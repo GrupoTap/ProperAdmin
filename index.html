@@ -7947,7 +7947,7 @@ async function _confirmarTarefa(osId, tarefaId) {
 
 async function _renderInstanciarInline(osId) {
   try {
-    const r = await gsGet('getTemplates');
+    const r = await syncToGS('getTemplates', {});
     const templates = (r?.templates || []).filter(t => String(t.Ativo||'').toUpperCase() !== 'NÃO');
     if (!templates.length) return '<p style="color:var(--text-muted);font-size:12px">Nenhum template disponível.</p>';
     const opts = templates.map(t => `<option value="${t.Template_ID}">${t.Nome}</option>`).join('');
@@ -7981,7 +7981,7 @@ async function _abrirTrocarPipeline(osId) {
   if (sel) sel.innerHTML = '<option value="">Carregando templates…</option>';
   openModal('modalTrocarPipeline');
   try {
-    const r = await gsGet('getTemplates');
+    const r = await syncToGS('getTemplates', {});
     const templates = (r?.templates || []).filter(t => String(t.Ativo||'').toUpperCase() !== 'NÃO');
     if (sel) {
       sel.innerHTML = '<option value="">Selecione um template *</option>' +
@@ -8420,9 +8420,9 @@ async function renderTemplateList() {
   }
   el.innerHTML = '<div style="padding:32px;text-align:center;color:var(--text-muted)">Carregando…</div>';
   try {
-    const r = await gsGet('getTemplates');
+    const r = await syncToGS('getTemplates', {});
     console.log('[getTemplates] raw response:', JSON.stringify(r));
-    _templatesList = r.templates || [];
+    _templatesList = (r && r.templates) || [];
     if (!_templatesList.length) {
       el.innerHTML = `
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
@@ -8708,7 +8708,7 @@ async function renderTiposOSList() {
   try {
     const [rt, rtpl] = await Promise.all([
       gsGet('getTiposOS'),
-      _templatesList.length ? Promise.resolve({ templates: _templatesList }) : gsGet('getTemplates'),
+      _templatesList.length ? Promise.resolve({ templates: _templatesList }) : syncToGS('getTemplates', {}),
     ]);
     _tiposOS = rt.tipos || [];
     if (!_templatesList.length) _templatesList = rtpl.templates || [];
@@ -8771,7 +8771,7 @@ async function renderTiposOSList() {
 async function openTipoOSModal(tipoId) {
   if (!_templatesList.length) {
     try {
-      const r = await gsGet('getTemplates');
+      const r = await syncToGS('getTemplates', {});
       _templatesList = r.templates || [];
     } catch(e) {
       if (e.message && e.message.includes('AUTH_GOOGLE')) { hubLogout(); return; }
