@@ -545,6 +545,35 @@ tr:hover td{background:var(--gray-50)}
 .notif-item:last-child{border-bottom:none}
 .notif-msg{font-size:12px;color:var(--text);margin-bottom:4px}
 .notif-link{font-size:11px;color:var(--accent);font-weight:600}
+
+/* ── PROPERFLOW: Editor de Templates (Sprint 4E-C) ── */
+.tpl-list-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px;margin-bottom:8px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.tpl-list-card-info{flex:1;min-width:0}
+.tpl-list-card-name{font-size:14px;font-weight:600;color:var(--text)}
+.tpl-list-card-meta{font-size:12px;color:var(--text-muted);margin-top:2px}
+.tpl-editor-header{display:flex;align-items:center;gap:12px;margin-bottom:20px;padding-bottom:14px;border-bottom:1px solid var(--border)}
+.tpl-editor-name-input{flex:1;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);color:var(--text);font-size:16px;font-weight:600;padding:6px 10px}
+.tpl-editor-name-input:focus{outline:none;border-color:var(--accent)}
+.tpl-fase-block{border:1px solid var(--border);border-radius:var(--radius);margin-bottom:12px;overflow:hidden}
+.tpl-fase-header{background:var(--surface);padding:8px 14px;display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--border)}
+.tpl-fase-title-input{flex:1;background:transparent;border:none;color:var(--text);font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.06em}
+.tpl-fase-title-input:focus{outline:none}
+.tpl-fase-body{padding:10px 14px}
+.tpl-tarefa-card{background:var(--bg);border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:var(--radius);padding:8px 12px;margin-bottom:6px;display:flex;align-items:center;gap:10px;cursor:pointer;transition:border-color .15s}
+.tpl-tarefa-card:hover{border-color:var(--accent)}
+.tpl-tarefa-card-name{flex:1;font-size:13px;color:var(--text)}
+.tpl-tarefa-badge{font-size:10px;padding:2px 6px;border-radius:10px;background:var(--surface);color:var(--text-muted);border:1px solid var(--border);white-space:nowrap}
+/* ── PROPERFLOW: Gestão de Tipos de OS (Sprint 4E-C) ── */
+.tipo-os-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px;margin-bottom:8px}
+.tipo-os-card.inativo{opacity:0.5}
+.tipo-os-card-header{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:6px}
+.tipo-os-id{font-size:10px;color:var(--text-muted);font-family:var(--font-mono)}
+.tipo-os-nome{font-size:14px;font-weight:600;color:var(--text)}
+.tipo-os-template{font-size:12px;color:var(--text-muted);margin-bottom:4px}
+.tipo-os-desc{font-size:12px;color:var(--text-muted)}
+.tipo-os-badge-ativo{font-size:10px;padding:2px 7px;border-radius:10px;background:#14532d;color:#4ade80;font-weight:700;white-space:nowrap}
+.tipo-os-badge-inativo{font-size:10px;padding:2px 7px;border-radius:10px;background:#3f3f46;color:#a1a1aa;font-weight:700;white-space:nowrap}
+.tipo-id-preview{font-family:var(--font-mono);font-size:11px;color:var(--text-muted);background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);padding:4px 8px;margin-top:4px;display:block}
 </style>
 </head>
 <body>
@@ -607,6 +636,23 @@ tr:hover td{background:var(--gray-50)}
             d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
         </svg>
         Perfis
+      </button>
+    </div>
+
+    <div class="nav-group">
+      <div class="nav-group-label">PROPERFLOW</div>
+      <button class="nav-item" data-view="templates" onclick="showView('templates')" id="navTemplates">
+        <svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+          <rect x="2" y="2" width="12" height="12" rx="1"/>
+          <path d="M5 6h6M5 9h4"/>
+        </svg>
+        <span>Templates</span>
+      </button>
+      <button class="nav-item" data-view="tiposOS" onclick="showView('tiposOS')" id="navTiposOS">
+        <svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M2 5l4-3 4 3 4-3v9l-4 3-4-3-4 3V5z"/>
+        </svg>
+        <span>Tipos de OS</span>
       </button>
     </div>
 
@@ -712,6 +758,10 @@ tr:hover td{background:var(--gray-50)}
     <div id="viewTecnicos" style="display:none"></div>
     <!-- PERFIS VIEW -->
     <div id="viewPerfis" style="display:none"></div>
+    <!-- TEMPLATES VIEW (Sprint 4E-C) -->
+    <div id="viewTemplates" style="display:none"></div>
+    <!-- TIPOS DE OS VIEW (Sprint 4E-C) -->
+    <div id="viewTiposOS" style="display:none"></div>
   </main>
 </div>
 </div>
@@ -2694,7 +2744,7 @@ async function auditCreateBackup() {
 // ═══════════════════════════════════════════════════════════
 function showView(v){
   currentView=v;
-  const allViews=['dashboard','preventivas','catalog','machines','clients','estoque','config','tecnicos','perfis','os'];
+  const allViews=['dashboard','preventivas','catalog','machines','clients','estoque','config','tecnicos','perfis','os','templates','tiposOS'];
   allViews.forEach(x=>{
     const el=document.getElementById('view'+x.charAt(0).toUpperCase()+x.slice(1));
     if(el) el.style.display=x===v?'':'none';
@@ -2732,6 +2782,10 @@ function showView(v){
     renderPerfis();
   } else if(v==='os'){
     renderOS();
+  } else if(v==='templates'){
+    renderTemplateList();
+  } else if(v==='tiposOS'){
+    renderTiposOSList();
   }
 }
 
@@ -2748,6 +2802,8 @@ function showView(v){
     tecnicos: 'Técnicos',
     perfis:   'Perfis',
     os:       'Ordens de Serviço',
+    templates: 'Templates de Pipeline',
+    tiposOS:   'Tipos de OS',
   };
   window.showView = function(view) {
     const r = _origShowView ? _origShowView.apply(this, arguments) : undefined;
@@ -7030,6 +7086,11 @@ let _osSearch = '';
 let _osFilterStatus = '';
 let _tiposOS = [];
 let _notifInterval = null;
+let _templatesList = [];
+let _editorTemplate = null;
+let _editorFaseAtual = null;
+let _editorTarefaIdx = null;
+let _editandoTipoId = null;
 let _notifCount = 0;
 let _trocarPipelineOsId = null;
 
@@ -8228,6 +8289,574 @@ if(!gsUrl){
     </div>
   </div>
 </div>
+
+<!-- MODAL TIPO DE OS (Sprint 4E-C) -->
+<div class="overlay" id="modalTipoOS">
+  <div class="modal" style="width:480px">
+    <div class="modal-title">
+      <span id="modalTipoOSTitle">Novo tipo de OS</span>
+    </div>
+    <div class="modal-body">
+      <div class="form-row">
+        <label class="form-label">Nome *</label>
+        <input type="text" id="tipoOSNome" class="form-input"
+          placeholder="Ex: Reforma geral" oninput="atualizarPreviewTipoId()">
+        <span class="tipo-id-preview" id="tipoOSIdPreview">ID: —</span>
+      </div>
+      <div class="form-row" style="margin-top:14px">
+        <label class="form-label">Template padrão *</label>
+        <select id="tipoOSTemplate" class="form-select">
+          <option value="">Selecione o template...</option>
+        </select>
+      </div>
+      <div class="form-row" style="margin-top:14px">
+        <label class="form-label">Descrição</label>
+        <textarea id="tipoOSDescricao" class="form-input" rows="3"
+          placeholder="Orientação para o admin ao escolher este tipo..."></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('modalTipoOS')">Cancelar</button>
+      <button class="btn btn-primary" onclick="saveTipoOSModal()">Salvar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL TAREFA DO EDITOR DE TEMPLATES (Sprint 4E-C) -->
+<div class="overlay" id="modalTarefaEditor">
+  <div class="modal" style="width:480px">
+    <div class="modal-title">
+      <span id="modalTarefaTitle">Nova tarefa</span>
+    </div>
+    <div class="modal-body">
+      <div class="form-row">
+        <label class="form-label">Nome da tarefa *</label>
+        <input type="text" id="tarefaNome" class="form-input"
+          placeholder="Ex: Diagnóstico sem desmontagem">
+      </div>
+      <div class="form-row" style="margin-top:14px">
+        <label class="form-label">Tipo *</label>
+        <select id="tarefaTipo" class="form-select">
+          <option value="manual">Manual 🖐</option>
+          <option value="auto:form08">Auto — Form 08 (Diagnóstico)</option>
+          <option value="auto:form09">Auto — Form 09 (Peritagem mecânica)</option>
+          <option value="auto:form10">Auto — Form 10 (Peritagem elétrica)</option>
+          <option value="auto:rotores">Auto — Ficha de Rotores</option>
+        </select>
+      </div>
+      <div class="form-row" style="margin-top:14px">
+        <label class="form-label">Depende de</label>
+        <div id="tarefaDependencias"
+          style="max-height:120px;overflow-y:auto;border:1px solid var(--border);border-radius:var(--radius);padding:8px">
+          <!-- checkboxes gerados dinamicamente -->
+        </div>
+      </div>
+      <div style="display:flex;gap:16px;margin-top:14px;align-items:center">
+        <label style="display:flex;align-items:center;gap:6px;cursor:pointer">
+          <input type="checkbox" id="tarefaBloqueante">
+          <span class="form-label" style="margin:0">Bloqueante</span>
+        </label>
+        <div style="flex:1">
+          <label class="form-label">Alerta (dias sem progressão)</label>
+          <input type="number" id="tarefaAlertaDias" class="form-input"
+            placeholder="Ex: 3" min="1">
+        </div>
+      </div>
+      <div class="form-row" style="margin-top:14px">
+        <label class="form-label">Descrição / orientação</label>
+        <textarea id="tarefaDescricao" class="form-input" rows="2"
+          placeholder="Orientação para o técnico (opcional)..."></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('modalTarefaEditor')">Cancelar</button>
+      <button class="btn btn-primary" onclick="saveTarefaModal()">Confirmar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════════
+// PROPERFLOW – Sprint 4E-C: Editor de Templates + Tipos de OS
+// ═══════════════════════════════════════════════════════════
+
+// ── Helpers ──────────────────────────────────────────────────────────────────
+
+function gerarTipoId(nome) {
+  return nome
+    .normalize('NFD').replace(/[̀-ͯ]/g, '')
+    .toUpperCase()
+    .replace(/\s+/g, '_')
+    .replace(/[^A-Z0-9_]/g, '');
+}
+
+function _tipoLabel(tipo) {
+  const map = {
+    'manual': 'Manual',
+    'auto:form08': 'Form 08',
+    'auto:form09': 'Form 09',
+    'auto:form10': 'Form 10',
+    'auto:rotores': 'Rotores',
+  };
+  return map[tipo] || tipo;
+}
+
+function _todasTarefasEditor() {
+  if (!_editorTemplate) return [];
+  const result = [];
+  _editorTemplate.fases.forEach(f => f.tarefas.forEach(t => result.push(t)));
+  return result;
+}
+
+// ── MÓDULO TEMPLATES ──────────────────────────────────────────────────────────
+
+async function renderTemplateList() {
+  const el = document.getElementById('viewTemplates');
+  if (!el) return;
+  if (typeof gsConnected !== 'undefined' && !gsConnected) {
+    el.innerHTML = '<div style="padding:32px;text-align:center;color:var(--text-muted)">Sem conexão com o servidor. Conecte-se em Configurações.</div>';
+    return;
+  }
+  el.innerHTML = '<div style="padding:32px;text-align:center;color:var(--text-muted)">Carregando…</div>';
+  try {
+    const r = await gsGet('getTemplates');
+    _templatesList = r.templates || [];
+    if (!_templatesList.length) {
+      el.innerHTML = `
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
+          <h2 style="font-size:18px;font-weight:700;color:var(--text)">Templates de Pipeline</h2>
+          <button class="btn btn-primary" onclick="openTemplateEditor(null)">+ Novo template</button>
+        </div>
+        <div style="padding:48px;text-align:center;color:var(--text-muted)">
+          <div style="font-size:32px;margin-bottom:12px">📋</div>
+          <div style="font-size:14px;font-weight:600;margin-bottom:6px">Nenhum template cadastrado</div>
+          <div style="font-size:12px;margin-bottom:16px">Crie um template de pipeline para começar.</div>
+          <button class="btn btn-primary" onclick="openTemplateEditor(null)">+ Criar primeiro template</button>
+        </div>`;
+      return;
+    }
+    el.innerHTML = `
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
+        <h2 style="font-size:18px;font-weight:700;color:var(--text)">Templates de Pipeline</h2>
+        <button class="btn btn-primary" onclick="openTemplateEditor(null)">+ Novo template</button>
+      </div>
+      <div id="tplListContainer"></div>`;
+    const container = document.getElementById('tplListContainer');
+    container.innerHTML = _templatesList.map(t => {
+      const tarefas = JSON.parse(t.Tarefas_JSON || '[]');
+      const fases = [...new Set(tarefas.map(x => x.fase).filter(Boolean))];
+      const ativo = t.Ativo !== false && t.Ativo !== 'false' && t.Ativo !== 0;
+      return `
+        <div class="tpl-list-card" style="${ativo ? '' : 'opacity:0.5'}">
+          <div class="tpl-list-card-info">
+            <div class="tpl-list-card-name">${t.Nome || '(sem nome)'}</div>
+            <div class="tpl-list-card-meta">${tarefas.length} tarefa${tarefas.length !== 1 ? 's' : ''} · ${fases.length} fase${fases.length !== 1 ? 's' : ''} · ${ativo ? 'Ativo' : 'Inativo'}</div>
+          </div>
+          <div style="display:flex;gap:8px;flex-shrink:0">
+            <button class="btn btn-secondary btn-sm" onclick="duplicarTemplate('${t.Template_ID}')">Duplicar</button>
+            <button class="btn btn-primary btn-sm" onclick="openTemplateEditor('${t.Template_ID}')">Editar</button>
+          </div>
+        </div>`;
+    }).join('');
+  } catch(e) {
+    if (e.message && e.message.includes('AUTH_GOOGLE')) { hubLogout(); return; }
+    el.innerHTML = `
+      <div style="padding:48px;text-align:center;color:var(--text-muted)">
+        <div style="margin-bottom:12px;color:#f87171">Erro ao carregar templates.</div>
+        <button class="btn btn-secondary" onclick="renderTemplateList()">Tentar novamente</button>
+      </div>`;
+  }
+}
+
+function openTemplateEditor(templateId) {
+  const el = document.getElementById('viewTemplates');
+  if (!el) return;
+  if (templateId) {
+    const tpl = _templatesList.find(t => t.Template_ID === templateId);
+    if (!tpl) { toast('Template não encontrado.', 'error'); return; }
+    const tarefasFlat = JSON.parse(tpl.Tarefas_JSON || '[]');
+    const fasesMap = {};
+    tarefasFlat.forEach(t => {
+      const fn = t.fase || 'Fase 1';
+      const fo = t.fase_ordem || 1;
+      if (!fasesMap[fn]) fasesMap[fn] = { nome: fn, fase_ordem: fo, tarefas: [] };
+      fasesMap[fn].tarefas.push({...t});
+    });
+    const fasesArr = Object.values(fasesMap).sort((a,b) => a.fase_ordem - b.fase_ordem);
+    fasesArr.forEach(f => f.tarefas.sort((a,b) => (a.ordem||0) - (b.ordem||0)));
+    _editorTemplate = { template_id: tpl.Template_ID, nome: tpl.Nome, fases: fasesArr };
+  } else {
+    _editorTemplate = { template_id: null, nome: '', fases: [] };
+  }
+  _renderTemplateEditor(el);
+}
+
+function duplicarTemplate(templateId) {
+  const tpl = _templatesList.find(t => t.Template_ID === templateId);
+  if (!tpl) { toast('Template não encontrado.', 'error'); return; }
+  const el = document.getElementById('viewTemplates');
+  if (!el) return;
+  const tarefasFlat = JSON.parse(tpl.Tarefas_JSON || '[]');
+  const fasesMap = {};
+  tarefasFlat.forEach(t => {
+    const fn = t.fase || 'Fase 1';
+    const fo = t.fase_ordem || 1;
+    if (!fasesMap[fn]) fasesMap[fn] = { nome: fn, fase_ordem: fo, tarefas: [] };
+    fasesMap[fn].tarefas.push({...t});
+  });
+  const fasesArr = Object.values(fasesMap).sort((a,b) => a.fase_ordem - b.fase_ordem);
+  fasesArr.forEach(f => f.tarefas.sort((a,b) => (a.ordem||0) - (b.ordem||0)));
+  _editorTemplate = { template_id: null, nome: 'Cópia de ' + tpl.Nome, fases: fasesArr };
+  _renderTemplateEditor(el);
+}
+
+function _renderTemplateEditor(el) {
+  el.innerHTML = `
+    <div class="tpl-editor-header">
+      <button class="btn btn-secondary btn-sm" onclick="renderTemplateList()">← Lista de templates</button>
+      <input class="tpl-editor-name-input" id="tplNomeInput" type="text"
+        placeholder="Nome do template..." value="${(_editorTemplate.nome||'').replace(/"/g,'&quot;')}">
+      <button class="btn btn-primary" onclick="saveTemplateEditor()">Salvar template</button>
+    </div>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+      <span style="font-size:13px;color:var(--text-muted)">Fases do pipeline:</span>
+      <button class="btn btn-secondary btn-sm" onclick="adicionarFase()">+ Adicionar fase</button>
+    </div>
+    <div id="tplFasesContainer"></div>`;
+  _renderFases();
+}
+
+function _renderFases() {
+  const container = document.getElementById('tplFasesContainer');
+  if (!container || !_editorTemplate) return;
+  if (!_editorTemplate.fases.length) {
+    container.innerHTML = '<div style="padding:24px;text-align:center;color:var(--text-muted);font-size:13px">Nenhuma fase. Clique em "+ Adicionar fase" para começar.</div>';
+    return;
+  }
+  container.innerHTML = _editorTemplate.fases.map((fase, fi) => `
+    <div class="tpl-fase-block">
+      <div class="tpl-fase-header">
+        <input class="tpl-fase-title-input" type="text" value="${(fase.nome||'').replace(/"/g,'&quot;')}"
+          oninput="_renameFase(${fi}, this.value)" placeholder="Nome da fase">
+        <button class="btn btn-secondary btn-sm" onclick="_moverFase(${fi},-1)" ${fi===0?'disabled':''}>↑</button>
+        <button class="btn btn-secondary btn-sm" onclick="_moverFase(${fi},1)" ${fi===_editorTemplate.fases.length-1?'disabled':''}>↓</button>
+        <button class="btn btn-secondary btn-sm" style="color:#f87171" onclick="_removerFase(${fi})">Remover fase</button>
+      </div>
+      <div class="tpl-fase-body">
+        ${fase.tarefas.map((t, ti) => `
+          <div class="tpl-tarefa-card" onclick="_editarTarefa(${fi},${ti})">
+            <span class="tpl-tarefa-card-name">${t.id||''} · ${t.nome||'(sem nome)'}</span>
+            <span class="tpl-tarefa-badge">${_tipoLabel(t.tipo||'manual')}</span>
+            <button class="btn btn-secondary btn-sm" style="flex-shrink:0;color:#f87171"
+              onclick="event.stopPropagation();_removerTarefa(${fi},${ti})">🗑</button>
+          </div>`).join('')}
+        <button class="btn btn-secondary btn-sm" style="margin-top:6px" onclick="_novaTarefa(${fi})">+ Adicionar tarefa nesta fase</button>
+      </div>
+    </div>`).join('');
+}
+
+function adicionarFase() {
+  if (!_editorTemplate) return;
+  _editorTemplate.fases.push({ nome: 'Nova fase', fase_ordem: _editorTemplate.fases.length + 1, tarefas: [] });
+  _renderFases();
+}
+
+function _renameFase(fi, nome) {
+  if (_editorTemplate && _editorTemplate.fases[fi]) _editorTemplate.fases[fi].nome = nome;
+}
+
+function _moverFase(fi, dir) {
+  const fases = _editorTemplate.fases;
+  const ni = fi + dir;
+  if (ni < 0 || ni >= fases.length) return;
+  [fases[fi], fases[ni]] = [fases[ni], fases[fi]];
+  _renderFases();
+}
+
+function _removerFase(fi) {
+  if (!confirm('Remover esta fase e todas as suas tarefas?')) return;
+  _editorTemplate.fases.splice(fi, 1);
+  _renderFases();
+}
+
+function _novaTarefa(fi) {
+  _editorFaseAtual = fi;
+  _editorTarefaIdx = null;
+  document.getElementById('modalTarefaTitle').textContent = 'Nova tarefa';
+  document.getElementById('tarefaNome').value = '';
+  document.getElementById('tarefaTipo').value = 'manual';
+  document.getElementById('tarefaBloqueante').checked = false;
+  document.getElementById('tarefaAlertaDias').value = '';
+  document.getElementById('tarefaDescricao').value = '';
+  _renderDependenciasCheckboxes(null);
+  openModal('modalTarefaEditor');
+}
+
+function _editarTarefa(fi, ti) {
+  _editorFaseAtual = fi;
+  _editorTarefaIdx = ti;
+  const t = _editorTemplate.fases[fi].tarefas[ti];
+  document.getElementById('modalTarefaTitle').textContent = 'Editar tarefa';
+  document.getElementById('tarefaNome').value = t.nome || '';
+  document.getElementById('tarefaTipo').value = t.tipo || 'manual';
+  document.getElementById('tarefaBloqueante').checked = !!t.bloqueante;
+  document.getElementById('tarefaAlertaDias').value = t.alerta_dias || '';
+  document.getElementById('tarefaDescricao').value = t.descricao || '';
+  _renderDependenciasCheckboxes(t);
+  openModal('modalTarefaEditor');
+}
+
+function _renderDependenciasCheckboxes(tarefaAtual) {
+  const container = document.getElementById('tarefaDependencias');
+  const todas = _todasTarefasEditor();
+  const depAtual = tarefaAtual ? (tarefaAtual.depende_de || []) : [];
+  const selfId = tarefaAtual ? tarefaAtual.id : null;
+  const opts = todas.filter(t => t.id !== selfId);
+  if (!opts.length) {
+    container.innerHTML = '<span style="font-size:12px;color:var(--text-muted)">Nenhuma tarefa disponível para dependência.</span>';
+    return;
+  }
+  container.innerHTML = opts.map(t => `
+    <label style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text);padding:3px 0;cursor:pointer">
+      <input type="checkbox" value="${t.id}" ${depAtual.includes(t.id)?'checked':''}>
+      ${t.id} — ${t.nome||'(sem nome)'}
+    </label>`).join('');
+}
+
+function saveTarefaModal() {
+  const nome = document.getElementById('tarefaNome').value.trim();
+  if (!nome) { toast('Nome da tarefa é obrigatório.', 'error'); return; }
+  const tipo = document.getElementById('tarefaTipo').value;
+  const bloqueante = document.getElementById('tarefaBloqueante').checked;
+  const alertaDias = document.getElementById('tarefaAlertaDias').value;
+  const descricao = document.getElementById('tarefaDescricao').value.trim();
+  const deps = Array.from(document.querySelectorAll('#tarefaDependencias input[type=checkbox]:checked')).map(c => c.value);
+
+  const fase = _editorTemplate.fases[_editorFaseAtual];
+  if (_editorTarefaIdx !== null) {
+    const t = fase.tarefas[_editorTarefaIdx];
+    t.nome = nome; t.tipo = tipo; t.bloqueante = bloqueante;
+    t.alerta_dias = alertaDias ? parseInt(alertaDias) : null;
+    t.descricao = descricao; t.depende_de = deps;
+  } else {
+    const todas = _todasTarefasEditor();
+    const newId = 'T' + String(todas.length + 1).padStart(2, '0');
+    fase.tarefas.push({
+      id: newId, nome, tipo, fase: fase.nome,
+      fase_ordem: _editorFaseAtual + 1,
+      ordem: fase.tarefas.length + 1,
+      depende_de: deps, paralelo_com: [],
+      bloqueante, alerta_dias: alertaDias ? parseInt(alertaDias) : null, descricao
+    });
+  }
+  closeModal('modalTarefaEditor');
+  _renderFases();
+}
+
+function _removerTarefa(fi, ti) {
+  if (!confirm('Remover esta tarefa?')) return;
+  _editorTemplate.fases[fi].tarefas.splice(ti, 1);
+  _renderFases();
+}
+
+async function saveTemplateEditor() {
+  if (!_editorTemplate) return;
+  const nomeInput = document.getElementById('tplNomeInput');
+  const nome = (nomeInput ? nomeInput.value.trim() : _editorTemplate.nome.trim());
+  if (!nome) { toast('Nome do template é obrigatório.', 'error'); return; }
+  const totalTarefas = _editorTemplate.fases.reduce((s, f) => s + f.tarefas.length, 0);
+  if (!_editorTemplate.fases.length) { toast('Adicione pelo menos uma fase.', 'error'); return; }
+  if (!totalTarefas) { toast('Adicione pelo menos uma tarefa.', 'error'); return; }
+
+  const tarefasFlat = [];
+  _editorTemplate.fases.forEach((fase, fi) => {
+    fase.tarefas.forEach((t, ti) => {
+      tarefasFlat.push({ ...t, fase: fase.nome, fase_ordem: fi + 1, ordem: ti + 1 });
+    });
+  });
+
+  try {
+    const payload = {
+      nome,
+      tarefas_json: JSON.stringify(tarefasFlat),
+    };
+    if (_editorTemplate.template_id) payload.template_id = _editorTemplate.template_id;
+    await syncToGS('saveTemplate', payload);
+    toast('Template salvo!', 'success');
+    renderTemplateList();
+  } catch(e) {
+    if (e.message && e.message.includes('AUTH_GOOGLE')) { hubLogout(); return; }
+    toast('Erro ao salvar template.', 'error');
+  }
+}
+
+// ── MÓDULO TIPOS DE OS ────────────────────────────────────────────────────────
+
+async function renderTiposOSList() {
+  const el = document.getElementById('viewTiposOS');
+  if (!el) return;
+  if (typeof gsConnected !== 'undefined' && !gsConnected) {
+    el.innerHTML = '<div style="padding:32px;text-align:center;color:var(--text-muted)">Sem conexão com o servidor. Conecte-se em Configurações.</div>';
+    return;
+  }
+  el.innerHTML = '<div style="padding:32px;text-align:center;color:var(--text-muted)">Carregando…</div>';
+  try {
+    const [rt, rtpl] = await Promise.all([
+      gsGet('getTiposOS'),
+      _templatesList.length ? Promise.resolve({ templates: _templatesList }) : gsGet('getTemplates'),
+    ]);
+    _tiposOS = rt.tipos || [];
+    if (!_templatesList.length) _templatesList = rtpl.templates || [];
+
+    if (!_tiposOS.length) {
+      el.innerHTML = `
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
+          <h2 style="font-size:18px;font-weight:700;color:var(--text)">Tipos de OS</h2>
+          <button class="btn btn-primary" onclick="openTipoOSModal(null)">+ Novo tipo</button>
+        </div>
+        <div style="padding:48px;text-align:center;color:var(--text-muted)">
+          <div style="font-size:32px;margin-bottom:12px">🗂</div>
+          <div style="font-size:14px;font-weight:600;margin-bottom:6px">Nenhum tipo de OS cadastrado</div>
+          <div style="font-size:12px;margin-bottom:16px">Crie um tipo de OS para categorizar as ordens de serviço.</div>
+          <button class="btn btn-primary" onclick="openTipoOSModal(null)">+ Criar primeiro tipo</button>
+        </div>`;
+      return;
+    }
+
+    el.innerHTML = `
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
+        <h2 style="font-size:18px;font-weight:700;color:var(--text)">Tipos de OS</h2>
+        <button class="btn btn-primary" onclick="openTipoOSModal(null)">+ Novo tipo</button>
+      </div>
+      <div id="tiposOSContainer"></div>`;
+
+    const container = document.getElementById('tiposOSContainer');
+    container.innerHTML = _tiposOS.map(tipo => {
+      const ativo = tipo.Ativo !== false && tipo.Ativo !== 'false' && tipo.Ativo !== 0;
+      const tplNome = (_templatesList.find(t => t.Template_ID === tipo.Template_ID_Padrao) || {}).Nome || tipo.Template_ID_Padrao || '—';
+      return `
+        <div class="tipo-os-card ${ativo ? '' : 'inativo'}">
+          <div class="tipo-os-card-header">
+            <div>
+              <div class="tipo-os-id">${tipo.Tipo_ID || ''}</div>
+              <div class="tipo-os-nome">${tipo.Nome || ''}</div>
+            </div>
+            <span class="${ativo ? 'tipo-os-badge-ativo' : 'tipo-os-badge-inativo'}">${ativo ? 'Ativo' : 'Inativo'}</span>
+          </div>
+          <div class="tipo-os-template">Template padrão: ${tplNome}</div>
+          ${tipo.Descricao ? `<div class="tipo-os-desc">${tipo.Descricao}</div>` : ''}
+          <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">
+            <button class="btn btn-secondary btn-sm" onclick="openTipoOSModal('${tipo.Tipo_ID}')">Editar</button>
+            <button class="btn btn-secondary btn-sm" onclick="toggleTipoOS('${tipo.Tipo_ID}',${ativo})">${ativo ? 'Inativar' : 'Reativar'}</button>
+            ${!ativo ? `<button class="btn btn-secondary btn-sm" style="color:#f87171" onclick="deleteTipoOSAction('${tipo.Tipo_ID}','${(tipo.Nome||'').replace(/'/g,"\\'")}')">Excluir</button>` : ''}
+          </div>
+        </div>`;
+    }).join('');
+  } catch(e) {
+    if (e.message && e.message.includes('AUTH_GOOGLE')) { hubLogout(); return; }
+    el.innerHTML = `
+      <div style="padding:48px;text-align:center;color:var(--text-muted)">
+        <div style="margin-bottom:12px;color:#f87171">Erro ao carregar tipos de OS.</div>
+        <button class="btn btn-secondary" onclick="renderTiposOSList()">Tentar novamente</button>
+      </div>`;
+  }
+}
+
+async function openTipoOSModal(tipoId) {
+  if (!_templatesList.length) {
+    try {
+      const r = await gsGet('getTemplates');
+      _templatesList = r.templates || [];
+    } catch(e) {
+      if (e.message && e.message.includes('AUTH_GOOGLE')) { hubLogout(); return; }
+      toast('Erro ao carregar templates.', 'error'); return;
+    }
+  }
+
+  const select = document.getElementById('tipoOSTemplate');
+  const ativos = _templatesList.filter(t => t.Ativo !== false && t.Ativo !== 'false' && t.Ativo !== 0);
+  select.innerHTML = '<option value="">Selecione o template...</option>' +
+    ativos.map(t => `<option value="${t.Template_ID}">${t.Nome}</option>`).join('');
+
+  if (tipoId) {
+    const tipo = _tiposOS.find(t => t.Tipo_ID === tipoId);
+    if (!tipo) { toast('Tipo não encontrado.', 'error'); return; }
+    _editandoTipoId = tipoId;
+    document.getElementById('modalTipoOSTitle').textContent = 'Editar tipo de OS';
+    document.getElementById('tipoOSNome').value = tipo.Nome || '';
+    document.getElementById('tipoOSDescricao').value = tipo.Descricao || '';
+    select.value = tipo.Template_ID_Padrao || '';
+    const preview = document.getElementById('tipoOSIdPreview');
+    preview.textContent = 'ID: ' + tipoId + ' (fixo)';
+    document.getElementById('tipoOSNome').removeAttribute('oninput');
+  } else {
+    _editandoTipoId = null;
+    document.getElementById('modalTipoOSTitle').textContent = 'Novo tipo de OS';
+    document.getElementById('tipoOSNome').value = '';
+    document.getElementById('tipoOSDescricao').value = '';
+    select.value = '';
+    document.getElementById('tipoOSIdPreview').textContent = 'ID: —';
+    document.getElementById('tipoOSNome').setAttribute('oninput', 'atualizarPreviewTipoId()');
+  }
+  openModal('modalTipoOS');
+}
+
+function atualizarPreviewTipoId() {
+  const nome = document.getElementById('tipoOSNome').value;
+  const preview = document.getElementById('tipoOSIdPreview');
+  if (preview) preview.textContent = 'ID: ' + (nome ? gerarTipoId(nome) : '—');
+}
+
+async function saveTipoOSModal() {
+  const nome = document.getElementById('tipoOSNome').value.trim();
+  const templateId = document.getElementById('tipoOSTemplate').value;
+  const descricao = document.getElementById('tipoOSDescricao').value.trim();
+
+  if (!nome) { toast('Nome é obrigatório.', 'error'); return; }
+  if (!templateId) { toast('Selecione um template padrão.', 'error'); return; }
+
+  try {
+    const payload = { nome, template_id_padrao: templateId, descricao };
+    if (_editandoTipoId) payload.tipo_id = _editandoTipoId;
+    await syncToGS('saveTipoOS', payload);
+    toast('Tipo salvo!', 'success');
+    closeModal('modalTipoOS');
+    renderTiposOSList();
+  } catch(e) {
+    if (e.message && e.message.includes('AUTH_GOOGLE')) { hubLogout(); return; }
+    toast('Erro ao salvar tipo.', 'error');
+  }
+}
+
+async function toggleTipoOS(tipoId, ativoAtual) {
+  if (ativoAtual) {
+    const tipo = _tiposOS.find(t => t.Tipo_ID === tipoId);
+    const nome = tipo ? tipo.Nome : tipoId;
+    if (!confirm(`Inativar "${nome}"? OS existentes não serão afetadas.`)) return;
+  }
+  try {
+    await syncToGS('saveTipoOS', { tipo_id: tipoId, ativo: !ativoAtual });
+    toast(ativoAtual ? 'Tipo inativado.' : 'Tipo reativado.', 'success');
+    renderTiposOSList();
+  } catch(e) {
+    if (e.message && e.message.includes('AUTH_GOOGLE')) { hubLogout(); return; }
+    toast('Erro ao alterar status.', 'error');
+  }
+}
+
+async function deleteTipoOSAction(tipoId, nome) {
+  if (!confirm(`Excluir permanentemente "${nome}"? Esta ação não pode ser desfeita.`)) return;
+  try {
+    const r = await syncToGS('deleteTipoOS', { tipo_id: tipoId });
+    if (r && r.status === 'error') { toast(r.error || 'Erro ao excluir tipo.', 'error'); return; }
+    toast('Tipo excluído.', 'success');
+    renderTiposOSList();
+  } catch(e) {
+    if (e.message && e.message.includes('AUTH_GOOGLE')) { hubLogout(); return; }
+    toast('Erro ao excluir tipo.', 'error');
+  }
+}
+</script>
 
 </body>
 </html>
