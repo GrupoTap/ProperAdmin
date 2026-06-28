@@ -8679,6 +8679,7 @@ async function saveTemplateEditor() {
     const payload = {
       nome,
       tarefas_json: JSON.stringify(tarefasFlat),
+      ativo: 'SIM',
     };
     if (_editorTemplate.template_id) payload.template_id = _editorTemplate.template_id;
     await syncToGS('saveTemplate', payload);
@@ -8733,7 +8734,8 @@ async function renderTiposOSList() {
     const container = document.getElementById('tiposOSContainer');
     container.innerHTML = _tiposOS.map(tipo => {
       const ativo = tipo.Ativo !== false && tipo.Ativo !== 'false' && tipo.Ativo !== 0;
-      const tplNome = (_templatesList.find(t => t.Template_ID === tipo.Template_ID_Padrao) || {}).Nome || tipo.Template_ID_Padrao || '—';
+      const tplEncontrado = _templatesList.find(t => t.Template_ID === tipo.Template_ID_Padrao);
+      const tplNome = tplEncontrado ? tplEncontrado.Nome : (tipo.Template_ID_Padrao ? `${tipo.Template_ID_Padrao} (template não encontrado)` : '—');
       return `
         <div class="tipo-os-card ${ativo ? '' : 'inativo'}">
           <div class="tipo-os-card-header">
@@ -8775,6 +8777,10 @@ async function openTipoOSModal(tipoId) {
 
   const select = document.getElementById('tipoOSTemplate');
   const ativos = _templatesList.filter(t => t.Ativo !== false && t.Ativo !== 'false' && t.Ativo !== 0);
+  if (!ativos.length) {
+    toast('Nenhum template disponível. Crie um template antes de cadastrar tipos de OS.', 'error');
+    return;
+  }
   select.innerHTML = '<option value="">Selecione o template...</option>' +
     ativos.map(t => `<option value="${t.Template_ID}">${t.Nome}</option>`).join('');
 
