@@ -8421,6 +8421,7 @@ async function renderTemplateList() {
   el.innerHTML = '<div style="padding:32px;text-align:center;color:var(--text-muted)">Carregando…</div>';
   try {
     const r = await gsGet('getTemplates');
+    console.log('[getTemplates] raw response:', JSON.stringify(r));
     _templatesList = r.templates || [];
     if (!_templatesList.length) {
       el.innerHTML = `
@@ -8683,12 +8684,14 @@ async function saveTemplateEditor() {
       ativo: 'SIM',
     };
     if (_editorTemplate.template_id) payload.template_id = _editorTemplate.template_id;
-    await syncToGS('saveTemplate', payload);
+    const saveResult = await syncToGS('saveTemplate', payload);
+    console.log('[saveTemplate] GAS response:', JSON.stringify(saveResult));
     toast('Template salvo!', 'success');
     renderTemplateList();
   } catch(e) {
+    console.error('[saveTemplate] error:', e.message);
     if (e.message && e.message.includes('AUTH_GOOGLE')) { hubLogout(); return; }
-    toast('Erro ao salvar template.', 'error');
+    toast('Erro ao salvar template: ' + e.message, 'error');
   }
 }
 
