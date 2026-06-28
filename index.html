@@ -7543,9 +7543,10 @@ async function openModalOS(id) {
   document.getElementById('osDataAbertura').value = new Date().toISOString().slice(0,10);
   _populateOSTecnicoSelect('');
 
+  document.getElementById('osClienteId').value = '';
   const dl = document.getElementById('osClienteList');
-  dl.innerHTML = (db?.clients||[]).filter(c=>c.name)
-    .map(c=>`<option value="${c.name.replace(/"/g,'&quot;')}">`).join('');
+  dl.innerHTML = (db?.clients||[]).filter(c=>c.nome)
+    .map(c=>`<option data-id="${c.id}" value="${(c.nome||'').replace(/"/g,'&quot;')}">`).join('');
 
   if (id) {
     const os = _osList.find(o => o.id_os === id);
@@ -7554,6 +7555,7 @@ async function openModalOS(id) {
     document.getElementById('osId').value = os.id_os || '';
     document.getElementById('osNumero').value = os.numero_os || '';
     document.getElementById('osCliente').value = os.cliente || '';
+    document.getElementById('osClienteId').value = os.id_cliente || '';
     document.getElementById('osTipoOS').value = os.tipo_os || '';
     document.getElementById('osDescricao').value = os.descricao || '';
     document.getElementById('osStatus').value = os.status || 'ABERTA';
@@ -7563,6 +7565,15 @@ async function openModalOS(id) {
     document.getElementById('modalOSTitle').textContent = 'Nova OS';
   }
   openModal('modalOS');
+}
+
+// ── Handler dinâmico de cliente no modal OS ─────────────────────────────────
+function _osClienteInputHandler(val) {
+  // Ao digitar, tenta encontrar cliente pelo nome para capturar o id
+  document.getElementById('osClienteId').value = '';
+  if (!val) return;
+  const match = (db?.clients||[]).find(c => (c.nome||'').toLowerCase() === val.toLowerCase());
+  if (match) document.getElementById('osClienteId').value = match.id;
 }
 
 async function saveOSModal() {
@@ -7579,10 +7590,19 @@ async function saveOSModal() {
   if (!cliente) { toast('Preencha o cliente.', 'error'); return; }
   if (!tipo) { toast('Selecione o tipo de OS.', 'error'); return; }
 
+  // Resolver id_cliente: preferir hidden field; fallback por nome no db local
+  let clienteId = document.getElementById('osClienteId').value.trim();
+  if (!clienteId && cliente) {
+    const match = (db?.clients||[]).find(c => (c.nome||'').toLowerCase() === cliente.toLowerCase());
+    if (match) clienteId = match.id;
+  }
+  if (!clienteId) { toast('Cliente não encontrado no cadastro. Selecione um cliente da lista.', 'error'); return; }
+
   const payload = {
     action: 'saveOS',
     numero_os: numero,
     cliente,
+    id_cliente: clienteId,
     tipo_os: tipo,
     descricao,
     status,
@@ -8159,13 +8179,15 @@ if(!gsUrl){
     <div class="modal-title"><span id="modalOSTitle">Nova OS</span></div>
     <div class="modal-body">
       <input type="hidden" id="osId">
+      <input type="hidden" id="osClienteId">
       <div class="form-row">
         <label class="form-label">Número da OS *</label>
         <input class="form-input" type="text" id="osNumero" placeholder="Ex: OS-2026-001">
       </div>
       <div class="form-row">
         <label class="form-label">Cliente *</label>
-        <input class="form-input" type="text" id="osCliente" list="osClienteList" placeholder="Nome do cliente">
+        <input class="form-input" type="text" id="osCliente" list="osClienteList" placeholder="Nome do cliente"
+          oninput="_osClienteInputHandler(this.value)">
         <datalist id="osClienteList"></datalist>
       </div>
       <div class="form-row">
