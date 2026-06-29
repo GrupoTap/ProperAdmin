@@ -7694,6 +7694,7 @@ async function saveOSModal() {
             await syncToGS('instanciarPipeline', { os_id: novoIdOs, template_id: templatePadrao });
           } catch(epi) {
             if (epi.message && epi.message.includes('AUTH_GOOGLE')) { hubLogout(); return; }
+            toast('⚠ Pipeline não foi configurado automaticamente: ' + epi.message, 'warning');
             console.warn('Falha ao instanciar pipeline:', epi.message);
           }
         }
