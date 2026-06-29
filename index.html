@@ -7473,7 +7473,12 @@ async function renderOS() {
 
   let result = null;
   try {
-    result = await gsGet('getOS');
+    const [resOS, resTipos] = await Promise.all([
+      gsGet('getOS'),
+      _tiposOS.length ? Promise.resolve({ tipos: _tiposOS }) : gsGet('getTiposOS').catch(() => ({ tipos: [] }))
+    ]);
+    result = resOS;
+    if (!_tiposOS.length) _tiposOS = (resTipos?.tipos || []);
   } catch(e) {
     el.innerHTML = `<div class="empty"><div class="empty-icon">⚠️</div>
       <div class="empty-title">Erro ao carregar</div>
@@ -7544,7 +7549,7 @@ function _renderOSTable(search = '', statusFilter = '') {
             return `<tr>
               <td><span style="font-family:var(--font-mono);font-size:12px;font-weight:600">${o.numero_os||'—'}</span></td>
               <td class="td-name">${o.cliente||'—'}</td>
-              <td>${o.tipo_os||'—'}</td>
+              <td>${(_tiposOS.find(t=>t.Tipo_ID===o.tipo_os)?.Nome) || o.tipo_os||'—'}</td>
               <td style="font-size:11px">${data}</td>
               <td><span class="${st.cls}">${st.label}</span></td>
               <td>
@@ -7620,7 +7625,7 @@ async function openModalOS(id) {
     document.getElementById('osClienteId').value = os.id_cliente || '';
     document.getElementById('osTipoOS').value = os.tipo_os || '';
     document.getElementById('osDescricao').value = os.descricao || '';
-    document.getElementById('osStatus').value = os.status || 'ABERTA';
+    document.getElementById('osStatus').value = (os.status || 'ABERTA').toUpperCase().replace('-','_');
     if (os.data_abertura) document.getElementById('osDataAbertura').value = os.data_abertura.slice(0,10);
     _populateOSTecnicoSelect(os.tecnico_atual || '');
   } else {
@@ -7780,8 +7785,8 @@ function _osDetailTab(osId, tab) {
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;max-width:640px">
         ${_osDetailField('Nº OS', `<span style="font-family:var(--font-mono);font-weight:700">${os.numero_os||'—'}</span>`)}
         ${_osDetailField('Cliente', os.cliente||'—')}
-        ${_osDetailField('Tipo', os.tipo_os||'—')}
-        ${_osDetailField('Status', os.status||'—')}
+        ${_osDetailField('Tipo', (_tiposOS.find(t=>t.Tipo_ID===os.tipo_os)?.Nome) || os.tipo_os||'—')}
+        ${_osDetailField('Status', STATUS_LABELS[(os.status||'').toUpperCase()] || os.status||'—')}
         ${_osDetailField('Data de abertura', data)}
         ${_osDetailField('Técnico', tec ? tec.nome : (os.tecnico_atual||'—'))}
         ${os.descricao ? `<div style="grid-column:1/-1">${_osDetailField('Descrição', os.descricao)}</div>` : ''}
