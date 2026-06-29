@@ -8452,7 +8452,7 @@ async function renderTemplateList() {
     container.innerHTML = _templatesList.map(t => {
       const tarefas = JSON.parse(t.Tarefas_JSON || '[]');
       const fases = [...new Set(tarefas.map(x => x.fase).filter(Boolean))];
-      const ativo = t.Ativo !== false && t.Ativo !== 'false' && t.Ativo !== 0;
+      const ativo = String(t.Ativo || 'SIM').toUpperCase() !== 'NÃO';
       return `
         <div class="tpl-list-card" style="${ativo ? '' : 'opacity:0.5'}">
           <div class="tpl-list-card-info">
@@ -8647,7 +8647,13 @@ function saveTarefaModal() {
     t.descricao = descricao; t.depende_de = deps;
   } else {
     const todas = _todasTarefasEditor();
-    const newId = 'T' + String(todas.length + 1).padStart(2, '0');
+    const existingIds = new Set(todas.map(t => t.id));
+    let newId;
+    let seq = todas.length + 1;
+    do {
+      newId = 'T' + String(seq).padStart(2, '0');
+      seq++;
+    } while (existingIds.has(newId));
     fase.tarefas.push({
       id: newId, nome, tipo, fase: fase.nome,
       fase_ordem: _editorFaseAtual + 1,
@@ -8742,7 +8748,7 @@ async function renderTiposOSList() {
 
     const container = document.getElementById('tiposOSContainer');
     container.innerHTML = _tiposOS.map(tipo => {
-      const ativo = tipo.Ativo !== false && tipo.Ativo !== 'false' && tipo.Ativo !== 0;
+      const ativo = String(tipo.Ativo || 'SIM').toUpperCase() !== 'NÃO';
       const tplEncontrado = _templatesList.find(t => t.Template_ID === tipo.Template_ID_Padrao);
       const tplNome = tplEncontrado ? tplEncontrado.Nome : (tipo.Template_ID_Padrao ? `${tipo.Template_ID_Padrao} (template não encontrado)` : '—');
       return `
@@ -8785,7 +8791,7 @@ async function openTipoOSModal(tipoId) {
   }
 
   const select = document.getElementById('tipoOSTemplate');
-  const ativos = _templatesList.filter(t => t.Ativo !== false && t.Ativo !== 'false' && t.Ativo !== 0);
+  const ativos = _templatesList.filter(t => String(t.Ativo || 'SIM').toUpperCase() !== 'NÃO');
   if (!ativos.length) {
     toast('Nenhum template disponível. Crie um template antes de cadastrar tipos de OS.', 'error');
     return;
@@ -8832,7 +8838,11 @@ async function saveTipoOSModal() {
 
   try {
     const payload = { nome, template_id_padrao: templateId, descricao };
-    if (_editandoTipoId) payload.tipo_id = _editandoTipoId;
+    if (_editandoTipoId) {
+      payload.tipo_id = _editandoTipoId;
+    } else {
+      payload.tipo_id = gerarTipoId(nome);
+    }
     await syncToGS('saveTipoOS', payload);
     toast('Tipo salvo!', 'success');
     closeModal('modalTipoOS');
@@ -8850,7 +8860,12 @@ async function toggleTipoOS(tipoId, ativoAtual) {
     if (!confirm(`Inativar "${nome}"? OS existentes não serão afetadas.`)) return;
   }
   try {
-    await syncToGS('saveTipoOS', { tipo_id: tipoId, ativo: !ativoAtual });
+    const tipoObj = _tiposOS.find(t => t.Tipo_ID === tipoId);
+    await syncToGS('saveTipoOS', {
+      tipo_id: tipoId,
+      nome: tipoObj?.Nome || '',
+      ativo: !ativoAtual
+    });
     toast(ativoAtual ? 'Tipo inativado.' : 'Tipo reativado.', 'success');
     renderTiposOSList();
   } catch(e) {
