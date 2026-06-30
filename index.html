@@ -624,12 +624,12 @@ tr:hover td{background:var(--gray-50)}
         <svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="12" height="12" rx="1"/><path d="M5 5h6M5 8h6M5 11h4"/></svg>
         <span>Catálogo</span>
       </button>
-      <button class="nav-item" data-view="tecnicos" onclick="showView('tecnicos')" id="navTecnicos">
+      <button class="nav-item" data-view="tecnicos" onclick="showView('tecnicos')" id="navUsuarios">
         <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
             d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
         </svg>
-        Técnicos
+        Usuários
       </button>
       <button class="nav-item" data-view="perfis" onclick="showView('perfis')" id="navPerfis">
         <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -756,7 +756,7 @@ tr:hover td{background:var(--gray-50)}
     <!-- OS VIEW -->
     <div id="viewOs" style="display:none"></div>
     <!-- TÉCNICOS VIEW -->
-    <div id="viewTecnicos" style="display:none"></div>
+    <div id="viewUsuarios" style="display:none"></div>
     <!-- PERFIS VIEW -->
     <div id="viewPerfis" style="display:none"></div>
     <!-- TEMPLATES VIEW (Sprint 4E-C) -->
@@ -1698,7 +1698,7 @@ function _bindModal(modalId) {
 
 function initModalSystem() {
   ['modalModel','modalSub','modalPart','modalMachine','modalMachineParts','modalClient','modalCompat','modalDeleteOrphan',
-   'modalTecnico','modalResetPin','modalPerfil','modalOS','modalTrocarPipeline']
+   'modalUsuario','modalResetPin','modalPerfil','modalOS','modalTrocarPipeline']
     .forEach(_bindModal);
 }
 
@@ -2778,7 +2778,7 @@ function showView(v){
     renderConfigStats();
     if(gsUrl) document.getElementById('gsUrlInput').value=gsUrl;
   } else if(v==='tecnicos'){
-    renderTecnicos();
+    renderUsuarios();
   } else if(v==='perfis'){
     renderPerfis();
   } else if(v==='os'){
@@ -2800,7 +2800,7 @@ function showView(v){
     estoque: 'Estoque',
     catalog: 'Catálogo',
     config: 'Configurações',
-    tecnicos: 'Técnicos',
+    tecnicos: 'Usuários',
     perfis:   'Perfis',
     os:       'Ordens de Serviço',
     templates: 'Templates de Pipeline',
@@ -4780,7 +4780,7 @@ function renderFormNovaPreventiva(eq){
     </div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
       <div class="form-group" style="margin:0">
-        <label class="form-label">Técnico responsável</label>
+        <label class="form-label">Responsável</label>
         <input class="form-input" type="text" id="prevTecnico" placeholder="Nome do técnico">
       </div>
       <div class="form-group" style="margin:0">
@@ -4858,7 +4858,7 @@ async function salvarPreventiva() {
 
   const dataVal   = document.getElementById('prevData')?.value || '';
   const horimetro = parseInt(document.getElementById('prevHorimetro')?.value) || 0;
-  const tecnico   = document.getElementById('prevTecnico')?.value.trim() || '';
+  const responsavel   = document.getElementById('prevTecnico')?.value.trim() || '';
   const tipo      = document.getElementById('prevTipo')?.value || 'preventiva';
   const obs       = document.getElementById('prevObs')?.value.trim() || '';
 
@@ -4928,7 +4928,7 @@ async function salvarPreventiva() {
     visitDate:  new Date(dataVal + 'T12:00:00').toISOString(),
     hourTotal:  horimetro,
     hpw:        eq.hpw || 0,
-    tech:       tecnico,
+    tech:       responsavel,
     tipo:       tipo,
     generalObs: obs,
     parts:      parts
@@ -5059,7 +5059,7 @@ function renderHistoricoPreventivas(visits, pecasLog) {
         <span style="${tipoStyle};font-size:10px;font-weight:700;padding:2px 8px;border-radius:999px">${tipoLabel}</span>
         <span style="font-size:12px;color:var(--text2)">${dataFmt}</span>
         <span style="font-size:12px">Horímetro: <strong>${hour.toLocaleString('pt-BR')}h</strong></span>
-        <span style="font-size:12px;color:var(--text2)">Técnico: ${v.tech||'—'}</span>
+        <span style="font-size:12px;color:var(--text2)">Responsável: ${v.tech||'—'}</span>
       </div>
       ${trocadasHtml}
       ${outrasHtml}
@@ -5421,7 +5421,7 @@ function verMedicoesRotores(coletaId){
 
   let h = '<div style="font-size:12px;padding:4px 0"><b>Coleta:</b> '+coletaId+'<br>';
   h += '<b>Data:</b> '+(coleta['Data_Coleta']||coleta.Data_Coleta||'—')+'<br>';
-  h += '<b>Técnico:</b> '+(coleta['Tecnico']||coleta.Tecnico||'—')+'</div>';
+  h += '<b>Responsável:</b> '+(coleta['Tecnico']||coleta.Tecnico||'—')+'</div>';
   h += '<table style="width:100%;border-collapse:collapse;margin-top:8px;font-size:12px">';
   h += '<tr style="background:#f5f5f5"><th style="text-align:left;padding:4px 8px;border-bottom:1px solid #ddd">Ponto</th><th style="text-align:left;padding:4px 8px;border-bottom:1px solid #ddd">Valores</th></tr>';
   Object.keys(meds).sort((a,b)=>parseInt(a)-parseInt(b)).forEach(function(pt){
@@ -7078,8 +7078,8 @@ async function gsPost(params) {
 }
 
 // ── ESTADO DOS NOVOS MÓDULOS ──────────────────────────────────────────────
-let _tecSearch = '';
-let _tecList = [];
+let _usuSearch = '';
+let _usuList = [];
 let _perfilList = [];
 let _perfSearch = '';
 let _osList = [];
@@ -7110,15 +7110,15 @@ async function pinToHash(pin) {
   return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
 }
 
-async function renderTecnicos() {
-  const el = document.getElementById('viewTecnicos');
+async function renderUsuarios() {
+  const el = document.getElementById('viewUsuarios');
   el.innerHTML = `<div style="display:flex;align-items:center;justify-content:center;padding:40px">
-    <span style="color:var(--text-muted);font-size:13px">Carregando técnicos…</span></div>`;
+    <span style="color:var(--text-muted);font-size:13px">Carregando usuários…</span></div>`;
 
   let tecResult = null, perfResult = null;
   try {
     [tecResult, perfResult] = await Promise.all([
-      gsGet('getTecnicos'),
+      gsGet('getUsuarios'),
       gsGet('getPerfis')
     ]);
   } catch(e) {
@@ -7128,15 +7128,15 @@ async function renderTecnicos() {
     return;
   }
 
-  _tecList   = (tecResult?.tecnicos  || tecResult?.data  || []);
+  _usuList   = (tecResult?.usuarios  || tecResult?.data  || []);
   _perfilList = (perfResult?.perfis   || perfResult?.data || []);
 
-  _renderTecnicosTable(_tecSearch);
+  _renderUsuariosTable(_usuSearch);
 }
 
-function _renderTecnicosTable(filter = '') {
-  const el = document.getElementById('viewTecnicos');
-  const items = _tecList.filter(t =>
+function _renderUsuariosTable(filter = '') {
+  const el = document.getElementById('viewUsuarios');
+  const items = _usuList.filter(t =>
     (t.nome || '').toLowerCase().includes(filter.toLowerCase()) ||
     (t.id   || '').toLowerCase().includes(filter.toLowerCase())
   );
@@ -7144,20 +7144,20 @@ function _renderTecnicosTable(filter = '') {
   el.innerHTML = `
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
       <div>
-        <h2 style="font-size:18px;font-weight:700;color:var(--text)">Técnicos</h2>
-        <p style="font-size:12px;color:var(--text-muted);margin-top:2px">${_tecList.length} técnico(s) cadastrado(s)</p>
+        <h2 style="font-size:18px;font-weight:700;color:var(--text)">Usuários</h2>
+        <p style="font-size:12px;color:var(--text-muted);margin-top:2px">${_usuList.length} usuário(s) cadastrado(s)</p>
       </div>
-      <button class="btn btn-primary" onclick="openModalTecnico()">+ Novo técnico</button>
+      <button class="btn btn-primary" onclick="openModalUsuario()">+ Novo usuário</button>
     </div>
     <div style="margin-bottom:12px">
       <input type="text" placeholder="Buscar por nome ou ID…"
         style="width:280px;height:32px;padding:0 10px;font-size:13px;background:white;border:1px solid var(--border2);border-radius:var(--radius-sm);outline:none;font-family:var(--font-sans)"
         value="${filter}"
-        oninput="_tecSearch=this.value;_renderTecnicosTable(this.value)">
+        oninput="_usuSearch=this.value;_renderUsuariosTable(this.value)">
     </div>
     ${items.length === 0 ? `<div class="empty"><div class="empty-icon">👷</div>
-      <div class="empty-title">Nenhum técnico encontrado</div>
-      <div class="empty-sub">Cadastre o primeiro técnico com o botão acima.</div></div>`
+      <div class="empty-title">Nenhum usuário encontrado</div>
+      <div class="empty-sub">Cadastre o primeiro usuário com o botão acima.</div></div>`
     : `<div class="table-wrap">
       <table>
         <thead><tr>
@@ -7180,10 +7180,10 @@ function _renderTecnicosTable(filter = '') {
                 : '<span class="status-late">Inativo</span>'}</td>
               <td>
                 <div class="row-actions">
-                  <button class="btn btn-secondary btn-sm" onclick="openModalTecnico('${pid}')">Editar</button>
+                  <button class="btn btn-secondary btn-sm" onclick="openModalUsuario('${pid}')">Editar</button>
                   <button class="btn btn-secondary btn-sm" onclick="openModalResetPin('${pid}')">PIN</button>
                   <button class="btn ${ativo?'btn-danger':'btn-success'} btn-sm"
-                    onclick="toggleTecnicoAtivo('${pid}',${ativo})">
+                    onclick="toggleUsuarioAtivo('${pid}',${ativo})">
                     ${ativo?'Inativar':'Ativar'}
                   </button>
                 </div>
@@ -7194,8 +7194,8 @@ function _renderTecnicosTable(filter = '') {
       </table></div>`}`;
 }
 
-function _populateTecnicoPerfilSelect(selectedId) {
-  const sel = document.getElementById('tecnicoPerfil');
+function _populateUsuarioPerfilSelect(selectedId) {
+  const sel = document.getElementById('usuarioPerfil');
   sel.innerHTML = '<option value="">Selecione um perfil…</option>';
   _perfilList.filter(p => String(p.ativo||'').toUpperCase() !== 'NÃO').forEach(p => {
     const opt = document.createElement('option');
@@ -7207,7 +7207,7 @@ function _populateTecnicoPerfilSelect(selectedId) {
 }
 
 function _populateAcessoExtraCheckboxes(selectedIds) {
-  const container = document.getElementById('tecnicoAcessoExtra');
+  const container = document.getElementById('usuarioAcessoExtra');
   container.innerHTML = MODULOS_DISPONIVEIS.map(m => `
     <label style="display:flex;align-items:center;gap:5px;font-size:12px;cursor:pointer;
       background:var(--gray-100);border-radius:6px;padding:4px 8px">
@@ -7217,52 +7217,52 @@ function _populateAcessoExtraCheckboxes(selectedIds) {
     </label>`).join('');
 }
 
-function openModalTecnico(id) {
-  _populateTecnicoPerfilSelect('');
-  document.getElementById('tecnicoId').value = '';
-  document.getElementById('tecnicoNome').value = '';
-  document.getElementById('tecnicoPin').value = '';
-  document.getElementById('tecnicoTelefone').value = '';
-  document.getElementById('tecnicoEmail').value = '';
-  document.getElementById('tecnicoPinRow').style.display = '';
+function openModalUsuario(id) {
+  _populateUsuarioPerfilSelect('');
+  document.getElementById('usuarioId').value = '';
+  document.getElementById('usuarioNome').value = '';
+  document.getElementById('usuarioPin').value = '';
+  document.getElementById('usuarioTelefone').value = '';
+  document.getElementById('usuarioEmail').value = '';
+  document.getElementById('usuarioPinRow').style.display = '';
   _populateAcessoExtraCheckboxes([]);
 
   if (id) {
-    const tec = _tecList.find(t => t.id === id);
-    if (!tec) return;
-    document.getElementById('modalTecnicoTitle').textContent = 'Editar técnico';
-    document.getElementById('tecnicoId').value = id;
-    document.getElementById('tecnicoNome').value = tec.nome || '';
-    document.getElementById('tecnicoTelefone').value = tec.telefone || '';
-    document.getElementById('tecnicoEmail').value = tec.email || '';
-    document.getElementById('tecnicoPinRow').style.display = 'none';
-    _populateTecnicoPerfilSelect(tec.perfil || '');
+    const usu = _usuList.find(t => t.id === id);
+    if (!usu) return;
+    document.getElementById('modalUsuarioTitle').textContent = 'Editar usuário';
+    document.getElementById('usuarioId').value = id;
+    document.getElementById('usuarioNome').value = usu.nome || '';
+    document.getElementById('usuarioTelefone').value = usu.telefone || '';
+    document.getElementById('usuarioEmail').value = usu.email || '';
+    document.getElementById('usuarioPinRow').style.display = 'none';
+    _populateUsuarioPerfilSelect(usu.perfil || '');
     let extra = [];
-    try { extra = JSON.parse(tec.acesso_extra || '[]'); } catch(e){}
+    try { extra = JSON.parse(usu.acesso_extra || '[]'); } catch(e){}
     _populateAcessoExtraCheckboxes(extra);
   } else {
-    document.getElementById('modalTecnicoTitle').textContent = 'Novo técnico';
+    document.getElementById('modalUsuarioTitle').textContent = 'Novo usuário';
   }
-  openModal('modalTecnico');
+  openModal('modalUsuario');
 }
 
-async function saveTecnicoModal() {
-  const id     = document.getElementById('tecnicoId').value.trim();
-  const nome   = document.getElementById('tecnicoNome').value.trim();
-  const perfil = document.getElementById('tecnicoPerfil').value.trim();
-  const pin    = document.getElementById('tecnicoPin').value.trim();
-  const tel    = document.getElementById('tecnicoTelefone').value.trim();
-  const email  = document.getElementById('tecnicoEmail').value.trim();
-  const extra  = Array.from(document.querySelectorAll('#tecnicoAcessoExtra input[type=checkbox]:checked'))
+async function saveUsuarioModal() {
+  const id     = document.getElementById('usuarioId').value.trim();
+  const nome   = document.getElementById('usuarioNome').value.trim();
+  const perfil = document.getElementById('usuarioPerfil').value.trim();
+  const pin    = document.getElementById('usuarioPin').value.trim();
+  const tel    = document.getElementById('usuarioTelefone').value.trim();
+  const email  = document.getElementById('usuarioEmail').value.trim();
+  const extra  = Array.from(document.querySelectorAll('#usuarioAcessoExtra input[type=checkbox]:checked'))
                    .map(cb => cb.value);
 
-  if (!nome) { toast('Preencha o nome do técnico.', 'error'); return; }
+  if (!nome) { toast('Preencha o nome do usuário.', 'error'); return; }
   if (!perfil) { toast('Selecione um perfil.', 'error'); return; }
   if (!id && (!pin || !/^\d{6}$/.test(pin))) {
     toast('PIN deve ter exatamente 6 dígitos numéricos.', 'error'); return;
   }
 
-  const payload = { action: 'saveTecnico', nome, perfil, telefone: tel, email, acesso_extra: JSON.stringify(extra) };
+  const payload = { action: 'saveUsuario', nome, perfil, telefone: tel, email, acesso_extra: JSON.stringify(extra) };
   if (id) {
     payload.id = id;
   } else {
@@ -7271,19 +7271,19 @@ async function saveTecnicoModal() {
 
   try {
     await gsPost(payload);
-    toast('Técnico salvo com sucesso.', 'success');
-    closeModal('modalTecnico');
-    renderTecnicos();
+    toast('Usuário salvo com sucesso.', 'success');
+    closeModal('modalUsuario');
+    renderUsuarios();
   } catch(e) {
     toast('Erro ao salvar: ' + e.message, 'error');
   }
 }
 
 function openModalResetPin(id) {
-  const tec = _tecList.find(t => t.id === id);
-  if (!tec) return;
+  const usu = _usuList.find(t => t.id === id);
+  if (!usu) return;
   document.getElementById('resetPinTecId').value = id;
-  document.getElementById('resetPinNome').textContent = 'Técnico: ' + (tec.nome || id);
+  document.getElementById('resetPinNome').textContent = 'Usuário: ' + (usu.nome || id);
   document.getElementById('resetPinInput').value = '';
   openModal('modalResetPin');
 }
@@ -7294,7 +7294,7 @@ async function saveResetPin() {
   if (!id || !/^\d{6}$/.test(pin)) { toast('PIN deve ter 6 dígitos numéricos.', 'error'); return; }
   try {
     const hash = await pinToHash(pin);
-    await gsPost({ action: 'saveTecnico', id, pin_hash: hash });
+    await gsPost({ action: 'saveUsuario', id, pin_hash: hash });
     toast('PIN redefinido com sucesso.', 'success');
     closeModal('modalResetPin');
   } catch(e) {
@@ -7302,12 +7302,12 @@ async function saveResetPin() {
   }
 }
 
-async function toggleTecnicoAtivo(id, isAtivo) {
-  if (!confirm(`${isAtivo ? 'Inativar' : 'Ativar'} este técnico?`)) return;
+async function toggleUsuarioAtivo(id, isAtivo) {
+  if (!confirm(`${isAtivo ? 'Inativar' : 'Ativar'} este usuário?`)) return;
   try {
-    await gsPost({ action: 'saveTecnico', id, ativo: isAtivo ? 'NÃO' : 'SIM' });
-    toast(`Técnico ${isAtivo ? 'inativado' : 'ativado'}.`, 'success');
-    renderTecnicos();
+    await gsPost({ action: 'saveUsuario', id, ativo: isAtivo ? 'NÃO' : 'SIM' });
+    toast(`Usuário ${isAtivo ? 'inativado' : 'ativado'}.`, 'success');
+    renderUsuarios();
   } catch(e) {
     toast('Erro: ' + e.message, 'error');
   }
@@ -7561,10 +7561,10 @@ function _renderOSTable(search = '', statusFilter = '') {
       </table></div>`}`;
 }
 
-function _populateOSTecnicoSelect(selectedId) {
-  const sel = document.getElementById('osTecnico');
-  sel.innerHTML = '<option value="">Selecione um técnico…</option>';
-  _tecList.filter(t => String(t.ativo||'').toUpperCase() !== 'NÃO').forEach(t => {
+function _populateOSUsuarioSelect(selectedId) {
+  const sel = document.getElementById('osUsuario');
+  sel.innerHTML = '<option value="">Selecione um usuário…</option>';
+  _usuList.filter(t => String(t.ativo||'').toUpperCase() !== 'NÃO').forEach(t => {
     const opt = document.createElement('option');
     opt.value = t.id;
     opt.textContent = t.nome;
@@ -7574,10 +7574,10 @@ function _populateOSTecnicoSelect(selectedId) {
 }
 
 async function openModalOS(id) {
-  if (_tecList.length === 0) {
+  if (_usuList.length === 0) {
     try {
-      const r = await gsGet('getTecnicos');
-      _tecList = r?.tecnicos || r?.data || [];
+      const r = await gsGet('getUsuarios');
+      _usuList = r?.usuarios || r?.data || [];
     } catch(e) {}
   }
 
@@ -7605,7 +7605,7 @@ async function openModalOS(id) {
   document.getElementById('osDescricao').value = '';
   document.getElementById('osStatus').value = 'ABERTA';
   document.getElementById('osDataAbertura').value = new Date().toISOString().slice(0,10);
-  _populateOSTecnicoSelect('');
+  _populateOSUsuarioSelect('');
 
   document.getElementById('osClienteId').value = '';
   const dl = document.getElementById('osClienteList');
@@ -7624,7 +7624,7 @@ async function openModalOS(id) {
     document.getElementById('osDescricao').value = os.descricao || '';
     document.getElementById('osStatus').value = (os.status || 'ABERTA').toUpperCase().replace('-','_');
     if (os.data_abertura) document.getElementById('osDataAbertura').value = os.data_abertura.slice(0,10);
-    _populateOSTecnicoSelect(os.tecnico_atual || '');
+    _populateOSUsuarioSelect(os.usuario_atual || '');
   } else {
     document.getElementById('modalOSTitle').textContent = 'Nova OS';
   }
@@ -7648,7 +7648,7 @@ async function saveOSModal() {
   const descricao= document.getElementById('osDescricao').value.trim();
   const status   = document.getElementById('osStatus').value.trim();
   const data     = document.getElementById('osDataAbertura').value.trim();
-  const tecnico  = document.getElementById('osTecnico').value.trim();
+  const usuario  = document.getElementById('osUsuario').value.trim();
 
   if (!numero) { toast('Preencha o número da OS.', 'error'); return; }
   if (!cliente) { toast('Preencha o cliente.', 'error'); return; }
@@ -7671,7 +7671,7 @@ async function saveOSModal() {
     descricao,
     status,
     data_abertura: data,
-    tecnico_atual: tecnico,
+    usuario_atual: usuario,
   };
   if (id) payload.id_os = id;
 
@@ -7778,7 +7778,7 @@ function _osDetailTab(osId, tab) {
     const os = _osList.find(o => o.id_os === osId);
     if (!os) { content.innerHTML = ''; return; }
     const data = os.data_abertura ? new Date(os.data_abertura).toLocaleDateString('pt-BR') : '—';
-    const tec = _tecList.find(t => t.id === os.tecnico_atual);
+    const usu = _usuList.find(t => t.id === os.usuario_atual);
     content.innerHTML = `
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;max-width:640px">
         ${_osDetailField('Nº OS', `<span style="font-family:var(--font-mono);font-weight:700">${os.numero_os||'—'}</span>`)}
@@ -7786,7 +7786,7 @@ function _osDetailTab(osId, tab) {
         ${_osDetailField('Tipo', (_tiposOS.find(t=>t.Tipo_ID===os.tipo_os)?.Nome) || os.tipo_os||'—')}
         ${_osDetailField('Status', STATUS_LABELS[(os.status||'').toUpperCase()] || os.status||'—')}
         ${_osDetailField('Data de abertura', data)}
-        ${_osDetailField('Técnico', tec ? tec.nome : (os.tecnico_atual||'—'))}
+        ${_osDetailField('Responsável', usu ? usu.nome : (os.usuario_atual||'—'))}
         ${os.descricao ? `<div style="grid-column:1/-1">${_osDetailField('Descrição', os.descricao)}</div>` : ''}
       </div>`;
   } else if (tab === 'pipeline') {
@@ -8119,46 +8119,46 @@ if(!gsUrl){
 </script>
 
 <!-- MODAL TÉCNICO -->
-<div class="overlay" id="modalTecnico">
+<div class="overlay" id="modalUsuario">
   <div class="modal" style="width:480px">
     <div class="modal-title">
-      <span id="modalTecnicoTitle">Novo técnico</span>
+      <span id="modalUsuarioTitle">Novo usuário</span>
     </div>
     <div class="modal-body">
-      <input type="hidden" id="tecnicoId">
+      <input type="hidden" id="usuarioId">
       <div class="form-row">
         <label class="form-label">Nome completo *</label>
-        <input class="form-input" type="text" id="tecnicoNome" placeholder="Ex: João da Silva">
+        <input class="form-input" type="text" id="usuarioNome" placeholder="Ex: João da Silva">
       </div>
       <div class="form-row">
         <label class="form-label">Perfil *</label>
-        <select class="form-select" id="tecnicoPerfil">
+        <select class="form-select" id="usuarioPerfil">
           <option value="">Selecione um perfil…</option>
         </select>
       </div>
-      <div class="form-row" id="tecnicoPinRow">
+      <div class="form-row" id="usuarioPinRow">
         <label class="form-label">PIN (6 dígitos numéricos) *</label>
-        <input class="form-input" type="password" id="tecnicoPin" inputmode="numeric"
+        <input class="form-input" type="password" id="usuarioPin" inputmode="numeric"
           maxlength="6" placeholder="••••••">
       </div>
       <div class="form-row">
         <label class="form-label">Telefone</label>
-        <input class="form-input" type="tel" id="tecnicoTelefone" placeholder="(35) 9 0000-0000">
+        <input class="form-input" type="tel" id="usuarioTelefone" placeholder="(35) 9 0000-0000">
       </div>
       <div class="form-row">
         <label class="form-label">E-mail</label>
-        <input class="form-input" type="email" id="tecnicoEmail" placeholder="joao@proper.com.br">
+        <input class="form-input" type="email" id="usuarioEmail" placeholder="joao@proper.com.br">
       </div>
       <div class="form-row">
         <label class="form-label">Acesso extra (módulos adicionais além do perfil)</label>
-        <div id="tecnicoAcessoExtra" style="display:flex;flex-wrap:wrap;gap:6px;margin-top:4px">
+        <div id="usuarioAcessoExtra" style="display:flex;flex-wrap:wrap;gap:6px;margin-top:4px">
           <!-- checkboxes inseridos por JS -->
         </div>
       </div>
     </div>
     <div class="modal-footer">
-      <button class="btn btn-secondary" onclick="closeModal('modalTecnico')">Cancelar</button>
-      <button class="btn btn-primary" onclick="saveTecnicoModal()">Salvar</button>
+      <button class="btn btn-secondary" onclick="closeModal('modalUsuario')">Cancelar</button>
+      <button class="btn btn-primary" onclick="saveUsuarioModal()">Salvar</button>
     </div>
   </div>
 </div>
@@ -8281,9 +8281,9 @@ if(!gsUrl){
         <input class="form-input" type="date" id="osDataAbertura">
       </div>
       <div class="form-row">
-        <label class="form-label">Técnico responsável</label>
-        <select class="form-select" id="osTecnico">
-          <option value="">Selecione um técnico…</option>
+        <label class="form-label">Usuário responsável</label>
+        <select class="form-select" id="osUsuario">
+          <option value="">Selecione um usuário…</option>
         </select>
       </div>
     </div>
