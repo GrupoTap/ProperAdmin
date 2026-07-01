@@ -2754,10 +2754,16 @@ async function auditCreateBackup() {
 function showView(v){
   currentView=v;
   const allViews=['dashboard','preventivas','catalog','machines','clients','estoque','config','tecnicos','perfis','os','templates','tiposOS','saturacao'];
+  // A view 'tecnicos' usa IDs viewUsuarios/navUsuarios (renomeados na migração
+  // técnico→usuário), que divergem da capitalização automática abaixo — sem este
+  // mapa, getElementById procurava viewTecnicos/navTecnicos (inexistentes) e a
+  // aba nunca era exibida, mesmo com o conteúdo já carregado por trás.
+  const VIEW_ID_OVERRIDES = { tecnicos: 'Usuarios' };
   allViews.forEach(x=>{
-    const el=document.getElementById('view'+x.charAt(0).toUpperCase()+x.slice(1));
+    const suffix = VIEW_ID_OVERRIDES[x] || (x.charAt(0).toUpperCase()+x.slice(1));
+    const el=document.getElementById('view'+suffix);
     if(el) el.style.display=x===v?'':'none';
-    const nav=document.getElementById('nav'+x.charAt(0).toUpperCase()+x.slice(1));
+    const nav=document.getElementById('nav'+suffix);
     if(nav) nav.classList.toggle('active',x===v);
   });
 
@@ -7271,7 +7277,7 @@ async function renderUsuarios() {
     return;
   }
 
-  _usuList   = (tecResult?.usuarios  || tecResult?.data  || []);
+  _usuList   = (tecResult?.tecnicos || tecResult?.usuarios || tecResult?.data || []);
   _perfilList = (perfResult?.perfis   || perfResult?.data || []);
 
   _renderUsuariosTable(_usuSearch);
@@ -7720,7 +7726,7 @@ async function openModalOS(id) {
   if (_usuList.length === 0) {
     try {
       const r = await gsGet('getUsuarios');
-      _usuList = r?.usuarios || r?.data || [];
+      _usuList = r?.tecnicos || r?.usuarios || r?.data || [];
     } catch(e) {}
   }
 
