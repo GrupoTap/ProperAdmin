@@ -7140,6 +7140,7 @@ let _perfSearch = '';
 let _osList = [];
 let _osSearch = '';
 let _osFilterStatus = '';
+let _osFilterPrioridade = '';
 let _tiposOS = [];
 let _notifInterval = null;
 let _templatesList = [];
@@ -7632,10 +7633,10 @@ async function renderOS() {
     return;
   }
   _osList = result?.os || result?.data || [];
-  _renderOSTable(_osSearch, _osFilterStatus);
+  _renderOSTable(_osSearch, _osFilterStatus, _osFilterPrioridade);
 }
 
-function _renderOSTable(search = '', statusFilter = '') {
+function _renderOSTable(search = '', statusFilter = '', priorityFilter = '') {
   const el = document.getElementById('viewOs');
   if (!el) return;
 
@@ -7652,6 +7653,27 @@ function _renderOSTable(search = '', statusFilter = '') {
     (o.cliente  ||'').toLowerCase().includes(search.toLowerCase()));
   if (statusFilter) items = items.filter(o =>
     (o.status||'').toUpperCase() === statusFilter);
+  if (priorityFilter) items = items.filter(o =>
+    (o.prioridade||'normal').toLowerCase() === priorityFilter);
+
+  const RANK_PRIORIDADE = { urgente: 3, alta: 2, normal: 1 };
+  const hoje = new Date(); hoje.setHours(0,0,0,0);
+  const isAtrasada = o => {
+    if (!o.data_prevista) return false;
+    const st = String(o.status||'').toUpperCase();
+    if (st === 'CONCLUIDA' || st === 'CANCELADA') return false;
+    const prazo = new Date(o.data_prevista);
+    prazo.setHours(0,0,0,0);
+    return prazo.getTime() < hoje.getTime();
+  };
+  items = [...items].sort((a, b) => {
+    const atrasoA = isAtrasada(a) ? 1 : 0, atrasoB = isAtrasada(b) ? 1 : 0;
+    if (atrasoA !== atrasoB) return atrasoB - atrasoA;
+    const rankA = RANK_PRIORIDADE[(a.prioridade||'normal').toLowerCase()] || 1;
+    const rankB = RANK_PRIORIDADE[(b.prioridade||'normal').toLowerCase()] || 1;
+    if (rankA !== rankB) return rankB - rankA;
+    return 0;
+  });
 
   el.innerHTML = `
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
@@ -7666,15 +7688,23 @@ function _renderOSTable(search = '', statusFilter = '') {
         style="width:240px;height:32px;padding:0 10px;font-size:13px;background:white;
           border:1px solid var(--border2);border-radius:var(--radius-sm);outline:none;font-family:var(--font-sans)"
         value="${search}"
-        oninput="_osSearch=this.value;_renderOSTable(this.value,_osFilterStatus)">
+        oninput="_osSearch=this.value;_renderOSTable(this.value,_osFilterStatus,_osFilterPrioridade)">
       <select style="height:32px;padding:0 8px;font-size:12px;border:1px solid var(--border2);
         border-radius:var(--radius-sm);background:white;font-family:var(--font-sans)"
-        onchange="_osFilterStatus=this.value;_renderOSTable(_osSearch,this.value)">
+        onchange="_osFilterStatus=this.value;_renderOSTable(_osSearch,this.value,_osFilterPrioridade)">
         <option value="">Todos os status</option>
         <option value="ABERTA" ${statusFilter==='ABERTA'?'selected':''}>Aberta</option>
         <option value="EM_ANDAMENTO" ${statusFilter==='EM_ANDAMENTO'?'selected':''}>Em andamento</option>
         <option value="CONCLUIDA" ${statusFilter==='CONCLUIDA'?'selected':''}>Concluída</option>
         <option value="CANCELADA" ${statusFilter==='CANCELADA'?'selected':''}>Cancelada</option>
+      </select>
+      <select style="height:32px;padding:0 8px;font-size:12px;border:1px solid var(--border2);
+        border-radius:var(--radius-sm);background:white;font-family:var(--font-sans)"
+        onchange="_osFilterPrioridade=this.value;_renderOSTable(_osSearch,_osFilterStatus,this.value)">
+        <option value="">Todas as prioridades</option>
+        <option value="normal" ${priorityFilter==='normal'?'selected':''}>Normal</option>
+        <option value="alta" ${priorityFilter==='alta'?'selected':''}>Alta</option>
+        <option value="urgente" ${priorityFilter==='urgente'?'selected':''}>Urgente</option>
       </select>
     </div>
     ${items.length === 0 ? `<div class="empty"><div class="empty-icon">📋</div>
@@ -7683,6 +7713,7 @@ function _renderOSTable(search = '', statusFilter = '') {
     : `<div class="table-wrap"><table>
         <thead><tr>
           <th>Nº OS</th><th>Cliente</th><th>Tipo</th>
+          <th>Prioridade</th><th>Prazo</th>
           <th>Abertura</th><th>Status</th><th style="text-align:right">Ações</th>
         </tr></thead>
         <tbody>
@@ -7692,10 +7723,20 @@ function _renderOSTable(search = '', statusFilter = '') {
             const data = o.data_abertura
               ? new Date(o.data_abertura).toLocaleDateString('pt-BR') : '—';
             const oid = (o.id_os||'').replace(/'/g,"\\'");
+            const PRIORIDADE_BADGE = {
+              urgente: { label: 'Urgente', bg: '#fee2e2', color: '#991b1b' },
+              alta:    { label: 'Alta',    bg: '#ffedd5', color: '#9a3412' },
+              normal:  { label: 'Normal',  bg: '#f1f5f9', color: '#475569' },
+            };
+            const prio = PRIORIDADE_BADGE[(o.prioridade||'normal').toLowerCase()] || PRIORIDADE_BADGE.normal;
+            const atrasada = isAtrasada(o);
+            const prazoStr = o.data_prevista ? new Date(o.data_prevista).toLocaleDateString('pt-BR') : '—';
             return `<tr>
               <td><span style="font-family:var(--font-mono);font-size:12px;font-weight:600">${o.numero_os||'—'}</span></td>
               <td class="td-name">${o.cliente||'—'}</td>
               <td>${(_tiposOS.find(t=>t.Tipo_ID===o.tipo_os)?.Nome) || o.tipo_os||'—'}</td>
+              <td><span style="font-size:11px;font-weight:600;padding:2px 8px;border-radius:10px;background:${prio.bg};color:${prio.color}">${prio.label}</span></td>
+              <td style="font-size:11px;${atrasada ? 'color:#dc2626;font-weight:700' : ''}">${prazoStr}${atrasada ? ' ⚠' : ''}</td>
               <td style="font-size:11px">${data}</td>
               <td><span class="${st.cls}">${st.label}</span></td>
               <td>
@@ -7754,6 +7795,8 @@ async function openModalOS(id) {
   document.getElementById('osDescricao').value = '';
   document.getElementById('osStatus').value = 'ABERTA';
   document.getElementById('osDataAbertura').value = new Date().toISOString().slice(0,10);
+  document.getElementById('osPrioridade').value = 'normal';
+  document.getElementById('osDataPrevista').value = '';
   _populateOSUsuarioSelect('');
 
   document.getElementById('osClienteId').value = '';
@@ -7773,6 +7816,8 @@ async function openModalOS(id) {
     document.getElementById('osDescricao').value = os.descricao || '';
     document.getElementById('osStatus').value = (os.status || 'ABERTA').toUpperCase().replace('-','_');
     if (os.data_abertura) document.getElementById('osDataAbertura').value = os.data_abertura.slice(0,10);
+    document.getElementById('osPrioridade').value = os.prioridade || 'normal';
+    if (os.data_prevista) document.getElementById('osDataPrevista').value = os.data_prevista.slice(0,10);
     _populateOSUsuarioSelect(os.usuario_atual || '');
   } else {
     document.getElementById('modalOSTitle').textContent = 'Nova OS';
@@ -7798,6 +7843,8 @@ async function saveOSModal() {
   const status   = document.getElementById('osStatus').value.trim();
   const data     = document.getElementById('osDataAbertura').value.trim();
   const usuario  = document.getElementById('osUsuario').value.trim();
+  const prioridade    = document.getElementById('osPrioridade').value.trim();
+  const dataPrevista  = document.getElementById('osDataPrevista').value.trim();
 
   if (!numero) { toast('Preencha o número da OS.', 'error'); return; }
   if (!cliente) { toast('Preencha o cliente.', 'error'); return; }
@@ -7821,6 +7868,8 @@ async function saveOSModal() {
     status,
     data_abertura: data,
     usuario_atual: usuario,
+    prioridade,
+    data_prevista: dataPrevista,
   };
   if (id) payload.id_os = id;
 
@@ -8526,6 +8575,18 @@ if(!gsUrl){
       <div class="form-row">
         <label class="form-label">Data de abertura</label>
         <input class="form-input" type="date" id="osDataAbertura">
+      </div>
+      <div class="form-row">
+        <label class="form-label">Prioridade</label>
+        <select class="form-select" id="osPrioridade">
+          <option value="normal">Normal</option>
+          <option value="alta">Alta</option>
+          <option value="urgente">Urgente</option>
+        </select>
+      </div>
+      <div class="form-row">
+        <label class="form-label">Prazo (data prevista) <span style="font-weight:400;color:var(--text-muted)">opcional</span></label>
+        <input class="form-input" type="date" id="osDataPrevista">
       </div>
       <div class="form-row">
         <label class="form-label">Usuário responsável</label>
