@@ -655,6 +655,12 @@ tr:hover td{background:var(--gray-50)}
         </svg>
         <span>Tipos de OS</span>
       </button>
+      <button class="nav-item" data-view="saturacao" onclick="showView('saturacao')" id="navSaturacao">
+        <svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M2 13V8M6 13V3M10 13v6M14 13V6"/>
+        </svg>
+        <span>Saturação</span>
+      </button>
     </div>
 
     <div class="nav-group nav-group-bottom">
@@ -763,6 +769,8 @@ tr:hover td{background:var(--gray-50)}
     <div id="viewTemplates" style="display:none"></div>
     <!-- TIPOS DE OS VIEW (Sprint 4E-C) -->
     <div id="viewTiposOS" style="display:none"></div>
+    <!-- SATURAÇÃO VIEW (Sessão E) -->
+    <div id="viewSaturacao" style="display:none"></div>
   </main>
 </div>
 </div>
@@ -2745,7 +2753,7 @@ async function auditCreateBackup() {
 // ═══════════════════════════════════════════════════════════
 function showView(v){
   currentView=v;
-  const allViews=['dashboard','preventivas','catalog','machines','clients','estoque','config','tecnicos','perfis','os','templates','tiposOS'];
+  const allViews=['dashboard','preventivas','catalog','machines','clients','estoque','config','tecnicos','perfis','os','templates','tiposOS','saturacao'];
   allViews.forEach(x=>{
     const el=document.getElementById('view'+x.charAt(0).toUpperCase()+x.slice(1));
     if(el) el.style.display=x===v?'':'none';
@@ -2777,6 +2785,7 @@ function showView(v){
   } else if(v==='config'){
     renderConfigStats();
     if(gsUrl) document.getElementById('gsUrlInput').value=gsUrl;
+    loadParametrosTurno();
   } else if(v==='tecnicos'){
     renderUsuarios();
   } else if(v==='perfis'){
@@ -2787,6 +2796,8 @@ function showView(v){
     renderTemplateList();
   } else if(v==='tiposOS'){
     renderTiposOSList();
+  } else if(v==='saturacao'){
+    renderSaturacao();
   }
 }
 
@@ -2805,6 +2816,7 @@ function showView(v){
     os:       'Ordens de Serviço',
     templates: 'Templates de Pipeline',
     tiposOS:   'Tipos de OS',
+    saturacao: 'Saturação',
   };
   window.showView = function(view) {
     const r = _origShowView ? _origShowView.apply(this, arguments) : undefined;
@@ -6342,6 +6354,38 @@ function renderConfigStats(){
       <div id="gsTestResult" style="font-size:11px;color:var(--text2);min-height:16px"></div>
     </div>
 
+    <!-- ── REGIME DE TRABALHO (PROPERFLOW) ── -->
+    <div class="card" id="cardRegimeTrabalho" style="margin-top:16px">
+      <div style="font-size:14px;font-weight:700;margin-bottom:4px">⏰ Regime de trabalho — Proper</div>
+      <div style="font-size:12px;color:var(--text2);margin-bottom:14px">
+        Parâmetro único, válido para toda a empresa. Usado pelo ProperFlow para calcular
+        tempo efetivo de execução das tarefas do pipeline.
+      </div>
+      <div style="display:flex;gap:16px;margin-bottom:14px">
+        <div style="flex:1">
+          <label class="form-label">Início do turno</label>
+          <input type="time" id="turnoInicioInput" class="form-input">
+        </div>
+        <div style="flex:1">
+          <label class="form-label">Fim do turno</label>
+          <input type="time" id="turnoFimInput" class="form-input">
+        </div>
+      </div>
+      <div style="margin-bottom:14px">
+        <label class="form-label">Dias úteis</label>
+        <div id="diasUteisCheckboxes" style="display:flex;gap:10px;flex-wrap:wrap;margin-top:4px">
+          <!-- checkboxes gerados dinamicamente -->
+        </div>
+      </div>
+      <div style="margin-bottom:10px">
+        <label class="form-label">Intervalos previstos (ex: almoço)</label>
+        <div id="turnoIntervalosList" style="margin-top:6px"></div>
+        <button class="btn btn-secondary btn-sm" style="margin-top:8px" onclick="_addIntervaloTurno()">+ Adicionar intervalo</button>
+      </div>
+      <button class="btn btn-primary" onclick="saveParametrosTurno()">Salvar regime de trabalho</button>
+      <span id="turnoSaveStatus" style="font-size:11px;color:var(--text2);margin-left:10px"></span>
+    </div>
+
     <!-- ── PAINEL DE AUDITORIA ── -->
     <div class="card" id="cardAuditoria" style="margin-top:16px">
       <div style="font-size:13px;font-weight:600;margin-bottom:8px">Saúde do sistema</div>
@@ -7081,6 +7125,11 @@ async function gsPost(params) {
 let _usuSearch = '';
 let _usuList = [];
 let _perfilList = [];
+let _turnoIntervalos = [];
+const DIAS_SEMANA = [
+  { v: 1, l: 'Seg' }, { v: 2, l: 'Ter' }, { v: 3, l: 'Qua' }, { v: 4, l: 'Qui' },
+  { v: 5, l: 'Sex' }, { v: 6, l: 'Sáb' }, { v: 7, l: 'Dom' }
+];
 let _perfSearch = '';
 let _osList = [];
 let _osSearch = '';
@@ -7094,6 +7143,100 @@ let _editorTarefaIdx = null;
 let _editandoTipoId = null;
 let _notifCount = 0;
 let _trocarPipelineOsId = null;
+
+async function loadParametrosTurno() {
+  try {
+    const r = await gsGet('getParametrosTurno');
+    const p = r?.parametros || {};
+    document.getElementById('turnoInicioInput').value = p.turno_inicio || '08:00';
+    document.getElementById('turnoFimInput').value = p.turno_fim || '18:00';
+    _turnoIntervalos = JSON.parse(p.intervalos_json || '[]');
+    const diasAtivos = JSON.parse(p.dias_uteis_json || '[1,2,3,4,5]');
+    _renderDiasUteisCheckboxes(diasAtivos);
+    _renderTurnoIntervalos();
+  } catch(e) {
+    console.warn('Falha ao carregar parâmetros de turno:', e);
+  }
+}
+
+function _renderDiasUteisCheckboxes(ativos) {
+  const el = document.getElementById('diasUteisCheckboxes');
+  if (!el) return;
+  el.innerHTML = DIAS_SEMANA.map(d => `
+    <label style="display:flex;align-items:center;gap:4px;font-size:12px;cursor:pointer">
+      <input type="checkbox" class="dia-util-cb" value="${d.v}" ${ativos.includes(d.v) ? 'checked' : ''}>
+      ${d.l}
+    </label>`).join('');
+}
+
+function _renderTurnoIntervalos() {
+  const el = document.getElementById('turnoIntervalosList');
+  if (!el) return;
+  if (!_turnoIntervalos.length) {
+    el.innerHTML = '<span style="font-size:12px;color:var(--text-muted)">Nenhum intervalo cadastrado.</span>';
+    return;
+  }
+  el.innerHTML = _turnoIntervalos.map((iv, idx) => `
+    <div data-turno-intervalo-idx="${idx}" style="display:flex;gap:8px;align-items:center;margin-bottom:6px">
+      <input type="text" class="form-input" style="flex:1" placeholder="Nome (ex: Almoço)"
+        value="${escHtml(iv.nome || '')}" data-turno-field="nome" onchange="_turnoIntervalos[${idx}].nome=this.value">
+      <input type="time" class="form-input" style="width:110px"
+        value="${iv.inicio || ''}" data-turno-field="inicio" onchange="_turnoIntervalos[${idx}].inicio=this.value">
+      <span style="font-size:12px;color:var(--text-muted)">até</span>
+      <input type="time" class="form-input" style="width:110px"
+        value="${iv.fim || ''}" data-turno-field="fim" onchange="_turnoIntervalos[${idx}].fim=this.value">
+      <button class="btn btn-secondary btn-sm" onclick="_removerIntervaloTurno(${idx})">✕</button>
+    </div>`).join('');
+}
+
+function _syncTurnoIntervalosFromInputs() {
+  document.querySelectorAll('[data-turno-intervalo-idx]').forEach(row => {
+    const idx = parseInt(row.dataset.turnoIntervaloIdx, 10);
+    if (!_turnoIntervalos[idx]) return;
+    row.querySelectorAll('[data-turno-field]').forEach(input => {
+      _turnoIntervalos[idx][input.dataset.turnoField] = input.value;
+    });
+  });
+}
+
+function _addIntervaloTurno() {
+  _syncTurnoIntervalosFromInputs();
+  _turnoIntervalos.push({ nome: '', inicio: '', fim: '' });
+  _renderTurnoIntervalos();
+}
+
+function _removerIntervaloTurno(idx) {
+  _syncTurnoIntervalosFromInputs();
+  _turnoIntervalos.splice(idx, 1);
+  _renderTurnoIntervalos();
+}
+
+async function saveParametrosTurno() {
+  const turnoInicio = document.getElementById('turnoInicioInput').value;
+  const turnoFim = document.getElementById('turnoFimInput').value;
+  if (!turnoInicio || !turnoFim) {
+    toast('Preencha início e fim do turno.', 'error');
+    return;
+  }
+  _syncTurnoIntervalosFromInputs();
+  const diasUteis = Array.from(document.querySelectorAll('.dia-util-cb:checked')).map(cb => parseInt(cb.value));
+  const statusEl = document.getElementById('turnoSaveStatus');
+  statusEl.textContent = 'Salvando...';
+  try {
+    await syncToGS('saveParametrosTurno', {
+      turno_inicio: turnoInicio,
+      turno_fim: turnoFim,
+      intervalos: _turnoIntervalos,
+      dias_uteis: diasUteis,
+      usuario: window.PROPER_SESSION?.usuario?.nome || window.PROPER_SESSION?.tecnico?.nome || ''
+    });
+    statusEl.textContent = '';
+    toast('Regime de trabalho salvo!', 'success');
+  } catch(e) {
+    statusEl.textContent = '';
+    toast('Erro ao salvar: ' + e.message, 'error');
+  }
+}
 
 // ── MÓDULO TÉCNICOS ───────────────────────────────────────────────────────
 
@@ -7893,6 +8036,35 @@ async function _loadPipelineTab(osId) {
       const concByLine = t.Status === 'completo' && t.Concluido_por
         ? `<div style="font-size:11px;color:var(--text-muted);margin-top:4px">Concluído por: ${t.Concluido_por}${t.Data_conclusao ? ' · ' + new Date(t.Data_conclusao).toLocaleDateString('pt-BR') : ''}</div>`
         : '';
+      const perfilLine = t.Perfil_Responsavel
+        ? `<div style="font-size:11px;color:var(--text-muted);margin-top:4px">👤 Responsável sugerido: ${escHtml(t.Perfil_Responsavel)}</div>`
+        : '';
+      const tempoLine = t.Tempo_Estimado_Min
+        ? `<div style="font-size:11px;color:var(--text-muted);margin-top:2px">⏱ Estimado: ${escHtml(t.Tempo_Estimado_Min)} min</div>`
+        : '';
+      const tempoEfetivoLine = t.Tempo_Efetivo_Min
+        ? `<div style="font-size:11px;color:var(--text-muted);margin-top:2px;display:flex;align-items:center;gap:6px">
+             <span>⏱ Efetivo: ${escHtml(t.Tempo_Efetivo_Min)} min${t.Tempo_Estimado_Min ? ' <span style="opacity:.7">(estimado: ' + escHtml(t.Tempo_Estimado_Min) + 'min)</span>' : ''}</span>
+             ${window.PROPER_SESSION?.is_admin === true
+               ? `<button class="btn btn-secondary btn-sm" style="padding:1px 6px;font-size:10px" onclick="_ajustarTempoEfetivo('${escJs(osId)}','${escJs(t.Tarefa_ID)}','${t.Tempo_Efetivo_Min}')">✏️ Ajustar</button>`
+               : ''}
+           </div>`
+        : '';
+      const dataPrevistaStr = t.Data_Prevista ? new Date(t.Data_Prevista).toLocaleDateString('pt-BR') : '';
+      const dataPrevistaLine = window.PROPER_SESSION?.is_admin === true
+        ? `<div style="font-size:11px;color:var(--text-muted);margin-top:2px;display:flex;align-items:center;gap:6px">
+             ${dataPrevistaStr ? '📅 Previsto: ' + dataPrevistaStr : ''}
+             <button class="btn btn-secondary btn-sm" style="padding:1px 6px;font-size:10px;pointer-events:auto"
+               onclick="_definirDataPrevista('${escJs(osId)}','${escJs(t.Tarefa_ID)}','${escJs(t.Data_Prevista||'')}')">📅 Definir data</button>
+           </div>`
+        : (dataPrevistaStr ? `<div style="font-size:11px;color:var(--text-muted);margin-top:2px">📅 Previsto: ${dataPrevistaStr}</div>` : '');
+      const usuarioDesignadoStr = t.Usuario_Designado || '';
+      const usuarioDesignadoLine = window.PROPER_SESSION?.is_admin === true
+        ? `<div style="font-size:11px;color:var(--text-muted);margin-top:2px;display:flex;align-items:center;gap:6px">
+             ${usuarioDesignadoStr ? '👤 Designado: ' + escHtml(usuarioDesignadoStr) : '<span style="opacity:.6">Sem usuário designado</span>'}
+             <button class="btn btn-secondary btn-sm" style="padding:1px 6px;font-size:10px" onclick="_designarUsuario('${escJs(osId)}','${escJs(t.Tarefa_ID)}','${escJs(usuarioDesignadoStr)}')">👤 Designar</button>
+           </div>`
+        : (usuarioDesignadoStr ? `<div style="font-size:11px;color:var(--text-muted);margin-top:2px">👤 Designado: ${escHtml(usuarioDesignadoStr)}</div>` : '');
 
       // Disponível para marcar: manual, pendente/em_andamento, dependências todas completas
       const deps = t.Depende_de ? String(t.Depende_de).split(',').map(d=>d.trim()).filter(Boolean) : [];
@@ -7910,6 +8082,11 @@ async function _loadPipelineTab(osId) {
           ${tipoBadge}
         </div>
         ${concByLine}
+        ${perfilLine}
+        ${usuarioDesignadoLine}
+        ${tempoLine}
+        ${tempoEfetivoLine}
+        ${dataPrevistaLine}
         ${btnCompletar}
         <div id="pconfirm-${tid}" style="display:none;margin-top:10px">
           <textarea id="pobs-${tid}" placeholder="Observação (opcional)" rows="2"
@@ -7932,6 +8109,70 @@ function _expandConfirmTarefa(osId, tarefaId, btn) {
   btn.style.display = 'none';
   const confirm = document.getElementById('pconfirm-' + tarefaId);
   if (confirm) confirm.style.display = '';
+}
+
+async function _definirDataPrevista(osId, tarefaId, dataAtual) {
+  const novaData = prompt('Data prevista (AAAA-MM-DD):', dataAtual ? dataAtual.slice(0,10) : '');
+  if (novaData === null) return;
+  const tarefaAtual = (await syncToGS('getPipelineByOS', { os_id: osId })).tarefas
+    .find(t => t.Tarefa_ID === tarefaId);
+  if (!tarefaAtual) { toast('Tarefa não encontrada.', 'error'); return; }
+  try {
+    await syncToGS('updateTarefaStatus', {
+      os_id: osId,
+      tarefa_id: tarefaId,
+      status: tarefaAtual.Status,
+      usuario: window.PROPER_SESSION?.tecnico?.nome || '',
+      data_prevista: novaData ? new Date(novaData).toISOString() : ''
+    });
+    toast('Data prevista atualizada.', 'success');
+    _loadPipelineTab(osId);
+  } catch(e) {
+    toast('Erro ao definir data: ' + e.message, 'error');
+  }
+}
+
+async function _ajustarTempoEfetivo(osId, tarefaId, valorAtual) {
+  const novoValor = prompt('Tempo efetivo (minutos):', valorAtual || '');
+  if (novoValor === null) return;
+  const min = parseInt(novoValor, 10);
+  if (isNaN(min) || min < 0) { toast('Valor inválido.', 'error'); return; }
+  try {
+    await syncToGS('ajustarTempoEfetivoTarefa', {
+      os_id: osId,
+      tarefa_id: tarefaId,
+      tempo_efetivo_min: min,
+      usuario: window.PROPER_SESSION?.tecnico?.nome || ''
+    });
+    toast('Tempo efetivo ajustado.', 'success');
+    _loadPipelineTab(osId);
+  } catch(e) {
+    toast('Erro ao ajustar: ' + e.message, 'error');
+  }
+}
+
+async function _designarUsuario(osId, tarefaId, atual) {
+  if (!_usuList || !_usuList.length) {
+    try {
+      const r = await gsGet('getUsuarios');
+      _usuList = r?.tecnicos || r?.usuarios || r?.data || [];
+    } catch(e) { /* segue com lista vazia — prompt simples ainda funciona */ }
+  }
+  const nomes = (_usuList || []).map(u => u.nome).filter(Boolean).join(', ');
+  const novoUsuario = prompt('Designar usuário para esta tarefa' + (nomes ? ' (' + nomes + ')' : '') + ':', atual || '');
+  if (novoUsuario === null) return;
+  try {
+    await syncToGS('designarUsuarioTarefa', {
+      os_id: osId,
+      tarefa_id: tarefaId,
+      usuario_designado: novoUsuario.trim(),
+      usuario: window.PROPER_SESSION?.tecnico?.nome || ''
+    });
+    toast('Usuário designado.', 'success');
+    _loadPipelineTab(osId);
+  } catch(e) {
+    toast('Erro ao designar: ' + e.message, 'error');
+  }
 }
 
 async function _confirmarTarefa(osId, tarefaId) {
@@ -8340,13 +8581,24 @@ if(!gsUrl){
       </div>
       <div class="form-row" style="margin-top:14px">
         <label class="form-label">Tipo *</label>
-        <select id="tarefaTipo" class="form-select">
+        <select id="tarefaTipo" class="form-select" onchange="_toggleTarefaAutoFields()">
           <option value="manual">Manual 🖐</option>
-          <option value="auto:form08">Auto — Form 08 (Diagnóstico)</option>
-          <option value="auto:form09">Auto — Form 09 (Peritagem mecânica)</option>
-          <option value="auto:form10">Auto — Form 10 (Peritagem elétrica)</option>
-          <option value="auto:rotores">Auto — Ficha de Rotores</option>
+          <option value="auto">Auto — Checklist/formulário externo</option>
         </select>
+        <div id="tarefaAutoFields" style="display:none;margin-top:10px">
+          <div style="display:flex;gap:16px">
+            <div style="flex:1">
+              <label class="form-label">Identificador do tipo (sem espaços)</label>
+              <input type="text" id="tarefaTipoAutoNome" class="form-input"
+                placeholder="Ex: form08, rotores, checklist_compressor_x">
+            </div>
+            <div style="flex:1">
+              <label class="form-label">URL do checklist</label>
+              <input type="url" id="tarefaFormUrl" class="form-input"
+                placeholder="https://grupotap.github.io/...">
+            </div>
+          </div>
+        </div>
       </div>
       <div class="form-row" style="margin-top:14px">
         <label class="form-label">Depende de</label>
@@ -8364,6 +8616,19 @@ if(!gsUrl){
           <label class="form-label">Alerta (dias sem progressão)</label>
           <input type="number" id="tarefaAlertaDias" class="form-input"
             placeholder="Ex: 3" min="1">
+        </div>
+      </div>
+      <div style="display:flex;gap:16px;margin-top:14px">
+        <div style="flex:1">
+          <label class="form-label">Perfil responsável (informativo)</label>
+          <select id="tarefaPerfilResponsavel" class="form-select">
+            <option value="">— Nenhum —</option>
+          </select>
+        </div>
+        <div style="flex:1">
+          <label class="form-label">Tempo estimado (min)</label>
+          <input type="number" id="tarefaTempoEstimadoMin" class="form-input"
+            placeholder="Ex: 180" min="0" step="5">
         </div>
       </div>
       <div class="form-row" style="margin-top:14px">
@@ -8410,6 +8675,24 @@ function _todasTarefasEditor() {
   const result = [];
   _editorTemplate.fases.forEach(f => f.tarefas.forEach(t => result.push(t)));
   return result;
+}
+
+async function _popularSelectPerfilResponsavel(valorAtual = '') {
+  const sel = document.getElementById('tarefaPerfilResponsavel');
+  if (!sel) return;
+  if (!_perfilList || !_perfilList.length) {
+    try {
+      const result = await gsGet('getPerfis');
+      _perfilList = result?.perfis || result?.data || [];
+    } catch(e) {
+      console.warn('Falha ao carregar perfis para tarefa:', e);
+    }
+  }
+  sel.innerHTML = '<option value="">— Nenhum —</option>' + (_perfilList || [])
+    .filter(p => String(p.ativo || '').toUpperCase() !== 'NÃO')
+    .map(p => `<option value="${escHtml(p.nome_perfil || p.id_perfil || '')}">${escHtml(p.nome_perfil || p.id_perfil || '(sem nome)')}</option>`)
+    .join('');
+  sel.value = valorAtual || '';
 }
 
 // ── MÓDULO TEMPLATES ──────────────────────────────────────────────────────────
@@ -8552,6 +8835,7 @@ function _renderFases() {
           <div class="tpl-tarefa-card" onclick="_editarTarefa(${fi},${ti})">
             <span class="tpl-tarefa-card-name">${t.id||''} · ${t.nome||'(sem nome)'}</span>
             <span class="tpl-tarefa-badge">${_tipoLabel(t.tipo||'manual')}</span>
+            ${(t.perfil_responsavel || t.tempo_estimado_min) ? `<span class="tpl-tarefa-badge" style="color:var(--text-muted)">${t.perfil_responsavel ? '👤 ' + escHtml(t.perfil_responsavel) : ''}${t.perfil_responsavel && t.tempo_estimado_min ? ' · ' : ''}${t.tempo_estimado_min ? '⏱ ' + escHtml(t.tempo_estimado_min) + 'min' : ''}</span>` : ''}
             <button class="btn btn-secondary btn-sm" style="flex-shrink:0;color:#f87171"
               onclick="event.stopPropagation();_removerTarefa(${fi},${ti})">🗑</button>
           </div>`).join('')}
@@ -8578,35 +8862,55 @@ function _moverFase(fi, dir) {
   _renderFases();
 }
 
+
+function _toggleTarefaAutoFields() {
+  const tipo = document.getElementById('tarefaTipo').value;
+  document.getElementById('tarefaAutoFields').style.display = tipo === 'auto' ? '' : 'none';
+}
+
 function _removerFase(fi) {
   if (!confirm('Remover esta fase e todas as suas tarefas?')) return;
   _editorTemplate.fases.splice(fi, 1);
   _renderFases();
 }
 
-function _novaTarefa(fi) {
+async function _novaTarefa(fi) {
   _editorFaseAtual = fi;
   _editorTarefaIdx = null;
   document.getElementById('modalTarefaTitle').textContent = 'Nova tarefa';
   document.getElementById('tarefaNome').value = '';
   document.getElementById('tarefaTipo').value = 'manual';
+  document.getElementById('tarefaTipoAutoNome').value = '';
+  document.getElementById('tarefaFormUrl').value = '';
+  _toggleTarefaAutoFields();
   document.getElementById('tarefaBloqueante').checked = false;
   document.getElementById('tarefaAlertaDias').value = '';
+  document.getElementById('tarefaPerfilResponsavel').value = '';
+  document.getElementById('tarefaTempoEstimadoMin').value = '';
   document.getElementById('tarefaDescricao').value = '';
+  await _popularSelectPerfilResponsavel('');
   _renderDependenciasCheckboxes(null);
   openModal('modalTarefaEditor');
 }
 
-function _editarTarefa(fi, ti) {
+async function _editarTarefa(fi, ti) {
   _editorFaseAtual = fi;
   _editorTarefaIdx = ti;
   const t = _editorTemplate.fases[fi].tarefas[ti];
   document.getElementById('modalTarefaTitle').textContent = 'Editar tarefa';
   document.getElementById('tarefaNome').value = t.nome || '';
-  document.getElementById('tarefaTipo').value = t.tipo || 'manual';
+  const tipoBase = String(t.tipo || 'manual').startsWith('auto:') ? 'auto' : 'manual';
+  document.getElementById('tarefaTipo').value = tipoBase;
+  document.getElementById('tarefaTipoAutoNome').value = tipoBase === 'auto'
+    ? String(t.tipo).slice('auto:'.length) : '';
+  document.getElementById('tarefaFormUrl').value = t.form_url || '';
+  _toggleTarefaAutoFields();
   document.getElementById('tarefaBloqueante').checked = !!t.bloqueante;
   document.getElementById('tarefaAlertaDias').value = t.alerta_dias || '';
+  document.getElementById('tarefaPerfilResponsavel').value = t.perfil_responsavel || '';
+  document.getElementById('tarefaTempoEstimadoMin').value = t.tempo_estimado_min || '';
   document.getElementById('tarefaDescricao').value = t.descricao || '';
+  await _popularSelectPerfilResponsavel(t.perfil_responsavel || '');
   _renderDependenciasCheckboxes(t);
   openModal('modalTarefaEditor');
 }
@@ -8631,9 +8935,18 @@ function _renderDependenciasCheckboxes(tarefaAtual) {
 function saveTarefaModal() {
   const nome = document.getElementById('tarefaNome').value.trim();
   if (!nome) { toast('Nome da tarefa é obrigatório.', 'error'); return; }
-  const tipo = document.getElementById('tarefaTipo').value;
+  const tipoSel = document.getElementById('tarefaTipo').value;
+  const tipoAutoNome = document.getElementById('tarefaTipoAutoNome').value.trim().toLowerCase().replace(/\s+/g, '_');
+  if (tipoSel === 'auto' && !tipoAutoNome) {
+    toast('Informe o identificador do tipo para tarefas automáticas.', 'error');
+    return;
+  }
+  const tipo = tipoSel === 'auto' ? ('auto:' + tipoAutoNome) : 'manual';
+  const formUrl = tipoSel === 'auto' ? document.getElementById('tarefaFormUrl').value.trim() : '';
   const bloqueante = document.getElementById('tarefaBloqueante').checked;
   const alertaDias = document.getElementById('tarefaAlertaDias').value;
+  const perfilResponsavel = document.getElementById('tarefaPerfilResponsavel').value;
+  const tempoEstimadoMin  = document.getElementById('tarefaTempoEstimadoMin').value;
   const descricao = document.getElementById('tarefaDescricao').value.trim();
   const deps = Array.from(document.querySelectorAll('#tarefaDependencias input[type=checkbox]:checked')).map(c => c.value);
 
@@ -8643,6 +8956,9 @@ function saveTarefaModal() {
     t.nome = nome; t.tipo = tipo; t.bloqueante = bloqueante;
     t.alerta_dias = alertaDias ? parseInt(alertaDias) : null;
     t.descricao = descricao; t.depende_de = deps;
+    t.perfil_responsavel = perfilResponsavel || '';
+    t.tempo_estimado_min = tempoEstimadoMin ? parseInt(tempoEstimadoMin) : null;
+    t.form_url = formUrl;
   } else {
     const todas = _todasTarefasEditor();
     const existingIds = new Set(todas.map(t => t.id));
@@ -8657,7 +8973,10 @@ function saveTarefaModal() {
       fase_ordem: _editorFaseAtual + 1,
       ordem: fase.tarefas.length + 1,
       depende_de: deps, paralelo_com: [],
-      bloqueante, alerta_dias: alertaDias ? parseInt(alertaDias) : null, descricao
+      bloqueante, alerta_dias: alertaDias ? parseInt(alertaDias) : null, descricao,
+      perfil_responsavel: perfilResponsavel || '',
+      tempo_estimado_min: tempoEstimadoMin ? parseInt(tempoEstimadoMin) : null,
+      form_url: formUrl
     });
   }
   closeModal('modalTarefaEditor');
@@ -8883,6 +9202,95 @@ async function deleteTipoOSAction(tipoId, nome) {
     if (e.message && e.message.includes('AUTH_GOOGLE')) { hubLogout(); return; }
     toast('Erro ao excluir tipo.', 'error');
   }
+}
+
+// ── MÓDULO SATURAÇÃO (Sessão E) ────────────────────────────────────────────
+
+async function renderSaturacao() {
+  const el = document.getElementById('viewSaturacao');
+  el.innerHTML = `<div style="display:flex;align-items:center;justify-content:center;padding:40px">
+    <span style="color:var(--text-muted);font-size:13px">Calculando saturação…</span></div>`;
+
+  let result;
+  try {
+    result = await gsGet('getSaturacaoUsuarios');
+  } catch(e) {
+    el.innerHTML = `<div class="empty"><div class="empty-icon">⚠️</div>
+      <div class="empty-title">Erro ao carregar</div>
+      <div class="empty-sub">${e.message}</div></div>`;
+    return;
+  }
+
+  const usuarios = result?.usuarios || [];
+  if (!usuarios.length) {
+    el.innerHTML = `<div class="empty">
+      <div class="empty-icon">📊</div>
+      <div class="empty-title">Nenhuma tarefa designada</div>
+      <div class="empty-sub">Designe usuários nas tarefas do pipeline das OS para ver a saturação aqui.</div>
+    </div>`;
+    return;
+  }
+
+  let html = `<div style="font-size:18px;font-weight:700;margin-bottom:4px">Saturação de usuários</div>
+    <div style="font-size:12px;color:var(--text2);margin-bottom:16px">Fila de tarefas designadas, não concluídas · Capacidade diária: ${Math.round(result.capacidade_diaria_min)} min</div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;margin-bottom:24px">`;
+
+  usuarios.forEach((u, idx) => {
+    const destaque = idx === 0;
+    html += `<div class="card" style="${destaque ? 'border-color:var(--red)' : ''}">
+      ${destaque ? '<div style="font-size:11px;font-weight:700;color:var(--red);margin-bottom:4px">🔥 MAIS SATURADO</div>' : ''}
+      <div style="font-size:14px;font-weight:700;margin-bottom:6px">${escHtml(u.usuario)}</div>
+      <div style="font-size:12px;color:var(--text2)">${u.total_tarefas} tarefa(s) na fila</div>
+      <div style="font-size:12px;color:var(--text2)">${Math.round(u.total_estimado_min / 60 * 10) / 10}h estimadas</div>
+      <div style="font-size:13px;font-weight:600;margin-top:6px">${u.dias_de_fila != null ? u.dias_de_fila + ' dia(s) de fila' : '—'}</div>
+    </div>`;
+  });
+
+  html += `</div>` + _renderGanttSaturacao(usuarios);
+  el.innerHTML = html;
+}
+
+function _renderGanttSaturacao(usuarios) {
+  const HOJE = new Date();
+  HOJE.setHours(0, 0, 0, 0);
+  const DIAS_JANELA = 10; // próximos 10 dias corridos exibidos como colunas
+  const colunas = [];
+  for (let i = 0; i < DIAS_JANELA; i++) {
+    const d = new Date(HOJE);
+    d.setDate(d.getDate() + i);
+    colunas.push(d);
+  }
+  const fmtDia = d => d.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' });
+  const chaveDia = d => d.toISOString().slice(0, 10);
+
+  let html = `<div style="font-size:15px;font-weight:700;margin-bottom:10px">Gantt (próximos ${DIAS_JANELA} dias)</div>
+    <div style="overflow-x:auto">
+    <table style="border-collapse:collapse;width:100%;font-size:11px">
+      <thead><tr>
+        <th style="text-align:left;padding:6px;border-bottom:1px solid var(--border);white-space:nowrap">Usuário</th>
+        <th style="text-align:left;padding:6px;border-bottom:1px solid var(--border);white-space:nowrap;color:var(--text-muted)">A definir</th>
+        ${colunas.map(d => `<th style="text-align:left;padding:6px;border-bottom:1px solid var(--border);white-space:nowrap">${fmtDia(d)}</th>`).join('')}
+      </tr></thead><tbody>`;
+
+  usuarios.forEach(u => {
+    const semData = u.tarefas.filter(t => !t.data_prevista);
+    html += `<tr>
+      <td style="padding:6px;border-bottom:1px solid var(--border);font-weight:600;white-space:nowrap">${escHtml(u.usuario)}</td>
+      <td style="padding:6px;border-bottom:1px solid var(--border);vertical-align:top">
+        ${semData.map(t => `<div style="background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:2px 6px;margin-bottom:2px;white-space:nowrap" title="${escHtml(t.nome)} (OS ${escHtml(t.os_id)})">${escHtml(t.nome).slice(0,18)}</div>`).join('') || '—'}
+      </td>
+      ${colunas.map(d => {
+        const chave = chaveDia(d);
+        const doDia = u.tarefas.filter(t => t.data_prevista && String(t.data_prevista).slice(0,10) === chave);
+        return `<td style="padding:6px;border-bottom:1px solid var(--border);vertical-align:top">
+          ${doDia.map(t => `<div style="background:var(--accent);color:#fff;border-radius:4px;padding:2px 6px;margin-bottom:2px;white-space:nowrap" title="${escHtml(t.nome)} (OS ${escHtml(t.os_id)})">${escHtml(t.nome).slice(0,14)}</div>`).join('')}
+        </td>`;
+      }).join('')}
+    </tr>`;
+  });
+
+  html += `</tbody></table></div>`;
+  return html;
 }
 </script>
 
