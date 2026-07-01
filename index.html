@@ -2748,6 +2748,35 @@ async function auditCreateBackup() {
   }
 }
 
+async function auditRepairOrphanVisits() {
+  if (!confirm('Isso vai varrer VISITAS em busca de Machine_ID inválido e corrigir automaticamente\nos que tiverem correspondência clara por cliente+série (ou cliente+TAG) em MAQUINAS.\n\nNenhum registro é apagado. Continuar?')) return;
+  const el = document.getElementById('auditResult');
+  if (!el) return;
+  el.innerHTML = '<span style="color:var(--text2)">⏳ Reparando visitas órfãs...</span>';
+  try {
+    const r = await fetch(gsUrl, { method: 'POST', body: gcBody({ action: 'repararVisitasOrfas', key: _AUTH_HASH }) });
+    const d = await r.json();
+    if (d.status !== 'ok') { el.innerHTML = '❌ Erro: ' + d.error; return; }
+
+    const relinkedHtml = d.relinked.map(x =>
+      `<div style="padding:2px 0;color:var(--green)">Visita ${x.visitaId}: ${x.de} → ${x.para}</div>`
+    ).join('');
+    const unresolvedHtml = d.unresolved.map(x =>
+      `<div style="padding:2px 0;color:var(--orange)">Visita ${x.visitaId} (${x.cliente}): "${x.machineIdOrfao}" sem correspondência — revisar manualmente</div>`
+    ).join('');
+
+    el.innerHTML = `
+      <div style="color:var(--green);font-weight:500;margin-bottom:6px">✅ ${d.total_relinkados} visita(s) realinhada(s)</div>
+      ${relinkedHtml}
+      ${d.total_nao_resolvidos ? `<div style="color:var(--orange);font-weight:500;margin:8px 0 4px">⚠️ ${d.total_nao_resolvidos} sem correspondência automática</div>${unresolvedHtml}` : ''}
+      <div style="color:var(--text3);margin-top:6px;font-size:11px">Atualizado em: ${new Date(d.ts).toLocaleString('pt-BR')}</div>
+    `;
+    toast(d.total_relinkados + ' visita(s) corrigida(s)', 'success');
+  } catch(e) {
+    el.innerHTML = '❌ Falha na consulta: ' + (e.message || 'erro desconhecido');
+  }
+}
+
 // ═══════════════════════════════════════════════════════════
 // VIEWS
 // ═══════════════════════════════════════════════════════════
@@ -6403,6 +6432,7 @@ function renderConfigStats(){
         <button class="btn btn-secondary" onclick="auditCheckDuplicates()">Ver duplicidades</button>
         <button class="btn btn-secondary" onclick="auditCheckDeleted()">Ver inativados</button>
         <button class="btn btn-secondary" onclick="auditCreateBackup()">Criar backup</button>
+        <button class="btn btn-secondary" onclick="auditRepairOrphanVisits()">Reparar visitas órfãs</button>
       </div>
       <div id="auditResult" style="font-size:12px;color:var(--text2);min-height:24px"></div>
     </div>
