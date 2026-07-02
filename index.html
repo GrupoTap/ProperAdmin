@@ -1303,6 +1303,25 @@ tr:hover td{background:var(--gray-50)}
 <input type="file" id="importFile" accept=".json" style="display:none" onchange="importJSON(this)">
 
 <script>
+// ══════════════════════════════════════════════════════════════════════════
+// CHANGELOG v47 (Sprint Preventiva↔Pipeline de OS — item 6 do prompt)
+// ══════════════════════════════════════════════════════════════════════════
+// - Modal de OS (#modalOS): novo campo "Local de Atendimento" (select
+//   osLocalAtendimento, valores 'externo'/'interno', default 'externo').
+//   saveOSModal envia local_atendimento no payload de saveOS.
+// - openModalOS: pré-preenche osLocalAtendimento ao editar OS existente
+//   (fallback 'externo' se o campo vier vazio — retrocompatível com OS
+//   antigas criadas antes deste sprint).
+// - _renderOSTable: badge 🏭 Interno / 🚐 Externo abaixo do nome do tipo,
+//   na coluna "Tipo" da listagem de OS.
+// - openOSDetail (aba Dados): novo campo "Local de Atendimento" no detalhe
+//   da OS.
+// - Depende de GAS_properCare_v43.js (coluna local_atendimento em
+//   ORDENS_SERVICO). O cadastro do template "Preventiva" via editor de
+//   templates (item 7 do prompt) não exige código — é configuração feita
+//   depois do deploy, usando a tela que já existe.
+// ══════════════════════════════════════════════════════════════════════════
+
 // ── HUB SESSION CHECK ─────────────────────────────────────────────────────
 (function checkHubSession() {
   var raw = sessionStorage.getItem('proper_session');
@@ -7761,10 +7780,13 @@ function _renderOSTable(search = '', statusFilter = '', priorityFilter = '') {
             const prio = PRIORIDADE_BADGE[(o.prioridade||'normal').toLowerCase()] || PRIORIDADE_BADGE.normal;
             const atrasada = isAtrasada(o);
             const prazoStr = o.data_prevista ? new Date(o.data_prevista).toLocaleDateString('pt-BR') : '—';
+            const localAtend = (o.local_atendimento === 'interno') ? '🏭 Interno' : '🚐 Externo';
             return `<tr>
               <td><span style="font-family:var(--font-mono);font-size:12px;font-weight:600">${o.numero_os||'—'}</span></td>
               <td class="td-name">${o.cliente||'—'}</td>
-              <td>${(_tiposOS.find(t=>t.Tipo_ID===o.tipo_os)?.Nome) || o.tipo_os||'—'}</td>
+              <td>${(_tiposOS.find(t=>t.Tipo_ID===o.tipo_os)?.Nome) || o.tipo_os||'—'}
+                <div style="font-size:10px;color:var(--text-muted);margin-top:2px">${localAtend}</div>
+              </td>
               <td><span style="font-size:11px;font-weight:600;padding:2px 8px;border-radius:10px;background:${prio.bg};color:${prio.color}">${prio.label}</span></td>
               <td style="font-size:11px;${atrasada ? 'color:#dc2626;font-weight:700' : ''}">${prazoStr}${atrasada ? ' ⚠' : ''}</td>
               <td style="font-size:11px">${data}</td>
@@ -7827,6 +7849,7 @@ async function openModalOS(id) {
   document.getElementById('osDataAbertura').value = new Date().toISOString().slice(0,10);
   document.getElementById('osPrioridade').value = 'normal';
   document.getElementById('osDataPrevista').value = '';
+  document.getElementById('osLocalAtendimento').value = 'externo';
   _populateOSUsuarioSelect('');
 
   document.getElementById('osClienteId').value = '';
@@ -7848,6 +7871,7 @@ async function openModalOS(id) {
     if (os.data_abertura) document.getElementById('osDataAbertura').value = os.data_abertura.slice(0,10);
     document.getElementById('osPrioridade').value = os.prioridade || 'normal';
     if (os.data_prevista) document.getElementById('osDataPrevista').value = os.data_prevista.slice(0,10);
+    document.getElementById('osLocalAtendimento').value = (os.local_atendimento === 'interno') ? 'interno' : 'externo';
     _populateOSUsuarioSelect(os.usuario_atual || '');
   } else {
     document.getElementById('modalOSTitle').textContent = 'Nova OS';
@@ -7875,6 +7899,7 @@ async function saveOSModal() {
   const usuario  = document.getElementById('osUsuario').value.trim();
   const prioridade    = document.getElementById('osPrioridade').value.trim();
   const dataPrevista  = document.getElementById('osDataPrevista').value.trim();
+  const localAtendimento = document.getElementById('osLocalAtendimento').value.trim();
 
   if (!numero) { toast('Preencha o número da OS.', 'error'); return; }
   if (!cliente) { toast('Preencha o cliente.', 'error'); return; }
@@ -7900,6 +7925,7 @@ async function saveOSModal() {
     usuario_atual: usuario,
     prioridade,
     data_prevista: dataPrevista,
+    local_atendimento: localAtendimento,
   };
   if (id) payload.id_os = id;
 
@@ -8012,6 +8038,7 @@ function _osDetailTab(osId, tab) {
         ${_osDetailField('Nº OS', `<span style="font-family:var(--font-mono);font-weight:700">${os.numero_os||'—'}</span>`)}
         ${_osDetailField('Cliente', os.cliente||'—')}
         ${_osDetailField('Tipo', (_tiposOS.find(t=>t.Tipo_ID===os.tipo_os)?.Nome) || os.tipo_os||'—')}
+        ${_osDetailField('Local de Atendimento', (os.local_atendimento === 'interno') ? '🏭 Interno (oficina)' : '🚐 Externo (campo)')}
         ${_osDetailField('Status', STATUS_LABELS[(os.status||'').toUpperCase()] || os.status||'—')}
         ${_osDetailField('Data de abertura', data)}
         ${_osDetailField('Responsável', usu ? usu.nome : (os.usuario_atual||'—'))}
@@ -8585,6 +8612,13 @@ if(!gsUrl){
         <label class="form-label">Tipo de OS *</label>
         <select class="form-select" id="osTipoOS">
           <option value="">Selecione o tipo *</option>
+        </select>
+      </div>
+      <div class="form-row">
+        <label class="form-label">Local de Atendimento</label>
+        <select class="form-select" id="osLocalAtendimento">
+          <option value="externo">🚐 Externo (campo)</option>
+          <option value="interno">🏭 Interno (oficina)</option>
         </select>
       </div>
       <div class="form-row">
