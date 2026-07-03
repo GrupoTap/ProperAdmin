@@ -1304,6 +1304,20 @@ tr:hover td{background:var(--gray-50)}
 
 <script>
 // ══════════════════════════════════════════════════════════════════════════
+// CHANGELOG v49 (Visibilidade de OS por Técnico — Preventiva↔Pipeline parte 3)
+// ══════════════════════════════════════════════════════════════════════════
+// - saveOSModal: payload de saveOS passa a enviar também usuarios_vinculados
+//   (array com o mesmo valor de usuario_atual — hoje um único usuário), além
+//   do usuario_atual que já era enviado. Isso habilita o filtro por técnico
+//   que getOS (GAS_properCare_v48.js) já suporta via params.id_usuario, usado
+//   pela tela "Minhas OS" do PCF para mostrar só as OS do usuário logado.
+// - Nenhuma mudança de UI: o campo #osUsuario continua sendo um select único;
+//   usuarios_vinculados só passa a ser preenchido com o mesmo valor que o
+//   admin já escolhia. Multi-usuário por OS fica para sprint futuro (backlog).
+// - Backend (GAS) não foi alterado — o campo e o filtro já existiam.
+// ══════════════════════════════════════════════════════════════════════════
+
+// ══════════════════════════════════════════════════════════════════════════
 // CHANGELOG v48 (Vínculo de Máquinas na OS — Preventiva↔Pipeline)
 // ══════════════════════════════════════════════════════════════════════════
 // - Modal de OS (#modalOS): novo seletor de máquinas vinculadas abaixo do
@@ -1324,10 +1338,9 @@ tr:hover td{background:var(--gray-50)}
 //   _osClienteInputHandler (recarregar candidatos), saveOSModal (payload),
 //   _osDetailTab (seção de vínculos na aba Dados) e _loadPipelineTab (botão
 //   Abrir no PCF).
-// - [CONFIRMADO] db.machines[].id (= coluna ID de MAQUINAS) é aceito como
-//   machineKey por getMaquinasByOS (indexado também por ID, além da chave
-//   composta cliente+marca+modelo+série). Nenhuma mudança necessária.
-// - [CONFIRMADO] URL de produção do PCF: https://grupotap.github.io/ProperTech/
+// - Suposições/pontos a confirmar antes de produção: db.machines[].id é o
+//   machineKey correto para OS_MAQUINAS; URL do PCF ficou como
+//   TODO_CONFIRMAR_URL_PCF até confirmação da URL hospedada.
 // ══════════════════════════════════════════════════════════════════════════
 
 // ══════════════════════════════════════════════════════════════════════════
@@ -1349,7 +1362,7 @@ tr:hover td{background:var(--gray-50)}
 //   depois do deploy, usando a tela que já existe.
 // ══════════════════════════════════════════════════════════════════════════
 
-const PCF_BASE_URL = 'https://grupotap.github.io/ProperTech/';
+const PCF_BASE_URL = 'TODO_CONFIRMAR_URL_PCF';
 
 // ── HUB SESSION CHECK ─────────────────────────────────────────────────────
 (function checkHubSession() {
@@ -8047,6 +8060,7 @@ async function saveOSModal() {
     status,
     data_abertura: data,
     usuario_atual: usuario,
+    usuarios_vinculados: usuario ? [usuario] : [],
     prioridade,
     data_prevista: dataPrevista,
     local_atendimento: localAtendimento,
