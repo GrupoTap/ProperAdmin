@@ -1304,6 +1304,32 @@ tr:hover td{background:var(--gray-50)}
 
 <script>
 // ══════════════════════════════════════════════════════════════════════════
+// CHANGELOG v48 (Vínculo de Máquinas na OS — Preventiva↔Pipeline)
+// ══════════════════════════════════════════════════════════════════════════
+// - Modal de OS (#modalOS): novo seletor de máquinas vinculadas abaixo do
+//   campo Cliente, filtrando db.machines por clientKey(cliente) e recarregando
+//   dinamicamente quando o cliente muda.
+// - saveOSModal: envia maquinas_vinculadas: [...] no payload de saveOS, usando
+//   o id da máquina (db.machines[].id) como machineKey esperado pelo GAS.
+// - openModalOS: ao editar OS existente, busca getMaquinasByOS({ id_os }) e
+//   pré-marca as máquinas já vinculadas no seletor.
+// - Detalhe da OS (aba Dados): adicionada seção "Máquinas vinculadas" com
+//   leitura via getMaquinasByOS e botão para editar vínculos pelo modal.
+// - Backend GAS não alterado: GAS_properCare_v47.js já aceita o campo
+//   maquinas_vinculadas em saveOS e retorna os vínculos em getMaquinasByOS.
+// - Funções novas: _osMachineId, _osMachineLabel, _getOSClientMachineOptions,
+//   _renderOSMachineSelector, _getSelectedOSMachineIds, _loadOSLinkedMachines,
+//   _renderOSLinkedMachinesDetail e _openPCFFromOS.
+// - Funções tocadas: openModalOS (reset/preload do seletor),
+//   _osClienteInputHandler (recarregar candidatos), saveOSModal (payload),
+//   _osDetailTab (seção de vínculos na aba Dados) e _loadPipelineTab (botão
+//   Abrir no PCF).
+// - Suposições/pontos a confirmar antes de produção: db.machines[].id é o
+//   machineKey correto para OS_MAQUINAS; URL do PCF ficou como
+//   TODO_CONFIRMAR_URL_PCF até confirmação da URL hospedada.
+// ══════════════════════════════════════════════════════════════════════════
+
+// ══════════════════════════════════════════════════════════════════════════
 // CHANGELOG v47 (Sprint Preventiva↔Pipeline de OS — item 6 do prompt)
 // ══════════════════════════════════════════════════════════════════════════
 // - Modal de OS (#modalOS): novo campo "Local de Atendimento" (select
@@ -1321,6 +1347,8 @@ tr:hover td{background:var(--gray-50)}
 //   templates (item 7 do prompt) não exige código — é configuração feita
 //   depois do deploy, usando a tela que já existe.
 // ══════════════════════════════════════════════════════════════════════════
+
+const PCF_BASE_URL = 'TODO_CONFIRMAR_URL_PCF';
 
 // ── HUB SESSION CHECK ─────────────────────────────────────────────────────
 (function checkHubSession() {
@@ -7815,6 +7843,90 @@ function _populateOSUsuarioSelect(selectedId) {
   });
 }
 
+
+let _osMachineSelection = new Set();
+
+function _osMachineId(m) {
+  return String(m?.id || '').trim();
+}
+
+function _osMachineLabel(m) {
+  const marcaModelo = [m?.brand, m?.model].filter(Boolean).join(' ').trim() || 'Máquina sem modelo';
+  const serieTag = String(m?.serial || m?.tag || '').trim() || 'sem série';
+  return `${marcaModelo} — ${serieTag}`;
+}
+
+function _getOSClientMachineOptions() {
+  const cliente = document.getElementById('osCliente')?.value?.trim() || '';
+  const clienteId = document.getElementById('osClienteId')?.value?.trim() || '';
+  if (!cliente || !clienteId) return { reason: 'missing-client', machines: [] };
+  const ck = clientKey(cliente);
+  if (!ck) return { reason: 'missing-client', machines: [] };
+  const machines = (db.machines || []).filter(m => clientKey(m.client || '') === ck && _osMachineId(m));
+  return { reason: machines.length ? '' : 'empty', machines };
+}
+
+function _renderOSMachineSelector(selectedIds) {
+  const wrap = document.getElementById('osMaquinasSelector');
+  if (!wrap) return;
+  if (selectedIds) _osMachineSelection = new Set((selectedIds || []).map(String).filter(Boolean));
+  const { reason, machines } = _getOSClientMachineOptions();
+  if (reason === 'missing-client') {
+    wrap.innerHTML = '<div style="font-size:12px;color:var(--text-muted);padding:8px 0">Selecione um cliente cadastrado para ver as máquinas.</div>';
+    return;
+  }
+  if (reason === 'empty') {
+    wrap.innerHTML = '<div style="font-size:12px;color:var(--text-muted);padding:8px 0">Nenhuma máquina cadastrada para este cliente.</div>';
+    return;
+  }
+  wrap.innerHTML = machines.map(m => {
+    const id = _osMachineId(m);
+    const checked = _osMachineSelection.has(id) ? 'checked' : '';
+    return `<label style="display:flex;align-items:flex-start;gap:8px;padding:7px 8px;border:1px solid var(--border);border-radius:8px;margin-bottom:6px;background:var(--surface)">
+      <input type="checkbox" class="os-machine-check" value="${escHtml(id)}" ${checked} onchange="_osMachineSelection=this.checked?_osMachineSelection.add(this.value)||_osMachineSelection:_osMachineSelection.delete(this.value)||_osMachineSelection">
+      <span style="font-size:12px;color:var(--text)">${escHtml(_osMachineLabel(m))}</span>
+    </label>`;
+  }).join('');
+}
+
+function _getSelectedOSMachineIds() {
+  return Array.from(document.querySelectorAll('#osMaquinasSelector .os-machine-check:checked')).map(el => el.value).filter(Boolean);
+}
+
+async function _loadOSLinkedMachines(osId) {
+  if (!osId) return [];
+  const r = await syncToGS('getMaquinasByOS', { id_os: osId });
+  const fromOS = Array.isArray(r?.os?.maquinas_vinculadas) ? r.os.maquinas_vinculadas : [];
+  const fromMachines = Array.isArray(r?.machines) ? r.machines.map(_osMachineId).filter(Boolean) : [];
+  return Array.from(new Set([...fromOS.map(String), ...fromMachines.map(String)]));
+}
+
+async function _renderOSLinkedMachinesDetail(osId) {
+  const el = document.getElementById('osLinkedMachinesDetail');
+  if (!el) return;
+  try {
+    const r = await syncToGS('getMaquinasByOS', { id_os: osId });
+    const machines = Array.isArray(r?.machines) ? r.machines : [];
+    const missing = Array.isArray(r?.missing_machine_ids) ? r.missing_machine_ids : [];
+    if (!machines.length && !missing.length) {
+      el.innerHTML = '<div style="font-size:12px;color:var(--text-muted);margin-top:8px">Nenhuma máquina vinculada a esta OS.</div>';
+      return;
+    }
+    el.innerHTML = `<div style="display:grid;gap:6px;margin-top:8px">${machines.map(m => `<div style="font-size:12px;color:var(--text);padding:8px;border:1px solid var(--border);border-radius:8px;background:var(--surface)">${escHtml(_osMachineLabel(m))}</div>`).join('')}${missing.map(id => `<div style="font-size:12px;color:var(--warning);padding:8px;border:1px solid var(--border);border-radius:8px">Máquina não encontrada: ${escHtml(id)}</div>`).join('')}</div>`;
+  } catch(e) {
+    if (e.message && e.message.includes('AUTH_GOOGLE')) { hubLogout(); return; }
+    el.innerHTML = `<div style="font-size:12px;color:var(--danger);margin-top:8px">Erro ao carregar máquinas vinculadas: ${escHtml(e.message)}</div>`;
+  }
+}
+
+function _openPCFFromOS(osId) {
+  if (!PCF_BASE_URL || PCF_BASE_URL === 'TODO_CONFIRMAR_URL_PCF') {
+    toast('URL do PCF precisa ser confirmada antes de abrir.', 'warning');
+    return;
+  }
+  window.open(`${PCF_BASE_URL}?modo=pipeline&os_id=${encodeURIComponent(osId)}`, '_blank');
+}
+
 async function openModalOS(id) {
   if (_usuList.length === 0) {
     try {
@@ -7851,6 +7963,8 @@ async function openModalOS(id) {
   document.getElementById('osDataPrevista').value = '';
   document.getElementById('osLocalAtendimento').value = 'externo';
   _populateOSUsuarioSelect('');
+  _osMachineSelection = new Set();
+  _renderOSMachineSelector([]);
 
   document.getElementById('osClienteId').value = '';
   const dl = document.getElementById('osClienteList');
@@ -7873,6 +7987,14 @@ async function openModalOS(id) {
     if (os.data_prevista) document.getElementById('osDataPrevista').value = os.data_prevista.slice(0,10);
     document.getElementById('osLocalAtendimento').value = (os.local_atendimento === 'interno') ? 'interno' : 'externo';
     _populateOSUsuarioSelect(os.usuario_atual || '');
+    try {
+      const linkedMachineIds = await _loadOSLinkedMachines(id);
+      _renderOSMachineSelector(linkedMachineIds);
+    } catch(e) {
+      if (e.message && e.message.includes('AUTH_GOOGLE')) { hubLogout(); return; }
+      toast('Não foi possível carregar máquinas vinculadas: ' + e.message, 'warning');
+      _renderOSMachineSelector([]);
+    }
   } else {
     document.getElementById('modalOSTitle').textContent = 'Nova OS';
   }
@@ -7883,9 +8005,10 @@ async function openModalOS(id) {
 function _osClienteInputHandler(val) {
   // Ao digitar, tenta encontrar cliente pelo nome para capturar o id
   document.getElementById('osClienteId').value = '';
-  if (!val) return;
+  if (!val) { _renderOSMachineSelector([]); return; }
   const match = (db?.clients||[]).find(c => (c.nome||'').toLowerCase() === val.toLowerCase());
   if (match) document.getElementById('osClienteId').value = match.id;
+  _renderOSMachineSelector();
 }
 
 async function saveOSModal() {
@@ -7926,6 +8049,7 @@ async function saveOSModal() {
     prioridade,
     data_prevista: dataPrevista,
     local_atendimento: localAtendimento,
+    maquinas_vinculadas: _getSelectedOSMachineIds(),
   };
   if (id) payload.id_os = id;
 
@@ -8043,7 +8167,15 @@ function _osDetailTab(osId, tab) {
         ${_osDetailField('Data de abertura', data)}
         ${_osDetailField('Responsável', usu ? usu.nome : (os.usuario_atual||'—'))}
         ${os.descricao ? `<div style="grid-column:1/-1">${_osDetailField('Descrição', os.descricao)}</div>` : ''}
+        <div style="grid-column:1/-1;margin-top:8px;padding-top:12px;border-top:1px solid var(--border)">
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+            <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text-muted)">Máquinas vinculadas</div>
+            <button class="btn btn-secondary btn-sm" onclick="openModalOS('${osId.replace(/'/g,"\\'")}')">+ Vincular máquina</button>
+          </div>
+          <div id="osLinkedMachinesDetail"><div style="font-size:12px;color:var(--text-muted);margin-top:8px">Carregando máquinas vinculadas…</div></div>
+        </div>
       </div>`;
+    _renderOSLinkedMachinesDetail(osId);
   } else if (tab === 'pipeline') {
     content.innerHTML = '<div style="padding:20px;text-align:center;color:var(--text-muted)">Carregando pipeline…</div>';
     _loadPipelineTab(osId);
@@ -8092,6 +8224,7 @@ async function _loadPipelineTab(osId) {
     }
     content.innerHTML = `<div style="padding:20px">
       <p style="color:var(--text-muted);margin-bottom:12px">Nenhuma tarefa no pipeline desta OS.</p>
+      <button class="btn btn-secondary btn-sm" onclick="_openPCFFromOS('${osId.replace(/'/g,"\\'")}')">Abrir no PCF</button>
       ${window.PROPER_SESSION?.is_admin === true ? `<button class="btn btn-secondary btn-sm" onclick="_abrirTrocarPipeline('${osId.replace(/'/g,"\\'")}')">🔄 Trocar pipeline</button>` : ''}
     </div>`;
     return;
@@ -8607,6 +8740,12 @@ if(!gsUrl){
         <input class="form-input" type="text" id="osCliente" list="osClienteList" placeholder="Nome do cliente"
           oninput="_osClienteInputHandler(this.value)">
         <datalist id="osClienteList"></datalist>
+      </div>
+      <div class="form-row">
+        <label class="form-label">Máquinas vinculadas</label>
+        <div id="osMaquinasSelector" style="max-height:180px;overflow:auto;border:1px solid var(--border);border-radius:10px;padding:8px;background:var(--bg)">
+          <div style="font-size:12px;color:var(--text-muted);padding:8px 0">Selecione um cliente cadastrado para ver as máquinas.</div>
+        </div>
       </div>
       <div class="form-row">
         <label class="form-label">Tipo de OS *</label>
