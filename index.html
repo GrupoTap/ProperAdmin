@@ -1,4 +1,16 @@
 <!--
+PCM_v54.html
+v54 — checkHubSession lia só sessionStorage. O ProperHub restaura sessão
+       via localStorage (sobrevive fechar aba/app — essencial em campo) e
+       só re-hidrata sessionStorage durante o login ativo, não no restore
+       via init(). Resultado: abrir uma aba nova/direto no ProperHub com
+       sessão antiga funcionava lá (usa localStorage), mas ao navegar pro
+       PCM o sessionStorage desta aba estava vazio → bounce imediato pro
+       ProperHub, antes até de chegar na checagem de is_admin/módulo.
+  - checkHubSession: lê localStorage.getItem('proper_session') primeiro,
+    sessionStorage como fallback — mesmo padrão do lerSessaoStorage() do
+    ProperHub_index.
+
 PCM_v53.html
 v53 — checkHubSession não deixava entrar quem tem acesso a "Administração"
        via módulo (pcm_completo/pcm_leitura no perfil) mas sem is_admin=SIM.
@@ -1413,7 +1425,15 @@ const PCF_BASE_URL = 'TODO_CONFIRMAR_URL_PCF';
 
 // ── HUB SESSION CHECK ─────────────────────────────────────────────────────
 (function checkHubSession() {
-  var raw = sessionStorage.getItem('proper_session');
+  // v54: mesma prioridade de leitura do lerSessaoStorage() do ProperHub —
+  // localStorage primeiro (sobrevive a fechar a aba), sessionStorage como
+  // fallback. Ler só sessionStorage causava bounce imediato quando a aba
+  // restaurava a sessão via localStorage sem re-hidratar sessionStorage.
+  var raw;
+  try { raw = localStorage.getItem('proper_session'); } catch(e) {}
+  if (!raw) {
+    try { raw = sessionStorage.getItem('proper_session'); } catch(e) {}
+  }
   if (!raw) {
     window.location.href = 'https://grupotap.github.io/ProperHub/';
     return;
