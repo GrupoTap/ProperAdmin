@@ -1,4 +1,12 @@
-﻿<!DOCTYPE html>
+// PCM_v50.html
+// v50 — Resiliência de rede: retry/backoff em gsGet e syncToGS
+//   - Nova função interna _gsRequestComRetry_: até 2 retries (600ms/1200ms)
+//     para falhas de infraestrutura do GAS. Cobre indiretamente toda
+//     chamada que passa por gsGet/syncToGS/gsPost, inclusive
+//     instanciarPipeline (criação de OS e "Trocar pipeline") e a
+//     sincronização silenciosa de boot (syncFromGS).
+//   - gsGet/syncToGS: assinatura e comportamento de sucesso inalterados.
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
@@ -2216,25 +2224,53 @@ async function testGS(){
   }
 }
 
+// v50 — Resiliência de rede: retry com backoff para falhas transitórias de
+// infraestrutura do GAS. NÃO retenta erros de negócio (status:'error' com
+// HTTP 200) — só falhas de rede/infra.
+async function _gsRequestComRetry_(url, options, maxRetries) {
+  if (maxRetries === undefined) maxRetries = 2;
+  var lastErr;
+  for (var tentativa = 0; tentativa <= maxRetries; tentativa++) {
+    try {
+      const r = await fetch(url, options);
+      const txt = await r.text();
+      if (txt.trim().startsWith('<')) {
+        throw new Error('GAS retornou HTML — verifique a publicação do Web App');
+      }
+      if (!r.ok) {
+        throw new Error('HTTP ' + r.status);
+      }
+      try {
+        return JSON.parse(txt);
+      } catch (e) {
+        throw new Error('Resposta inválida do GAS: ' + txt.slice(0, 80));
+      }
+    } catch (e) {
+      lastErr = e;
+      var infraTransitoria = /^HTTP \d+$/.test(e.message) ||
+        /Failed to fetch|NetworkError|Load failed/i.test(e.message);
+      if (!infraTransitoria || tentativa === maxRetries) throw e;
+      console.warn('[gsRequest] tentativa ' + (tentativa + 1) + ' falhou (' +
+        e.message + ') — retry em ' + (600 * (tentativa + 1)) + 'ms');
+      await new Promise(function(res) { setTimeout(res, 600 * (tentativa + 1)); });
+    }
+  }
+  throw lastErr;
+}
+
 async function syncToGS(action,payload){
   if(!gsUrl||!gsConnected) return null;
-  const r = await fetch(gsUrl,{method:'POST',body:gcBody({action,key:_AUTH_HASH,...payload})});
-  if(!r.ok) throw new Error('HTTP ' + r.status);
-  const txt = await r.text();
-  if(txt.trim().startsWith('<')) throw new Error('GAS retornou HTML — verifique publicação do Web App');
-  let json;
-  try { json = JSON.parse(txt); } catch(e) { throw new Error('Resposta inválida do GAS: ' + txt.slice(0,80)); }
+  const json = await _gsRequestComRetry_(gsUrl, {
+    method:'POST',
+    body: gcBody({action,key:_AUTH_HASH,...payload})
+  });
   if(!json || json.status !== 'ok') throw new Error(json?.error || 'Erro GS');
   return json;
 }
 
 async function gsGet(action, params = {}){
   const qs = new URLSearchParams({ action, key:_AUTH_HASH, ...params });
-  const r = await fetch(gsUrl + '?' + qs.toString() + gcParam(), { method:'GET' });
-  const txt = await r.text();
-  if(txt.trim().startsWith('<'))
-    throw new Error('GAS retornou HTML — verifique a publicação do Web App');
-  return JSON.parse(txt);
+  return await _gsRequestComRetry_(gsUrl + '?' + qs.toString() + gcParam(), { method:'GET' });
 }
 
 // ═══════════════════════════════════════════════════════════
