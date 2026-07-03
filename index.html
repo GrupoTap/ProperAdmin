@@ -1,4 +1,14 @@
 <!--
+PCM_v52.html
+v52 — Instabilidade "GAS retornou HTML": resposta HTML do Apps Script
+       (cold start / hiccup momentâneo de rede) estava sendo tratada
+       como erro permanente de config e não era retentada.
+  - _gsRequestComRetry_: resposta HTML agora entra no mesmo retry com
+    backoff (600ms/1200ms) já usado para falhas de rede. Continua
+    falhando (sem mascarar) se persistir após esgotar as tentativas —
+    aí sim é config real do Web App. Mesmo ajuste feito em
+    PCF_index_v34.html (_pgpFetchComRetry_).
+
 PCM_v51.html
 v51 — Cache-first + revalidação em background nas 5 telas administrativas
   - Usuários, Perfis, Ordens de Serviço, Templates e Tipos de OS: se já
@@ -2265,8 +2275,12 @@ async function _gsRequestComRetry_(url, options, maxRetries) {
       }
     } catch (e) {
       lastErr = e;
+      // v52: resposta HTML entra como falha transitória (cold start /
+      // hiccup de rede) — se persistir após esgotar as tentativas, o erro
+      // ainda sobe normalmente e revela uma config real quebrada.
       var infraTransitoria = /^HTTP \d+$/.test(e.message) ||
-        /Failed to fetch|NetworkError|Load failed/i.test(e.message);
+        /Failed to fetch|NetworkError|Load failed/i.test(e.message) ||
+        /GAS retornou HTML/.test(e.message);
       if (!infraTransitoria || tentativa === maxRetries) throw e;
       console.warn('[gsRequest] tentativa ' + (tentativa + 1) + ' falhou (' +
         e.message + ') — retry em ' + (600 * (tentativa + 1)) + 'ms');
