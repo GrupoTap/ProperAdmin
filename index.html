@@ -1,4 +1,20 @@
 <!--
+PCM_v51.html
+v51 — Cache-first + revalidação em background nas 5 telas administrativas
+  - Usuários, Perfis, Ordens de Serviço, Templates e Tipos de OS: se já
+    há dados em memória de uma visita anterior na mesma sessão, a tela
+    renderiza instantânea a partir do cache e busca a versão atual do
+    GAS em segundo plano, sem travar a UI. Sem cache (primeira abertura
+    da sessão), comportamento inalterado (mostra "Carregando...").
+  - Nova função _usuarioEstaDigitandoEm_: evita que a atualização em
+    background substitua a tela enquanto o usuário está digitando numa
+    busca — a variável de cache é atualizada de qualquer forma, a tela
+    só não pisca no meio da digitação.
+  - Templates e Tipos de OS: lógica de renderização extraída para
+    _renderTemplateListUI/_renderTiposOSListUI, reutilizável entre o
+    caminho de cache e o caminho pós-busca. Nenhuma mudança visual ou
+    de comportamento de escrita.
+
 PCM_v50.html
 v50 — Resiliência de rede: retry/backoff em gsGet e syncToGS
   - Nova função interna _gsRequestComRetry_: até 2 retries (600ms/1200ms)
@@ -2933,6 +2949,14 @@ function showView(v){
   } else if(v==='saturacao'){
     renderSaturacao();
   }
+}
+
+// v51 — Helper para o padrão cache-first + revalidação em segundo plano.
+// Evita atropelar o usuário se ele estiver digitando num campo de busca
+// dentro do container quando a atualização em background chega.
+function _usuarioEstaDigitandoEm_(el) {
+  const ativo = document.activeElement;
+  return !!(el && ativo && ativo.tagName === 'INPUT' && el.contains(ativo));
 }
 
 (function() {
@@ -7391,8 +7415,14 @@ async function pinToHash(pin) {
 
 async function renderUsuarios() {
   const el = document.getElementById('viewUsuarios');
-  el.innerHTML = `<div style="display:flex;align-items:center;justify-content:center;padding:40px">
-    <span style="color:var(--text-muted);font-size:13px">Carregando usuários…</span></div>`;
+  const temCache = _usuList.length > 0;
+
+  if (temCache) {
+    _renderUsuariosTable(_usuSearch);
+  } else {
+    el.innerHTML = `<div style="display:flex;align-items:center;justify-content:center;padding:40px">
+      <span style="color:var(--text-muted);font-size:13px">Carregando usuários…</span></div>`;
+  }
 
   let tecResult = null, perfResult = null;
   try {
@@ -7401,16 +7431,22 @@ async function renderUsuarios() {
       gsGet('getPerfis')
     ]);
   } catch(e) {
-    el.innerHTML = `<div class="empty"><div class="empty-icon">⚠️</div>
-      <div class="empty-title">Erro ao carregar</div>
-      <div class="empty-sub">${e.message}</div></div>`;
+    if (!temCache) {
+      el.innerHTML = `<div class="empty"><div class="empty-icon">⚠️</div>
+        <div class="empty-title">Erro ao carregar</div>
+        <div class="empty-sub">${e.message}</div></div>`;
+    } else {
+      console.warn('[renderUsuarios] atualização em segundo plano falhou, mantendo cache:', e.message);
+    }
     return;
   }
 
   _usuList   = (tecResult?.tecnicos || tecResult?.usuarios || tecResult?.data || []);
   _perfilList = (perfResult?.perfis   || perfResult?.data || []);
 
-  _renderUsuariosTable(_usuSearch);
+  if (!_usuarioEstaDigitandoEm_(el)) {
+    _renderUsuariosTable(_usuSearch);
+  }
 }
 
 function _renderUsuariosTable(filter = '') {
@@ -7596,20 +7632,32 @@ async function toggleUsuarioAtivo(id, isAtivo) {
 
 async function renderPerfis() {
   const el = document.getElementById('viewPerfis');
-  el.innerHTML = `<div style="display:flex;align-items:center;justify-content:center;padding:40px">
-    <span style="color:var(--text-muted);font-size:13px">Carregando perfis…</span></div>`;
+  const temCache = _perfilList.length > 0;
+
+  if (temCache) {
+    _renderPerfisTable(_perfSearch);
+  } else {
+    el.innerHTML = `<div style="display:flex;align-items:center;justify-content:center;padding:40px">
+      <span style="color:var(--text-muted);font-size:13px">Carregando perfis…</span></div>`;
+  }
 
   let result = null;
   try {
     result = await gsGet('getPerfis');
   } catch(e) {
-    el.innerHTML = `<div class="empty"><div class="empty-icon">⚠️</div>
-      <div class="empty-title">Erro ao carregar</div>
-      <div class="empty-sub">${e.message}</div></div>`;
+    if (!temCache) {
+      el.innerHTML = `<div class="empty"><div class="empty-icon">⚠️</div>
+        <div class="empty-title">Erro ao carregar</div>
+        <div class="empty-sub">${e.message}</div></div>`;
+    } else {
+      console.warn('[renderPerfis] atualização em segundo plano falhou, mantendo cache:', e.message);
+    }
     return;
   }
   _perfilList = result?.perfis || result?.data || [];
-  _renderPerfisTable(_perfSearch);
+  if (!_usuarioEstaDigitandoEm_(el)) {
+    _renderPerfisTable(_perfSearch);
+  }
 }
 
 function _renderPerfisTable(filter = '') {
@@ -7744,8 +7792,14 @@ async function togglePerfilAtivo(id, isAtivo) {
 async function renderOS() {
   const el = document.getElementById('viewOs');
   if (!el) return;
-  el.innerHTML = `<div style="display:flex;align-items:center;justify-content:center;padding:40px">
-    <span style="color:var(--text-muted);font-size:13px">Carregando OS…</span></div>`;
+  const temCache = _osList.length > 0;
+
+  if (temCache) {
+    _renderOSTable(_osSearch, _osFilterStatus, _osFilterPrioridade);
+  } else {
+    el.innerHTML = `<div style="display:flex;align-items:center;justify-content:center;padding:40px">
+      <span style="color:var(--text-muted);font-size:13px">Carregando OS…</span></div>`;
+  }
 
   let result = null;
   try {
@@ -7756,13 +7810,19 @@ async function renderOS() {
     result = resOS;
     if (!_tiposOS.length) _tiposOS = (resTipos?.tipos || []);
   } catch(e) {
-    el.innerHTML = `<div class="empty"><div class="empty-icon">⚠️</div>
-      <div class="empty-title">Erro ao carregar</div>
-      <div class="empty-sub">${e.message}</div></div>`;
+    if (!temCache) {
+      el.innerHTML = `<div class="empty"><div class="empty-icon">⚠️</div>
+        <div class="empty-title">Erro ao carregar</div>
+        <div class="empty-sub">${e.message}</div></div>`;
+    } else {
+      console.warn('[renderOS] atualização em segundo plano falhou, mantendo cache:', e.message);
+    }
     return;
   }
   _osList = result?.os || result?.data || [];
-  _renderOSTable(_osSearch, _osFilterStatus, _osFilterPrioridade);
+  if (!_usuarioEstaDigitandoEm_(el)) {
+    _renderOSTable(_osSearch, _osFilterStatus, _osFilterPrioridade);
+  }
 }
 
 function _renderOSTable(search = '', statusFilter = '', priorityFilter = '') {
@@ -9020,6 +9080,48 @@ async function _popularSelectPerfilResponsavel(valorAtual = '') {
 
 // ── MÓDULO TEMPLATES ──────────────────────────────────────────────────────────
 
+function _renderTemplateListUI() {
+  const el = document.getElementById('viewTemplates');
+  if (!el) return;
+  if (!_templatesList.length) {
+    el.innerHTML = `
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
+        <h2 style="font-size:18px;font-weight:700;color:var(--text)">Templates de Pipeline</h2>
+        <button class="btn btn-primary" onclick="openTemplateEditor(null)">+ Novo template</button>
+      </div>
+      <div style="padding:48px;text-align:center;color:var(--text-muted)">
+        <div style="font-size:32px;margin-bottom:12px">📋</div>
+        <div style="font-size:14px;font-weight:600;margin-bottom:6px">Nenhum template cadastrado</div>
+        <div style="font-size:12px;margin-bottom:16px">Crie um template de pipeline para começar.</div>
+        <button class="btn btn-primary" onclick="openTemplateEditor(null)">+ Criar primeiro template</button>
+      </div>`;
+    return;
+  }
+  el.innerHTML = `
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
+      <h2 style="font-size:18px;font-weight:700;color:var(--text)">Templates de Pipeline</h2>
+      <button class="btn btn-primary" onclick="openTemplateEditor(null)">+ Novo template</button>
+    </div>
+    <div id="tplListContainer"></div>`;
+  const container = document.getElementById('tplListContainer');
+  container.innerHTML = _templatesList.map(t => {
+    const tarefas = JSON.parse(t.Tarefas_JSON || '[]');
+    const fases = [...new Set(tarefas.map(x => x.fase).filter(Boolean))];
+    const ativo = String(t.Ativo || 'SIM').toUpperCase() !== 'NÃO';
+    return `
+      <div class="tpl-list-card" style="${ativo ? '' : 'opacity:0.5'}">
+        <div class="tpl-list-card-info">
+          <div class="tpl-list-card-name">${t.Nome || '(sem nome)'}</div>
+          <div class="tpl-list-card-meta">${tarefas.length} tarefa${tarefas.length !== 1 ? 's' : ''} · ${fases.length} fase${fases.length !== 1 ? 's' : ''} · ${ativo ? 'Ativo' : 'Inativo'}</div>
+        </div>
+        <div style="display:flex;gap:8px;flex-shrink:0">
+          <button class="btn btn-secondary btn-sm" onclick="duplicarTemplate('${t.Template_ID}')">Duplicar</button>
+          <button class="btn btn-primary btn-sm" onclick="openTemplateEditor('${t.Template_ID}')">Editar</button>
+        </div>
+      </div>`;
+  }).join('');
+}
+
 async function renderTemplateList() {
   const el = document.getElementById('viewTemplates');
   if (!el) return;
@@ -9027,55 +9129,28 @@ async function renderTemplateList() {
     el.innerHTML = '<div style="padding:32px;text-align:center;color:var(--text-muted)">Sem conexão com o servidor. Conecte-se em Configurações.</div>';
     return;
   }
-  el.innerHTML = '<div style="padding:32px;text-align:center;color:var(--text-muted)">Carregando…</div>';
+  const temCache = _templatesList.length > 0;
+  if (temCache) {
+    _renderTemplateListUI();
+  } else {
+    el.innerHTML = '<div style="padding:32px;text-align:center;color:var(--text-muted)">Carregando…</div>';
+  }
   try {
     const r = await syncToGS('getTemplates', {});
     console.log('[getTemplates] raw response:', JSON.stringify(r));
     _templatesList = (r && r.templates) || [];
-    if (!_templatesList.length) {
-      el.innerHTML = `
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
-          <h2 style="font-size:18px;font-weight:700;color:var(--text)">Templates de Pipeline</h2>
-          <button class="btn btn-primary" onclick="openTemplateEditor(null)">+ Novo template</button>
-        </div>
-        <div style="padding:48px;text-align:center;color:var(--text-muted)">
-          <div style="font-size:32px;margin-bottom:12px">📋</div>
-          <div style="font-size:14px;font-weight:600;margin-bottom:6px">Nenhum template cadastrado</div>
-          <div style="font-size:12px;margin-bottom:16px">Crie um template de pipeline para começar.</div>
-          <button class="btn btn-primary" onclick="openTemplateEditor(null)">+ Criar primeiro template</button>
-        </div>`;
-      return;
-    }
-    el.innerHTML = `
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
-        <h2 style="font-size:18px;font-weight:700;color:var(--text)">Templates de Pipeline</h2>
-        <button class="btn btn-primary" onclick="openTemplateEditor(null)">+ Novo template</button>
-      </div>
-      <div id="tplListContainer"></div>`;
-    const container = document.getElementById('tplListContainer');
-    container.innerHTML = _templatesList.map(t => {
-      const tarefas = JSON.parse(t.Tarefas_JSON || '[]');
-      const fases = [...new Set(tarefas.map(x => x.fase).filter(Boolean))];
-      const ativo = String(t.Ativo || 'SIM').toUpperCase() !== 'NÃO';
-      return `
-        <div class="tpl-list-card" style="${ativo ? '' : 'opacity:0.5'}">
-          <div class="tpl-list-card-info">
-            <div class="tpl-list-card-name">${t.Nome || '(sem nome)'}</div>
-            <div class="tpl-list-card-meta">${tarefas.length} tarefa${tarefas.length !== 1 ? 's' : ''} · ${fases.length} fase${fases.length !== 1 ? 's' : ''} · ${ativo ? 'Ativo' : 'Inativo'}</div>
-          </div>
-          <div style="display:flex;gap:8px;flex-shrink:0">
-            <button class="btn btn-secondary btn-sm" onclick="duplicarTemplate('${t.Template_ID}')">Duplicar</button>
-            <button class="btn btn-primary btn-sm" onclick="openTemplateEditor('${t.Template_ID}')">Editar</button>
-          </div>
-        </div>`;
-    }).join('');
+    _renderTemplateListUI();
   } catch(e) {
     if (e.message && e.message.includes('AUTH_GOOGLE')) { hubLogout(); return; }
-    el.innerHTML = `
-      <div style="padding:48px;text-align:center;color:var(--text-muted)">
-        <div style="margin-bottom:12px;color:#f87171">Erro ao carregar templates.</div>
-        <button class="btn btn-secondary" onclick="renderTemplateList()">Tentar novamente</button>
-      </div>`;
+    if (!temCache) {
+      el.innerHTML = `
+        <div style="padding:48px;text-align:center;color:var(--text-muted)">
+          <div style="margin-bottom:12px;color:#f87171">Erro ao carregar templates.</div>
+          <button class="btn btn-secondary" onclick="renderTemplateList()">Tentar novamente</button>
+        </div>`;
+    } else {
+      console.warn('[renderTemplateList] atualização em segundo plano falhou, mantendo cache:', e.message);
+    }
   }
 }
 
@@ -9348,6 +9423,54 @@ async function saveTemplateEditor() {
 
 // ── MÓDULO TIPOS DE OS ────────────────────────────────────────────────────────
 
+function _renderTiposOSListUI() {
+  const el = document.getElementById('viewTiposOS');
+  if (!el) return;
+  if (!_tiposOS.length) {
+    el.innerHTML = `
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
+        <h2 style="font-size:18px;font-weight:700;color:var(--text)">Tipos de OS</h2>
+        <button class="btn btn-primary" onclick="openTipoOSModal(null)">+ Novo tipo</button>
+      </div>
+      <div style="padding:48px;text-align:center;color:var(--text-muted)">
+        <div style="font-size:32px;margin-bottom:12px">🗂</div>
+        <div style="font-size:14px;font-weight:600;margin-bottom:6px">Nenhum tipo de OS cadastrado</div>
+        <div style="font-size:12px;margin-bottom:16px">Crie um tipo de OS para categorizar as ordens de serviço.</div>
+        <button class="btn btn-primary" onclick="openTipoOSModal(null)">+ Criar primeiro tipo</button>
+      </div>`;
+    return;
+  }
+  el.innerHTML = `
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
+      <h2 style="font-size:18px;font-weight:700;color:var(--text)">Tipos de OS</h2>
+      <button class="btn btn-primary" onclick="openTipoOSModal(null)">+ Novo tipo</button>
+    </div>
+    <div id="tiposOSContainer"></div>`;
+  const container = document.getElementById('tiposOSContainer');
+  container.innerHTML = _tiposOS.map(tipo => {
+    const ativo = String(tipo.Ativo || 'SIM').toUpperCase() !== 'NÃO';
+    const tplEncontrado = _templatesList.find(t => t.Template_ID === tipo.Template_ID_Padrao);
+    const tplNome = tplEncontrado ? tplEncontrado.Nome : (tipo.Template_ID_Padrao ? `${tipo.Template_ID_Padrao} (template não encontrado)` : '—');
+    return `
+      <div class="tipo-os-card ${ativo ? '' : 'inativo'}">
+        <div class="tipo-os-card-header">
+          <div>
+            <div class="tipo-os-id">${tipo.Tipo_ID || ''}</div>
+            <div class="tipo-os-nome">${tipo.Nome || ''}</div>
+          </div>
+          <span class="${ativo ? 'tipo-os-badge-ativo' : 'tipo-os-badge-inativo'}">${ativo ? 'Ativo' : 'Inativo'}</span>
+        </div>
+        <div class="tipo-os-template">Template padrão: ${tplNome}</div>
+        ${tipo.Descricao ? `<div class="tipo-os-desc">${tipo.Descricao}</div>` : ''}
+        <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">
+          <button class="btn btn-secondary btn-sm" onclick="openTipoOSModal('${tipo.Tipo_ID}')">Editar</button>
+          <button class="btn btn-secondary btn-sm" onclick="toggleTipoOS('${tipo.Tipo_ID}',${ativo})">${ativo ? 'Inativar' : 'Reativar'}</button>
+          ${!ativo ? `<button class="btn btn-secondary btn-sm" style="color:#f87171" onclick="deleteTipoOSAction('${tipo.Tipo_ID}','${(tipo.Nome||'').replace(/'/g,"\\'")}')">Excluir</button>` : ''}
+        </div>
+      </div>`;
+  }).join('');
+}
+
 async function renderTiposOSList() {
   const el = document.getElementById('viewTiposOS');
   if (!el) return;
@@ -9355,7 +9478,12 @@ async function renderTiposOSList() {
     el.innerHTML = '<div style="padding:32px;text-align:center;color:var(--text-muted)">Sem conexão com o servidor. Conecte-se em Configurações.</div>';
     return;
   }
-  el.innerHTML = '<div style="padding:32px;text-align:center;color:var(--text-muted)">Carregando…</div>';
+  const temCache = _tiposOS.length > 0;
+  if (temCache) {
+    _renderTiposOSListUI();
+  } else {
+    el.innerHTML = '<div style="padding:32px;text-align:center;color:var(--text-muted)">Carregando…</div>';
+  }
   try {
     const [rt, rtpl] = await Promise.all([
       gsGet('getTiposOS'),
@@ -9363,59 +9491,18 @@ async function renderTiposOSList() {
     ]);
     _tiposOS = rt.tipos || [];
     if (!_templatesList.length) _templatesList = rtpl.templates || [];
-
-    if (!_tiposOS.length) {
-      el.innerHTML = `
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
-          <h2 style="font-size:18px;font-weight:700;color:var(--text)">Tipos de OS</h2>
-          <button class="btn btn-primary" onclick="openTipoOSModal(null)">+ Novo tipo</button>
-        </div>
-        <div style="padding:48px;text-align:center;color:var(--text-muted)">
-          <div style="font-size:32px;margin-bottom:12px">🗂</div>
-          <div style="font-size:14px;font-weight:600;margin-bottom:6px">Nenhum tipo de OS cadastrado</div>
-          <div style="font-size:12px;margin-bottom:16px">Crie um tipo de OS para categorizar as ordens de serviço.</div>
-          <button class="btn btn-primary" onclick="openTipoOSModal(null)">+ Criar primeiro tipo</button>
-        </div>`;
-      return;
-    }
-
-    el.innerHTML = `
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
-        <h2 style="font-size:18px;font-weight:700;color:var(--text)">Tipos de OS</h2>
-        <button class="btn btn-primary" onclick="openTipoOSModal(null)">+ Novo tipo</button>
-      </div>
-      <div id="tiposOSContainer"></div>`;
-
-    const container = document.getElementById('tiposOSContainer');
-    container.innerHTML = _tiposOS.map(tipo => {
-      const ativo = String(tipo.Ativo || 'SIM').toUpperCase() !== 'NÃO';
-      const tplEncontrado = _templatesList.find(t => t.Template_ID === tipo.Template_ID_Padrao);
-      const tplNome = tplEncontrado ? tplEncontrado.Nome : (tipo.Template_ID_Padrao ? `${tipo.Template_ID_Padrao} (template não encontrado)` : '—');
-      return `
-        <div class="tipo-os-card ${ativo ? '' : 'inativo'}">
-          <div class="tipo-os-card-header">
-            <div>
-              <div class="tipo-os-id">${tipo.Tipo_ID || ''}</div>
-              <div class="tipo-os-nome">${tipo.Nome || ''}</div>
-            </div>
-            <span class="${ativo ? 'tipo-os-badge-ativo' : 'tipo-os-badge-inativo'}">${ativo ? 'Ativo' : 'Inativo'}</span>
-          </div>
-          <div class="tipo-os-template">Template padrão: ${tplNome}</div>
-          ${tipo.Descricao ? `<div class="tipo-os-desc">${tipo.Descricao}</div>` : ''}
-          <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">
-            <button class="btn btn-secondary btn-sm" onclick="openTipoOSModal('${tipo.Tipo_ID}')">Editar</button>
-            <button class="btn btn-secondary btn-sm" onclick="toggleTipoOS('${tipo.Tipo_ID}',${ativo})">${ativo ? 'Inativar' : 'Reativar'}</button>
-            ${!ativo ? `<button class="btn btn-secondary btn-sm" style="color:#f87171" onclick="deleteTipoOSAction('${tipo.Tipo_ID}','${(tipo.Nome||'').replace(/'/g,"\\'")}')">Excluir</button>` : ''}
-          </div>
-        </div>`;
-    }).join('');
+    _renderTiposOSListUI();
   } catch(e) {
     if (e.message && e.message.includes('AUTH_GOOGLE')) { hubLogout(); return; }
-    el.innerHTML = `
-      <div style="padding:48px;text-align:center;color:var(--text-muted)">
-        <div style="margin-bottom:12px;color:#f87171">Erro ao carregar tipos de OS.</div>
-        <button class="btn btn-secondary" onclick="renderTiposOSList()">Tentar novamente</button>
-      </div>`;
+    if (!temCache) {
+      el.innerHTML = `
+        <div style="padding:48px;text-align:center;color:var(--text-muted)">
+          <div style="margin-bottom:12px;color:#f87171">Erro ao carregar tipos de OS.</div>
+          <button class="btn btn-secondary" onclick="renderTiposOSList()">Tentar novamente</button>
+        </div>`;
+    } else {
+      console.warn('[renderTiposOSList] atualização em segundo plano falhou, mantendo cache:', e.message);
+    }
   }
 }
 
