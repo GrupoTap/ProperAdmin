@@ -1,4 +1,16 @@
 <!--
+PCM_v55.html
+v55 — BUGFIX: painel "Dados" da tela de detalhe da OS aparecia em branco.
+       STATUS_LABELS usado por _osDetailTab (aba Dados) estava declarado
+       como const local dentro de openOSDetail — função irmã, sem acesso a
+       esse escopo. Todo clique em "Dados" lançava
+       "ReferenceError: STATUS_LABELS is not defined" e interrompia a
+       montagem do HTML antes de terminar.
+  - Renomeado para OS_DETAIL_STATUS_LABELS e movido para escopo de módulo
+    (antes da declaração de openOSDetail). Não colide com o STATUS_LABELS
+    de _renderOSTable (formato diferente, {label,cls}, permanece intocado).
+  - Nenhuma outra mudança de comportamento ou visual.
+
 PCM_v54.html
 v54 — checkHubSession lia só sessionStorage. O ProperHub restaura sessão
        via localStorage (sobrevive fechar aba/app — essencial em campo) e
@@ -8251,6 +8263,19 @@ async function saveOSModal() {
 // SPRINT 4E-B — TELA DE DETALHE DA OS + PIPELINE + NOTIFICAÇÕES
 // ═══════════════════════════════════════════════════════════
 
+// v55 — BUGFIX: STATUS_LABELS usado por _osDetailTab (linha ~8329) estava
+// declarado como const local dentro de openOSDetail, função irmã que não
+// compartilha escopo com _osDetailTab. Resultado: ReferenceError toda vez
+// que a aba "Dados" tentava renderizar, deixando o painel de detalhe da OS
+// em branco. Renomeado e movido para escopo de módulo para não colidir com
+// o STATUS_LABELS (formato diferente, {label,cls}) local de _renderOSTable.
+const OS_DETAIL_STATUS_LABELS = {
+  'ABERTA':      'Aberta',
+  'EM_ANDAMENTO':'Em andamento',
+  'CONCLUIDA':   'Concluída',
+  'CANCELADA':   'Cancelada',
+};
+
 // ── Detalhe da OS ────────────────────────────────────────────────────────────
 async function openOSDetail(osId) {
   const el = document.getElementById('viewOs');
@@ -8263,13 +8288,6 @@ async function openOSDetail(osId) {
       <button class="btn btn-secondary" style="margin-top:12px" onclick="renderOS()">← Voltar</button></div>`;
     return;
   }
-
-  const STATUS_LABELS = {
-    'ABERTA':      'Aberta',
-    'EM_ANDAMENTO':'Em andamento',
-    'CONCLUIDA':   'Concluída',
-    'CANCELADA':   'Cancelada',
-  };
 
   el.innerHTML = `
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:10px">
@@ -8326,7 +8344,7 @@ function _osDetailTab(osId, tab) {
         ${_osDetailField('Cliente', os.cliente||'—')}
         ${_osDetailField('Tipo', (_tiposOS.find(t=>t.Tipo_ID===os.tipo_os)?.Nome) || os.tipo_os||'—')}
         ${_osDetailField('Local de Atendimento', (os.local_atendimento === 'interno') ? '🏭 Interno (oficina)' : '🚐 Externo (campo)')}
-        ${_osDetailField('Status', STATUS_LABELS[(os.status||'').toUpperCase()] || os.status||'—')}
+        ${_osDetailField('Status', OS_DETAIL_STATUS_LABELS[(os.status||'').toUpperCase()] || os.status||'—')}
         ${_osDetailField('Data de abertura', data)}
         ${_osDetailField('Responsável', usu ? usu.nome : (os.usuario_atual||'—'))}
         ${os.descricao ? `<div style="grid-column:1/-1">${_osDetailField('Descrição', os.descricao)}</div>` : ''}
