@@ -1,4 +1,15 @@
 <!--
+PCM_v53.html
+v53 — checkHubSession não deixava entrar quem tem acesso a "Administração"
+       via módulo (pcm_completo/pcm_leitura no perfil) mas sem is_admin=SIM.
+       ProperHub mostrava o card como link ativo (usa módulo OU is_admin),
+       PCM só aceitava is_admin===true — clique navegava e o PCM devolvia
+       na hora pro ProperHub, parecendo que "nada acontecia".
+  - checkHubSession: passa a aceitar acesso também quando
+    session.modulos inclui 'pcm_completo' ou 'pcm_leitura', igualando a
+    regra já usada no ProperHub_index (renderMenu/temAdmin). is_admin
+    continua concedendo acesso normalmente.
+
 PCM_v52.html
 v52 — Instabilidade "GAS retornou HTML": resposta HTML do Apps Script
        (cold start / hiccup momentâneo de rede) estava sendo tratada
@@ -1409,7 +1420,12 @@ const PCF_BASE_URL = 'TODO_CONFIRMAR_URL_PCF';
   }
   try {
     var session = JSON.parse(raw);
-    if (session.is_admin !== true) {
+    // v53: mesma regra do ProperHub (renderMenu/temAdmin) — acesso via
+    // módulo pcm_completo/pcm_leitura também libera entrada, não só is_admin.
+    var mods = session.modulos || [];
+    var temAcessoAdmin = session.is_admin === true ||
+      mods.indexOf('pcm_completo') !== -1 || mods.indexOf('pcm_leitura') !== -1;
+    if (!temAcessoAdmin) {
       window.location.href = 'https://grupotap.github.io/ProperHub/';
       return;
     }
