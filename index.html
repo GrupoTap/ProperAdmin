@@ -1,4 +1,29 @@
 <!--
+PCM_v56.html
+v56 — Feedback visual de "carregando" em botões async do fluxo OS/Pipeline
+       (Tier 1). Nenhum botão async do PCM indicava estado de processamento
+       (busca no arquivo inteiro achou só 5 ocorrências de disabled/spinner,
+       nenhuma neste fluxo), o que convidava a clique duplo. Em
+       confirmarTrocarPipeline isso é destrutivo: cada clique dispara
+       instanciarPipeline de novo no GAS, que arquiva o progresso atual e
+       recria as tarefas do zero — um duplo-clique acidental apagava
+       designação de usuário e data já configuradas.
+  - Novo helper _comLoadingBtn_(btnEl, asyncFn): desabilita o botão e troca
+    o texto por indicador enquanto a Promise não resolve, restaura texto e
+    estado original no finally (sucesso ou erro).
+  - Aplicado nos 6 pontos do fluxo OS/Pipeline: saveOSModal,
+    _abrirTrocarPipeline (2 onclick), confirmarTrocarPipeline,
+    _confirmarTarefa, _instanciarInline, _designarUsuario. Cada função passou
+    a receber o botão como primeiro parâmetro (onclick="fn(this,...)");
+    confirmado que nenhuma delas tem chamador fora do onclick correspondente.
+  - openModalOS: botão que abre o modal ("+ Nova OS"/"Editar OS") continua
+    sem travar — em vez disso, o modal agora abre imediatamente e mostra
+    "⏳ Carregando…" no título enquanto tipos de OS, usuários e máquinas
+    vinculadas carregam, escondendo o indicador no finally.
+  - Nenhuma mudança de lógica de negócio. Comportamento de
+    arquivar-e-recriar do Trocar Pipeline permanece intencionalmente
+    idêntico — este ajuste só evita que ele dispare duas vezes por engano.
+
 PCM_v55.html
 v55 — BUGFIX: painel "Dados" da tela de detalhe da OS aparecia em branco.
        STATUS_LABELS usado por _osDetailTab (aba Dados) estava declarado
@@ -7851,6 +7876,26 @@ async function togglePerfilAtivo(id, isAtivo) {
 
 // ── MÓDULO OS ─────────────────────────────────────────────────────────────
 
+// v56 — Helper genérico de estado de carregamento para botões async. Desabilita
+// o botão e troca seu texto por um indicador visual enquanto a Promise não
+// resolve; restaura estado original (texto + disabled) no finally, mesmo em
+// caso de erro. Uso: async function fn(btn) { await _comLoadingBtn_(btn, async () => { ... }); }
+async function _comLoadingBtn_(btnEl, asyncFn) {
+  if (!btnEl) return asyncFn();
+  const textoOriginal = btnEl.textContent;
+  const disabledOriginal = btnEl.disabled;
+  btnEl.disabled = true;
+  btnEl.dataset.loadingOriginalText = textoOriginal;
+  btnEl.textContent = '⏳ Processando…';
+  try {
+    return await asyncFn();
+  } finally {
+    btnEl.disabled = disabledOriginal;
+    btnEl.textContent = btnEl.dataset.loadingOriginalText;
+    delete btnEl.dataset.loadingOriginalText;
+  }
+}
+
 async function renderOS() {
   const el = document.getElementById('viewOs');
   if (!el) return;
@@ -8102,30 +8147,10 @@ function _openPCFFromOS(osId) {
 }
 
 async function openModalOS(id) {
-  if (_usuList.length === 0) {
-    try {
-      const r = await gsGet('getUsuarios');
-      _usuList = r?.tecnicos || r?.usuarios || r?.data || [];
-    } catch(e) {}
-  }
-
-  // Carregar tipos de OS dinamicamente
-  try {
-    const rt = await gsGet('getTiposOS');
-    _tiposOS = (rt?.tipos || []).filter(t => String(t.Ativo||'').toUpperCase() !== 'NÃO');
-  } catch(e) {
-    if (e.message && e.message.includes('AUTH_GOOGLE')) { hubLogout(); return; }
-    _tiposOS = [];
-  }
-  const selTipo = document.getElementById('osTipoOS');
-  selTipo.innerHTML = '<option value="">Selecione o tipo *</option>';
-  _tiposOS.forEach(t => {
-    const opt = document.createElement('option');
-    opt.value = t.Tipo_ID;
-    opt.textContent = t.Nome;
-    selTipo.appendChild(opt);
-  });
-
+  // v56 — Reset síncrono roda antes de qualquer await, e o modal já abre em
+  // seguida (com indicador de carregamento no título) em vez de só aparecer
+  // depois que tipos/usuários/máquinas terminam de carregar — antes disso
+  // não havia nenhum feedback visual durante essa espera.
   document.getElementById('osId').value = '';
   document.getElementById('osNumero').value = '';
   document.getElementById('osCliente').value = '';
@@ -8145,34 +8170,64 @@ async function openModalOS(id) {
   dl.innerHTML = (db?.clients||[]).filter(c=>c.nome)
     .map(c=>`<option data-id="${c.id}" value="${(c.nome||'').replace(/"/g,'&quot;')}">`).join('');
 
-  if (id) {
-    const os = _osList.find(o => o.id_os === id);
-    if (!os) { openModal('modalOS'); return; }
-    document.getElementById('modalOSTitle').textContent = 'Editar OS';
-    document.getElementById('osId').value = os.id_os || '';
-    document.getElementById('osNumero').value = os.numero_os || '';
-    document.getElementById('osCliente').value = os.cliente || '';
-    document.getElementById('osClienteId').value = os.id_cliente || '';
-    document.getElementById('osTipoOS').value = os.tipo_os || '';
-    document.getElementById('osDescricao').value = os.descricao || '';
-    document.getElementById('osStatus').value = (os.status || 'ABERTA').toUpperCase().replace('-','_');
-    if (os.data_abertura) document.getElementById('osDataAbertura').value = os.data_abertura.slice(0,10);
-    document.getElementById('osPrioridade').value = os.prioridade || 'normal';
-    if (os.data_prevista) document.getElementById('osDataPrevista').value = os.data_prevista.slice(0,10);
-    document.getElementById('osLocalAtendimento').value = (os.local_atendimento === 'interno') ? 'interno' : 'externo';
-    _populateOSUsuarioSelect(os.usuario_atual || '');
+  const os = id ? _osList.find(o => o.id_os === id) : null;
+  if (id && !os) { openModal('modalOS'); return; }
+  document.getElementById('modalOSTitle').textContent = id ? 'Editar OS' : 'Nova OS';
+
+  const loadingEl = document.getElementById('modalOSLoading');
+  if (loadingEl) loadingEl.style.display = '';
+  openModal('modalOS');
+
+  try {
+    if (_usuList.length === 0) {
+      try {
+        const r = await gsGet('getUsuarios');
+        _usuList = r?.tecnicos || r?.usuarios || r?.data || [];
+      } catch(e) {}
+    }
+
+    // Carregar tipos de OS dinamicamente
     try {
-      const linkedMachineIds = await _loadOSLinkedMachines(id);
-      _renderOSMachineSelector(linkedMachineIds);
+      const rt = await gsGet('getTiposOS');
+      _tiposOS = (rt?.tipos || []).filter(t => String(t.Ativo||'').toUpperCase() !== 'NÃO');
     } catch(e) {
       if (e.message && e.message.includes('AUTH_GOOGLE')) { hubLogout(); return; }
-      toast('Não foi possível carregar máquinas vinculadas: ' + e.message, 'warning');
-      _renderOSMachineSelector([]);
+      _tiposOS = [];
     }
-  } else {
-    document.getElementById('modalOSTitle').textContent = 'Nova OS';
+    const selTipo = document.getElementById('osTipoOS');
+    selTipo.innerHTML = '<option value="">Selecione o tipo *</option>';
+    _tiposOS.forEach(t => {
+      const opt = document.createElement('option');
+      opt.value = t.Tipo_ID;
+      opt.textContent = t.Nome;
+      selTipo.appendChild(opt);
+    });
+
+    if (os) {
+      document.getElementById('osId').value = os.id_os || '';
+      document.getElementById('osNumero').value = os.numero_os || '';
+      document.getElementById('osCliente').value = os.cliente || '';
+      document.getElementById('osClienteId').value = os.id_cliente || '';
+      document.getElementById('osTipoOS').value = os.tipo_os || '';
+      document.getElementById('osDescricao').value = os.descricao || '';
+      document.getElementById('osStatus').value = (os.status || 'ABERTA').toUpperCase().replace('-','_');
+      if (os.data_abertura) document.getElementById('osDataAbertura').value = os.data_abertura.slice(0,10);
+      document.getElementById('osPrioridade').value = os.prioridade || 'normal';
+      if (os.data_prevista) document.getElementById('osDataPrevista').value = os.data_prevista.slice(0,10);
+      document.getElementById('osLocalAtendimento').value = (os.local_atendimento === 'interno') ? 'interno' : 'externo';
+      _populateOSUsuarioSelect(os.usuario_atual || '');
+      try {
+        const linkedMachineIds = await _loadOSLinkedMachines(id);
+        _renderOSMachineSelector(linkedMachineIds);
+      } catch(e) {
+        if (e.message && e.message.includes('AUTH_GOOGLE')) { hubLogout(); return; }
+        toast('Não foi possível carregar máquinas vinculadas: ' + e.message, 'warning');
+        _renderOSMachineSelector([]);
+      }
+    }
+  } finally {
+    if (loadingEl) loadingEl.style.display = 'none';
   }
-  openModal('modalOS');
 }
 
 // ── Handler dinâmico de cliente no modal OS ─────────────────────────────────
@@ -8185,7 +8240,8 @@ function _osClienteInputHandler(val) {
   _renderOSMachineSelector();
 }
 
-async function saveOSModal() {
+async function saveOSModal(btnEl) {
+  await _comLoadingBtn_(btnEl, async () => {
   const id       = document.getElementById('osId').value.trim();
   const numero   = document.getElementById('osNumero').value.trim();
   const cliente  = document.getElementById('osCliente').value.trim();
@@ -8256,6 +8312,7 @@ async function saveOSModal() {
     if (e.message && e.message.includes('AUTH_GOOGLE')) { hubLogout(); return; }
     toast('Erro ao salvar OS: ' + e.message, 'error');
   }
+  });
 }
 
 
@@ -8406,7 +8463,7 @@ async function _loadPipelineTab(osId) {
     content.innerHTML = `<div style="padding:20px">
       <p style="color:var(--text-muted);margin-bottom:12px">Nenhuma tarefa no pipeline desta OS.</p>
       <button class="btn btn-secondary btn-sm" onclick="_openPCFFromOS('${osId.replace(/'/g,"\\'")}')">Abrir no PCF</button>
-      ${window.PROPER_SESSION?.is_admin === true ? `<button class="btn btn-secondary btn-sm" onclick="_abrirTrocarPipeline('${osId.replace(/'/g,"\\'")}')">🔄 Trocar pipeline</button>` : ''}
+      ${window.PROPER_SESSION?.is_admin === true ? `<button class="btn btn-secondary btn-sm" onclick="_abrirTrocarPipeline(this, '${osId.replace(/'/g,"\\'")}')">🔄 Trocar pipeline</button>` : ''}
     </div>`;
     return;
   }
@@ -8444,7 +8501,7 @@ async function _loadPipelineTab(osId) {
         <div style="font-size:12px;color:var(--text-muted);margin-bottom:4px">${concluidas} de ${total} tarefas concluídas</div>
         <div class="pipeline-progress"><div class="pipeline-progress-bar" style="width:${pct}%"></div></div>
       </div>
-      ${window.PROPER_SESSION?.is_admin === true ? `<button class="btn btn-secondary btn-sm" onclick="_abrirTrocarPipeline('${osId.replace(/'/g,"\\'")}')">🔄 Trocar pipeline</button>` : ''}
+      ${window.PROPER_SESSION?.is_admin === true ? `<button class="btn btn-secondary btn-sm" onclick="_abrirTrocarPipeline(this, '${osId.replace(/'/g,"\\'")}')">🔄 Trocar pipeline</button>` : ''}
     </div>`;
 
   fasesOrdenadas.forEach(fase => {
@@ -8488,7 +8545,7 @@ async function _loadPipelineTab(osId) {
       const usuarioDesignadoLine = window.PROPER_SESSION?.is_admin === true
         ? `<div style="font-size:11px;color:var(--text-muted);margin-top:2px;display:flex;align-items:center;gap:6px">
              ${usuarioDesignadoStr ? '👤 Designado: ' + escHtml(usuarioDesignadoStr) : '<span style="opacity:.6">Sem usuário designado</span>'}
-             <button class="btn btn-secondary btn-sm" style="padding:1px 6px;font-size:10px" onclick="_designarUsuario('${escJs(osId)}','${escJs(t.Tarefa_ID)}','${escJs(usuarioDesignadoStr)}')">👤 Designar</button>
+             <button class="btn btn-secondary btn-sm" style="padding:1px 6px;font-size:10px" onclick="_designarUsuario(this, '${escJs(osId)}','${escJs(t.Tarefa_ID)}','${escJs(usuarioDesignadoStr)}')">👤 Designar</button>
            </div>`
         : (usuarioDesignadoStr ? `<div style="font-size:11px;color:var(--text-muted);margin-top:2px">👤 Designado: ${escHtml(usuarioDesignadoStr)}</div>` : '');
 
@@ -8518,7 +8575,7 @@ async function _loadPipelineTab(osId) {
           <textarea id="pobs-${tid}" placeholder="Observação (opcional)" rows="2"
             style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-sm);padding:6px 8px;font-size:12px;color:var(--text);font-family:var(--font-sans);resize:vertical"></textarea>
           <div style="display:flex;gap:6px;margin-top:6px">
-            <button class="btn btn-success btn-sm" onclick="_confirmarTarefa('${osId.replace(/'/g,"\\'")}','${tid.replace(/'/g,"\\'")}')">Confirmar</button>
+            <button class="btn btn-success btn-sm" onclick="_confirmarTarefa(this, '${osId.replace(/'/g,"\\'")}','${tid.replace(/'/g,"\\'")}')">Confirmar</button>
             <button class="btn btn-secondary btn-sm" onclick="document.getElementById('pconfirm-${tid}').style.display='none'">Cancelar</button>
           </div>
         </div>
@@ -8577,7 +8634,8 @@ async function _ajustarTempoEfetivo(osId, tarefaId, valorAtual) {
   }
 }
 
-async function _designarUsuario(osId, tarefaId, atual) {
+async function _designarUsuario(btnEl, osId, tarefaId, atual) {
+  await _comLoadingBtn_(btnEl, async () => {
   if (!_usuList || !_usuList.length) {
     try {
       const r = await gsGet('getUsuarios');
@@ -8599,9 +8657,11 @@ async function _designarUsuario(osId, tarefaId, atual) {
   } catch(e) {
     toast('Erro ao designar: ' + e.message, 'error');
   }
+  });
 }
 
-async function _confirmarTarefa(osId, tarefaId) {
+async function _confirmarTarefa(btnEl, osId, tarefaId) {
+  await _comLoadingBtn_(btnEl, async () => {
   const obs = (document.getElementById('pobs-' + tarefaId)?.value || '').trim();
   const usuario = window.PROPER_SESSION?.tecnico?.nome || window.PROPER_SESSION?.tecnico?.id || '';
   if (!gsConnected) { toast('Google Sheets offline', 'error'); return; }
@@ -8613,6 +8673,7 @@ async function _confirmarTarefa(osId, tarefaId) {
     if (e.message && e.message.includes('AUTH_GOOGLE')) { hubLogout(); return; }
     toast('Erro ao marcar tarefa: ' + e.message, 'error');
   }
+  });
 }
 
 async function _renderInstanciarInline(osId) {
@@ -8623,14 +8684,15 @@ async function _renderInstanciarInline(osId) {
     const opts = templates.map(t => `<option value="${t.Template_ID}">${t.Nome}</option>`).join('');
     return `<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
       <select id="inlineTemplateSelect" class="form-select" style="width:200px">${opts}</select>
-      <button class="btn btn-primary btn-sm" onclick="_instanciarInline('${osId.replace(/'/g,"\\'")}')">Aplicar</button>
+      <button class="btn btn-primary btn-sm" onclick="_instanciarInline(this, '${osId.replace(/'/g,"\\'")}')">Aplicar</button>
     </div>`;
   } catch(e) {
     return '<p style="color:var(--text-muted);font-size:12px">Erro ao carregar templates.</p>';
   }
 }
 
-async function _instanciarInline(osId) {
+async function _instanciarInline(btnEl, osId) {
+  await _comLoadingBtn_(btnEl, async () => {
   const sel = document.getElementById('inlineTemplateSelect');
   if (!sel || !sel.value) { toast('Selecione um template.', 'error'); return; }
   if (!gsConnected) { toast('Google Sheets offline', 'error'); return; }
@@ -8642,10 +8704,12 @@ async function _instanciarInline(osId) {
     if (e.message && e.message.includes('AUTH_GOOGLE')) { hubLogout(); return; }
     toast('Erro ao instanciar pipeline: ' + e.message, 'error');
   }
+  });
 }
 
 // ── Trocar Pipeline (admin) ──────────────────────────────────────────────────
-async function _abrirTrocarPipeline(osId) {
+async function _abrirTrocarPipeline(btnEl, osId) {
+  await _comLoadingBtn_(btnEl, async () => {
   _trocarPipelineOsId = osId;
   const sel = document.getElementById('trocarPipelineSelect');
   if (sel) sel.innerHTML = '<option value="">Carregando templates…</option>';
@@ -8660,9 +8724,11 @@ async function _abrirTrocarPipeline(osId) {
   } catch(e) {
     if (sel) sel.innerHTML = '<option value="">Erro ao carregar</option>';
   }
+  });
 }
 
-async function confirmarTrocarPipeline() {
+async function confirmarTrocarPipeline(btnEl) {
+  await _comLoadingBtn_(btnEl, async () => {
   const sel = document.getElementById('trocarPipelineSelect');
   const templateId = sel?.value;
   if (!templateId) { toast('Selecione um template.', 'error'); return; }
@@ -8677,6 +8743,7 @@ async function confirmarTrocarPipeline() {
     if (e.message && e.message.includes('AUTH_GOOGLE')) { hubLogout(); return; }
     toast('Erro ao trocar pipeline: ' + e.message, 'error');
   }
+  });
 }
 
 // ── Notificações ──────────────────────────────────────────────────────────────
@@ -8900,7 +8967,7 @@ if(!gsUrl){
     </div>
     <div class="modal-footer">
       <button class="btn btn-secondary" onclick="closeModal('modalTrocarPipeline')">Cancelar</button>
-      <button class="btn btn-primary" onclick="confirmarTrocarPipeline()">Confirmar</button>
+      <button class="btn btn-primary" onclick="confirmarTrocarPipeline(this)">Confirmar</button>
     </div>
   </div>
 </div>
@@ -8908,7 +8975,7 @@ if(!gsUrl){
 <!-- MODAL OS -->
 <div class="overlay" id="modalOS">
   <div class="modal" style="width:520px">
-    <div class="modal-title"><span id="modalOSTitle">Nova OS</span></div>
+    <div class="modal-title"><span id="modalOSTitle">Nova OS</span> <span id="modalOSLoading" style="display:none;font-size:11px;font-weight:400;color:var(--text-muted)">⏳ Carregando…</span></div>
     <div class="modal-body">
       <input type="hidden" id="osId">
       <input type="hidden" id="osClienteId">
@@ -8981,7 +9048,7 @@ if(!gsUrl){
     </div>
     <div class="modal-footer">
       <button class="btn btn-secondary" onclick="closeModal('modalOS')">Cancelar</button>
-      <button class="btn btn-primary" onclick="saveOSModal()">Salvar</button>
+      <button class="btn btn-primary" onclick="saveOSModal(this)">Salvar</button>
     </div>
   </div>
 </div>
