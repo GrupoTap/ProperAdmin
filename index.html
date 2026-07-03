@@ -1324,9 +1324,10 @@ tr:hover td{background:var(--gray-50)}
 //   _osClienteInputHandler (recarregar candidatos), saveOSModal (payload),
 //   _osDetailTab (seção de vínculos na aba Dados) e _loadPipelineTab (botão
 //   Abrir no PCF).
-// - Suposições/pontos a confirmar antes de produção: db.machines[].id é o
-//   machineKey correto para OS_MAQUINAS; URL do PCF ficou como
-//   TODO_CONFIRMAR_URL_PCF até confirmação da URL hospedada.
+// - [CONFIRMADO] db.machines[].id (= coluna ID de MAQUINAS) é aceito como
+//   machineKey por getMaquinasByOS (indexado também por ID, além da chave
+//   composta cliente+marca+modelo+série). Nenhuma mudança necessária.
+// - [CONFIRMADO] URL de produção do PCF: https://grupotap.github.io/ProperTech/
 // ══════════════════════════════════════════════════════════════════════════
 
 // ══════════════════════════════════════════════════════════════════════════
@@ -1348,7 +1349,7 @@ tr:hover td{background:var(--gray-50)}
 //   depois do deploy, usando a tela que já existe.
 // ══════════════════════════════════════════════════════════════════════════
 
-const PCF_BASE_URL = 'TODO_CONFIRMAR_URL_PCF';
+const PCF_BASE_URL = 'https://grupotap.github.io/ProperTech/';
 
 // ── HUB SESSION CHECK ─────────────────────────────────────────────────────
 (function checkHubSession() {
