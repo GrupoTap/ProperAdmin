@@ -1,3 +1,4 @@
+<!-- v37/v58 sprint: PCF/OS/preventiva updates. -->
 <!--
   PCM v57 — 04/07/2026
   B1 (P0): botão "Excluir OS" (admin) na listagem de OS -> ação deleteOS (soft-delete).
@@ -7915,7 +7916,7 @@ async function renderOS() {
   let result = null;
   try {
     const [resOS, resTipos] = await Promise.all([
-      gsGet('getOS'),
+      gsGet('getOS', { includeClosed: 'true' }),
       _tiposOS.length ? Promise.resolve({ tipos: _tiposOS }) : gsGet('getTiposOS').catch(() => ({ tipos: [] }))
     ]);
     result = resOS;
