@@ -1,4 +1,8 @@
 <!--
+  PCM v57 — 04/07/2026
+  B1 (P0): botão "Excluir OS" (admin) na listagem de OS -> ação deleteOS (soft-delete).
+-->
+<!--
 PCM_v56.html
 v56 — Feedback visual de "carregando" em botões async do fluxo OS/Pipeline
        (Tier 1). Nenhum botão async do PCM indicava estado de processamento
@@ -8042,6 +8046,7 @@ function _renderOSTable(search = '', statusFilter = '', priorityFilter = '') {
                 <div class="row-actions">
                   <button class="btn btn-secondary btn-sm" onclick="openOSDetail('${oid}')">Detalhe</button>
                   <button class="btn btn-secondary btn-sm" onclick="openModalOS('${oid}')">Editar</button>
+                  ${window.PROPER_SESSION?.is_admin ? `<button class="btn btn-danger btn-sm" onclick="deleteOSFromList('${oid}')">Excluir OS</button>` : ''}
                 </div>
               </td>
             </tr>`;
@@ -8083,6 +8088,21 @@ function _getOSClientMachineOptions() {
   if (!ck) return { reason: 'missing-client', machines: [] };
   const machines = (db.machines || []).filter(m => clientKey(m.client || '') === ck && _osMachineId(m));
   return { reason: machines.length ? '' : 'empty', machines };
+}
+
+async function deleteOSFromList(idOs) {
+  if (!idOs) return;
+  if (!confirm('Excluir esta OS? Ela sairá das listagens.')) return;
+  const session = window.PROPER_SESSION || {};
+  const tecnico = session.tecnico || {};
+  try {
+    await syncToGS('deleteOS', { id_os: idOs, updated_by: tecnico.nome || session.nome || 'admin' });
+    toast('OS excluída com sucesso.', 'success');
+    await renderOS();
+  } catch(e) {
+    if (e.message && e.message.includes('AUTH_GOOGLE')) { hubLogout(); return; }
+    toast('Erro ao excluir OS: ' + e.message, 'error');
+  }
 }
 
 function _renderOSMachineSelector(selectedIds) {
