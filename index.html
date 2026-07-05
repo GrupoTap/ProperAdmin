@@ -1,4 +1,24 @@
 <!--
+  PCM v60 — 04/07/2026
+  Docs: hardening + UX da aba Gestão de Documentos (fecha v59-a).
+  - renderDocs: gsGet('getAttachments') passa a checar r.status !== 'ok'
+    antes de ler r.attachments, lançando erro (roteado para o catch
+    existente, que já mostra a mensagem do backend + "Tentar novamente").
+    Antes, uma resposta de erro do GAS (ex.: ação ainda não implantada)
+    era lida como lista vazia e a aba mostrava silenciosamente "Nenhum
+    documento encontrado".
+  - Chips de agrupamento (Por OS/Cliente/Máquina) ganham classe
+    docs-group-chip + data-group; renderDocsList() agora resincroniza o
+    destaque .active desses chips a cada render (antes só renderDocs()
+    completo atualizava o realce, então o clique no chip trocava o
+    agrupamento mas parecia "não fazer nada").
+  - .docs-chip ganha transition (background/border-color/color) para dar
+    feedback visual ao clique.
+  - Subtítulo do herói não expõe mais o nome interno da planilha
+    TECH_ATTACHMENTS.
+  - Nenhuma chamada de escrita nem mudança de contrato com o GAS.
+-->
+<!--
   PCM v59 — 04/07/2026
   Gestão de Documentos: nova view docs com leitura de TECH_ATTACHMENTS via gsGet('getAttachments', {}), cache local, busca genérica, chips de Categoria, agrupamento por OS/Cliente/Máquina, miniatura da primeira foto e ações para abrir arquivo/pasta no Drive.
   Integração no mecanismo existente: navDocs, viewDocs, inclusão de 'docs' em allViews e dispatch para renderDocs().
@@ -251,7 +271,7 @@ tr:hover td{background:var(--gray-50)}
 /* ── DOCUMENTOS ── */
 .docs-toolbar{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:12px}
 .docs-controls{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-.docs-chip{border:1px solid var(--border2);background:white;color:var(--text2);border-radius:20px;padding:5px 10px;font-size:11px;font-weight:700;cursor:pointer;font-family:var(--font-sans),sans-serif}
+.docs-chip{border:1px solid var(--border2);background:white;color:var(--text2);border-radius:20px;padding:5px 10px;font-size:11px;font-weight:700;cursor:pointer;font-family:var(--font-sans),sans-serif;transition:background .15s,border-color .15s,color .15s}
 .docs-chip.active{background:var(--blue-light);border-color:var(--blue-mid);color:var(--blue-mid)}
 .docs-count{font-size:12px;color:var(--text3);font-family:var(--font-mono),monospace}
 .docs-group{background:white;border:1px solid var(--border);border-radius:var(--radius-lg);margin-bottom:10px;overflow:hidden}
@@ -3048,7 +3068,7 @@ async function renderDocs(force){
       <div class="model-hero-top">
         <div>
           <div class="model-hero-title">Gestão de Documentos</div>
-          <div class="model-hero-sub">Anexos indexados em TECH_ATTACHMENTS: fotos, PDFs e assinaturas com acesso ao Drive.</div>
+          <div class="model-hero-sub">Fotos, PDFs e assinaturas das ordens de serviço, com acesso direto ao Drive.</div>
         </div>
         <div class="hero-actions"><button class="btn btn-secondary" onclick="renderDocs(true)">Atualizar</button></div>
       </div>
@@ -3056,9 +3076,9 @@ async function renderDocs(force){
     <div class="docs-toolbar">
       <div class="docs-controls">
         <input class="form-input" style="width:280px" placeholder="Buscar cliente, OS, máquina, arquivo..." value="${escHtml(_docsQuery)}" oninput="_docsQuery=this.value;renderDocsList()">
-        <button class="docs-chip ${_docsGroupBy==='os'?'active':''}" onclick="_docsGroupBy='os';renderDocsList()">Por OS</button>
-        <button class="docs-chip ${_docsGroupBy==='cliente'?'active':''}" onclick="_docsGroupBy='cliente';renderDocsList()">Por Cliente</button>
-        <button class="docs-chip ${_docsGroupBy==='maquina'?'active':''}" onclick="_docsGroupBy='maquina';renderDocsList()">Por Máquina</button>
+        <button class="docs-chip docs-group-chip ${_docsGroupBy==='os'?'active':''}" data-group="os" onclick="_docsGroupBy='os';renderDocsList()">Por OS</button>
+        <button class="docs-chip docs-group-chip ${_docsGroupBy==='cliente'?'active':''}" data-group="cliente" onclick="_docsGroupBy='cliente';renderDocsList()">Por Cliente</button>
+        <button class="docs-chip docs-group-chip ${_docsGroupBy==='maquina'?'active':''}" data-group="maquina" onclick="_docsGroupBy='maquina';renderDocsList()">Por Máquina</button>
       </div>
       <div id="docsCounter" class="docs-count">Carregando…</div>
     </div>
@@ -3068,7 +3088,8 @@ async function renderDocs(force){
   _docsLoading = true;
   try{
     const r = await gsGet('getAttachments', {});
-    _docsCache = (r && Array.isArray(r.attachments)) ? r.attachments : [];
+    if(!r || r.status !== 'ok') throw new Error((r && r.error) || 'Falha ao carregar anexos (getAttachments).');
+    _docsCache = Array.isArray(r.attachments) ? r.attachments : [];
     _docsLoading = false;
     renderDocsList();
   }catch(e){
@@ -3081,6 +3102,9 @@ async function renderDocs(force){
 
 function renderDocsList(){
   const list=document.getElementById('docsList'); if(!list) return;
+  document.querySelectorAll('.docs-group-chip').forEach(function(c){
+    c.classList.toggle('active', c.dataset.group === _docsGroupBy);
+  });
   const cats=['todas', ...Array.from(new Set(_docsCache.map(x=>x?.Categoria).filter(Boolean))).sort()];
   const catsEl=document.getElementById('docsCats');
   if(catsEl) catsEl.innerHTML = cats.map(c=>`<button class="docs-chip ${_docsCat===c?'active':''}" onclick="_docsCat='${escJs(c)}';renderDocsList()">${c==='todas'?'Todas':escHtml(_docCatLabel(c))}</button>`).join('');
