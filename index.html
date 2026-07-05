@@ -1,4 +1,34 @@
 <!--
+  PCM v61 — 05/07/2026
+  Sprint "Reorganização do Sidebar" (Fase 1 do backlog §5.A) — só front-end,
+  nenhuma ação de backend nova, nenhum id/view/render renomeado (só rótulo
+  visível e realocação de elementos entre grupos).
+  - 3 grupos-alvo: PAINEL DE GESTÃO (Preventivas, Gestão de OSs, Estoque,
+    Gestão de Documentos), CADASTRAL (Clientes, Máquinas), CONFIGURAÇÕES
+    (Usuários, Perfis, Templates, Tipos de OS, Saturação, Catálogo).
+    Grupo SISTEMA (Configurações/GAS+turno, Sair) mantido separado como
+    rodapé mínimo — decisão confirmada (não force utilitários de sistema
+    dentro do grupo temático CONFIGURAÇÕES).
+  - Dashboard: removido do nav (comentado, não deletado — Portão 3,
+    reversível); view/renderDashboard intactos no código. Boot passa a
+    abrir em Controle de Preventivas (showView('preventivas')).
+  - "Ordens de Serviço" → rótulo "Gestão de OSs" no nav e no breadcrumb
+    (id/view/render `os`/`viewOs`/`renderOS` inalterados).
+  - Catálogo movido para CONFIGURAÇÕES com posição marcada como
+    provisória (comentário no ponto do nav) — aguardando decisão final.
+  - Máquinas e Clientes saem de OPERAÇÃO (achado de auditoria: já
+    estavam lá, não em CADASTROS como o backlog supunha) e vão para
+    CADASTRAL.
+  - Nenhuma mudança de contrato com o GAS; nenhuma chamada de escrita
+    nova. `node --check` real não pôde ser executado nesta sessão
+    (Node/npm ausentes do PATH deste ambiente, mesma limitação já
+    registrada nos sprints anteriores) — auditoria estática + balanço
+    manual de `{}`/`()`/`[]` + diff unificado v60→v61.
+  - Fases 2 (Ribbon+Kanban+Calendário) e 3 (Abertura de OS) deferidas
+    para PCM_v62.html — diff mantido pequeno e auditável nesta versão
+    (decisão tomada com o usuário, ver nota de tamanho do prompt).
+-->
+<!--
   PCM v60 — 04/07/2026
   Docs: hardening + UX da aba Gestão de Documentos (fecha v59-a).
   - renderDocs: gsGet('getAttachments') passa a checar r.status !== 'ok'
@@ -737,12 +767,16 @@ tr:hover td{background:var(--gray-50)}
 
   <nav class="nav-groups">
     <div class="nav-group">
-      <div class="nav-group-label">OPERAÇÃO</div>
-      <button class="nav-item is-active" data-view="dashboard" onclick="showView('dashboard')" id="navDashboard">
+      <div class="nav-group-label">PAINEL DE GESTÃO</div>
+      <!-- v61 — Dashboard oculto do nav (Portão 3, decisão confirmada): view/renderDashboard
+           mantidos intactos no código, só sem entrada de menu. Reversível — reabrir é
+           só descomentar o botão abaixo. Boot passa a abrir em Controle de Preventivas.
+      <button class="nav-item" data-view="dashboard" onclick="showView('dashboard')" id="navDashboard">
         <svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="5" height="5"/><rect x="9" y="2" width="5" height="5"/><rect x="2" y="9" width="5" height="5"/><rect x="9" y="9" width="5" height="5"/></svg>
         <span>Dashboard</span>
       </button>
-      <button class="nav-item" data-view="preventivas" onclick="showView('preventivas')" id="navPreventivas">
+      -->
+      <button class="nav-item is-active" data-view="preventivas" onclick="showView('preventivas')" id="navPreventivas">
         <svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6"/><path d="M8 4v4l2.5 2.5"/></svg>
         <span>Controle de Preventivas</span>
       </button>
@@ -751,15 +785,7 @@ tr:hover td{background:var(--gray-50)}
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
             d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
         </svg>
-        Ordens de Serviço
-      </button>
-      <button class="nav-item" data-view="machines" onclick="showView('machines')" id="navMachines">
-        <svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="5" width="12" height="8" rx="1"/><path d="M5 5V3h6v2M5 13v1M11 13v1"/></svg>
-        <span>Máquinas</span>
-      </button>
-      <button class="nav-item" data-view="clients" onclick="showView('clients')" id="navClients">
-        <svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="6" r="3"/><path d="M2 14c0-3 2.5-5 6-5s6 2 6 5"/></svg>
-        <span>Clientes</span>
+        Gestão de OSs
       </button>
       <button class="nav-item" data-view="estoque" onclick="showView('estoque')" id="navEstoque">
         <svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 5l6-3 6 3v6l-6 3-6-3V5z"/><path d="M2 5l6 3 6-3M8 8v7"/></svg>
@@ -775,11 +801,21 @@ tr:hover td{background:var(--gray-50)}
     </div>
 
     <div class="nav-group">
-      <div class="nav-group-label">CADASTROS</div>
-      <button class="nav-item" data-view="catalog" onclick="showView('catalog')" id="navCatalog">
-        <svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="12" height="12" rx="1"/><path d="M5 5h6M5 8h6M5 11h4"/></svg>
-        <span>Catálogo</span>
+      <div class="nav-group-label">CADASTRAL</div>
+      <!-- v61 — "Abertura de OS" (viewAberturaOS/navAberturaOS) é Fase 3 do backlog,
+           deferida para PCM_v62.html junto com Ribbon+Kanban+Calendário (Fase 2). -->
+      <button class="nav-item" data-view="clients" onclick="showView('clients')" id="navClients">
+        <svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="6" r="3"/><path d="M2 14c0-3 2.5-5 6-5s6 2 6 5"/></svg>
+        <span>Clientes</span>
       </button>
+      <button class="nav-item" data-view="machines" onclick="showView('machines')" id="navMachines">
+        <svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="5" width="12" height="8" rx="1"/><path d="M5 5V3h6v2M5 13v1M11 13v1"/></svg>
+        <span>Máquinas</span>
+      </button>
+    </div>
+
+    <div class="nav-group">
+      <div class="nav-group-label">CONFIGURAÇÕES</div>
       <button class="nav-item" data-view="tecnicos" onclick="showView('tecnicos')" id="navUsuarios">
         <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -794,10 +830,6 @@ tr:hover td{background:var(--gray-50)}
         </svg>
         Perfis
       </button>
-    </div>
-
-    <div class="nav-group">
-      <div class="nav-group-label">PROPERFLOW</div>
       <button class="nav-item" data-view="templates" onclick="showView('templates')" id="navTemplates">
         <svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
           <rect x="2" y="2" width="12" height="12" rx="1"/>
@@ -816,6 +848,11 @@ tr:hover td{background:var(--gray-50)}
           <path d="M2 13V8M6 13V3M10 13v6M14 13V6"/>
         </svg>
         <span>Saturação</span>
+      </button>
+      <!-- POSIÇÃO PENDENTE: Catálogo (Configurações vs Cadastral) — aguardando Fernando -->
+      <button class="nav-item" data-view="catalog" onclick="showView('catalog')" id="navCatalog">
+        <svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="12" height="12" rx="1"/><path d="M5 5h6M5 8h6M5 11h4"/></svg>
+        <span>Catálogo</span>
       </button>
     </div>
 
@@ -838,7 +875,7 @@ tr:hover td{background:var(--gray-50)}
 
 <div class="app-main">
   <header class="app-header">
-    <div class="breadcrumb">PCM <span class="sep">/</span> <span id="breadcrumb-current">Dashboard</span></div>
+    <div class="breadcrumb">PCM <span class="sep">/</span> <span id="breadcrumb-current">Controle de Preventivas</span></div>
     <div class="header-actions">
       <input type="search" class="header-search" placeholder="Buscar..." />
       <div id="notifBtn" style="position:relative;cursor:pointer;font-size:18px;line-height:1" onclick="toggleNotifPanel()">
@@ -882,10 +919,10 @@ tr:hover td{background:var(--gray-50)}
 
   <!-- MAIN -->
   <main class="main" id="mainContent">
-    <!-- DASHBOARD VIEW -->
-    <div id="viewDashboard"></div>
-    <!-- PREVENTIVAS VIEW -->
-    <div id="viewPreventivas" style="display:none"></div>
+    <!-- DASHBOARD VIEW (oculta do nav no v61 — ver Portão 3; mantido display:none para não piscar antes do JS trocar o boot para Preventivas) -->
+    <div id="viewDashboard" style="display:none"></div>
+    <!-- PREVENTIVAS VIEW (nova view de boot no v61) -->
+    <div id="viewPreventivas"></div>
     <!-- CATALOG VIEW -->
     <div id="viewCatalog" style="display:none"></div>
     <!-- MACHINES VIEW -->
@@ -3217,7 +3254,7 @@ function _usuarioEstaDigitandoEm_(el) {
     config: 'Configurações',
     tecnicos: 'Usuários',
     perfis:   'Perfis',
-    os:       'Ordens de Serviço',
+    os:       'Gestão de OSs',
     templates: 'Templates de Pipeline',
     tiposOS:   'Tipos de OS',
     saturacao: 'Saturação',
@@ -7483,7 +7520,7 @@ function importJSON(input){
 // ═══════════════════════════════════════════════════════════
 if(gsUrl) testGS();
 renderSidebar();
-showView('dashboard');
+showView('preventivas'); // v61 — boot: Dashboard saiu do nav (Portão 3); Controle de Preventivas é a nova view padrão.
 
 // Etapa 1: injetar botão X e listener de overlay em todos os modais
 initModalSystem();
