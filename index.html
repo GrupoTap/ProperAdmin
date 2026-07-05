@@ -1,4 +1,32 @@
 <!--
+  PCM v63 — 05/07/2026
+  Sprint frontend Gestão de OSs Ribbon, contraste Proper e Catálogo.
+  - Paleta primária migrada para laranja Proper em accent, hover e botões primários; rótulos de grupo do sidebar ganharam contraste.
+  - Catálogo movido de Configurações para Painel de Gestão, preservando id, data-view e onclick.
+  - Gestão de OSs agora usa shell Ribbon com abas Lista, Kanban e Calendário; Kanban e Calendário leem o cache real de OS, sem nova escrita no backend.
+  - Validação: script principal extraído passou no node check e greps de invariantes conferidos.
+  - 100% frontend; nenhuma alteração no GAS.
+-->
+<!--
+  PCM v62 — 05/07/2026
+  Fix: seletor "Usuário responsável" vinha vazio ao abrir Nova OS —
+  openModalOS agora repopula o select após o lazy-load de getUsuarios
+  também no caminho de criação (ramo `else` do `if (os)`, ~8439).
+  - Causa-raiz: o reset síncrono chamava `_populateOSUsuarioSelect('')`
+    (~8376) antes de qualquer `await`, quando `_usuList` ainda podia
+    estar vazio (usuário não tinha visitado a tela "Usuários" antes).
+    O lazy-load de `getUsuarios` (~8394) preenchia `_usuList`, mas a
+    repopulação do select só acontecia no ramo de edição (`if (os)`,
+    ~8430) — no caminho de "Nova OS" (`os === null`) o select nunca
+    era repovoado depois que `_usuList` carregava.
+  - Correção: `else { _populateOSUsuarioSelect(''); }` logo após o
+    fechamento do `if (os) { ... }`, antes do `} finally {`. Nenhum
+    id/data-key/função renomeados; ramo `if (os)` e reset síncrono
+    intactos — em Editar OS o usuário atual continua pré-selecionado.
+  - 100% frontend; nenhuma alteração no GAS (`getUsuarios` já roteado
+    corretamente em `doGet`/`doPost`).
+-->
+<!--
   PCM v61 — 05/07/2026
   Sprint "Reorganização do Sidebar" (Fase 1 do backlog §5.A) — só front-end,
   nenhuma ação de backend nova, nenhum id/view/render renomeado (só rótulo
@@ -172,9 +200,9 @@ v50 — Resiliência de rede: retry/backoff em gsGet e syncToGS
   --sidebar-fg-active: #fafafa;
   --sidebar-hover: rgba(255,255,255,.04);
   --sidebar-active: rgba(255,255,255,.06);
-  --sidebar-group: #52525b;
-  --accent: #0d9488;
-  --accent-hover: #0f766e;
+  --sidebar-group: #9a9aa4;
+  --accent: #f07725;
+  --accent-hover: #d9661a;
   --bg: #f4f4f5;
   --surface: #fafafa;
   --surface-2: #ffffff;
@@ -246,8 +274,9 @@ body{font-size:13px;line-height:1.5;min-height:100vh;margin:0}
 /* ── BUTTONS ── */
 .btn{display:inline-flex;align-items:center;gap:5px;border:none;border-radius:var(--radius);padding:7px 14px;font-size:12px;font-weight:500;cursor:pointer;font-family:var(--font-sans),sans-serif;transition:all .15s;white-space:nowrap}
 .btn:active{transform:scale(.98)}
-.btn-primary{background:var(--blue);color:white}
-.btn-primary:hover{background:var(--blue-mid)}
+.btn-primary{background:var(--accent)}
+.btn-primary{color:white}
+.btn-primary:hover{background:var(--accent-hover)}
 .btn-secondary{background:white;color:var(--text);border:1px solid var(--border2)}
 .btn-secondary:hover{background:var(--gray-100)}
 .btn-danger{background:var(--red-light);color:var(--red);border:1px solid var(--red)}
@@ -754,6 +783,69 @@ tr:hover td{background:var(--gray-50)}
 .tipo-os-badge-ativo{font-size:10px;padding:2px 7px;border-radius:10px;background:#14532d;color:#4ade80;font-weight:700;white-space:nowrap}
 .tipo-os-badge-inativo{font-size:10px;padding:2px 7px;border-radius:10px;background:#3f3f46;color:#a1a1aa;font-weight:700;white-space:nowrap}
 .tipo-id-preview{font-family:var(--font-mono);font-size:11px;color:var(--text-muted);background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);padding:4px 8px;margin-top:4px;display:block}
+/* ═══ v63 · Gestão de OSs · Ribbon (Kanban + Calendário) — CSS escopado ═══ */
+.gos-root{ --st-aberta:#c07800; --st-andamento:#2f6fed; --st-concluida:#1f9d57; --st-cancelada:#b91c1c; --gos-faint:#9aa0a6; }
+.gos-topbar{margin-bottom:14px}
+.gos-page-title{font-size:18px;font-weight:700;color:var(--text)}
+.gos-page-sub{font-size:12.5px;color:var(--text2);margin-top:2px}
+.gos-ribbon{display:flex;align-items:center;gap:2px;border-bottom:1px solid var(--border);margin-bottom:16px}
+.gos-ribbon-tab{display:flex;align-items:center;gap:7px;padding:9px 15px;font-size:13px;font-weight:600;color:var(--text-muted);cursor:pointer;border-bottom:2px solid transparent;user-select:none}
+.gos-ribbon-tab:hover{color:var(--text)}
+.gos-ribbon-tab.active{color:var(--accent);border-bottom-color:var(--accent)}
+.gos-ribbon-tab svg{width:16px;height:16px}
+.gos-ribbon-actions{margin-left:auto}
+/* badges/tags */
+.gos-osnum{font-family:var(--font-mono);font-size:12.5px;font-weight:600}
+.gos-prio{font-size:10.5px;font-weight:600;padding:2px 8px;border-radius:10px;white-space:nowrap}
+.gos-tp,.gos-badge{display:inline-flex;align-items:center;gap:5px;font-size:11.5px;font-weight:500;color:var(--text)}
+.gos-sw{width:9px;height:9px;border-radius:2px;display:inline-block;flex-shrink:0}
+/* kanban */
+.gos-kanban-bar{display:flex;align-items:center;gap:8px;margin-bottom:14px;flex-wrap:wrap}
+.gos-seg-label{font-size:12px;color:var(--text-muted)}
+.gos-seg{display:inline-flex;border:1px solid var(--border-strong);border-radius:var(--radius-sm);overflow:hidden}
+.gos-seg button{all:unset;padding:5px 13px;font-size:12.5px;cursor:pointer;color:var(--text-muted)}
+.gos-seg button.active{background:var(--accent);color:#fff;font-weight:600}
+.gos-chips{display:flex;gap:6px;flex-wrap:wrap}
+.gos-chip{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;font-size:11.5px;border:1px solid var(--border-strong);border-radius:20px;cursor:pointer;color:var(--text-muted);background:var(--surface-2)}
+.gos-chip.on{border-color:var(--accent);color:var(--text);font-weight:600}
+.gos-kanban{display:flex;gap:12px;overflow-x:auto;padding-bottom:8px;align-items:flex-start}
+.gos-kcol{flex:0 0 262px;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius)}
+.gos-kcol-h{display:flex;align-items:center;gap:8px;padding:10px 12px;font-size:13px;font-weight:700;color:var(--text)}
+.gos-hbar{width:8px;height:8px;border-radius:50%}
+.gos-count{margin-left:auto;font-size:11px;font-weight:600;color:var(--text-muted);background:var(--surface-2);border:1px solid var(--border);border-radius:10px;padding:0 7px}
+.gos-klist{padding:0 8px 10px;display:flex;flex-direction:column;gap:8px;min-height:24px}
+.gos-kempty{color:var(--gos-faint);font-size:12.5px;padding:4px 4px 10px}
+.gos-kcard{background:var(--surface-2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 11px;cursor:pointer;box-shadow:var(--shadow);transition:border-color 120ms}
+.gos-kcard:hover{border-color:var(--accent)}
+.gos-kcard-top{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.gos-kcard-cli{font-size:13.5px;font-weight:600;color:var(--text)}
+.gos-kcard-maq{font-size:11.5px;color:var(--text-muted);margin-top:2px}
+.gos-kcard-foot{margin-top:8px}
+.gos-kcard-date{font-size:11.5px;color:var(--text-muted)}
+.gos-kcard-date.nodate{color:var(--gos-faint);font-style:italic}
+/* calendário */
+.gos-cal-head{display:flex;align-items:center;gap:10px;margin-bottom:12px;flex-wrap:wrap}
+.gos-cal-nav{display:flex;gap:4px}
+.gos-cal-month{font-size:16px;font-weight:700;color:var(--text);min-width:150px}
+.gos-cal-legend{display:flex;gap:12px;margin-left:auto;flex-wrap:wrap}
+.gos-lg{display:inline-flex;align-items:center;gap:5px;font-size:11.5px;color:var(--text-muted)}
+.gos-cal-grid{border:1px solid var(--border);border-radius:var(--radius);overflow:hidden}
+.gos-cal-dow{display:grid;grid-template-columns:repeat(7,1fr);background:var(--bg)}
+.gos-cal-dow>div{padding:7px 10px;font-size:11px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.04em}
+.gos-cal-weeks{display:grid;grid-template-columns:repeat(7,1fr)}
+.gos-cal-cell{min-height:96px;border-top:1px solid var(--border);border-left:1px solid var(--border);padding:6px;background:var(--surface-2)}
+.gos-cal-cell:nth-child(7n+1){border-left:none}
+.gos-cal-cell.out{background:var(--bg)}
+.gos-cal-daynum{font-size:12px;font-weight:600;color:var(--text-muted)}
+.gos-cal-cell.out .gos-cal-daynum{color:var(--gos-faint)}
+.gos-cal-cell.today .gos-cal-daynum{background:var(--accent);color:#fff;border-radius:50%;padding:1px 6px}
+.gos-cal-ev{display:flex;align-items:center;gap:5px;margin-top:4px;padding:2px 6px;border-radius:5px;font-size:11px;font-weight:600;cursor:pointer;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.gos-edot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.gos-cal-nodate{margin-top:14px}
+.gos-cal-nodate h4{font-size:12.5px;color:var(--text-muted);margin-bottom:8px;font-weight:600}
+.gos-cal-nodate-list{display:flex;gap:8px;flex-wrap:wrap}
+.gos-cal-pill{display:inline-flex;align-items:center;gap:6px;padding:5px 11px;font-size:11.5px;border:1px solid var(--border-strong);border-radius:20px;cursor:pointer;color:var(--text);background:var(--surface-2)}
+.gos-cal-pill:hover{border-color:var(--accent)}
 </style>
 </head>
 <body>
@@ -797,6 +889,11 @@ tr:hover td{background:var(--gray-50)}
           <path d="M9 2v4h4"/>
         </svg>
         <span>Gestão de Documentos</span>
+      </button>
+      <!-- v63 — Catálogo movido de CONFIGURAÇÕES para PAINEL DE GESTÃO (decisão do Fernando). id/data-view/onclick inalterados. -->
+      <button class="nav-item" data-view="catalog" onclick="showView('catalog')" id="navCatalog">
+        <svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="12" height="12" rx="1"/><path d="M5 5h6M5 8h6M5 11h4"/></svg>
+        <span>Catálogo</span>
       </button>
     </div>
 
@@ -848,11 +945,6 @@ tr:hover td{background:var(--gray-50)}
           <path d="M2 13V8M6 13V3M10 13v6M14 13V6"/>
         </svg>
         <span>Saturação</span>
-      </button>
-      <!-- POSIÇÃO PENDENTE: Catálogo (Configurações vs Cadastral) — aguardando Fernando -->
-      <button class="nav-item" data-view="catalog" onclick="showView('catalog')" id="navCatalog">
-        <svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="12" height="12" rx="1"/><path d="M5 5h6M5 8h6M5 11h4"/></svg>
-        <span>Catálogo</span>
       </button>
     </div>
 
@@ -8097,10 +8189,13 @@ async function renderOS() {
   if (!el) return;
   const temCache = _osList.length > 0;
 
+  _renderOSRibbonShell();   // desenha ribbon + #osRibbonContent (aba ativa preservada)
+
   if (temCache) {
-    _renderOSTable(_osSearch, _osFilterStatus, _osFilterPrioridade);
+    _gosRenderActiveTab();
   } else {
-    el.innerHTML = `<div style="display:flex;align-items:center;justify-content:center;padding:40px">
+    const cont = document.getElementById('osRibbonContent');
+    if (cont) cont.innerHTML = `<div style="display:flex;align-items:center;justify-content:center;padding:40px">
       <span style="color:var(--text-muted);font-size:13px">Carregando OS…</span></div>`;
   }
 
@@ -8113,8 +8208,9 @@ async function renderOS() {
     result = resOS;
     if (!_tiposOS.length) _tiposOS = (resTipos?.tipos || []);
   } catch(e) {
-    if (!temCache) {
-      el.innerHTML = `<div class="empty"><div class="empty-icon">⚠️</div>
+    const cont = document.getElementById('osRibbonContent');
+    if (!temCache && cont) {
+      cont.innerHTML = `<div class="empty"><div class="empty-icon">⚠️</div>
         <div class="empty-title">Erro ao carregar</div>
         <div class="empty-sub">${e.message}</div></div>`;
     } else {
@@ -8123,13 +8219,14 @@ async function renderOS() {
     return;
   }
   _osList = result?.os || result?.data || [];
-  if (!_usuarioEstaDigitandoEm_(el)) {
-    _renderOSTable(_osSearch, _osFilterStatus, _osFilterPrioridade);
+  const cont = document.getElementById('osRibbonContent');
+  if (cont && !_usuarioEstaDigitandoEm_(cont)) {
+    _gosRenderActiveTab();
   }
 }
 
 function _renderOSTable(search = '', statusFilter = '', priorityFilter = '') {
-  const el = document.getElementById('viewOs');
+  const el = document.getElementById('osRibbonContent') || document.getElementById('viewOs');
   if (!el) return;
 
   const STATUS_LABELS = {
@@ -8168,13 +8265,6 @@ function _renderOSTable(search = '', statusFilter = '', priorityFilter = '') {
   });
 
   el.innerHTML = `
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
-      <div>
-        <h2 style="font-size:18px;font-weight:700;color:var(--text)">Ordens de Serviço</h2>
-        <p style="font-size:12px;color:var(--text-muted);margin-top:2px">${_osList.length} OS cadastrada(s)</p>
-      </div>
-      <button class="btn btn-primary" onclick="openModalOS()">+ Nova OS</button>
-    </div>
     <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;align-items:center">
       <input type="text" placeholder="Buscar por nº OS ou cliente…"
         style="width:240px;height:32px;padding:0 10px;font-size:13px;background:white;
@@ -8246,6 +8336,184 @@ function _renderOSTable(search = '', statusFilter = '', priorityFilter = '') {
         </tbody>
       </table></div>`}`;
 }
+
+/* ═══ v63 · Gestão de OSs · Ribbon (Lista / Kanban / Calendário) ═══ */
+let _osRibbonTab = 'lista';            // 'lista' | 'kanban' | 'calendario'
+let _gosKanbanGroupBy = 'status';      // 'status' | 'tipo'
+let _gosKanbanTipoFilter = new Set();
+let _gosCalRef = new Date();
+
+const _GOS_STATUS = {
+  ABERTA:       { label:'Aberta',       color:'var(--st-aberta)' },
+  EM_ANDAMENTO: { label:'Em andamento', color:'var(--st-andamento)' },
+  CONCLUIDA:    { label:'Concluída',    color:'var(--st-concluida)' },
+  CANCELADA:    { label:'Cancelada',    color:'var(--st-cancelada)' },
+};
+const _GOS_TIPO_PALETTE = ['#0d9488','#7c5cff','#0ea5e9','#d97706','#db2777','#2563eb','#16a34a','#b45309'];
+const _GOS_MESES = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+
+function _gosStatusKey(o){ return String(o.status||'').toUpperCase(); }
+function _gosTipoNome(o){ return (_tiposOS.find(t=>t.Tipo_ID===o.tipo_os)?.Nome) || o.tipo_os || '—'; }
+function _gosTipoColorMap(){
+  const m = {};
+  [...new Set(_osList.map(_gosTipoNome))].forEach((n,i)=> m[n] = _GOS_TIPO_PALETTE[i % _GOS_TIPO_PALETTE.length]);
+  return m;
+}
+function _gosData(o){ return o.data_prevista ? String(o.data_prevista).slice(0,10) : null; }
+function _gosFmt(d){ if(!d) return null; const [y,m,dd]=d.split('-'); return `${dd}/${m}/${y}`; }
+function _gosOid(o){ return String(o.id_os||'').replace(/'/g,"\\'"); }
+function _gosPrioTag(o){
+  const P = { urgente:{l:'Urgente',bg:'#fee2e2',c:'#991b1b'}, alta:{l:'Alta',bg:'#ffedd5',c:'#9a3412'}, normal:{l:'Normal',bg:'#f1f5f9',c:'#475569'} };
+  const p = P[(o.prioridade||'normal').toLowerCase()] || P.normal;
+  return `<span class="gos-prio" style="background:${p.bg};color:${p.c}">${p.l}</span>`;
+}
+function gosEmConstrucao(feature){ toast('🚧 ' + (feature||'Recurso') + ' — em construção, chega em breve.', 'warn'); }
+
+// ── Shell + dispatch de aba ──
+function _renderOSRibbonShell(){
+  const el = document.getElementById('viewOs');
+  if (!el) return;
+  el.innerHTML = `
+    <div class="gos-root">
+      <div class="gos-topbar">
+        <div class="gos-page-title">Gestão de OSs</div>
+        <div class="gos-page-sub">Kanban e calendário de agendamento das ordens de serviço</div>
+      </div>
+      <div class="gos-ribbon">
+        <div class="gos-ribbon-tab ${_osRibbonTab==='lista'?'active':''}" onclick="gosSetTab('lista')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg>Lista</div>
+        <div class="gos-ribbon-tab ${_osRibbonTab==='kanban'?'active':''}" onclick="gosSetTab('kanban')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="5" height="16" rx="1"/><rect x="10" y="4" width="5" height="11" rx="1"/><rect x="17" y="4" width="4" height="14" rx="1"/></svg>Kanban</div>
+        <div class="gos-ribbon-tab ${_osRibbonTab==='calendario'?'active':''}" onclick="gosSetTab('calendario')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 9h18M8 3v4M16 3v4"/></svg>Calendário</div>
+        <div class="gos-ribbon-actions">
+          <button class="btn btn-primary" onclick="openModalOS()">+ Abrir OS</button>
+        </div>
+      </div>
+      <div id="osRibbonContent"></div>
+    </div>`;
+}
+function _gosRenderActiveTab(){
+  if (_osRibbonTab === 'kanban')     return gosRenderKanban();
+  if (_osRibbonTab === 'calendario') return gosRenderCalendario();
+  _renderOSTable(_osSearch, _osFilterStatus, _osFilterPrioridade);   // Lista (existente)
+}
+function gosSetTab(tab){
+  _osRibbonTab = tab;
+  _renderOSRibbonShell();
+  _gosRenderActiveTab();
+}
+
+// ── Kanban ──
+function gosRenderKanban(){
+  const cont = document.getElementById('osRibbonContent');
+  if (!cont) return;
+  const tipoColor = _gosTipoColorMap();
+  const tiposPresentes = [...new Set(_osList.map(_gosTipoNome))];
+
+  const chips = tiposPresentes.map(t=>{
+    const on = _gosKanbanTipoFilter.has(t); const tt = t.replace(/'/g,"\\'");
+    return `<span class="gos-chip ${on?'on':''}" onclick="gosToggleTipoFilter('${tt}')"><span class="gos-sw" style="background:${tipoColor[t]}"></span>${t}</span>`;
+  }).join('');
+
+  const bar = `<div class="gos-kanban-bar">
+      <span class="gos-seg-label">Agrupar por</span>
+      <div class="gos-seg">
+        <button class="${_gosKanbanGroupBy==='status'?'active':''}" onclick="gosSetKanbanGroup('status')">Status</button>
+        <button class="${_gosKanbanGroupBy==='tipo'?'active':''}" onclick="gosSetKanbanGroup('tipo')">Tipo</button>
+      </div>
+      <div class="gos-chips" style="margin-left:8px">${chips}</div>
+    </div>`;
+
+  const data = _gosKanbanTipoFilter.size
+    ? _osList.filter(o=>_gosKanbanTipoFilter.has(_gosTipoNome(o)))
+    : _osList.slice();
+
+  let cols;
+  if (_gosKanbanGroupBy==='status'){
+    cols = Object.keys(_GOS_STATUS).map(k=>({ label:_GOS_STATUS[k].label, color:_GOS_STATUS[k].color, items:data.filter(o=>_gosStatusKey(o)===k) }));
+  } else {
+    cols = tiposPresentes.map(t=>({ label:t, color:tipoColor[t], items:data.filter(o=>_gosTipoNome(o)===t) }));
+  }
+
+  const board = `<div class="gos-kanban">` + cols.map(c=>`
+      <div class="gos-kcol" ondragover="event.preventDefault()" ondrop="gosKanbanDrop(event)">
+        <div class="gos-kcol-h"><span class="gos-hbar" style="background:${c.color}"></span>${c.label}<span class="gos-count">${c.items.length}</span></div>
+        <div class="gos-klist">${ c.items.map(_gosKcard).join('') || '<div class="gos-kempty">—</div>' }</div>
+      </div>`).join('') + `</div>`;
+
+  cont.innerHTML = bar + board;
+}
+function _gosKcard(o){
+  const tipoColor = _gosTipoColorMap();
+  const tnome = _gosTipoNome(o); const d = _gosData(o); const sk = _gosStatusKey(o);
+  const right = _gosKanbanGroupBy==='status'
+    ? `<span class="gos-tp"><span class="gos-sw" style="background:${tipoColor[tnome]}"></span>${tnome}</span>`
+    : `<span class="gos-badge" style="color:${(_GOS_STATUS[sk]||{}).color||'var(--text-muted)'}">${(_GOS_STATUS[sk]||{}).label||o.status||'—'}</span>`;
+  const maq = o.maquina || o.maquina_label || '';
+  return `<div class="gos-kcard" draggable="true" ondragstart="gosKanbanDragStart(event)" onclick="openOSDetail('${_gosOid(o)}')">
+    <div class="gos-kcard-top"><span class="gos-osnum">${o.numero_os||'—'}</span>${_gosPrioTag(o)}<span style="margin-left:auto">${right}</span></div>
+    <div class="gos-kcard-cli">${o.cliente||'—'}</div>
+    ${maq?`<div class="gos-kcard-maq">🏭 ${maq}</div>`:''}
+    <div class="gos-kcard-foot"><span class="gos-kcard-date ${d?'':'nodate'}">📅 ${d?_gosFmt(d):'Sem data'}</span></div>
+  </div>`;
+}
+function gosSetKanbanGroup(g){ _gosKanbanGroupBy = g; gosRenderKanban(); }
+function gosToggleTipoFilter(t){ _gosKanbanTipoFilter.has(t)?_gosKanbanTipoFilter.delete(t):_gosKanbanTipoFilter.add(t); gosRenderKanban(); }
+function gosKanbanDragStart(e){ try{ e.dataTransfer.setData('text/plain','os'); }catch(_){} }
+function gosKanbanDrop(e){ e.preventDefault(); gosEmConstrucao('Mudança de status arrastando o card'); }
+
+// ── Calendário ──
+function gosRenderCalendario(){
+  const cont = document.getElementById('osRibbonContent');
+  if (!cont) return;
+  const y = _gosCalRef.getFullYear(), m = _gosCalRef.getMonth();
+  const hoje = new Date();
+  const todayStr = `${hoje.getFullYear()}-${String(hoje.getMonth()+1).padStart(2,'0')}-${String(hoje.getDate()).padStart(2,'0')}`;
+
+  const legend = Object.keys(_GOS_STATUS).map(k=>`<span class="gos-lg"><span class="gos-sw" style="background:${_GOS_STATUS[k].color};border-radius:50%"></span>${_GOS_STATUS[k].label}</span>`).join('');
+
+  const first=new Date(y,m,1), start=first.getDay(), dim=new Date(y,m+1,0).getDate(), dimPrev=new Date(y,m,0).getDate();
+  const cells=[];
+  for(let i=start-1;i>=0;i--) cells.push({d:dimPrev-i,out:true});
+  for(let d=1;d<=dim;d++) cells.push({d,out:false});
+  while(cells.length%7) cells.push({d:'',out:true});
+
+  const byDay={};
+  _osList.forEach(o=>{ const dd=_gosData(o); if(!dd) return; const p=dd.split('-').map(Number); if(p[0]===y && p[1]-1===m) (byDay[p[2]]=byDay[p[2]]||[]).push(o); });
+
+  const weeks = cells.map(c=>{
+    if(c.out) return `<div class="gos-cal-cell out"><span class="gos-cal-daynum">${c.d}</span></div>`;
+    const dstr=`${y}-${String(m+1).padStart(2,'0')}-${String(c.d).padStart(2,'0')}`;
+    const evs=(byDay[c.d]||[]).map(o=>{
+      const col=(_GOS_STATUS[_gosStatusKey(o)]||{}).color||'var(--text-muted)';
+      return `<div class="gos-cal-ev" style="background:${col}18;color:${col}" onclick="openOSDetail('${_gosOid(o)}')"><span class="gos-edot" style="background:${col}"></span>${(o.cliente||'—').split(' ')[0]} · ${String(o.numero_os||'').slice(-3)}</div>`;
+    }).join('');
+    return `<div class="gos-cal-cell ${dstr===todayStr?'today':''}"><span class="gos-cal-daynum">${c.d}</span>${evs}</div>`;
+  }).join('');
+
+  const semData=_osList.filter(o=>!_gosData(o));
+  const nodate = semData.length ? `<div class="gos-cal-nodate"><h4>Sem data prevista · ${semData.length}</h4><div class="gos-cal-nodate-list">`+
+    semData.map(o=>{ const col=(_GOS_STATUS[_gosStatusKey(o)]||{}).color||'var(--text-muted)'; return `<span class="gos-cal-pill" onclick="openOSDetail('${_gosOid(o)}')"><span class="gos-edot" style="background:${col}"></span>${o.numero_os||'—'} · ${o.cliente||'—'}</span>`; }).join('')+`</div></div>` : '';
+
+  cont.innerHTML = `
+    <div class="gos-cal-head">
+      <div class="gos-cal-nav">
+        <button class="btn btn-secondary btn-sm" onclick="gosCalMove(-1)">‹</button>
+        <button class="btn btn-secondary btn-sm" onclick="gosCalMove(1)">›</button>
+      </div>
+      <div class="gos-cal-month">${_GOS_MESES[m]} ${y}</div>
+      <button class="btn btn-secondary btn-sm" onclick="gosCalToday()">Hoje</button>
+      <div class="gos-cal-legend">${legend}</div>
+    </div>
+    <div class="gos-cal-grid">
+      <div class="gos-cal-dow"><div>Dom</div><div>Seg</div><div>Ter</div><div>Qua</div><div>Qui</div><div>Sex</div><div>Sáb</div></div>
+      <div class="gos-cal-weeks">${weeks}</div>
+    </div>
+    ${nodate}`;
+}
+function gosCalMove(d){ _gosCalRef = new Date(_gosCalRef.getFullYear(), _gosCalRef.getMonth()+d, 1); gosRenderCalendario(); }
+function gosCalToday(){ _gosCalRef = new Date(); gosRenderCalendario(); }
 
 function _populateOSUsuarioSelect(selectedId) {
   const sel = document.getElementById('osUsuario');
@@ -8436,6 +8704,13 @@ async function openModalOS(id) {
         toast('Não foi possível carregar máquinas vinculadas: ' + e.message, 'warning');
         _renderOSMachineSelector([]);
       }
+    } else {
+      // v62 FIX — Em "Nova OS", o select de usuários era populado no reset
+      // síncrono (~8376) enquanto _usuList ainda estava vazio; só o ramo de
+      // edição repopulava após o lazy-load de getUsuarios. Aqui repovoamos o
+      // select (vazio, sem seleção) depois que _usuList terminou de carregar,
+      // para que a lista de usuários apareça já na criação da OS.
+      _populateOSUsuarioSelect('');
     }
   } finally {
     if (loadingEl) loadingEl.style.display = 'none';
