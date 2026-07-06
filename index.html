@@ -1,4 +1,22 @@
 <!--
+  PCM v66 — 06/07/2026
+  Sprint frontend FixBuscaFoco (1 fix de UX, achado na auditoria completa de 06/07).
+  100% frontend; nenhuma alteração no GAS; nenhum id/data-view/data-key/view renomeado.
+  - FIX (UX): o campo de busca da Lista de OS perdia o foco/cursor a cada tecla, porque
+    _renderOSTable reconstruía o innerHTML inteiro (barra de filtros + tabela) no oninput,
+    destruindo e recriando o proprio input. Refatoração (Opcao A): a barra de filtros passa
+    a ser desenhada UMA vez por _renderOSTable, que agora insere um container vazio
+    id="osListResults" e delega a renderizacao das linhas para a nova _renderOSListResults().
+    Os handlers de busca/status/prioridade chamam _renderOSListResults() (atualiza SO o
+    container de resultados) em vez de _renderOSTable — o input nunca e recriado, foco
+    preservado. Toda a logica de filtro/ordenacao, o fix de fuso do v65 (isAtrasada/prazoStr
+    via _gosData/_gosFmt) e o template de linha migraram sem alteracao de comportamento.
+    Estado canonico permanece em _osSearch/_osFilterStatus/_osFilterPrioridade. O guard de
+    refresh em segundo plano (_usuarioEstaDigitandoEm_ em renderOS) continua valido.
+  - Validacao: script principal extraido passou no node check; parser HTML sem excecao;
+    greps de invariantes conferidos.
+-->
+<!--
   PCM v65 — 06/07/2026
   Sprint frontend FixDataCSS (2 correções cirúrgicas, achadas na auditoria completa de 06/07).
   100% frontend; nenhuma alteração no GAS; nenhum id/data-view/data-key/função/view renomeado.
@@ -8254,9 +8272,53 @@ async function renderOS() {
   }
 }
 
+// v66: barra de filtros desenhada UMA vez; a busca/filtro re-renderiza só #osListResults
+// (o <input> nunca é recriado → foco/cursor preservados). Estado canônico em
+// _osSearch / _osFilterStatus / _osFilterPrioridade. Toda a lógica de filtro/ordenação
+// e o template de linha migraram para _renderOSListResults() sem alteração de comportamento.
 function _renderOSTable(search = '', statusFilter = '', priorityFilter = '') {
   const el = document.getElementById('osRibbonContent') || document.getElementById('viewOs');
   if (!el) return;
+  _osSearch = search; _osFilterStatus = statusFilter; _osFilterPrioridade = priorityFilter;
+
+  el.innerHTML = `
+    <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;align-items:center">
+      <input type="text" placeholder="Buscar por nº OS ou cliente…"
+        style="width:240px;height:32px;padding:0 10px;font-size:13px;background:white;
+          border:1px solid var(--border2);border-radius:var(--radius-sm);outline:none;font-family:var(--font-sans)"
+        value="${search}"
+        oninput="_osSearch=this.value;_renderOSListResults()">
+      <select style="height:32px;padding:0 8px;font-size:12px;border:1px solid var(--border2);
+        border-radius:var(--radius-sm);background:white;font-family:var(--font-sans)"
+        onchange="_osFilterStatus=this.value;_renderOSListResults()">
+        <option value="">Todos os status</option>
+        <option value="ABERTA" ${statusFilter==='ABERTA'?'selected':''}>Aberta</option>
+        <option value="EM_ANDAMENTO" ${statusFilter==='EM_ANDAMENTO'?'selected':''}>Em andamento</option>
+        <option value="CONCLUIDA" ${statusFilter==='CONCLUIDA'?'selected':''}>Concluída</option>
+        <option value="CANCELADA" ${statusFilter==='CANCELADA'?'selected':''}>Cancelada</option>
+      </select>
+      <select style="height:32px;padding:0 8px;font-size:12px;border:1px solid var(--border2);
+        border-radius:var(--radius-sm);background:white;font-family:var(--font-sans)"
+        onchange="_osFilterPrioridade=this.value;_renderOSListResults()">
+        <option value="">Todas as prioridades</option>
+        <option value="normal" ${priorityFilter==='normal'?'selected':''}>Normal</option>
+        <option value="alta" ${priorityFilter==='alta'?'selected':''}>Alta</option>
+        <option value="urgente" ${priorityFilter==='urgente'?'selected':''}>Urgente</option>
+      </select>
+    </div>
+    <div id="osListResults"></div>`;
+
+  _renderOSListResults();
+}
+
+// v66: renderiza SOMENTE a lista de resultados dentro de #osListResults (sem recriar a
+// barra de filtros). Lê o estado canônico das vars de módulo _osSearch/_osFilterStatus/
+// _osFilterPrioridade. É este ponto (não _renderOSTable) que os handlers de busca/filtro
+// chamam — por isso o <input> mantém o foco a cada tecla.
+function _renderOSListResults() {
+  const box = document.getElementById('osListResults');
+  if (!box) return;
+  const search = _osSearch, statusFilter = _osFilterStatus, priorityFilter = _osFilterPrioridade;
 
   const STATUS_LABELS = {
     'ABERTA':      { label:'Aberta',      cls:'status-ok' },
@@ -8295,32 +8357,7 @@ function _renderOSTable(search = '', statusFilter = '', priorityFilter = '') {
     return 0;
   });
 
-  el.innerHTML = `
-    <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;align-items:center">
-      <input type="text" placeholder="Buscar por nº OS ou cliente…"
-        style="width:240px;height:32px;padding:0 10px;font-size:13px;background:white;
-          border:1px solid var(--border2);border-radius:var(--radius-sm);outline:none;font-family:var(--font-sans)"
-        value="${search}"
-        oninput="_osSearch=this.value;_renderOSTable(this.value,_osFilterStatus,_osFilterPrioridade)">
-      <select style="height:32px;padding:0 8px;font-size:12px;border:1px solid var(--border2);
-        border-radius:var(--radius-sm);background:white;font-family:var(--font-sans)"
-        onchange="_osFilterStatus=this.value;_renderOSTable(_osSearch,this.value,_osFilterPrioridade)">
-        <option value="">Todos os status</option>
-        <option value="ABERTA" ${statusFilter==='ABERTA'?'selected':''}>Aberta</option>
-        <option value="EM_ANDAMENTO" ${statusFilter==='EM_ANDAMENTO'?'selected':''}>Em andamento</option>
-        <option value="CONCLUIDA" ${statusFilter==='CONCLUIDA'?'selected':''}>Concluída</option>
-        <option value="CANCELADA" ${statusFilter==='CANCELADA'?'selected':''}>Cancelada</option>
-      </select>
-      <select style="height:32px;padding:0 8px;font-size:12px;border:1px solid var(--border2);
-        border-radius:var(--radius-sm);background:white;font-family:var(--font-sans)"
-        onchange="_osFilterPrioridade=this.value;_renderOSTable(_osSearch,_osFilterStatus,this.value)">
-        <option value="">Todas as prioridades</option>
-        <option value="normal" ${priorityFilter==='normal'?'selected':''}>Normal</option>
-        <option value="alta" ${priorityFilter==='alta'?'selected':''}>Alta</option>
-        <option value="urgente" ${priorityFilter==='urgente'?'selected':''}>Urgente</option>
-      </select>
-    </div>
-    ${items.length === 0 ? `<div class="empty"><div class="empty-icon">📋</div>
+  box.innerHTML = `${items.length === 0 ? `<div class="empty"><div class="empty-icon">📋</div>
       <div class="empty-title">Nenhuma OS encontrada</div>
       <div class="empty-sub">Crie a primeira Ordem de Serviço com o botão acima.</div></div>`
     : `<div class="table-wrap"><table>
