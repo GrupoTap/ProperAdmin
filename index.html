@@ -1,4 +1,12 @@
 <!--
+  PCM v64 — 05/07/2026
+  Sprint frontend: rótulo e posição do item de estoque no sidebar (decisão do Fernando).
+  - "Estoque" renomeado para "Peças a Vencer" (rótulo visível do nav + label de breadcrumb). Chave interna, id, data-view, onclick, view e função de render INALTERADOS (data-view estoque, id navEstoque, showView estoque, viewEstoque, renderEstoque). Sem violar VIEW_ID_OVERRIDES.
+  - Item reposicionado logo abaixo de "Controle de Preventivas" dentro do grupo PAINEL DE GESTÃO, por afinidade conceitual (a sugestão de estoque deriva das peças de preventiva a vencer). Nenhuma dependência de CSS posicional no nav (sem nth-child em nav-item), reorder seguro.
+  - Título interno da view segue "Sugestão de Estoque" (função da tela preservada, fora do escopo do menu).
+  - 100% frontend; nenhuma alteração no GAS.
+-->
+<!--
   PCM v63 — 05/07/2026
   Sprint frontend Gestão de OSs Ribbon, contraste Proper e Catálogo.
   - Paleta primária migrada para laranja Proper em accent, hover e botões primários; rótulos de grupo do sidebar ganharam contraste.
@@ -872,16 +880,17 @@ tr:hover td{background:var(--gray-50)}
         <svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6"/><path d="M8 4v4l2.5 2.5"/></svg>
         <span>Controle de Preventivas</span>
       </button>
+      <!-- v64 - "Estoque" renomeado para "Pecas a Vencer" (so o rotulo visivel) e reposicionado logo abaixo de Controle de Preventivas, por afinidade conceitual (a sugestao de estoque deriva das pecas de preventiva a vencer). IDs/data-view/onclick/view/render INALTERADOS: data-view="estoque", id="navEstoque", showView('estoque'), viewEstoque, renderEstoque(). -->
+      <button class="nav-item" data-view="estoque" onclick="showView('estoque')" id="navEstoque">
+        <svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 5l6-3 6 3v6l-6 3-6-3V5z"/><path d="M2 5l6 3 6-3M8 8v7"/></svg>
+        <span>Peças a Vencer</span>
+      </button>
       <button class="nav-item" data-view="os" onclick="showView('os')" id="navOs">
         <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
             d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
         </svg>
         Gestão de OSs
-      </button>
-      <button class="nav-item" data-view="estoque" onclick="showView('estoque')" id="navEstoque">
-        <svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 5l6-3 6 3v6l-6 3-6-3V5z"/><path d="M2 5l6 3 6-3M8 8v7"/></svg>
-        <span>Estoque</span>
       </button>
       <button class="nav-item" data-view="docs" onclick="showView('docs')" id="navDocs">
         <svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
@@ -3341,7 +3350,7 @@ function _usuarioEstaDigitandoEm_(el) {
     preventivas: 'Controle de Preventivas',
     machines: 'Máquinas',
     clients: 'Clientes',
-    estoque: 'Estoque',
+    estoque: 'Peças a Vencer',
     catalog: 'Catálogo',
     config: 'Configurações',
     tecnicos: 'Usuários',
