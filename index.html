@@ -1,4 +1,24 @@
 <!--
+  PCM v65 — 06/07/2026
+  Sprint frontend FixDataCSS (2 correções cirúrgicas, achadas na auditoria completa de 06/07).
+  100% frontend; nenhuma alteração no GAS; nenhum id/data-view/data-key/função/view renomeado.
+  - FIX 1 (cosmético): 3 variáveis CSS inexistentes no :root eram referenciadas em color:var(...),
+    fazendo a cor herdar o padrão (texto visível, cor errada). Corrigidas para nomes já definidos
+    na paleta: var(text1) para var(text) no corpo do modal "Apagar cliente"; var(warning) para
+    var(orange) no aviso "Máquina não encontrada"; var(danger) para var(red) na mensagem de erro
+    ao carregar máquinas vinculadas. (Notação sem duplo-hífen aqui de propósito, para não fechar
+    o comentário HTML; no código os nomes usam o prefixo de duplo-hífen normal.)
+  - FIX 2 (robustez de fuso): data_prevista é gravada como string YYYY-MM-DD (input type=date, sem
+    conversão). A Lista de OS (_renderOSTable) fazia new Date(o.data_prevista), que interpreta a
+    string como UTC e desloca 1 dia para trás no fuso do Brasil (UTC-3), tanto no display "Prazo"
+    quanto na marcação "atrasada". O Calendário (v63) já usava parsing por componentes de string,
+    imune a fuso, então a mesma OS podia cair em dias diferentes entre Lista e Calendário. Fix:
+    reusar os helpers imunes a fuso já existentes (_gosData/_gosFmt, function declarations
+    hoisted) dentro de isAtrasada e na montagem de prazoStr.
+  - Validação: script principal extraído passou no node check; greps de invariantes conferidos
+    (0 refs a var(text1)/var(warning)/var(danger); 0 refs a new Date(o.data_prevista)).
+-->
+<!--
   PCM v64 — 05/07/2026
   Sprint frontend: rótulo e posição do item de estoque no sidebar (decisão do Fernando).
   - "Estoque" renomeado para "Peças a Vencer" (rótulo visível do nav + label de breadcrumb). Chave interna, id, data-view, onclick, view e função de render INALTERADOS (data-view estoque, id navEstoque, showView estoque, viewEstoque, renderEstoque). Sem violar VIEW_ID_OVERRIDES.
@@ -1568,7 +1588,7 @@ tr:hover td{background:var(--gray-50)}
 <div class="overlay" id="modalDeleteOrphan">
   <div class="modal" style="max-width:440px">
     <div class="modal-title" style="color:var(--red)">🗑 Apagar cliente</div>
-    <div id="deleteOrphanBody" style="font-size:13px;color:var(--text1);line-height:1.6;margin:12px 0 4px"></div>
+    <div id="deleteOrphanBody" style="font-size:13px;color:var(--text);line-height:1.6;margin:12px 0 4px"></div>
     <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:18px;flex-wrap:wrap">
       <button class="btn btn-secondary" onclick="closeModal('modalDeleteOrphan')">Cancelar</button>
       <button class="btn" style="background:var(--orange);color:#fff" id="btnDeleteOrphanOnly" onclick="_confirmDeleteOrphan(false)">Apagar só o nome</button>
@@ -8260,8 +8280,10 @@ function _renderOSTable(search = '', statusFilter = '', priorityFilter = '') {
     if (!o.data_prevista) return false;
     const st = String(o.status||'').toUpperCase();
     if (st === 'CONCLUIDA' || st === 'CANCELADA') return false;
-    const prazo = new Date(o.data_prevista);
-    prazo.setHours(0,0,0,0);
+    const ds = _gosData(o);                     // "YYYY-MM-DD", imune a fuso
+    if (!ds) return false;
+    const [py, pm, pd] = ds.split('-').map(Number);
+    const prazo = new Date(py, pm - 1, pd);     // meia-noite LOCAL, sem shift UTC
     return prazo.getTime() < hoje.getTime();
   };
   items = [...items].sort((a, b) => {
@@ -8321,7 +8343,7 @@ function _renderOSTable(search = '', statusFilter = '', priorityFilter = '') {
             };
             const prio = PRIORIDADE_BADGE[(o.prioridade||'normal').toLowerCase()] || PRIORIDADE_BADGE.normal;
             const atrasada = isAtrasada(o);
-            const prazoStr = o.data_prevista ? new Date(o.data_prevista).toLocaleDateString('pt-BR') : '—';
+            const prazoStr = _gosData(o) ? _gosFmt(_gosData(o)) : '—';
             const localAtend = (o.local_atendimento === 'interno') ? '🏭 Interno' : '🚐 Externo';
             return `<tr>
               <td><span style="font-family:var(--font-mono);font-size:12px;font-weight:600">${o.numero_os||'—'}</span></td>
@@ -8620,10 +8642,10 @@ async function _renderOSLinkedMachinesDetail(osId) {
       el.innerHTML = '<div style="font-size:12px;color:var(--text-muted);margin-top:8px">Nenhuma máquina vinculada a esta OS.</div>';
       return;
     }
-    el.innerHTML = `<div style="display:grid;gap:6px;margin-top:8px">${machines.map(m => `<div style="font-size:12px;color:var(--text);padding:8px;border:1px solid var(--border);border-radius:8px;background:var(--surface)">${escHtml(_osMachineLabel(m))}</div>`).join('')}${missing.map(id => `<div style="font-size:12px;color:var(--warning);padding:8px;border:1px solid var(--border);border-radius:8px">Máquina não encontrada: ${escHtml(id)}</div>`).join('')}</div>`;
+    el.innerHTML = `<div style="display:grid;gap:6px;margin-top:8px">${machines.map(m => `<div style="font-size:12px;color:var(--text);padding:8px;border:1px solid var(--border);border-radius:8px;background:var(--surface)">${escHtml(_osMachineLabel(m))}</div>`).join('')}${missing.map(id => `<div style="font-size:12px;color:var(--orange);padding:8px;border:1px solid var(--border);border-radius:8px">Máquina não encontrada: ${escHtml(id)}</div>`).join('')}</div>`;
   } catch(e) {
     if (e.message && e.message.includes('AUTH_GOOGLE')) { hubLogout(); return; }
-    el.innerHTML = `<div style="font-size:12px;color:var(--danger);margin-top:8px">Erro ao carregar máquinas vinculadas: ${escHtml(e.message)}</div>`;
+    el.innerHTML = `<div style="font-size:12px;color:var(--red);margin-top:8px">Erro ao carregar máquinas vinculadas: ${escHtml(e.message)}</div>`;
   }
 }
 
