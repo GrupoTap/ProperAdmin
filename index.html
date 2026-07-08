@@ -1,4 +1,16 @@
 <!--
+  PCM v67 — 08/07/2026
+  Sprint Performance (Fase 1, item 3 do roadmap — ver Auditoria_Performance_ProperCare.md).
+  100% frontend; nenhuma alteração de id/data-view/data-key/view. Par do backend: GAS_properCare_v59.js.
+  - PERF (boot): syncFromGS passa a disparar as 5 leituras independentes do carregamento
+    inicial (getMachinesWithParts, getVisits, getClients, getCatalogFull, getRotorModels)
+    em PARALELO via Promise.all, em vez de 5 awaits sequenciais — corta a latência de rede
+    do boot para ~1/5. O processamento (merge no db) continua na MESMA ordem de antes; cada
+    chamada tem catch individual, então falha de uma não derruba o boot.
+  - syncCatalogFromGS(gsGet, preResult): aceita o resultado de getCatalogFull já baixado no
+    Promise.all (fallback para buscar sozinha se não vier). Assinatura retrocompatível.
+  - Sem mudança de comportamento funcional; só ordena o download de forma concorrente.
+
   PCM v66 — 06/07/2026
   Sprint frontend FixBuscaFoco (1 fix de UX, achado na auditoria completa de 06/07).
   100% frontend; nenhuma alteração no GAS; nenhum id/data-view/data-key/view renomeado.
@@ -7202,10 +7214,11 @@ async function seedDemoData(){
   }
 }
 
-async function syncCatalogFromGS(gsGet){
+async function syncCatalogFromGS(gsGet, preResult){
   try{
-    const result = await gsGet('getCatalogFull');
-    if(result.status!=='ok'){ console.warn('getCatalogFull retornou erro:', result.error||''); return; }
+    // v67 PERF: aceita resultado já baixado (boot em paralelo). Se não vier, busca.
+    const result = preResult || await gsGet('getCatalogFull');
+    if(!result || result.status!=='ok'){ console.warn('getCatalogFull retornou erro:', (result&&result.error)||''); return; }
     const modelsRows = result.models || [];
     const partsRows = result.parts || [];
     const simRows = result.similarities || [];
@@ -7313,19 +7326,25 @@ async function syncFromGS({ silent = false } = {}){
 
   try{
     const beforeHash = _dbHash(db);
-    const dm = await gsGet('getMachinesWithParts');
+
+    // v67 PERF (Fase 1, item 3): dispara TODAS as leituras independentes do boot
+    // em PARALELO (antes eram 5 idas e voltas sequenciais ao Apps Script). O
+    // processamento abaixo continua na mesma ordem — só o download foi paralelizado.
+    const [dm, dv, dc, dCatalog, dr] = await Promise.all([
+      gsGet('getMachinesWithParts'),
+      gsGet('getVisits'),
+      gsGet('getClients').catch(e => { console.warn('getClients falhou:', e); return { status:'error' }; }),
+      gsGet('getCatalogFull').catch(e => { console.warn('getCatalogFull falhou:', e); return null; }),
+      gsGet('getRotorModels').catch(e => { console.warn('getRotorModels falhou:', e); return { status:'error' }; })
+    ]);
+
     if(dm.status!=='ok') throw new Error('Erro ao buscar máquinas: '+(dm.error||''));
     const sheetMachines = dm.machines||[];
 
-    const dv = await gsGet('getVisits');
     const visits = dv.status==='ok' ? dv.visits||[] : [];
 
     // Sincronizar clientes do Sheets
-    let sheetClients = [];
-    try {
-      const dc = await gsGet('getClients');
-      if (dc.status === 'ok') sheetClients = dc.clients || [];
-    } catch(e) { console.warn('getClients falhou:', e); }
+    let sheetClients = (dc && dc.status === 'ok') ? (dc.clients || []) : [];
 
     if (!db.clients) db.clients = [];
     sheetClients.forEach(sc => {
@@ -7373,12 +7392,11 @@ async function syncFromGS({ silent = false } = {}){
       }
     });
 
-    await syncCatalogFromGS(gsGet);
+    await syncCatalogFromGS(gsGet, dCatalog); // v67 PERF: usa o catálogo já baixado em paralelo
 
     // Sync ROTORES_MODELOS
     try {
-      const dr = await gsGet('getRotorModels');
-      if (dr.status === 'ok') {
+      if (dr && dr.status === 'ok') { // v67 PERF: usa o resultado já baixado em paralelo
         if (!db.rotorModels) db.rotorModels = [];
         (dr.rotorModels || []).forEach(rm => {
           const mid = String(rm.Model_ID || '').trim();
