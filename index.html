@@ -1,4 +1,21 @@
 <!--
+  PCM v68 — 08/07/2026
+  Fix: contaminação entre clientes + cache local preso (dados de uma máquina/cliente
+  aparecendo em outra; PCs diferentes mostrando contagens diferentes). 100% frontend;
+  par do backend inalterado (GAS_properCare_v60.js). Sem renomear id/data-view/data-key/view.
+  - (A) findMachineByKey: match robusto por TAG/série NUNCA cruza clientes. Duas máquinas
+    de clientes diferentes com a MESMA TAG (ex.: 296-CP-01 em SORRAG e Fundição São Cristóvão)
+    não colidem mais; TAG isolada só vale como chave dentro do mesmo cliente.
+  - (B) syncFromGS: as peças de cada máquina passam a ser RECONSTRUÍDAS a partir da planilha
+    (fonte da verdade) em vez de mescladas por cima. Peças antigas/contaminadas que não existem
+    mais na planilha somem sozinhas no próximo sync — sem limpeza manual.
+  - (C) DATA_SCHEMA_VERSION ('68'): no boot, se a versão gravada difere, o localStorage
+    (proper_admin_v2) é resetado e ressincronizado automaticamente — subir o número força o
+    reset em TODOS os PCs, sem "limpar dados do site" no Chrome. Novo botão "🧹 Limpar cache e
+    ressincronizar" na tela de Config (function resetLocalCacheAndSync) para reset manual pontual.
+  Motivo raiz: Ctrl+Shift+R só limpa cache HTTP, não o localStorage (onde vive o "db"); e o sync
+  era aditivo (nunca removia), então erro gravado ficava preso até limpeza forçada.
+
   PCM v67 — 08/07/2026
   Sprint Performance (Fase 1, item 3 do roadmap — ver Auditoria_Performance_ProperCare.md).
   100% frontend; nenhuma alteração de id/data-view/data-key/view. Par do backend: GAS_properCare_v59.js.
@@ -2193,6 +2210,20 @@ function showHelp(el, key) {
 // ═══════════════════════════════════════════════════════════
 // DATABASE
 // ═══════════════════════════════════════════════════════════
+// v68: versão do schema do cache local. Ao subir este número, TODO PC reseta
+// o localStorage (proper_admin_v2) sozinho no próximo carregamento e ressincroniza
+// do Sheets — sem precisar "limpar dados do site" no Chrome. Suba o número sempre
+// que uma correção exigir reconstruir o cache do zero.
+const DATA_SCHEMA_VERSION = '68';
+try {
+  const _sv = localStorage.getItem('proper_schema_version');
+  if (_sv !== DATA_SCHEMA_VERSION) {
+    localStorage.removeItem('proper_admin_v2');
+    localStorage.setItem('proper_schema_version', DATA_SCHEMA_VERSION);
+    console.log('[PCM v68] Cache local resetado: schema', _sv, '->', DATA_SCHEMA_VERSION);
+  }
+} catch(e) { console.warn('[PCM v68] checagem de schema falhou:', e); }
+
 let db = JSON.parse(localStorage.getItem('proper_admin_v2') || 'null') || {
   models: [
     {
@@ -2459,30 +2490,45 @@ function findMachineByKey(mkId, client, brand, model, serial, tag){
   const mk = machineKey(client, brand, model, serial);
   const byMk = db.machines.find(m => String(m.id||'').trim() === mk);
   if(byMk) return byMk;
-  // 3. v3.12: match robusto por marca+modelo+série (requer os três)
+  // 3. v68: match robusto por marca+modelo+série/TAG — NUNCA cruza clientes.
+  //    BUG corrigido: duas máquinas de clientes diferentes com a MESMA TAG
+  //    (ex.: 296-CP-01 em SORRAG e Fundição São Cristóvão) colidiam e as peças
+  //    de uma eram gravadas na outra. Agora: se ambos os lados têm cliente e são
+  //    diferentes, não é a mesma máquina; e TAG isolada (sem série) só vale como
+  //    chave DENTRO do mesmo cliente.
   const ck = compactKey(serial);
   const tk = compactKey(tag);
   const bk = compactKey(brand);
   const dk = compactKey(model);
+  const cl = compactKey(client);
   if((ck||tk) && (bk||dk)){
     const robust = db.machines.find(m => {
       const mSer = compactKey(m.serial||'');
       const mTag = compactKey(m.tag||'');
       const mBrd = compactKey(m.brand||'');
       const mMod = compactKey(m.model||'');
+      const mCl  = compactKey(m.client||'');
+      // v68: cliente diferente nos dois lados => máquinas distintas
+      if(cl && mCl && cl !== mCl) return false;
       const serMatch = ck && mSer && ck === mSer;
       const tagMatch = tk && mTag && tk === mTag;
       if(!serMatch && !tagMatch) return false;
+      // v68: TAG sozinha (sem série batendo) só casa se o cliente também bater
+      if(tagMatch && !serMatch && !(cl && mCl && cl === mCl)) return false;
       const brandOk = !bk || !mBrd || bk === mBrd;
       const modelOk = !dk || !mMod || dk === mMod;
       return brandOk && modelOk;
     });
     if(robust) return robust;
   }
-  // 4. v3.12: fallback por série única (independente de cliente) — só se única
+  // 4. v68: fallback por série única — só se única E sem conflito de cliente
   if(ck){
     const bySerial = db.machines.filter(m => compactKey(m.serial||'')===ck);
-    if(bySerial.length === 1) return bySerial[0];
+    if(bySerial.length === 1){
+      const cand = bySerial[0];
+      const candCl = compactKey(cand.client||'');
+      if(!(cl && candCl && cl !== candCl)) return cand;
+    }
   }
   return null;
 }
@@ -7009,7 +7055,11 @@ function renderConfigStats(){
       <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
         <button class="btn btn-primary" onclick="syncFromGS()">↓ Sincronizar agora</button>
         <button class="btn btn-secondary" onclick="resyncCatalogToGS()">↑ Reenviar catálogo para Sheets</button>
+        <button class="btn btn-secondary" onclick="resetLocalCacheAndSync()" title="Apaga o cache local deste PC e recarrega tudo da planilha">🧹 Limpar cache e ressincronizar</button>
         <span id="syncStatus" style="font-size:11px;color:var(--text2)"></span>
+      </div>
+      <div style="font-size:11px;color:var(--text-muted);margin-top:8px">
+        Use "Limpar cache e ressincronizar" se uma máquina estiver mostrando dados de outro cliente ou peças que não são dela. Substitui a necessidade de limpar dados do site no Chrome.
       </div>
     </div>
 
@@ -7303,6 +7353,15 @@ async function syncCatalogFromGS(gsGet, preResult){
 // ═══════════════════════════════════════════════════════════
 // SINCRONIZAR DO SHEETS → LOCAL
 // ═══════════════════════════════════════════════════════════
+// v68: botão de pânico — limpa o cache local deste PC e recarrega tudo da
+// planilha (fonte da verdade), sem precisar mexer nas configurações do Chrome.
+// Resolve de forma controlada dados presos/contaminados no localStorage.
+async function resetLocalCacheAndSync(){
+  if(!confirm('Isto vai apagar o cache local deste computador e recarregar tudo da planilha (fonte da verdade).\n\nDados ainda não sincronizados neste PC serão perdidos. Continuar?')) return;
+  try { localStorage.removeItem('proper_admin_v2'); } catch(e){ console.warn(e); }
+  location.reload();
+}
+
 async function syncFromGS({ silent = false } = {}){
   if(!gsUrl||!gsConnected){
     setSyncHeaderStatus('error');
@@ -7449,10 +7508,16 @@ async function syncFromGS({ silent = false } = {}){
         if(sm.obsOp    || sm['Obs_Op'])     eq.obsOp   = sm.obsOp    || sm['Obs_Op']     || eq.obsOp   || '';
         eq.hpw      = parseInt(sm.hpw || sm['h/Semana']) || eq.hpw || 0;
         if(sm.parts && typeof sm.parts === 'object'){
-          if(!eq.parts) eq.parts = {};
+          // v68 (auto-cura): a planilha é a FONTE DA VERDADE das peças desta
+          // máquina. Reconstruímos eq.parts SÓ com o que veio do Sheets, em vez
+          // de mesclar por cima. Assim, peças antigas/contaminadas que já não
+          // existem na planilha (ex.: filtros de outro cliente) somem sozinhas
+          // no próximo sync — sem precisar limpar cache no Chrome.
+          const _prev = eq.parts || {};
+          const _rebuilt = {};
           Object.entries(sm.parts).forEach(([pid, ps])=>{
-            const _ex = eq.parts[pid] || {};
-            eq.parts[pid] = {
+            const _ex = _prev[pid] || {};
+            _rebuilt[pid] = {
               name:           ps.name          || _ex.name          || pid,
               lastChange:     parseInt(ps.lastChange) || 0,
               interval:       parseInt(ps.interval)  || 2000,
@@ -7468,6 +7533,7 @@ async function syncFromGS({ silent = false } = {}){
             };
             updParts++;
           });
+          eq.parts = _rebuilt;
         }
       } else if(gsClient || gsBrand || gsSerial || gsTag){
         db.machines.push({
