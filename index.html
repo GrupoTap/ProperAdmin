@@ -1,4 +1,12 @@
 <!--
+  PCM v75 — 09/07/2026 — Número da OS AUTO-GERADO (par do GAS_properCare_v66.js).
+  O campo "Número da OS" do modal Nova OS deixa de ser digitado: vira somente-leitura
+  com placeholder "Gerado automaticamente ao salvar". saveOSModal não exige mais o
+  número — em Nova OS envia vazio e o backend gera PGP-{ano}-{sequencial}; em edição
+  o número existente é preservado (o backend não altera numero_os no update). Evita
+  confusão/colisão de números digitados à mão. OS de Inspeção usam INS-{ano}-#### (GAS v66).
+-->
+<!--
   PCM v74 — 09/07/2026
   FIX DEFINITIVO: perda de dados no editor de Peças (aba "Peças" do detalhe da máquina).
   CAUSA RAIZ: _renderPartsEditor renderizava as linhas SEM data-pid, então
@@ -17,6 +25,11 @@
   Duplicatas JÁ existentes em MACHINE_PARTS são limpas pelo script
   AUDITORIA_Vazamentos_ProperCare.gs (rodar 1× no editor Apps Script).
   Sem mudança de schema; par mantém GAS v64 / PCF v52.
+  ── FIX Gestão de Documentos (grouping): no modo "Por OS", arquivos SEM OS caíam
+  todos num único grupo '_SEM_OS' rotulado pelo cliente do 1º item — fazia as fotos
+  da Metalforma aparecerem sob "OS — Aluminas". Não era vazamento de dado (Cliente
+  correto no registro), só exibição. renderDocsList agora agrupa os sem-OS POR
+  CLIENTE ("Sem OS · {Cliente}") e prefixa a chave das OS reais ('OS::').
 -->
 <!--
   PCM v73 — 09/07/2026
@@ -3443,7 +3456,14 @@ function renderDocsList(){
     let key,label;
     if(_docsGroupBy==='cliente'){ key=_docVal(it?.Cliente); label=key; }
     else if(_docsGroupBy==='maquina'){ key=_docVal(it?.Maquina_Label || it?.Maquina_ID); label=key; }
-    else { key=it?.OS_Numero || '_SEM_OS'; label=it?.OS_Numero ? `OS ${it.OS_Numero}` : 'OS —'; if(it?.Cliente) label += ` · ${it.Cliente}`; }
+    else {
+      // v74 — "Por OS": arquivos SEM OS não podem cair todos num único balde
+      // '_SEM_OS' rotulado pelo cliente do 1º item (fazia as fotos da Metalforma
+      // aparecerem sob "OS — Aluminas"). Agora os sem-OS são agrupados POR CLIENTE,
+      // com rótulo claro "Sem OS · {Cliente}". OS reais seguem agrupadas por número.
+      if(it?.OS_Numero){ key='OS::'+it.OS_Numero; label=`OS ${it.OS_Numero}`; if(it?.Cliente) label += ` · ${it.Cliente}`; }
+      else { const _cli=_docVal(it?.Cliente); key='SEMOS::'+String(_cli).toLowerCase(); label='Sem OS · '+_cli; }
+    }
     if(!groupsMap.has(key)) groupsMap.set(key,{label,items:[],maxDate:0});
     const g=groupsMap.get(key); g.items.push(it); g.maxDate=Math.max(g.maxDate,_docDateValue(it));
   });
@@ -9100,7 +9120,9 @@ async function saveOSModal(btnEl) {
   const dataPrevista  = document.getElementById('osDataPrevista').value.trim();
   const localAtendimento = document.getElementById('osLocalAtendimento').value.trim();
 
-  if (!numero) { toast('Preencha o número da OS.', 'error'); return; }
+  // v75 — número da OS não é mais digitado: em Nova OS vai vazio e o backend gera
+  // PGP-{ano}-{sequencial} (generateOsNumber_); em edição, o número já existe e é
+  // preservado (o backend não altera numero_os no update).
   if (!cliente) { toast('Preencha o cliente.', 'error'); return; }
   if (!tipo) { toast('Selecione o tipo de OS.', 'error'); return; }
 
@@ -10025,8 +10047,8 @@ if(!gsUrl){
       <input type="hidden" id="osId">
       <input type="hidden" id="osClienteId">
       <div class="form-row">
-        <label class="form-label">Número da OS *</label>
-        <input class="form-input" type="text" id="osNumero" placeholder="Ex: OS-2026-001">
+        <label class="form-label">Número da OS</label>
+        <input class="form-input" type="text" id="osNumero" placeholder="Gerado automaticamente ao salvar" readonly title="O número é gerado automaticamente (PGP-ano-sequencial) para evitar confusão/colisão." style="background:var(--bg,#f1f3f5);color:var(--text-muted,#6b7280);cursor:not-allowed">
       </div>
       <div class="form-row">
         <label class="form-label">Cliente *</label>
