@@ -1,4 +1,17 @@
 <!--
+  PCM v73 — 09/07/2026
+  BLINDAGEM da tela de Preventivas (par do GAS_properCare_v64.js / PCF v52).
+  renderPreventivas() agora envolve o cálculo+render num try/catch com snapshot do
+  conteúdo anterior: se qualquer coisa lançar, a lista anterior é preservada em vez
+  de a tela ficar vazia (sintoma "as máquinas sumiram todas" ao clicar num controle
+  de outro contexto). Mesmo padrão "mantém cache" já usado em renderOS/renderTemplateList.
+  Observação: a ORIGEM do botão "Recebimento de máquina" aparecendo nesta tela não foi
+  localizada no código estático (é rótulo dinâmico de tarefa/decisão de pipeline; o
+  pipeline só renderiza dentro de #osDetailContent/viewOs). Requer inspeção do DOM ao
+  vivo para cravar — esta blindagem trata o SINTOMA; o vazamento de dados em si é
+  estancado no back-end (GAS v64) e no PCF (v52).
+-->
+<!--
   PCM v72 — 09/07/2026
   HORÍMETRO DINÂMICO — painel de calibração exclusivo do ADM (par do GAS_properCare_v63.js / PCF v51).
   Regra do Fernando: o técnico em campo NÃO vê fator/erro/calibração; ele vê o horímetro
@@ -3723,6 +3736,13 @@ function renderPreventivas(){
   const el=document.getElementById('viewPreventivas');
   if(!el) return;
 
+  // v73 — Blindagem: snapshot do conteúdo anterior. Se qualquer coisa lançar
+  // durante o cálculo/render, restauramos a lista em vez de deixar a tela vazia
+  // (evita o sintoma "as máquinas sumiram todas" causado por um handler/estado
+  // defeituoso de outro contexto). Mesmo padrão "mantém cache" de renderOS.
+  const _prevPrevHTML = el.innerHTML;
+  try {
+
   // Calcular status de cada máquina
   const rows=db.machines.map(eq=>({
     eq,
@@ -3878,6 +3898,12 @@ function renderPreventivas(){
       const _psi = document.getElementById('prevSearchInput');
       if (_psi) { _psi.focus(); _psi.setSelectionRange(_psi.value.length, _psi.value.length); }
     });
+  }
+
+  } catch(_e) {
+    // v73 — nunca deixa a tela de Preventivas vazia por causa de um erro de render.
+    console.error('[renderPreventivas] falha ao renderizar — preservando a lista anterior:', _e);
+    if (_prevPrevHTML && (el.innerHTML || '').trim() === '') el.innerHTML = _prevPrevHTML;
   }
 }
 
