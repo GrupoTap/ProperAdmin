@@ -1,4 +1,19 @@
 <!--
+  PCM v72 — 09/07/2026
+  HORÍMETRO DINÂMICO — painel de calibração exclusivo do ADM (par do GAS_properCare_v63.js / PCF v51).
+  Regra do Fernando: o técnico em campo NÃO vê fator/erro/calibração; ele vê o horímetro
+  total e o de cada peça já projetados pelo regime e só corrige com o real. O fator roda
+  em background e se auto-calibra ao salvar a preventiva (GAS). Aqui no PCM, só o admin vê.
+  - Detalhe da máquina (aba Resumo), novo bloco "📊 Calibração do horímetro (só admin)":
+    container #mdetCalibHorim + renderCalibHorim(machineId) → gsGet('getHorimetroCalib').
+    Mostra fator atual (com % vs. regime), última leitura real + data, nº de amostras e a
+    tabela do histórico HORIMETRO_HIST (Data / Estimado / Real / Erro / Fator, marcando
+    ajustes manuais). Campo "Sobrescrever fator" + salvarFatorHorim → gsPost('setHorimetroFator').
+  - Fator é MULTIPLICATIVO do delta projetado: 1,000 = sem correção (NÃO é 1000);
+    1,10 = a máquina roda ~10% a mais que a estimativa do regime. Helper _fatorPct.
+  - Reaproveita gsGet/gsPost/openMachineDetail/switchMdetTab já existentes. DATA_SCHEMA_VERSION
+    mantido '68' (calibração é lida ao vivo do backend, não vive no cache local).
+
   PCM v71 — 08/07/2026
   FLUXO DE OFICINA (par do backend GAS_properCare_v62.js — não roda sem ele).
   DATA_SCHEMA_VERSION mantido '68' (pipeline/fila lidos ao vivo, não vivem no cache local).
@@ -5378,6 +5393,7 @@ function openMachineDetail(id){
       ${clientReg?.antecedencia_alerta_dias?`<div style="grid-column:1/-1"><span class="client-alerta-badge">🔔 Alerta ${clientReg.antecedencia_alerta_dias} dias antes do vencimento</span></div>`:''}
     </div>
     ${_buildPartsReadTable(eq, hourTotal, hpw)}
+    <div id="mdetCalibHorim" style="margin-top:14px"></div>
     <div style="display:flex;gap:6px;margin-top:14px;padding-top:10px;border-top:1px solid var(--border);flex-wrap:wrap">
       <button class="btn btn-secondary btn-sm" onclick="openModalMachine('${id}');closeModal('modalMachineParts')">Editar dados</button>
       <button class="btn btn-secondary btn-sm" onclick="switchMdetTab('pecas')">✏️ Editar peças</button>
@@ -5387,6 +5403,9 @@ function openMachineDetail(id){
 
   // ── ABA PEÇAS (edição) ──
   _renderPartsEditor(eq);
+
+  // ── v72: painel de calibração do horímetro (só admin) ──
+  renderCalibHorim(id);
 
   // ── ABA FOTOS ──
   document.getElementById('mdetFotos').innerHTML =
@@ -5410,6 +5429,96 @@ function openMachineDetail(id){
   // Resetar para aba resumo
   switchMdetTab('resumo');
   openModal('modalMachineParts');
+}
+
+// ── v72: Calibração do horímetro (visão exclusiva do ADM) ────────────────────
+// Mostra fator atual, última leitura real e o histórico estimado×real×erro×fator
+// (que roda em background no campo, invisível ao técnico). Permite sobrescrever o
+// fator manualmente (setHorimetroFator). O fator é MULTIPLICATIVO do delta projetado
+// pelo regime: 1,00 = sem correção; 1,10 = máquina roda ~10% a mais que o estimado.
+function _fatorPct(f){
+  const n = Number(f); if(isNaN(n)) return '—';
+  const d = Math.round((n-1)*100);
+  return (d>0?'+':'') + d + '%';
+}
+async function renderCalibHorim(machineId){
+  const box = document.getElementById('mdetCalibHorim');
+  if(!box) return;
+  box.innerHTML = `<div style="font-size:11px;font-weight:700;color:var(--blue-mid);text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px">📊 Calibração do horímetro (só admin)</div>
+    <div style="font-size:12px;color:var(--text3)">Carregando…</div>`;
+  let r;
+  try { r = await gsGet('getHorimetroCalib', { machine_id: machineId }); }
+  catch(e){ box.innerHTML = `<div style="font-size:12px;color:var(--danger,#b91c1c)">⚠ Erro ao carregar calibração: ${e.message}</div>`; return; }
+  if(!r || r.status!=='ok'){ box.innerHTML = `<div style="font-size:12px;color:var(--text3)">Sem dados de calibração.</div>`; return; }
+
+  const fator = (r.fator_correcao!=null) ? Number(r.fator_correcao) : 1;
+  const ult   = (r.ultimo_horimetro_real!=='' && r.ultimo_horimetro_real!=null) ? Number(r.ultimo_horimetro_real) : null;
+  const ultAt = r.ultimo_real_at ? String(r.ultimo_real_at).slice(0,10) : '—';
+  const nAm   = r.n_amostras || 0;
+  const hist  = Array.isArray(r.historico) ? r.historico : [];
+
+  const fmt = n => (n===''||n==null||isNaN(Number(n))) ? '—' : Math.round(Number(n)).toLocaleString('pt-BR');
+  const rows = hist.slice(0,12).map(h=>{
+    const err = (h.erro_horas===''||h.erro_horas==null||isNaN(Number(h.erro_horas))) ? null : Number(h.erro_horas);
+    const errTxt = err==null ? '—' : (err>0?'+':'') + Math.round(err) + 'h';
+    const errCol = err==null ? 'var(--text3)' : (Math.abs(err)>Math.max(50, Math.abs(Number(h.estimado||0))*0.1) ? '#b45309' : 'var(--text2,#475569)');
+    const data = h.data ? String(h.data).slice(0,10) : (h.Created_At? String(h.Created_At).slice(0,10):'—');
+    const tipo = (h.fator_amostra==='override') ? ' <span style="color:#7c3aed">✎ manual</span>' : '';
+    return `<tr>
+      <td style="padding:3px 6px;white-space:nowrap">${data}${tipo}</td>
+      <td style="padding:3px 6px;text-align:right;font-family:var(--font-mono),monospace">${fmt(h.estimado)}</td>
+      <td style="padding:3px 6px;text-align:right;font-family:var(--font-mono),monospace">${fmt(h.real)}</td>
+      <td style="padding:3px 6px;text-align:right;color:${errCol}">${errTxt}</td>
+      <td style="padding:3px 6px;text-align:right">${h.fator_novo!=null&&h.fator_novo!==''?Number(h.fator_novo).toFixed(3):'—'}</td>
+    </tr>`;
+  }).join('');
+
+  box.innerHTML = `
+    <div style="font-size:11px;font-weight:700;color:var(--blue-mid);text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px">📊 Calibração do horímetro (só admin)</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px 20px;font-size:12px;margin-bottom:8px">
+      <div><span style="color:var(--text3)">Fator atual:</span> <strong>${fator.toFixed(3)}</strong> <span style="color:var(--text3)">(${_fatorPct(fator)} vs. regime)</span></div>
+      <div><span style="color:var(--text3)">Amostras:</span> <strong>${nAm}</strong></div>
+      <div><span style="color:var(--text3)">Última leitura real:</span> <strong>${ult!=null?ult.toLocaleString('pt-BR')+'h':'—'}</strong></div>
+      <div><span style="color:var(--text3)">Em:</span> <strong>${ultAt}</strong></div>
+    </div>
+    ${rows ? `<div style="overflow:auto;border:1px solid var(--border);border-radius:8px">
+      <table style="width:100%;border-collapse:collapse;font-size:11px">
+        <thead><tr style="background:var(--blue-light,#eff6ff);color:var(--text2,#475569)">
+          <th style="padding:4px 6px;text-align:left">Data</th>
+          <th style="padding:4px 6px;text-align:right">Estimado</th>
+          <th style="padding:4px 6px;text-align:right">Real</th>
+          <th style="padding:4px 6px;text-align:right">Erro</th>
+          <th style="padding:4px 6px;text-align:right">Fator</th>
+        </tr></thead>
+        <tbody>${rows}</tbody>
+      </table></div>`
+    : `<div style="font-size:12px;color:var(--text3);margin-bottom:6px">Ainda sem histórico de leituras. O fator se calibra sozinho a partir da próxima visita.</div>`}
+    <div style="display:flex;gap:6px;align-items:center;margin-top:8px;flex-wrap:wrap">
+      <span style="font-size:12px;color:var(--text3)">Sobrescrever fator:</span>
+      <input id="calibFatorInput" type="number" step="0.01" min="0.3" max="3" value="${fator.toFixed(2)}"
+        style="width:90px;padding:4px 8px;border:1px solid var(--border);border-radius:6px;font-size:12px">
+      <button class="btn btn-secondary btn-sm" onclick="salvarFatorHorim('${machineId}')">Salvar fator</button>
+      <span style="font-size:11px;color:var(--text3)">1,00 = sem correção · 1,10 = +10%</span>
+    </div>
+    <div id="calibFatorMsg" style="font-size:12px;margin-top:6px"></div>`;
+}
+async function salvarFatorHorim(machineId){
+  const inp = document.getElementById('calibFatorInput');
+  const msg = document.getElementById('calibFatorMsg');
+  if(!inp) return;
+  const f = parseFloat(String(inp.value).replace(',','.'));
+  if(isNaN(f)){ if(msg){msg.style.color='#b91c1c';msg.textContent='⚠ Fator inválido.';} return; }
+  if(msg){ msg.style.color='var(--text3)'; msg.textContent='Salvando…'; }
+  try{
+    const usuario = (window._usuarioAtual && (_usuarioAtual.nome||_usuarioAtual.id)) || (typeof usuarioLogado!=='undefined' ? (usuarioLogado?.nome||'') : '') || 'admin';
+    const r = await gsPost({ action:'setHorimetroFator', machine_id: machineId, fator: f, usuario });
+    if(r && r.status==='ok'){
+      if(msg){ msg.style.color='var(--success,#15803d)'; msg.textContent='✅ Fator salvo: '+Number(r.fator_correcao).toFixed(3); }
+      renderCalibHorim(machineId);
+    } else {
+      if(msg){ msg.style.color='#b91c1c'; msg.textContent='⚠ '+((r&&r.error)||'Falha ao salvar'); }
+    }
+  }catch(e){ if(msg){ msg.style.color='#b91c1c'; msg.textContent='⚠ '+e.message; } }
 }
 
 async function renderMdetPreventivas(){
