@@ -1,4 +1,20 @@
 <!--
+  PCM v71 — 08/07/2026
+  FLUXO DE OFICINA (par do backend GAS_properCare_v62.js — não roda sem ele).
+  DATA_SCHEMA_VERSION mantido '68' (pipeline/fila lidos ao vivo, não vivem no cache local).
+  - Pipeline (aba da OS), header admin: novos botões "➕ Empilhar execução", "🏭 Fila da oficina"
+    (além do "🔄 Trocar pipeline" já existente).
+  - Empilhar execução: modal modalEmpilhar. Escolhe o template de execução e mostra as tarefas
+    do template como CHECKLIST DE SERVIÇOS com nome editável (espelha o serviço do orçamento).
+    confirmarEmpilhar → ação empilharTemplate {os_id, template_id, usuario, servicos:[{id,nome}]},
+    que anexa uma NOVA camada sem arquivar o diagnóstico. Funções: _abrirEmpilharPipeline,
+    _onEmpilharTemplateChange, confirmarEmpilhar.
+  - Fila da oficina FIFO: modal modalFilaOficina + _abrirFilaOficina → ação getFilaOficina;
+    lista as OS por ordem de entrada (posição, dias na fila, estágio, técnicos com lock, prioridade).
+  - Cards do pipeline: badge de camada empilhada (Camada_Nome) e linha "🔒 Em execução por: X"
+    (Lock_Por) quando a tarefa está travada por um técnico.
+  - Reaproveita openModal/closeModal/syncToGS/escHtml/escJs/_comLoadingBtn_/toast já existentes.
+
   PCM v70 — 08/07/2026
   ProperFlow BRANCHING: pipeline com tarefas de DECISÃO + ativação CONDICIONAL.
   Par do backend: GAS_properCare_v61.js (não roda sem ele — usa ação resolverDecisao
@@ -9171,7 +9187,10 @@ async function _loadPipelineTab(osId) {
         <div style="font-size:12px;color:var(--text-muted);margin-bottom:4px">${concluidas} de ${total} tarefas concluídas</div>
         <div class="pipeline-progress"><div class="pipeline-progress-bar" style="width:${pct}%"></div></div>
       </div>
-      ${window.PROPER_SESSION?.is_admin === true ? `<button class="btn btn-secondary btn-sm" onclick="_abrirTrocarPipeline(this, '${osId.replace(/'/g,"\\'")}')">🔄 Trocar pipeline</button>` : ''}
+      ${window.PROPER_SESSION?.is_admin === true ? `
+        <button class="btn btn-secondary btn-sm" onclick="_abrirEmpilharPipeline(this, '${osId.replace(/'/g,"\\'")}')">➕ Empilhar execução</button>
+        <button class="btn btn-secondary btn-sm" onclick="_abrirFilaOficina(this)">🏭 Fila da oficina</button>
+        <button class="btn btn-secondary btn-sm" onclick="_abrirTrocarPipeline(this, '${osId.replace(/'/g,"\\'")}')">🔄 Trocar pipeline</button>` : ''}
     </div>`;
 
   fasesOrdenadas.forEach(fase => {
@@ -9222,6 +9241,15 @@ async function _loadPipelineTab(osId) {
            </div>`
         : (usuarioDesignadoStr ? `<div style="font-size:11px;color:var(--text-muted);margin-top:2px">👤 Designado: ${escHtml(usuarioDesignadoStr)}</div>` : '');
 
+      // v71: lock exclusivo por técnico
+      const lockLine = t.Lock_Por
+        ? `<div style="font-size:11px;color:#b45309;margin-top:4px">🔒 Em execução por: <b>${escHtml(t.Lock_Por)}</b></div>`
+        : '';
+      // v71: badge de camada (template empilhado)
+      const camadaBadge = (t.Camada_Ordem && parseInt(t.Camada_Ordem) > 1)
+        ? `<span style="font-size:10px;color:#7c3aed;background:var(--bg);padding:1px 6px;border-radius:10px;border:1px solid var(--border);margin-left:4px">${escHtml(t.Camada_Nome || ('Camada ' + t.Camada_Ordem))}</span>`
+        : '';
+
       // Disponível para marcar: manual, pendente/em_andamento, dependências todas completas
       const deps = t.Depende_de ? String(t.Depende_de).split(',').map(d=>d.trim()).filter(Boolean) : [];
       const depsOk = deps.every(d => statusMap[d] === 'completo');
@@ -9252,10 +9280,11 @@ async function _loadPipelineTab(osId) {
 
       html += `<div class="pipeline-card status-${st}" id="pcard-${tid}" ${st==='bloqueado'?'style="pointer-events:none"':''}>
         <div class="pipeline-card-header">
-          <span>${icon} <span class="pipeline-card-name">${t.Nome||'—'}</span></span>
+          <span>${icon} <span class="pipeline-card-name">${t.Nome||'—'}</span>${camadaBadge}</span>
           ${tipoBadge}
         </div>
         ${concByLine}
+        ${lockLine}
         ${decisaoValorLine}
         ${dispensadoLine}
         ${perfilLine}
@@ -9454,6 +9483,114 @@ async function confirmarTrocarPipeline(btnEl) {
     if (e.message && e.message.includes('AUTH_GOOGLE')) { hubLogout(); return; }
     toast('Erro ao trocar pipeline: ' + e.message, 'error');
   }
+  });
+}
+
+// ══════════════════════════════════════════════════════════════════════════
+// v71 — FLUXO DE OFICINA: empilhar execução (seleção de serviços) + fila FIFO
+// ══════════════════════════════════════════════════════════════════════════
+let _empilharOsId = null;
+let _empilharTemplateTarefas = [];
+
+// Abre o modal de empilhamento: escolhe o template de execução; ao selecionar,
+// mostra as tarefas do template como checklist de serviços (nome editável).
+async function _abrirEmpilharPipeline(btnEl, osId) {
+  await _comLoadingBtn_(btnEl, async () => {
+    _empilharOsId = osId;
+    const sel = document.getElementById('empilharTemplateSelect');
+    const box = document.getElementById('empilharServicos');
+    if (box) box.innerHTML = '<p style="font-size:12px;color:var(--text-muted)">Selecione um template para escolher os serviços.</p>';
+    if (sel) sel.innerHTML = '<option value="">Carregando…</option>';
+    openModal('modalEmpilhar');
+    try {
+      const r = await syncToGS('getTemplates', {});
+      const templates = (r?.templates || []).filter(t => String(t.Ativo||'').toUpperCase() !== 'NÃO');
+      if (sel) {
+        sel.innerHTML = '<option value="">Selecione o template de execução *</option>' +
+          templates.map(t => `<option value="${t.Template_ID}">${escHtml(t.Nome)}</option>`).join('');
+        sel.onchange = () => _onEmpilharTemplateChange(templates);
+      }
+    } catch(e) {
+      if (sel) sel.innerHTML = '<option value="">Erro ao carregar</option>';
+    }
+  });
+}
+
+// Renderiza o checklist de serviços a partir do Tarefas_JSON do template escolhido.
+function _onEmpilharTemplateChange(templates) {
+  const sel = document.getElementById('empilharTemplateSelect');
+  const box = document.getElementById('empilharServicos');
+  if (!sel || !box) return;
+  const tpl = (templates || []).find(t => String(t.Template_ID) === String(sel.value));
+  if (!tpl) { box.innerHTML = ''; _empilharTemplateTarefas = []; return; }
+  let tarefas = [];
+  try { tarefas = JSON.parse(tpl.Tarefas_JSON || '[]'); } catch(e) { tarefas = []; }
+  _empilharTemplateTarefas = tarefas;
+  if (!tarefas.length) { box.innerHTML = '<p style="font-size:12px;color:var(--text-muted)">Template sem tarefas.</p>'; return; }
+  box.innerHTML = `
+    <div style="font-size:12px;color:var(--text-muted);margin-bottom:6px">Marque os serviços do orçamento aprovado que entram no pipeline (nome editável):</div>
+    <div style="max-height:280px;overflow:auto;display:flex;flex-direction:column;gap:6px">
+      ${tarefas.map((t, i) => {
+        const id = String(t.id || ('T' + String(i+1).padStart(2,'0')));
+        return `<label style="display:flex;align-items:center;gap:8px;font-size:13px">
+          <input type="checkbox" class="emp-serv-chk" data-id="${escHtml(id)}" checked>
+          <input type="text" class="emp-serv-nome form-input" data-id="${escHtml(id)}" value="${escHtml(t.nome || id)}" style="flex:1;padding:4px 8px;font-size:12px">
+          ${t.fase ? `<span style="font-size:10px;color:var(--text-muted)">${escHtml(t.fase)}</span>` : ''}
+        </label>`;
+      }).join('')}
+    </div>`;
+}
+
+async function confirmarEmpilhar(btnEl) {
+  await _comLoadingBtn_(btnEl, async () => {
+    const sel = document.getElementById('empilharTemplateSelect');
+    const templateId = sel?.value;
+    if (!templateId) { toast('Selecione um template.', 'error'); return; }
+    if (!_empilharOsId) return;
+    if (!gsConnected) { toast('Google Sheets offline', 'error'); return; }
+    // Coleta os serviços marcados com o nome (espelhado) informado
+    const chks = Array.from(document.querySelectorAll('.emp-serv-chk'));
+    const servicos = chks.filter(c => c.checked).map(c => {
+      const id = c.getAttribute('data-id');
+      const nomeEl = document.querySelector('.emp-serv-nome[data-id="' + id + '"]');
+      return { id, nome: nomeEl ? nomeEl.value.trim() : '' };
+    });
+    if (!servicos.length) { toast('Marque ao menos um serviço.', 'error'); return; }
+    const usuario = window.PROPER_SESSION?.tecnico?.nome || window.PROPER_SESSION?.tecnico?.id || '';
+    try {
+      const r = await syncToGS('empilharTemplate', { os_id: _empilharOsId, template_id: templateId, usuario, servicos });
+      toast(`Execução empilhada (${r?.tarefas_criadas ?? servicos.length} tarefas).`, 'success');
+      closeModal('modalEmpilhar');
+      _loadPipelineTab(_empilharOsId);
+    } catch(e) {
+      if (e.message && e.message.includes('AUTH_GOOGLE')) { hubLogout(); return; }
+      toast('Erro ao empilhar: ' + e.message, 'error');
+    }
+  });
+}
+
+// Fila FIFO da oficina (modal)
+async function _abrirFilaOficina(btnEl) {
+  await _comLoadingBtn_(btnEl, async () => {
+    const box = document.getElementById('filaOficinaBox');
+    if (box) box.innerHTML = '<p style="font-size:13px;color:var(--text-muted)">Carregando fila…</p>';
+    openModal('modalFilaOficina');
+    try {
+      const r = await syncToGS('getFilaOficina', {});
+      const fila = r?.fila || [];
+      if (!fila.length) { box.innerHTML = '<p style="font-size:13px;color:var(--text-muted)">Nenhuma OS na fila.</p>'; return; }
+      box.innerHTML = `<div style="display:flex;flex-direction:column;gap:8px">` + fila.map(f => `
+        <div style="display:flex;align-items:center;gap:10px;padding:8px 10px;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--bg)">
+          <div style="font-size:18px;font-weight:700;color:var(--accent);min-width:28px;text-align:center">${f.posicao}</div>
+          <div style="flex:1">
+            <div style="font-size:13px;font-weight:600">${escHtml(f.numero_os || f.id_os)} — ${escHtml(f.cliente || '')}</div>
+            <div style="font-size:11px;color:var(--text-muted)">${escHtml(f.tipo_os || '')} · estágio: ${escHtml(f.estagio || '—')} · ${f.dias_na_fila} dia(s) na fila${f.prioridade > 0 ? ' · <b style="color:#b45309">prioridade ' + f.prioridade + '</b>' : ''}</div>
+            ${(f.tecnicos && f.tecnicos.length) ? `<div style="font-size:11px;color:#b45309">🔒 ${f.tecnicos.map(escHtml).join(', ')}</div>` : ''}
+          </div>
+        </div>`).join('') + `</div>`;
+    } catch(e) {
+      if (box) box.innerHTML = `<p style="font-size:13px;color:var(--danger)">Erro ao carregar fila: ${escHtml(e.message)}</p>`;
+    }
   });
 }
 
@@ -9679,6 +9816,41 @@ if(!gsUrl){
     <div class="modal-footer">
       <button class="btn btn-secondary" onclick="closeModal('modalTrocarPipeline')">Cancelar</button>
       <button class="btn btn-primary" onclick="confirmarTrocarPipeline(this)">Confirmar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL EMPILHAR EXECUÇÃO (v71) -->
+<div class="overlay" id="modalEmpilhar">
+  <div class="modal" style="width:560px">
+    <div class="modal-title">➕ Empilhar template de execução</div>
+    <div class="modal-body">
+      <p style="font-size:13px;color:var(--text-muted);margin-bottom:12px;line-height:1.6">
+        Anexa o template de execução na MESMA OS, <b>sem apagar</b> o diagnóstico/orçamento. Marque os serviços do orçamento aprovado que viram tarefas — o nome da tarefa espelha o nome do serviço.
+      </p>
+      <div class="form-row">
+        <label class="form-label">Template de execução *</label>
+        <select class="form-select" id="empilharTemplateSelect"><option value="">Carregando…</option></select>
+      </div>
+      <div id="empilharServicos" style="margin-top:8px"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('modalEmpilhar')">Cancelar</button>
+      <button class="btn btn-primary" onclick="confirmarEmpilhar(this)">Empilhar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL FILA DA OFICINA FIFO (v71) -->
+<div class="overlay" id="modalFilaOficina">
+  <div class="modal" style="width:560px">
+    <div class="modal-title">🏭 Fila da oficina (FIFO)</div>
+    <div class="modal-body">
+      <p style="font-size:12px;color:var(--text-muted);margin-bottom:10px">Ordem de entrada — a mais antiga é trabalhada primeiro. Prioridade (quando definida) fura a fila.</p>
+      <div id="filaOficinaBox"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('modalFilaOficina')">Fechar</button>
     </div>
   </div>
 </div>
