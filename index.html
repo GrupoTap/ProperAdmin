@@ -1,4 +1,24 @@
 <!--
+  PCM v74 — 09/07/2026
+  FIX DEFINITIVO: perda de dados no editor de Peças (aba "Peças" do detalhe da máquina).
+  CAUSA RAIZ: _renderPartsEditor renderizava as linhas SEM data-pid, então
+  saveMachineParts nunca lia o Part_ID estável e o RECONSTRUÍA por nome
+  (DEFAULT_PARTS.findIndex(name===) ). Qualquer diferença de grafia/acento/
+  normalização Unicode (ex.: "Separador Ar/Óleo", "Óleo Lubrificante") ou peça
+  extra gerava um pid NOVO aleatório: a edição ia para uma linha fantasma, a
+  linha original mantinha o valor antigo (dado "sumia") e o back-end APENDAVA uma
+  duplicata em MACHINE_PARTS. Bug secundário: removePeRow não renumerava e o save
+  selecionava inputs por #pe-name-${i} (índice do forEach) — após remover uma
+  linha, o input não era achado e a linha era pulada em silêncio.
+  CORREÇÃO: (1) _renderPartsEditor emite data-pid="${p.id}" em cada <tr>;
+  (2) addPeRow atribui pid estável já na criação; (3) saveMachineParts usa
+  row.dataset.pid como chave autoritativa (sem reconstruir por nome) e lê os
+  inputs POSICIONALMENTE (input.pe-input[0..3]), imune a remoção de linhas.
+  Duplicatas JÁ existentes em MACHINE_PARTS são limpas pelo script
+  AUDITORIA_Vazamentos_ProperCare.gs (rodar 1× no editor Apps Script).
+  Sem mudança de schema; par mantém GAS v64 / PCF v52.
+-->
+<!--
   PCM v73 — 09/07/2026
   BLINDAGEM da tela de Preventivas (par do GAS_properCare_v64.js / PCF v52).
   renderPreventivas() agora envolve o cálculo+render num try/catch com snapshot do
@@ -6010,7 +6030,7 @@ function _buildPartsReadTable(eq, hourTotal, hpw){
 function _renderPartsEditor(eq){
   const parts = _getEffectiveParts(eq);
   const rows = parts.map((p,i)=>`
-    <tr id="perow-${i}" class="${p.na?'part-na':''}">
+    <tr id="perow-${i}" data-pid="${p.id||''}" class="${p.na?'part-na':''}">
       <td style="min-width:150px">
         <input class="pe-input" style="font-family:var(--font-sans),monospace" value="${p.name}" id="pe-name-${i}" placeholder="Nome da peça">
       </td>
@@ -6069,6 +6089,10 @@ function addPeRow(){
   const i = tbody.querySelectorAll('tr').length;
   const tr = document.createElement('tr');
   tr.id = `perow-${i}`;
+  // v74: pid estável já no nascimento da linha (peça nova/extra). Antes o id só
+  // era "inventado" no save por nome — o que trocava a identidade da peça a cada
+  // gravação e gerava linhas duplicadas em MACHINE_PARTS.
+  tr.dataset.pid = 'p_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2,6);
   tr.innerHTML = `
     <td><input class="pe-input" style="font-family:var(--font-sans),monospace" value="${name}" id="pe-name-${i}" placeholder="Nome da peça"></td>
     <td><input class="pe-input" type="number" id="pe-last-${i}" placeholder="ex: 0"></td>
@@ -6094,26 +6118,29 @@ function saveMachineParts(){
   const rows = tbody.querySelectorAll('tr');
   const newParts = {};
 
-  rows.forEach((row, i)=>{
-    const nameEl = row.querySelector(`#pe-name-${i}`);
-    const lastEl = row.querySelector(`#pe-last-${i}`);
-    const intEl  = row.querySelector(`#pe-int-${i}`);
-    const refEl  = row.querySelector(`#pe-ref-${i}`);
-    const naBtn  = row.querySelector(`#pe-na-${i}`);
+  rows.forEach((row)=>{
+    // v74: seleção POSICIONAL dentro da linha (antes usava #pe-name-${i} com o
+    // índice do forEach; após removePeRow os ids embutidos deixavam de bater com
+    // o índice e a linha era silenciosamente pulada, perdendo a edição).
+    const inputs = row.querySelectorAll('input.pe-input');
+    const nameEl = inputs[0];
+    const lastEl = inputs[1];
+    const intEl  = inputs[2];
+    const refEl  = inputs[3];
+    const naBtn  = row.querySelector('.pe-na-btn');
     if(!nameEl) return;
 
     const name = nameEl.value.trim();
     if(!name) return;
 
-    // PCM-5: lê pid estável do data-pid; fallback para DEFAULT_PARTS ou geração única
+    // v74: usa o pid ESTÁVEL vindo do data-pid (emitido em _renderPartsEditor/
+    // addPeRow). NÃO reconstrói mais o id por nome — era a causa raiz da perda de
+    // dados: qualquer diferença de grafia/acentuação/normalização Unicode gerava
+    // um pid novo, gravava a edição numa linha fantasma e duplicava em MACHINE_PARTS.
     let pid = row.dataset.pid || '';
     if (!pid) {
-      const defaultIdx = DEFAULT_PARTS.findIndex(d => d.name === name || (d.id === name));
-      if (defaultIdx >= 0) {
-        pid = DEFAULT_PARTS[defaultIdx].id;
-      } else {
-        pid = 'p_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2, 6);
-      }
+      const d = DEFAULT_PARTS.find(d => d.name === name || d.id === name);
+      pid = d ? d.id : ('p_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2, 6));
       row.dataset.pid = pid;
     }
 
