@@ -1,4 +1,15 @@
 <!--
+  PCM v76 — 09/07/2026 — ROBUSTEZ "ONDA 1" (par do GAS_properCare_v67.js / PCF v54).
+  Aditivo; nenhum id/data-view/data-key/view/função renomeado; todos os blocos de
+  script passam em node --check.
+  (N13) novo helper global pgpUid() (crypto.randomUUID() com fallback ao padrão
+  antigo) substitui o sufixo Math.random().toString(36).slice(2,6) na geração dos
+  IDs de ENTIDADE: EQ- (nova máquina), CLI- (novo cliente) e VIS- (nova visita).
+  Remove a classe de colisão de ID. Prefixos e formato prefixo+timestamp mantidos;
+  nenhum ID já gravado é tocado. (IDs de DOM/log — uid()/pid — fora de escopo.)
+  Sem esta versão o PCM continua a gerar EQ-/CLI-/VIS- com 4 chars base36.
+-->
+<!--
   PCM v75 — 09/07/2026 — Número da OS AUTO-GERADO (par do GAS_properCare_v66.js).
   O campo "Número da OS" do modal Nova OS deixa de ser digitado: vira somente-leitura
   com placeholder "Gerado automaticamente ao salvar". saveOSModal não exige mais o
@@ -1771,6 +1782,13 @@ tr:hover td{background:var(--gray-50)}
 <input type="file" id="photoInput" accept="image/*" multiple style="display:none" onchange="handlePhotoUpload(this)">
 <input type="file" id="importFile" accept=".json" style="display:none" onchange="importJSON(this)">
 
+<!-- v67 — N13: helper global de ID opaco (crypto.randomUUID) com fallback ao padrão antigo -->
+<script>
+function pgpUid(){
+  try { if (window.crypto && typeof window.crypto.randomUUID === 'function') return window.crypto.randomUUID(); } catch(e){}
+  return Math.random().toString(36).slice(2,6); // fallback: padrão antigo
+}
+</script>
 <script>
 // ══════════════════════════════════════════════════════════════════════════
 // CHANGELOG v49 (Visibilidade de OS por Técnico — Preventiva↔Pipeline parte 3)
@@ -5326,7 +5344,7 @@ function saveMachine(){
         toast('Modelo semelhante encontrado, mas série diferente — nova máquina será cadastrada.', 'info');
       }
     }
-    data.id = data.serial ? machineKey(data.client, data.brand, data.model, data.serial) : (data.tag ? machineKey(data.client,data.brand,data.model,'TAG-'+data.tag) : ('EQ-'+Date.now()+'-'+Math.random().toString(36).slice(2,6)));
+    data.id = data.serial ? machineKey(data.client, data.brand, data.model, data.serial) : (data.tag ? machineKey(data.client,data.brand,data.model,'TAG-'+data.tag) : ('EQ-'+Date.now()+'-'+pgpUid()));
     data.photos = []; data.parts = {};
     // BUG1-FIX: propagar dados de cliente do modal Máquina para db.clients
     (function upsertClientFromMachine() {
@@ -5359,7 +5377,7 @@ function saveMachine(){
         }
       } else {
         const newClient = {
-          id:        'CLI-' + Date.now() + '-' + Math.random().toString(36).slice(2, 6),
+          id:        'CLI-' + Date.now() + '-' + pgpUid(),
           nome:      client,
           cnpj:      cnpjVal,
           cidade:    cityVal,
@@ -5785,7 +5803,7 @@ async function salvarPreventiva() {
     return;
   }
 
-  const visitId = 'VIS-' + Date.now() + '-' + Math.random().toString(36).slice(2,6);
+  const visitId = 'VIS-' + Date.now() + '-' + pgpUid();
   const payload = {
     visit_id:   visitId,
     machine_id: eq.id,
