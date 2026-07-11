@@ -1,4 +1,14 @@
 <!--
+  PCM v78 — 11/07/2026 — Sprint F: rename form08→form02 (par
+  GAS_properCare_v68.js/PCF v57/Hub v15). Aditivo, aliases legados mantidos:
+  foto_form08 (label) e 'auto:form08' (label) permanecem, com foto_form02 e
+  'auto:form02' adicionados ao lado. Label "Formulários Avulsos" e
+  placeholders de exemplo (form08→form02) atualizados para refletir a
+  numeração corrente (form02/09/10 exibidos como Form 02/03/04 na UI,
+  mesma convenção já usada em peritagem.html). Nenhum id/data-key/view/
+  função renomeado.
+-->
+<!--
   PCM v77 — 11/07/2026 — CORREÇÕES DE UX (par PCF v55) — ver
   PROMPT_CLAUDE_CODE_UX_FRONTS_2026-07-11.md. Aditivo; nenhum id/data-view/
   data-key/view/função renomeado; node --check real passa nos 3 blocos de script.
@@ -3434,7 +3444,7 @@ let _docsQuery = '';
 let _docsLoading = false;
 
 const DOCS_CAT_LABELS = {
-  foto_preventiva:'Foto Preventiva', foto_form08:'Foto Form 08', foto_rotor:'Foto Rotor',
+  foto_preventiva:'Foto Preventiva', foto_form08:'Foto Form 08 (legado)', foto_form02:'Foto Form 02', foto_rotor:'Foto Rotor',
   pdf_preventiva:'PDF Preventiva', pdf_relatorio:'PDF Relatório', pdf_formulario:'PDF Formulário',
   assinatura:'Assinatura', outro:'Outro'
 };
@@ -8187,7 +8197,7 @@ async function saveParametrosTurno() {
 const MODULOS_DISPONIVEIS = [
   { id:'pcf_inspecao',  label:'Campo – Inspeção' },
   { id:'pcf_preventiva',label:'Campo – Preventiva' },
-  { id:'forms_avulso',  label:'Formulários Avulsos (Form 08, 09, 10, Rotores)' },
+  { id:'forms_avulso',  label:'Formulários Avulsos (Form 02, 03, 04, Rotores)' },
   { id:'pcm_leitura',   label:'PCM – Leitura' },
   { id:'pcm_completo',  label:'PCM – Completo' },
 ];
@@ -10229,7 +10239,7 @@ if(!gsUrl){
             <div style="flex:1">
               <label class="form-label">Identificador do tipo (sem espaços)</label>
               <input type="text" id="tarefaTipoAutoNome" class="form-input"
-                placeholder="Ex: form08, rotores, checklist_compressor_x">
+                placeholder="Ex: form02, rotores, checklist_compressor_x">
             </div>
             <div style="flex:1">
               <label class="form-label">URL do checklist</label>
@@ -10244,7 +10254,7 @@ if(!gsUrl){
             placeholder="Sim&#10;Não"></textarea>
           <label class="form-label" style="margin-top:8px">Fonte automática (opcional)</label>
           <input type="text" id="tarefaDecisaoFonte" class="form-input"
-            placeholder="Ex: form08:necessita_desmontagem">
+            placeholder="Ex: form02:necessita_desmontagem">
           <div style="font-size:11px;color:var(--text-muted);margin-top:4px">
             A pergunta da decisão é o próprio nome da tarefa. O técnico escolhe uma opção no pipeline;
             os ramos que dependem dela seguem pela condição "Só executar se…".
@@ -10325,7 +10335,8 @@ function _tipoLabel(tipo) {
   const map = {
     'manual': 'Manual',
     'decisao': 'Decisão 🔀',
-    'auto:form08': 'Form 08',
+    'auto:form08': 'Form 08 (legado)',
+    'auto:form02': 'Form 02',
     'auto:form09': 'Form 09',
     'auto:form10': 'Form 10',
     'auto:rotores': 'Rotores',
