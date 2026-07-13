@@ -3566,6 +3566,7 @@ function showView(v){
   if(v==='dashboard'){
     renderDashboard();
   } else if(v==='preventivas'){
+    _prevSearch='';               // v79: evita busca presa/autofill deixar a tabela vazia ao entrar
     renderPreventivas();
   } else if(v==='catalog'){
     document.getElementById('sidebarNewLabel').textContent='Novo modelo';
@@ -3894,6 +3895,17 @@ function renderPreventivas(){
     });
   }).length;
 
+  // v79 — CAUSA RAIZ do "os dados somem, refresh resolve": a busca era aplicada DENTRO
+  // do map (retornando '' por linha). Com uma busca sem correspondência (ex.: valor de
+  // autofill do Chrome preso no campo), `filtered.length` continuava > 0, o map produzia
+  // só strings vazias → tbody VISUALMENTE VAZIO, sem nem a mensagem "Nenhuma máquina".
+  // Agora a busca entra no cálculo de `visible`, então o length reflete o resultado real
+  // e a mensagem certa aparece. (O campo também ganhou autocomplete=off p/ barrar o autofill.)
+  const _prevBusca = (_prevSearch||'').trim().toLowerCase();
+  const visible = _prevBusca
+    ? filtered.filter(({eq}) => ((eq.client||'')+(eq.brand||'')+(eq.model||'')+(eq.tag||'')+(eq.serial||'')).toLowerCase().includes(_prevBusca))
+    : filtered;
+
   el.innerHTML=`
     <div class="stats-grid" style="margin-bottom:14px">
       <div class="stat-card danger" style="cursor:pointer" onclick="setPrevFilter('vencido')" title="Ver máquinas com peças vencidas">
@@ -3928,8 +3940,9 @@ function renderPreventivas(){
         <div style="font-size:18px;font-weight:700">Preventivas</div>
         <div style="font-size:12px;color:var(--text2);margin-top:2px">Status de peças por máquina</div>
       </div>
-      <input type="text" id="prevSearchInput" class="form-input" placeholder="Buscar cliente ou máquina..."
-             style="width:200px" oninput="_prevSearch=this.value;renderPreventivas()" value="${_prevSearch}">
+      <input type="search" id="prevSearchInput" class="form-input" placeholder="Buscar cliente ou máquina..."
+             autocomplete="off" name="pcm_prev_busca_nofill" data-lpignore="true" data-1p-ignore
+             style="width:200px" oninput="_prevSearch=this.value;renderPreventivas()" value="${escHtml(_prevSearch)}">
     </div>
 
     <div class="prev-filters">
@@ -3952,9 +3965,7 @@ function renderPreventivas(){
           <th>Status geral</th>
           <th></th>
         </tr></thead>
-        <tbody>${filtered.length?filtered.map(({eq,ws,parts})=>{
-          const search=_prevSearch.toLowerCase();
-          if(search&&!(eq.client+eq.brand+eq.model+eq.tag+eq.serial).toLowerCase().includes(search)) return '';
+        <tbody>${visible.length?visible.map(({eq,ws,parts})=>{
           const barColor=ws?.level==='vencido'?'var(--red)':ws?.level==='alerta'?'var(--orange)':ws?'var(--green)':'var(--gray-300)';
           // Peça mais crítica
           let worstPart=null, worstRemaining=Infinity;
@@ -3985,7 +3996,7 @@ function renderPreventivas(){
             </td>
             <td><button class="btn btn-secondary btn-xs" onclick="event.stopPropagation();openMachineDetail('${eq.id}')">Detalhes</button></td>
           </tr>`;
-        }).join(''):`<tr><td colspan="7" style="text-align:center;padding:24px;color:var(--text3)">Nenhuma máquina nesta categoria.</td></tr>`}
+        }).join(''):`<tr><td colspan="7" style="text-align:center;padding:24px;color:var(--text3)">${_prevBusca?`Nenhuma máquina encontrada para “${escHtml(_prevSearch)}”. <button onclick="_prevSearch='';renderPreventivas()" style="border:none;background:none;color:var(--blue-mid);cursor:pointer;font-weight:600">✕ limpar busca</button>`:'Nenhuma máquina nesta categoria.'}</td></tr>`}
         </tbody>
       </table>
     </div>
@@ -6953,7 +6964,7 @@ function renderMachines(){
         </div>
       </div>
       <div style="display:flex;gap:8px;flex-wrap:wrap">
-        <input type="text" id="machineSearchInput" class="form-input" placeholder="Buscar..." style="width:160px" oninput="renderMachines()" value="${search}">
+        <input type="search" id="machineSearchInput" class="form-input" placeholder="Buscar..." autocomplete="off" name="pcm_maq_busca_nofill" data-lpignore="true" data-1p-ignore style="width:160px" oninput="renderMachines()" value="${escHtml(search)}">
         <select id="machineClientFilter" class="form-input" style="width:220px" onchange="_machFilter=this.value;renderMachines()">
           <option value="">Todos os clientes</option>
           ${Object.keys(byClient).sort((a,b)=>a.localeCompare(b,'pt-BR',{sensitivity:'base'})).map(c=>`<option value="${c.replace(/"/g,'&quot;')}" ${clientKey(_machFilter)===clientKey(c)?'selected':''}>${c} (${byClient[c].length})</option>`).join('')}
