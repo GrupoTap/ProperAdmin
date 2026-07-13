@@ -2875,11 +2875,13 @@ function getPartStatus(part, currentHour) {
   return { level: 'ok', label: 'Faltam ' + (next - currentHour) + 'h', next };
 }
 
-function getMachineWorstStatus(eq){
+function getMachineWorstStatus(eq, curHour){
+  // v79: curHour opcional = horímetro projetado p/ hoje; sem ele, usa o cru (retrocompat).
+  const _base=(curHour!=null && curHour!=='' && !isNaN(Number(curHour)))?Number(curHour):(eq.hourTotal||0);
   const parts=_getEffectiveParts(eq);
   let countVencido=0,countAlerta=0,countSemDados=0;
   parts.forEach(p=>{
-    const st=getPartStatus(p, eq.hourTotal||0);
+    const st=getPartStatus(p, _base);
     if(st.level==='na') return;
     if(st.level==='vencido') countVencido++;
     else if(st.level==='alerta') countAlerta++;
@@ -5484,26 +5486,75 @@ function switchMdetTab(tab){
   if(tab==='rotores') carregarColetasRotores(_mdetMachineId);
 }
 
-function openMachineDetail(id){
-  _mdetMachineId = id;
-  editMachineId = id;
-  const eq = db.machines.find(m=>m.id===id);
+// ── HORÍMETRO DINÂMICO no ADM (v79) ─────────────────────────────────────────
+// Espelha a projeção que o PCF (pfReprojetar) já faz no campo, para que o Resumo
+// da máquina, o "valor mostrado" de cada peça e o STATUS acompanhem o regime de
+// trabalho e avancem — ou REGRIDAM, quando o fator corrige para menos horas —
+// dia a dia, sem esperar a próxima visita. Fórmula idêntica à do PCF:
+//   projTotal = base_real + dias*(h_semana/7)*fator.
+// Fator e última leitura real vêm de getHorimetroCalib (mesma fonte do PCF).
+// Enquanto a calibração não chega (1ª pintura do Resumo), projeta com fator=1 e
+// base=hourTotal/lastVisit — o mesmo fallback offline documentado do PCF.
+function _pcmTs(v){
+  if(!v) return 0;
+  if(v instanceof Date) return v.getTime();
+  var s=String(v).trim(); if(!s) return 0;
+  var m=s.match(/^(\d{4})-(\d{2})-(\d{2})/);   // yyyy-mm-dd / ISO → meia-noite local
+  if(m) return new Date(+m[1], +m[2]-1, +m[3]).getTime();
+  var d=s.match(/^(\d{2})\/(\d{2})\/(\d{4})/);  // dd/mm/yyyy
+  if(d) return new Date(+d[3], +d[2]-1, +d[1]).getTime();
+  var t=new Date(s).getTime(); return isNaN(t)?0:t;
+}
+function _pcmTodayTs(){ var n=new Date(); return new Date(n.getFullYear(),n.getMonth(),n.getDate()).getTime(); }
+// Projeta o horímetro TOTAL para hoje. calib = retorno de getHorimetroCalib
+// (fator_correcao / ultimo_horimetro_real / ultimo_real_at) ou null (fator=1).
+function _pcmProjHorim(eq, calib){
+  eq = eq||{}; calib = calib||{};
+  var fator = (calib.fator_correcao!=null && !isNaN(Number(calib.fator_correcao))) ? Number(calib.fator_correcao) : 1;
+  var baseReal = (calib.ultimo_horimetro_real!=='' && calib.ultimo_horimetro_real!=null && !isNaN(Number(calib.ultimo_horimetro_real)))
+                   ? Number(calib.ultimo_horimetro_real)
+                   : ((eq.hourTotal!=null && eq.hourTotal!=='' && !isNaN(Number(eq.hourTotal))) ? Number(eq.hourTotal) : null);
+  var baseTs = _pcmTs(calib.ultimo_real_at) || _pcmTs(eq.lastVisit);
+  var hSem   = Number(eq.hpw)||0;
+  var raw    = (eq.hourTotal!=null && eq.hourTotal!=='' && !isNaN(Number(eq.hourTotal))) ? Number(eq.hourTotal) : 0;
+  var out = { ok:false, fator:fator, baseReal:baseReal, baseTs:baseTs, hSem:hSem, dias:0, delta:0, projTotal:raw };
+  if(baseReal==null || !baseTs || hSem<=0) return out;
+  var dias  = Math.max(0, Math.round((_pcmTodayTs()-baseTs)/86400000));
+  var delta = dias*(hSem/7)*fator;
+  out.ok=true; out.dias=dias; out.delta=delta; out.projTotal=Math.round(baseReal+delta);
+  return out;
+}
+// Projeta o "valor mostrado" de uma peça pelo MESMO delta de horas da máquina
+// (regressivo desconta, progressivo soma). Devolve o original se não for numérico.
+function _pcmProjVm(baseVm, contador, delta){
+  var b = parseFloat(baseVm);
+  if(isNaN(b)) return baseVm;
+  var v = (contador==='regressivo') ? (b - delta) : (b + delta);
+  return Math.round(v);
+}
+// Monta a aba Resumo com o horímetro/peças projetados. calib nullable: a 1ª pintura
+// vem de openMachineDetail (fator=1) e renderCalibHorim repinta com o fator real.
+function _renderMdetResumo(eq, calib){
   if(!eq) return;
-
-  const hourTotal = eq.hourTotal||0;
+  const proj = _pcmProjHorim(eq, calib);
+  const hourTotal = proj.ok ? proj.projTotal : (eq.hourTotal||0);
   const hpw = eq.hpw||0;
   const clientReg = db.clients ? db.clients.find(c=>c.nome.toLowerCase().trim()===(eq.client||'').toLowerCase().trim()) : null;
   const driveUrl = clientReg?.drive_url || eq.driveLink || '';
-
-  document.getElementById('modalMachinePartsTitle').textContent = `${eq.brand} ${eq.model} — ${eq.client}`;
-
-  // ── ABA RESUMO ──
-  document.getElementById('mdetResumo').innerHTML = `
+  const titleEl = document.getElementById('modalMachinePartsTitle');
+  if(titleEl) titleEl.textContent = `${eq.brand} ${eq.model} — ${eq.client}`;
+  const projHint = proj.ok
+    ? `<div style="grid-column:1/-1;font-size:11px;color:var(--text3);margin-top:-4px">↳ Projetado p/ hoje pelo regime: base <strong>${Math.round(proj.baseReal).toLocaleString('pt-BR')}h</strong>${proj.baseTs?` de ${new Date(proj.baseTs).toLocaleDateString('pt-BR')}`:''} + ${proj.dias}d${(proj.fator&&Math.abs(proj.fator-1)>=0.005)?` · fator ${proj.fator.toFixed(3)}`:''}</div>`
+    : '';
+  const resEl = document.getElementById('mdetResumo');
+  if(!resEl) return;
+  resEl.innerHTML = `
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px 20px;font-size:12px;margin-bottom:14px">
       <div><span style="color:var(--text3)">Série:</span> <strong>${eq.serial||'—'}</strong></div>
       <div><span style="color:var(--text3)">TAG:</span> <strong>${eq.tag||'—'}</strong></div>
-      <div><span style="color:var(--text3)">Horímetro:</span> <strong style="color:var(--blue-mid);font-family:var(--font-mono),monospace">${hourTotal.toLocaleString('pt-BR')}h</strong></div>
+      <div><span style="color:var(--text3)">Horímetro${proj.ok?' <span style="font-weight:400;color:var(--text3)">(hoje)</span>':''}:</span> <strong style="color:var(--blue-mid);font-family:var(--font-mono),monospace">${hourTotal.toLocaleString('pt-BR')}h</strong></div>
       <div><span style="color:var(--text3)">h/Semana:</span> <strong>${hpw||'—'}h</strong></div>
+      ${projHint}
       <div><span style="color:var(--text3)">Localização:</span> <strong>${eq.location||'—'}</strong></div>
       <div><span style="color:var(--text3)">Ano:</span> <strong>${eq.year||'—'}</strong></div>
       ${eq.contact?`<div><span style="color:var(--text3)">Contato:</span> <strong>${eq.contact}</strong></div>`:''}
@@ -5513,14 +5564,31 @@ function openMachineDetail(id){
       ${driveUrl?`<div style="grid-column:1/-1">📁 <a href="${driveUrl}" target="_blank" style="color:var(--blue-mid)">Abrir pasta do Drive</a></div>`:''}
       ${clientReg?.antecedencia_alerta_dias?`<div style="grid-column:1/-1"><span class="client-alerta-badge">🔔 Alerta ${clientReg.antecedencia_alerta_dias} dias antes do vencimento</span></div>`:''}
     </div>
-    ${_buildPartsReadTable(eq, hourTotal, hpw)}
+    ${_buildPartsReadTable(eq, hourTotal, hpw, proj)}
     <div id="mdetCalibHorim" style="margin-top:14px"></div>
     <div style="display:flex;gap:6px;margin-top:14px;padding-top:10px;border-top:1px solid var(--border);flex-wrap:wrap">
-      <button class="btn btn-secondary btn-sm" onclick="openModalMachine('${id}');closeModal('modalMachineParts')">Editar dados</button>
+      <button class="btn btn-secondary btn-sm" onclick="openModalMachine('${eq.id}');closeModal('modalMachineParts')">Editar dados</button>
       <button class="btn btn-secondary btn-sm" onclick="switchMdetTab('pecas')">✏️ Editar peças</button>
-      <button class="btn btn-secondary btn-sm" onclick="promoverAoCatalogo('${id}')">📋 Promover ao catálogo</button>
-      <button class="btn btn-danger btn-sm" onclick="deleteMachine('${id}');closeModal('modalMachineParts')">Inativar</button>
+      <button class="btn btn-secondary btn-sm" onclick="promoverAoCatalogo('${eq.id}')">📋 Promover ao catálogo</button>
+      <button class="btn btn-danger btn-sm" onclick="deleteMachine('${eq.id}');closeModal('modalMachineParts')">Inativar</button>
     </div>`;
+  // Badge de peças com problema (usa o horímetro projetado — mesma base do Resumo)
+  const ws = _getMachineWorst(eq, hourTotal);
+  const badgeEl = document.getElementById('mdetPecasBadge');
+  if(badgeEl) badgeEl.innerHTML = ws
+    ? `<span style="background:${ws.level==='vencido'?'#fee2e2':'#fef3c7'};color:${ws.level==='vencido'?'#b91c1c':'#b45309'};font-size:9px;font-weight:700;padding:1px 6px;border-radius:10px;margin-left:4px">${ws.count}</span>`
+    : '';
+}
+
+function openMachineDetail(id){
+  _mdetMachineId = id;
+  editMachineId = id;
+  const eq = db.machines.find(m=>m.id===id);
+  if(!eq) return;
+
+  // ── ABA RESUMO (horímetro/peças projetados pelo regime — v79) ──
+  // 1ª pintura com fator=1; renderCalibHorim repinta com o fator calibrado.
+  _renderMdetResumo(eq, null);
 
   // ── ABA PEÇAS (edição) ──
   _renderPartsEditor(eq);
@@ -5533,11 +5601,7 @@ function openMachineDetail(id){
     `<div style="font-size:11px;font-weight:700;color:var(--blue-mid);text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px">Fotos da máquina</div>
     ${renderPhotosGrid(eq.photos||[],'machine',id)}`;
 
-  // Badge de peças com problema
-  const ws = _getMachineWorst(eq);
-  document.getElementById('mdetPecasBadge').innerHTML = ws
-    ? `<span style="background:${ws.level==='vencido'?'#fee2e2':'#fef3c7'};color:${ws.level==='vencido'?'#b91c1c':'#b45309'};font-size:9px;font-weight:700;padding:1px 6px;border-radius:10px;margin-left:4px">${ws.count}</span>`
-    : '';
+  // Badge de peças com problema é pintado em _renderMdetResumo (usa horímetro projetado).
 
   // Limpar painel de preventivas — será carregado ao clicar na aba
   document.getElementById('mdetPreventivas').innerHTML =
@@ -5570,7 +5634,12 @@ async function renderCalibHorim(machineId){
   let r;
   try { r = await gsGet('getHorimetroCalib', { machine_id: machineId }); }
   catch(e){ box.innerHTML = `<div style="font-size:12px;color:var(--danger,#b91c1c)">⚠ Erro ao carregar calibração: ${e.message}</div>`; return; }
-  if(!r || r.status!=='ok'){ box.innerHTML = `<div style="font-size:12px;color:var(--text3)">Sem dados de calibração.</div>`; return; }
+  // v79: repinta o Resumo com o fator/leitura real (o 1º render usou fator=1). Isso
+  // recria o #mdetCalibHorim vazio — reobtemos a referência logo abaixo (box2).
+  const _eqCalib = db.machines.find(m=>m.id===machineId);
+  if(_eqCalib && r && r.status==='ok'){ try{ _renderMdetResumo(_eqCalib, r); }catch(_e){ console.warn('reprojeção resumo:', _e); } }
+  const box2 = document.getElementById('mdetCalibHorim') || box;
+  if(!r || r.status!=='ok'){ box2.innerHTML = `<div style="font-size:12px;color:var(--text3)">Sem dados de calibração.</div>`; return; }
 
   const fator = (r.fator_correcao!=null) ? Number(r.fator_correcao) : 1;
   const ult   = (r.ultimo_horimetro_real!=='' && r.ultimo_horimetro_real!=null) ? Number(r.ultimo_horimetro_real) : null;
@@ -5594,7 +5663,7 @@ async function renderCalibHorim(machineId){
     </tr>`;
   }).join('');
 
-  box.innerHTML = `
+  box2.innerHTML = `
     <div style="font-size:11px;font-weight:700;color:var(--blue-mid);text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px">📊 Calibração do horímetro (só admin)</div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px 20px;font-size:12px;margin-bottom:8px">
       <div><span style="color:var(--text3)">Fator atual:</span> <strong>${fator.toFixed(3)}</strong> <span style="color:var(--text3)">(${_fatorPct(fator)} vs. regime)</span></div>
@@ -6012,13 +6081,14 @@ function toggleVisitParts(id, link){
   if(link) link.textContent = isOpen ? 'Ver todas as peças desta visita ▸' : 'Ocultar peças desta visita ▾';
 }
 
-function _getMachineWorst(eq){
+function _getMachineWorst(eq, curHour){
+  const _base = (curHour!=null && curHour!=='' && !isNaN(Number(curHour))) ? Number(curHour) : (eq.hourTotal||0);
   const parts = _getEffectiveParts(eq);
   let cv=0, ca=0;
   parts.forEach(p=>{
     if(p.na) return;
     if (p.lastChange === undefined || p.lastChange === null || p.lastChange === '') return;
-    const {status}=calcPartStatus(p.lastChange, p.interval, eq.hourTotal||0);
+    const {status}=calcPartStatus(p.lastChange, p.interval, _base);
     if(status==='vencido') cv++;
     else if(status==='alerta') ca++;
   });
@@ -6065,8 +6135,9 @@ function _getEffectiveParts(eq){
   return list;
 }
 
-function _buildPartsReadTable(eq, hourTotal, hpw){
+function _buildPartsReadTable(eq, hourTotal, hpw, proj){
   const parts = _getEffectiveParts(eq);
+  const _delta = (proj && proj.ok) ? proj.delta : 0;
   const hasParts = parts.some(p =>
     !p.na && (
       hasVal(p.lastChange) ||
@@ -6082,7 +6153,8 @@ function _buildPartsReadTable(eq, hourTotal, hpw){
   <div class="table-wrap"><table>
     <thead><tr><th>Peça</th><th>Ref.</th><th>Valor mostrado</th><th>Contador</th><th>Últ. troca (h)</th><th>Intervalo (h)</th><th>Próxima (h)</th><th>Status</th></tr></thead>
     <tbody>${parts.map(p=>{
-      const st=getPartStatus(p, hourTotal);
+      const st=getPartStatus(p, hourTotal);   // hourTotal já é o horímetro projetado p/ hoje
+      const vmProj=(proj && proj.ok) ? _pcmProjVm(p.valorMostrado, p.contador, _delta) : p.valorMostrado;
       const hasLast = !(p.lastChange===null || p.lastChange===undefined || p.lastChange==='');
       const next=(parseInt(p.lastChange)||0)+(parseInt(p.interval)||0);
       const nextText=(hasLast&&(parseInt(p.interval)||0)>0)?`${next.toLocaleString('pt-BR')}h`:'—';
@@ -6097,7 +6169,7 @@ function _buildPartsReadTable(eq, hourTotal, hpw){
       return `<tr${trClass}${trStyle}>
         <td><div class="td-name">${p.name}${p.na?' <span style="font-size:10px;color:#9ca3af;font-style:italic">(N/A)</span>':''}</div></td>
         <td>${p.ref ? p.ref : '—'}</td>
-        <td>${hasVal(p.valorMostrado) ? `${p.valorMostrado}h` : '—'}</td>
+        <td>${hasVal(p.valorMostrado) ? `${vmProj}h` : '—'}</td>
         <td>${p.contador||'—'}</td>
         <td>${(p.lastChange!==null&&p.lastChange!==undefined&&p.lastChange!=='')?`${Number(p.lastChange).toLocaleString('pt-BR')}h`:'—'}</td>
         <td>${p.interval?`${p.interval.toLocaleString('pt-BR')}h`:'—'}</td>
@@ -6861,7 +6933,7 @@ function renderMachines(){
   const nClients=Object.keys(byClient).length;
   const withModel=db.machines.filter(eq=>db.models.some(m=>modelKey(m.brand,m.model)===modelKey(eq.brand,eq.model))).length;
   const withPhotos=db.machines.filter(eq=>(eq.photos||[]).length>0).length;
-  const withAlert=db.machines.filter(eq=>{const ws=getMachineWorstStatus(eq);return ws&&(ws.level==='vencido'||ws.level==='alerta');}).length;
+  const withAlert=db.machines.filter(eq=>{const ws=getMachineWorstStatus(eq, _pcmProjHorim(eq,null).projTotal);return ws&&(ws.level==='vencido'||ws.level==='alerta');}).length;
 
   // Filtrar máquinas
   let machines=db.machines.filter(eq=>{
@@ -6925,7 +6997,8 @@ function renderMachines(){
           <th></th>
         </tr></thead>
         <tbody>${machines.length?machines.map(eq=>{
-          const ws=getMachineWorstStatus(eq);
+          const _projT=_pcmProjHorim(eq,null).projTotal;   // v79: horímetro projetado p/ hoje (fator=1)
+          const ws=getMachineWorstStatus(eq, _projT);
           return`<tr>
             <td><span style="font-family:var(--font-mono),monospace;font-size:10px;background:var(--blue-light);color:var(--blue-mid);padding:2px 7px;border-radius:4px;white-space:nowrap">${eq.tag||'—'}</span></td>
             <td>
@@ -6937,7 +7010,7 @@ function renderMachines(){
               <div class="mach-meta">${eq.branch||eq.location||'—'}</div>
             </td>
             <td>
-              <div class="mach-hora">${(eq.hourTotal||0).toLocaleString('pt-BR')}h</div>
+              <div class="mach-hora" title="${_projT!==(eq.hourTotal||0)?`Projetado p/ hoje pelo regime · última leitura ${(eq.hourTotal||0).toLocaleString('pt-BR')}h`:'Horímetro'}">${_projT.toLocaleString('pt-BR')}h</div>
               <div class="mach-meta">${eq.hpw||'—'} h/sem</div>
             </td>
             <td>
