@@ -3628,6 +3628,13 @@ function _usuarioEstaDigitandoEm_(el) {
     saturacao: 'Saturação',
   };
   window.showView = function(view) {
+    // v79 — trava de não-salvo: sair do editor de template (sidebar) com edições
+    // pendentes pede confirmação antes de descartar.
+    if (view !== 'templates' && typeof currentView !== 'undefined' && currentView === 'templates'
+        && _tplEditorDirty && document.getElementById('tplFasesContainer')) {
+      if (!confirm('Há alterações NÃO salvas no template.\n\nSair sem salvar? As alterações serão perdidas.\n\n(Cancele e clique em "Salvar template" para gravar.)')) return undefined;
+      _tplEditorDirty = false;
+    }
     const r = _origShowView ? _origShowView.apply(this, arguments) : undefined;
     document.querySelectorAll('.nav-item').forEach(b => {
       b.classList.toggle('is-active', b.dataset.view === view);
@@ -8176,6 +8183,21 @@ let _tiposOS = [];
 let _notifInterval = null;
 let _templatesList = [];
 let _editorTemplate = null;
+// v79 — trava de "alterações não salvas" do editor de templates. A tarefa é salva
+// em 2 níveis: "Confirmar" no modal grava só em memória; a persistência real é o
+// botão "Salvar template". Sem esta trava, sair da tela (sidebar ou "← Lista")
+// descartava silenciosamente as edições — sintoma "config da tarefa não salva".
+let _tplEditorDirty = false;
+function _marcarTemplateDirty() {
+  _tplEditorDirty = true;
+  const b = document.getElementById('btnSalvarTemplate');
+  if (b) { b.textContent = '● Salvar template'; b.style.boxShadow = '0 0 0 2px var(--orange, #f59e0b)'; }
+}
+function _voltarListaTemplates() {
+  if (_tplEditorDirty && !confirm('Há alterações NÃO salvas neste template.\n\nSair sem salvar? As alterações serão perdidas.\n\n(Cancele e clique em "Salvar template" para gravar.)')) return;
+  _tplEditorDirty = false;
+  renderTemplateList();
+}
 let _editorFaseAtual = null;
 let _editorTarefaIdx = null;
 let _editandoTipoId = null;
@@ -10530,6 +10552,7 @@ async function renderTemplateList() {
 }
 
 function openTemplateEditor(templateId) {
+  _tplEditorDirty = false;   // v79: abre limpo (edições marcam dirty)
   const el = document.getElementById('viewTemplates');
   if (!el) return;
   if (templateId) {
@@ -10568,16 +10591,17 @@ function duplicarTemplate(templateId) {
   const fasesArr = Object.values(fasesMap).sort((a,b) => a.fase_ordem - b.fase_ordem);
   fasesArr.forEach(f => f.tarefas.sort((a,b) => (a.ordem||0) - (b.ordem||0)));
   _editorTemplate = { template_id: null, nome: 'Cópia de ' + tpl.Nome, fases: fasesArr };
+  _tplEditorDirty = true;   // v79: cópia ainda não persistida → sair sem salvar avisa
   _renderTemplateEditor(el);
 }
 
 function _renderTemplateEditor(el) {
   el.innerHTML = `
     <div class="tpl-editor-header">
-      <button class="btn btn-secondary btn-sm" onclick="renderTemplateList()">← Lista de templates</button>
+      <button class="btn btn-secondary btn-sm" onclick="_voltarListaTemplates()">← Lista de templates</button>
       <input class="tpl-editor-name-input" id="tplNomeInput" type="text"
         placeholder="Nome do template..." value="${(_editorTemplate.nome||'').replace(/"/g,'&quot;')}">
-      <button class="btn btn-primary" onclick="saveTemplateEditor()">Salvar template</button>
+      <button class="btn btn-primary" id="btnSalvarTemplate" onclick="saveTemplateEditor()">Salvar template</button>
     </div>
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
       <span style="font-size:13px;color:var(--text-muted)">Fases do pipeline:</span>
@@ -10624,11 +10648,12 @@ function _renderFases() {
 function adicionarFase() {
   if (!_editorTemplate) return;
   _editorTemplate.fases.push({ nome: 'Nova fase', fase_ordem: _editorTemplate.fases.length + 1, tarefas: [] });
+  _marcarTemplateDirty();
   _renderFases();
 }
 
 function _renameFase(fi, nome) {
-  if (_editorTemplate && _editorTemplate.fases[fi]) _editorTemplate.fases[fi].nome = nome;
+  if (_editorTemplate && _editorTemplate.fases[fi]) { _editorTemplate.fases[fi].nome = nome; _marcarTemplateDirty(); }
 }
 
 function _moverFase(fi, dir) {
@@ -10636,6 +10661,7 @@ function _moverFase(fi, dir) {
   const ni = fi + dir;
   if (ni < 0 || ni >= fases.length) return;
   [fases[fi], fases[ni]] = [fases[ni], fases[fi]];
+  _marcarTemplateDirty();
   _renderFases();
 }
 
@@ -10661,6 +10687,7 @@ function _moverTarefa(fi, ti, dir) {
   } else {
     return; // extremidade global — nada a fazer
   }
+  _marcarTemplateDirty();
   _renderFases();
 }
 
@@ -10742,6 +10769,7 @@ function _renderCondicaoRows() {
 function _removerFase(fi) {
   if (!confirm('Remover esta fase e todas as suas tarefas?')) return;
   _editorTemplate.fases.splice(fi, 1);
+  _marcarTemplateDirty();
   _renderFases();
 }
 
@@ -10880,6 +10908,7 @@ function saveTarefaModal() {
       opcoes, fonte_auto: fonteAuto, condicao
     });
   }
+  _marcarTemplateDirty();   // v79: edição fica pendente até "Salvar template"
   closeModal('modalTarefaEditor');
   _renderFases();
 }
@@ -10887,6 +10916,7 @@ function saveTarefaModal() {
 function _removerTarefa(fi, ti) {
   if (!confirm('Remover esta tarefa?')) return;
   _editorTemplate.fases[fi].tarefas.splice(ti, 1);
+  _marcarTemplateDirty();
   _renderFases();
 }
 
@@ -10915,6 +10945,7 @@ async function saveTemplateEditor() {
     if (_editorTemplate.template_id) payload.template_id = _editorTemplate.template_id;
     const saveResult = await syncToGS('saveTemplate', payload);
     console.log('[saveTemplate] GAS response:', JSON.stringify(saveResult));
+    _tplEditorDirty = false;   // v79: persistido — limpa a trava de não-salvo
     toast('Template salvo!', 'success');
     renderTemplateList();
   } catch(e) {
