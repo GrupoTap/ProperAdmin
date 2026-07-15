@@ -5,7 +5,7 @@
   "Expandir/Recolher tudo" (docsExpandBtn). Fotos saem da tabela e viram uma
   GALERIA de miniaturas colapsável (<details>) por grupo; a tabela lista só
   PDFs/assinaturas/outros. Contadores por tipo (📷/📄) no cabeçalho. Novos rótulos
-  de categoria (foto_form01/09/10, pdf_form01/02/termo). Novos: _docsExpanded,
+  de categoria (foto_form01/03/04/09/10, pdf_form01/02/03/04/termo). Novos: _docsExpanded,
   _docIsFoto, _docsToggleExpandAll, CSS .docs-tcount/.docs-gallery-*/.docs-gthumb.
   Nenhum id/data-key/view/função renomeado. node --check OK na região de docs.
   (Este arquivo empilha sobre as mudanças v79/v80 do regime multi-faixa — publicar
@@ -3404,9 +3404,11 @@ let _docsExpanded = (function(){ try{ return localStorage.getItem('proper_docs_e
 
 const DOCS_CAT_LABELS = {
   foto_preventiva:'Foto Preventiva', foto_form08:'Foto Form 08 (legado)', foto_form02:'Foto Form 02',
-  foto_form01:'Foto Form 01', foto_form09:'Foto Form 03 (perit. mec.)', foto_form10:'Foto Form 04 (perit. elét.)', foto_rotor:'Foto Rotor',
+  foto_form01:'Foto Form 01', foto_form03:'Foto Form 03 (perit. mec.)', foto_form04:'Foto Form 04 (perit. elét.)',
+  foto_form09:'Foto Form 03 (perit. mec.)', foto_form10:'Foto Form 04 (perit. elét.)', foto_rotor:'Foto Rotor',
   pdf_preventiva:'PDF Preventiva', pdf_relatorio:'PDF Relatório', pdf_formulario:'PDF Formulário',
-  pdf_form01:'PDF Recebimento (F01)', pdf_form02:'PDF Diagnóstico (F02)', pdf_termo_desmontagem:'PDF Termo Desmontagem (F05)',
+  pdf_form01:'PDF Recebimento (F01)', pdf_form02:'PDF Diagnóstico (F02)',
+  pdf_form03:'PDF Peritagem Mec. (F03)', pdf_form04:'PDF Peritagem Elét. (F04)', pdf_termo_desmontagem:'PDF Termo Desmontagem (F05)',
   assinatura:'Assinatura', outro:'Outro'
 };
 // Um anexo é "foto" se o MIME é imagem ou a categoria começa com foto_.
