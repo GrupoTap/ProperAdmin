@@ -1,4 +1,10 @@
 <!--
+  PCM V82 — 15/07/2026 — Fase A + Fases B/C no editor de tarefa (STAGED — NÃO PUBLICADO).
+    Fase A: seletor "Ao concluir esta tarefa" (Acao_Terminal).
+    Fase B: builder de slots de foto (rótulo + mín/máx) → requisitos.fotos.
+    Fase C: builder de checklist (pergunta/tipo/opções/obrigatória) → requisitos.checklist.
+    Tudo grava em t.requisitos/t.acao_terminal via Tarefas_JSON (spread). _novaTarefa reseta os novos campos.
+    Ver PATCH_FASE_A e PATCH_FASES_BCD (2026-07-15). Renomear arquivo para PCM_V82.html ao publicar.
   PCM v80 — 15/07/2026 — UX da Gestão de Documentos (ADITIVO, frontend-only).
   Grupos (OS/Cliente/Máquina) RECOLHIDOS por padrão → mais OSs por tela; estado
   aberto/fechado persistido (localStorage 'proper_docs_expanded') com botão
@@ -9643,7 +9649,8 @@ async function _loadPipelineTab(osId) {
       ${window.PROPER_SESSION?.is_admin === true ? `
         <button class="btn btn-secondary btn-sm" onclick="_abrirEmpilharPipeline(this, '${osId.replace(/'/g,"\\'")}')">➕ Empilhar execução</button>
         <button class="btn btn-secondary btn-sm" onclick="_abrirFilaOficina(this)">🏭 Fila da oficina</button>
-        <button class="btn btn-secondary btn-sm" onclick="_abrirTrocarPipeline(this, '${osId.replace(/'/g,"\\'")}')">🔄 Trocar pipeline</button>` : ''}
+        <button class="btn btn-secondary btn-sm" onclick="_abrirTrocarPipeline(this, '${osId.replace(/'/g,"\\'")}')">🔄 Trocar pipeline</button>
+        <button class="btn btn-secondary btn-sm" onclick="gerarRelatorioReforma('${osId.replace(/'/g,"\\'")}')">📄 Gerar relatório</button>` : ''}
     </div>`;
 
   fasesOrdenadas.forEach(fase => {
@@ -10510,6 +10517,24 @@ if(!gsUrl){
         </div>
       </div>
       <div class="form-row" style="margin-top:14px">
+        <label class="form-label">Ao concluir esta tarefa</label>
+        <select id="tarefaAcaoTerminal" class="form-select">
+          <option value="">— Nada (padrão) —</option>
+          <option value="fechar_os">Fechar OS</option>
+          <option value="fechar_pipeline">Fechar pipeline (aguardar próxima camada)</option>
+        </select>
+      </div>
+      <div class="form-row" style="margin-top:14px">
+        <label class="form-label">Fotos exigidas na conclusão</label>
+        <div id="tarefaFotosSlots"></div>
+        <button type="button" class="btn btn-sm" onclick="_addFotoSlot()">+ Slot de foto</button>
+      </div>
+      <div class="form-row" style="margin-top:14px">
+        <label class="form-label">Checklist de conclusão</label>
+        <div id="tarefaChecklistItens"></div>
+        <button type="button" class="btn btn-sm" onclick="_addChecklistItem()">+ Pergunta</button>
+      </div>
+      <div class="form-row" style="margin-top:14px">
         <label class="form-label">Descrição / orientação</label>
         <textarea id="tarefaDescricao" class="form-input" rows="2"
           placeholder="Orientação para o técnico (opcional)..."></textarea>
@@ -10889,6 +10914,9 @@ async function _novaTarefa(fi) {
   document.getElementById('tarefaPerfilResponsavel').value = '';
   document.getElementById('tarefaTempoEstimadoMin').value = '';
   document.getElementById('tarefaDescricao').value = '';
+  document.getElementById('tarefaAcaoTerminal').value = ''; // v71 Fase A
+  _editorFotos = []; _renderFotoSlots();                     // v72 Fase B
+  _editorChecklist = []; _renderChecklist();                 // v72 Fase C
   _editorCondicao = [];
   _renderCondicaoRows();
   await _popularSelectPerfilResponsavel('');
@@ -10919,6 +10947,11 @@ async function _editarTarefa(fi, ti) {
   document.getElementById('tarefaPerfilResponsavel').value = t.perfil_responsavel || '';
   document.getElementById('tarefaTempoEstimadoMin').value = t.tempo_estimado_min || '';
   document.getElementById('tarefaDescricao').value = t.descricao || '';
+  document.getElementById('tarefaAcaoTerminal').value = t.acao_terminal || ''; // v71 Fase A
+  _editorFotos = (t.requisitos && Array.isArray(t.requisitos.fotos)) ? t.requisitos.fotos.map(f=>({...f})) : []; // v72 Fase B
+  _renderFotoSlots();
+  _editorChecklist = (t.requisitos && Array.isArray(t.requisitos.checklist)) ? t.requisitos.checklist.map(q=>({...q})) : []; // v72 Fase C
+  _renderChecklist();
   await _popularSelectPerfilResponsavel(t.perfil_responsavel || '');
   _renderDependenciasCheckboxes(t);
   openModal('modalTarefaEditor');
@@ -10939,6 +10972,109 @@ function _renderDependenciasCheckboxes(tarefaAtual) {
       <input type="checkbox" value="${t.id}" ${depAtual.includes(t.id)?'checked':''}>
       ${t.id} — ${t.nome||'(sem nome)'}
     </label>`).join('');
+}
+
+// v72 Fase B — builder de slots de foto
+let _editorFotos = [];
+function _renderFotoSlots() {
+  const c = document.getElementById('tarefaFotosSlots');
+  if (!c) return;
+  c.innerHTML = _editorFotos.map((f, i) => `
+    <div style="display:flex;gap:6px;margin-bottom:6px;align-items:center">
+      <input class="form-input" style="flex:2" placeholder="Rótulo (ex: Antes)" value="${(f.rotulo||'').replace(/"/g,'&quot;')}"
+        oninput="_editorFotos[${i}].rotulo=this.value">
+      <input class="form-input" style="width:64px" type="number" min="0" placeholder="mín" value="${f.min==null?'':f.min}"
+        oninput="_editorFotos[${i}].min=parseInt(this.value)||0">
+      <input class="form-input" style="width:64px" type="number" min="1" placeholder="máx" value="${f.max==null?'':f.max}"
+        oninput="_editorFotos[${i}].max=parseInt(this.value)||0">
+      <button type="button" class="btn btn-sm" onclick="_removeFotoSlot(${i})">🗑</button>
+    </div>`).join('');
+}
+function _addFotoSlot() { _editorFotos.push({ id: 'f' + (_editorFotos.length+1), rotulo: '', min: 1, max: 3 }); _renderFotoSlots(); }
+function _removeFotoSlot(i) { _editorFotos.splice(i,1); _renderFotoSlots(); }
+
+// v72 Fase C — builder de checklist (monta pergunta + opções no cadastro)
+let _editorChecklist = [];
+function _renderChecklist() {
+  const c = document.getElementById('tarefaChecklistItens');
+  if (!c) return;
+  c.innerHTML = _editorChecklist.map((q,i)=>`
+    <div style="border:1px solid var(--border);border-radius:6px;padding:8px;margin-bottom:6px">
+      <input class="form-input" placeholder="Pergunta" value="${(q.pergunta||'').replace(/"/g,'&quot;')}"
+        oninput="_editorChecklist[${i}].pergunta=this.value">
+      <div style="display:flex;gap:6px;margin-top:6px;align-items:center">
+        <select class="form-select" onchange="_editorChecklist[${i}].tipo=this.value">
+          <option value="sim_nao" ${q.tipo==='sim_nao'?'selected':''}>Sim/Não</option>
+          <option value="unica" ${q.tipo==='unica'?'selected':''}>Uma opção</option>
+          <option value="multipla" ${q.tipo==='multipla'?'selected':''}>Múltipla</option>
+        </select>
+        <label style="font-size:12px"><input type="checkbox" ${q.obrigatoria?'checked':''}
+          onchange="_editorChecklist[${i}].obrigatoria=this.checked"> obrigatória</label>
+        <button type="button" class="btn btn-sm" onclick="_removeChecklistItem(${i})">🗑</button>
+      </div>
+      <textarea class="form-input" style="margin-top:6px" placeholder="Opções (uma por linha)"
+        oninput="_editorChecklist[${i}]._opcoesRaw=this.value">${(q.opcoes||[]).join('\n')}</textarea>
+    </div>`).join('');
+}
+function _addChecklistItem(){ _editorChecklist.push({id:'q'+(_editorChecklist.length+1),pergunta:'',tipo:'sim_nao',opcoes:['Sim','Não'],obrigatoria:true}); _renderChecklist(); }
+function _removeChecklistItem(i){ _editorChecklist.splice(i,1); _renderChecklist(); }
+function _coletarChecklistOpcoes(){ _editorChecklist.forEach(function(q){ if (q._opcoesRaw!==undefined){ q.opcoes = String(q._opcoesRaw).split('\n').map(function(s){return s.trim();}).filter(Boolean); delete q._opcoesRaw; } }); }
+
+// v72 Fase D — relatório PDF de reforma (texto + checklist funcionais; embutir fotos = passo final, precisa de helper GAS base64)
+async function gerarRelatorioReforma(os_id) {
+  if (!os_id) { toast('OS não informada.', 'error'); return; }
+  const pipe = await gsGet('getPipelineByOS', { os_id });
+  if (!pipe || pipe.status !== 'ok') { toast('Falha ao carregar o pipeline (getPipelineByOS).', 'error'); return; }
+  const tarefas = (pipe.tarefas || []).slice().sort(function(a,b){
+    var f = (parseInt(a.Camada_Ordem)||1) - (parseInt(b.Camada_Ordem)||1); if (f) return f;
+    var g = (parseInt(a.Fase_Ordem)||0) - (parseInt(b.Fase_Ordem)||0); if (g) return g;
+    return (parseInt(a.Ordem)||0) - (parseInt(b.Ordem)||0);
+  });
+  let fotosBase64 = {};
+  try { const fr = await gsGet('getFotosTarefasBase64', { os_id }); fotosBase64 = (fr && fr.fotos) || {}; } catch(e){ console.warn('fotos do relatório falharam:', e); }
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ unit:'mm', format:'a4' });
+  let y = 15;
+  const numero = (tarefas[0] && tarefas[0].OS_ID) || os_id;
+  doc.setFontSize(16); doc.text('Relatorio de Reforma - OS ' + numero, 14, y); y += 10;
+  doc.setFontSize(10);
+  let faseAtual = '';
+  tarefas.forEach(function(t){
+    if (String(t.Fase||'') !== faseAtual) {
+      faseAtual = String(t.Fase||'');
+      if (y > 270) { doc.addPage(); y = 15; }
+      y += 4; doc.setFont(undefined,'bold'); doc.text(faseAtual, 14, y); doc.setFont(undefined,'normal'); y += 6;
+    }
+    if (y > 275) { doc.addPage(); y = 15; }
+    doc.text('- ' + (t.Tarefa_ID||'') + ' ' + (t.Nome||''), 16, y); y += 5;
+    let resp = {}; try { resp = JSON.parse(t.Respostas_JSON || '{}'); } catch(e){}
+    const chk = (resp && resp.checklist) || {};
+    Object.keys(chk).forEach(function(k){
+      var v = Array.isArray(chk[k]) ? chk[k].join(', ') : chk[k];
+      if (y > 280) { doc.addPage(); y = 15; }
+      doc.text('   ' + k + ': ' + v, 18, y); y += 4;
+    });
+    // v72 Fase D: embutir as fotos da tarefa (base64 do getFotosTarefasBase64), agrupadas por slot
+    var prefT = os_id + '|' + (t.Tarefa_ID||'') + '|';
+    Object.keys(fotosBase64).filter(function(eid){ return eid.indexOf(prefT) === 0; }).forEach(function(eid){
+      var slotId = eid.slice(prefT.length);
+      var imgs = fotosBase64[eid] || [];
+      if (!imgs.length) return;
+      if (y > 250) { doc.addPage(); y = 15; }
+      doc.text('   ' + slotId + ':', 18, y); y += 3;
+      var x = 20;
+      imgs.forEach(function(im){
+        try {
+          if (x > 165) { x = 20; y += 34; if (y > 250) { doc.addPage(); y = 15; } }
+          doc.addImage(im.dataUrl, 'JPEG', x, y, 40, 30);
+          x += 44;
+        } catch(e){}
+      });
+      y += 34;
+    });
+  });
+  doc.save('Relatorio_' + numero + '.pdf');
+  toast('Relatório gerado (texto + checklist + fotos).', 'success');
 }
 
 function saveTarefaModal() {
@@ -10975,6 +11111,9 @@ function saveTarefaModal() {
   const perfilResponsavel = document.getElementById('tarefaPerfilResponsavel').value;
   const tempoEstimadoMin  = document.getElementById('tarefaTempoEstimadoMin').value;
   const descricao = document.getElementById('tarefaDescricao').value.trim();
+  const acaoTerminal = document.getElementById('tarefaAcaoTerminal').value; // v71 Fase A
+  _coletarChecklistOpcoes(); // v72 Fase C
+  const requisitos = { fotos: _editorFotos.map(f=>({...f})), checklist: _editorChecklist.map(q=>({...q})) }; // v72 Fases B/C
   const deps = Array.from(document.querySelectorAll('#tarefaDependencias input[type=checkbox]:checked')).map(c => c.value);
 
   const fase = _editorTemplate.fases[_editorFaseAtual];
@@ -10987,6 +11126,8 @@ function saveTarefaModal() {
     t.tempo_estimado_min = tempoEstimadoMin ? parseInt(tempoEstimadoMin) : null;
     t.form_url = formUrl;
     t.opcoes = opcoes; t.fonte_auto = fonteAuto; t.condicao = condicao;
+    t.acao_terminal = acaoTerminal; // v71 Fase A
+    t.requisitos = requisitos; // v72 Fases B/C
   } else {
     const todas = _todasTarefasEditor();
     const existingIds = new Set(todas.map(t => t.id));
@@ -11005,7 +11146,8 @@ function saveTarefaModal() {
       perfil_responsavel: perfilResponsavel || '',
       tempo_estimado_min: tempoEstimadoMin ? parseInt(tempoEstimadoMin) : null,
       form_url: formUrl,
-      opcoes, fonte_auto: fonteAuto, condicao
+      opcoes, fonte_auto: fonteAuto, condicao, acao_terminal: acaoTerminal,
+      requisitos // v72 Fases B/C
     });
   }
   _marcarTemplateDirty();   // v79: edição fica pendente até "Salvar template"
