@@ -640,6 +640,23 @@ tr:hover td{background:var(--gray-50)}
 .form-textarea{resize:vertical;min-height:60px}
 .form-hint{font-size:10px;color:var(--text3);margin-top:2px}
 
+/* ── REGIME MULTI-FAIXA (cadastro de máquina — espelha o PCF) ── */
+.mcregime-turnos{display:flex;flex-direction:column;gap:6px;margin-bottom:8px}
+.mcturno-row{display:flex;align-items:flex-end;gap:6px;background:var(--blue-pale);border:1px solid var(--border);border-radius:8px;padding:8px;flex-wrap:wrap}
+.mcturno-dias{flex:2;min-width:130px;display:flex;flex-direction:column;gap:3px}
+.mcturno-h{flex:1;min-width:80px;display:flex;flex-direction:column;gap:3px}
+.mcturno-dias label,.mcturno-h label{font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.4px}
+.mcturno-dias-sel,.mcturno-h input{width:100%;border:1px solid var(--border2);border-radius:6px;padding:7px 6px;font-size:12px;background:white;color:var(--text);outline:none;font-family:var(--font-sans),sans-serif}
+.mcturno-dias-sel:focus,.mcturno-h input:focus{border-color:var(--blue-mid)}
+.mc-custom-days-wrap{display:none;flex-wrap:wrap;gap:6px;margin-top:4px}
+.mc-custom-day-label{font-size:11px;color:var(--text2);display:inline-flex;align-items:center;gap:3px}
+.mcturno-del{flex-shrink:0;width:28px;height:28px;border-radius:50%;border:1px solid var(--border2);background:white;color:#c0392b;cursor:pointer;font-size:13px;line-height:1;padding:0;align-self:flex-end}
+.mc-btn-add-turno{width:100%;padding:9px;border:1.5px dashed var(--blue-mid);border-radius:8px;background:transparent;color:var(--blue-mid);font-size:12px;font-weight:700;text-transform:uppercase;cursor:pointer;margin-bottom:8px}
+.mc-btn-add-turno:hover{background:var(--blue-pale)}
+.mcregime-calc{background:var(--green-light);border-left:3px solid var(--green);border-radius:0 8px 8px 0;padding:8px 12px;margin-top:4px}
+.mcregime-calc-row{display:flex;justify-content:space-between;font-size:12px;color:var(--text);padding:2px 0}
+.mcregime-calc-row b{color:var(--green);font-size:13px}
+
 /* ── MACHINES VIEW ── */
 .client-group{background:white;border:1px solid var(--border);border-radius:var(--radius-lg);margin-bottom:10px;overflow:hidden}
 .client-group-head{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:var(--gray-50);border-bottom:1px solid var(--border);cursor:pointer}
@@ -1654,6 +1671,19 @@ tr:hover td{background:var(--gray-50)}
       <div class="form-group">
         <label class="form-label">h / Semana</label>
         <input class="form-input" id="mcHpw" type="number" placeholder="ex: 45">
+        <div class="form-hint">Calculado automaticamente pelo regime abaixo. Você pode ajustar manualmente.</div>
+      </div>
+    </div>
+    <!-- Regime de trabalho multi-faixa (espelha o PCF) -->
+    <div class="form-group">
+      <label class="form-label">Regime de trabalho <span>opcional</span></label>
+      <div class="form-hint" style="margin-bottom:6px">Informe como a máquina opera — pode ter faixas de horário diferentes por dia. As horas/semana são somadas automaticamente.</div>
+      <div class="mcregime-turnos" id="mcTurnos"></div>
+      <button type="button" class="mc-btn-add-turno" onclick="mcAddTurno(event)">+ Adicionar faixa de horário</button>
+      <div class="mcregime-calc" id="mcRegimeCalc" style="display:none">
+        <div class="mcregime-calc-row"><span>Horas/semana:</span><b id="mcHSem">—</b></div>
+        <div class="mcregime-calc-row"><span>Horas/mês (~4,33 sem):</span><b id="mcHMes">—</b></div>
+        <div class="mcregime-calc-row"><span>Horas/ano:</span><b id="mcHAno">—</b></div>
       </div>
     </div>
     <div class="form-group">
@@ -2375,7 +2405,7 @@ function showHelp(el, key) {
 // o localStorage (proper_admin_v2) sozinho no próximo carregamento e ressincroniza
 // do Sheets — sem precisar "limpar dados do site" no Chrome. Suba o número sempre
 // que uma correção exigir reconstruir o cache do zero.
-const DATA_SCHEMA_VERSION = '68';
+const DATA_SCHEMA_VERSION = '80';
 try {
   const _sv = localStorage.getItem('proper_schema_version');
   if (_sv !== DATA_SCHEMA_VERSION) {
@@ -2417,113 +2447,13 @@ let db = JSON.parse(localStorage.getItem('proper_admin_v2') || 'null') || {
       ]
     }
   ],
-  machines: [
-  {
-    "id": "EQ-MODELO",
-    "client": "SORRAG",
-    "branch": "Filial - Andaimes",
-    "cnpj": "",
-    "contact": "Adilson",
-    "phone": "(37) 99999-0001",
-    "email": "fiscal@sorrag.com.br",
-    "city": "Cláudio / MG",
-    "lastVisit": "2026-03-13",
-    "nextVisit": "2026-04-13",
-    "brand": "Schulz",
-    "model": "SRP 3010 III",
-    "serial": "41805",
-    "year": 2023,
-    "type": "Compressor Parafuso",
-    "location": "Laser de Corte de Tubos",
-    "tag": "296-CP-01",
-    "hourTotal": 5091,
-    "hpw": 90,
-    "power": "10cv / 7,5kW",
-    "obs": "Ambiente com poeira — verificar filtro de ar a cada visita",
-    "driveLink": "",
-    "photos": [],
-    "updatedAt": "2026-03-25",
-    "parts": {
-      "filtro_oleo": {
-        "name": "Filtro de Óleo",
-        "lastChange": 5091,
-        "interval": 1000,
-        "ref": "W9231",
-        "na": false
-      },
-      "filtro_ar_prim": {
-        "name": "Filtro de Ar Primário",
-        "lastChange": 5091,
-        "interval": 500,
-        "ref": "C1140",
-        "na": false
-      },
-      "filtro_ar_secu": {
-        "name": "Filtro de Ar Secundário",
-        "lastChange": 0,
-        "interval": 4000,
-        "ref": "",
-        "na": true
-      },
-      "separador": {
-        "name": "Separador Ar/Óleo",
-        "lastChange": 3091,
-        "interval": 4000,
-        "ref": "007.0233-0",
-        "na": false
-      },
-      "oleo_lubrif": {
-        "name": "Óleo Lubrificante",
-        "lastChange": 5091,
-        "interval": 1000,
-        "ref": "46 SEMI",
-        "na": false
-      },
-      "v_termostatica": {
-        "name": "Válvula Termostática",
-        "lastChange": 0,
-        "interval": 8000,
-        "ref": "",
-        "na": true
-      },
-      "v_admissao": {
-        "name": "Válvula de Admissão",
-        "lastChange": 0,
-        "interval": 8000,
-        "ref": "",
-        "na": true
-      },
-      "v_pressao_min": {
-        "name": "Válvula Pressão Mínima",
-        "lastChange": 0,
-        "interval": 8000,
-        "ref": "",
-        "na": true
-      },
-      "correia": {
-        "name": "Correia",
-        "lastChange": 3091,
-        "interval": 3000,
-        "ref": "3VX 335",
-        "na": false
-      }
-    }
-  }
-],
-      clients: [
-  {
-    "id": "CLI-MODELO",
-    "nome": "SORRAG",
-    "cnpj": "",
-    "cidade": "Cláudio / MG",
-    "telefone": "(37) 99999-0001",
-    "email": "fiscal@sorrag.com.br",
-    "antecedencia_alerta_dias": 30,
-    "drive_url": "",
-    "observacoes": "Cliente modelo — exemplo de cadastro completo.",
-    "updatedAt": "2026-03-25T00:00:00.000Z"
-  }
-]
+  // v79.1 — seed demo (SORRAG "Cliente modelo" / EQ-MODELO / CLI-MODELO) REMOVIDO
+  // do fallback padrão. Era a origem do cliente-modelo fantasma que reaparecia em
+  // navegador novo e do id template "EQ-MODELO" que contaminava OS_MAQUINAS.
+  // Fresh boot agora começa vazio e ressincroniza do Sheets (fonte de verdade).
+  // O botão "Seed de Dados Demo (usar 1x)" segue disponível para uso manual.
+  machines: [],
+  clients: []
 };
 
 // Etapa 0: garantir schemaVersion sem alterar dados (retrocompatível)
@@ -5284,10 +5214,12 @@ function openModalMachine(id=null){
     document.getElementById('mcType').value=eq.type||'Compressor Parafuso';
     document.getElementById('mcLastVisit').value=eq.lastVisit||'';
     document.getElementById('mcNextVisit').value=eq.nextVisit||'';
+    mcRenderRegime(eq.regimeData);
   } else {
     fields.forEach(k=>{const el=document.getElementById(k);if(el)el.value=''});
     ['mcYear','mcHour','mcHpw','mcLastVisit','mcNextVisit'].forEach(k=>{const el=document.getElementById(k);if(el)el.value=''});
     document.getElementById('mcType').value='Compressor Parafuso';
+    mcRenderRegime([]);
     // Pré-preencher dados do cliente se houver filtro de cliente ativo
     if(_machFilter && db.clients){
       const hitC=db.clients.find(c=>clientKey(c.nome)===clientKey(_machFilter));
@@ -5309,6 +5241,124 @@ function openModalMachine(id=null){
   }
   openModal('modalMachine');
   _captureFormSnapshot('modalMachine');
+}
+
+// ── REGIME MULTI-FAIXA (cadastro de máquina — espelha o PCF) ──
+// Aditivo, frontend-only. Nomes prefixados 'mc' para não colidir com o regime
+// de turno global (loadParametrosTurno/_addIntervaloTurno) nem com nada do PCF.
+const MC_DIAS_MAP = {'seg-qui':4,'seg-sex':5,'seg-sab':6,'seg-dom':7,'sex':1,'sab':1,'dom':1};
+function mcBuildTurnoRow(tIdx){
+  const dias=['Seg','Ter','Qua','Qui','Sex','Sáb','Dom'];
+  return `
+  <div class="mcturno-row">
+    <div class="mcturno-dias">
+      <label>Dias</label>
+      <select data-mtkey="turno${tIdx}_dias" class="mcturno-dias-sel" onchange="mcHandleDiasSel(this);mcCalcRegime()">
+        <option value="">Selecionar...</option>
+        <option value="seg-qui">Seg–Qui (4d)</option>
+        <option value="seg-sex">Seg–Sex (5d)</option>
+        <option value="seg-sab">Seg–Sáb (6d)</option>
+        <option value="seg-dom">Seg–Dom (7d)</option>
+        <option value="sex">Sex (1d)</option>
+        <option value="sab">Sáb (1d)</option>
+        <option value="dom">Dom (1d)</option>
+        <option value="custom">Personalizado</option>
+      </select>
+      <div class="mc-custom-days-wrap">
+        ${dias.map((d,di)=>`<label class="mc-custom-day-label"><input type="checkbox" data-mtcd="${di}" onchange="mcCalcRegime()"> ${d}</label>`).join('')}
+      </div>
+    </div>
+    <div class="mcturno-h"><label>Início</label><input type="time" class="mcturno-inicio" onchange="mcCalcRegime()"></div>
+    <div class="mcturno-h"><label>Fim</label><input type="time" class="mcturno-fim" onchange="mcCalcRegime()"></div>
+    <button type="button" class="mcturno-del" onclick="mcRemoveTurno(this)" style="display:none" title="Remover faixa">✕</button>
+  </div>`;
+}
+function mcAddTurno(e){
+  if(e&&e.stopPropagation)e.stopPropagation();
+  const c=document.getElementById('mcTurnos');if(!c)return;
+  const tIdx=c.querySelectorAll('.mcturno-row').length;
+  const div=document.createElement('div');
+  div.innerHTML=mcBuildTurnoRow(tIdx);
+  c.appendChild(div.firstElementChild);
+  if(c.querySelectorAll('.mcturno-row').length>1) c.querySelectorAll('.mcturno-del').forEach(b=>b.style.display='');
+}
+function mcRemoveTurno(btn){
+  btn.closest('.mcturno-row').remove();
+  const c=document.getElementById('mcTurnos');
+  if(c&&c.querySelectorAll('.mcturno-row').length<=1){const d=c.querySelector('.mcturno-del');if(d)d.style.display='none';}
+  mcCalcRegime();
+}
+function mcHandleDiasSel(sel){
+  const row=sel.closest('.mcturno-row');if(!row)return;
+  const w=row.querySelector('.mc-custom-days-wrap');
+  if(w)w.style.display=sel.value==='custom'?'flex':'none';
+}
+function mcGetDiasNum(sel,wrap){
+  if(sel.value==='custom')return wrap?wrap.querySelectorAll('input[type=checkbox]:checked').length:0;
+  return MC_DIAS_MAP[sel.value]||0;
+}
+function mcCalcRegime(){
+  const c=document.getElementById('mcTurnos');if(!c)return;
+  let totalHSem=0;
+  c.querySelectorAll('.mcturno-row').forEach(function(row){
+    const sel=row.querySelector('.mcturno-dias-sel');
+    const wrap=row.querySelector('.mc-custom-days-wrap');
+    const ini=row.querySelector('.mcturno-inicio');
+    const fim=row.querySelector('.mcturno-fim');
+    if(!sel||!ini||!fim||!ini.value||!fim.value)return;
+    const hiParts=ini.value.split(':').map(Number);
+    const hfParts=fim.value.split(':').map(Number);
+    let horas=(hfParts[0]*60+hfParts[1]-(hiParts[0]*60+hiParts[1]))/60;
+    if(horas<=0)horas+=24;
+    const dias=mcGetDiasNum(sel,wrap);
+    if(dias>0&&horas>0)totalHSem+=dias*horas;
+  });
+  const calc=document.getElementById('mcRegimeCalc');
+  if(totalHSem>0){
+    if(calc)calc.style.display='';
+    const hs=document.getElementById('mcHSem');if(hs)hs.textContent=totalHSem.toFixed(1)+' h';
+    const hm=document.getElementById('mcHMes');if(hm)hm.textContent=(totalHSem*4.33).toFixed(1)+' h';
+    const ha=document.getElementById('mcHAno');if(ha)ha.textContent=(totalHSem*52).toFixed(0)+' h';
+    const hpw=document.getElementById('mcHpw');if(hpw)hpw.value=Math.round(totalHSem);
+  } else {
+    if(calc)calc.style.display='none';
+  }
+}
+function mcCollectRegime(){
+  const c=document.getElementById('mcTurnos');if(!c)return [];
+  return [...c.querySelectorAll('.mcturno-row')].map(function(row){
+    const sel=row.querySelector('.mcturno-dias-sel');
+    const ini=row.querySelector('.mcturno-inicio');
+    const fim=row.querySelector('.mcturno-fim');
+    const cbs=[...(row.querySelectorAll('.mc-custom-days-wrap input[type=checkbox]')||[])];
+    const customDays=cbs.map(function(cb,i){return cb.checked?i:-1;}).filter(function(i){return i>=0;});
+    return {dias:sel?sel.value:'',inicio:ini?ini.value:'',fim:fim?fim.value:'',customDays:customDays};
+  }).filter(function(t){return t.dias&&t.inicio&&t.fim;});
+}
+function mcRenderRegime(regimeData){
+  const c=document.getElementById('mcTurnos');if(!c)return;
+  c.innerHTML='';
+  const rows=(Array.isArray(regimeData)&&regimeData.length)?regimeData:[null];
+  rows.forEach(function(t,i){
+    const div=document.createElement('div');
+    div.innerHTML=mcBuildTurnoRow(i);
+    const el=div.firstElementChild;
+    c.appendChild(el);
+    if(t){
+      const sel=el.querySelector('.mcturno-dias-sel');
+      const ini=el.querySelector('.mcturno-inicio');
+      const fim=el.querySelector('.mcturno-fim');
+      if(sel)sel.value=t.dias||'';
+      if(ini)ini.value=t.inicio||'';
+      if(fim)fim.value=t.fim||'';
+      if(sel&&sel.value==='custom'){
+        const w=el.querySelector('.mc-custom-days-wrap');
+        if(w){w.style.display='flex';(t.customDays||[]).forEach(function(di){const cb=w.querySelector('input[data-mtcd="'+di+'"]');if(cb)cb.checked=true;});}
+      }
+    }
+  });
+  if(c.querySelectorAll('.mcturno-row').length>1)c.querySelectorAll('.mcturno-del').forEach(function(b){b.style.display='';});
+  mcCalcRegime();
 }
 
 function saveMachine(){
@@ -5336,6 +5386,7 @@ function saveMachine(){
     power:document.getElementById('mcPower').value.trim(),
     hourTotal:parseInt(document.getElementById('mcHour').value)||0,
     hpw:parseInt(document.getElementById('mcHpw').value)||0,
+    regimeData:mcCollectRegime(),
     obs:document.getElementById('mcObs').value.trim(),
     obsOp:document.getElementById('mcObsOp').value.trim(),
     driveLink:document.getElementById('mcDriveLink').value.trim(),
