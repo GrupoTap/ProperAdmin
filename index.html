@@ -1,4 +1,17 @@
 <!--
+  PCM v80 — 15/07/2026 — UX da Gestão de Documentos (ADITIVO, frontend-only).
+  Grupos (OS/Cliente/Máquina) RECOLHIDOS por padrão → mais OSs por tela; estado
+  aberto/fechado persistido (localStorage 'proper_docs_expanded') com botão
+  "Expandir/Recolher tudo" (docsExpandBtn). Fotos saem da tabela e viram uma
+  GALERIA de miniaturas colapsável (<details>) por grupo; a tabela lista só
+  PDFs/assinaturas/outros. Contadores por tipo (📷/📄) no cabeçalho. Novos rótulos
+  de categoria (foto_form01/09/10, pdf_form01/02/termo). Novos: _docsExpanded,
+  _docIsFoto, _docsToggleExpandAll, CSS .docs-tcount/.docs-gallery-*/.docs-gthumb.
+  Nenhum id/data-key/view/função renomeado. node --check OK na região de docs.
+  (Este arquivo empilha sobre as mudanças v79/v80 do regime multi-faixa — publicar
+  como um único bump v80.)
+-->
+<!--
   PCM v78 — 11/07/2026 — Sprint F: rename form08→form02 (par
   GAS_properCare_v68.js/PCF v57/Hub v15). Aditivo, aliases legados mantidos:
   foto_form08 (label) e 'auto:form08' (label) permanecem, com foto_form02 e
@@ -562,6 +575,18 @@ tr:hover td{background:var(--gray-50)}
 .docs-badge.pdf{background:var(--red-light);color:var(--red)}
 .docs-badge.assinatura{background:var(--purple-light);color:var(--purple)}
 .docs-badge.outro{background:var(--gray-100);color:var(--text2)}
+/* ── Docs UX: contadores por tipo + galeria de fotos colapsável (grupos recolhidos) ── */
+.docs-count-pills{display:inline-flex;gap:6px;align-items:center;flex-wrap:wrap}
+.docs-tcount{display:inline-flex;align-items:center;gap:3px;font-size:11px;font-weight:800;padding:2px 8px;border-radius:20px}
+.docs-tcount.foto{background:var(--blue-light);color:var(--blue-mid)}
+.docs-tcount.pdf{background:var(--red-light);color:var(--red)}
+.docs-gallery-wrap{border-bottom:1px solid var(--border)}
+.docs-gallery-wrap summary{list-style:none;cursor:pointer;padding:8px 12px;font-size:11px;font-weight:700;color:var(--blue-mid);background:var(--gray-50)}
+.docs-gallery-wrap summary::-webkit-details-marker{display:none}
+.docs-gallery-grid{display:flex;flex-wrap:wrap;gap:6px;padding:10px 12px}
+.docs-gthumb{width:64px;height:64px;border-radius:8px;object-fit:cover;border:1px solid var(--border2);background:var(--gray-100);cursor:pointer;transition:transform .1s}
+.docs-gthumb:hover{transform:scale(1.06)}
+.docs-empty-mini{padding:12px;color:var(--text3);font-size:12px}
 
 /* ── SUBSYSTEM ── */
 .sub-block{border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:8px}
@@ -3374,12 +3399,24 @@ let _docsGroupBy = 'os';
 let _docsCat = 'todas';
 let _docsQuery = '';
 let _docsLoading = false;
+// Preferência de grupos abertos/fechados (persistida). Padrão = recolhido → mais OSs por tela.
+let _docsExpanded = (function(){ try{ return localStorage.getItem('proper_docs_expanded')==='1'; }catch(e){ return false; } })();
 
 const DOCS_CAT_LABELS = {
-  foto_preventiva:'Foto Preventiva', foto_form08:'Foto Form 08 (legado)', foto_form02:'Foto Form 02', foto_rotor:'Foto Rotor',
+  foto_preventiva:'Foto Preventiva', foto_form08:'Foto Form 08 (legado)', foto_form02:'Foto Form 02',
+  foto_form01:'Foto Form 01', foto_form09:'Foto Form 03 (perit. mec.)', foto_form10:'Foto Form 04 (perit. elét.)', foto_rotor:'Foto Rotor',
   pdf_preventiva:'PDF Preventiva', pdf_relatorio:'PDF Relatório', pdf_formulario:'PDF Formulário',
+  pdf_form01:'PDF Recebimento (F01)', pdf_form02:'PDF Diagnóstico (F02)', pdf_termo_desmontagem:'PDF Termo Desmontagem (F05)',
   assinatura:'Assinatura', outro:'Outro'
 };
+// Um anexo é "foto" se o MIME é imagem ou a categoria começa com foto_.
+function _docIsFoto(it){ return String(it?.Mime||'').startsWith('image/') || String(it?.Categoria||'').startsWith('foto_'); }
+function _docsToggleExpandAll(){
+  _docsExpanded = !_docsExpanded;
+  try{ localStorage.setItem('proper_docs_expanded', _docsExpanded ? '1':'0'); }catch(e){}
+  const b=document.getElementById('docsExpandBtn'); if(b) b.textContent=_docsExpanded ? 'Recolher tudo' : 'Expandir tudo';
+  renderDocsList();
+}
 function _docVal(v){ return (v===undefined || v===null || v==='') ? '—' : String(v); }
 function _docCatLabel(cat){ return DOCS_CAT_LABELS[cat] || _docVal(cat); }
 function _docCatClass(cat){ if(String(cat||'').startsWith('foto_')) return 'foto'; if(String(cat||'').startsWith('pdf_')) return 'pdf'; if(cat==='assinatura') return 'assinatura'; return 'outro'; }
@@ -3406,6 +3443,7 @@ async function renderDocs(force){
         <button class="docs-chip docs-group-chip ${_docsGroupBy==='os'?'active':''}" data-group="os" onclick="_docsGroupBy='os';renderDocsList()">Por OS</button>
         <button class="docs-chip docs-group-chip ${_docsGroupBy==='cliente'?'active':''}" data-group="cliente" onclick="_docsGroupBy='cliente';renderDocsList()">Por Cliente</button>
         <button class="docs-chip docs-group-chip ${_docsGroupBy==='maquina'?'active':''}" data-group="maquina" onclick="_docsGroupBy='maquina';renderDocsList()">Por Máquina</button>
+        <button class="docs-chip" id="docsExpandBtn" onclick="_docsToggleExpandAll()">${_docsExpanded?'Recolher tudo':'Expandir tudo'}</button>
       </div>
       <div id="docsCounter" class="docs-count">Carregando…</div>
     </div>
@@ -3458,15 +3496,24 @@ function renderDocsList(){
   groups.forEach(g=>g.items.sort((a,b)=>_docDateValue(b)-_docDateValue(a)));
   const counter=document.getElementById('docsCounter'); if(counter) counter.textContent=`${items.length} arquivo${items.length===1?'':'s'} · ${groups.length} grupo${groups.length===1?'':'s'}`;
   if(!items.length){ list.innerHTML='<div class="empty"><div class="empty-icon">📄</div><div class="empty-title">Nenhum documento encontrado para este filtro.</div></div>'; return; }
+  // v80 — grupos RECOLHIDOS por padrão (mais OSs por tela); fotos numa galeria
+  // de miniaturas colapsável separada; PDFs/assinaturas/outros na tabela; contadores
+  // por tipo (📷/📄) no cabeçalho. Estado aberto/fechado segue _docsExpanded (persistido).
+  const openAttr = _docsExpanded ? ' open' : '';
   list.innerHTML = groups.map(g=>{
     const folder=(g.items.find(x=>x?.Folder_URL)||{}).Folder_URL;
-    const photo=g.items.find(x=>String(x?.Mime||'').startsWith('image/') && x?.File_URL);
-    return `<details class="docs-group" open><summary>
-      <div class="docs-group-title"><span class="docs-group-name">${escHtml(g.label)}</span><span class="docs-group-meta">${g.items.length} arquivo${g.items.length===1?'':'s'}</span></div>
-      <div class="docs-actions">${photo?`<img class="docs-thumb" src="${escHtml(photo.File_URL)}" alt="Primeira foto" onclick="event.preventDefault();_docOpen('${escJs(photo.File_URL)}')">`:''}${folder?`<button class="btn btn-secondary btn-sm" onclick="event.preventDefault();_docOpen('${escJs(folder)}')">Abrir pasta</button>`:''}</div>
-    </summary><div class="table-wrap"><table><thead><tr><th>Categoria</th><th>Máquina</th><th>Arquivo</th><th>Data</th><th>Por</th><th style="text-align:right">Ações</th></tr></thead><tbody>
-      ${g.items.map(it=>`<tr><td><span class="docs-badge ${_docCatClass(it?.Categoria)}">${escHtml(_docCatLabel(it?.Categoria))}</span></td><td>${escHtml(_docVal(it?.Maquina_Label || it?.Maquina_ID))}</td><td><div class="docs-file-name">${escHtml(_docVal(it?.File_Name))}</div>${it?.Caption?`<div class="docs-caption">${escHtml(it.Caption)}</div>`:''}</td><td>${escHtml(_docDateLabel(it?.Created_At))}</td><td>${escHtml(_docVal(it?.Created_By))}</td><td><div class="row-actions">${it?.File_URL?`<button class="btn btn-secondary btn-xs" onclick="_docOpen('${escJs(it.File_URL)}')">Ver</button>`:''}${it?.Folder_URL?`<button class="btn btn-secondary btn-xs" onclick="_docOpen('${escJs(it.Folder_URL)}')">Abrir pasta</button>`:''}</div></td></tr>`).join('')}
-    </tbody></table></div></details>`;
+    const fotos=g.items.filter(_docIsFoto);
+    const docs =g.items.filter(it=>!_docIsFoto(it));
+    const cover=fotos.find(x=>x?.File_URL);
+    const counters=`${fotos.length?`<span class="docs-tcount foto">📷 ${fotos.length}</span>`:''}${docs.length?`<span class="docs-tcount pdf">📄 ${docs.length}</span>`:''}` || `<span class="docs-group-meta">${g.items.length} arquivo${g.items.length===1?'':'s'}</span>`;
+    const gallery = fotos.length ? `<details class="docs-gallery-wrap"><summary>📷 ${fotos.length} foto${fotos.length===1?'':'s'} — ver miniaturas</summary><div class="docs-gallery-grid">${fotos.map(f=>f?.File_URL?`<img class="docs-gthumb" src="${escHtml(f.File_URL)}" alt="foto" title="${escHtml(_docVal(f?.File_Name))}" onclick="_docOpen('${escJs(f.File_URL)}')">`:'').join('')}</div></details>` : '';
+    const table = docs.length ? `<div class="table-wrap"><table><thead><tr><th>Categoria</th><th>Máquina</th><th>Arquivo</th><th>Data</th><th>Por</th><th style="text-align:right">Ações</th></tr></thead><tbody>
+      ${docs.map(it=>`<tr><td><span class="docs-badge ${_docCatClass(it?.Categoria)}">${escHtml(_docCatLabel(it?.Categoria))}</span></td><td>${escHtml(_docVal(it?.Maquina_Label || it?.Maquina_ID))}</td><td><div class="docs-file-name">${escHtml(_docVal(it?.File_Name))}</div>${it?.Caption?`<div class="docs-caption">${escHtml(it.Caption)}</div>`:''}</td><td>${escHtml(_docDateLabel(it?.Created_At))}</td><td>${escHtml(_docVal(it?.Created_By))}</td><td><div class="row-actions">${it?.File_URL?`<button class="btn btn-secondary btn-xs" onclick="_docOpen('${escJs(it.File_URL)}')">Ver</button>`:''}${it?.Folder_URL?`<button class="btn btn-secondary btn-xs" onclick="_docOpen('${escJs(it.Folder_URL)}')">Abrir pasta</button>`:''}</div></td></tr>`).join('')}
+    </tbody></table></div>` : (fotos.length ? '' : '<div class="docs-empty-mini">Nenhum documento.</div>');
+    return `<details class="docs-group"${openAttr}><summary>
+      <div class="docs-group-title"><span class="docs-group-name">${escHtml(g.label)}</span><span class="docs-count-pills">${counters}</span></div>
+      <div class="docs-actions">${cover?`<img class="docs-thumb" src="${escHtml(cover.File_URL)}" alt="Primeira foto" onclick="event.preventDefault();_docOpen('${escJs(cover.File_URL)}')">`:''}${folder?`<button class="btn btn-secondary btn-sm" onclick="event.preventDefault();_docOpen('${escJs(folder)}')">Abrir pasta</button>`:''}</div>
+    </summary>${gallery}${table}</details>`;
   }).join('');
 }
 
