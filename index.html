@@ -1247,7 +1247,7 @@ tr:hover td{background:var(--gray-50)}
   <header class="app-header">
     <div class="breadcrumb">PCM <span class="sep">/</span> <span id="breadcrumb-current">Controle de Preventivas</span></div>
     <div class="header-actions">
-      <input type="search" class="header-search" placeholder="Buscar..." />
+      <input type="search" class="header-search" placeholder="Buscar..." autocomplete="off" name="pcm_hdr_busca_nofill" data-lpignore="true" data-1p-ignore readonly onfocus="this.removeAttribute('readonly')" />
       <div id="notifBtn" style="position:relative;cursor:pointer;font-size:18px;line-height:1" onclick="toggleNotifPanel()">
         🔔
         <span id="notifBadge" style="display:none;position:absolute;top:-4px;right:-4px;background:#ef4444;color:white;font-size:9px;font-weight:700;padding:1px 4px;border-radius:10px;min-width:14px;text-align:center"></span>
@@ -1274,7 +1274,7 @@ tr:hover td{background:var(--gray-50)}
       </div>
       <div class="search-wrap">
         <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
-        <input type="text" placeholder="Buscar modelo..." id="sidebarSearch" oninput="filterSidebar(this.value)">
+        <input type="text" placeholder="Buscar modelo..." id="sidebarSearch" autocomplete="off" name="pcm_sidebar_busca_nofill" data-lpignore="true" data-1p-ignore readonly onfocus="this.removeAttribute('readonly')" oninput="filterSidebar(this.value)">
       </div>
     </div>
     <div class="sidebar-list" id="sidebarList"></div>
@@ -1309,6 +1309,8 @@ tr:hover td{background:var(--gray-50)}
             <input type="text" id="clientSearchInput" class="form-input"
               placeholder="Buscar cliente, cidade, CNPJ..."
               style="width:220px;padding-left:28px"
+              autocomplete="off" name="pcm_cli_busca_nofill" data-lpignore="true" data-1p-ignore
+              readonly onfocus="this.removeAttribute('readonly')"
               oninput="_clientSearch=this.value;renderClients()">
             <svg style="position:absolute;left:8px;top:50%;transform:translateY(-50%);color:var(--text3);pointer-events:none" width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
           </div>
@@ -1482,7 +1484,7 @@ tr:hover td{background:var(--gray-50)}
 <div class="overlay" id="modalLinkSubLib">
   <div class="modal modal-lg">
     <div class="modal-title">🔗 Vincular subsistema da biblioteca</div>
-    <div class="form-group"><label class="form-label">Buscar</label><input class="form-input" id="linkSubLibSearch" oninput="renderLinkSubLibOptions()" placeholder="Nome, categoria, código..."></div>
+    <div class="form-group"><label class="form-label">Buscar</label><input class="form-input" id="linkSubLibSearch" autocomplete="off" name="pcm_lib_busca_nofill" data-lpignore="true" data-1p-ignore readonly onfocus="this.removeAttribute('readonly')" oninput="renderLinkSubLibOptions()" placeholder="Nome, categoria, código..."></div>
     <div id="linkSubLibOptions"></div>
     <div class="modal-footer"><button class="btn btn-secondary" onclick="closeModal('modalLinkSubLib')">Cancelar</button></div>
   </div>
@@ -3447,7 +3449,7 @@ async function renderDocs(force){
     </div>
     <div class="docs-toolbar">
       <div class="docs-controls">
-        <input class="form-input" style="width:280px" placeholder="Buscar cliente, OS, máquina, arquivo..." value="${escHtml(_docsQuery)}" oninput="_docsQuery=this.value;renderDocsList()">
+        <input class="form-input" style="width:280px" placeholder="Buscar cliente, OS, máquina, arquivo..." autocomplete="off" name="pcm_docs_busca_nofill" data-lpignore="true" data-1p-ignore readonly onfocus="this.removeAttribute('readonly')" value="${escHtml(_docsQuery)}" oninput="_docsQuery=this.value;renderDocsList()">
         <button class="docs-chip docs-group-chip ${_docsGroupBy==='os'?'active':''}" data-group="os" onclick="_docsGroupBy='os';renderDocsList()">Por OS</button>
         <button class="docs-chip docs-group-chip ${_docsGroupBy==='cliente'?'active':''}" data-group="cliente" onclick="_docsGroupBy='cliente';renderDocsList()">Por Cliente</button>
         <button class="docs-chip docs-group-chip ${_docsGroupBy==='maquina'?'active':''}" data-group="maquina" onclick="_docsGroupBy='maquina';renderDocsList()">Por Máquina</button>
@@ -7078,7 +7080,7 @@ function renderMachines(){
         </div>
       </div>
       <div style="display:flex;gap:8px;flex-wrap:wrap">
-        <input type="search" id="machineSearchInput" class="form-input" placeholder="Buscar..." autocomplete="off" name="pcm_maq_busca_nofill" data-lpignore="true" data-1p-ignore style="width:160px" oninput="renderMachines()" value="${escHtml(search)}">
+        <input type="search" id="machineSearchInput" class="form-input" placeholder="Buscar..." autocomplete="off" name="pcm_maq_busca_nofill" data-lpignore="true" data-1p-ignore readonly onfocus="this.removeAttribute('readonly')" style="width:160px" oninput="renderMachines()" value="${escHtml(search)}">
         <select id="machineClientFilter" class="form-input" style="width:220px" onchange="_machFilter=this.value;renderMachines()">
           <option value="">Todos os clientes</option>
           ${Object.keys(byClient).sort((a,b)=>a.localeCompare(b,'pt-BR',{sensitivity:'base'})).map(c=>`<option value="${c.replace(/"/g,'&quot;')}" ${clientKey(_machFilter)===clientKey(c)?'selected':''}>${c} (${byClient[c].length})</option>`).join('')}
