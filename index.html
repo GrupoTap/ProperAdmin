@@ -3934,6 +3934,7 @@ function renderPreventivas(){
       </div>
       <input type="search" id="prevSearchInput" class="form-input" placeholder="Buscar cliente ou máquina..."
              autocomplete="off" name="pcm_prev_busca_nofill" data-lpignore="true" data-1p-ignore
+             readonly onfocus="this.removeAttribute('readonly')"
              style="width:200px" oninput="_prevSearch=this.value;renderPreventivas()" value="${escHtml(_prevSearch)}">
     </div>
 
@@ -10438,6 +10439,7 @@ if(!gsUrl){
       <div class="form-row">
         <label class="form-label">Nome da tarefa *</label>
         <input type="text" id="tarefaNome" class="form-input"
+          autocomplete="off" name="tpl_tarefa_nome_nofill" data-lpignore="true" data-1p-ignore
           placeholder="Ex: Diagnóstico sem desmontagem">
       </div>
       <div class="form-row" style="margin-top:14px">
