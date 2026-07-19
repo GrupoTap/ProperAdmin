@@ -1,4 +1,25 @@
 <!--
+  PCM V84 — 19/07/2026 — FixNumeroOsNumber (4 casts String(), 100% frontend; GAS inalterado).
+    Sintoma (Fernando, 19/07, já no V83 publicado): digitar na busca da Gestão de OSs não faz
+    nada; Enter também não. Causa REAL (reproduzida em headless com dado numérico): o Sheets
+    devolve numero_os como NUMBER quando a célula é numérica (ex.: 2026012, 20260706) e
+    (o.numero_os||'').toLowerCase() estoura "TypeError: toLowerCase is not a function" a cada
+    tecla — o handler morre ANTES de redesenhar #osListResults e a lista congela como está.
+    Este MESMO throw é o que fazia os filtros de status parecerem mortos no V82: o autofill
+    ("REcebimento de máquina") enchia _osSearch → o branch de busca rodava em toda interação →
+    TypeError → tela congelada. O guard do V83 continua correto e necessário; o V84 fecha a
+    outra metade do bug.
+    Fix: String() nos campos vindos do Sheets nos pontos de filtro que chamavam método direto:
+      1. _renderOSListResults: numero_os/cliente (busca), status, prioridade.
+      2. _renderUsuariosTable: t.nome / t.id.
+      3. _renderPerfisTable: p.nome_perfil.
+      4. _osClienteInputHandler: c.nome (crítico — casa NOME→id_cliente ao editar OS).
+    Filtros por concatenação (Máquinas, Preventivas, sidebar) já eram imunes (num+str = str);
+    Docs e Clientes já usavam String()/normalizeForSearch. Validação: node --check nos 3
+    blocos; bateria headless com numero_os NUMBER passa (busca "sorrag" filtra, status filtra,
+    zero pageerrors); bateria completa de 14 checks do V83 re-passa no V84.
+-->
+<!--
   PCM V83 — 19/07/2026 — FixAutofillGestaoOS (4 correções cirúrgicas, 100% frontend; GAS inalterado).
     Sintoma (Fernando, 19/07): na Gestão de OSs o Chrome autofillava "REcebimento de máquina"
     no campo de busca; ao primeiro gesto o autofill era commitado, _osSearch ficava contaminado
@@ -8483,8 +8504,8 @@ async function renderUsuarios() {
 function _renderUsuariosTable(filter = '') {
   const el = document.getElementById('viewUsuarios');
   const items = _usuList.filter(t =>
-    (t.nome || '').toLowerCase().includes(filter.toLowerCase()) ||
-    (t.id   || '').toLowerCase().includes(filter.toLowerCase())
+    String(t.nome || '').toLowerCase().includes(filter.toLowerCase()) ||
+    String(t.id   || '').toLowerCase().includes(filter.toLowerCase())
   );
 
   el.innerHTML = `
@@ -8696,7 +8717,7 @@ async function renderPerfis() {
 function _renderPerfisTable(filter = '') {
   const el = document.getElementById('viewPerfis');
   const items = _perfilList.filter(p =>
-    (p.nome_perfil||'').toLowerCase().includes(filter.toLowerCase())
+    String(p.nome_perfil||'').toLowerCase().includes(filter.toLowerCase())
   );
 
   el.innerHTML = `
@@ -8943,13 +8964,16 @@ function _renderOSListResults() {
   };
 
   let items = _osList;
+  // v84: String() em TODOS os campos vindos do Sheets — numero_os chega como NUMBER
+  // (ex.: 2026012, 20260706) e (num||'').toLowerCase() estourava TypeError a cada
+  // tecla/seleção, congelando a lista ("busquei/filtrei e nada aconteceu").
   if (search)       items = items.filter(o =>
-    (o.numero_os||'').toLowerCase().includes(search.toLowerCase()) ||
-    (o.cliente  ||'').toLowerCase().includes(search.toLowerCase()));
+    String(o.numero_os||'').toLowerCase().includes(search.toLowerCase()) ||
+    String(o.cliente  ||'').toLowerCase().includes(search.toLowerCase()));
   if (statusFilter) items = items.filter(o =>
-    (o.status||'').toUpperCase() === statusFilter);
+    String(o.status||'').toUpperCase() === statusFilter);
   if (priorityFilter) items = items.filter(o =>
-    (o.prioridade||'normal').toLowerCase() === priorityFilter);
+    String(o.prioridade||'normal').toLowerCase() === priorityFilter);
 
   const RANK_PRIORIDADE = { urgente: 3, alta: 2, normal: 1 };
   const hoje = new Date(); hoje.setHours(0,0,0,0);
@@ -9405,7 +9429,7 @@ function _osClienteInputHandler(val) {
   // Ao digitar, tenta encontrar cliente pelo nome para capturar o id
   document.getElementById('osClienteId').value = '';
   if (!val) { _renderOSMachineSelector([]); return; }
-  const match = (db?.clients||[]).find(c => (c.nome||'').toLowerCase() === val.toLowerCase());
+  const match = (db?.clients||[]).find(c => String(c.nome||'').toLowerCase() === val.toLowerCase());
   if (match) document.getElementById('osClienteId').value = match.id;
   _renderOSMachineSelector();
 }
