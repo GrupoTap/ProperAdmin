@@ -1,4 +1,24 @@
 <!--
+  PCM V86 — 19/07/2026 — F2c: Clientes + Máquinas + Peças lidos do SUPABASE (STAGED).
+    Leitura autenticada via TOKEN-PONTE: gsGet('getSupabaseToken') → JWT
+    role=authenticated assinado pelo GAS v74 (Legacy JWT Secret); renovação
+    automática (cache até faltar <1h do exp). RLS libera clientes/maquinas/
+    machine_parts só pra portadores; anon segue lendo só o catálogo.
+    Adapters no formato que o merge do syncFromGS já consome:
+      - getClientsFromSupabase → shape das ABAS (ID/Nome/CNPJ/...).
+      - getMachinesWithPartsFromSupabase → porta FIEL do pipeline do GAS:
+        _f2cRowToMachine (rowToMachine), _f2cPartsForMachine (match por id OU
+        serial OU tag, pulando inativas) e enrich com clientData (cmap por
+        nome normalizado). Devolve {status:'ok', machines:[...]} idêntico.
+    Troca de 2 call sites no syncFromGS (getMachinesWithParts + getClients);
+    getVisits FICA no GAS (dado quente de campo — F3). Sincronizar MANUAL
+    (botões, silent=false) força a rodada via GAS (frescura máxima sob demanda).
+    Guards de frescura via sync_meta: maquinas/machine_parts ≤2h (acionador de
+    30 min do GAS v74), clientes ≤48h. Kill-switch localStorage f2c_source='gas';
+    sombra f2c_shadow='1'. Par deste deploy: GAS v74 + f2c_auth_cadastro.sql.
+    Ver NEWFILE_SPEC_F2C_CLIENTES_MAQUINAS_2026-07-19.md.
+-->
+<!--
   PCM V85 — 19/07/2026 — F2a: catálogo lido do SUPABASE com fallback GAS (STAGED).
     Primeira leitura do Supabase (estratégia strangler, Rota B). O bloco novo (antes de
     syncCatalogFromGS) busca as 6 tabelas do catálogo via PostgREST com a chave anon
@@ -7909,6 +7929,170 @@ async function getCatalogFullSupabaseOrGAS(){
   }
 }
 
+// ═══════════════════════════════════════════════════════════════════════════
+// v86 — F2c: CLIENTES + MÁQUINAS + PEÇAS lidos do SUPABASE (token-ponte)
+// ═══════════════════════════════════════════════════════════════════════════
+// Leitura autenticada: o GAS assina um token-ponte (getSupabaseToken, JWT
+// role=authenticated) e o RLS libera clientes/maquinas/machine_parts só pra
+// quem o apresenta. A chave anon continua lendo SÓ o catálogo. TEMPORÁRIO:
+// no F4 o Supabase Auth assume e a ponte é desmontada.
+// Controles (localStorage): f2c_source='gas' (kill-switch) · f2c_shadow='1'
+// (sombra: busca as duas fontes, USA o GAS, loga comparação).
+// Sincronizar MANUAL (botões) força a rodada via GAS — frescura máxima
+// sob demanda; o espelho de maquinas/machine_parts atualiza a cada 30 min
+// (acionador do GAS v74) e clientes a cada save.
+let _supaTokenCache = null;   // { token, exp } — renova quando faltar <1h
+let _f2cManualRound = false;  // setado por syncFromGS quando o sync é manual
+
+function _f2cSource(){ try { return localStorage.getItem('f2c_source') || 'supabase'; } catch(e){ return 'supabase'; } }
+function _f2cShadow(){ try { return localStorage.getItem('f2c_shadow') === '1'; } catch(e){ return false; } }
+
+async function _supaTokenGet(){
+  const agora = Date.now() / 1000;
+  if (_supaTokenCache && (_supaTokenCache.exp - agora) > 3600) return _supaTokenCache.token;
+  const r = await gsGet('getSupabaseToken', { id_usuario: (window.PROPER_SESSION && window.PROPER_SESSION.id) || '' });
+  if (!r || r.status !== 'ok' || !r.token) throw new Error('getSupabaseToken: ' + ((r && r.error) || 'sem token'));
+  let exp = agora + 11 * 3600;
+  try { exp = JSON.parse(atob(r.token.split('.')[1].replace(/-/g,'+').replace(/_/g,'/'))).exp || exp; } catch(e){}
+  _supaTokenCache = { token: r.token, exp };
+  return r.token;
+}
+
+async function supaGetAuth_(tabela, select){
+  const tok = await _supaTokenGet();
+  const r = await fetch(`${SUPA_URL}/rest/v1/${tabela}?select=${select||'*'}`, {
+    headers: { apikey: SUPA_ANON, Authorization: 'Bearer ' + tok } });
+  if (!r.ok) throw new Error(`supabase ${tabela} HTTP ${r.status}`);
+  return r.json();
+}
+
+// Guard de frescura por tabela (sync_meta é legível pela anon)
+async function _f2cFrescor(tabelas, maxHoras){
+  const meta = await supaGet_('sync_meta', 'tabela,pushed_at');
+  for (const t of tabelas) {
+    const m = meta.find(x => x.tabela === t);
+    if (!m) throw new Error(`sync_meta sem ${t} — push do GAS ainda não cobriu`);
+    if (Date.now() - new Date(m.pushed_at).getTime() > maxHoras*3600*1000)
+      throw new Error(`espelho de ${t} >${maxHoras}h velho`);
+  }
+}
+
+// ── Adapter 1: getClients (shape das ABAS, o que o merge do syncFromGS lê) ──
+const _F2C_CLIMAP = r => ({ ID:r.id, Nome:r.nome, CNPJ:r.cnpj, Cidade:r.cidade, Telefone:r.telefone,
+  Email:r.email, 'Observações':r.observacoes, Antecedencia_Alerta_Dias:r.antecedencia_alerta_dias,
+  Drive_URL:r.drive_url, Ativo:r.ativo, Tipo_Registro:r.tipo_registro, Contato:r.contato,
+  Filial:r.filial, Prox_Visita:r.prox_visita, Ult_Visita:r.ult_visita, Endereco:r.endereco, UF:r.uf });
+
+async function getClientsFromSupabase(){
+  await _f2cFrescor(['clientes'], 48);
+  const rows = await supaGetAuth_('clientes');
+  return { status:'ok', clients: _f2Ativos(rows).map(_F2C_CLIMAP) };
+}
+
+// ── Adapter 2: getMachinesWithParts — porta fiel do pipeline do GAS ─────────
+// (rowToMachine + getMachinePartsById match id OU serial OU tag + enrich)
+function _f2cIntOrBlank(v){
+  if (v === undefined || v === null || v === '') return '';
+  const s = String(v).trim(); if (!s) return '';
+  const n = Number(s.replace(',', '.'));
+  return Number.isFinite(n) ? Math.trunc(n) : '';
+}
+
+function _f2cRowToMachine(r){
+  let regime = [];
+  try { const v = r.regime_json; regime = v ? (typeof v === 'object' ? v : JSON.parse(v)) : []; } catch(e){}
+  return {
+    id: String(r.id||''), client: String(r.cliente||''), branch: String(r.filial||''),
+    brand: String(r.marca||''), model: String(r.modelo||''), serial: String(r.serie||''),
+    year: r.ano || '', tag: String(r.tag||''), location: r.localizacao || '',
+    hourTotal: parseInt(r.hor_total) || 0, hpw: parseInt(r.h_semana) || 0,
+    obs: r.observacoes || '', power: r.potencia || '', type: r.tipo_equip || '',
+    obsOp: r.obs_op || '', tipo: r.tipo_equip || '', potencia: r.potencia || '',
+    regimeData: Array.isArray(regime) ? regime : []
+  };
+}
+
+function _f2cPartsForMachine(machineId, serial, tag, mpRows){
+  const out = {};
+  const mid = String(machineId||'').trim();
+  for (const p of mpRows){
+    if (String(p.ativo||'').toUpperCase() === 'NÃO') continue;
+    const rowMid = String(p.machine_id||'').trim();
+    const rowSer = String(p.serial||'').trim();
+    const rowTag = String(p.tag||'').trim();
+    const rowPid = String(p.part_id||'').trim();
+    const match = mid ? rowMid === mid
+      : ((serial && rowSer === String(serial).trim()) || (tag && rowTag === String(tag).trim()));
+    if (match && rowPid){
+      out[rowPid] = {
+        name: String(p.part_name || rowPid),
+        lastChange: _f2cIntOrBlank(p.last_change_h),
+        interval: _f2cIntOrBlank(p.interval_h),
+        ref: String(p.ref || ''),
+        na: String(p.na || '').toUpperCase() === 'SIM',
+        valorMostrado: (p.valor_mostrado === null || p.valor_mostrado === undefined) ? '' : String(p.valor_mostrado),
+        contador: (p.contador === null || p.contador === undefined) ? '' : String(p.contador)
+      };
+    }
+  }
+  return out;
+}
+
+async function getMachinesWithPartsFromSupabase(){
+  await _f2cFrescor(['maquinas','machine_parts'], 2);
+  const [cli, maq, mp] = await Promise.all([
+    supaGetAuth_('clientes'), supaGetAuth_('maquinas'), supaGetAuth_('machine_parts')]);
+  const norm = v => String(v||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').trim();
+  const cmap = {};
+  _f2Ativos(cli).forEach(c => { const k = norm(c.nome); if (!k) return;
+    cmap[k] = { nome:String(c.nome||'').trim(), cnpj:String(c.cnpj||'').trim(), cidade:String(c.cidade||'').trim(),
+      telefone:String(c.telefone||'').trim(), email:String(c.email||'').trim(), contato:String(c.contato||'').trim(),
+      filial:String(c.filial||'').trim(), nextVisit:String(c.prox_visita||'').trim(), lastVisit:String(c.ult_visita||'').trim() }; });
+  const machines = _f2Ativos(maq).map(r => {
+    const m = _f2cRowToMachine(r);
+    m.parts = _f2cPartsForMachine(m.id, m.serial, m.tag, mp);
+    const cd = cmap[norm(m.client)] || null;
+    if (cd){
+      [['client','nome'],['branch','filial'],['cnpj','cnpj'],['contact','contato'],['phone','telefone'],
+       ['email','email'],['city','cidade'],['lastVisit','lastVisit'],['nextVisit','nextVisit']]
+        .forEach(([k,ck])=>{ if (!String(m[k]||'').trim() && String(cd[ck]||'').trim()) m[k] = String(cd[ck]).trim(); });
+      m.clientData = cd;
+    }
+    return m;
+  });
+  return { status:'ok', machines };
+}
+
+// ── Wrappers com fonte/kill-switch/sombra/fallback (padrão F2a) ─────────────
+async function _f2cViaSupabaseOuGAS(nome, fnSupa, fnGas){
+  if (!_f2Configurado() || _f2cSource() === 'gas' || _f2cManualRound) return fnGas();
+  if (_f2cShadow()) {
+    const [supa, gas] = await Promise.allSettled([fnSupa(), fnGas()]);
+    if (supa.status === 'fulfilled' && gas.status === 'fulfilled') {
+      const cs = supa.value.clients ? supa.value.clients.length : (supa.value.machines||[]).length;
+      const cg = gas.value.clients ? (gas.value.clients||[]).length : (gas.value.machines||[]).length;
+      console.info(`[F2c sombra] ${nome}: supabase=${cs} gas=${cg}${cs!==cg?'  ⚠ DIVERGÊNCIA':''}`);
+    } else if (supa.status === 'rejected') {
+      console.warn(`[F2c sombra] ${nome}: supabase falhou:`, supa.reason && supa.reason.message);
+    }
+    if (gas.status === 'fulfilled') return gas.value;
+    if (supa.status === 'fulfilled') return supa.value;
+    throw gas.reason;
+  }
+  try {
+    const r = await fnSupa();
+    console.info(`[F2c] ${nome} do SUPABASE:`, (r.clients||r.machines||[]).length, 'registros');
+    return r;
+  } catch(e) {
+    console.warn(`[F2c] ${nome}: Supabase indisponível, fallback GAS:`, e.message);
+    return fnGas();
+  }
+}
+const getClientsSupabaseOrGAS = () =>
+  _f2cViaSupabaseOuGAS('getClients', getClientsFromSupabase, () => gsGet('getClients'));
+const getMachinesWithPartsSupabaseOrGAS = () =>
+  _f2cViaSupabaseOuGAS('getMachinesWithParts', getMachinesWithPartsFromSupabase, () => gsGet('getMachinesWithParts'));
+
 async function syncCatalogFromGS(gsGet, preResult){
   try{
     // v67 PERF: aceita resultado já baixado (boot em paralelo). Se não vier, busca.
@@ -8015,6 +8199,7 @@ async function syncFromGS({ silent = false } = {}){
   }
   if(_syncInProgress) return;
   _syncInProgress = true;
+  _f2cManualRound = !silent; // v86 F2c: sync MANUAL (botões) força a rodada via GAS (frescura máxima)
 
   const el = document.getElementById('syncStatus');
   const syncBtn = document.getElementById('btnSyncHeader');
@@ -8035,9 +8220,9 @@ async function syncFromGS({ silent = false } = {}){
     // em PARALELO (antes eram 5 idas e voltas sequenciais ao Apps Script). O
     // processamento abaixo continua na mesma ordem — só o download foi paralelizado.
     const [dm, dv, dc, dCatalog, dr] = await Promise.all([
-      gsGet('getMachinesWithParts'),
-      gsGet('getVisits'),
-      gsGet('getClients').catch(e => { console.warn('getClients falhou:', e); return { status:'error' }; }),
+      getMachinesWithPartsSupabaseOrGAS(),                                    // v86 F2c
+      gsGet('getVisits'),                                                     // dado quente — fica no GAS até o F3
+      getClientsSupabaseOrGAS().catch(e => { console.warn('getClients (F2c) falhou:', e); return { status:'error' }; }), // v86 F2c
       getCatalogFullSupabaseOrGAS().catch(e => { console.warn('getCatalogFull (F2a) falhou:', e); return null; }), // v85 F2a
       gsGet('getRotorModels').catch(e => { console.warn('getRotorModels falhou:', e); return { status:'error' }; })
     ]);
