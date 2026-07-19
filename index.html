@@ -1,4 +1,24 @@
 <!--
+  PCM V83 — 19/07/2026 — FixAutofillGestaoOS (4 correções cirúrgicas, 100% frontend; GAS inalterado).
+    Sintoma (Fernando, 19/07): na Gestão de OSs o Chrome autofillava "REcebimento de máquina"
+    no campo de busca; ao primeiro gesto o autofill era commitado, _osSearch ficava contaminado
+    e QUALQUER filtro de status/prioridade passava a retornar lista vazia ("a tela não muda").
+    Reproduzido ponta a ponta em Chromium headless (harness test3.js): autofill silencioso →
+    lista cheia + texto na caixa; commit → 0 linhas; qualquer status → 0 linhas. Com dados
+    limpos os filtros funcionam — o filtro NUNCA esteve quebrado; era o guard que faltava.
+    Fix = mesmo guard anti-autofill das outras 7 buscas (readonly onfocus=removeAttribute +
+    autocomplete=off + name *_nofill + data-lpignore + data-1p-ignore), aplicado aos 4 campos
+    que a varredura achou sem guard:
+      1. Busca da Gestão de OSs (_renderOSTable) — causa raiz do chamado.
+      2. Busca de Usuários (_renderUsuariosTable) — mesma classe de bug.
+      3. #partSearchInput (busca de peças do catálogo, modal) — mesma classe.
+      4. #osCliente (modal Nova/Editar OS) — preventivo: é o campo que casa NOME→id_cliente
+         (_osClienteInputHandler); autofill aqui gravaria id de cliente errado na OS.
+    Inputs recriados a cada render (OS/Usuários/partSearch) renascem com readonly a cada
+    innerHTML — o guard não "gasta". Perfis não tem campo de busca; Kanban/Calendário usam
+    chips/botões. Total de inputs com guard agora = 11.
+-->
+<!--
   PCM V82 — 15/07/2026 — Fase A + Fases B/C no editor de tarefa (STAGED — NÃO PUBLICADO).
     Fase A: seletor "Ao concluir esta tarefa" (Acao_Terminal).
     Fase B: builder de slots de foto (rótulo + mín/máx) → requisitos.fotos.
@@ -4046,6 +4066,8 @@ function renderPartSearchCard() {
           <input type="text" id="partSearchInput"
             placeholder="${isModel ? 'Marca e modelo: ex. Schulz SRP3010, Atlas GA30...' : 'Referência OEM, similar ou nome da peça...'}"
             style="flex:1;border:1.5px solid var(--border);border-radius:var(--radius);padding:8px 12px;font-size:13px;outline:none"
+            autocomplete="off" name="pcm_part_busca_nofill" data-lpignore="true" data-1p-ignore
+            readonly onfocus="this.removeAttribute('readonly')"
             oninput="renderPartSearchResults()"
             onkeydown="if(event.key==='Enter') renderPartSearchResults()" />
           <button class="btn btn-secondary btn-sm" onclick="document.getElementById('partSearchInput').value='';renderPartSearchResults()">✕</button>
@@ -8476,6 +8498,8 @@ function _renderUsuariosTable(filter = '') {
     <div style="margin-bottom:12px">
       <input type="text" placeholder="Buscar por nome ou ID…"
         style="width:280px;height:32px;padding:0 10px;font-size:13px;background:white;border:1px solid var(--border2);border-radius:var(--radius-sm);outline:none;font-family:var(--font-sans)"
+        autocomplete="off" name="pcm_usu_busca_nofill" data-lpignore="true" data-1p-ignore
+        readonly onfocus="this.removeAttribute('readonly')"
         value="${filter}"
         oninput="_usuSearch=this.value;_renderUsuariosTable(this.value)">
     </div>
@@ -8875,6 +8899,8 @@ function _renderOSTable(search = '', statusFilter = '', priorityFilter = '') {
       <input type="text" placeholder="Buscar por nº OS ou cliente…"
         style="width:240px;height:32px;padding:0 10px;font-size:13px;background:white;
           border:1px solid var(--border2);border-radius:var(--radius-sm);outline:none;font-family:var(--font-sans)"
+        autocomplete="off" name="pcm_os_busca_nofill" data-lpignore="true" data-1p-ignore
+        readonly onfocus="this.removeAttribute('readonly')"
         value="${search}"
         oninput="_osSearch=this.value;_renderOSListResults()">
       <select style="height:32px;padding:0 8px;font-size:12px;border:1px solid var(--border2);
@@ -10332,6 +10358,8 @@ if(!gsUrl){
       <div class="form-row">
         <label class="form-label">Cliente *</label>
         <input class="form-input" type="text" id="osCliente" list="osClienteList" placeholder="Nome do cliente"
+          autocomplete="off" name="pcm_os_cliente_nofill" data-lpignore="true" data-1p-ignore
+          readonly onfocus="this.removeAttribute('readonly')"
           oninput="_osClienteInputHandler(this.value)">
         <datalist id="osClienteList"></datalist>
       </div>
