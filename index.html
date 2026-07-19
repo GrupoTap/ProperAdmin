@@ -1,4 +1,22 @@
 <!--
+  PCM V85 — 19/07/2026 — F2a: catálogo lido do SUPABASE com fallback GAS (STAGED).
+    Primeira leitura do Supabase (estratégia strangler, Rota B). O bloco novo (antes de
+    syncCatalogFromGS) busca as 6 tabelas do catálogo via PostgREST com a chave anon
+    (RLS limita a leitura a essas tabelas) e devolve NO FORMATO DAS ABAS — o merge
+    (syncCatalogFromGS) não mudou. Troca de 1 call site no syncFromGS:
+    gsGet('getCatalogFull') → getCatalogFullSupabaseOrGAS(). O refetch interno de
+    syncCatalogFromGS segue no GAS (é o próprio caminho de fallback).
+    Segurança/operacão:
+      - SUPA_ANON com placeholder ⇒ código detecta e usa GAS direto (deploy seguro
+        antes de configurar a chave).
+      - localStorage f2_catalog_source='gas' ⇒ kill-switch total sem redeploy.
+      - localStorage f2_shadow='1' ⇒ modo sombra (busca as duas fontes, USA o GAS,
+        console.table com a comparação) — rodar na 1ª semana.
+      - Guard de frescura: sync_meta (heartbeat do push GAS v73) >48h ⇒ fallback GAS.
+    Par deste deploy: GAS v73 (push do catálogo) + f2_rls_sync_meta.sql (RLS).
+    Ver SPEC_F2_LEITURA_SUPABASE_2026-07-19.md.
+-->
+<!--
   PCM V84 — 19/07/2026 — FixNumeroOsNumber (4 casts String(), 100% frontend; GAS inalterado).
     Sintoma (Fernando, 19/07, já no V83 publicado): digitar na busca da Gestão de OSs não faz
     nada; Enter também não. Causa REAL (reproduzida em headless com dado numérico): o Sheets
@@ -7795,6 +7813,102 @@ async function seedDemoData(){
   }
 }
 
+// ═══════════════════════════════════════════════════════════════════════════
+// v85 — F2a: CATÁLOGO LIDO DO SUPABASE (fallback GAS automático)
+// ═══════════════════════════════════════════════════════════════════════════
+// O adapter devolve os dados NO FORMATO DAS ABAS (Part_ID, Marca, Potência...),
+// então syncCatalogFromGS não muda uma linha. Controles via localStorage:
+//   f2_catalog_source = 'gas'  → kill-switch: volta 100% pro GAS, sem redeploy
+//   f2_shadow = '1'            → modo sombra: busca das DUAS fontes, USA o GAS,
+//                                loga a comparação no console (1ª semana)
+// Guard de frescura: se o sync do GAS (sync_meta) está >48h velho → fallback.
+// Chave anon é pública por design (RLS limita a leitura às 6 tabelas do catálogo).
+const SUPA_URL  = 'https://mxczeemglrehadjualvi.supabase.co';
+const SUPA_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im14Y3plZW1nbHJlaGFkanVhbHZpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ0Mjg4NzUsImV4cCI6MjEwMDAwNDg3NX0.TPToXpuPS6PvNzADaFqc7r7P9TIsS4DtGwm-n-0IXDw'; // anon public (RLS limita ao catálogo)
+function _f2Source(){ try { return localStorage.getItem('f2_catalog_source') || 'supabase'; } catch(e){ return 'supabase'; } }
+function _f2Shadow(){ try { return localStorage.getItem('f2_shadow') === '1'; } catch(e){ return false; } }
+function _f2Configurado(){ return SUPA_ANON && SUPA_ANON.indexOf('COLE_AQUI') !== 0; }
+
+async function supaGet_(tabela, select){
+  const r = await fetch(`${SUPA_URL}/rest/v1/${tabela}?select=${select||'*'}`, {
+    headers: { apikey: SUPA_ANON, Authorization: 'Bearer ' + SUPA_ANON } });
+  if (!r.ok) throw new Error(`supabase ${tabela} HTTP ${r.status}`);
+  return r.json();
+}
+
+// snake_case (Supabase) → formato da aba (o que syncCatalogFromGS consome)
+const _F2_MAP = {
+  modelos: r => ({ ID:r.id, Marca:r.marca, Modelo:r.modelo, Tipo:r.tipo, 'Potência':r.potencia,
+    'Pressão':r.pressao, 'Observações':r.observacoes, Ativo:r.ativo, Tipo_Registro:r.tipo_registro,
+    Vazao_l_min:r.vazao_l_min, Tensao:r.tensao, Corrente_A:r.corrente_a }),
+  parts_master: r => ({ Part_ID:r.part_id, Model_ID:r.model_id, Name:r.name, OEM_Ref:r.oem_ref,
+    Part_Brand:r.part_brand, Supplier_Primary:r.supplier_primary, Slot:r.slot, Qty_Default:r.qty_default,
+    Interval_H:r.interval_h, Criticality:r.criticality, Cost:r.cost, Obs:r.obs, Ativo:r.ativo,
+    Part_Scope:r.part_scope, Sub_ID:r.sub_id, Sub_Name:r.sub_name, Sub_Category:r.sub_category,
+    Sub_Desc:r.sub_desc, Sub_Interval_H:r.sub_interval_h }),
+  part_similarities: r => ({ Part_ID:r.part_id, Model_ID:r.model_id, Ref_Similar:r.ref_similar,
+    Brand_Similar:r.brand_similar, Obs:r.obs, Ativo:r.ativo }),
+  subsistemas_lib: r => ({ Sub_Lib_ID:r.sub_lib_id, Nome:r.nome, Categoria:r.categoria,
+    Descricao:r.descricao, Interval_Base_H:r.interval_base_h, Codigo_Referencia:r.codigo_referencia,
+    Fabricante:r.fabricante, Obs:r.obs, Ativo:r.ativo }),
+  subsistema_lib_parts: r => ({ Part_ID:r.part_id, Sub_Lib_ID:r.sub_lib_id, Name:r.name,
+    OEM_Ref:r.oem_ref, Part_Brand:r.part_brand, Supplier_Primary:r.supplier_primary, Slot:r.slot,
+    Qty_Default:r.qty_default, Interval_H:r.interval_h, Criticality:r.criticality, Cost:r.cost,
+    Obs:r.obs, Ativo:r.ativo }),
+  modelo_subsistema_lib: r => ({ Link_ID:r.link_id, Model_ID:r.model_id, Sub_Lib_ID:r.sub_lib_id, Ativo:r.ativo }),
+};
+const _f2Ativos = rows => rows.filter(r => String(r.ativo||'').trim().toUpperCase() !== 'NÃO');
+
+async function getCatalogFullFromSupabase(){
+  // guard de frescura: sync_meta é o heartbeat do push do GAS
+  const meta = await supaGet_('sync_meta', 'tabela,pushed_at');
+  if (!meta.length) throw new Error('sync_meta vazio — push do GAS nunca rodou');
+  const maisVelho = Math.min(...meta.map(m => new Date(m.pushed_at).getTime()));
+  if (Date.now() - maisVelho > 48*3600*1000) throw new Error('espelho >48h velho');
+  const [mo, pm, si, sl, sp, ml] = await Promise.all([
+    supaGet_('modelos'), supaGet_('parts_master'), supaGet_('part_similarities'),
+    supaGet_('subsistemas_lib'), supaGet_('subsistema_lib_parts'), supaGet_('modelo_subsistema_lib')]);
+  return { status:'ok',
+    models:         _f2Ativos(mo).map(_F2_MAP.modelos),
+    parts:          _f2Ativos(pm).map(_F2_MAP.parts_master),
+    similarities:   _f2Ativos(si).map(_F2_MAP.part_similarities),
+    subsistemasLib: _f2Ativos(sl).map(_F2_MAP.subsistemas_lib),
+    subLibParts:    _f2Ativos(sp).map(_F2_MAP.subsistema_lib_parts),
+    modeloSubLinks: _f2Ativos(ml).map(_F2_MAP.modelo_subsistema_lib) };
+}
+
+async function getCatalogFullSupabaseOrGAS(){
+  if (!_f2Configurado() || _f2Source() === 'gas') return gsGet('getCatalogFull');
+  if (_f2Shadow()) {
+    // modo sombra: compara as fontes, USA o GAS (zero risco)
+    const [supa, gas] = await Promise.allSettled([getCatalogFullFromSupabase(), gsGet('getCatalogFull')]);
+    if (supa.status === 'fulfilled' && gas.status === 'fulfilled') {
+      const s = supa.value, g = gas.value;
+      console.table({
+        models:         { supabase: s.models.length,         gas: (g.models||[]).length },
+        parts:          { supabase: s.parts.length,          gas: (g.parts||[]).length },
+        similarities:   { supabase: s.similarities.length,   gas: (g.similarities||[]).length },
+        subsistemasLib: { supabase: s.subsistemasLib.length, gas: (g.subsistemasLib||[]).length },
+        subLibParts:    { supabase: s.subLibParts.length,    gas: (g.subLibParts||[]).length },
+        modeloSubLinks: { supabase: s.modeloSubLinks.length, gas: (g.modeloSubLinks||[]).length },
+      });
+    } else if (supa.status === 'rejected') {
+      console.warn('[F2a sombra] Supabase falhou:', supa.reason?.message);
+    }
+    if (gas.status === 'fulfilled') return gas.value;
+    if (supa.status === 'fulfilled') return supa.value;   // GAS caiu, Supabase salvou
+    throw gas.reason;
+  }
+  try {
+    const r = await getCatalogFullFromSupabase();
+    console.info('[F2a] catálogo do SUPABASE:', r.parts.length, 'peças /', r.models.length, 'modelos');
+    return r;
+  } catch(e) {
+    console.warn('[F2a] Supabase indisponível, fallback GAS:', e.message);
+    return gsGet('getCatalogFull');
+  }
+}
+
 async function syncCatalogFromGS(gsGet, preResult){
   try{
     // v67 PERF: aceita resultado já baixado (boot em paralelo). Se não vier, busca.
@@ -7924,7 +8038,7 @@ async function syncFromGS({ silent = false } = {}){
       gsGet('getMachinesWithParts'),
       gsGet('getVisits'),
       gsGet('getClients').catch(e => { console.warn('getClients falhou:', e); return { status:'error' }; }),
-      gsGet('getCatalogFull').catch(e => { console.warn('getCatalogFull falhou:', e); return null; }),
+      getCatalogFullSupabaseOrGAS().catch(e => { console.warn('getCatalogFull (F2a) falhou:', e); return null; }), // v85 F2a
       gsGet('getRotorModels').catch(e => { console.warn('getRotorModels falhou:', e); return { status:'error' }; })
     ]);
 
