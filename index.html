@@ -1,4 +1,23 @@
 <!--
+  PCM V88 — 20/07/2026 — Gestão de Documentos: galeria de fotos SEPARADA POR MÁQUINA
+  (ADITIVO, frontend-only).
+    Dentro de cada grupo (OS/Cliente), as miniaturas agora vêm sub-agrupadas por
+    Maquina_Label (fallback Maquina_ID; fotos sem vínculo caem em "Sem máquina",
+    sempre por último). Novo helper _docsGalleryHtml() substitui o template
+    inline da galeria em renderDocsList; cada máquina ganha um cabeçalho
+    🔧 nome + contador e sua própria grade. No agrupamento "Por Máquina" o
+    cabeçalho é omitido (seria redundante com o título do grupo). String() nos
+    rótulos (invariante: campo do Sheets pode vir NUMBER — ex.: série 24201).
+    CSS novo: .docs-gallery-sub / .docs-gallery-sub-count.
+    + DEDUP DEFENSIVO de fotos (_docsDedupFotos): a fila pgp_pending_drive do
+    PCF reenviava o MESMO payload em flushes sobrepostos (sem trava de
+    reentrância; fix real no PCF V62 + idempotência no GAS v74.2) — auditoria de
+    20/07 achou 32 linhas excedentes em TECH_ATTACHMENTS (29 na PGP-2026-0012:
+    97 exibidas, 68 únicas). Mesma Entity_Type|Entity_ID|File_Name = mesma foto
+    (File_Name carrega o timestamp ms da captura); mantém a linha mais ANTIGA
+    (original) e o contador informa "N duplicadas ocultas". Só fotos — PDF com
+    mesmo nome pode ser regeneração legítima (conteúdo novo) e segue aparecendo.
+
   PCM V87 — 20/07/2026 — FIX Gerar relatório (pipeline) + miniaturas da Gestão de
   Documentos (ADITIVO, frontend-only; zero mudança de GAS).
     1) Gerar relatório (aba Pipeline da OS): gerarRelatorioReforma buscava o
@@ -692,6 +711,10 @@ tr:hover td{background:var(--gray-50)}
 .docs-gallery-grid{display:flex;flex-wrap:wrap;gap:6px;padding:10px 12px}
 .docs-gthumb{width:64px;height:64px;border-radius:8px;object-fit:cover;border:1px solid var(--border2);background:var(--gray-100);cursor:pointer;transition:transform .1s}
 .docs-gthumb:hover{transform:scale(1.06)}
+/* v88 — cabeçalho de máquina dentro da galeria de fotos */
+.docs-gallery-sub{display:flex;align-items:center;gap:8px;margin:10px 12px 0;padding-top:8px;border-top:1px dashed var(--border);font-size:12px;font-weight:700;color:var(--text)}
+.docs-gallery-sub:first-child{border-top:none;padding-top:0}
+.docs-gallery-sub-count{font-weight:600;font-size:11px;color:var(--text-muted)}
 /* v87 — placeholder quando o Drive nega a miniatura (arquivo privado) */
 .docs-thumb-ph{display:inline-flex;align-items:center;justify-content:center;font-size:20px;user-select:none;border-radius:8px;border:1px solid var(--border2);background:var(--gray-100);cursor:pointer;width:64px;height:64px;flex:0 0 auto}
 .docs-thumb.docs-thumb-ph{width:42px;height:42px;font-size:16px}
@@ -3550,6 +3573,52 @@ function _docThumbUrl(it, w){
   const fid = _docFileId(it);
   return fid ? ('https://drive.google.com/thumbnail?id=' + encodeURIComponent(fid) + '&sz=w' + (w || 200)) : String(it?.File_URL || '');
 }
+// v88 — DEDUP defensivo de FOTOS: retries da fila do PCF duplicavam o upload
+// (mesmo Entity_Type|Entity_ID|File_Name = mesma foto; o File_Name carrega o
+// timestamp ms da captura). Mantém a linha mais ANTIGA (original). PDFs e demais
+// docs passam direto (regeneração com mesmo nome pode ser conteúdo novo).
+let _docsDupOcultas = 0;
+function _docsDedupFotos(arr){
+  _docsDupOcultas = 0;
+  if(!Array.isArray(arr) || !arr.length) return [];
+  const porData = arr.slice().sort(function(a,b){ return _docDateValue(a)-_docDateValue(b); });
+  const seen = new Set(); const manter = new Set();
+  porData.forEach(function(a){
+    const nome = String(a?.File_Name||'').trim();
+    if(!_docIsFoto(a) || !nome){ manter.add(a); return; }
+    const k = String(a?.Entity_Type||'')+'|'+String(a?.Entity_ID||'')+'|'+nome;
+    if(seen.has(k)){ _docsDupOcultas++; return; }
+    seen.add(k); manter.add(a);
+  });
+  return arr.filter(function(a){ return manter.has(a); });
+}
+// v88 — galeria de fotos SEPARADA POR MÁQUINA dentro do grupo. Sub-buckets por
+// Maquina_Label (fallback Maquina_ID); sem vínculo → "Sem máquina" (por último).
+// No agrupamento "Por Máquina" o cabeçalho é omitido (redundante com o grupo).
+function _docsGalleryHtml(fotos){
+  if(!fotos || !fotos.length) return '';
+  const SEM = '__SEM_MAQUINA__';
+  const buckets = new Map();
+  fotos.forEach(function(f){
+    const k = String(f?.Maquina_Label || f?.Maquina_ID || '').trim() || SEM;
+    if(!buckets.has(k)) buckets.set(k, []);
+    buckets.get(k).push(f);
+  });
+  const keys = Array.from(buckets.keys()).sort(function(a,b){
+    if(a===SEM) return 1; if(b===SEM) return -1;
+    return a.localeCompare(b, 'pt-BR');
+  });
+  const mostrarSub = _docsGroupBy !== 'maquina' && !(keys.length===1 && keys[0]===SEM);
+  const inner = keys.map(function(k){
+    const fs = buckets.get(k);
+    const head = mostrarSub
+      ? `<div class="docs-gallery-sub">🔧 <span>${escHtml(k===SEM?'Sem máquina':k)}</span><span class="docs-gallery-sub-count">${fs.length} foto${fs.length===1?'':'s'}</span></div>`
+      : '';
+    const grid = `<div class="docs-gallery-grid">${fs.map(f=>f?.File_URL?`<img class="docs-gthumb" loading="lazy" src="${escHtml(_docThumbUrl(f,200))}" alt="foto" title="${escHtml(_docVal(f?.File_Name))}" onclick="_docOpen('${escJs(f.File_URL)}')" onerror="_docThumbErr(this,'${escJs(f.File_URL)}')">`:'').join('')}</div>`;
+    return head + grid;
+  }).join('');
+  return `<details class="docs-gallery-wrap"><summary>📷 ${fotos.length} foto${fotos.length===1?'':'s'} — ver miniaturas</summary>${inner}</details>`;
+}
 // Se o Drive negar a miniatura (403/404 — ex.: arquivo PRIVATE e a conta Google
 // padrão do navegador sem acesso), troca a <img> quebrada por um placeholder 📷
 // clicável que abre o arquivo. preventDefault/stopPropagation p/ não togglar o
@@ -3615,7 +3684,7 @@ function renderDocsList(){
   const catsEl=document.getElementById('docsCats');
   if(catsEl) catsEl.innerHTML = cats.map(c=>`<button class="docs-chip ${_docsCat===c?'active':''}" onclick="_docsCat='${escJs(c)}';renderDocsList()">${c==='todas'?'Todas':escHtml(_docCatLabel(c))}</button>`).join('');
   const q=String(_docsQuery||'').trim().toLowerCase();
-  let items=_docsCache.slice().filter(it=>_docsCat==='todas' || it?.Categoria===_docsCat);
+  let items=_docsDedupFotos(_docsCache).filter(it=>_docsCat==='todas' || it?.Categoria===_docsCat); // v88 — dedup defensivo
   if(q) items=items.filter(it=>[it?.Cliente,it?.OS_Numero,it?.Maquina_Label,it?.Maquina_ID,it?.File_Name,it?.Caption].some(v=>String(v||'').toLowerCase().includes(q)));
   const groupsMap=new Map();
   items.forEach(it=>{
@@ -3635,7 +3704,7 @@ function renderDocsList(){
   });
   const groups=Array.from(groupsMap.values()).sort((a,b)=>b.maxDate-a.maxDate || a.label.localeCompare(b.label));
   groups.forEach(g=>g.items.sort((a,b)=>_docDateValue(b)-_docDateValue(a)));
-  const counter=document.getElementById('docsCounter'); if(counter) counter.textContent=`${items.length} arquivo${items.length===1?'':'s'} · ${groups.length} grupo${groups.length===1?'':'s'}`;
+  const counter=document.getElementById('docsCounter'); if(counter) counter.textContent=`${items.length} arquivo${items.length===1?'':'s'} · ${groups.length} grupo${groups.length===1?'':'s'}${_docsDupOcultas?` · ${_docsDupOcultas} duplicada${_docsDupOcultas===1?'':'s'} oculta${_docsDupOcultas===1?'':'s'}`:''}`;
   if(!items.length){ list.innerHTML='<div class="empty"><div class="empty-icon">📄</div><div class="empty-title">Nenhum documento encontrado para este filtro.</div></div>'; return; }
   // v80 — grupos RECOLHIDOS por padrão (mais OSs por tela); fotos numa galeria
   // de miniaturas colapsável separada; PDFs/assinaturas/outros na tabela; contadores
@@ -3647,7 +3716,7 @@ function renderDocsList(){
     const docs =g.items.filter(it=>!_docIsFoto(it));
     const cover=fotos.find(x=>x?.File_URL);
     const counters=`${fotos.length?`<span class="docs-tcount foto">📷 ${fotos.length}</span>`:''}${docs.length?`<span class="docs-tcount pdf">📄 ${docs.length}</span>`:''}` || `<span class="docs-group-meta">${g.items.length} arquivo${g.items.length===1?'':'s'}</span>`;
-    const gallery = fotos.length ? `<details class="docs-gallery-wrap"><summary>📷 ${fotos.length} foto${fotos.length===1?'':'s'} — ver miniaturas</summary><div class="docs-gallery-grid">${fotos.map(f=>f?.File_URL?`<img class="docs-gthumb" loading="lazy" src="${escHtml(_docThumbUrl(f,200))}" alt="foto" title="${escHtml(_docVal(f?.File_Name))}" onclick="_docOpen('${escJs(f.File_URL)}')" onerror="_docThumbErr(this,'${escJs(f.File_URL)}')">`:'').join('')}</div></details>` : '';
+    const gallery = _docsGalleryHtml(fotos); // v88 — separada por máquina
     const table = docs.length ? `<div class="table-wrap"><table><thead><tr><th>Categoria</th><th>Máquina</th><th>Arquivo</th><th>Data</th><th>Por</th><th style="text-align:right">Ações</th></tr></thead><tbody>
       ${docs.map(it=>`<tr><td><span class="docs-badge ${_docCatClass(it?.Categoria)}">${escHtml(_docCatLabel(it?.Categoria))}</span></td><td>${escHtml(_docVal(it?.Maquina_Label || it?.Maquina_ID))}</td><td><div class="docs-file-name">${escHtml(_docVal(it?.File_Name))}</div>${it?.Caption?`<div class="docs-caption">${escHtml(it.Caption)}</div>`:''}</td><td>${escHtml(_docDateLabel(it?.Created_At))}</td><td>${escHtml(_docVal(it?.Created_By))}</td><td><div class="row-actions">${it?.File_URL?`<button class="btn btn-secondary btn-xs" onclick="_docOpen('${escJs(it.File_URL)}')">Ver</button>`:''}${it?.Folder_URL?`<button class="btn btn-secondary btn-xs" onclick="_docOpen('${escJs(it.Folder_URL)}')">Abrir pasta</button>`:''}</div></td></tr>`).join('')}
     </tbody></table></div>` : (fotos.length ? '' : '<div class="docs-empty-mini">Nenhum documento.</div>');
