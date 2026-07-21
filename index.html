@@ -1,4 +1,78 @@
 <!--
+  PCM V91 — 20/07/2026 — FOTOS SINCRONIZADAS: catálogo e máquina visíveis em
+  QUALQUER PC (requer GAS v75 publicado — 3 actions novas no doPost).
+    Problema: fotos manuais (m.photos / eq.photos) e promovidas eram base64/URL
+    no localStorage — só existiam no navegador que as criou. Agora:
+    1) UPLOAD MANUAL → DRIVE: handlePhotoUpload roteia para _uploadFotosCatalogo
+       quando o GAS está conectado: base64 via doPost 'salvarFotoCatalogo' →
+       _persistirAnexoDrive_ (pasta _CATALOGO ou {Cliente}/_SEM_OS/{máquina}) +
+       linha TECH_ATTACHMENTS com Entity_Type 'modelo'|'maquina', Entity_ID =
+       id do modelo/máquina, Categoria foto_modelo|foto_maquina. Sem conexão →
+       fallback no fluxo local legado, com aviso.
+    2) GALERIA SINCRONIZADA (_renderFotosSync): nova seção nas abas Fotos do
+       catálogo (#modelFotosSync) e da máquina (#mdetFotosSync) lendo de
+       TECH_ATTACHMENTS (cache _docsCache), dedup por File_ID, × = soft-delete
+       via doPost 'desativarAnexo' (Ativo='NÃO'; arquivo permanece no Drive).
+       Badge da aba Fotos passa a somar sincronizadas + locais legadas.
+    3) PROMOÇÃO via PLANILHA: _promoteFieldPhotoToModel agora chama doPost
+       'vincularFotoEntidade' (nova linha TECH_ATTACHMENTS apontando o MESMO
+       File_ID, sem duplicar arquivo) — a foto promovida aparece em qualquer PC.
+       Fallback local só se o backend falhar. Idempotente ("já estava na galeria").
+    4) Fotos locais antigas continuam visíveis numa seção "Fotos locais
+       (legado — só neste PC)" — nada é perdido; recomenda-se repostá-las pelo
+       botão de upload para sincronizar.
+    5) Seções "Fotos de campo" (V89/V90) agora EXCLUEM categorias
+       foto_modelo/foto_maquina (evita eco das fotos de catálogo) e dedupam
+       por File_ID (a promoção cria linha nova com o mesmo arquivo).
+    Novos: _renderFotosSync, _uploadFotosCatalogo, _handlePhotoUploadLocal,
+    _removerFotoSync, _updateFotosBadge, _fotosSyncSeq; DOCS_CAT_LABELS +
+    foto_modelo/foto_maquina. GAS v75: salvarFotoCatalogo, vincularFotoEntidade,
+    desativarAnexo (todas roteadas no doPost; aditivas, contratos preservados).
+
+  PCM V90 — 20/07/2026 — CATÁLOGO › aba Fotos do modelo: fotos de campo agregadas
+  + PROMOVER foto de campo ao catálogo (ADITIVO, frontend-only; zero mudança de GAS).
+    A aba Fotos do catálogo (panelPhotos em renderCatalog) mostrava só a galeria
+    manual do modelo (m.photos, base64 local). Agora, abaixo dela, a seção
+    "Fotos de campo das máquinas deste modelo" agrega automaticamente os anexos
+    de TECH_ATTACHMENTS de TODAS as máquinas em campo daquele modelo
+    (machinesWithModel via modelKey(brand,model), mesmo critério do chip
+    "🏭 N máquinas em campo"), reusando _attMatchesMachine/_docsDedupFotos/
+    _docThumbUrl do V89. Agrupadas por Categoria (Preventiva primeiro — é onde
+    saem foto geral e filtros novos), mais recentes primeiro; o title do thumb
+    traz máquina + cliente + OS + data.
+    PROMOÇÃO: cada thumb de campo ganha o botão ➕ que copia a foto para a
+    galeria manual do modelo (_promoteFieldPhotoToModel) — grava em m.photos a
+    URL de miniatura do Drive (sz=w1200) como `data` (o renderPhotosGrid/lightbox
+    funcionam sem mudança), com fileId para dedup ("já está no catálogo") e
+    origem:'campo'. NÃO baixa bytes — a imagem continua no Drive; se o arquivo
+    for PRIVATE e a conta Google do navegador não tiver acesso, o thumb pode
+    não renderizar (mesma limitação da Gestão de Documentos). O upload manual
+    "+ Adicionar fotos" segue intacto (é o caminho principal, como pedido).
+    Novos: _renderModelFotosCampo, _promoteFieldPhotoToModel, _modelFotosReqSeq,
+    <div id="modelFotosCampo">. Chip/badge "N fotos" continua contando só as
+    fotos do catálogo (manuais + promovidas) — fotos de campo são só leitura.
+
+  PCM V89 — 20/07/2026 — Aba FOTOS da máquina: fotos de campo AUTOMÁTICAS
+  (ADITIVO, frontend-only; zero mudança de GAS).
+    A aba Fotos do detalhe da máquina (openMachineDetail → mdetFotos) exibia só
+    a galeria MANUAL (base64 em db.machines[].photos, persistida apenas no
+    localStorage 'proper_admin_v2' — não sincroniza entre dispositivos). Agora,
+    abaixo dela, uma seção "Fotos de campo — inspeções & preventivas" carrega
+    sozinha os anexos de TECH_ATTACHMENTS (gsGet('getAttachments'), reaproveitando
+    o cache _docsCache da Gestão de Documentos) filtrados para a máquina aberta,
+    agrupados por Categoria (Preventiva e Rotor primeiro — peças principais),
+    ordenados do mais recente ao mais antigo, com dedup (_docsDedupFotos) e
+    miniaturas do Drive (_docThumbUrl/_docThumbErr). SÓ LEITURA — nada é gravado.
+    Vínculo anexo↔máquina (_attMatchesMachine): Maquina_ID/Maquina_Label igual a
+    id/série/TAG; série (≥4 chars) contida no label; fallback conservador
+    cliente+marca+modelo APENAS se o cliente tiver UMA máquina daquele modelo
+    (não mistura máquinas gêmeas). Guarda de corrida (_mdetFotosReqSeq): trocar
+    de máquina durante o fetch descarta a resposta antiga. Botão ↻ Atualizar
+    força re-fetch (realimenta o _docsCache). A galeria manual continua intacta
+    ("Adicionar fotos" segue funcionando como antes).
+    Novos: _renderMdetFotosCampo, _attMatchesMachine, _attNorm, _mdetFotosReqSeq,
+    <div id="mdetFotosCampo">. Reuso de CSS: .docs-gallery-sub/.docs-gallery-grid/.docs-gthumb.
+
   PCM V88 — 20/07/2026 — Gestão de Documentos: galeria de fotos SEPARADA POR MÁQUINA
   (ADITIVO, frontend-only).
     Dentro de cada grupo (OS/Cliente), as miniaturas agora vêm sub-agrupadas por
@@ -3537,6 +3611,7 @@ let _docsLoading = false;
 let _docsExpanded = (function(){ try{ return localStorage.getItem('proper_docs_expanded')==='1'; }catch(e){ return false; } })();
 
 const DOCS_CAT_LABELS = {
+  foto_modelo:'Foto Catálogo (modelo)', foto_maquina:'Foto Máquina (manual)', // v91
   foto_preventiva:'Foto Preventiva', foto_form08:'Foto Form 08 (legado)', foto_form02:'Foto Form 02',
   foto_form01:'Foto Form 01', foto_form03:'Foto Form 03 (perit. mec.)', foto_form04:'Foto Form 04 (perit. elét.)',
   foto_form09:'Foto Form 03 (perit. mec.)', foto_form10:'Foto Form 04 (perit. elét.)', foto_rotor:'Foto Rotor',
@@ -4638,10 +4713,12 @@ function renderCatalog(){
 
     <div id="panelPhotos" style="display:none">
       <div class="sec-header">
-        <span class="sec-title">Fotos do modelo</span>
+        <span class="sec-title">Fotos do modelo <span style="font-size:10px;font-weight:400;color:var(--text3)">☁️ sincronizadas via Drive</span></span>
         <button class="btn btn-primary btn-sm" onclick="triggerPhotoUpload('model','${m.id}')">+ Adicionar fotos</button>
       </div>
-      ${renderPhotosGrid(m.photos||[],'model',m.id)}
+      <div id="modelFotosSync"><div style="font-size:12px;color:var(--text3)">Carregando fotos…</div></div>
+      ${(m.photos||[]).length?`<div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.05em;margin:14px 0 8px">Fotos locais (legado — só neste PC)</div>${renderPhotosGrid(m.photos||[],'model',m.id)}`:''}
+      <div id="modelFotosCampo"></div>
     </div>
 
     <!-- Seção de máquinas em campo com este modelo -->
@@ -4673,6 +4750,8 @@ function renderCatalog(){
       </div>`}
     </div>
   `;
+  _renderFotosSync('modelo', m.id, 'modelFotosSync'); // v91 — galeria sincronizada (Drive)
+  _renderModelFotosCampo(m); // v90 — fotos de campo agregadas das máquinas deste modelo
 }
 
 function switchTab(tab){
@@ -4839,10 +4918,19 @@ function triggerPhotoUpload(type,id){
 function handlePhotoUpload(input){
   if(!input.files||!input.files.length||!currentPhotoTarget) return;
   const{type,id}=currentPhotoTarget;
-  const files=Array.from(input.files);
+  const files=Array.from(input.files).filter(f=>f.type.startsWith('image/'));
+  if(!files.length) return;
+  // v91 — destino padrão: Drive via GAS (visível em qualquer PC).
+  // Fallback local (legado) só quando o backend não está conectado.
+  if(gsUrl && gsConnected){ _uploadFotosCatalogo(type,id,files); return; }
+  toast('Sem conexão com o backend — foto salva só neste PC (legado).','error');
+  _handlePhotoUploadLocal(type,id,files);
+}
+
+// v91 — fluxo local LEGADO (base64 no localStorage), mantido como fallback offline.
+function _handlePhotoUploadLocal(type,id,files){
   let done=0;
   files.forEach(file=>{
-    if(!file.type.startsWith('image/')) return;
     const reader=new FileReader();
     reader.onload=e=>{
       const photo={id:uid(),data:e.target.result,label:file.name.replace(/\.[^.]+$/,''),ts:Date.now()};
@@ -4859,11 +4947,120 @@ function handlePhotoUpload(input){
         save();
         if(type==='model') renderCatalog(),switchTab('photos');
         else renderMachines();
-        toast(`${files.length} foto${files.length>1?'s':''} adicionada${files.length>1?'s':''}!`,'success');
+        toast(`${files.length} foto${files.length>1?'s':''} adicionada${files.length>1?'s':''} (local)!`,'success');
       }
     };
     reader.readAsDataURL(file);
   });
+}
+
+// v91 — upload manual para o DRIVE via GAS (doPost 'salvarFotoCatalogo').
+// Entity_Type 'modelo'|'maquina' + Entity_ID = id do registro → a galeria
+// sincronizada (_renderFotosSync) lê de TECH_ATTACHMENTS em qualquer PC.
+async function _uploadFotosCatalogo(type,id,files){
+  const isModel = type==='model';
+  const m  = isModel ? getModel(id) : null;
+  const eq = isModel ? null : db.machines.find(x=>x.id===id);
+  const tipo = isModel ? 'modelo' : 'maquina';
+  const label = isModel
+    ? `${(m&&m.brand)||''} ${(m&&m.model)||''}`.trim()
+    : `${(eq&&eq.brand)||''} ${(eq&&eq.model)||''}${(eq&&eq.serial)?' · '+eq.serial:''}`.trim();
+  const autor = (window._usuarioAtual && (_usuarioAtual.nome||_usuarioAtual.id)) || 'admin';
+  toast(`Enviando ${files.length} foto${files.length>1?'s':''} para o Drive…`);
+  let ok=0, falhas=0;
+  for(const file of files){
+    try{
+      const dataUrl = await new Promise((res,rej)=>{ const r=new FileReader(); r.onload=e=>res(e.target.result); r.onerror=rej; r.readAsDataURL(file); });
+      const base64 = String(dataUrl).split(',')[1]||'';
+      if(!base64) throw new Error('leitura do arquivo falhou');
+      await syncToGS('salvarFotoCatalogo',{
+        tipo: tipo,
+        entity_id: id,
+        cliente: isModel ? '_CATALOGO' : ((eq&&eq.client)||'_CATALOGO'),
+        maquina_id: isModel ? '' : ((eq&&(eq.serial||eq.tag))||id),
+        maquina_label: label || (isModel?'_MODELO':'_MAQUINA'),
+        base64: base64,
+        mime: file.type||'image/jpeg',
+        fileName: Date.now()+'_'+file.name,
+        createdBy: autor
+      });
+      ok++;
+    }catch(e){ console.warn('upload foto catálogo falhou:', e); falhas++; }
+  }
+  if(ok) toast(`${ok} foto${ok>1?'s':''} enviada${ok>1?'s':''} ao Drive — visível em qualquer PC!`,'success');
+  if(falhas) toast(`${falhas} foto${falhas>1?'s':''} falharam — tente novamente.`,'error');
+  _docsCache = []; // força re-fetch nas galerias
+  if(isModel) _renderFotosSync('modelo', id, 'modelFotosSync', true);
+  else _renderFotosSync('maquina', id, 'mdetFotosSync', true);
+}
+
+// v91 — galeria SINCRONIZADA (TECH_ATTACHMENTS): fotos do catálogo/máquina
+// visíveis em qualquer PC. × = soft-delete via 'desativarAnexo' (o arquivo
+// permanece no Drive; a linha vira Ativo='NÃO').
+const _fotosSyncSeq = {};
+async function _renderFotosSync(tipoEntidade, entityId, boxId, force){
+  const box = document.getElementById(boxId);
+  if(!box) return;
+  const seq = (_fotosSyncSeq[boxId]||0)+1; _fotosSyncSeq[boxId]=seq;
+  box.innerHTML = `<div style="font-size:12px;color:var(--text3)">Carregando fotos…</div>`;
+  let rows = (!force && Array.isArray(_docsCache) && _docsCache.length) ? _docsCache : null;
+  if(!rows){
+    try{
+      const r = await gsGet('getAttachments', {});
+      rows = Array.isArray(r && r.attachments) ? r.attachments : [];
+      _docsCache = rows;
+    }catch(e){
+      if(seq!==_fotosSyncSeq[boxId]) return;
+      const b=document.getElementById(boxId);
+      if(b) b.innerHTML = `<div style="font-size:12px;color:#b91c1c">⚠ Não foi possível carregar as fotos sincronizadas: ${escHtml(e.message||'erro de rede')}</div>`;
+      return;
+    }
+  }
+  if(seq!==_fotosSyncSeq[boxId]) return;
+  const b2 = document.getElementById(boxId);
+  if(!b2) return;
+  const seen = new Set();
+  const fotos = rows
+    .filter(a=>String(a.Entity_Type||'')===tipoEntidade && String(a.Entity_ID||'')===String(entityId))
+    .filter(_docIsFoto)
+    .sort((a,b)=>_docDateValue(b)-_docDateValue(a))
+    .filter(f=>{ const k=String(_docFileId(f)||f.Attachment_ID||''); if(k && seen.has(k)) return false; if(k) seen.add(k); return true; });
+  if(!fotos.length){
+    b2.innerHTML = `<div style="font-size:12px;color:var(--text3)">Nenhuma foto sincronizada ainda — use “+ Adicionar fotos” (vai para o Drive e aparece em qualquer PC).</div>`;
+    _updateFotosBadge(tipoEntidade, entityId, 0);
+    return;
+  }
+  b2.innerHTML = `<div class="docs-gallery-grid">${fotos.map(f=>{
+    const tt = `${_docVal(f.File_Name)} — ${_docDateLabel(f.Created_At)}`;
+    return `<div style="position:relative;display:inline-block">
+      <img class="docs-gthumb" loading="lazy" src="${escHtml(_docThumbUrl(f,200))}" alt="foto" title="${escHtml(tt)}" onclick="_docOpen('${escJs(f.File_URL)}')" onerror="_docThumbErr(this,'${escJs(f.File_URL)}')">
+      <button title="Remover do catálogo (o arquivo continua no Drive)" onclick="event.stopPropagation();_removerFotoSync('${escJs(String(f.Attachment_ID||''))}','${tipoEntidade}','${escJs(String(entityId))}','${boxId}')" style="position:absolute;top:4px;right:4px;background:#b91c1c;color:#fff;border:none;border-radius:50%;width:20px;height:20px;cursor:pointer;font-size:11px;line-height:1;display:flex;align-items:center;justify-content:center">×</button>
+    </div>`;
+  }).join('')}</div>
+  <div style="font-size:10px;color:var(--text3);margin-top:6px">☁️ ${fotos.length} foto${fotos.length===1?'':'s'} sincronizada${fotos.length===1?'':'s'} via Drive — visíveis em qualquer PC.</div>`;
+  _updateFotosBadge(tipoEntidade, entityId, fotos.length);
+}
+
+// v91 — badge da aba Fotos do catálogo = sincronizadas + locais legadas.
+function _updateFotosBadge(tipoEntidade, entityId, nSync){
+  try{
+    if(tipoEntidade!=='modelo' || selModelId!==entityId) return;
+    const m = getModel(entityId);
+    const total = nSync + ((m&&m.photos)||[]).length;
+    const bg = document.querySelector('#tabPhotos .badge');
+    if(bg) bg.textContent = total;
+  }catch(_e){}
+}
+
+async function _removerFotoSync(attachmentId, tipoEntidade, entityId, boxId){
+  if(!attachmentId){ toast('Anexo sem ID — não dá para remover.','error'); return; }
+  if(!confirm('Remover esta foto do catálogo? O arquivo continua no Drive.')) return;
+  try{
+    await syncToGS('desativarAnexo',{ attachment_id: attachmentId });
+    toast('Foto removida.','success');
+  }catch(e){ toast('Falha ao remover: '+(e.message||'erro'),'error'); return; }
+  _docsCache = [];
+  _renderFotosSync(tipoEntidade, entityId, boxId, true);
 }
 
 function deletePhoto(type,id,idx){
@@ -4881,6 +5078,202 @@ function openLightbox(src){
   document.getElementById('lightbox').classList.add('open');
 }
 function closeLightbox(){document.getElementById('lightbox').classList.remove('open')}
+
+// ═══════════════════════════════════════════════════════════
+// v89 — FOTOS DE CAMPO NA ABA FOTOS DA MÁQUINA (TECH_ATTACHMENTS)
+// Complementa a galeria manual (base64 local) com as fotos tiradas em campo
+// nas inspeções/preventivas (preventiva, rotores, perícias, forms), lidas do
+// backend via getAttachments e casadas com a máquina por ID/série/TAG.
+// Reaproveita cache (_docsCache), dedup (_docsDedupFotos) e miniaturas
+// (_docThumbUrl/_docThumbErr) da Gestão de Documentos. SÓ LEITURA.
+// ═══════════════════════════════════════════════════════════
+let _mdetFotosReqSeq = 0; // guarda de corrida: descarta fetch de máquina já fechada
+
+function _attNorm(v){ return String(v==null?'':v).trim().toLowerCase().replace(/\s+/g,' '); }
+
+// Match anexo ↔ máquina:
+//   1) Maquina_ID/Maquina_Label igual a id, série ou TAG (normalizados);
+//   2) série (≥4 chars, evita falso positivo curto) contida no label — cobre o
+//      PCF que grava Maquina_ID como série pura (ex.: "33027");
+//   3) fallback CONSERVADOR: mesmo cliente + label contém marca+modelo, MAS só
+//      se o cliente tiver UMA máquina daquele modelo (não mistura gêmeas).
+function _attMatchesMachine(a, eq){
+  if(!a || !eq) return false;
+  const aid  = _attNorm(a.Maquina_ID);
+  const albl = _attNorm(a.Maquina_Label);
+  const keys = [eq.id, eq.serial, eq.tag].map(_attNorm).filter(Boolean);
+  if(aid && keys.includes(aid)) return true;
+  if(albl && keys.includes(albl)) return true;
+  const serial = _attNorm(eq.serial);
+  if(serial && serial.length>=4 && (aid===serial || (albl && albl.includes(serial)))) return true;
+  const cli = _attNorm(a.Cliente), eqCli = _attNorm(eq.client);
+  const marca = _attNorm(eq.brand), modelo = _attNorm(eq.model);
+  if(cli && eqCli && cli===eqCli && modelo && albl && albl.includes(modelo) && (!marca || albl.includes(marca))){
+    const irmas = db.machines.filter(m=>_attNorm(m.client)===eqCli && _attNorm(m.model)===modelo && (!marca || _attNorm(m.brand)===marca));
+    if(irmas.length===1) return true;
+  }
+  return false;
+}
+
+async function _renderMdetFotosCampo(eq, force){
+  const box = document.getElementById('mdetFotosCampo');
+  if(!box || !eq) return;
+  const seq = ++_mdetFotosReqSeq;
+  const head = `<div style="display:flex;align-items:center;gap:8px;margin:18px 0 10px;flex-wrap:wrap">
+    <div style="font-size:11px;font-weight:700;color:var(--blue-mid);text-transform:uppercase;letter-spacing:.05em">📷 Fotos de campo — inspeções &amp; preventivas</div>
+    <button class="btn btn-secondary btn-sm" onclick="_renderMdetFotosCampo(db.machines.find(m=>m.id===_mdetMachineId),true)">↻ Atualizar</button>
+  </div>`;
+  box.innerHTML = head + `<div style="font-size:12px;color:var(--text3)">Carregando…</div>`;
+  let rows = (!force && Array.isArray(_docsCache) && _docsCache.length) ? _docsCache : null;
+  if(!rows){
+    try{
+      const r = await gsGet('getAttachments', {});
+      rows = Array.isArray(r && r.attachments) ? r.attachments : [];
+      _docsCache = rows; // realimenta o cache da Gestão de Documentos
+    }catch(e){
+      if(seq!==_mdetFotosReqSeq) return;
+      box.innerHTML = head + `<div style="font-size:12px;color:#b91c1c">⚠ Não foi possível carregar as fotos de campo: ${escHtml(e.message||'erro de rede')}</div>`;
+      return;
+    }
+  }
+  if(seq!==_mdetFotosReqSeq) return; // usuário abriu outra máquina no meio do fetch
+  const _seenFid = new Set(); // v91 — promoção duplica File_ID em linha nova
+  const fotos = _docsDedupFotos(rows).filter(_docIsFoto)
+    .filter(a=>{ const c=String(a.Categoria||''); return c!=='foto_modelo' && c!=='foto_maquina'; }) // v91 — catálogo não é "campo"
+    .filter(a=>_attMatchesMachine(a,eq))
+    .sort((a,b)=>_docDateValue(b)-_docDateValue(a)) // mais recentes primeiro
+    .filter(f=>{ const k=String(_docFileId(f)||''); if(k && _seenFid.has(k)) return false; if(k) _seenFid.add(k); return true; });
+  if(!fotos.length){
+    box.innerHTML = head + `<div style="font-size:12px;color:var(--text3)">Nenhuma foto de campo encontrada para esta máquina (vínculo por ID, série ou TAG).</div>`;
+    return;
+  }
+  // agrupa por Categoria; peças principais (preventiva, rotor) primeiro
+  const ordem = ['foto_preventiva','foto_rotor'];
+  const buckets = new Map();
+  fotos.forEach(f=>{ const c=String((f&&f.Categoria)||'outro'); if(!buckets.has(c)) buckets.set(c,[]); buckets.get(c).push(f); });
+  const cats = Array.from(buckets.keys()).sort((a,b)=>{
+    const ia=ordem.indexOf(a), ib=ordem.indexOf(b);
+    if(ia!==-1||ib!==-1) return (ia===-1?99:ia)-(ib===-1?99:ib);
+    return _docCatLabel(a).localeCompare(_docCatLabel(b),'pt-BR');
+  });
+  box.innerHTML = head + cats.map(c=>{
+    const fs=buckets.get(c);
+    return `<div class="docs-gallery-sub">${escHtml(_docCatLabel(c))}<span class="docs-gallery-sub-count">${fs.length} foto${fs.length===1?'':'s'}</span></div>
+      <div class="docs-gallery-grid">${fs.map(f=>f&&f.File_URL?`<img class="docs-gthumb" loading="lazy" src="${escHtml(_docThumbUrl(f,200))}" alt="foto" title="${escHtml(_docVal(f.File_Name))} — ${_docDateLabel(f.Created_At)}${f.OS_Numero?' — OS '+escHtml(String(f.OS_Numero)):''}" onclick="_docOpen('${escJs(f.File_URL)}')" onerror="_docThumbErr(this,'${escJs(f.File_URL)}')">`:'').join('')}</div>`;
+  }).join('');
+}
+
+// ═══════════════════════════════════════════════════════════
+// v90 — FOTOS DE CAMPO NO CATÁLOGO (agregadas por MODELO) + PROMOÇÃO
+// Agrega os anexos de campo de TODAS as máquinas em campo do modelo aberto
+// (mesmo critério do chip "🏭 N máquinas em campo": modelKey(brand,model)).
+// Cada thumb tem ➕ para copiar a foto à galeria manual do modelo.
+// ═══════════════════════════════════════════════════════════
+let _modelFotosReqSeq = 0;
+
+async function _renderModelFotosCampo(m, force){
+  const box = document.getElementById('modelFotosCampo');
+  if(!box || !m) return;
+  const seq = ++_modelFotosReqSeq;
+  const maqs = db.machines.filter(eq=>modelKey(eq.brand,eq.model)===modelKey(m.brand,m.model));
+  const head = `<div style="display:flex;align-items:center;gap:8px;margin:18px 0 10px;flex-wrap:wrap">
+    <div style="font-size:11px;font-weight:700;color:var(--blue-mid);text-transform:uppercase;letter-spacing:.05em">📷 Fotos de campo das máquinas deste modelo</div>
+    <button class="btn btn-secondary btn-sm" onclick="_renderModelFotosCampo(getModel(selModelId),true)">↻ Atualizar</button>
+  </div>`;
+  if(!maqs.length){
+    box.innerHTML = head + `<div style="font-size:12px;color:var(--text3)">Nenhuma máquina em campo com este modelo — sem fotos de campo para agregar.</div>`;
+    return;
+  }
+  box.innerHTML = head + `<div style="font-size:12px;color:var(--text3)">Carregando…</div>`;
+  let rows = (!force && Array.isArray(_docsCache) && _docsCache.length) ? _docsCache : null;
+  if(!rows){
+    try{
+      const r = await gsGet('getAttachments', {});
+      rows = Array.isArray(r && r.attachments) ? r.attachments : [];
+      _docsCache = rows; // realimenta o cache da Gestão de Documentos
+    }catch(e){
+      if(seq!==_modelFotosReqSeq) return;
+      box.innerHTML = head + `<div style="font-size:12px;color:#b91c1c">⚠ Não foi possível carregar as fotos de campo: ${escHtml(e.message||'erro de rede')}</div>`;
+      return;
+    }
+  }
+  if(seq!==_modelFotosReqSeq) return; // trocou de modelo/visão no meio do fetch
+  const _seenFidM = new Set(); // v91 — promoção duplica File_ID em linha nova
+  const fotos = _docsDedupFotos(rows).filter(_docIsFoto)
+    .filter(a=>{ const c=String(a.Categoria||''); return c!=='foto_modelo' && c!=='foto_maquina'; }) // v91 — catálogo não é "campo"
+    .filter(a=>maqs.some(eq=>_attMatchesMachine(a,eq)))
+    .sort((a,b)=>_docDateValue(b)-_docDateValue(a))
+    .filter(f=>{ const k=String(_docFileId(f)||''); if(k && _seenFidM.has(k)) return false; if(k) _seenFidM.add(k); return true; });
+  if(!fotos.length){
+    box.innerHTML = head + `<div style="font-size:12px;color:var(--text3)">Nenhuma foto de campo encontrada para as ${maqs.length} máquina${maqs.length===1?'':'s'} deste modelo (vínculo por ID, série ou TAG).</div>`;
+    return;
+  }
+  const jaNoCatalogo = new Set((m.photos||[]).map(p=>String(p.fileId||'')).filter(Boolean));
+  // v91 — fotos já vinculadas ao modelo no BACKEND (promovidas em qualquer PC)
+  rows.forEach(a=>{ if(String(a.Entity_Type||'')==='modelo' && String(a.Entity_ID||'')===String(m.id)){ const k=_docFileId(a); if(k) jaNoCatalogo.add(String(k)); } });
+  const ordem = ['foto_preventiva','foto_rotor']; // preventiva primeiro: foto geral + filtros novos
+  const buckets = new Map();
+  fotos.forEach(f=>{ const c=String((f&&f.Categoria)||'outro'); if(!buckets.has(c)) buckets.set(c,[]); buckets.get(c).push(f); });
+  const cats = Array.from(buckets.keys()).sort((a,b)=>{
+    const ia=ordem.indexOf(a), ib=ordem.indexOf(b);
+    if(ia!==-1||ib!==-1) return (ia===-1?99:ia)-(ib===-1?99:ib);
+    return _docCatLabel(a).localeCompare(_docCatLabel(b),'pt-BR');
+  });
+  box.innerHTML = head
+    + `<div style="font-size:11px;color:var(--text3);margin-bottom:8px">Clique na foto para abrir no Drive · ➕ copia a foto para a galeria do modelo.</div>`
+    + cats.map(c=>{
+      const fs=buckets.get(c);
+      return `<div class="docs-gallery-sub">${escHtml(_docCatLabel(c))}<span class="docs-gallery-sub-count">${fs.length} foto${fs.length===1?'':'s'}</span></div>
+        <div class="docs-gallery-grid">${fs.map(f=>{
+          if(!f || !f.File_URL) return '';
+          const fid = _docFileId(f);
+          const tt  = `${_docVal(f.File_Name)} — ${_docDateLabel(f.Created_At)}${f.Maquina_Label?' — '+f.Maquina_Label:''}${f.Cliente?' — '+f.Cliente:''}${f.OS_Numero?' — OS '+f.OS_Numero:''}`;
+          const jaTem = fid && jaNoCatalogo.has(String(fid));
+          const acao = !fid ? '' : jaTem
+            ? `<span title="Já está na galeria do modelo" style="position:absolute;top:4px;right:4px;background:#16a34a;color:#fff;border-radius:50%;width:20px;height:20px;display:flex;align-items:center;justify-content:center;font-size:11px">✓</span>`
+            : `<button title="Adicionar à galeria do modelo" onclick="event.stopPropagation();_promoteFieldPhotoToModel('${escJs(m.id)}','${escJs(fid)}','${escJs(f.File_URL)}','${escJs(String(f.File_Name||'Foto de campo'))}')" style="position:absolute;top:4px;right:4px;background:var(--blue-mid);color:#fff;border:none;border-radius:50%;width:20px;height:20px;cursor:pointer;font-size:12px;line-height:1;display:flex;align-items:center;justify-content:center">＋</button>`;
+          return `<div style="position:relative;display:inline-block">
+            <img class="docs-gthumb" loading="lazy" src="${escHtml(_docThumbUrl(f,200))}" alt="foto" title="${escHtml(tt)}" onclick="_docOpen('${escJs(f.File_URL)}')" onerror="_docThumbErr(this,'${escJs(f.File_URL)}')">
+            ${acao}
+          </div>`;
+        }).join('')}</div>`;
+    }).join('');
+}
+
+// v90 — copia uma foto de campo (Drive) para a galeria manual do modelo.
+// Grava a URL de miniatura grande (sz=w1200) como `data` — renderPhotosGrid e o
+// lightbox aceitam URL do mesmo jeito que base64. Guarda fileId p/ dedup ("✓ já
+// está na galeria") e driveUrl p/ referência. NÃO baixa bytes: a imagem segue no
+// Drive; se o arquivo for PRIVATE e a conta Google do navegador não tiver
+// acesso, o thumb não renderiza (mesma limitação da Gestão de Documentos).
+async function _promoteFieldPhotoToModel(modelId, fileId, fileUrl, label){
+  const m = getModel(modelId);
+  if(!m){ toast('Modelo não encontrado.','error'); return; }
+  // v91 — caminho principal: vínculo no BACKEND (linha nova em TECH_ATTACHMENTS
+  // apontando o MESMO File_ID) → a foto promovida aparece em qualquer PC.
+  if(fileId && gsUrl && gsConnected){
+    try{
+      const r = await syncToGS('vincularFotoEntidade',{ file_id:String(fileId), entity_type:'modelo', entity_id:String(modelId), categoria:'foto_modelo' });
+      toast((r && r.ja_existia) ? 'Esta foto já estava na galeria do modelo.' : 'Foto adicionada à galeria do modelo — visível em qualquer PC!','success');
+      _docsCache = [];
+      _renderFotosSync('modelo', modelId, 'modelFotosSync', true);
+      const mm = getModel(selModelId); if(mm && mm.id===modelId) _renderModelFotosCampo(mm, true);
+      return;
+    }catch(e){
+      toast('Falha ao vincular no backend ('+(e.message||'erro')+') — salvando só neste PC.','error');
+    }
+  }
+  // fallback LEGADO (local, só neste PC)
+  if(!m.photos) m.photos = [];
+  if(fileId && m.photos.some(p=>String(p.fileId||'')===String(fileId))){ toast('Esta foto já está na galeria do modelo.'); return; }
+  const data = fileId
+    ? ('https://drive.google.com/thumbnail?id=' + encodeURIComponent(fileId) + '&sz=w1200')
+    : String(fileUrl||'');
+  m.photos.push({ id:uid(), data:data, label:String(label||'Foto de campo').replace(/\.[^.]+$/,''), ts:Date.now(), fileId:fileId||'', driveUrl:fileUrl||'', origem:'campo' });
+  save();
+  renderCatalog(); switchTab('photos');
+  toast('Foto de campo adicionada à galeria do modelo (local)!','success');
+}
 
 // ═══════════════════════════════════════════════════════════
 // MODALS
@@ -5925,10 +6318,17 @@ function openMachineDetail(id){
   // ── v72: painel de calibração do horímetro (só admin) ──
   renderCalibHorim(id);
 
-  // ── ABA FOTOS ──
+  // ── ABA FOTOS (v91: sincronizadas via Drive + locais legadas + fotos de campo) ──
   document.getElementById('mdetFotos').innerHTML =
-    `<div style="font-size:11px;font-weight:700;color:var(--blue-mid);text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px">Fotos da máquina</div>
-    ${renderPhotosGrid(eq.photos||[],'machine',id)}`;
+    `<div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;flex-wrap:wrap">
+      <div style="font-size:11px;font-weight:700;color:var(--blue-mid);text-transform:uppercase;letter-spacing:.05em">Fotos da máquina <span style="font-size:10px;font-weight:400;color:var(--text3)">☁️ sincronizadas via Drive</span></div>
+      <button class="btn btn-primary btn-sm" onclick="triggerPhotoUpload('machine','${id}')">+ Adicionar fotos</button>
+    </div>
+    <div id="mdetFotosSync"><div style="font-size:12px;color:var(--text3)">Carregando fotos…</div></div>
+    ${(eq.photos||[]).length?`<div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.05em;margin:14px 0 8px">Fotos locais (legado — só neste PC)</div>${renderPhotosGrid(eq.photos||[],'machine',id)}`:''}
+    <div id="mdetFotosCampo"></div>`;
+  _renderFotosSync('maquina', id, 'mdetFotosSync');
+  _renderMdetFotosCampo(eq);
 
   // Badge de peças com problema é pintado em _renderMdetResumo (usa horímetro projetado).
 
