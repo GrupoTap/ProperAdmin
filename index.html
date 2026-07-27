@@ -1,4 +1,30 @@
 <!--
+  PCM V94 — 27/07/2026 — TABELAS EM ESCALA (pré-importação Omie) — frontend-only, ZERO GAS.
+    Aprovado pelo Fernando via 4 mockups interativos (NEWFILE_MOCKUP_PCM_*_V1_2026-07-27).
+    Novo motor XF (namespace XF/xf*, aditivo): filtro ESTILO EXCEL em cada título de
+    coluna (ordenar + procurar valores + checkboxes com contagem), chips de filtros
+    ativos com "Limpar tudo", busca sem acento/multi-termo, paginação 25/50/100/200,
+    cabeçalho fixo, zebra, densidade compacta.
+    Telas migradas:
+    1) Controle de Preventivas — nova coluna "Restam (h)" com presets; cards viram
+       filtro-toggle de um clique (setPrevFilter/_prevFilter preservados como
+       filtro-extra com chip); fileira "prev-filter-btn" absorvida pelos cards+chips.
+    2) Gestão de OSs (aba Lista) — cards-painel (Atrasadas/Abertas/Em andamento/
+       Concluídas/Canceladas); presets no Prazo ("Atrasadas", "Hoje", "Próx. 7/30");
+       dias de atraso na célula; "Excluir OS" saiu da linha → menu ⋯ (mesma
+       deleteOSFromList + confirmação); _renderOSTable/_renderOSListResults mantêm
+       nome/assinatura; selects legados de status/prioridade viraram filtros de coluna.
+    3) Gestão de Documentos — novo modo "☰ Tabela" (lista plana paginada com filtros
+       de coluna; categoria virou filtro da coluna). Modos agrupados Por OS/Cliente/
+       Máquina e galerias por máquina (v88) INTACTOS.
+    4) Clientes — régua A–Z, colunas filtráveis (Cidade/UF, Máquinas com presets),
+       CNPJ ordenável; setClientSort preservado (dirige a ordenação padrão do XF);
+       seção "sem cadastro completo" e ações ✏️/⇄/🗑 intactas.
+    Invariantes: nenhuma função/id/data-view renomeado; inputs de busca mantêm o
+    guard anti-autofill completo; String() em campos do Sheets (lição V84); datas de
+    prazo seguem parsing imune a fuso (_gosData, lição V65).
+-->
+<!--
   PCM V93 — 23/07/2026 — PODA DE INATIVOS NO SYNC (aditivo, frontend-only, ZERO GAS).
     Mata os "clientes/máquinas fantasma" que voltavam a cada sincronização mesmo
     com Ativo=NÃO na planilha E no espelho Supabase. Causa raiz (diagnóstico ao
@@ -640,7 +666,7 @@ v50 — Resiliência de rede: retry/backoff em gsGet e syncToGS
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>ProperCare Manager · Gestão PGP v3.32</title>
+<title>ProperCare Manager · Gestão PGP v3.33</title>
 <link rel="icon" type="image/jpeg" href="data:image/jpeg;base64,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">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1350,6 +1376,76 @@ tr:hover td{background:var(--gray-50)}
 .btn.is-busy,#btnSyncHeader.is-busy{ position:relative; color:transparent !important; pointer-events:none }
 .btn.is-busy::after,#btnSyncHeader.is-busy::after{ content:''; position:absolute; width:16px; height:16px; top:calc(50% - 8px); left:calc(50% - 8px);
   border:2px solid currentColor; border-right-color:transparent; border-radius:50%; animation:spin .6s linear infinite; color:#fff }
+
+/* ═══ V94 · XF — tabelas com filtro estilo Excel (CSS aditivo, namespace xf-) ═══ */
+.xf-wrap{overflow:auto;max-height:calc(100vh - 200px);background:white}
+.xf-table thead th{position:sticky;top:0;background:var(--gray-50);z-index:10;padding:0;white-space:nowrap;border-bottom:1px solid var(--border2)}
+.xf-table thead th.xf-num{text-align:right}
+.xf-th-btn{display:flex;align-items:center;gap:5px;width:100%;padding:8px 12px;background:none;border:none;cursor:pointer;font-family:var(--font-sans);font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text3);transition:background .12s;text-align:left}
+.xf-th-btn:hover{background:var(--gray-100);color:var(--text)}
+th.xf-num .xf-th-btn{justify-content:flex-end}
+.xf-sind{font-size:9px;color:var(--accent)}
+.xf-fun{width:10px;height:10px;opacity:.35;flex:none}
+.xf-th-btn:hover .xf-fun{opacity:.8}
+th.xf-filtered .xf-th-btn{color:var(--accent)}
+th.xf-filtered .xf-fun{opacity:1;stroke:var(--accent)}
+.xf-table tbody tr:nth-child(even) td{background:var(--gray-50)}
+.xf-table tbody tr:hover td{background:var(--blue-pale)}
+.xf-table td.xf-num{text-align:right;font-family:var(--font-mono),monospace}
+.xf-compact .xf-table td{padding:4px 12px;font-size:11.5px}
+.xf-late-row td:first-child{box-shadow:inset 3px 0 0 var(--red)}
+.xf-counter{font-size:12px;color:var(--text2);font-family:var(--font-mono),monospace;white-space:nowrap;margin-left:4px}
+.xf-counter b{color:var(--text)}
+/* chips de filtros ativos */
+.xf-chips{display:none;gap:6px;align-items:center;flex-wrap:wrap;padding:0 0 8px}
+.xf-chips.xf-on{display:flex}
+.xf-chip{display:inline-flex;align-items:center;gap:6px;background:var(--blue-pale);border:1px solid var(--blue-light);color:var(--blue-mid);border-radius:999px;padding:3px 10px;font-size:11.5px;font-weight:600}
+.xf-chip button{border:none;background:none;color:inherit;cursor:pointer;font-size:12px;line-height:1;padding:0}
+.xf-link{font-size:11.5px;color:var(--red);background:none;border:none;cursor:pointer;font-weight:700;font-family:var(--font-sans)}
+/* paginação */
+.xf-pager{display:flex;align-items:center;gap:4px;justify-content:center;padding:12px 0 2px;flex-wrap:wrap}
+.xf-pager button{min-width:30px;height:30px;border:1px solid var(--border2);background:white;border-radius:8px;cursor:pointer;font-size:12px;color:var(--text2);font-family:var(--font-mono),monospace}
+.xf-pager button:hover{border-color:var(--accent);color:var(--accent)}
+.xf-pager button.xf-cur{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:700}
+.xf-pager button:disabled{opacity:.35;cursor:default}
+/* menu flutuante (coluna e ⋯) */
+.xf-menu{position:fixed;z-index:2100;background:white;border:1px solid var(--border2);border-radius:var(--radius);box-shadow:var(--shadow-lg);width:250px;display:none;flex-direction:column;overflow:hidden}
+.xf-menu.xf-on{display:flex}
+.xf-cm-head{padding:8px 12px;font-size:10px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--text3);background:var(--gray-50);border-bottom:1px solid var(--border)}
+.xf-cm-sort{display:flex;gap:6px;padding:8px 10px;border-bottom:1px solid var(--border)}
+.xf-cm-sort button{flex:1;border:1px solid var(--border2);background:white;border-radius:8px;padding:6px;font-size:11.5px;cursor:pointer;font-family:var(--font-sans);color:var(--text2)}
+.xf-cm-sort button.xf-cur,.xf-cm-sort button:hover{border-color:var(--accent);color:var(--accent);font-weight:700}
+.xf-cm-search{padding:8px 10px;border-bottom:1px solid var(--border)}
+.xf-cm-search input{width:100%;background:var(--gray-100);border:1px solid var(--border);border-radius:8px;padding:6px 10px;font-size:12px;outline:none;font-family:var(--font-sans)}
+.xf-cm-search input:focus{border-color:var(--accent)}
+.xf-cm-list{max-height:230px;overflow:auto;padding:4px 0}
+.xf-cm-item{display:flex;align-items:center;gap:8px;padding:5px 12px;font-size:12px;cursor:pointer;user-select:none;color:var(--text)}
+.xf-cm-item:hover{background:var(--gray-100)}
+.xf-cm-item input{accent-color:var(--accent)}
+.xf-cnt{margin-left:auto;font-size:10px;color:var(--text3);font-family:var(--font-mono),monospace}
+.xf-cm-item.xf-all{border-bottom:1px solid var(--border);font-weight:600;position:sticky;top:0;background:white}
+.xf-cm-range{padding:10px 12px;border-bottom:1px solid var(--border);display:flex;flex-direction:column;gap:7px}
+.xf-cm-range label{font-size:10px;color:var(--text3);font-weight:700;text-transform:uppercase;letter-spacing:.05em}
+.xf-cm-range input{width:100%;border:1px solid var(--border2);border-radius:8px;padding:6px 8px;font-size:12px;font-family:var(--font-mono),monospace;outline:none}
+.xf-cm-range input:focus{border-color:var(--accent)}
+.xf-cm-presets{display:flex;flex-wrap:wrap;gap:5px;padding:8px 12px;border-bottom:1px solid var(--border)}
+.xf-cm-presets button{border:1px solid var(--border2);background:var(--gray-50);border-radius:999px;padding:4px 10px;font-size:11px;cursor:pointer;color:var(--text2);font-family:var(--font-sans)}
+.xf-cm-presets button:hover{border-color:var(--accent);color:var(--accent)}
+.xf-cm-foot{display:flex;gap:8px;padding:9px 12px;background:var(--gray-50)}
+.xf-cm-foot .btn{flex:1;justify-content:center}
+.xf-rowact{display:block;width:100%;text-align:left;border:none;background:none;padding:9px 14px;font-size:12.5px;cursor:pointer;font-family:var(--font-sans);color:var(--text)}
+.xf-rowact:hover{background:var(--gray-100)}
+.xf-rowact.xf-danger{color:var(--red);font-weight:600}
+.xf-rowact.xf-danger:hover{background:var(--red-light)}
+/* régua A–Z (Clientes) */
+.xf-alpha{display:flex;gap:2px;flex-wrap:wrap;align-items:center;padding:0 0 8px}
+.xf-alpha button{border:none;background:none;width:23px;height:23px;border-radius:6px;cursor:pointer;font-size:11px;font-family:var(--font-mono),monospace;color:var(--text2)}
+.xf-alpha button:hover{background:var(--gray-100)}
+.xf-alpha button.xf-cur{background:var(--accent);color:#fff;font-weight:700}
+.xf-alpha button:disabled{opacity:.22;cursor:default}
+/* célula composta */
+.xf-sub{font-size:10px;color:var(--text3);margin-top:1px}
+
 </style>
 </head>
 <body>
@@ -1538,7 +1634,7 @@ tr:hover td{background:var(--gray-50)}
               style="width:220px;padding-left:28px"
               autocomplete="off" name="pcm_cli_busca_nofill" data-lpignore="true" data-1p-ignore
               readonly onfocus="this.removeAttribute('readonly')"
-              oninput="_clientSearch=this.value;renderClients()">
+              oninput="_clientSearch=this.value;xfQ('cli')">
             <svg style="position:absolute;left:8px;top:50%;transform:translateY(-50%);color:var(--text3);pointer-events:none" width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
           </div>
           <button class="btn btn-secondary" onclick="mergeAllDuplicateClients()" style="font-size:11px">🔀 Mesclar duplicatas</button>
@@ -2143,6 +2239,309 @@ function pgpUid(){
   try { if (window.crypto && typeof window.crypto.randomUUID === 'function') return window.crypto.randomUUID(); } catch(e){}
   return Math.random().toString(36).slice(2,6); // fallback: padrão antigo
 }
+</script>
+<script>
+/* ═══════════════════════════════════════════════════════════════════
+   PCM V94 · XF — Motor de tabelas com filtro estilo Excel
+   (Preventivas · Gestão de OSs Lista · Documentos modo Tabela · Clientes)
+   ADITIVO: tudo em namespace XF/xf* — nenhuma função/id existente muda.
+   Aprovado pelo Fernando em 27/07/2026 via mockups
+   NEWFILE_MOCKUP_PCM_{PREVENTIVAS,GESTAO_OS,DOCUMENTOS,CLIENTES}_V1.
+   Conceitos:
+   - xfReg(iid,cfg) registra a instância (estado de filtros persiste
+     entre re-renders da tela, inclusive refresh de sync em 2º plano).
+   - Cada tela monta o esqueleto (xfSkeletonHtml/xfBarHtml) e chama
+     xfRender(iid); o motor só preenche ids xf_<iid>_*.
+   - Filtro por coluna: 'values' (checkboxes c/ contagem, estilo Excel)
+     ou 'range' (De/Até p/ número e data, com presets).
+   ═══════════════════════════════════════════════════════════════════ */
+const XF = { inst:{}, mIid:null, mKey:null, mChecked:null };
+
+function xfReg(iid, cfg){
+  if(!XF.inst[iid]) XF.inst[iid] = { s:{sort:null,filters:{},page:1,pageSize:50,extra:{}}, data:[], menus:[], _chips:[] };
+  XF.inst[iid].cfg = cfg;
+  return XF.inst[iid];
+}
+function xfNorm(s){ return String(s==null?'':s).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,''); }
+function xfNum(n){ return Number(n||0).toLocaleString('pt-BR'); }
+function xfFmtISO(iso){ if(!iso) return '—'; const p=String(iso).slice(0,10).split('-'); return p.length===3 ? (p[2]+'/'+p[1]+'/'+p[0]) : '—'; }
+function xfHoje(){ const d=new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+function xfAddDias(base,n){ const p=base.split('-').map(Number); const dt=new Date(p[0],p[1]-1,p[2]+n); return dt.getFullYear()+'-'+String(dt.getMonth()+1).padStart(2,'0')+'-'+String(dt.getDate()).padStart(2,'0'); }
+function xfCol(I,k){ return I.cfg.columns.find(c=>c.key===k); }
+function xfGV(c,r){ return c.getValue ? c.getValue(r) : r[c.key]; }
+function xfFV(c,r){ return c.getFilterValue ? c.getFilterValue(r) : xfGV(c,r); }
+
+function xfRowPasses(I,r,skip){
+  const q = xfNorm(I.cfg.getQuery ? I.cfg.getQuery() : '');
+  if(q){ const terms=q.split(/\s+/).filter(Boolean); for(const t of terms){ if(!r._xfSearch.includes(t)) return false; } }
+  for(const k in I.s.filters){
+    if(k===skip) continue;
+    const f=I.s.filters[k]; const c=xfCol(I,k); if(!c) continue;
+    if(f.type==='values'){ if(!f.set.has(String(xfFV(c,r)))) return false; }
+    else if(f.type==='range'){
+      const v=xfGV(c,r);
+      if(v==null||v==='') return false;
+      if(f.min!=null&&f.min!==''&&v<f.min) return false;
+      if(f.max!=null&&f.max!==''&&v>f.max) return false;
+    }
+  }
+  if(I.cfg.extraFilter && !I.cfg.extraFilter(r)) return false;
+  return true;
+}
+function xfFiltered(I){
+  let rows = I.data.filter(r=>xfRowPasses(I,r,null));
+  if(I.s.sort){
+    const c=xfCol(I,I.s.sort.key); const dir=I.s.sort.dir;
+    if(c) rows = rows.slice().sort((a,b)=>{
+      let va=xfGV(c,a), vb=xfGV(c,b);
+      const ea=(va==null||va===''), eb=(vb==null||vb==='');
+      if(ea&&eb) return 0; if(ea) return 1; if(eb) return -1;
+      if(c.type==='num'){ va=Number(va); vb=Number(vb); } else { va=xfNorm(va); vb=xfNorm(vb); }
+      return (va<vb?-1:va>vb?1:0)*dir;
+    });
+  } else if(I.cfg.defaultSort){ rows = I.cfg.defaultSort(rows.slice()); }
+  return rows;
+}
+
+/* ── esqueleto que cada tela embute no seu próprio HTML ── */
+function xfBarHtml(iid){
+  const I=XF.inst[iid];
+  const ps=(I&&I.s.pageSize)||50;
+  return `<span style="display:inline-flex;align-items:center;gap:6px;flex-wrap:wrap">
+    <span style="font-size:11px;color:var(--text3)">Por página</span>
+    <select onchange="xfPageSize('${iid}',this.value)" style="height:30px;padding:0 6px;font-size:12px;border:1px solid var(--border2);border-radius:var(--radius-sm);background:white;font-family:var(--font-sans)">
+      ${[25,50,100,200].map(n=>`<option value="${n}" ${ps===n?'selected':''}>${n}</option>`).join('')}
+    </select>
+    <button class="btn btn-secondary btn-sm" onclick="xfDensity('${iid}',this)">${I&&I.s.extra._compact?'Densidade: compacta':'Densidade: confortável'}</button>
+    <span class="xf-counter" id="xf_${iid}_counter"></span>
+  </span>`;
+}
+function xfSkeletonHtml(iid, extraClass){
+  const I=XF.inst[iid];
+  return `<div id="xf_${iid}_chips" class="xf-chips"></div>
+    <div class="table-wrap xf-wrap ${I&&I.s.extra._compact?'xf-compact':''} ${extraClass||''}" id="xf_${iid}_wrap">
+      <table class="xf-table"><thead><tr id="xf_${iid}_head"></tr></thead><tbody id="xf_${iid}_body"></tbody></table>
+    </div>
+    <div class="xf-pager" id="xf_${iid}_pager"></div>`;
+}
+
+/* ── render principal ── */
+function xfRender(iid){
+  const I=XF.inst[iid]; if(!I||!I.cfg) return;
+  const body=document.getElementById('xf_'+iid+'_body'); if(!body) return;
+  I.data = I.cfg.getData();
+  for(const r of I.data) r._xfSearch = xfNorm(I.cfg.searchText(r));
+  const rows = xfFiltered(I);
+  I.menus = [];
+  xfRenderHead(iid,I);
+  xfRenderChips(iid,I);
+  if(!rows.length){
+    body.innerHTML = `<tr><td colspan="${I.cfg.columns.length}"><div class="empty" style="padding:30px 16px"><div class="empty-icon">🔎</div><div class="empty-title">Nenhum resultado</div><div class="empty-sub">Ajuste a busca ou <button class="xf-link" onclick="xfClearAll('${iid}')">limpe os filtros</button></div></div></td></tr>`;
+  } else {
+    const pages=Math.max(1,Math.ceil(rows.length/I.s.pageSize));
+    if(I.s.page>pages) I.s.page=pages;
+    const p0=(I.s.page-1)*I.s.pageSize;
+    const page=rows.slice(p0,p0+I.s.pageSize);
+    body.innerHTML = page.map(r=>{
+      const attrs = I.cfg.rowAttrs ? I.cfg.rowAttrs(r) : '';
+      return `<tr ${attrs}>` + I.cfg.columns.map(c=>`<td class="${c.type==='num'?'xf-num':''}"${c.tdStyle?` style="${c.tdStyle}"`:''}>${c.render?c.render(r):escHtml(xfGV(c,r)==null?'—':xfGV(c,r))}</td>`).join('') + `</tr>`;
+    }).join('');
+  }
+  xfRenderPager(iid,I,rows.length);
+  const cnt=document.getElementById('xf_'+iid+'_counter');
+  if(cnt){
+    const q = I.cfg.getQuery ? I.cfg.getQuery() : '';
+    const ativo = q || Object.keys(I.s.filters).length || (I.cfg.hasExtraActive && I.cfg.hasExtraActive());
+    cnt.innerHTML = ativo ? `<b>${xfNum(rows.length)}</b> de ${xfNum(I.data.length)} ${I.cfg.unit||''}` : `<b>${xfNum(I.data.length)}</b> ${I.cfg.unit||''}`;
+  }
+  if(I.cfg.after) I.cfg.after(rows);
+}
+function xfRenderHead(iid,I){
+  const tr=document.getElementById('xf_'+iid+'_head'); if(!tr) return;
+  tr.innerHTML = I.cfg.columns.map(c=>{
+    const sorted=I.s.sort&&I.s.sort.key===c.key;
+    const filtered=!!I.s.filters[c.key];
+    const sind=sorted?`<span class="xf-sind">${I.s.sort.dir>0?'▲':'▼'}</span>`:'';
+    const fun=c.filter?`<svg class="xf-fun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M3 5h18l-7 8v6l-4-2v-4L3 5z"/></svg>`:'';
+    const cls=(c.type==='num'?'xf-num ':'')+(filtered?'xf-filtered':'');
+    if(!c.filter&&!c.sortable) return `<th class="${cls}"${c.thStyle?` style="${c.thStyle}"`:''}><div class="xf-th-btn" style="cursor:default">${c.label||''}</div></th>`;
+    return `<th class="${cls}"${c.thStyle?` style="${c.thStyle}"`:''}><button class="xf-th-btn" onclick="xfOpenMenu(event,'${iid}','${c.key}')">${c.label||''} ${sind}${fun}</button></th>`;
+  }).join('');
+}
+function xfRenderPager(iid,I,total){
+  const el=document.getElementById('xf_'+iid+'_pager'); if(!el) return;
+  const pages=Math.max(1,Math.ceil(total/I.s.pageSize));
+  if(pages<=1){ el.innerHTML = total>I.s.pageSize?'':''; if(total<=I.s.pageSize){ el.innerHTML=''; return; } }
+  const p=Math.min(I.s.page,pages);
+  const win=[]; const W=2;
+  for(let i=1;i<=pages;i++){ if(i===1||i===pages||Math.abs(i-p)<=W) win.push(i); else if(win[win.length-1]!=='…') win.push('…'); }
+  el.innerHTML =
+    `<button ${p===1?'disabled':''} onclick="xfGoPage('${iid}',${p-1})">‹</button>` +
+    win.map(i=>i==='…'?`<button disabled>…</button>`:`<button class="${i===p?'xf-cur':''}" onclick="xfGoPage('${iid}',${i})">${i}</button>`).join('') +
+    `<button ${p===pages?'disabled':''} onclick="xfGoPage('${iid}',${p+1})">›</button>` +
+    `<span style="margin-left:10px;font-size:11px;color:var(--text3);font-family:var(--font-mono)">${total?xfNum((p-1)*I.s.pageSize+1)+'–'+xfNum(Math.min(total,p*I.s.pageSize))+' de '+xfNum(total):'0'}</span>`;
+}
+function xfRenderChips(iid,I){
+  const el=document.getElementById('xf_'+iid+'_chips'); if(!el) return;
+  const chips=[];
+  const q = I.cfg.getQuery ? I.cfg.getQuery() : '';
+  if(q) chips.push({lbl:'🔎 “'+escHtml(q)+'”', clear:()=>{ if(I.cfg.clearQuery) I.cfg.clearQuery(); }});
+  for(const k in I.s.filters){
+    const c=xfCol(I,k); if(!c) continue;
+    const f=I.s.filters[k];
+    let v;
+    if(f.type==='values'){ const a=[...f.set]; v=a.length<=2?a.join(', '):a.length+' valores'; }
+    else { v=(f.min!==''&&f.min!=null?('≥ '+(c.type==='date'?xfFmtISO(f.min):xfNum(f.min))):'')+((f.min!==''&&f.min!=null)&&(f.max!==''&&f.max!=null)?' e ':'')+(f.max!==''&&f.max!=null?('≤ '+(c.type==='date'?xfFmtISO(f.max):xfNum(f.max))):''); }
+    chips.push({lbl:'<b>'+(c.label||k)+':</b>&nbsp;'+escHtml(v), clear:()=>{ delete I.s.filters[k]; }});
+  }
+  if(I.cfg.extraChips) I.cfg.extraChips(chips);
+  I._chips=chips;
+  el.classList.toggle('xf-on', chips.length>0);
+  el.innerHTML = chips.map((ch,i)=>`<span class="xf-chip">${ch.lbl}<button title="Remover filtro" onclick="xfRmChip('${iid}',${i})">✕</button></span>`).join('') +
+    (chips.length>1?`<button class="xf-link" onclick="xfClearAll('${iid}')">Limpar tudo ✕</button>`:'');
+}
+function xfRmChip(iid,i){ const I=XF.inst[iid]; const ch=I._chips[i]; if(ch) ch.clear(); I.s.page=1; xfRender(iid); }
+function xfClearAll(iid){ const I=XF.inst[iid]; I.s.filters={}; I.s.sort=null; I.s.page=1; if(I.cfg.clearQuery) I.cfg.clearQuery(); if(I.cfg.clearExtra) I.cfg.clearExtra(); xfRender(iid); }
+
+/* ── controles da barra ── */
+let _xfQT=null;
+function xfQ(iid){ clearTimeout(_xfQT); _xfQT=setTimeout(function(){ const I=XF.inst[iid]; if(I){ I.s.page=1; xfRender(iid); } },140); }
+function xfPageSize(iid,v){ const I=XF.inst[iid]; I.s.pageSize=Number(v)||50; I.s.page=1; xfRender(iid); }
+function xfDensity(iid,btn){ const I=XF.inst[iid]; I.s.extra._compact=!I.s.extra._compact; const w=document.getElementById('xf_'+iid+'_wrap'); if(w) w.classList.toggle('xf-compact',!!I.s.extra._compact); if(btn) btn.textContent=I.s.extra._compact?'Densidade: compacta':'Densidade: confortável'; }
+function xfGoPage(iid,p){ const I=XF.inst[iid]; I.s.page=p; xfRender(iid); const w=document.getElementById('xf_'+iid+'_wrap'); if(w) w.scrollTop=0; }
+
+/* ── menu flutuante (colunas e ⋯ de linha) ── */
+function xfMenuEl(){
+  let m=document.getElementById('xfMenu');
+  if(!m){ m=document.createElement('div'); m.id='xfMenu'; m.className='xf-menu'; document.body.appendChild(m); }
+  return m;
+}
+function xfPosMenu(m, anchor){
+  m.classList.add('xf-on');
+  const r=anchor.getBoundingClientRect();
+  let x=Math.min(r.left, window.innerWidth-266); let y=r.bottom+4;
+  const h=m.offsetHeight||300;
+  if(y+h>window.innerHeight-8) y=Math.max(8, r.top-h-4);
+  m.style.left=Math.max(8,x)+'px'; m.style.top=y+'px';
+}
+function xfCloseMenu(){ const m=document.getElementById('xfMenu'); if(m) m.classList.remove('xf-on'); XF.mIid=null; XF.mKey=null; XF.mChecked=null; }
+function xfOpenMenu(ev,iid,key){
+  ev.stopPropagation();
+  const m=xfMenuEl();
+  if(XF.mIid===iid && XF.mKey===key && m.classList.contains('xf-on')){ xfCloseMenu(); return; }
+  const I=XF.inst[iid]; const c=xfCol(I,key); if(!c) return;
+  XF.mIid=iid; XF.mKey=key;
+  const cur=I.s.filters[key];
+  let html=`<div class="xf-cm-head">${c.label||key}</div>`;
+  const az=(c.type==='num'||c.type==='date')?['1 → 9','9 → 1']:['A → Z','Z → A'];
+  const s=I.s.sort;
+  html+=`<div class="xf-cm-sort"><button class="${s&&s.key===key&&s.dir>0?'xf-cur':''}" onclick="xfSetSort(1)">↑ ${az[0]}</button><button class="${s&&s.key===key&&s.dir<0?'xf-cur':''}" onclick="xfSetSort(-1)">↓ ${az[1]}</button></div>`;
+  if(c.filter==='values'){
+    XF.mChecked = (cur&&cur.type==='values') ? new Set(cur.set) : null;
+    html+=`<div class="xf-cm-search"><input id="xfCmQ" placeholder="Procurar valores…" autocomplete="off" name="xf_cmq_nofill" data-lpignore="true" data-1p-ignore readonly onfocus="this.removeAttribute('readonly')" oninput="xfCmList()"></div>`;
+    html+=`<div class="xf-cm-list" id="xfCmList"></div>`;
+    html+=`<div class="xf-cm-foot"><button class="btn btn-secondary btn-sm" onclick="xfClearCol()">Limpar</button><button class="btn btn-primary btn-sm" onclick="xfApplyValues()">Aplicar</button></div>`;
+  } else if(c.filter==='range'){
+    const t=c.type==='date'?'date':'number';
+    html+=`<div class="xf-cm-range"><label>De</label><input id="xfCmMin" type="${t}" value="${cur&&cur.min!=null?cur.min:''}"><label>Até</label><input id="xfCmMax" type="${t}" value="${cur&&cur.max!=null?cur.max:''}"></div>`;
+    if(c.presets) html+=`<div class="xf-cm-presets">${c.presets.map((p,i)=>`<button onclick="xfApplyPreset(${i})">${p.label}</button>`).join('')}</div>`;
+    html+=`<div class="xf-cm-foot"><button class="btn btn-secondary btn-sm" onclick="xfClearCol()">Limpar</button><button class="btn btn-primary btn-sm" onclick="xfApplyRange()">Aplicar</button></div>`;
+  }
+  m.innerHTML=html;
+  xfPosMenu(m, ev.currentTarget);
+  if(c.filter==='values') xfCmList();
+}
+function xfCmList(){
+  const I=XF.inst[XF.mIid]; if(!I) return;
+  const c=xfCol(I,XF.mKey);
+  const q=xfNorm((document.getElementById('xfCmQ')||{}).value||'');
+  const base=I.data.filter(r=>xfRowPasses(I,r,XF.mKey));
+  const counts=new Map();
+  for(const r of base){ const v=String(xfFV(c,r)); counts.set(v,(counts.get(v)||0)+1); }
+  let vals=[...counts.keys()];
+  if(c.valueOrder){ vals.sort((a,b)=>{ const ia=c.valueOrder.indexOf(a), ib=c.valueOrder.indexOf(b); return (ia<0?999:ia)-(ib<0?999:ib); }); }
+  else { vals.sort((a,b)=>xfNorm(a)<xfNorm(b)?-1:1); }
+  if(q) vals=vals.filter(v=>xfNorm(v).includes(q));
+  const checked=v=>XF.mChecked===null?true:XF.mChecked.has(v);
+  const allOn=vals.every(checked);
+  const el=document.getElementById('xfCmList'); if(!el) return;
+  el.innerHTML = `<label class="xf-cm-item xf-all"><input type="checkbox" ${allOn?'checked':''} onchange="xfToggleAll(this.checked)"> (Selecionar tudo)<span class="xf-cnt">${vals.length}</span></label>` +
+    vals.map(v=>`<label class="xf-cm-item"><input type="checkbox" ${checked(v)?'checked':''} onchange="xfToggleVal(this)" data-v="${escHtml(v)}"> <span>${escHtml(v)}</span><span class="xf-cnt">${counts.get(v)}</span></label>`).join('');
+  el.dataset.visible=JSON.stringify(vals);
+}
+function xfAllVals(){
+  const I=XF.inst[XF.mIid]; const c=xfCol(I,XF.mKey);
+  const s=new Set(); for(const r of I.data) s.add(String(xfFV(c,r))); return s;
+}
+function xfToggleAll(on){
+  const el=document.getElementById('xfCmList'); if(!el) return;
+  const vis=JSON.parse(el.dataset.visible||'[]');
+  if(XF.mChecked===null) XF.mChecked=xfAllVals();
+  for(const v of vis){ if(on) XF.mChecked.add(v); else XF.mChecked.delete(v); }
+  xfCmList();
+}
+function xfToggleVal(cb){
+  if(XF.mChecked===null) XF.mChecked=xfAllVals();
+  const v=cb.dataset.v;
+  if(cb.checked) XF.mChecked.add(v); else XF.mChecked.delete(v);
+  xfCmList();
+}
+function xfApplyValues(){
+  const iid=XF.mIid, key=XF.mKey; const I=XF.inst[iid];
+  if(XF.mChecked===null || XF.mChecked.size>=xfAllVals().size){ delete I.s.filters[key]; }
+  else if(XF.mChecked.size===0){ toast('Selecione ao menos um valor',''); return; }
+  else { I.s.filters[key]={type:'values',set:new Set(XF.mChecked)}; }
+  I.s.page=1; xfCloseMenu(); xfRender(iid);
+}
+function xfApplyRange(){
+  const iid=XF.mIid, key=XF.mKey; const I=XF.inst[iid]; const c=xfCol(I,key);
+  const min=(document.getElementById('xfCmMin')||{}).value||'', max=(document.getElementById('xfCmMax')||{}).value||'';
+  if(!min&&!max){ delete I.s.filters[key]; }
+  else I.s.filters[key]={type:'range',min:(c.type==='num'&&min!=='')?Number(min):min,max:(c.type==='num'&&max!=='')?Number(max):max};
+  I.s.page=1; xfCloseMenu(); xfRender(iid);
+}
+function xfApplyPreset(i){
+  const iid=XF.mIid, key=XF.mKey; const I=XF.inst[iid]; const c=xfCol(I,key);
+  const v=c.presets[i].get();
+  I.s.filters[key]={type:'range',min:v.min!=null?v.min:'',max:v.max!=null?v.max:''};
+  I.s.page=1; xfCloseMenu(); xfRender(iid);
+}
+function xfClearCol(){
+  const iid=XF.mIid, key=XF.mKey; const I=XF.inst[iid];
+  delete I.s.filters[key]; I.s.page=1; xfCloseMenu(); xfRender(iid);
+}
+function xfSetSort(dir){
+  const iid=XF.mIid, key=XF.mKey; const I=XF.inst[iid];
+  if(I.s.sort&&I.s.sort.key===key&&I.s.sort.dir===dir) I.s.sort=null;
+  else I.s.sort={key:key,dir:dir};
+  xfCloseMenu(); xfRender(iid);
+}
+
+/* ── menu ⋯ por linha (ações secundárias, ex.: Excluir OS c/ confirmação) ── */
+function xfMenuBtn(iid, actions, title){
+  const I=XF.inst[iid]; const idx=I.menus.length; I.menus.push(actions);
+  return `<button class="btn btn-secondary btn-sm" title="${escHtml(title||'Mais ações')}" onclick="xfOpenRowMenu(event,'${iid}',${idx})">⋯</button>`;
+}
+function xfOpenRowMenu(ev,iid,idx){
+  ev.stopPropagation();
+  const m=xfMenuEl();
+  XF.mIid=null; XF.mKey=null; XF.mChecked=null;
+  const acts=(XF.inst[iid].menus[idx])||[];
+  m.innerHTML = `<div class="xf-cm-head">Ações</div>` + acts.map((a,i)=>`<button class="xf-rowact ${a.cls||''}" onclick="xfRunRowAct('${iid}',${idx},${i})">${a.label}</button>`).join('');
+  xfPosMenu(m, ev.currentTarget);
+}
+function xfRunRowAct(iid,idx,i){
+  const a=(XF.inst[iid].menus[idx]||[])[i];
+  xfCloseMenu();
+  if(a&&a.run) a.run();
+}
+
+/* fechar menu em clique fora / Esc (registrado uma única vez) */
+document.addEventListener('click', function(e){
+  if(!e.target.closest('#xfMenu') && !e.target.closest('.xf-th-btn')) xfCloseMenu();
+});
+document.addEventListener('keydown', function(e){ if(e.key==='Escape') xfCloseMenu(); });
+
 </script>
 <script>
 // ══════════════════════════════════════════════════════════════════════════
@@ -3867,6 +4266,7 @@ async function renderDocs(force){
         <button class="docs-chip docs-group-chip ${_docsGroupBy==='os'?'active':''}" data-group="os" onclick="_docsGroupBy='os';renderDocsList()">Por OS</button>
         <button class="docs-chip docs-group-chip ${_docsGroupBy==='cliente'?'active':''}" data-group="cliente" onclick="_docsGroupBy='cliente';renderDocsList()">Por Cliente</button>
         <button class="docs-chip docs-group-chip ${_docsGroupBy==='maquina'?'active':''}" data-group="maquina" onclick="_docsGroupBy='maquina';renderDocsList()">Por Máquina</button>
+        <button class="docs-chip docs-group-chip ${_docsGroupBy==='flat'?'active':''}" data-group="flat" onclick="_docsGroupBy='flat';renderDocsList()">☰ Tabela</button>
         <button class="docs-chip" id="docsExpandBtn" onclick="_docsToggleExpandAll()">${_docsExpanded?'Recolher tudo':'Expandir tudo'}</button>
       </div>
       <div id="docsCounter" class="docs-count">Carregando…</div>
@@ -3894,6 +4294,7 @@ function renderDocsList(){
   document.querySelectorAll('.docs-group-chip').forEach(function(c){
     c.classList.toggle('active', c.dataset.group === _docsGroupBy);
   });
+  if(_docsGroupBy==='flat'){ _renderDocsFlatV94(list); return; }   // V94 — modo tabela plana (filtros de coluna XF)
   const cats=['todas', ...Array.from(new Set(_docsCache.map(x=>x?.Categoria).filter(Boolean))).sort()];
   const catsEl=document.getElementById('docsCats');
   if(catsEl) catsEl.innerHTML = cats.map(c=>`<button class="docs-chip ${_docsCat===c?'active':''}" onclick="_docsCat='${escJs(c)}';renderDocsList()">${c==='todas'?'Todas':escHtml(_docCatLabel(c))}</button>`).join('');
@@ -3939,6 +4340,59 @@ function renderDocsList(){
       <div class="docs-actions">${cover?`<img class="docs-thumb" loading="lazy" src="${escHtml(_docThumbUrl(cover,128))}" alt="Primeira foto" onclick="event.preventDefault();_docOpen('${escJs(cover.File_URL)}')" onerror="_docThumbErr(this,'${escJs(cover.File_URL)}')">`:''}${folder?`<button class="btn btn-secondary btn-sm" onclick="event.preventDefault();_docOpen('${escJs(folder)}')">Abrir pasta</button>`:''}</div>
     </summary>${gallery}${table}</details>`;
   }).join('');
+}
+
+// V94 — Gestão de Documentos, modo "☰ Tabela": lista PLANA paginada com filtro
+// estilo Excel por coluna (Categoria/Cliente/Máquina/Data/Por), aprovado via
+// mockup NEWFILE_MOCKUP_PCM_DOCUMENTOS_V1_2026-07-27. Os modos agrupados
+// (Por OS/Cliente/Máquina, com galerias por máquina do v88) seguem intactos;
+// este modo serve para achar UM arquivo específico entre milhares. Os chips de
+// categoria do topo não aparecem aqui — a categoria virou filtro da coluna.
+function _renderDocsFlatV94(list){
+  const catsEl=document.getElementById('docsCats'); if(catsEl) catsEl.innerHTML='';
+  xfReg('docs', {
+    unit:'arquivos',
+    columns:[
+      {key:'cat',label:'Categoria',filter:'values',
+        getValue:it=>_docCatLabel(it?.Categoria),
+        render:it=>`<span class="docs-badge ${_docCatClass(it?.Categoria)}">${escHtml(_docCatLabel(it?.Categoria))}</span>`},
+      {key:'os',label:'Nº OS',sortable:true,
+        getValue:it=>it?.OS_Numero?String(it.OS_Numero):'',
+        render:it=>it?.OS_Numero?`<span style="font-family:var(--font-mono),monospace;font-size:11px;font-weight:600">${escHtml(String(it.OS_Numero))}</span>`:'<span class="docs-badge outro">Sem OS</span>'},
+      {key:'cliente',label:'Cliente',filter:'values',
+        getValue:it=>_docVal(it?.Cliente),
+        render:it=>`<div style="font-weight:600;font-size:12px">${escHtml(_docVal(it?.Cliente))}</div>`},
+      {key:'maquina',label:'Máquina',filter:'values',
+        getValue:it=>_docVal(it?.Maquina_Label||it?.Maquina_ID),
+        render:it=>`<span style="font-size:11px">${escHtml(_docVal(it?.Maquina_Label||it?.Maquina_ID))}</span>`},
+      {key:'arquivo',label:'Arquivo',sortable:true,
+        getValue:it=>_docVal(it?.File_Name),
+        render:it=>`<div style="display:flex;align-items:center;gap:7px"><span style="font-size:14px">${_docIsFoto(it)?'📷':'📄'}</span><div><div class="docs-file-name">${escHtml(_docVal(it?.File_Name))}</div>${it?.Caption?`<div class="docs-caption">${escHtml(it.Caption)}</div>`:''}</div></div>`},
+      {key:'data',label:'Data',type:'date',filter:'range',
+        getValue:it=>{const t=_docDateValue(it); if(!t) return ''; const d=new Date(t); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');},
+        presets:[
+          {label:'Hoje',get:()=>({min:xfHoje(),max:xfHoje()})},
+          {label:'Últimos 7 dias',get:()=>({min:xfAddDias(xfHoje(),-7),max:''})},
+          {label:'Últimos 30 dias',get:()=>({min:xfAddDias(xfHoje(),-30),max:''})}],
+        render:it=>`<span style="font-size:11px">${escHtml(_docDateLabel(it?.Created_At))}</span>`},
+      {key:'por',label:'Por',filter:'values',
+        getValue:it=>_docVal(it?.Created_By),
+        render:it=>`<span style="font-size:11px">${escHtml(_docVal(it?.Created_By))}</span>`},
+      {key:'acoes',label:'Ações',thStyle:'text-align:right',
+        render:it=>`<div class="row-actions">${it?.File_URL?`<button class="btn btn-secondary btn-xs" onclick="_docOpen('${escJs(it.File_URL)}')">Ver</button>`:''}${it?.Folder_URL?`<button class="btn btn-secondary btn-xs" onclick="_docOpen('${escJs(it.Folder_URL)}')">Abrir pasta</button>`:''}</div>`}
+    ],
+    getData:()=>_docsDedupFotos(_docsCache),  // v88 — mesmo dedup defensivo dos modos agrupados
+    searchText:it=>[it?.Cliente,it?.OS_Numero,it?.Maquina_Label,it?.Maquina_ID,it?.File_Name,it?.Caption,_docCatLabel(it?.Categoria),it?.Created_By].map(v=>String(v==null?'':v)).join(' '),
+    getQuery:()=>_docsQuery||'',
+    clearQuery:()=>{_docsQuery=''; const inp=document.querySelector('.docs-controls input'); if(inp) inp.value='';},
+    defaultSort:rs=>rs.sort((a,b)=>_docDateValue(b)-_docDateValue(a)),
+    after:(rows)=>{
+      const counter=document.getElementById('docsCounter');
+      if(counter) counter.textContent=`${rows.length} arquivo${rows.length===1?'':'s'} · modo tabela${_docsDupOcultas?` · ${_docsDupOcultas} duplicada${_docsDupOcultas===1?'':'s'} oculta${_docsDupOcultas===1?'':'s'}`:''}`;
+    }
+  });
+  list.innerHTML = `<div style="display:flex;justify-content:flex-end;margin-bottom:8px">${xfBarHtml('docs')}</div>` + xfSkeletonHtml('docs');
+  xfRender('docs');
 }
 
 // ═══════════════════════════════════════════════════════════
@@ -4242,174 +4696,164 @@ function renderPreventivas(){
   const el=document.getElementById('viewPreventivas');
   if(!el) return;
 
-  // v73 — Blindagem: snapshot do conteúdo anterior. Se qualquer coisa lançar
-  // durante o cálculo/render, restauramos a lista em vez de deixar a tela vazia
-  // (evita o sintoma "as máquinas sumiram todas" causado por um handler/estado
-  // defeituoso de outro contexto). Mesmo padrão "mantém cache" de renderOS.
+  // v73 — Blindagem: snapshot do conteúdo anterior (mantida no V94).
   const _prevPrevHTML = el.innerHTML;
   try {
 
-  // Calcular status de cada máquina
-  const rows=db.machines.map(eq=>({
-    eq,
-    ws: getMachineWorstStatus(eq),
-    parts: _getEffectiveParts(eq)
-  }));
-
-  // Ordenar: vencido > alerta > sem_dados > ok
-  const order={vencido:0,alerta:1,sem_dados:2,ok:3};
-  rows.sort((a,b)=>{
-    const oa=order[a.ws?.level ?? 'sem_dados'];
-    const ob=order[b.ws?.level ?? 'sem_dados'];
-    if(oa!==ob) return oa-ob;
-    return (b.ws?.count||0)-(a.ws?.count||0);
+  // V94 — tabela migrada para o motor XF (filtro estilo Excel em cada título de
+  // coluna + chips + paginação), aprovado via mockup
+  // NEWFILE_MOCKUP_PCM_PREVENTIVAS_V1_2026-07-27. Nada renomeado: os cards e
+  // setPrevFilter/_prevFilter continuam sendo o "painel" (agora exposto como
+  // filtro-extra do XF, com chip removível); a antiga fileira de botões
+  // "prev-filter-btn" foi absorvida pelos cards + chips. Nova coluna "Restam (h)".
+  const rows=db.machines.map(eq=>{
+    const ws=getMachineWorstStatus(eq);
+    const parts=_getEffectiveParts(eq);
+    let worstPart=null, worstRemaining=Infinity;
+    parts.forEach(p=>{
+      if(p.na||!hasVal(p.lastChange)||!p.interval) return;   // V94: hasVal — lastChange=0 é dado válido (troca no horímetro zero)
+      const {remaining}=calcPartStatus(p.lastChange,p.interval,eq.hourTotal||0);
+      if(remaining!==null&&remaining<worstRemaining){worstRemaining=remaining;worstPart=p;}
+    });
+    const level=ws?.level??'sem_dados';
+    return {eq,ws,parts,level,
+      statusCat: level==='vencido'?'Vencidas':level==='alerta'?'Atenção':level==='ok'?'Em dia':'Sem dados',
+      pior: worstPart?worstPart.name:null,
+      rest: worstRemaining===Infinity?null:worstRemaining};
   });
-
-  // Filtrar
-  const filtered = _prevFilter === 'todos' ? rows : _prevFilter === 'proximos30'
-    ? rows.filter(({ eq }) => {
-        if (!eq.hpw || eq.hpw <= 0) return false;
-        const parts = _getEffectiveParts(eq);
-        return parts.some(p => {
-          if (p.na || !hasVal(p.lastChange) || !hasVal(p.interval)) return false;
-          const { status, remaining } = calcPartStatus(p.lastChange, p.interval, eq.hourTotal || 0);
-          if (status === 'vencido') return false;
-          if (remaining === null) return false;
-          return (remaining / eq.hpw * 7) <= 30;
-        });
-      })
-    : rows.filter(({ ws }) => {
-        return ws?.level === _prevFilter;
-      });
 
   const counts={
     todos: rows.length,
-    vencido: rows.filter(r=>r.ws?.level==='vencido').length,
-    alerta:  rows.filter(r=>r.ws?.level==='alerta').length,
-    ok:      rows.filter(r=>r.ws?.level==='ok').length,
-    sem_dados: rows.filter(r=>r.ws?.level==='sem_dados').length,
+    vencido: rows.filter(r=>r.level==='vencido').length,
+    alerta:  rows.filter(r=>r.level==='alerta').length,
+    ok:      rows.filter(r=>r.level==='ok').length,
+    sem_dados: rows.filter(r=>r.level==='sem_dados').length,
   };
-
-  const nProximos30 = db.machines.filter(eq => {
+  const _isProx30 = r => {
+    const eq=r.eq;
     if (!eq.hpw || eq.hpw <= 0) return false;
-    const parts = _getEffectiveParts(eq);
-    return parts.some(p => {
+    return r.parts.some(p => {
       if (p.na || !hasVal(p.lastChange) || !hasVal(p.interval)) return false;
       const { status, remaining } = calcPartStatus(p.lastChange, p.interval, eq.hourTotal || 0);
       if (status === 'vencido') return false;
       if (remaining === null) return false;
-      const diasRestantes = remaining / eq.hpw * 7;
-      return diasRestantes <= 30;
+      return (remaining / eq.hpw * 7) <= 30;
     });
-  }).length;
+  };
+  const nProximos30 = rows.filter(_isProx30).length;
 
-  // v79 — CAUSA RAIZ do "os dados somem, refresh resolve": a busca era aplicada DENTRO
-  // do map (retornando '' por linha). Com uma busca sem correspondência (ex.: valor de
-  // autofill do Chrome preso no campo), `filtered.length` continuava > 0, o map produzia
-  // só strings vazias → tbody VISUALMENTE VAZIO, sem nem a mensagem "Nenhuma máquina".
-  // Agora a busca entra no cálculo de `visible`, então o length reflete o resultado real
-  // e a mensagem certa aparece. (O campo também ganhou autocomplete=off p/ barrar o autofill.)
-  const _prevBusca = (_prevSearch||'').trim().toLowerCase();
-  const visible = _prevBusca
-    ? filtered.filter(({eq}) => ((eq.client||'')+(eq.brand||'')+(eq.model||'')+(eq.tag||'')+(eq.serial||'')).toLowerCase().includes(_prevBusca))
-    : filtered;
+  const ORDER_SEV={vencido:0,alerta:1,sem_dados:2,ok:3};
+  const PREV_FILTER_LABELS={vencido:'⛔ Vencidas',alerta:'⚠ Atenção',proximos30:'🗓 Vencem em 30 dias',ok:'✓ Em dia',sem_dados:'— Sem dados'};
+
+  xfReg('prev', {
+    unit:'máquinas',
+    columns:[
+      {key:'bar',label:'',thStyle:'width:4px',tdStyle:'padding:0 6px;width:4px',
+        render:r=>{const barColor=r.level==='vencido'?'var(--red)':r.level==='alerta'?'var(--orange)':r.ws?'var(--green)':'var(--gray-300)';return `<div style="width:4px;height:36px;border-radius:2px;background:${barColor}"></div>`;}},
+      {key:'maquina',label:'Máquina',filter:'values',
+        getValue:r=>((r.eq.brand||'')+' '+(r.eq.model||'')).trim()||'—',
+        render:r=>`<div class="mach-model-name">${escHtml(r.eq.brand||'')} ${escHtml(r.eq.model||'')}</div><div class="mach-meta" style="font-family:var(--font-mono),monospace">${escHtml(r.eq.tag||r.eq.serial||'—')}</div>`},
+      {key:'cliente',label:'Cliente',filter:'values',
+        getValue:r=>r.eq.client||'—',
+        render:r=>`<div style="font-size:12px;font-weight:600">${escHtml(r.eq.client||'—')}</div><div style="font-size:10px;color:var(--text3)">${escHtml(r.eq.city||'')}</div>`},
+      {key:'hor',label:'Horímetro',type:'num',filter:'range',
+        getValue:r=>r.eq.hourTotal||0,
+        render:r=>`<span class="mach-hora">${(r.eq.hourTotal||0).toLocaleString('pt-BR')}h</span><div style="font-size:10px;color:var(--text3)">${r.eq.hpw||'—'} h/sem</div>`},
+      {key:'pior',label:'Pior peça',filter:'values',
+        getValue:r=>r.pior||'',
+        getFilterValue:r=>r.pior||'—',
+        render:r=>r.pior?`<div style="font-size:11px;font-weight:600">${escHtml(r.pior)}</div>`:'<span style="color:var(--text3)">—</span>'},
+      {key:'rest',label:'Restam (h)',type:'num',filter:'range',
+        getValue:r=>r.rest,
+        presets:[
+          {label:'Já vencidas',get:()=>({min:'',max:0})},
+          {label:'≤ 500 h',get:()=>({min:'',max:500})},
+          {label:'≤ 1.000 h',get:()=>({min:'',max:1000})}],
+        render:r=>r.rest==null?'<span style="color:var(--text3)">—</span>':
+          `<span style="font-family:var(--font-mono),monospace;font-weight:700;font-size:11px;color:${r.rest<=0?'var(--red)':r.rest<500?'var(--orange)':'var(--green)'}">${r.rest<=0?'VENCIDA':xfNum(r.rest)+'h'}</span>`},
+      {key:'status',label:'Status geral',filter:'values',valueOrder:['Vencidas','Atenção','Em dia','Sem dados'],
+        getValue:r=>r.statusCat,
+        render:r=>{const ws=r.ws;return r.level==='vencido'?`<span class="badge-vencido">⛔ ${ws.count} vencida${ws.count>1?'s':''}</span>`:
+          r.level==='alerta' ?`<span class="badge-alerta">⚠ ${ws.count} em alerta</span>`:
+          r.level==='sem_dados'?`<span class="badge-sem">📋 ${ws?.label||'Sem dados'}</span>`:
+          '<span class="badge-ok">✓ OK</span>';}},
+      {key:'acoes',label:'',render:r=>`<button class="btn btn-secondary btn-xs" onclick="event.stopPropagation();openMachineDetail('${r.eq.id}')">Detalhes</button>`}
+    ],
+    getData:()=>rows,
+    searchText:r=>[r.eq.client,r.eq.brand,r.eq.model,r.eq.tag,r.eq.serial,r.eq.city,r.pior,r.statusCat].map(v=>v||'').join(' '),
+    getQuery:()=>_prevSearch||'',
+    clearQuery:()=>{_prevSearch='';const i=document.getElementById('prevSearchInput');if(i)i.value='';},
+    rowAttrs:r=>`onclick="openMachineDetail('${r.eq.id}')" style="cursor:pointer"`,
+    defaultSort:rs=>rs.sort((a,b)=>{
+      const oa=ORDER_SEV[a.level], ob=ORDER_SEV[b.level];
+      if(oa!==ob) return oa-ob;
+      const ra=a.rest==null?Infinity:a.rest, rb=b.rest==null?Infinity:b.rest;
+      if(ra!==rb) return ra-rb;
+      return (b.ws?.count||0)-(a.ws?.count||0);
+    }),
+    extraFilter:r=>{
+      if(_prevFilter==='todos') return true;
+      if(_prevFilter==='proximos30') return _isProx30(r);
+      return r.level===_prevFilter;
+    },
+    hasExtraActive:()=>_prevFilter!=='todos',
+    extraChips:(chips)=>{
+      if(_prevFilter!=='todos') chips.push({lbl:'<b>Painel:</b>&nbsp;'+(PREV_FILTER_LABELS[_prevFilter]||_prevFilter),clear:()=>{_prevFilter='todos';}});
+    },
+    clearExtra:()=>{_prevFilter='todos';},
+    after:()=>{
+      document.querySelectorAll('#viewPreventivas .stat-card').forEach(cd=>{
+        if(cd.dataset.pf) cd.classList.toggle('active-filter', cd.dataset.pf===_prevFilter && _prevFilter!=='todos');
+      });
+    }
+  });
 
   el.innerHTML=`
     <div class="stats-grid" style="margin-bottom:14px">
-      <div class="stat-card danger" style="cursor:pointer" onclick="setPrevFilter('vencido')" title="Ver máquinas com peças vencidas">
+      <div class="stat-card danger" data-pf="vencido" style="cursor:pointer" onclick="setPrevFilter(_prevFilter==='vencido'?'todos':'vencido')" title="Ver máquinas com peças vencidas">
         <div class="stat-val" style="color:var(--red)">${counts.vencido}</div>
         <div class="stat-lbl">Peças vencidas →</div>
         <div class="card-tooltip">Máquinas com pelo menos uma peça fora do intervalo de troca</div>
       </div>
-      <div class="stat-card warning" style="cursor:pointer" onclick="setPrevFilter('alerta')" title="Ver máquinas em atenção">
+      <div class="stat-card warning" data-pf="alerta" style="cursor:pointer" onclick="setPrevFilter(_prevFilter==='alerta'?'todos':'alerta')" title="Ver máquinas em atenção">
         <div class="stat-val" style="color:var(--orange)">${counts.alerta}</div>
         <div class="stat-lbl">Em atenção →</div>
         <div class="card-tooltip">Dentro de 10% do intervalo de troca</div>
       </div>
-      <div class="stat-card" style="cursor:pointer;border-color:var(--blue-mid)" onclick="setPrevFilter('proximos30')" title="Ver máquinas com vencimento nos próximos 30 dias">
+      <div class="stat-card" data-pf="proximos30" style="cursor:pointer;border-color:var(--blue-mid)" onclick="setPrevFilter(_prevFilter==='proximos30'?'todos':'proximos30')" title="Ver máquinas com vencimento nos próximos 30 dias">
         <div class="stat-val" style="color:var(--blue-mid)">${nProximos30}</div>
         <div class="stat-lbl">Vencem em 30 dias →</div>
         <div class="card-tooltip">Máquinas com horas/semana cadastrado e peça vencendo nos próximos 30 dias (excluindo as já vencidas)</div>
       </div>
-      <div class="stat-card" style="cursor:pointer" onclick="setPrevFilter('ok')" title="Ver máquinas em dia">
+      <div class="stat-card" data-pf="ok" style="cursor:pointer" onclick="setPrevFilter(_prevFilter==='ok'?'todos':'ok')" title="Ver máquinas em dia">
         <div class="stat-val" style="color:var(--green)">${counts.ok}</div>
         <div class="stat-lbl">Em dia →</div>
       </div>
-      <div class="stat-card ${counts.sem_dados ? '' : 'no-action'}"
-           ${counts.sem_dados ? `style="cursor:pointer" onclick="setPrevFilter('sem_dados')" title="Ver máquinas sem dados de peças"` : ''}>
+      <div class="stat-card ${counts.sem_dados ? '' : 'no-action'}" data-pf="sem_dados"
+           ${counts.sem_dados ? `style="cursor:pointer" onclick="setPrevFilter(_prevFilter==='sem_dados'?'todos':'sem_dados')" title="Ver máquinas sem dados de peças"` : ''}>
         <div class="stat-val" style="color:var(--text3)">${counts.sem_dados}</div>
         <div class="stat-lbl">${counts.sem_dados ? 'Sem dados →' : 'Sem dados'}</div>
         <div class="card-tooltip">Máquinas sem intervalo de preventiva cadastrado</div>
       </div>
     </div>
 
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:10px">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;flex-wrap:wrap;gap:10px">
       <div>
         <div style="font-size:18px;font-weight:700">Preventivas</div>
-        <div style="font-size:12px;color:var(--text2);margin-top:2px">Status de peças por máquina</div>
+        <div style="font-size:12px;color:var(--text2);margin-top:2px">Status de peças por máquina — clique nos títulos das colunas para filtrar e ordenar</div>
       </div>
-      <input type="search" id="prevSearchInput" class="form-input" placeholder="Buscar cliente ou máquina..."
-             autocomplete="off" name="pcm_prev_busca_nofill" data-lpignore="true" data-1p-ignore
-             readonly onfocus="this.removeAttribute('readonly')"
-             style="width:200px" oninput="_prevSearch=this.value;renderPreventivas()" value="${escHtml(_prevSearch)}">
+      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+        <input type="search" id="prevSearchInput" class="form-input" placeholder="Buscar máquina, série, cliente, peça…"
+               autocomplete="off" name="pcm_prev_busca_nofill" data-lpignore="true" data-1p-ignore
+               readonly onfocus="this.removeAttribute('readonly')"
+               style="width:230px" oninput="_prevSearch=this.value;xfQ('prev')" value="${escHtml(_prevSearch)}">
+        ${xfBarHtml('prev')}
+      </div>
     </div>
-
-    <div class="prev-filters">
-      <button class="prev-filter-btn ${_prevFilter==='todos'?'active':''}" onclick="setPrevFilter('todos')">Todos (${counts.todos})</button>
-      <button class="prev-filter-btn danger ${_prevFilter==='vencido'?'active':''}" onclick="setPrevFilter('vencido')">⛔ Vencidas (${counts.vencido})</button>
-      <button class="prev-filter-btn warning ${_prevFilter==='alerta'?'active':''}" onclick="setPrevFilter('alerta')">⚠ Atenção (${counts.alerta})</button>
-      <button class="prev-filter-btn ${_prevFilter==='proximos30'?'active':''}" onclick="setPrevFilter('proximos30')" style="border-color:var(--blue-mid);color:var(--blue-mid)">🗓 30 dias (${nProximos30})</button>
-      <button class="prev-filter-btn ${_prevFilter==='ok'?'active':''}" onclick="setPrevFilter('ok')">✓ Em dia (${counts.ok})</button>
-      <button class="prev-filter-btn ${_prevFilter==='sem_dados'?'active':''}" onclick="setPrevFilter('sem_dados')">— Sem dados (${counts.sem_dados})</button>
-    </div>
-
-    <div class="table-wrap">
-      <table class="prev-table">
-        <thead><tr>
-          <th style="width:4px"></th>
-          <th>Máquina</th>
-          <th>Cliente</th>
-          <th>Horímetro</th>
-          <th>Pior peça</th>
-          <th>Status geral</th>
-          <th></th>
-        </tr></thead>
-        <tbody>${visible.length?visible.map(({eq,ws,parts})=>{
-          const barColor=ws?.level==='vencido'?'var(--red)':ws?.level==='alerta'?'var(--orange)':ws?'var(--green)':'var(--gray-300)';
-          // Peça mais crítica
-          let worstPart=null, worstRemaining=Infinity;
-          parts.forEach(p=>{
-            if(p.na||!p.lastChange||!p.interval) return;
-            const {remaining}=calcPartStatus(p.lastChange,p.interval,eq.hourTotal||0);
-            if(remaining!==null&&remaining<worstRemaining){worstRemaining=remaining;worstPart=p;}
-          });
-          return`<tr onclick="openMachineDetail('${eq.id}')">
-            <td style="padding:0 6px;width:4px"><div style="width:4px;height:36px;border-radius:2px;background:${barColor}"></div></td>
-            <td>
-              <div class="mach-model-name">${eq.brand} ${eq.model}</div>
-              <div class="mach-meta" style="font-family:var(--font-mono),monospace">${eq.tag||eq.serial||'—'}</div>
-            </td>
-            <td><div style="font-size:12px;font-weight:600">${eq.client||'—'}</div><div style="font-size:10px;color:var(--text3)">${eq.city||''}</div></td>
-            <td><span class="mach-hora">${(eq.hourTotal||0).toLocaleString('pt-BR')}h</span><div style="font-size:10px;color:var(--text3)">${eq.hpw||'—'} h/sem</div></td>
-            <td style="font-size:11px">
-              ${worstPart?`<div style="font-weight:600">${worstPart.name}</div>
-                <div style="color:${worstRemaining<=0?'var(--red)':'var(--orange)'};font-family:var(--font-mono),monospace;font-size:10px">
-                  ${worstRemaining<=0?'VENCIDA':'Restam '+worstRemaining.toLocaleString('pt-BR')+'h'}
-                </div>`:'<span style="color:var(--text3)">—</span>'}
-            </td>
-            <td>
-              ${ws.level==='vencido'?`<span class="badge-vencido">⛔ ${ws.count} vencida${ws.count>1?'s':''}`:
-                ws.level==='alerta' ?`<span class="badge-alerta">⚠ ${ws.count} em alerta</span>`:
-                ws.level==='sem_dados'?`<span class="badge-sem">📋 ${ws.label}</span>`:
-                '<span class="badge-ok">✓ OK</span>'}
-            </td>
-            <td><button class="btn btn-secondary btn-xs" onclick="event.stopPropagation();openMachineDetail('${eq.id}')">Detalhes</button></td>
-          </tr>`;
-        }).join(''):`<tr><td colspan="7" style="text-align:center;padding:24px;color:var(--text3)">${_prevBusca?`Nenhuma máquina encontrada para “${escHtml(_prevSearch)}”. <button onclick="_prevSearch='';renderPreventivas()" style="border:none;background:none;color:var(--blue-mid);cursor:pointer;font-weight:600">✕ limpar busca</button>`:'Nenhuma máquina nesta categoria.'}</td></tr>`}
-        </tbody>
-      </table>
-    </div>
+    ${xfSkeletonHtml('prev')}
   `;
+  xfRender('prev');
+
   if (_prevInputFocused) {
     requestAnimationFrame(() => {
       const _psi = document.getElementById('prevSearchInput');
@@ -8000,31 +8444,21 @@ function renderClients(){
     if(k){if(!machinesByClient[k])machinesByClient[k]=[];machinesByClient[k].push(eq);}
   });
 
-  // Busca
-  const q = normalizeForSearch(_clientSearch);
-
-  // Clientes registrados, filtrados e ordenados
-  let registered=db.clients.filter(c=>
-    !q||
-    normalizeForSearch(c?.nome).includes(q)||
-    normalizeForSearch(c?.cidade).includes(q)||
-    normalizeForSearch(c?.cnpj).includes(q)||
-    normalizeForSearch(c?.email).includes(q)
-  );
-
-  // Ordenação
-  registered=registered.slice().sort((a,b)=>{
-    let va='', vb='';
-    if(_clientSort==='nome'){va=a.nome;vb=b.nome;}
-    else if(_clientSort==='cidade'){va=a.cidade||'';vb=b.cidade||'';}
-    else if(_clientSort==='maquinas'){
-      va=(machinesByClient[clientKey(a.nome||'')]||[]).length;
-      vb=(machinesByClient[clientKey(b.nome||'')]||[]).length;
-      return _clientSortDir==='asc'?va-vb:vb-va;
-    }
-    else if(_clientSort==='alerta'){va=a.antecedencia_alerta_dias||0;vb=b.antecedencia_alerta_dias||0;return _clientSortDir==='asc'?va-vb:vb-va;}
-    else if(_clientSort==='updatedAt'){va=a.updatedAt||'';vb=b.updatedAt||'';}
-    return _clientSortDir==='asc'?va.localeCompare(vb):vb.localeCompare(va);
+  // V94 — tabela migrada para o motor XF (filtro estilo Excel por coluna, régua
+  // A–Z, chips, paginação), aprovado via mockup NEWFILE_MOCKUP_PCM_CLIENTES_V1.
+  // Preservados: busca _clientSearch (input do header estático), setClientSort
+  // (agora dirige a ordenação do XF), cards-resumo, seção "Clientes nas máquinas
+  // sem cadastro completo" (⇄ Transferir / Cadastrar / 🗑) e todas as ações por
+  // linha (✏️ ⇄ 🗑). Pronto para o pós-importação Omie (centenas de clientes).
+  const rows=db.clients.map(c=>{
+    const eqs=machinesByClient[clientKey(c.nome||'')]||[];
+    const nVenc=eqs.filter(eq=>{const ws=getMachineWorstStatus(eq);return ws?.level==='vencido';}).length;
+    const nAlert=eqs.filter(eq=>{const ws=getMachineWorstStatus(eq);return ws?.level==='alerta';}).length;
+    const nSemDados=eqs.filter(eq=>{const ws=getMachineWorstStatus(eq);return ws?.level==='sem_dados';}).length;
+    const _normNomeC=normalizeEntityName(c.nome);
+    const isDup=db.clients.filter(x=>x.id!==c.id && normalizeEntityName(x.nome)===_normNomeC).length>0;
+    return {c, eqs, nVenc, nAlert, nSemDados, isDup,
+      cidadeUf:[c.cidade,c.uf].filter(Boolean).join(' / ')||'—'};
   });
 
   // v3.11: usar clientKey para detectar clientes sem cadastro
@@ -8037,18 +8471,108 @@ function renderClients(){
   // Stats
   const total=db.clients.length;
   const comDrive=db.clients.filter(c=>c.drive_url).length;
-  const comAlerta=db.clients.filter(c=>c.antecedencia_alerta_dias>0).length;
 
-  const sortTh=(field,label,tip='')=>{
-    const cls=_clientSort===field?(_clientSortDir==='asc'?'sort-asc':'sort-desc'):'';
-    const tipHtml=tip?`<i class="tooltip-icon" data-tip="${tip}">?</i>`:'';
-    return`<th class="${cls}" onclick="setClientSort('${field}')">${label} ${tipHtml}</th>`;
-  };
+  xfReg('cli', {
+    unit:'clientes',
+    columns:[
+      {key:'nome',label:'Cliente',sortable:true,
+        getValue:r=>r.c.nome||'',
+        render:r=>{
+          const c=r.c;
+          let statusDot='';
+          if(r.nVenc>0) statusDot=`<span class="client-status-dot" style="background:var(--red)" title="${r.nVenc} máquina(s) com preventiva vencida"></span>`;
+          else if(r.nAlert>0) statusDot=`<span class="client-status-dot" style="background:var(--orange)" title="${r.nAlert} máquina(s) em atenção"></span>`;
+          else if(r.eqs.length>0 && r.nSemDados>0) statusDot=`<span class="client-status-dot" style="background:var(--gray-400,#9ca3af)" title="${r.nSemDados} máquina(s) com dados incompletos"></span>`;
+          else if(r.eqs.length>0) statusDot=`<span class="client-status-dot" style="background:var(--green)" title="Todas as máquinas em dia"></span>`;
+          return `<div style="display:flex;align-items:center;gap:6px">
+              ${statusDot}
+              <div>
+                <div style="font-weight:700;font-size:12px">${c.nome}${r.isDup ? '<span style="margin-left:5px;font-size:9px;font-weight:700;color:var(--red);background:#fdecea;padding:1px 5px;border-radius:3px;text-transform:uppercase">DUP</span>' : ''}</div>
+                ${c.observacoes?`<div style="font-size:10px;color:var(--text3);font-style:italic;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${c.observacoes}">${c.observacoes}</div>`:''}
+              </div>
+            </div>`;}},
+      {key:'cidade',label:'Cidade / UF',filter:'values',
+        getValue:r=>r.cidadeUf,
+        render:r=>`<span style="font-size:11px;color:var(--text2)">${r.cidadeUf}</span>${r.c.endereco?`<div style="font-size:10px;color:var(--text3)">${r.c.endereco}</div>`:''}`},
+      {key:'contato',label:'Contato',
+        render:r=>{
+          const c=r.c;
+          return `<span style="font-size:11px">
+            ${c.telefone?`<div>📞 ${c.telefone}</div>`:''}
+            ${c.email?`<div><a href="mailto:${c.email}" style="color:var(--blue-mid)">✉ ${c.email}</a></div>`:''}
+            ${!c.telefone&&!c.email?'<span style="color:var(--text3)">—</span>':''}
+          </span>`;}},
+      {key:'cnpj',label:'CNPJ',sortable:true,
+        getValue:r=>r.c.cnpj||'',
+        render:r=>`<span style="font-family:var(--font-mono),monospace;font-size:10px;color:var(--text3)">${r.c.cnpj||'—'}</span>`},
+      {key:'maq',label:'Máquinas',type:'num',filter:'range',
+        getValue:r=>r.eqs.length,
+        presets:[
+          {label:'Sem máquinas',get:()=>({min:'',max:0})},
+          {label:'1 ou mais',get:()=>({min:1,max:''})},
+          {label:'3 ou mais',get:()=>({min:3,max:''})}],
+        tdStyle:'text-align:center',thStyle:'text-align:center',
+        render:r=>{
+          const c=r.c;
+          return r.eqs.length?`<span style="font-weight:700;color:var(--blue-mid)">${r.eqs.length}</span>
+              <button class="btn btn-secondary btn-xs" style="margin-left:5px" onclick="event.stopPropagation();_machFilter='${(c.nome||'').replace(/'/g,"\\'")}';showView('machines')" title="Ver máquinas deste cliente">Ver →</button>`
+            :`<button class="btn btn-primary btn-xs" onclick="event.stopPropagation();_machFilter='${(c.nome||'').replace(/'/g,"\\'")}';showView('machines');openModalMachine()" title="Cadastrar primeira máquina deste cliente">+ Máquina</button>`;}},
+      {key:'alerta',label:'Alerta',type:'num',sortable:true,
+        getValue:r=>r.c.antecedencia_alerta_dias||0,
+        tdStyle:'text-align:center',
+        render:r=>r.c.antecedencia_alerta_dias?`<span class="client-alerta-badge">🔔 ${r.c.antecedencia_alerta_dias}d</span>`:'<span style="color:var(--text3)">—</span>'},
+      {key:'drive',label:'Drive',
+        render:r=>r.c.drive_url?`<a href="${r.c.drive_url}" target="_blank" class="btn btn-secondary btn-xs">📁 Abrir</a>`:'<span style="color:var(--text3)">—</span>'},
+      {key:'acoes',label:'',
+        render:r=>{
+          const c=r.c;
+          return `<div class="row-actions">
+              <button class="btn-icon" onclick="openModalClient('${c.id}')" title="Editar cliente">✏️</button>
+              <button class="btn-icon" onclick="openMergeClient('${(c.nome||'').replace(/'/g,"\\'")}', '${c.id}')" title="Mesclar este cliente em outro (uniformizar grafia / juntar duplicatas)">⇄</button>
+              ${(String(c.tipoRegistro||'').toUpperCase()==='TESTE')
+                ? `<button class="btn btn-danger btn-xs"
+                     onclick="hardDeleteTestRecord('CLIENTES','${c.id}','${(c.nome||'Cliente').replace(/'/g,"\\'")}')"
+                     title="Excluir permanentemente (registro de TESTE)">🗑 TESTE</button>`
+                : ''}
+              <button class="btn-icon" onclick="deleteClient('${c.id}')" title="Inativar cliente">🗑️</button>
+            </div>`;}}
+    ],
+    getData:()=>rows,
+    searchText:r=>[r.c.nome,r.c.cidade,r.c.uf,r.c.cnpj,r.c.email,r.c.telefone].map(v=>String(v==null?'':v)).join(' '),
+    getQuery:()=>_clientSearch||'',
+    clearQuery:()=>{_clientSearch='';const i=document.getElementById('clientSearchInput');if(i)i.value='';},
+    defaultSort:rs=>{
+      // setClientSort legado dirige a ordenação padrão quando o usuário não usa o menu de coluna
+      const dir=_clientSortDir==='asc'?1:-1;
+      return rs.sort((a,b)=>{
+        if(_clientSort==='maquinas') return (a.eqs.length-b.eqs.length)*dir;
+        if(_clientSort==='alerta') return ((a.c.antecedencia_alerta_dias||0)-(b.c.antecedencia_alerta_dias||0))*dir;
+        if(_clientSort==='cidade') return String(a.c.cidade||'').localeCompare(String(b.c.cidade||''))*dir;
+        if(_clientSort==='updatedAt') return String(a.c.updatedAt||'').localeCompare(String(b.c.updatedAt||''))*dir;
+        return String(a.c.nome||'').localeCompare(String(b.c.nome||''))*dir;
+      });
+    },
+    extraFilter:r=>{
+      const I=XF.inst['cli'];
+      if(I&&I.s.extra.letter){
+        const first=xfNorm(String(r.c.nome||'').trim()).charAt(0).toUpperCase();
+        if(first!==I.s.extra.letter) return false;
+      }
+      return true;
+    },
+    hasExtraActive:()=>{const I=XF.inst['cli'];return !!(I&&I.s.extra.letter);},
+    extraChips:(chips)=>{
+      const I=XF.inst['cli'];
+      if(I&&I.s.extra.letter) chips.push({lbl:'<b>Letra:</b>&nbsp;'+I.s.extra.letter,clear:()=>{I.s.extra.letter=null;}});
+    },
+    clearExtra:()=>{const I=XF.inst['cli'];if(I)I.s.extra.letter=null;},
+    after:()=>{_cliRenderAlphaV94();}
+  });
 
   el.innerHTML=`
     <!-- Stats -->
     <div class="stats-grid" style="margin-bottom:14px">
-      <div class="stat-card" style="cursor:pointer" onclick="_clientSearch='';renderClients()" title="Limpar busca e ver todos os clientes">
+      <div class="stat-card" style="cursor:pointer" onclick="_clientSearch='';(document.getElementById('clientSearchInput')||{}).value='';xfClearAll('cli')" title="Limpar busca e filtros e ver todos os clientes">
         <div class="stat-val">${total}</div>
         <div class="stat-lbl">Clientes cadastrados →</div>
       </div>
@@ -8065,94 +8589,13 @@ function renderClients(){
       </div>
     </div>
 
-    <!-- Tabela de clientes -->
-    ${registered.length?`
-    <div class="table-wrap" style="margin-bottom:18px">
-      <table class="client-table">
-        <thead><tr>
-          ${sortTh('nome','Cliente','Clique para ordenar pelo nome')}
-          ${sortTh('cidade','Cidade')}
-          <th>Contato</th>
-          <th>CNPJ</th>
-          ${sortTh('maquinas','Máquinas','Número de equipamentos vinculados ao nome deste cliente')}
-          ${sortTh('alerta','Alerta','Dias de antecedência para alertar sobre preventiva vencendo')}
-          <th>Drive
-            <i class="tooltip-icon" data-tip="Pasta do Google Drive com fotos e documentos do cliente">?</i>
-          </th>
-          <th></th>
-        </tr></thead>
-        <tbody>${registered.map(c=>{
-          const eqs=machinesByClient[clientKey(c.nome||'')]||[];
-          const nVenc=eqs.filter(eq=>{const ws=getMachineWorstStatus(eq);return ws?.level==='vencido';}).length;
-          const nAlert=eqs.filter(eq=>{const ws=getMachineWorstStatus(eq);return ws?.level==='alerta';}).length;
-          // BUG2-FIX: distinção entre máquina sem dados vs máquina com tudo N/A ou OK
-          function _isMachineConfigured(eq) {
-            return _getEffectiveParts(eq).some(p =>
-              p.na === true ||
-              (p.lastChange !== null && p.lastChange !== undefined && p.lastChange !== '') ||
-              (parseInt(p.interval) || 0) > 0
-            );
-          }
-          const nSemDados = eqs.filter(eq => {
-            const ws = getMachineWorstStatus(eq);
-            return ws?.level === 'sem_dados';
-          }).length;
-          let statusDot='';
-          if(nVenc>0) statusDot=`<span class="client-status-dot" style="background:var(--red)" title="${nVenc} máquina(s) com preventiva vencida"></span>`;
-          else if(nAlert>0) statusDot=`<span class="client-status-dot" style="background:var(--orange)" title="${nAlert} máquina(s) em atenção"></span>`;
-          else if(eqs.length>0 && nSemDados>0) statusDot=`<span class="client-status-dot" style="background:var(--gray-400,#9ca3af)" title="${nSemDados} máquina(s) com dados incompletos"></span>`;
-          else if(eqs.length>0) statusDot=`<span class="client-status-dot" style="background:var(--green)" title="Todas as máquinas em dia"></span>`;
-          const _normNomeC = normalizeEntityName(c.nome);
-          const _isDupC = db.clients.filter(x => x.id !== c.id && normalizeEntityName(x.nome) === _normNomeC).length > 0;
-          return`<tr>
-            <td>
-              <div style="display:flex;align-items:center;gap:6px">
-                ${statusDot}
-                <div>
-                  <div style="font-weight:700;font-size:12px">${c.nome}${_isDupC ? '<span style="margin-left:5px;font-size:9px;font-weight:700;color:var(--red);background:#fdecea;padding:1px 5px;border-radius:3px;text-transform:uppercase">DUP</span>' : ''}</div>
-                  ${c.observacoes?`<div style="font-size:10px;color:var(--text3);font-style:italic;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${c.observacoes}">${c.observacoes}</div>`:''}
-                </div>
-              </div>
-            </td>
-            <td style="font-size:11px;color:var(--text2)">${[c.cidade, c.uf].filter(Boolean).join(' / ')||'—'}${c.endereco?`<div style="font-size:10px;color:var(--text3)">${c.endereco}</div>`:''}</td>
-            <td style="font-size:11px">
-              ${c.telefone?`<div>📞 ${c.telefone}</div>`:''}
-              ${c.email?`<div><a href="mailto:${c.email}" style="color:var(--blue-mid)">✉ ${c.email}</a></div>`:''}
-              ${!c.telefone&&!c.email?'<span style="color:var(--text3)">—</span>':''}
-            </td>
-            <td><span style="font-family:var(--font-mono),monospace;font-size:10px;color:var(--text3)">${c.cnpj||'—'}</span></td>
-            <td style="text-align:center">
-              ${eqs.length?`<span style="font-weight:700;color:var(--blue-mid)">${eqs.length}</span>
-                <button class="btn btn-secondary btn-xs" style="margin-left:5px" onclick="_machFilter='${c.nome.replace(/'/g,"\\'")}';showView('machines')" title="Ver máquinas deste cliente">Ver →</button>`
-                :`<button class="btn btn-primary btn-xs" onclick="_machFilter='${c.nome.replace(/'/g,"\\'")}';showView('machines');openModalMachine()" title="Cadastrar primeira máquina deste cliente">+ Máquina</button>`}
-            </td>
-            <td style="text-align:center">
-              ${c.antecedencia_alerta_dias?`<span class="client-alerta-badge">🔔 ${c.antecedencia_alerta_dias}d</span>`:'<span style="color:var(--text3)">—</span>'}
-            </td>
-            <td>
-              ${c.drive_url?`<a href="${c.drive_url}" target="_blank" class="btn btn-secondary btn-xs">📁 Abrir</a>`:'<span style="color:var(--text3)">—</span>'}
-            </td>
-            <td>
-              <div class="row-actions">
-                <button class="btn-icon" onclick="openModalClient('${c.id}')" title="Editar cliente">✏️</button>
-                <button class="btn-icon" onclick="openMergeClient('${c.nome.replace(/'/g,"\\'")}', '${c.id}')" title="Mesclar este cliente em outro (uniformizar grafia / juntar duplicatas)">⇄</button>
-                ${(String(c.tipoRegistro||'').toUpperCase()==='TESTE')
-                  ? `<button class="btn btn-danger btn-xs"
-                       onclick="hardDeleteTestRecord('CLIENTES','${c.id}','${(c.nome||'Cliente').replace(/'/g,"\\'")}')"
-                       title="Excluir permanentemente (registro de TESTE)">🗑 TESTE</button>`
-                  : ''}
-                <button class="btn-icon" onclick="deleteClient('${c.id}')" title="Inativar cliente">🗑️</button>
-              </div>
-            </td>
-          </tr>`;
-        }).join('')}
-        </tbody>
-      </table>
-    </div>`:`
-    <div class="empty"><div class="empty-icon">🏢</div>
-      <div class="empty-title">${q?'Nenhum cliente encontrado':'Nenhum cliente cadastrado'}</div>
-      <div class="empty-sub">${q?'Tente outro termo de busca.':'Clique em "+ Novo cliente" para começar. Os clientes aparecem automaticamente ao cadastrar máquinas.'}</div>
-    </div>`}
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:8px">
+      <div class="xf-alpha" id="xfCliAlpha"></div>
+      ${xfBarHtml('cli')}
+    </div>
+    <div style="margin-bottom:18px">
+      ${xfSkeletonHtml('cli')}
+    </div>
 
     <!-- Clientes sem cadastro completo -->
     ${unregistered.length?`
@@ -8175,6 +8618,22 @@ function renderClients(){
       </table></div>
     </div>`:''}
   `;
+  xfRender('cli');
+}
+
+// V94 — régua A–Z dos Clientes (letras sem cliente ficam apagadas)
+function _cliRenderAlphaV94(){
+  const el=document.getElementById('xfCliAlpha'); if(!el) return;
+  const I=XF.inst['cli']; if(!I) return;
+  const have=new Set((I.data||[]).map(r=>xfNorm(String(r.c.nome||'').trim()).charAt(0).toUpperCase()).filter(Boolean));
+  el.innerHTML='<span style="font-size:11px;color:var(--text3);margin-right:4px">Ir para:</span>'+
+    'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('').map(L=>`<button ${have.has(L)?'':'disabled'} class="${I.s.extra.letter===L?'xf-cur':''}" onclick="_cliAlphaV94('${L}')">${L}</button>`).join('')+
+    (I.s.extra.letter?`<button class="xf-link" onclick="_cliAlphaV94(null)">todas ✕</button>`:'');
+}
+function _cliAlphaV94(L){
+  const I=XF.inst['cli']; if(!I) return;
+  I.s.extra.letter = (L && I.s.extra.letter!==L) ? L : null;
+  I.s.page=1; xfRender('cli');
 }
 
 // ═══════════════════════════════════════════════════════════
@@ -9903,142 +10362,186 @@ async function renderOS() {
   }
 }
 
-// v66: barra de filtros desenhada UMA vez; a busca/filtro re-renderiza só #osListResults
-// (o <input> nunca é recriado → foco/cursor preservados). Estado canônico em
-// _osSearch / _osFilterStatus / _osFilterPrioridade. Toda a lógica de filtro/ordenação
-// e o template de linha migraram para _renderOSListResults() sem alteração de comportamento.
+// V94: Lista da Gestão de OSs migrada para o motor XF (filtro estilo Excel em
+// cada título de coluna + cards-painel + chips + paginação), aprovado via mockup
+// NEWFILE_MOCKUP_PCM_GESTAO_OS_V1_2026-07-27. Contratos preservados:
+// _renderOSTable(search,status,prio) e _renderOSListResults() mantêm nome e
+// assinatura (callers legados); os antigos <select> de status/prioridade viraram
+// filtros de coluna — argumentos legados são convertidos em filtro XF na entrada.
+// "Excluir OS" saiu da linha e foi para o menu ⋯ (mesma deleteOSFromList, com a
+// mesma confirmação de sempre), evitando o botão vermelho permanente por linha.
+const _GOS_STATUS_LABELS_V94 = { ABERTA:'Aberta', EM_ANDAMENTO:'Em andamento', CONCLUIDA:'Concluída', CANCELADA:'Cancelada' };
+const _GOS_STATUS_CLS_V94 = { ABERTA:'status-ok', EM_ANDAMENTO:'status-warn', CONCLUIDA:'status-ok', CANCELADA:'status-late' };
+const _GOS_PRIO_LABELS_V94 = { urgente:'Urgente', alta:'Alta', normal:'Normal' };
+
 function _renderOSTable(search = '', statusFilter = '', priorityFilter = '') {
   const el = document.getElementById('osRibbonContent') || document.getElementById('viewOs');
   if (!el) return;
   _osSearch = search; _osFilterStatus = statusFilter; _osFilterPrioridade = priorityFilter;
 
+  const I = xfReg('os', {
+    unit:'OSs',
+    columns:[
+      {key:'num',label:'Nº OS',sortable:true,
+        getValue:r=>String(r.o.numero_os||''),
+        render:r=>`<span style="font-family:var(--font-mono);font-size:12px;font-weight:600">${escHtml(String(r.o.numero_os||'—'))}</span>`},
+      {key:'cliente',label:'Cliente',filter:'values',
+        getValue:r=>String(r.o.cliente||'—'),
+        render:r=>`<span class="td-name">${escHtml(String(r.o.cliente||'—'))}</span>`},
+      {key:'tipo',label:'Tipo',filter:'values',
+        getValue:r=>r.tipoNome,
+        render:r=>escHtml(r.tipoNome)},
+      {key:'local',label:'Local',filter:'values',
+        getValue:r=>r.local,
+        render:r=>`<span style="font-size:11px">${r.local==='Interno'?'🏭 Interno':'🚐 Externo'}</span>`},
+      {key:'prio',label:'Prioridade',filter:'values',valueOrder:['Urgente','Alta','Normal'],
+        getValue:r=>r.prioLabel,
+        render:r=>{
+          const PB={Urgente:{bg:'#fee2e2',color:'#991b1b'},Alta:{bg:'#ffedd5',color:'#9a3412'},Normal:{bg:'#f1f5f9',color:'#475569'}};
+          const p=PB[r.prioLabel]||PB.Normal;
+          return `<span style="font-size:11px;font-weight:600;padding:2px 8px;border-radius:10px;background:${p.bg};color:${p.color}">${r.prioLabel}</span>`;}},
+      {key:'prazo',label:'Prazo',type:'date',filter:'range',
+        getValue:r=>r.prazoISO,
+        presets:[
+          {label:'Atrasadas',get:()=>({min:'',max:xfAddDias(xfHoje(),-1)})},
+          {label:'Hoje',get:()=>({min:xfHoje(),max:xfHoje()})},
+          {label:'Próx. 7 dias',get:()=>({min:xfHoje(),max:xfAddDias(xfHoje(),7)})},
+          {label:'Próx. 30 dias',get:()=>({min:xfHoje(),max:xfAddDias(xfHoje(),30)})}],
+        render:r=>{
+          const s=r.prazoISO?_gosFmt(r.prazoISO):'—';
+          return r.atrasada
+            ? `<span style="font-size:11px;color:#dc2626;font-weight:700">${s} ⚠</span><div class="xf-sub" style="color:#dc2626;font-weight:700">${r.diasAtraso}d atrasada</div>`
+            : `<span style="font-size:11px">${s}</span>`;}},
+      {key:'abertura',label:'Abertura',type:'date',filter:'range',
+        getValue:r=>r.aberturaISO,
+        presets:[
+          {label:'Últimos 7 dias',get:()=>({min:xfAddDias(xfHoje(),-7),max:''})},
+          {label:'Últimos 30 dias',get:()=>({min:xfAddDias(xfHoje(),-30),max:''})},
+          {label:'Este ano',get:()=>({min:xfHoje().slice(0,4)+'-01-01',max:''})}],
+        render:r=>`<span style="font-size:11px">${r.aberturaISO?xfFmtISO(r.aberturaISO):'—'}</span>`},
+      {key:'status',label:'Status',filter:'values',valueOrder:['Aberta','Em andamento','Concluída','Cancelada'],
+        getValue:r=>r.statusLabel,
+        render:r=>`<span class="${_GOS_STATUS_CLS_V94[r.st]||'status-na'}">${escHtml(r.statusLabel)}</span>`},
+      {key:'acoes',label:'Ações',thStyle:'text-align:right',
+        render:r=>{
+          const oid=(r.o.id_os||'').replace(/'/g,"\\'");
+          const extra = window.PROPER_SESSION?.is_admin
+            ? xfMenuBtn('os',[{label:'🗑 Excluir OS…',cls:'xf-danger',run:()=>deleteOSFromList(r.o.id_os)}],'Mais ações (excluir fica aqui)')
+            : '';
+          return `<div class="row-actions">
+            <button class="btn btn-secondary btn-sm" onclick="openOSDetail('${oid}')">Detalhe</button>
+            <button class="btn btn-secondary btn-sm" onclick="openModalOS('${oid}')">Editar</button>
+            ${extra}
+          </div>`;}}
+    ],
+    getData:()=>{
+      const hoje=new Date(); hoje.setHours(0,0,0,0);
+      return _osList.map(o=>{
+        const st=String(o.status||'').toUpperCase();
+        const ds=_gosData(o);                       // "YYYY-MM-DD", imune a fuso (v65)
+        let atrasada=false, diasAtraso=0;
+        if(ds && st!=='CONCLUIDA' && st!=='CANCELADA'){
+          const p=ds.split('-').map(Number);
+          const prazo=new Date(p[0],p[1]-1,p[2]);   // meia-noite LOCAL, sem shift UTC
+          atrasada = prazo.getTime()<hoje.getTime();
+          if(atrasada) diasAtraso=Math.max(1,Math.round((hoje.getTime()-prazo.getTime())/864e5));
+        }
+        let aberturaISO='';
+        if(o.data_abertura){ const d=new Date(o.data_abertura); if(!isNaN(d.getTime())) aberturaISO=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+        return {o, st, atrasada, diasAtraso, prazoISO: ds||'', aberturaISO,
+          tipoNome:_gosTipoNome(o),
+          local:(o.local_atendimento==='interno')?'Interno':'Externo',
+          statusLabel:_GOS_STATUS_LABELS_V94[st]||String(o.status||'—'),
+          prioLabel:_GOS_PRIO_LABELS_V94[String(o.prioridade||'normal').toLowerCase()]||'Normal'};
+      });
+    },
+    // v84: String() em TODOS os campos — numero_os pode chegar como NUMBER do Sheets.
+    searchText:r=>[r.o.numero_os,r.o.cliente,r.tipoNome,r.statusLabel,r.prioLabel,r.local].map(v=>String(v==null?'':v)).join(' '),
+    getQuery:()=>_osSearch||'',
+    clearQuery:()=>{_osSearch='';const i=document.getElementById('osSearchInputV94');if(i)i.value='';},
+    rowAttrs:r=>r.atrasada?'class="xf-late-row"':'',
+    defaultSort:rs=>rs.sort((a,b)=>{
+      const RANK={Urgente:3,Alta:2,Normal:1};
+      const wa=a.atrasada?0:(a.st==='ABERTA'||a.st==='EM_ANDAMENTO')?1:2;
+      const wb=b.atrasada?0:(b.st==='ABERTA'||b.st==='EM_ANDAMENTO')?1:2;
+      if(wa!==wb) return wa-wb;
+      const ra=RANK[a.prioLabel]||1, rb=RANK[b.prioLabel]||1;
+      if(ra!==rb) return rb-ra;
+      const pa=a.prazoISO||'9999-12-31', pb=b.prazoISO||'9999-12-31';
+      return pa<pb?-1:pa>pb?1:0;
+    }),
+    extraFilter:r=>{
+      if(I.s.extra.atr) return r.atrasada;
+      return true;
+    },
+    hasExtraActive:()=>!!I.s.extra.atr,
+    extraChips:(chips)=>{
+      if(I.s.extra.atr) chips.push({lbl:'<b>Painel:</b>&nbsp;⚠ Atrasadas',clear:()=>{I.s.extra.atr=false;}});
+    },
+    clearExtra:()=>{I.s.extra.atr=false;},
+    after:()=>{_gosRenderCardsV94();}
+  });
+
+  // Conversão dos argumentos legados (callers antigos passavam os valores dos <select>)
+  if (statusFilter)   { I.s.filters.status = {type:'values', set:new Set([_GOS_STATUS_LABELS_V94[String(statusFilter).toUpperCase()]||statusFilter])}; _osFilterStatus=''; }
+  if (priorityFilter) { I.s.filters.prio   = {type:'values', set:new Set([_GOS_PRIO_LABELS_V94[String(priorityFilter).toLowerCase()]||priorityFilter])}; _osFilterPrioridade=''; }
+
   el.innerHTML = `
-    <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;align-items:center">
-      <input type="text" placeholder="Buscar por nº OS ou cliente…"
-        style="width:240px;height:32px;padding:0 10px;font-size:13px;background:white;
+    <div class="stats-grid" style="margin-bottom:12px" id="gosCardsV94"></div>
+    <div style="display:flex;gap:8px;margin-bottom:8px;flex-wrap:wrap;align-items:center">
+      <input type="text" id="osSearchInputV94" placeholder="Buscar nº OS, cliente, tipo…"
+        style="width:250px;height:32px;padding:0 10px;font-size:13px;background:white;
           border:1px solid var(--border2);border-radius:var(--radius-sm);outline:none;font-family:var(--font-sans)"
         autocomplete="off" name="pcm_os_busca_nofill" data-lpignore="true" data-1p-ignore
         readonly onfocus="this.removeAttribute('readonly')"
-        value="${search}"
-        oninput="_osSearch=this.value;_renderOSListResults()">
-      <select style="height:32px;padding:0 8px;font-size:12px;border:1px solid var(--border2);
-        border-radius:var(--radius-sm);background:white;font-family:var(--font-sans)"
-        onchange="_osFilterStatus=this.value;_renderOSListResults()">
-        <option value="">Todos os status</option>
-        <option value="ABERTA" ${statusFilter==='ABERTA'?'selected':''}>Aberta</option>
-        <option value="EM_ANDAMENTO" ${statusFilter==='EM_ANDAMENTO'?'selected':''}>Em andamento</option>
-        <option value="CONCLUIDA" ${statusFilter==='CONCLUIDA'?'selected':''}>Concluída</option>
-        <option value="CANCELADA" ${statusFilter==='CANCELADA'?'selected':''}>Cancelada</option>
-      </select>
-      <select style="height:32px;padding:0 8px;font-size:12px;border:1px solid var(--border2);
-        border-radius:var(--radius-sm);background:white;font-family:var(--font-sans)"
-        onchange="_osFilterPrioridade=this.value;_renderOSListResults()">
-        <option value="">Todas as prioridades</option>
-        <option value="normal" ${priorityFilter==='normal'?'selected':''}>Normal</option>
-        <option value="alta" ${priorityFilter==='alta'?'selected':''}>Alta</option>
-        <option value="urgente" ${priorityFilter==='urgente'?'selected':''}>Urgente</option>
-      </select>
+        value="${escHtml(search)}"
+        oninput="_osSearch=this.value;xfQ('os')">
+      ${xfBarHtml('os')}
     </div>
-    <div id="osListResults"></div>`;
+    <div id="osListResults">${xfSkeletonHtml('os')}</div>`;
 
   _renderOSListResults();
 }
 
-// v66: renderiza SOMENTE a lista de resultados dentro de #osListResults (sem recriar a
-// barra de filtros). Lê o estado canônico das vars de módulo _osSearch/_osFilterStatus/
-// _osFilterPrioridade. É este ponto (não _renderOSTable) que os handlers de busca/filtro
-// chamam — por isso o <input> mantém o foco a cada tecla.
+// v66 (mantido no V94): este é o ponto que os handlers de busca/filtro chamam —
+// o <input> nunca é recriado, foco/cursor preservados. Agora delega ao motor XF.
 function _renderOSListResults() {
-  const box = document.getElementById('osListResults');
-  if (!box) return;
-  const search = _osSearch, statusFilter = _osFilterStatus, priorityFilter = _osFilterPrioridade;
+  if (!document.getElementById('xf_os_body')) { _renderOSTable(_osSearch, _osFilterStatus, _osFilterPrioridade); return; }
+  xfRender('os');
+}
 
-  const STATUS_LABELS = {
-    'ABERTA':      { label:'Aberta',      cls:'status-ok' },
-    'EM_ANDAMENTO':{ label:'Em andamento',cls:'status-warn' },
-    'CONCLUIDA':   { label:'Concluída',   cls:'status-ok' },
-    'CANCELADA':   { label:'Cancelada',   cls:'status-late' },
-  };
-
-  let items = _osList;
-  // v84: String() em TODOS os campos vindos do Sheets — numero_os chega como NUMBER
-  // (ex.: 2026012, 20260706) e (num||'').toLowerCase() estourava TypeError a cada
-  // tecla/seleção, congelando a lista ("busquei/filtrei e nada aconteceu").
-  if (search)       items = items.filter(o =>
-    String(o.numero_os||'').toLowerCase().includes(search.toLowerCase()) ||
-    String(o.cliente  ||'').toLowerCase().includes(search.toLowerCase()));
-  if (statusFilter) items = items.filter(o =>
-    String(o.status||'').toUpperCase() === statusFilter);
-  if (priorityFilter) items = items.filter(o =>
-    String(o.prioridade||'normal').toLowerCase() === priorityFilter);
-
-  const RANK_PRIORIDADE = { urgente: 3, alta: 2, normal: 1 };
-  const hoje = new Date(); hoje.setHours(0,0,0,0);
-  const isAtrasada = o => {
-    if (!o.data_prevista) return false;
-    const st = String(o.status||'').toUpperCase();
-    if (st === 'CONCLUIDA' || st === 'CANCELADA') return false;
-    const ds = _gosData(o);                     // "YYYY-MM-DD", imune a fuso
-    if (!ds) return false;
-    const [py, pm, pd] = ds.split('-').map(Number);
-    const prazo = new Date(py, pm - 1, pd);     // meia-noite LOCAL, sem shift UTC
-    return prazo.getTime() < hoje.getTime();
-  };
-  items = [...items].sort((a, b) => {
-    const atrasoA = isAtrasada(a) ? 1 : 0, atrasoB = isAtrasada(b) ? 1 : 0;
-    if (atrasoA !== atrasoB) return atrasoB - atrasoA;
-    const rankA = RANK_PRIORIDADE[(a.prioridade||'normal').toLowerCase()] || 1;
-    const rankB = RANK_PRIORIDADE[(b.prioridade||'normal').toLowerCase()] || 1;
-    if (rankA !== rankB) return rankB - rankA;
-    return 0;
-  });
-
-  box.innerHTML = `${items.length === 0 ? `<div class="empty"><div class="empty-icon">📋</div>
-      <div class="empty-title">Nenhuma OS encontrada</div>
-      <div class="empty-sub">Crie a primeira Ordem de Serviço com o botão acima.</div></div>`
-    : `<div class="table-wrap"><table>
-        <thead><tr>
-          <th>Nº OS</th><th>Cliente</th><th>Tipo</th>
-          <th>Prioridade</th><th>Prazo</th>
-          <th>Abertura</th><th>Status</th><th style="text-align:right">Ações</th>
-        </tr></thead>
-        <tbody>
-          ${items.map(o => {
-            const st = STATUS_LABELS[String(o.status||'').toUpperCase()] ||
-              { label: o.status||'—', cls:'status-na' };
-            const data = o.data_abertura
-              ? new Date(o.data_abertura).toLocaleDateString('pt-BR') : '—';
-            const oid = (o.id_os||'').replace(/'/g,"\\'");
-            const PRIORIDADE_BADGE = {
-              urgente: { label: 'Urgente', bg: '#fee2e2', color: '#991b1b' },
-              alta:    { label: 'Alta',    bg: '#ffedd5', color: '#9a3412' },
-              normal:  { label: 'Normal',  bg: '#f1f5f9', color: '#475569' },
-            };
-            const prio = PRIORIDADE_BADGE[(o.prioridade||'normal').toLowerCase()] || PRIORIDADE_BADGE.normal;
-            const atrasada = isAtrasada(o);
-            const prazoStr = _gosData(o) ? _gosFmt(_gosData(o)) : '—';
-            const localAtend = (o.local_atendimento === 'interno') ? '🏭 Interno' : '🚐 Externo';
-            return `<tr>
-              <td><span style="font-family:var(--font-mono);font-size:12px;font-weight:600">${o.numero_os||'—'}</span></td>
-              <td class="td-name">${o.cliente||'—'}</td>
-              <td>${(_tiposOS.find(t=>t.Tipo_ID===o.tipo_os)?.Nome) || o.tipo_os||'—'}
-                <div style="font-size:10px;color:var(--text-muted);margin-top:2px">${localAtend}</div>
-              </td>
-              <td><span style="font-size:11px;font-weight:600;padding:2px 8px;border-radius:10px;background:${prio.bg};color:${prio.color}">${prio.label}</span></td>
-              <td style="font-size:11px;${atrasada ? 'color:#dc2626;font-weight:700' : ''}">${prazoStr}${atrasada ? ' ⚠' : ''}</td>
-              <td style="font-size:11px">${data}</td>
-              <td><span class="${st.cls}">${st.label}</span></td>
-              <td>
-                <div class="row-actions">
-                  <button class="btn btn-secondary btn-sm" onclick="openOSDetail('${oid}')">Detalhe</button>
-                  <button class="btn btn-secondary btn-sm" onclick="openModalOS('${oid}')">Editar</button>
-                  ${window.PROPER_SESSION?.is_admin ? `<button class="btn btn-danger btn-sm" onclick="deleteOSFromList('${oid}')">Excluir OS</button>` : ''}
-                </div>
-              </td>
-            </tr>`;
-          }).join('')}
-        </tbody>
-      </table></div>`}`;
+// V94 — cards-painel da Lista (Atrasadas / Aberta / Em andamento / Concluída / Cancelada).
+// Um clique filtra a lista (toggle); contorno via .active-filter (classe já existente).
+function _gosRenderCardsV94(){
+  const box=document.getElementById('gosCardsV94'); if(!box) return;
+  const I=XF.inst['os']; if(!I) return;
+  const d=I.data||[];
+  const stCount=k=>d.filter(r=>r.st===k).length;
+  const fSt=I.s.filters.status;
+  const oneSt=k=>!!(fSt&&fSt.type==='values'&&fSt.set.size===1&&fSt.set.has(_GOS_STATUS_LABELS_V94[k]));
+  const cards=[
+    {k:'atr', n:d.filter(r=>r.atrasada).length, lbl:'Atrasadas', color:'var(--red)',   on:!!I.s.extra.atr},
+    {k:'ABERTA', n:stCount('ABERTA'), lbl:'Abertas', color:'var(--blue-mid)', on:oneSt('ABERTA')},
+    {k:'EM_ANDAMENTO', n:stCount('EM_ANDAMENTO'), lbl:'Em andamento', color:'var(--orange)', on:oneSt('EM_ANDAMENTO')},
+    {k:'CONCLUIDA', n:stCount('CONCLUIDA'), lbl:'Concluídas', color:'var(--green)', on:oneSt('CONCLUIDA')},
+    {k:'CANCELADA', n:stCount('CANCELADA'), lbl:'Canceladas', color:'var(--text3)', on:oneSt('CANCELADA')}
+  ];
+  box.innerHTML = cards.map(c=>`<div class="stat-card ${c.on?'active-filter':''}" style="cursor:pointer" onclick="_gosCardV94('${c.k}')" title="Filtrar a lista">
+      <div class="stat-val" style="color:${c.color}">${c.n}</div>
+      <div class="stat-lbl">${c.lbl} →</div>
+    </div>`).join('');
+}
+function _gosCardV94(k){
+  const I=XF.inst['os']; if(!I) return;
+  if(k==='atr'){
+    I.s.extra.atr=!I.s.extra.atr;
+  } else {
+    const lbl=_GOS_STATUS_LABELS_V94[k];
+    const f=I.s.filters.status;
+    if(f&&f.type==='values'&&f.set.size===1&&f.set.has(lbl)) delete I.s.filters.status;
+    else I.s.filters.status={type:'values',set:new Set([lbl])};
+  }
+  I.s.page=1; xfRender('os');
 }
 
 /* ═══ v63 · Gestão de OSs · Ribbon (Lista / Kanban / Calendário) ═══ */
