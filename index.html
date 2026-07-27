@@ -1,4 +1,17 @@
 <!--
+  PCM V95 — 27/07/2026 — DOCUMENTOS: agrupados no layout do mockup (ajuste pedido pelo Fernando).
+    No V94 só o modo "☰ Tabela" tinha migrado para o motor XF; os modos Por OS/Cliente/
+    Máquina ficaram no visual antigo (cards <details> + chips de categoria). Agora:
+    - Grupos viram LINHAS recolhidas da própria tabela XF (▶ rótulo · 📷 n · 📄 n ·
+      últ. data · Abrir pasta); clique expande as linhas de arquivo do grupo.
+    - Filtros estilo Excel funcionam DENTRO dos agrupados; chips de categoria saíram
+      (categoria é filtro da coluna, com contagem). "Expandir/Recolher tudo" mantido.
+    - Fotos com MINIATURA na coluna Arquivo (thumbnail v87 + fallback v88); dedup v88.
+    - Motor XF ganhou hooks de agrupamento (cfg.groupMode/renderGrouped) — aditivo.
+    Funções/ids preservados: renderDocs, renderDocsList, _docsToggleExpandAll,
+    _docsGroupBy/_docsCat/_docsQuery/_docsExpanded, docsCats (fica vazio), docsCounter.
+-->
+<!--
   PCM V94 — 27/07/2026 — TABELAS EM ESCALA (pré-importação Omie) — frontend-only, ZERO GAS.
     Aprovado pelo Fernando via 4 mockups interativos (NEWFILE_MOCKUP_PCM_*_V1_2026-07-27).
     Novo motor XF (namespace XF/xf*, aditivo): filtro ESTILO EXCEL em cada título de
@@ -666,7 +679,7 @@ v50 — Resiliência de rede: retry/backoff em gsGet e syncToGS
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>ProperCare Manager · Gestão PGP v3.33</title>
+<title>ProperCare Manager · Gestão PGP v3.34</title>
 <link rel="icon" type="image/jpeg" href="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/4gHYSUNDX1BST0ZJTEUAAQEAAAHIAAAAAAQwAABtbnRyUkdCIFhZWiAH4AABAAEAAAAAAABhY3NwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlkZXNjAAAA8AAAACRyWFlaAAABFAAAABRnWFlaAAABKAAAABRiWFlaAAABPAAAABR3dHB0AAABUAAAABRyVFJDAAABZAAAAChnVFJDAAABZAAAAChiVFJDAAABZAAAAChjcHJ0AAABjAAAADxtbHVjAAAAAAAAAAEAAAAMZW5VUwAAAAgAAAAcAHMAUgBHAEJYWVogAAAAAAAAb6IAADj1AAADkFhZWiAAAAAAAABimQAAt4UAABjaWFlaIAAAAAAAACSgAAAPhAAAts9YWVogAAAAAAAA9tYAAQAAAADTLXBhcmEAAAAAAAQAAAACZmYAAPKnAAANWQAAE9AAAApbAAAAAAAAAABtbHVjAAAAAAAAAAEAAAAMZW5VUwAAACAAAAAcAEcAbwBvAGcAbABlACAASQBuAGMALgAgADIAMAAxADb/2wBDAAUDBAQEAwUEBAQFBQUGBwwIBwcHBw8LCwkMEQ8SEhEPERETFhwXExQaFRERGCEYGh0dHx8fExciJCIeJBweHx7/2wBDAQUFBQcGBw4ICA4eFBEUHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh7/wAARCAGGAc0DASIAAhEBAxEB/8QAHAABAAIDAQEBAAAAAAAAAAAAAAYHBAUIAwIB/8QATBAAAQMCAgMJCBAFBAMBAAAAAAECAwQFBhEHIUESFjFRVnSBk7EIFyJVYZHR0hMUIzI0NTY3QmJxc6GissEVM4KU8FJ1krNypMKE/8QAHAEBAAIDAQEBAAAAAAAAAAAAAAYHAQMEBQII/8QAOhEAAQMBAwgHCAMAAwEBAAAAAAECAwQFETEGFCFBU3GRsRMVUVJh0eESIjI0NXKSwTOB8CRC8SOh/9oADAMBAAIRAxEAPwAACqj9AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA+JpY4YXzTSNjjY1XPe5ckaicKqvEZxMKqIl6iaWOGF800jY42NVz3uXJGonCqrxFFaRtJ1fcLj7Uw5VzUdDA5fd413L514+NG8SdK8SeGlbSDJiCZ9ptMjo7Ux3hOTUtSqbV+rxJ0rsRK7JjZFjJEnTTp72pOzf48itMo8pnTuWnpHXNTFya93hz3Y7/fri3lDcevUb9cW8obj16mgB72bQ9xOCERz2p2juKm/wB+uLeUNx69Rv1xbyhuPXqaADNoe4nBBntTtHcVN/v1xbyhuPXqN+uLeUNx69TQAZtD3E4IM9qdo7ipv9+uLeUNx69Rv1xbyhuPXqaADNoe4nBBntTtHcVN/v1xbyhuPXqN+uLeUNx69TQAZtD3E4IM9qdo7ipv9+uLeUNx69Rv1xbyhuPXqaADNoe4nBBntTtHcVN/v1xbyhuPXqN+uLeUNx69TQAZtD3E4IM9qdo7ipv9+uLeUNx69TY4ZxRjW4YgoKKkvldLNLO1rWySK5q69e6RdmWar5CHlxdz5hzVUYmqY+OClzT/AJuT9P8AyOOvWClp3SKxPDQmJ6dkNq6+sZC2R3auldCJj/u0uEAFdlzgAAAAAAqTTXjivttwisVkrHU0rGeyVcseW6RV1tYi7NWtftQszEV1p7JZKu61S+5U0avyzy3S7Gp5VXJOk5UutdUXO5VNwq37ueokdI9fKq7PISGwKFJpFlel7W8/TyIblfazqWFtPE65ztK3YonqvJTbb9cW8obj16jfri3lDcevU0AJfm0PcTghW+e1O0dxU3+/XFvKG49eo364t5Q3Hr1NABm0PcTggz2p2juKm/364t5Q3Hr1G/XFvKG49epoAM2h7icEGe1O0dxU3+/XFvKG49eo364t5Q3Hr1NABm0PcTggz2p2juKm/wB+uLeUNx69Rv1xbyhuPXqaADNoe4nBBntTtHcVN/v1xbyhuPXqN+uLeUNx69TQAZtD3E4IM9qdo7ipv9+uLeUNx69T0p8dYugnZM2/1zlYue5kk3TV+1F1KRwBaaFf+icEMpXVKLekjuKnTGjnGlFiy3fRguMLU9sU+f5m8bV/DgXYqys5HtFxrbTcYbhb53QVMLt0x7exeNF4jo3RzjSixZbvowXGFqe2KfP8zeNq/hwLsVYda9kLTL0sXwcvQsrJzKNK5Ep6hbpEwXvev/qErAB4BLwAAAAAAAAAAAAAAAAfMj2Rxukke1jGornOcuSIicKqoCrcJHsjjdJI9rGNRXOc5ckRE4VVSg9LWP5L9UPtFplVtqjdk96alqXJt/8AFNibeHiy9NLGkJ98kks1mlcy2NXKWVNS1Cp/8eTaVsTKxrH6K6eZPe1J2evLeVnlLlJnF9LSr7mte3wTw57sQAJKQgAAAAAAAAAAAAAAAAAAAAAzLHbai73eltlI3OapkSNvkz4VXyIma9B1XZLdT2i00tspG7mGmjSNvGuXCq+VV19JVXc+Yc1VGJqmPjgpc0/5uT9P/IuEhOUFZ0syQtwbz9PMtHI6zM3plqXp7z8Pt9V08AACPEyAAAABrsS3ansViq7rUr7nTxq7c55bp3A1qeVVyTpPpjHPcjW4qfEkjYmK963ImlSqO6CxH7LU0+GqaTNsWU9Vkv0lTwGr9ia+lOIqQyLnW1FxuFRX1b93PUSOkkdxqq5+YxyyqKlbSwNiTVjv1lH2pXur6p87teHgmoAA6zzwAAAAAAAAAAAAAAAAAAZdouNbabjDcLfO6CphdumPb2LxovEYgMOajkuXAy1yscjmrcqHTGjnGlFiy3fRguMLU9sU+f5m8bV/DgXYqys5HtFxrbTcYbhb53QVMLt0x7exeNF4jo3RzjSixZbvowXGFqe2KfP8zeNq/hwLsVYRa9kLTL0sXwcvQtPJzKNK5Ep6hbpEwXvev/qErAB4BLwAAAAAAAAAAfMj2Rxukke1jGornOcuSIicKqoCrcJHsjjdJI9rGNRXOc5ckRE4VVSh9LGkJ98kks1mlcy2NXKWVNS1Cp/8eTaNLGkJ98kks1mlcy2NXKWVNS1Cp/8AHk2lbEysex+iunnT3tSdnry3lZ5S5S5xfS0q+5rXt8E8Oe7EACSkIAAAAAAAAAAAAAAAAAAAAABmWO21F3u9LbKRuc1TIkbfJnwqvkRM16DDLj7n3Daok+JqqP3yLBSZ/ncn6f8AkcdfVJSwOkXHVvPSsmz3WhVsgTBcfBEx/wB2lqWS3U9otNLbKRu5hpo0jbxrlwqvlVdfSZgBWznK5VcuKl3sY2NqNalyJoAAPk+gAAAUr3QWI/Zq2nw3TSeBBlNVZLwvVPBb0Iuf9ScRbOJbtT2KxVd1qV9zp41duc8t07ga1PKq5J0nKtzrai43Cor6t+7nqJHSSO41Vc/MSPJ6j6SVZ3YNw3+hCss7T6GBKVi6X6V3J5ryUxwATQrEAAAAAAAAAAAAAAAAAAAAAAAAGXaLjW2m4w3C3zugqYXbpj29i8aLxGIDDmo5LlwMtcrHI5q3Kh0xo5xpRYst30YLjC1PbFPn+ZvG1fw4F2KsrOR7Rca203GG4W+d0FTC7dMe3sXjReI6N0c40osWW76MFxhantinz/M3jav4cC7FWEWvZC0y9LF8HL0LTycyjSuRKeoW6RMF73r/AOoSsAHgEvAAAAB+Pc1jVe9yNa1M1VVyREAD3NY1XvcjWtTNVVckRCitLekNbw6Sx2SVUtzVynnbw1CpsT6nb9nC0taRHXd0tjscyttzV3M87VyWoXiT6nb9nDWRMbHsfo7p5006k7PFfHlvK1ylyl6e+lpV93Wvb4J4dvbuxAAkxBgAAAAAAAAAAAAAAAAAAAAAAADOsFsqLzeaS10iZzVMiMRctTU2uXyIma9B1XaKCntVrprdSN3MFPGkbE25InCvlXhKr7nzDm4iqMTVMet+cFLmmxPfuTp8HocW8QjKCs6WboW4N5+nmWlkdZmb0y1L095+H2+uPAAAj5MQAAAAa7Et2p7FYqu61K+508au3OeW6dwNanlVck6T6Yxz3I1uKnxJI2JivetyJpUqbugsR+zVtPhumk8CDKaqyXheqeC3oRc/6k4ipjIudbUXG4VFfVv3c9RI6SR3Gqrn5jHLKoqVtLA2JNXPWUdale6vqnzu14eCakAAOs4AAAAAAAAAAAAAAAAAAAAAAAAAAAAZdouNbabjDcLfO6CphdumPb2LxovEYgMOajkuXAy1yscjmrcqHTGjnGlFiy3fRguMLU9sU+f5m8bV/DgXYqys5HtFxrbTcYbhb53QVMLt0x7exeNF4jo3RzjSixZbvowXGFqe2KfP8zeNq/hwLsVYRa9kLTL0sXwcvQtPJzKNK5Ep6hbpEwXvev8A6hKwAeAS8EC071M9PgJ6QTPj9mqWRyblct01UcqtXyakJ6V7p/8AkI3nkfY477LS+sjv7TyLeVUs2ZU7qnPwALIKTAAAAAAAAAABIcC4TuGK7qlLSosdPHktRUKngxt/dy7E/Y1yysiYr3rciG2CCSokSONL3LggwLhO4YruqUtKix08eS1FQqeDG393LsT9i5qfRNg6JqJJT1c6omSq+oVM14/ByJXh2y2+wWqK222FI4Y+FV98921zl2qpsSD19tzzyf8AyVWtTD1LVsnJalpYf+Q1HvXG/SieCf7SQjvV4L8XTf3MnpHerwX4um/uZPSTcHD1jV7ReKnq9SWdsG8EIR3q8F+Lpv7mT0jvV4L8XTf3MnpJuB1jV7ReKjqSztg3ghCO9XgvxdN/cyekd6vBfi6b+5k9JNwOsavaLxUdSWdsG8EIR3q8F+Lpv7mT0n6mivBSL8WzL/8Apk9JNgOsavaLxUz1LZ2wbwQ8KGkpqGjio6OBkFPE3cxxsTJGoe4Bxqqqt6npNajURES5EAAMGQAAAUn3QGJFqK+HDdNJ7lT5S1OS8Mip4LehFz6fIWzim8QWGwVl2qMlbTxqrW5+/dwNb0rkhytcKuevrp62qesk88jpJHLtcq5qSTJ6j6SRZ3Jobhv9CE5Z2n0MCUjF0v0ru9V5HgACZlZAAAAAAAAl2ifDm+LFsDJo91RUvu9RmmpURdTelcujM1TTNhjWR2CG+lpn1MzYY8XLcWJgDRfY34bpqvEFFJU1tSxJVY6Z7EiautG5NVNeWWee0kHexwP4k/8Aam9cmIK8ltOqkerukVL9SKtxc1PYdBDE2PomrcmKtRVXxUh3exwP4k/9qb1z6j0aYIjdum2Nqr9aolcnmVxLwa8/qto7ipu6poNgz8U8iK97vBfiGDrH+sO93gvxDB1j/WJUDGfVO0dxUz1VQ7Fn4p5FZ440U2mrtr5sOU6UVdGmbY/ZFVkyf6darkvEvBx8aUZVQTUtRJT1ET4po3K17HpkrVThRUOvyBaU8Aw4lp3XG3NZFd426l4EqET6LvLxL0Lq4Pbsm2nRu6KoW9F1rq3+HIi2UOS7JWdPRtucmLUwXcnbz3488g9KqCalqJKeoifFNG5WvY9MlaqcKKh5kxRbytFRUW5QADIAAAAAABsMN19Xbb7R1tFM6KaOZuTmrwpnrReNFTUqGvPe3/D6f71vah8vRHNVFPuNytejmrcqHXgAKqP0ACvdP/yEbzyPscWEV7p/+QjeeR9jjvsv5yPeeRb/ANNm+1Tn4AFkFJgAAAAAAA3OC7BPibEVPaYZWwpJm6SRUz3DETNVy2rxeVT4ke2NqvctyIbIonzSJGxL1Vbk3qZGBcJ3DFd1SlpUWOnjyWoqFTwY2/u5difsdI4dstvsFqittthSOGPhVffPdtc5dqqMO2W32C1RW22wpHDHwqvvnu2ucu1VNiQG1LUfWvuTQxME/alu2BYMdmR+07TIuK9ngn+0gAHkkiAAAAAAAAAAAAAAAAAAABrMU3iCw2Csu1RkraeNVa3P37uBrelckPpjHPcjW4qa5ZWxMWR63IiXqVL3QOI/bNxgw5TSZxU2UtTkvDIqeC3oRc/6vIVSe9wq56+unrap6yTzyOkkcu1yrmp4Fl0VM2lgbEmrnrKPtOudX1T53a10eCakAAOo4AAAAAAAdH6HsOfwDCUT549zW12U8+aa2oqeA3oT8VUp7RPhzfFi2Bk0e6oqX3eozTUqIupvSuXRmdKkVyjrLkSnbvX9J++BYGRVmXq6teng39r+uIABEiwwAAAAAAAACBaU8Aw4lp3XG3NZFd426l4EqET6LvLxL0Lq4OfaqCalqJKeoifFNG5WvY9MlaqcKKh1+V9pdwPTX23TXmia2K500SvcqJqna1M9yv1sk1L0L5JJY1rrEqQTL7upez05EIymycSoRaumS56aVTt8d/Pfjz6ACZlZgAAAAAA97f8AD6f71vah4Hvb/h9P963tQwuBluKHXgAKpP0ECvdP/wAhG88j7HFhFe6f/kI3nkfY477L+cj3nkW/9Nm+1Tn4AFkFJgAAAAAAnugb5wIubS9iECJ7oG+cCLm0vYhxWj8pJuXkenYv1CD7m8zoYAFal4AAAAAAAAAAAAAAAAAAAAAApLugcR+2bjBhymkzipspanJeGRU8FvQi5/1eQtrFN4gsNgrLtUZK2njVWtz9+7ga3pXJDla4Vc9fXT1tU9ZJ55HSSOXa5VzUkmTtH0kizuwbhv8AQhOWdp9DAlIxdL9K7vVeR4AAmZWQAAAAAAAJjoiw5vgxbCs0e6o6LKefNNS5L4LelfwRTTPM2CN0jsEOilpn1UzYY8XLcW/ogw2uHsJxuqI9xW1uU8+aa2pl4LehPxVSZgFaVE7p5XSOxUvKjpWUkDYI8Gpd/t+IABpOkAAAAAAAAAGHe/iWu5vJ+lTMMO9/EtdzeT9KmyL427zVUfxO3KckAAtMoEAAAAAAHvb/AIfT/et7UPA97f8AD6f71vahhcDLcUOvAAVSfoIFe6f/AJCN55H2OLCK90//ACEbzyPscd9l/OR7zyLf+mzfapz8ACyCkwAAAAAAT3QN84EXNpexCBE90DfOBFzaXsQ4rR+Uk3LyPTsX6hB9zeZ0MACtS8AAAAAAAAAAAAAAAAAAAAazFV3jsOHa27yt3SU0Sua3/U5dTU6XKiH0xivcjW4qfEsjYmLI9bkRL13IVFp/xItVdIsOU0nuFJlJUZL76VU1J0Ivnd5CrD2rametrJqypkWSeeR0kj14XOVc1U8Sy6OmbSwtibq56yjbSrn19U+d2tdHgmpAADqOEAAAAAAHSeiPDm97CUKTR7msrMp6jNNaZp4LehPxVSndEWHN8GLYVmj3VHRZTz5pqXJfBb0r+CKdJEUyjrMKdu9f0n74Fg5FWZpdWvTwb+1/XEAAiZYQAAAAAAAAAAAAMO9/EtdzeT9KmYYd7+Ja7m8n6VNkXxt3mqo/iduU5IABaZQIAAAAAAPe3/D6f71vah4Hvb/h9P8Aet7UMLgZbih14ACqT9BArLuiZHtwnQxtcqNfWpuk48mOyLNK07olrVwbRPy8JLgxEXyLHJ6EPRshf+bHvPFyiRVsya7s/aFDgAsYpYAAAAAAE90DfOBFzaXsQgRPdA3zgRc2l7EOK0flJNy8j07F+oQfc3mdDAArUvAAAAAAAAAAAAAAAAAAAHjW0tNW0ktJVwsnglbuZI3pmjkPYGUVUW9DDmo5FRU0EV73eC/EMHWP9Yd7vBfiGDrH+sSoHTn1TtHcVOHqqh2LPxTyIr3u8F+IYOsf6w73eC/EMHWP9YlQGfVO0dxUdVUOxZ+KeRFe93gvxDB1j/WHe7wX4hg6x/rEqAz6p2juKjqqh2LPxTyIr3u8F+IYOsf6w73eC/EMHWP9YlQGfVO0dxUdVUOxZ+KeRr7JZbVZKZ1NaqGGkjcubkYmty8arwr0mwAOd73PX2nLep2RxsjajGJciak0IAAfJ9gAAAAAAAAAAAAw738S13N5P0qZhh3v4lrubyfpU2RfG3eaqj+J25TkgAFplAgAAAAAA97f8Pp/vW9qHge9v+H0/wB63tQwuBluKHXgAKpP0ECtu6I+RVH/ALiz/rlLJK27oj5FUf8AuLP+uU9CyvnI9542UH02bcUKACxylQAAAAAAT3QN84EXNpexCBE90DfOBFzaXsQ4rR+Uk3LyPTsX6hB9zeZ0MACtS8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAYd7+Ja7m8n6VMww738S13N5P0qbIvjbvNVR/E7cpyQAC0ygQAAAAAAe9v+H0/3re1DwPe3/D6f71vahhcDLcUOvAAVSfoIFbd0R8iqP/cWf9cpZJW3dEfIqj/3Fn/XKehZXzke88bKD6bNuKFABY5SoAAAAAAJ7oG+cCLm0vYhAie6BvnAi5tL2IcVo/KSbl5Hp2L9Qg+5vM6GABWpeAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMO9/EtdzeT9KmYYd7+Ja7m8n6VNkXxt3mqo/iduU5IABaZQIAAAAAAPe3/D6f71vah4Hvb/AIfT/et7UMLgZbih14ACqT9BArzugGtXAsaqiKra2NU8i7l6fuWGV7p/+QjeeR9jjvsv5yPeeRb/ANNm+1Tn4AFkFJgAAAAAAnugb5wIubS9iECJ7oG+cCLm0vYhxWj8pJuXkenYv1CD7m8zoYAFal4AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAw738S13N5P0qZhh3v4lrubyfpU2RfG3eaqj+J25TkgAFplAgAAAAAA97f8Pp/vW9qHge9v+H0/wB63tQwuBluKHXgAKpP0ECvdP8A8hG88j7HFhFe6f8A5CN55H2OO+y/nI955Fv/AE2b7VOfgAWQUmAAAAAACe6BvnAi5tL2IQInugb5wIubS9iHFaPykm5eR6di/UIPubzOhgAVqXgAAAAAAAAAAAAAAAfMj2RxukkcjWNRVc5VyRETac8Ys0lYirr5UyWu5zUdA16tp440RM2Iupy6s814fIWNp0xH/CcMpaqeTKquWbFyXW2JPfr06m9K8Rz+S2wLPasazyNvvwv5ldZYWxI2ZtLA5U9nS65btK4J/Saf7JLv9xhygrPOnoG/3GHKCs86egjQJFmsHcTghDM/qtq7ivmSXf7jDlBWedPQN/uMOUFZ509BGgM1g7icEGf1W1dxXzJLv9xhygrPOnoG/wBxhygrPOnoI0BmsHcTggz+q2ruK+ZJd/uMOUFZ509BtMJYvxtccTW6ihvFTO6WoaixvyVqtzzdnq4Ms1Ugxcvc+Yc3EVRiapj1vzgpc02J79ydPg9DjitDN6WndIrE8NCYnp2MtbXVjIWyuuvvXSuhEx/3aW8ACvS5QAAAAAAAAAAAAAAAAAAYd7+Ja7m8n6VMww738S13N5P0qbIvjbvNVR/E7cpyQAC0ygQAAAAAAe9v+H0/3re1DwPe3/D6f71vahhcDLcUOvAAVSfoIFe6f/kI3nkfY4sIr3T/APIRvPI+xx32X85HvPIt/wCmzfapz8ACyCkwAAAAAAT3QN84EXNpexCBE90DfOBFzaXsQ4rR+Uk3LyPTsX6hB9zeZ0MACtS8AAAAAAAAAAAAAfMj2RxukkcjWNRVc5VyRETafRXmnPEaWnDX8Jp5Mqu45sXJdbYk98vT73pXiOilp3VMzYm6zjtCtZRUz534NTiupP7Up/SFiB+JcVVVxRV9rovsVM1dkbeDz61+1VI+AWXFG2JiMbghRs8z55HSvW9VW9QADYagAAAAADPw7aqi93uktVKnutTIjEXLNGpwq5fIiZr0HVVooKe1Wumt1I3cwU8aRsTbkicK+VeEq7ufMOexU1RiWpj8KXOClzT6KL4bulUy6F4y2yEZQVvTTdC3BvP08y08j7MzemWpenvPw+3Vxx4AAEfJgAAAAAAAAAAAAAAAAAADDvfxLXc3k/SpmGHe/iWu5vJ+lTZF8bd5qqP4nblOSAAWmUCAAAAAAD3t/wAPp/vW9qHge9v+H0/3re1DC4GW4odeAAqk/QQK90//ACEbzyPscWEV7p/+QjeeR9jjvsv5yPeeRb/02b7VOfgAWQUmAAAAAACb6EKqnpdIFL7YlbGk0UkTFcuSK5U1J05echAaqtVHNVUVNaKmw01EKTROjVbr0VDpo6haWoZMiX+yqLwOwwVbok0iJckisV9mRK1Mm09Q9f5/E1y/6/Lt+3htIrirpJKWRY5E9S7LOtGG0IUmhXRrTWi9igAHKdwAAAAAAAAB8yyMiifLI9GMY1XOcq5IiJwqcuY+v78SYpq7mqr7CrvY6dq/Rib73z61Xyqpb+nbEf8AC8NttFPJlVXHNrsl1thT33n1N+zMoImOTtH7DFqHYroTd/uRWuWlp9JK2jYuhuld+pP6TmAASYgwAAAAAAM/DtqqL3e6S1Uqe61MiMzyz3KcKuXyIma9BgF0dz5hz2KmqMS1MfhS5wUuafRRfDd0qmXQvGcVoVaUlO6TXq3np2PZ62hVshTDFdyY+W8tK1UNPbLbT2+kZuIKeNsbE8iJlr8pkgFbOcrlvXEu5jUY1GtS5EAAMH0AAAAAAAAAAAAAAAAAADV4sraa34auNVVytiiZTvRVcvCqtVERONVXUiGTd7jRWm3TXC4TsgpoW7p73dicarsTac56Rsa1uLLjkm7gtsLl9r0+f53cbl/DgTaq+rZdnSVciLg1MV/RH7ftqKzoFaul7k0J+18OZEwAWEU4AAAAAAD3t/w+n+9b2oeB72/4fT/et7UMLgZbih14ACqT9BAr3T/8hG88j7HFhFe6f/kI3nkfY477L+cj3nkW/wDTZvtU5+ABZBSYAAAAAAAAAaqtVHNVUVNaKmwvHRJpES5JFYr7MiVqZNp6h6/z+Jrl/wBfl2/bw0cGqrVRzVVFTWipsOKuoY6yP2H/ANL2HpWVas1mz9LFhrTUqf7BTsMFW6JNIiXJIrFfZkStTJtPUPX+fxNcv+vy7ft4bSK/q6SSlkWORPUuOzrRhtCFJoV0a01ovYoAByncAAAD5lkZFE+WR6MYxquc5VyREThU+iudO2I/4Xhttop5Mqq45tdkutsKe+8+pv2ZnTSU7qmZsTdZxWjWsoaZ87/+qcV1J/alQY+v78SYpq7mqr7CrvY6dq/Rib73z61XyqpoQCy442xsRjcEKNmmfPI6R63qq3qAAfZrAAAAAAM/DtqqL3e6S1Uqe61MiMzyz3KcKuXyIma9B1XaqGntltp7fSM3EFPG2NieREy1+Uq3ufMOexU1RiWpj8KXOClzT6KL4bulUy6F4y2yEZQVnTTdC3BvP08y08j7MzelWoenvPw+3Vxx4AAEfJgAAAAAAAAAAAAAAAAAADEu9xorTbprhcJ2QU0Ld097uxONV2JtF3uNFabdNcLhOyCmhbunvd2JxquxNpznpGxrW4suOSbuC2wuX2vT5/ndxuX8OBNqr6lmWY+tf2NTFf0nieDbluRWXF2vXBP2vhzGkbGtbiy45Ju4LbC5fa9Pn+d3G5fw4E2qsTAJ9DCyFiMYlyIVDU1MtVKssq3uUAA2mgAAAAAAHvb/AIfT/et7UPA97f8AD6f71vahhcDLcUOvAAVSfoIGlxrh6nxPh6e1VEixK9UfFKiZ7h6cC5bU2KnEqm6B9xyOjej2rcqGqaFk8bo5EvaqXKcm4jstwsF2lttyhWOaPWipra9uxzV2ov8Ams1x1FjrClvxXalpapEjqI81p6hEzdE792rtT98lObsR2W4WC7S225QrHNHrRU1te3Y5q7UX/NZPrLtRlay5dD0xT9oVDb1gyWZJ7TdMa4L+l8eZrgAesR8AAAAAAAAANVWqjmqqKmtFTYSOLHWL442xtxBXblqZJun7pfOutSOA1viZJ8aIu82xTyw39G5Uv7FuJLv9xhygrPOnoG/3GHKCs86egjQNeawdxOCG7P6rau4r5kl3+4w5QVnnT0Df7jDlBWedPQRoDNYO4nBBn9VtXcV8yS7/AHGHKCs86eg0l0uNddKx1ZcauWqqHalkkdmuXF9nkMUH2yGNi3taif0a5aqaVPZkeqp4qqgAG00AAAAAAA2OGbRUX2/Ulppv5lRIjVdlnuG8LndCIq9Bri6+59w57BQ1GJKmP3Sozhpc04GIvhO6VTL+leM4bQq0pKd0mvVvPUsazltCsZDqxXcmPkWhbKKnt1vp6CkjSOCnjSONqbERO0yACt1VXLepdrWoxEa1LkQAAwfQAAAKG0j6Rr1JiWopLHcX0tDSuWJqxImcrk1Ocq5cGeaJsyTMszSviPe7hKeSGTc1lV7hTZLrRVTW7oTNftyOaSU5P0DXos8iXpgl/wD+r/vEgOWNsPic2khcqLi65btyfvgSXf7jDlBWedPQN/uMOUFZ509BGgSbNYO4nBCC5/VbV3FfMku/3GHKCs86egb/AHGHKCs86egjQGawdxOCDP6rau4r5kl3+4w5QVnnT0Df7jDlBWedPQRoDNYO4nBBn9VtXcV8yS7/AHGHKCs86egb/cYcoKzzp6CNAZrB3E4IM/qtq7ivmbS9Yivl6jZHdLpU1cbF3TWPf4KLx5cGflNWAbmsaxLmpchzySPkd7T1VV8QAD6PgAAAAAAAAAFi6JMAzXyqivVzY6K2QvR0bVTJahyLwJ9XPhXbwJty/NFOj6TEEzLtdo3R2pjvBaupalU2J9XjXoTaqX5DFHDCyGGNscbGo1jGpkjUTgRE4iN2xbHQ3wQr72tez15E2yaybWpVKqpT3NSdvivhz3Y/YAIYWaAAACPY6wpb8V2paWqRI6iPNaeoRM3RO/dq7U/fJSQg2RSviej2LcqGmop46iNYpUvauKHJuI7LcLBdpbbcoVjmj1oqa2vbsc1dqL/ms1x1FjrClvxXalpapEjqI81p6hEzdE792rtT98lObsR2W4WC7S225QrHNHrRU1te3Y5q7UX/ADWT2y7UZWsuXQ9MU/aFRW9YMlmSe03TGuC/pfHma4AHrEfAAAAAAAAAAAAAAAAAAAAAAAAAAANjhm0VF9v1Jaab+ZUSI1XZZ7hvC53QiKvQdVW2jp7db6ehpWbiCnjbHG3iREyQq/ufcOewUNRiSpj90qM4aXNOBiL4TulUy/pXjLYIPb9Z00/RNwbz9MC1Mj7Mzalzh6e8/lq448AADwCXgAAAAiOljEaYdwlO+GTc1tVnBTZLrRVTW7oTX9uXGboIXTyNjbipz1dSylgdNJg1LyntMWI/4/i2WOCTdUdBnBDkupyovhu6V1fYiELALLghbBG2NuCFGVdS+qndNJi5bwADcc4AAAAAAAAAAAAAAAAAAAAALE0U6PpMQTMu12jdHamO8Fq6lqVTYn1eNehNqo0U6PpMQTMu12jdHamO8Fq6lqVTYn1eNehNqpfkMUcMLIYY2xxsajWMamSNROBETiI3bFsdDfDCvva17PXkTbJrJpalUqqpPc1J2+K+HPdihijhhZDDG2ONjUaxjUyRqJwIicR9gENXSWYiIiXIAAYMgAAAAAAj2OsKW/FdqWlqkSOojzWnqETN0Tv3au1P3yUkINkUr4no9i3KhpqKeOojWKVL2rihybiOy3CwXaW23KFY5o9aKmtr27HNXai/5rNcdRY6wpb8V2paWqRI6iPNaeoRM3RO/dq7U/fJTm7EdluFgu0ttuUKxzR60VNbXt2Oau1F/wA1k9su1GVrLl0PTFP2hUVvWDJZkntN0xrgv6Xx5muAB6xHwAAAAAAAAAAAAAAAAAAAAAbHDNoqL7fqS0038yokRquyz3DeFzuhEVeg1xdnc/4bWnoZ8SVUeUlSixUuacEaL4TulUy6F4zhtGrSkp3Sa9W89SxrOW0KxkOrFdyY+X9ln22jp7db6ehpWbiCnjbHG3iREyQyACt1VXLepdrWo1Ea1NCAAGD6AAABzbpdxHvgxbMkMm6o6LOCDJdS5L4TulfwRC4tLmI972Eplhk3NZWZwU+S60zTwndCfiqHNhLMnKPGoduT9r+uJXuWtp6W0TF8XfpP3wAAJWV8AAAAAAAAAAAAAAAAAAAAACxNFOj6TEEzLtdo3R2pjvBaupalU2J9XjXoTaqNFOj6TEEzLtdo3R2pjvBaupalU2J9XjXoTaqX5DFHDCyGGNscbGo1jGpkjUTgRE4iN2xbHQ3wwr72tez15E2yayaWpVKqqT3NSdvivhz3YoYo4YWQwxtjjY1GsY1MkaicCInEfYBDV0lmIiIlyAAGDIAAAAAAAAAAAAI9jrClvxXalpapEjqI81p6hEzdE792rtT98lJCDZFK+J6PYtyoaainjqI1ilS9q4ocm4jstwsF2lttyhWOaPWipra9uxzV2ov+azXHUWOsKW/FdqWlqkSOojzWnqETN0Tv3au1P3yU5uxHZbhYLtLbblCsc0etFTW17djmrtRf81k9su1GVrLl0PTFP2hUVvWDJZkntN0xrgv6Xx5muAB6xHwAAAAAAAAAAAAAAAAADZ4Vs89/xBR2mnzR08iI5yJ7xia3O6EzOqaCkgoaGCipY0jggjbHG1NjUTJCse5/w57Wts+IqmPKWqzip804I0Xwl6VTL+nylqkGt+s6afom4N56/ItXJCzM2pM4envP5auOPAAA8ElwAAAAIfpcxCuH8ITugeraurX2vAqcLVVPCd0Jn05G6CF08jY24qc1XVMpIHTSYNS//byndLuI98GLZkhk3VHRZwQZLqXJfCd0r+CIQ4AsuCFsEbY24IUbVVL6qZ00mLlvAANxzgAAAAAAAAAAAAAAAAAAsTRTo+kxBMy7XaN0dqY7wWrqWpVNifV416E2qjRTo+kxBMy7XaN0dqY7wWrqWpVNifV416E2ql+QxRwwshhjbHGxqNYxqZI1E4EROIjdsWx0N8MK+9rXs9eRNsmsmlqVSqqk9zUnb4r4c92KGKOGFkMMbY42NRrGNTJGonAiJxH2AQ1dJZiIiJcgABgyAAAAAAAAAAAAAAAAAADWX6wWa+xxsu1vhq0jVdwr01tz4clTWhswfTHuY72mrcp8SRMlarJERUXUulCK97vBfiGDrH+sO93gvxDB1j/WJUDoz6p2juKnH1VQ7Fn4p5EV73eC/EMHWP8AWHe7wX4hg6x/rEqAz6p2juKjqqh2LPxTyIr3u8F+IYOsf6w73eC/EMHWP9YlQGfVO0dxUdVUOxZ+KeRFe93gvxDB1j/WHe7wX4hg6x/rEqAz6p2juKjqqh2LPxTyIr3u8F+IYOsf6w73eC/EMHWP9YlQGfVO0dxUdVUOxZ+KeRFe93gvxDB1j/WHe7wX4hg6x/rEqAz6p2juKjqqh2LPxTyIr3u8F+IYOsf6x+po8wYi5/wGD/m/1iUgZ9U7R3FR1VQ7Fn4p5HnTww08DIKeJkUUbUaxjGo1rUTgRETgQ9ADmVb9KnciIiXIAAYMgAAAwL5Z7Ze6NKS60cdVCj0ejX56nJtRU1pwqZ4Ppr3MX2mrcp8SRskarHpei6lIr3u8F+IYOsf6w73eC/EMHWP9YlQOjPqnaO4qcfVVDsWfinkRXvd4L8QwdY/1h3u8F+IYOsf6xKgM+qdo7io6qodiz8U8iK97vBfiGDrH+sO93gvxDB1j/WJUBn1TtHcVHVVDsWfinkRXvd4L8QwdY/1h3u8F+IYOsf6xKgM+qdo7io6qodiz8U8iK97vBfiGDrH+sO93gvxDB1j/AFiVAZ9U7R3FR1VQ7Fn4p5EV73eC/EMHWP8AWHe7wX4hg6x/rEqAz6p2juKjqqh2LPxTyIr3u8F+IYOsf6w73eC/EMHWP9YlQGfVO0dxUdVUOxZ+KeRFe93gvxDB1j/WP1ujzBiORUsNPmi563vX9yUgZ9U7R3FR1VQ7Fn4p5HxDFHDCyGGNscbGo1jGpkjUTgRE4j7AOZdJ3IiIlyAAGDIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB//2Q==">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1445,6 +1458,15 @@ th.xf-filtered .xf-fun{opacity:1;stroke:var(--accent)}
 .xf-alpha button:disabled{opacity:.22;cursor:default}
 /* célula composta */
 .xf-sub{font-size:10px;color:var(--text3);margin-top:1px}
+
+
+/* V95 · XF — linhas de grupo (Documentos agrupado) */
+.xf-group-row td{background:var(--gray-100)!important;cursor:pointer;padding:8px 12px;border-bottom:1px solid var(--border2);font-size:12px}
+.xf-group-row:hover td{background:var(--gray-200)!important}
+.xf-car{display:inline-block;width:13px;font-size:10px;color:var(--text2);transition:transform .12s}
+.xf-group-row.xf-open .xf-car{transform:rotate(90deg)}
+.xf-gmeta{font-weight:500;color:var(--text3);font-size:11px}
+.xf-doc-thumb{width:34px;height:34px;object-fit:cover;border-radius:7px;border:1px solid var(--border2);cursor:zoom-in;flex:none}
 
 </style>
 </head>
@@ -2335,8 +2357,11 @@ function xfRender(iid){
   I.menus = [];
   xfRenderHead(iid,I);
   xfRenderChips(iid,I);
+  const _xfGrouped = I.cfg.groupMode && I.cfg.groupMode()!=='flat' && I.cfg.renderGrouped;   // V95
   if(!rows.length){
     body.innerHTML = `<tr><td colspan="${I.cfg.columns.length}"><div class="empty" style="padding:30px 16px"><div class="empty-icon">🔎</div><div class="empty-title">Nenhum resultado</div><div class="empty-sub">Ajuste a busca ou <button class="xf-link" onclick="xfClearAll('${iid}')">limpe os filtros</button></div></div></td></tr>`;
+  } else if(_xfGrouped){
+    I.cfg.renderGrouped(body, rows, I);   // V95 — grupos recolhidos, sem paginação
   } else {
     const pages=Math.max(1,Math.ceil(rows.length/I.s.pageSize));
     if(I.s.page>pages) I.s.page=pages;
@@ -2347,7 +2372,8 @@ function xfRender(iid){
       return `<tr ${attrs}>` + I.cfg.columns.map(c=>`<td class="${c.type==='num'?'xf-num':''}"${c.tdStyle?` style="${c.tdStyle}"`:''}>${c.render?c.render(r):escHtml(xfGV(c,r)==null?'—':xfGV(c,r))}</td>`).join('') + `</tr>`;
     }).join('');
   }
-  xfRenderPager(iid,I,rows.length);
+  if(_xfGrouped){ const _pg=document.getElementById('xf_'+iid+'_pager'); if(_pg) _pg.innerHTML=''; }
+  else xfRenderPager(iid,I,rows.length);
   const cnt=document.getElementById('xf_'+iid+'_counter');
   if(cnt){
     const q = I.cfg.getQuery ? I.cfg.getQuery() : '';
@@ -4163,6 +4189,7 @@ function _docIsFoto(it){ return String(it?.Mime||'').startsWith('image/') || Str
 function _docsToggleExpandAll(){
   _docsExpanded = !_docsExpanded;
   try{ localStorage.setItem('proper_docs_expanded', _docsExpanded ? '1':'0'); }catch(e){}
+  const _Id=XF.inst['docs']; if(_Id){ if(_Id.s.extra.open) _Id.s.extra.open.clear(); if(_Id.s.extra.closed) _Id.s.extra.closed.clear(); }   // V95
   const b=document.getElementById('docsExpandBtn'); if(b) b.textContent=_docsExpanded ? 'Recolher tudo' : 'Expandir tudo';
   renderDocsList();
 }
@@ -4262,7 +4289,7 @@ async function renderDocs(force){
     </div>
     <div class="docs-toolbar">
       <div class="docs-controls">
-        <input class="form-input" style="width:280px" placeholder="Buscar cliente, OS, máquina, arquivo..." autocomplete="off" name="pcm_docs_busca_nofill" data-lpignore="true" data-1p-ignore readonly onfocus="this.removeAttribute('readonly')" value="${escHtml(_docsQuery)}" oninput="_docsQuery=this.value;renderDocsList()">
+        <input class="form-input" style="width:280px" placeholder="Buscar arquivo, OS, cliente, máquina…" autocomplete="off" name="pcm_docs_busca_nofill" data-lpignore="true" data-1p-ignore readonly onfocus="this.removeAttribute('readonly')" value="${escHtml(_docsQuery)}" oninput="_docsQuery=this.value;xfQ('docs')">
         <button class="docs-chip docs-group-chip ${_docsGroupBy==='os'?'active':''}" data-group="os" onclick="_docsGroupBy='os';renderDocsList()">Por OS</button>
         <button class="docs-chip docs-group-chip ${_docsGroupBy==='cliente'?'active':''}" data-group="cliente" onclick="_docsGroupBy='cliente';renderDocsList()">Por Cliente</button>
         <button class="docs-chip docs-group-chip ${_docsGroupBy==='maquina'?'active':''}" data-group="maquina" onclick="_docsGroupBy='maquina';renderDocsList()">Por Máquina</button>
@@ -4294,63 +4321,24 @@ function renderDocsList(){
   document.querySelectorAll('.docs-group-chip').forEach(function(c){
     c.classList.toggle('active', c.dataset.group === _docsGroupBy);
   });
-  if(_docsGroupBy==='flat'){ _renderDocsFlatV94(list); return; }   // V94 — modo tabela plana (filtros de coluna XF)
-  const cats=['todas', ...Array.from(new Set(_docsCache.map(x=>x?.Categoria).filter(Boolean))).sort()];
-  const catsEl=document.getElementById('docsCats');
-  if(catsEl) catsEl.innerHTML = cats.map(c=>`<button class="docs-chip ${_docsCat===c?'active':''}" onclick="_docsCat='${escJs(c)}';renderDocsList()">${c==='todas'?'Todas':escHtml(_docCatLabel(c))}</button>`).join('');
-  const q=String(_docsQuery||'').trim().toLowerCase();
-  let items=_docsDedupFotos(_docsCache).filter(it=>_docsCat==='todas' || it?.Categoria===_docsCat); // v88 — dedup defensivo
-  if(q) items=items.filter(it=>[it?.Cliente,it?.OS_Numero,it?.Maquina_Label,it?.Maquina_ID,it?.File_Name,it?.Caption].some(v=>String(v||'').toLowerCase().includes(q)));
-  const groupsMap=new Map();
-  items.forEach(it=>{
-    let key,label;
-    if(_docsGroupBy==='cliente'){ key=_docVal(it?.Cliente); label=key; }
-    else if(_docsGroupBy==='maquina'){ key=_docVal(it?.Maquina_Label || it?.Maquina_ID); label=key; }
-    else {
-      // v74 — "Por OS": arquivos SEM OS não podem cair todos num único balde
-      // '_SEM_OS' rotulado pelo cliente do 1º item (fazia as fotos da Metalforma
-      // aparecerem sob "OS — Aluminas"). Agora os sem-OS são agrupados POR CLIENTE,
-      // com rótulo claro "Sem OS · {Cliente}". OS reais seguem agrupadas por número.
-      if(it?.OS_Numero){ key='OS::'+it.OS_Numero; label=`OS ${it.OS_Numero}`; if(it?.Cliente) label += ` · ${it.Cliente}`; }
-      else { const _cli=_docVal(it?.Cliente); key='SEMOS::'+String(_cli).toLowerCase(); label='Sem OS · '+_cli; }
-    }
-    if(!groupsMap.has(key)) groupsMap.set(key,{label,items:[],maxDate:0});
-    const g=groupsMap.get(key); g.items.push(it); g.maxDate=Math.max(g.maxDate,_docDateValue(it));
-  });
-  const groups=Array.from(groupsMap.values()).sort((a,b)=>b.maxDate-a.maxDate || a.label.localeCompare(b.label));
-  groups.forEach(g=>g.items.sort((a,b)=>_docDateValue(b)-_docDateValue(a)));
-  const counter=document.getElementById('docsCounter'); if(counter) counter.textContent=`${items.length} arquivo${items.length===1?'':'s'} · ${groups.length} grupo${groups.length===1?'':'s'}${_docsDupOcultas?` · ${_docsDupOcultas} duplicada${_docsDupOcultas===1?'':'s'} oculta${_docsDupOcultas===1?'':'s'}`:''}`;
-  if(!items.length){ list.innerHTML='<div class="empty"><div class="empty-icon">📄</div><div class="empty-title">Nenhum documento encontrado para este filtro.</div></div>'; return; }
-  // v80 — grupos RECOLHIDOS por padrão (mais OSs por tela); fotos numa galeria
-  // de miniaturas colapsável separada; PDFs/assinaturas/outros na tabela; contadores
-  // por tipo (📷/📄) no cabeçalho. Estado aberto/fechado segue _docsExpanded (persistido).
-  const openAttr = _docsExpanded ? ' open' : '';
-  list.innerHTML = groups.map(g=>{
-    const folder=(g.items.find(x=>x?.Folder_URL)||{}).Folder_URL;
-    const fotos=g.items.filter(_docIsFoto);
-    const docs =g.items.filter(it=>!_docIsFoto(it));
-    const cover=fotos.find(x=>x?.File_URL);
-    const counters=`${fotos.length?`<span class="docs-tcount foto">📷 ${fotos.length}</span>`:''}${docs.length?`<span class="docs-tcount pdf">📄 ${docs.length}</span>`:''}` || `<span class="docs-group-meta">${g.items.length} arquivo${g.items.length===1?'':'s'}</span>`;
-    const gallery = _docsGalleryHtml(fotos); // v88 — separada por máquina
-    const table = docs.length ? `<div class="table-wrap"><table><thead><tr><th>Categoria</th><th>Máquina</th><th>Arquivo</th><th>Data</th><th>Por</th><th style="text-align:right">Ações</th></tr></thead><tbody>
-      ${docs.map(it=>`<tr><td><span class="docs-badge ${_docCatClass(it?.Categoria)}">${escHtml(_docCatLabel(it?.Categoria))}</span></td><td>${escHtml(_docVal(it?.Maquina_Label || it?.Maquina_ID))}</td><td><div class="docs-file-name">${escHtml(_docVal(it?.File_Name))}</div>${it?.Caption?`<div class="docs-caption">${escHtml(it.Caption)}</div>`:''}</td><td>${escHtml(_docDateLabel(it?.Created_At))}</td><td>${escHtml(_docVal(it?.Created_By))}</td><td><div class="row-actions">${it?.File_URL?`<button class="btn btn-secondary btn-xs" onclick="_docOpen('${escJs(it.File_URL)}')">Ver</button>`:''}${it?.Folder_URL?`<button class="btn btn-secondary btn-xs" onclick="_docOpen('${escJs(it.Folder_URL)}')">Abrir pasta</button>`:''}</div></td></tr>`).join('')}
-    </tbody></table></div>` : (fotos.length ? '' : '<div class="docs-empty-mini">Nenhum documento.</div>');
-    return `<details class="docs-group"${openAttr}><summary>
-      <div class="docs-group-title"><span class="docs-group-name">${escHtml(g.label)}</span><span class="docs-count-pills">${counters}</span></div>
-      <div class="docs-actions">${cover?`<img class="docs-thumb" loading="lazy" src="${escHtml(_docThumbUrl(cover,128))}" alt="Primeira foto" onclick="event.preventDefault();_docOpen('${escJs(cover.File_URL)}')" onerror="_docThumbErr(this,'${escJs(cover.File_URL)}')">`:''}${folder?`<button class="btn btn-secondary btn-sm" onclick="event.preventDefault();_docOpen('${escJs(folder)}')">Abrir pasta</button>`:''}</div>
-    </summary>${gallery}${table}</details>`;
-  }).join('');
+  // V95 — os chips de categoria saíram: a categoria virou filtro estilo Excel
+  // da coluna CATEGORIA (com contagem por valor), em TODOS os modos.
+  const catsEl=document.getElementById('docsCats'); if(catsEl) catsEl.innerHTML='';
+  _renderDocsXfV95(list);
 }
 
-// V94 — Gestão de Documentos, modo "☰ Tabela": lista PLANA paginada com filtro
-// estilo Excel por coluna (Categoria/Cliente/Máquina/Data/Por), aprovado via
-// mockup NEWFILE_MOCKUP_PCM_DOCUMENTOS_V1_2026-07-27. Os modos agrupados
-// (Por OS/Cliente/Máquina, com galerias por máquina do v88) seguem intactos;
-// este modo serve para achar UM arquivo específico entre milhares. Os chips de
-// categoria do topo não aparecem aqui — a categoria virou filtro da coluna.
-function _renderDocsFlatV94(list){
-  const catsEl=document.getElementById('docsCats'); if(catsEl) catsEl.innerHTML='';
-  xfReg('docs', {
+// V95 — Gestão de Documentos 100% no motor XF, agrupado E plano (layout do mockup
+// NEWFILE_MOCKUP_PCM_DOCUMENTOS_V1_2026-07-27 aprovado pelo Fernando; no V94 só o
+// modo "☰ Tabela" tinha migrado — os agrupados ficaram no visual antigo, ajustado aqui).
+// - Modos Por OS / Por Cliente / Por Máquina: grupos viram LINHAS recolhidas da própria
+//   tabela (▶ rótulo · 📷 n · 📄 n · últ. data · Abrir pasta), clique expande as linhas
+//   de arquivo do grupo. Filtros de coluna funcionam DENTRO dos agrupados.
+// - Fotos mostram MINIATURA na coluna Arquivo (thumbnail v87 + fallback v88) — a
+//   informação das galerias por máquina segue acessível: agrupe "Por Máquina".
+// - "Expandir/Recolher tudo" (_docsExpanded, persistido) continua valendo.
+// - Dedup defensivo v88 (_docsDedupFotos) aplicado em todos os modos.
+function _renderDocsXfV95(list){
+  const I = xfReg('docs', {
     unit:'arquivos',
     columns:[
       {key:'cat',label:'Categoria',filter:'values',
@@ -4367,7 +4355,13 @@ function _renderDocsFlatV94(list){
         render:it=>`<span style="font-size:11px">${escHtml(_docVal(it?.Maquina_Label||it?.Maquina_ID))}</span>`},
       {key:'arquivo',label:'Arquivo',sortable:true,
         getValue:it=>_docVal(it?.File_Name),
-        render:it=>`<div style="display:flex;align-items:center;gap:7px"><span style="font-size:14px">${_docIsFoto(it)?'📷':'📄'}</span><div><div class="docs-file-name">${escHtml(_docVal(it?.File_Name))}</div>${it?.Caption?`<div class="docs-caption">${escHtml(it.Caption)}</div>`:''}</div></div>`},
+        render:it=>{
+          const nome=`<div><div class="docs-file-name">${escHtml(_docVal(it?.File_Name))}</div>${it?.Caption?`<div class="docs-caption">${escHtml(it.Caption)}</div>`:''}</div>`;
+          if(_docIsFoto(it) && it?.File_URL){
+            return `<div style="display:flex;align-items:center;gap:8px"><img class="xf-doc-thumb" loading="lazy" src="${escHtml(_docThumbUrl(it,64))}" alt="foto" onclick="_docOpen('${escJs(it.File_URL)}')" onerror="_docThumbErr(this,'${escJs(it.File_URL)}')">${nome}</div>`;
+          }
+          return `<div style="display:flex;align-items:center;gap:8px"><span style="font-size:15px">${_docIsFoto(it)?'📷':'📄'}</span>${nome}</div>`;
+        }},
       {key:'data',label:'Data',type:'date',filter:'range',
         getValue:it=>{const t=_docDateValue(it); if(!t) return ''; const d=new Date(t); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');},
         presets:[
@@ -4381,17 +4375,84 @@ function _renderDocsFlatV94(list){
       {key:'acoes',label:'Ações',thStyle:'text-align:right',
         render:it=>`<div class="row-actions">${it?.File_URL?`<button class="btn btn-secondary btn-xs" onclick="_docOpen('${escJs(it.File_URL)}')">Ver</button>`:''}${it?.Folder_URL?`<button class="btn btn-secondary btn-xs" onclick="_docOpen('${escJs(it.Folder_URL)}')">Abrir pasta</button>`:''}</div>`}
     ],
-    getData:()=>_docsDedupFotos(_docsCache),  // v88 — mesmo dedup defensivo dos modos agrupados
+    getData:()=>_docsDedupFotos(_docsCache),
     searchText:it=>[it?.Cliente,it?.OS_Numero,it?.Maquina_Label,it?.Maquina_ID,it?.File_Name,it?.Caption,_docCatLabel(it?.Categoria),it?.Created_By].map(v=>String(v==null?'':v)).join(' '),
     getQuery:()=>_docsQuery||'',
     clearQuery:()=>{_docsQuery=''; const inp=document.querySelector('.docs-controls input'); if(inp) inp.value='';},
     defaultSort:rs=>rs.sort((a,b)=>_docDateValue(b)-_docDateValue(a)),
+    groupMode:()=>_docsGroupBy==='flat'?'flat':_docsGroupBy,
+    renderGrouped:(body,rows,inst)=>_docsRenderGroupedV95(body,rows,inst),
     after:(rows)=>{
       const counter=document.getElementById('docsCounter');
-      if(counter) counter.textContent=`${rows.length} arquivo${rows.length===1?'':'s'} · modo tabela${_docsDupOcultas?` · ${_docsDupOcultas} duplicada${_docsDupOcultas===1?'':'s'} oculta${_docsDupOcultas===1?'':'s'}`:''}`;
+      if(counter){
+        const g=(_docsGroupBy!=='flat' && XF.inst['docs'].s.extra._nGrupos!=null)?` · ${XF.inst['docs'].s.extra._nGrupos} grupo${XF.inst['docs'].s.extra._nGrupos===1?'':'s'}`:' · modo tabela';
+        counter.textContent=`${rows.length} arquivo${rows.length===1?'':'s'}${g}${_docsDupOcultas?` · ${_docsDupOcultas} duplicada${_docsDupOcultas===1?'':'s'} oculta${_docsDupOcultas===1?'':'s'}`:''}`;
+      }
+      const note=document.getElementById('docsGroupNote');
+      if(note) note.textContent=(_docsGroupBy!=='flat' && XF.inst['docs'].s.extra._nGrupos!=null)?`${XF.inst['docs'].s.extra._nGrupos} grupos — clique num grupo para expandir · filtros de coluna valem aqui dentro`:'';
     }
   });
-  list.innerHTML = `<div style="display:flex;justify-content:flex-end;margin-bottom:8px">${xfBarHtml('docs')}</div>` + xfSkeletonHtml('docs');
+  if(!I.s.extra.open)   I.s.extra.open=new Set();
+  if(!I.s.extra.closed) I.s.extra.closed=new Set();
+  if(!document.getElementById('xf_docs_body')){
+    list.innerHTML = `<div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:6px">
+        <span class="tb-lbl" id="docsGroupNote" style="font-size:11px;color:var(--text3)"></span>${xfBarHtml('docs')}</div>`
+      + xfSkeletonHtml('docs');
+  }
+  xfRender('docs');
+}
+
+// chave/rótulo do grupo — MESMA semântica do agrupamento legado (v74: sem-OS por cliente)
+function _docsGroupKeyV95(it){
+  if(_docsGroupBy==='cliente'){ const v=_docVal(it?.Cliente); return {k:'CLI::'+String(v).toLowerCase(), label:v}; }
+  if(_docsGroupBy==='maquina'){ const v=_docVal(it?.Maquina_Label||it?.Maquina_ID); return {k:'MAQ::'+String(v).toLowerCase(), label:v}; }
+  if(it?.OS_Numero){ let label='OS '+it.OS_Numero; if(it?.Cliente) label+=' · '+it.Cliente; return {k:'OS::'+it.OS_Numero, label}; }
+  const cli=_docVal(it?.Cliente); return {k:'SEMOS::'+String(cli).toLowerCase(), label:'Sem OS · '+cli};
+}
+function _docsRenderGroupedV95(body,rows,inst){
+  const I=inst||XF.inst['docs'];
+  const groups=new Map();
+  rows.forEach(it=>{
+    const {k,label}=_docsGroupKeyV95(it);
+    if(!groups.has(k)) groups.set(k,{label,items:[],maxDate:0,folder:null});
+    const g=groups.get(k); g.items.push(it);
+    g.maxDate=Math.max(g.maxDate,_docDateValue(it));
+    if(!g.folder && it?.Folder_URL) g.folder=it.Folder_URL;
+  });
+  const keys=[...groups.keys()].sort((a,b)=>{
+    const ga=groups.get(a), gb=groups.get(b);
+    return gb.maxDate-ga.maxDate || ga.label.localeCompare(gb.label,'pt-BR');
+  });
+  I.s.extra._nGrupos=keys.length;
+  const isOpen=k=>_docsExpanded ? !I.s.extra.closed.has(k) : I.s.extra.open.has(k);
+  const nCols=I.cfg.columns.length;
+  let html='';
+  for(const k of keys){
+    const g=groups.get(k);
+    const nf=g.items.filter(_docIsFoto).length, np=g.items.length-nf;
+    const dt=g.maxDate?new Date(g.maxDate):null;
+    const ult=dt?(String(dt.getDate()).padStart(2,'0')+'/'+String(dt.getMonth()+1).padStart(2,'0')+'/'+dt.getFullYear()):'—';
+    const open=isOpen(k);
+    html+=`<tr class="xf-group-row${open?' xf-open':''}" data-k="${escHtml(k)}" onclick="_docsToggleGroupV95(this)"><td colspan="${nCols}">
+      <div style="display:flex;align-items:center;gap:8px">
+        <span class="xf-car">▶</span>
+        <span style="font-weight:700">${escHtml(g.label)}</span>
+        <span class="xf-gmeta">${nf?'📷 '+nf:''}${nf&&np?' · ':''}${np?'📄 '+np:''} · últ. ${ult}</span>
+        <span style="margin-left:auto;display:flex;gap:6px">${g.folder?`<button class="btn btn-secondary btn-xs" onclick="event.stopPropagation();_docOpen('${escJs(g.folder)}')">Abrir pasta</button>`:''}</span>
+      </div></td></tr>`;
+    if(open){
+      for(const it of g.items){
+        html+=`<tr>`+I.cfg.columns.map(c=>`<td class="${c.type==='num'?'xf-num':''}"${c.tdStyle?` style="${c.tdStyle}"`:''}>${c.render?c.render(it):escHtml(xfGV(c,it)==null?'—':xfGV(c,it))}</td>`).join('')+`</tr>`;
+      }
+    }
+  }
+  body.innerHTML=html;
+}
+function _docsToggleGroupV95(tr){
+  const I=XF.inst['docs']; if(!I) return;
+  const k=tr.dataset.k;
+  const set=_docsExpanded ? I.s.extra.closed : I.s.extra.open;
+  if(set.has(k)) set.delete(k); else set.add(k);
   xfRender('docs');
 }
 
@@ -4473,6 +4534,7 @@ function _usuarioEstaDigitandoEm_(el) {
     machines: 'Máquinas',
     clients: 'Clientes',
     estoque: 'Peças a Vencer',
+    docs: 'Gestão de Documentos',   // V95 — breadcrumb nunca atualizava ao entrar em Documentos (faltava no mapa)
     catalog: 'Catálogo',
     config: 'Configurações',
     tecnicos: 'Usuários',
