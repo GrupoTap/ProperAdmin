@@ -1,4 +1,44 @@
 <!--
+  PCM V98 — 29/07/2026 — PACOTE PÓS-TESTE PROFUNDO. Par: GAS v79 · PCF V68 · Forms 29/07.
+    Só mudanças ADITIVAS: nada renomeado (função, id, data-key, data-view, view, chave
+    de payload); nenhuma action nova inventada no GAS.
+    - F-07 (P1) — preventiva do PCM APAGAVA dados no servidor. salvarPreventiva montava
+      cada peça sem lastChange/valorMostrado/contador; como o GAS
+      (updateMachinePartFromPreventiva) REESCREVE a linha inteira de MACHINE_PARTS, a
+      peça mantinha o Last_Change_H antigo (voltava a VENCIDA no sync seguinte) e
+      Valor_Mostrado/Contador iam para ''. Agora o payload leva lastChange (= horímetro
+      da preventiva quando acao='trocada'; eco do valor atual nas demais) e ecoa
+      valorMostrado/contador de eq.parts[pid]. O estado local também passa a receber
+      updatedAt (ISO) — sem esse carimbo o guard LWW do V97 (syncFromGS) não protege a
+      edição, porque exige os DOIS carimbos.
+    - F-05 (P1) — Relatório de Reforma saía ESQUELETO (só Respostas_JSON + fotos de
+      pipeline_tarefa). Passa a incluir: bloco por FORMULÁRIO com os Campos_JSON
+      achatados, fotos da CORRETIVA (getFotosTarefasBase64 nunca as via — filtra
+      Entity_Type='pipeline_tarefa' e a corretiva grava entity_type:'corretiva'),
+      hidratadas por getFotoBase64, e seção de laudos/documentos PDF (inclusive
+      Categoria='pdf_corretiva') com link clicável. Anexos vêm de getAttachments —
+      action de leitura JÁ EXISTENTE. PENDÊNCIA DE COORDENAÇÃO: o GAS v79 não publica
+      leitura da aba FORMULARIOS; o PCM já consome `getFormulariosByOS`
+      ({status:'ok', formularios:[...]}) e, enquanto ela não existir, degrada em
+      silêncio (relatório sai sem o bloco, sem erro na tela).
+    - F-08 (lado cliente) — criação de OS idempotente. _gsRequestComRetry_ retenta
+      "GAS retornou HTML" até 3× e criava OS DUPLICADA. Novo client_uid (pgpUid/UUID)
+      gerado UMA vez por abertura do modal de OS e congelado em toda re-submissão e em
+      todo retry; enviado em saveOS só na criação. duplicate:true do GAS v79 é tratado
+      como SUCESSO (toast informativo, sem erro) e NÃO reinstancia o pipeline.
+    - F-30 — dashboard × Preventivas divergiam ("3 vencidas" no card, 1 na tela): o
+      dashboard/lista de máquinas avaliavam as peças contra o horímetro PROJETADO e
+      Preventivas/Catálogo/Clientes contra o CRU. Novo helper único
+      _pcmStatusMaquina(eq) (projeção, fator=1) usado por todas as telas, incluindo a
+      coluna "Restam (h)" e o filtro "Vencem em 30 dias". O horímetro REAL lido
+      continua visível na sub-linha e no tooltip (_pcmHorimTip).
+    - F-30b — _tipoLabel não conhecia auto:form03/04/05 (mostrava o tipo cru) e não
+      dizia a que formulário atual correspondem os legados. Acrescentados form01/03/04/
+      05, corretiva e genérica; legados agora dizem o par (ex.: "Form 09 (legado =
+      Peritagem Mecânica / form03)"). Só rótulo.
+    node --check ok em todos os blocos de script alterados; harness Chromium headless
+    cobrindo payload da preventiva, client_uid congelado e paridade dashboard×Preventivas.
+
   PCM V97 — 28/07/2026 — N/A DE PEÇA (E EDIÇÕES DE PEÇA) NÃO "VOLTAM" MAIS NO REFRESH. Par: GAS v77.
     Chamado do Fernando: marcar N/A no Filtro de Ar Secundário e atualizar a página
     fazia o N/A sumir. Causa no PCM: a RECONCILIAÇÃO DE VISITAS do syncFromGS replayava
@@ -713,7 +753,7 @@ v50 — Resiliência de rede: retry/backoff em gsGet e syncToGS
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>ProperCare Manager · Gestão PGP v3.36</title>
+<title>ProperCare Manager · Gestão PGP v3.37 (PCM V98)</title>
 <link rel="icon" type="image/jpeg" href="data:image/jpeg;base64,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">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -4719,7 +4759,7 @@ function renderDashboard(){
 
   let nVencidas=0, nAlertas=0, nOk=0, nSemDados=0;
   db.machines.forEach(eq=>{
-    const ws=getMachineWorstStatus(eq);
+    const ws=_pcmStatusMaquina(eq).ws;   // V98 F-30: mesma base (projetada) da tela de Preventivas
     if(ws.level==='vencido') nVencidas++;
     else if(ws.level==='alerta')  nAlertas++;
     else if(ws.level==='sem_dados') nSemDados++;
@@ -4731,7 +4771,7 @@ function renderDashboard(){
 
   // Máquinas mais urgentes (top 5 vencidas)
   const urgentes=db.machines
-    .map(eq=>({eq, ws:getMachineWorstStatus(eq)}))
+    .map(eq=>({eq, ws:_pcmStatusMaquina(eq).ws}))   // V98 F-30
     .filter(({ws})=>ws&&(ws.level==='vencido'||ws.level==='alerta'))
     .sort((a,b)=>{
       if(a.ws.level===b.ws.level) return b.ws.count-a.ws.count;
@@ -4851,16 +4891,20 @@ function renderPreventivas(){
   // filtro-extra do XF, com chip removível); a antiga fileira de botões
   // "prev-filter-btn" foi absorvida pelos cards + chips. Nova coluna "Restam (h)".
   const rows=db.machines.map(eq=>{
-    const ws=getMachineWorstStatus(eq);
+    // V98 F-30: mesma base do dashboard/lista de máquinas — horímetro PROJETADO
+    // p/ hoje. Antes esta tela usava o CRU e divergia da contagem dos cards.
+    const _st=_pcmStatusMaquina(eq);
+    const _hBase=_st.projTotal;
+    const ws=_st.ws;
     const parts=_getEffectiveParts(eq);
     let worstPart=null, worstRemaining=Infinity;
     parts.forEach(p=>{
       if(p.na||!hasVal(p.lastChange)||!p.interval) return;   // V94: hasVal — lastChange=0 é dado válido (troca no horímetro zero)
-      const {remaining}=calcPartStatus(p.lastChange,p.interval,eq.hourTotal||0);
+      const {remaining}=calcPartStatus(p.lastChange,p.interval,_hBase);
       if(remaining!==null&&remaining<worstRemaining){worstRemaining=remaining;worstPart=p;}
     });
     const level=ws?.level??'sem_dados';
-    return {eq,ws,parts,level,
+    return {eq,ws,parts,level,st:_st,hBase:_hBase,
       statusCat: level==='vencido'?'Vencidas':level==='alerta'?'Atenção':level==='ok'?'Em dia':'Sem dados',
       pior: worstPart?worstPart.name:null,
       rest: worstRemaining===Infinity?null:worstRemaining};
@@ -4878,7 +4922,8 @@ function renderPreventivas(){
     if (!eq.hpw || eq.hpw <= 0) return false;
     return r.parts.some(p => {
       if (p.na || !hasVal(p.lastChange) || !hasVal(p.interval)) return false;
-      const { status, remaining } = calcPartStatus(p.lastChange, p.interval, eq.hourTotal || 0);
+      // V98 F-30: "vencem em 30 dias" também parte do horímetro PROJETADO
+      const { status, remaining } = calcPartStatus(p.lastChange, p.interval, r.hBase);
       if (status === 'vencido') return false;
       if (remaining === null) return false;
       return (remaining / eq.hpw * 7) <= 30;
@@ -4900,9 +4945,11 @@ function renderPreventivas(){
       {key:'cliente',label:'Cliente',filter:'values',
         getValue:r=>r.eq.client||'—',
         render:r=>`<div style="font-size:12px;font-weight:600">${escHtml(r.eq.client||'—')}</div><div style="font-size:10px;color:var(--text3)">${escHtml(r.eq.city||'')}</div>`},
+      // V98 F-30: mostra o horímetro PROJETADO (base do status) e mantém a última
+      // leitura REAL visível na sub-linha + tooltip, para não esconder o dado bruto.
       {key:'hor',label:'Horímetro',type:'num',filter:'range',
-        getValue:r=>r.eq.hourTotal||0,
-        render:r=>`<span class="mach-hora">${(r.eq.hourTotal||0).toLocaleString('pt-BR')}h</span><div style="font-size:10px;color:var(--text3)">${r.eq.hpw||'—'} h/sem</div>`},
+        getValue:r=>r.hBase||0,
+        render:r=>`<span class="mach-hora" title="${escHtml(_pcmHorimTip(r.st))}">${(r.hBase||0).toLocaleString('pt-BR')}h</span><div style="font-size:10px;color:var(--text3)">${r.st&&r.st.projetado?`lido ${(r.st.raw||0).toLocaleString('pt-BR')}h · `:''}${r.eq.hpw||'—'} h/sem</div>`},
       {key:'pior',label:'Pior peça',filter:'values',
         getValue:r=>r.pior||'',
         getFilterValue:r=>r.pior||'—',
@@ -5459,11 +5506,12 @@ function renderCatalog(){
         <table class="mach-table">
           <thead><tr><th>TAG</th><th>Cliente</th><th>Horímetro</th><th>Status preventiva</th></tr></thead>
           <tbody>${machinesWithModel.slice(0,5).map(eq=>{
-            const ws=getMachineWorstStatus(eq);
+            const _st=_pcmStatusMaquina(eq);   // V98 F-30: mesma base das demais telas
+            const ws=_st.ws;
             return`<tr style="cursor:pointer" onclick="openMachineDetail('${eq.id}')">
               <td><span style="font-family:var(--font-mono),monospace;font-size:10px;background:var(--blue-light);color:var(--blue-mid);padding:2px 7px;border-radius:4px">${eq.tag||'—'}</span></td>
               <td><div style="font-weight:600;font-size:12px">${eq.client||'—'}</div><div style="font-size:10px;color:var(--text3)">${eq.branch||eq.location||''}</div></td>
-              <td><span class="mach-hora">${(eq.hourTotal||0).toLocaleString('pt-BR')}h</span></td>
+              <td><span class="mach-hora" title="${escHtml(_pcmHorimTip(_st))}">${(_st.projTotal||0).toLocaleString('pt-BR')}h</span>${_st.projetado?`<div style="font-size:10px;color:var(--text3)">lido ${(_st.raw||0).toLocaleString('pt-BR')}h</div>`:''}</td>
               <td>${!ws?'<span class="badge-sem">Sem dados</span>':ws.level==='vencido'?`<span class="badge-vencido">⛔ ${ws.label}</span>`:ws.level==='alerta'?`<span class="badge-alerta">⚠ ${ws.label}</span>`:ws.level==='sem_dados'?`<span class="badge-sem">📋 ${ws.label}</span>`:'<span class="badge-ok">✓ OK</span>'}</td>
             </tr>`;
           }).join('')}</tbody>
@@ -6973,6 +7021,34 @@ function _pcmProjHorim(eq, calib){
   out.ok=true; out.dias=dias; out.delta=delta; out.projTotal=Math.round(baseReal+delta);
   return out;
 }
+// V98 F-30 — FONTE ÚNICA do status de preventiva por máquina.
+// Dashboard/lista de máquinas já avaliavam as peças contra o horímetro PROJETADO
+// p/ hoje, enquanto Preventivas / Catálogo / Clientes avaliavam contra o horímetro
+// CRU (última leitura). Resultado visível ao usuário: o card dizia "3 vencidas",
+// ele clicava e a tela de Preventivas mostrava 1. Agora todas as telas passam por
+// aqui (projeção, fator=1). Devolve também o horímetro CRU para permanecer
+// visível/no tooltip — transparência sobre o que foi realmente lido em campo.
+function _pcmStatusMaquina(eq){
+  const _p   = _pcmProjHorim(eq, null);
+  const raw  = (eq && eq.hourTotal!=null && eq.hourTotal!=='' && !isNaN(Number(eq.hourTotal))) ? Number(eq.hourTotal) : 0;
+  const projTotal = (_p && _p.projTotal!=null && !isNaN(Number(_p.projTotal))) ? Number(_p.projTotal) : raw;
+  return {
+    ws:        getMachineWorstStatus(eq, projTotal),
+    projTotal: projTotal,
+    raw:       raw,
+    projetado: !!(_p && _p.ok) && projTotal !== raw,
+    proj:      _p
+  };
+}
+// V98 F-30: texto do tooltip do horímetro — deixa explícito quando o número
+// mostrado é projeção e qual foi a última leitura real.
+function _pcmHorimTip(st){
+  if (!st) return 'Horímetro';
+  return st.projetado
+    ? ('Projetado p/ hoje pelo regime · última leitura real ' + st.raw.toLocaleString('pt-BR') + 'h'
+       + (st.proj && st.proj.dias ? ' (' + st.proj.dias + ' d atrás)' : ''))
+    : 'Horímetro (última leitura real)';
+}
 // Projeta o "valor mostrado" de uma peça pelo MESMO delta de horas da máquina
 // (regressivo desconta, progressivo soma). Devolve o original se não for numérico.
 function _pcmProjVm(baseVm, contador, delta){
@@ -7196,18 +7272,25 @@ function getPreventivaStatusBadge(st){
 function renderFormNovaPreventiva(eq){
   const hoje = new Date().toISOString().slice(0,10);
   const parts = Object.entries(eq.parts||{});
+  // V98 F-30: a aba Resumo desta MESMA tela já avaliava as peças pelo horímetro
+  // PROJETADO (v79) e este formulário avaliava pelo CRU — a badge aqui contradizia
+  // o Resumo e o card do dashboard que trouxe o usuário até aqui. Mesma base agora.
+  // O campo "Horímetro atual" continua pré-preenchido com a ÚLTIMA LEITURA REAL:
+  // é o número que o técnico confirma/corrige e que vai ser gravado na visita.
+  const _stPrev = _pcmStatusMaquina(eq);
+  const _hPrev  = _stPrev.projTotal;
   const rows = parts.map(([pid, part])=>{
     const last = parseInt(part.lastChange)||0;
     const interval = parseInt(part.interval)||0;
     const next = last && interval ? (last + interval) : 0;
-    const st = getPartStatus(part, eq.hourTotal||0);
+    const st = getPartStatus(part, _hPrev);
     return `<tr>
       <td>${part.name||pid}</td>
       <td>${part.ref ? part.ref : '—'}</td>
       <td>${last?last.toLocaleString('pt-BR')+'h':'—'}</td>
       <td>${interval?interval.toLocaleString('pt-BR')+'h':'—'}</td>
       <td>${next?next.toLocaleString('pt-BR')+'h':'—'}</td>
-      <td>${getPreventivaStatusBadge(st)}</td>
+      <td title="${escHtml('Avaliado contra ' + _hPrev.toLocaleString('pt-BR') + 'h — ' + _pcmHorimTip(_stPrev))}">${getPreventivaStatusBadge(st)}</td>
       <td>
         <select class="form-input" id="prevAcao_${pid}" onchange="onChangePrevAcao('${pid}', this.value)" style="min-width:120px">
           <option value="">— selecionar —</option>
@@ -7229,8 +7312,10 @@ function renderFormNovaPreventiva(eq){
       </div>
       <div class="form-group" style="margin:0">
         <label class="form-label">Horímetro atual</label>
-        <input class="form-input" type="number" id="prevHorimetro" placeholder="ex. 5200" value="${eq.hourTotal||''}">
+        <input class="form-input" type="number" id="prevHorimetro" placeholder="ex. 5200" value="${eq.hourTotal||''}"
+               title="Última leitura REAL registrada. ${_stPrev.projetado?('Projeção p/ hoje pelo regime: '+_hPrev.toLocaleString('pt-BR')+'h — confirme o valor lido no equipamento.'):''}">
       </div>
+      ${_stPrev.projetado?`<div style="grid-column:1/-1;font-size:11px;color:var(--text3);margin-top:-4px">↳ Status das peças abaixo avaliado contra o horímetro <strong>projetado p/ hoje</strong> (${_hPrev.toLocaleString('pt-BR')}h) — mesma base do dashboard. Última leitura real: ${(_stPrev.raw||0).toLocaleString('pt-BR')}h.</div>`:''}
     </div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
       <div class="form-group" style="margin:0">
@@ -7340,7 +7425,19 @@ async function salvarPreventiva() {
       tipoReferencia: acao === 'trocada' && novaRefEl?.value?.trim()
                         ? 'manual'
                         : '',
-      obs:            ''
+      obs:            '',
+      // V98 F-07: o GAS (updateMachinePartFromPreventiva) REESCREVE a linha inteira
+      // de MACHINE_PARTS com o que vier aqui. Sem estes três campos ele mantinha o
+      // Last_Change_H ANTIGO (peça voltava a VENCIDA no próximo sync) e gravava ''
+      // em Valor_Mostrado/Contador (apagava o contador no servidor).
+      // 'trocada' → carimba o horímetro da preventiva; demais ações → ecoa o atual.
+      lastChange:     acao === 'trocada'
+                        ? horimetro
+                        : (hasVal(ps.lastChange) ? ps.lastChange : ''),
+      valorMostrado:  (ps.valorMostrado !== undefined && ps.valorMostrado !== null)
+                        ? ps.valorMostrado
+                        : '',
+      contador:       ps.contador || ''
     };
 
     if (acao === 'trocada' && !parts[pid].ref) {
@@ -7360,7 +7457,12 @@ async function salvarPreventiva() {
     parts[avId] = {
       name: nome, acao, ref: ref || '',
       refAnterior: '', interval,
-      tipoReferencia: 'manual', obs: obsAv || ''
+      tipoReferencia: 'manual', obs: obsAv || '',
+      // V98 F-07: mesmo contrato das peças do cadastro (peça avulsa nasce sem
+      // valorMostrado/contador, mas 'trocada' precisa carimbar o horímetro).
+      lastChange: acao === 'trocada' ? horimetro : '',
+      valorMostrado: '',
+      contador: ''
     };
   });
 
@@ -7398,6 +7500,10 @@ async function salvarPreventiva() {
   try {
     await syncToGS('savePreventiva', payload);
 
+    // V98 F-07: carimbo LWW. Sem updatedAt local, o guard do V97 (syncFromGS →
+    // rebuild v68 e replay de visitas, que exigem os DOIS carimbos) não protege
+    // esta edição e o espelho Supabase atrasado a regride no próximo sync.
+    const _prevStampISO = new Date().toISOString();
     Object.entries(parts).forEach(([pid, ps]) => {
       if (ps.acao !== 'trocada') return;
       if (!eq.parts) eq.parts = {};
@@ -7405,6 +7511,7 @@ async function salvarPreventiva() {
       eq.parts[pid].lastChange  = horimetro;
       eq.parts[pid].ref         = ps.ref;
       eq.parts[pid].refAnterior = ps.refAnterior;
+      eq.parts[pid].updatedAt   = _prevStampISO;
     });
     if (horimetro > (eq.hourTotal || 0)) eq.hourTotal = horimetro;
     save();
@@ -8392,7 +8499,7 @@ function renderMachines(){
   const nClients=Object.keys(byClient).length;
   const withModel=db.machines.filter(eq=>db.models.some(m=>modelKey(m.brand,m.model)===modelKey(eq.brand,eq.model))).length;
   const withPhotos=db.machines.filter(eq=>(eq.photos||[]).length>0).length;
-  const withAlert=db.machines.filter(eq=>{const ws=getMachineWorstStatus(eq, _pcmProjHorim(eq,null).projTotal);return ws&&(ws.level==='vencido'||ws.level==='alerta');}).length;
+  const withAlert=db.machines.filter(eq=>{const ws=_pcmStatusMaquina(eq).ws;return ws&&(ws.level==='vencido'||ws.level==='alerta');}).length;   // V98 F-30: helper único
 
   // Filtrar máquinas
   let machines=db.machines.filter(eq=>{
@@ -8456,8 +8563,9 @@ function renderMachines(){
           <th></th>
         </tr></thead>
         <tbody>${machines.length?machines.map(eq=>{
-          const _projT=_pcmProjHorim(eq,null).projTotal;   // v79: horímetro projetado p/ hoje (fator=1)
-          const ws=getMachineWorstStatus(eq, _projT);
+          const _stM=_pcmStatusMaquina(eq);                // V98 F-30: helper único (mesma base do dashboard/Preventivas)
+          const _projT=_stM.projTotal;                     // v79: horímetro projetado p/ hoje (fator=1)
+          const ws=_stM.ws;
           return`<tr>
             <td><span style="font-family:var(--font-mono),monospace;font-size:10px;background:var(--blue-light);color:var(--blue-mid);padding:2px 7px;border-radius:4px;white-space:nowrap">${eq.tag||'—'}</span></td>
             <td>
@@ -8599,9 +8707,10 @@ function renderClients(){
   // linha (✏️ ⇄ 🗑). Pronto para o pós-importação Omie (centenas de clientes).
   const rows=db.clients.map(c=>{
     const eqs=machinesByClient[clientKey(c.nome||'')]||[];
-    const nVenc=eqs.filter(eq=>{const ws=getMachineWorstStatus(eq);return ws?.level==='vencido';}).length;
-    const nAlert=eqs.filter(eq=>{const ws=getMachineWorstStatus(eq);return ws?.level==='alerta';}).length;
-    const nSemDados=eqs.filter(eq=>{const ws=getMachineWorstStatus(eq);return ws?.level==='sem_dados';}).length;
+    // V98 F-30: contagem por cliente na MESMA base (projetada) do dashboard/Preventivas
+    const nVenc=eqs.filter(eq=>{const ws=_pcmStatusMaquina(eq).ws;return ws?.level==='vencido';}).length;
+    const nAlert=eqs.filter(eq=>{const ws=_pcmStatusMaquina(eq).ws;return ws?.level==='alerta';}).length;
+    const nSemDados=eqs.filter(eq=>{const ws=_pcmStatusMaquina(eq).ws;return ws?.level==='sem_dados';}).length;
     const _normNomeC=normalizeEntityName(c.nome);
     const isDup=db.clients.filter(x=>x.id!==c.id && normalizeEntityName(x.nome)===_normNomeC).length>0;
     return {c, eqs, nVenc, nAlert, nSemDados, isDup,
@@ -8931,7 +9040,7 @@ function renderConfigStats(){
     <div class="card">
       <div style="font-size:13px;font-weight:600;margin-bottom:4px">Sobre o sistema</div>
       <div style="font-size:12px;color:var(--text2);line-height:1.8">
-        <strong>Catálogo Administrativo v3.3</strong> — Proper Compressores<br>
+        <strong>Catálogo Administrativo v3.37 · PCM V98</strong> — Proper Compressores<br>
         Catálogo de modelos · Peças com similares · Fotos · Subsistemas nomeados · Máquinas PGP com dados completos de cliente<br>
         Detecção de duplicados em modelos e máquinas · Google Sheets como backend
       </div>
@@ -11012,11 +11121,21 @@ function _openPCFFromOS(osId) {
   window.open(`${PCF_BASE_URL}?modo=pipeline&os_id=${encodeURIComponent(osId)}`, '_blank');
 }
 
+// V98 F-08 — UUID de submissão do formulário de OS. Gerado UMA vez por abertura
+// do modal e CONGELADO: o _gsRequestComRetry_ retenta "GAS retornou HTML" até 3×
+// e o duplo-clique do usuário reenvia o mesmo formulário — ambos os caminhos
+// criavam OS DUPLICADA. Com o client_uid estável o GAS v79 devolve a OS já criada
+// com duplicate:true em vez de abrir outra. Não é regerado no retry (o payload é
+// montado antes do fetch e reusado byte a byte pelo retry).
+let _osClientUid = '';
+function _novoOsClientUid(){ _osClientUid = pgpUid(); return _osClientUid; }
+
 async function openModalOS(id) {
   // v56 — Reset síncrono roda antes de qualquer await, e o modal já abre em
   // seguida (com indicador de carregamento no título) em vez de só aparecer
   // depois que tipos/usuários/máquinas terminam de carregar — antes disso
   // não havia nenhum feedback visual durante essa espera.
+  _novoOsClientUid();   // V98 F-08: um uid por abertura do formulário
   document.getElementById('osId').value = '';
   document.getElementById('osNumero').value = '';
   document.getElementById('osCliente').value = '';
@@ -11158,14 +11277,26 @@ async function saveOSModal(btnEl) {
     maquinas_vinculadas: _getSelectedOSMachineIds(),
   };
   if (id) payload.id_os = id;
+  // V98 F-08: só na CRIAÇÃO. O uid nasce em openModalOS e permanece o mesmo em
+  // toda re-submissão deste formulário (duplo-clique, retry manual) e em todo
+  // retry interno do _gsRequestComRetry_ → criação idempotente no GAS v79.
+  if (!id) payload.client_uid = (_osClientUid || _novoOsClientUid());
 
   try {
     const result = await gsPost(payload);
-    toast('OS salva com sucesso.', 'success');
+    // V98 F-08: duplicate:true = o GAS reconheceu o client_uid e devolveu a OS
+    // que já existia. É SUCESSO — nada de toast de erro.
+    if (!id && result && result.duplicate) {
+      toast('OS já registrada — reaproveitada (' + (result.numero_os || result.id_os || 'sem número') + ').', 'success');
+    } else {
+      toast('OS salva com sucesso.', 'success');
+    }
     closeModal('modalOS');
 
     // Após criar nova OS, instanciar pipeline automaticamente
-    if (!id) {
+    // V98 F-08: em duplicate:true a OS (e o pipeline dela) já existem — instanciar
+    // de novo empilharia as tarefas do template em cima das existentes.
+    if (!id && !(result && result.duplicate)) {
       const novoIdOs = result?.id_os || result?.data?.id_os;
       if (novoIdOs) {
         const tipoObj = _tiposOS.find(t => t.Tipo_ID === tipo);
@@ -12297,14 +12428,29 @@ function gerarTipoId(nome) {
     .replace(/[^A-Z0-9_]/g, '');
 }
 
+// V98 F-30b — rótulos do editor de templates. Puramente ADITIVO (só texto):
+// form03/form04/form05 e a corretiva não existiam no mapa e apareciam como o
+// tipo cru ("auto:form03"), e os legados form08/09/10 não diziam a QUAL
+// formulário atual correspondem (o GAS casa os pares em _aliasTipoTarefa_:
+// form02↔form08, form03↔form09, form04↔form10).
 function _tipoLabel(tipo) {
   const map = {
     'manual': 'Manual',
     'decisao': 'Decisão 🔀',
-    'auto:form08': 'Form 08 (legado)',
-    'auto:form02': 'Form 02',
-    'auto:form09': 'Form 09',
-    'auto:form10': 'Form 10',
+    // Formulários atuais
+    'auto:form01': 'Form 01 (Recebimento)',
+    'auto:form02': 'Form 02 (Diagnóstico sem Desmontagem)',
+    'auto:form03': 'Form 03 (Peritagem Mecânica)',
+    'auto:form04': 'Form 04 (Peritagem Elétrica)',
+    'auto:form05': 'Form 05 (Termo de Desmontagem)',
+    'auto:corretiva': 'Corretiva',
+    'auto:form_corretiva': 'Corretiva',
+    'auto:generica': 'OS Genérica',
+    'auto:form_generica': 'OS Genérica',
+    // Legados — mesmo formulário, nome antigo (aceitos pelo GAS via alias)
+    'auto:form08': 'Form 08 (legado = Diagnóstico sem Desmontagem / form02)',
+    'auto:form09': 'Form 09 (legado = Peritagem Mecânica / form03)',
+    'auto:form10': 'Form 10 (legado = Peritagem Elétrica / form04)',
     'auto:rotores': 'Rotores',
   };
   return map[tipo] || tipo;
@@ -12755,7 +12901,139 @@ function _addChecklistItem(){ _editorChecklist.push({id:'q'+(_editorChecklist.le
 function _removeChecklistItem(i){ _editorChecklist.splice(i,1); _renderChecklist(); }
 function _coletarChecklistOpcoes(){ _editorChecklist.forEach(function(q){ if (q._opcoesRaw!==undefined){ q.opcoes = String(q._opcoesRaw).split('\n').map(function(s){return s.trim();}).filter(Boolean); delete q._opcoesRaw; } }); }
 
+// ═══════════════════════════════════════════════════════════════════════════
+// V98 F-05 — INSUMOS DO RELATÓRIO DE REFORMA
+// O relatório saía ESQUELETO: só Respostas_JSON das tarefas + fotos de
+// pipeline_tarefa. Ficavam de fora (a) os Campos_JSON das linhas de FORMULARIOS
+// (forms 01-05 e corretiva) — o coração do processo —, (b) o laudo PDF em
+// TECH_ATTACHMENTS com Categoria='pdf_corretiva' e (c) as fotos da corretiva,
+// que o getFotosTarefasBase64 nunca enxerga porque filtra
+// Entity_Type==='pipeline_tarefa' e a corretiva grava entity_type:'corretiva'.
+// Os anexos vêm da action de LEITURA que JÁ EXISTE (getAttachments) + o
+// hidratador getFotoBase64 (v78). Nada inventado nesse caminho.
+// ═══════════════════════════════════════════════════════════════════════════
+
+// Texto seguro para o PDF: campos do Sheets podem vir como NUMBER/Date (lição do
+// V84) — tudo passa por String(x??'') antes de qualquer método de string.
+function _relTxt(v, max) {
+  let s = String(v ?? '');
+  if (s === '[object Object]') { try { s = JSON.stringify(v); } catch(e) { s = ''; } }
+  s = s.replace(/[\r\n\t]+/g, ' ').trim();
+  const lim = max || 300;
+  return s.length > lim ? s.slice(0, lim - 1) + '…' : s;
+}
+
+// Achata o Campos_JSON de um formulário em pares [rótulo, valor] legíveis.
+// Aceita objeto, array e valores aninhados; ignora vazios e chaves técnicas.
+function _relFlattenCampos(obj, prefixo, out, depth) {
+  out = out || []; depth = depth || 0;
+  if (obj === null || obj === undefined || depth > 3) return out;
+  const IGNORAR = /^(_|form_uid|client_uid|draftid|tarefa_id|os_id|base64|dataurl)/i;
+  if (Array.isArray(obj)) {
+    obj.forEach(function(v, i) {
+      if (v && typeof v === 'object') _relFlattenCampos(v, (prefixo ? prefixo + ' ' : '') + '#' + (i + 1), out, depth + 1);
+      else if (String(v ?? '').trim() !== '') out.push([(prefixo || 'item') + ' #' + (i + 1), _relTxt(v)]);
+    });
+    return out;
+  }
+  if (typeof obj === 'object') {
+    Object.keys(obj).forEach(function(k) {
+      if (IGNORAR.test(String(k ?? ''))) return;
+      const v = obj[k];
+      const rot = (prefixo ? prefixo + ' › ' : '') + String(k ?? '');
+      if (v && typeof v === 'object') _relFlattenCampos(v, rot, out, depth + 1);
+      else if (String(v ?? '').trim() !== '') out.push([rot, _relTxt(v)]);
+    });
+    return out;
+  }
+  if (String(obj ?? '').trim() !== '') out.push([prefixo || 'valor', _relTxt(obj)]);
+  return out;
+}
+
+// Rótulo humano do Tipo_Formulario ('form03', 'corretiva', 'form09' legado…).
+// Reusa o mapa de _tipoLabel (V98 F-30b) para não duplicar nomes.
+function _relFormLabel(tipo) {
+  const t = String(tipo ?? '').trim().toLowerCase();
+  if (!t) return 'Formulário';
+  const lbl = _tipoLabel('auto:' + t);
+  return (lbl && lbl !== 'auto:' + t) ? lbl : ('Formulário ' + String(tipo ?? ''));
+}
+
+// Linhas de FORMULARIOS da OS.
+// ATENÇÃO (coordenação): o GAS v79 NÃO publica hoje nenhuma action de leitura da
+// aba FORMULARIOS (conferido: doGet/doPost só têm getAttachments,
+// getFotosTarefasBase64, getFotosMaquina, getPipelineByOS…). O PCM já consome
+// `getFormulariosByOS` no MESMO formato de getPipelineByOS assim que ela existir;
+// enquanto não existir, a chamada falha EM SILÊNCIO e o relatório sai sem o bloco
+// (nunca com erro na cara do usuário). Nenhuma action nova foi inventada aqui.
+async function _relFormulariosOS(os_id, numero) {
+  let r = null;
+  try { r = await syncToGS('getFormulariosByOS', { os_id: os_id, os_numero: numero }); }
+  catch(e) { console.info('[V98 F-05] getFormulariosByOS indisponível no GAS — relatório sem o bloco de formulários:', e && e.message); return []; }
+  const lista = (r && (r.formularios || r.forms || r.data)) || [];
+  if (!Array.isArray(lista)) return [];
+  return lista.filter(function(f) {
+    return String((f && f.Ativo) ?? 'SIM').trim().toUpperCase() !== 'NÃO';
+  }).sort(function(a, b) {
+    return String((a && a.Data) ?? '').localeCompare(String((b && b.Data) ?? ''));
+  });
+}
+
+// Anexos (fotos + PDFs) da OS via getAttachments — action de leitura EXISTENTE.
+async function _relAnexosOS(os_id, numero) {
+  const chaves = [];
+  if (numero) chaves.push(String(numero));
+  if (os_id && String(os_id) !== String(numero)) chaves.push(String(os_id));
+  const vistos = {}, out = [];
+  for (const k of chaves) {
+    if (out.length) break;   // a 1ª chave que devolver linhas resolve — a 2ª é só fallback
+    let r = null;
+    try { r = await gsGet('getAttachments', { osNumero: k }); }
+    catch(e) { console.warn('[V98 F-05] getAttachments(' + k + '):', e && e.message); continue; }
+    ((r && r.attachments) || []).forEach(function(a) {
+      const id = String((a && (a.Attachment_ID || a.File_ID)) ?? '');
+      if (!id || vistos[id]) return;
+      vistos[id] = 1; out.push(a);
+    });
+  }
+  return out;
+}
+
+function _relEhImagem(a) {
+  return String((a && a.Mime) ?? '').indexOf('image/') === 0 ||
+         String((a && a.Categoria) ?? '').toLowerCase().indexOf('foto') === 0 ||
+         String((a && a.Attachment_Type) ?? '').toLowerCase().indexOf('foto') === 0;
+}
+function _relEhPdf(a) {
+  return String((a && a.Mime) ?? '').toLowerCase().indexOf('pdf') >= 0 ||
+         String((a && a.Categoria) ?? '').toLowerCase().indexOf('pdf') === 0 ||
+         String((a && a.File_Name) ?? '').toLowerCase().endsWith('.pdf');
+}
+
+// Hidrata em base64 (getFotoBase64, v78) as fotos que o getFotosTarefasBase64 não
+// devolve — as da CORRETIVA (entity_type:'corretiva') e outras fotos avulsas da OS.
+async function _relHidratarFotos(anexos, limite) {
+  const max = limite || 12;
+  const out = [];
+  for (const a of anexos.slice(0, max)) {
+    const fid = String((a && a.File_ID) ?? '');
+    if (!fid) continue;
+    try {
+      const r = await syncToGS('getFotoBase64', { file_id: fid });
+      if (r && r.base64) {
+        out.push({
+          dataUrl: 'data:' + String(r.mimeType || a.Mime || 'image/jpeg') + ';base64,' + r.base64,
+          caption: _relTxt((a && a.Caption) ?? '', 60),
+          fileName: _relTxt((a && a.File_Name) ?? '', 60)
+        });
+      }
+    } catch(e) { console.warn('[V98 F-05] getFotoBase64 ' + fid + ':', e && e.message); }
+  }
+  return out;
+}
+
 // v72 Fase D — relatório PDF de reforma (texto + checklist funcionais; embutir fotos = passo final, precisa de helper GAS base64)
+// V98 F-05 — passa a incluir FORMULARIOS (Campos_JSON), fotos da corretiva e laudos PDF.
 async function gerarRelatorioReforma(os_id) {
   if (!os_id) { toast('OS não informada.', 'error'); return; }
   // v87: getPipelineByOS só existe no doPost do GAS — via gsGet o doGet devolvia
@@ -12771,12 +13049,25 @@ async function gerarRelatorioReforma(os_id) {
   });
   let fotosBase64 = {};
   try { const fr = await gsGet('getFotosTarefasBase64', { os_id }); fotosBase64 = (fr && fr.fotos) || {}; } catch(e){ console.warn('fotos do relatório falharam:', e); }
-  const { jsPDF } = window.jspdf;
-  const doc = new jsPDF({ unit:'mm', format:'a4' });
-  let y = 15;
+
   // v87: OS_ID das tarefas é o id interno — usar o número real da OS quando disponível.
   const _osRec = (typeof _osList !== 'undefined' && Array.isArray(_osList)) ? _osList.find(function(o){ return o && o.id_os === os_id; }) : null;
   const numero = String((_osRec && (_osRec.numero_os || _osRec.id_os)) || (tarefas[0] && tarefas[0].OS_ID) || os_id);
+
+  // ── V98 F-05: insumos que faltavam (formulários + anexos da OS) ────────────
+  const formularios = await _relFormulariosOS(os_id, numero);
+  const anexos      = await _relAnexosOS(os_id, numero);
+  const laudosPdf   = anexos.filter(_relEhPdf);
+  // Fotos que o getFotosTarefasBase64 NÃO devolve (ele só olha pipeline_tarefa):
+  // corretiva e demais entidades. Sem isso as fotos da corretiva sumiam do PDF.
+  const fotosOutras = anexos.filter(function(a){
+    return _relEhImagem(a) && String((a && a.Entity_Type) ?? '') !== 'pipeline_tarefa';
+  });
+  const fotosCorretivaB64 = await _relHidratarFotos(fotosOutras, 12);
+
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ unit:'mm', format:'a4' });
+  let y = 15;
   doc.setFontSize(16); doc.text('Relatorio de Reforma - OS ' + numero, 14, y); y += 10;
   doc.setFontSize(10);
   let faseAtual = '';
@@ -12814,8 +13105,108 @@ async function gerarRelatorioReforma(os_id) {
       y += 34;
     });
   });
+
+  // ═══ V98 F-05 — BLOCOS NOVOS ═══════════════════════════════════════════════
+  const _nl = function(inc){ y += (inc || 5); if (y > 278) { doc.addPage(); y = 15; } };
+  const _sec = function(titulo){
+    if (y > 258) { doc.addPage(); y = 15; }
+    y += 8;
+    doc.setFontSize(13); doc.setFont(undefined, 'bold');
+    doc.text(_relTxt(titulo, 90), 14, y);
+    doc.setFont(undefined, 'normal'); doc.setFontSize(10);
+    y += 3; doc.setDrawColor(200); doc.line(14, y, 196, y); y += 6;
+  };
+
+  // 1) Um bloco por FORMULÁRIO, com os campos preenchidos (Campos_JSON)
+  if (formularios.length) {
+    _sec('Formularios da OS (' + formularios.length + ')');
+    formularios.forEach(function(f){
+      const tipo    = _relFormLabel((f && f.Tipo_Formulario) ?? '');
+      const usuario = _relTxt((f && (f.Usuario_Nome || f.Usuario_ID)) ?? '', 40);
+      const dataF   = _relTxt((f && f.Data) ?? '', 30);
+      const statusF = _relTxt((f && f.Status) ?? '', 20);
+      if (y > 265) { doc.addPage(); y = 15; }
+      doc.setFont(undefined, 'bold');
+      doc.text('* ' + _relTxt(tipo, 70), 14, y);
+      doc.setFont(undefined, 'normal'); y += 5;
+      const meta = [usuario && ('Resp.: ' + usuario), dataF && ('Data: ' + dataF), statusF && ('Status: ' + statusF)]
+                     .filter(Boolean).join('  |  ');
+      if (meta) { doc.setFontSize(8); doc.text(_relTxt(meta, 120), 18, y); doc.setFontSize(10); y += 5; }
+
+      let campos = {};
+      try { campos = JSON.parse(String((f && f.Campos_JSON) ?? '{}') || '{}'); } catch(e){ campos = {}; }
+      const pares = _relFlattenCampos(campos, '', [], 0);
+      if (!pares.length) {
+        doc.setFontSize(8); doc.text('(sem campos preenchidos)', 18, y); doc.setFontSize(10); y += 5;
+      } else {
+        doc.setFontSize(9);
+        pares.forEach(function(par){
+          const linhas = doc.splitTextToSize(_relTxt(par[0], 60) + ': ' + _relTxt(par[1], 220), 174);
+          linhas.forEach(function(ln){
+            if (y > 283) { doc.addPage(); y = 15; }
+            doc.text(ln, 18, y); y += 4;
+          });
+        });
+        doc.setFontSize(10);
+      }
+      // Fotos que o formulário registrou (Fotos_JSON) — só a contagem/legenda,
+      // o conteúdo vem embutido na seção de fotos.
+      let fotosF = null;
+      try { fotosF = JSON.parse(String((f && f.Fotos_JSON) ?? 'null') || 'null'); } catch(e){ fotosF = null; }
+      const nF = Array.isArray(fotosF) ? fotosF.length
+                 : (fotosF && typeof fotosF === 'object' ? Object.keys(fotosF).length : 0);
+      if (nF) { doc.setFontSize(8); doc.text(nF + ' foto(s) anexada(s)', 18, y); doc.setFontSize(10); y += 5; }
+      _nl(3);
+    });
+  }
+
+  // 2) Fotos da CORRETIVA (e demais fotos da OS fora do pipeline)
+  if (fotosCorretivaB64.length) {
+    _sec('Fotos da corretiva / anexos da OS (' + fotosCorretivaB64.length + ')');
+    let x = 20;
+    fotosCorretivaB64.forEach(function(im){
+      try {
+        if (x > 165) { x = 20; y += 38; if (y > 245) { doc.addPage(); y = 15; } }
+        if (y > 245) { doc.addPage(); y = 15; }
+        doc.addImage(im.dataUrl, 'JPEG', x, y, 40, 30);
+        const leg = _relTxt(im.caption || im.fileName, 26);
+        if (leg) { doc.setFontSize(7); doc.text(leg, x, y + 33); doc.setFontSize(10); }
+        x += 44;
+      } catch(e){ console.warn('[V98 F-05] addImage:', e && e.message); }
+    });
+    y += 38; if (y > 278) { doc.addPage(); y = 15; }
+  }
+
+  // 3) Laudos / documentos PDF (inclusive o 'pdf_corretiva')
+  if (laudosPdf.length) {
+    _sec('Laudos e documentos (' + laudosPdf.length + ')');
+    doc.setFontSize(9);
+    laudosPdf.forEach(function(a){
+      if (y > 280) { doc.addPage(); y = 15; }
+      const cat  = _relTxt((a && (a.Categoria || a.Attachment_Type)) ?? '', 30);
+      const nome = _relTxt((a && (a.File_Name || a.Caption)) ?? 'documento.pdf', 70);
+      const url  = String((a && a.File_URL) ?? '');
+      const rot  = '- ' + (cat ? '[' + cat + '] ' : '') + nome;
+      if (url && typeof doc.textWithLink === 'function') {
+        try { doc.textWithLink(rot, 16, y, { url: url }); }
+        catch(e){ doc.text(rot, 16, y); }
+      } else {
+        doc.text(rot, 16, y);
+      }
+      y += 4;
+      if (url) {
+        if (y > 283) { doc.addPage(); y = 15; }
+        doc.setFontSize(7); doc.text(_relTxt(url, 150), 18, y); doc.setFontSize(9); y += 4;
+      }
+    });
+    doc.setFontSize(10);
+  }
+
   doc.save('Relatorio_' + numero + '.pdf');
-  toast('Relatório gerado (texto + checklist + fotos).', 'success');
+  // V98 F-05: o toast passa a dizer o que efetivamente entrou no PDF.
+  toast('Relatório gerado — ' + tarefas.length + ' tarefa(s), ' + formularios.length +
+        ' formulário(s), ' + fotosCorretivaB64.length + ' foto(s) extra(s), ' +
+        laudosPdf.length + ' laudo(s).', 'success');
 }
 
 function saveTarefaModal() {
