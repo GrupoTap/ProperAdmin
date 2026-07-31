@@ -1,4 +1,44 @@
 <!--
+  PCM V103 — 31/07/2026 — TESTE SOFT GERAL (pré-migração Supabase/React). Par: PCF V75.
+    Varredura de bugs LEVES de UX no sistema inteiro (14 views percorridas, 173 botões
+    clicados, 21 modais auditados em Chromium headless). 10 correções, todas ADITIVAS —
+    nenhuma função, id, data-view, rota ou chave de payload renomeada/removida.
+      A1 (P1) checkModelDuplicates: `!model.length<2` é `(!model.length)<2`, SEMPRE true.
+              A função retornava cedo em 100% das chamadas — o alerta de modelo duplicado
+              nunca apareceu desde que foi escrito. Corrigido para `model.length<2`, e o
+              filtro (que só agora executa) ganhou guard String() em brand/model.
+      A2 (P1) openModalOS: data_abertura/data_prevista/status do Sheets podem vir NUMBER
+              (lição do V84). O .slice/.toUpperCase estourava no MEIO do preenchimento do
+              modal, dentro de um try/finally SEM catch: o "Carregando…" sumia, o modal
+              ficava aberto com prioridade/data/local/máquinas nos valores de RESET, e o
+              Salvar gravava esses brancos por cima da OS.
+      A3 (P2) _renderMdetResumo: `c.nome.toLowerCase()` sem guard — um único cliente sem
+              nome no cache derrubava a aba Resumo para TODAS as máquinas.
+      A4 (P1) renderSaturacao: `u.tarefas.filter()` sem guard estourava DEPOIS do
+              placeholder e a tela ficava presa em "Calculando saturação…" para sempre,
+              sem erro visível. Guard na entrada, try/catch no gantt (os cards continuam)
+              e Number() em capacidade_diaria_min/total_estimado_min (imprimiam NaN).
+      A5 (P2) Modais: de 21 (.overlay[id]) só 8 tinham × e fechamento por clique fora.
+              Causa dupla — initModalSystem() roda em L~10379 mas 5 dos 13 modais da lista
+              só são declarados a partir da L~12383 (getElementById devolvia null e
+              _bindModal saía calado), e outros 8 nunca estiveram na lista, depois que o
+              listener global de overlay foi removido. Agora _bindTodosOsModais() varre
+              TODO .overlay[id] no DOMContentLoaded (modal novo já nasce fechável) e o ESC
+              fecha o modal do topo, passando pelo closeModalSafe (a trava de "alterações
+              não salvas" continua valendo).
+      A6 (P1) Duplo-envio: saveTemplateEditor/saveUsuarioModal/savePerfilModal/saveResetPin/
+              saveTipoOSModal/resolverSolicitacaoCadastro fechavam o modal só DEPOIS do
+              await — o botão "Salvar" ficava clicável durante todo o round-trip do GAS e,
+              em cadastro NOVO (payload sem id), dois cliques criavam dois registros. Novo
+              _semDuploEnvio_(this, fn) aplicado no onclick, sem tocar no corpo das funções.
+      A7 (P3) Guard anti-autofill em mergeTargetSearch (única busca do arquivo sem ele),
+              pName e pSlot.
+      A8 (P2) _definirDataPrevista: await + `.tarefas` FORA do try — rede caindo virava
+              unhandled rejection e o admin digitava a data, apertava OK e nada acontecia.
+      A9 (P3) toggleUsuarioAtivo/togglePerfilAtivo: o confirm dizia "este usuário"/"este
+              perfil" sem identificar qual (padrão correto já existia em toggleTipoOS).
+    32 testes de verificação + 4 baterias de regressão, 0 falhas. node --check ok.
+
   PCM V102 — 31/07/2026 — O CLIENTE PARA DE VOLTAR PARA "SEM CADASTRO COMPLETO".
   Par: GAS v82 + PCF V74 (+sw v74). Fecha o caso EMOP/Herculano por inteiro.
 
@@ -1607,7 +1647,7 @@ th.xf-filtered .xf-fun{opacity:1;stroke:var(--accent)}
 <aside class="nav-sidebar" aria-label="Navegação principal">
   <div class="nav-brand">
     <span class="nav-brand-mark">PCM</span>
-    <span class="nav-brand-sub">v3.20</span>
+    <span class="nav-brand-sub">v3.21</span>
   </div>
 
   <nav class="nav-groups">
@@ -1976,7 +2016,7 @@ th.xf-filtered .xf-fun{opacity:1;stroke:var(--accent)}
     <div class="modal-title">🔧 <span id="modalPartTitle">Nova peça</span></div>
     <div class="form-group">
       <label class="form-label">Nome da peça</label>
-      <input class="form-input" id="pName" placeholder="ex: Filtro de óleo, Separador ar/óleo, Vedação do eixo">
+      <input class="form-input" id="pName" placeholder="ex: Filtro de óleo, Separador ar/óleo, Vedação do eixo" autocomplete="off" name="pcm_pname_nofill" data-lpignore="true" data-1p-ignore><!-- V103: anti-autofill -->
     </div>
     <div class="form-row">
       <div class="form-group">
@@ -2046,8 +2086,8 @@ th.xf-filtered .xf-fun{opacity:1;stroke:var(--accent)}
     <div class="form-row">
       <div class="form-group">
         <label class="form-label">Slot funcional <span>opcional — para busca por tipo</span></label>
-        <input class="form-input" id="pSlot" list="slotSuggestions"
-               placeholder="ex: oil_filter, air_filter, separator, belt">
+        <input class="form-input" id="pSlot" list="slotSuggestions" autocomplete="off" name="pcm_pslot_nofill" data-lpignore="true" data-1p-ignore
+               placeholder="ex: oil_filter, air_filter, separator, belt"><!-- V103: anti-autofill -->
         <datalist id="slotSuggestions">
           <option value="oil_filter">
           <option value="air_filter_primary">
@@ -2356,7 +2396,7 @@ th.xf-filtered .xf-fun{opacity:1;stroke:var(--accent)}
     </div>
     <div class="form-group">
       <label class="form-label">Transferir para o cliente cadastrado</label>
-      <input class="form-input" id="mergeTargetSearch" placeholder="Digite para buscar o cliente de destino..." oninput="renderMergeTargetList(this.value)" autocomplete="off">
+      <input class="form-input" id="mergeTargetSearch" placeholder="Digite para buscar o cliente de destino..." oninput="renderMergeTargetList(this.value)" autocomplete="off" name="pcm_merge_busca_nofill" data-lpignore="true" data-1p-ignore readonly onfocus="this.removeAttribute('readonly')"><!-- V103: guard anti-autofill completo (era a única busca do arquivo sem ele) -->
       <div id="mergeTargetList" style="margin-top:6px;max-height:220px;overflow-y:auto;border:1px solid var(--gray-200,#e5e7eb);border-radius:6px"></div>
     </div>
     <div id="mergeSelectedBox" style="display:none;font-size:12px;background:#eef7ee;border:1px solid #bfe3bf;border-radius:6px;padding:8px 10px;margin-top:4px">
@@ -3184,7 +3224,47 @@ function initModalSystem() {
   ['modalModel','modalSub','modalPart','modalMachine','modalMachineParts','modalClient','modalCompat','modalDeleteOrphan',
    'modalUsuario','modalResetPin','modalPerfil','modalOS','modalTrocarPipeline']
     .forEach(_bindModal);
+  _bindTodosOsModais(); // V103
 }
+
+// V103 (P2) — TESTE SOFT 31/07: de 21 modais (.overlay[id]) só 8 tinham × e
+// fechamento por clique fora. Duas causas somadas:
+//   (a) initModalSystem() roda em L~10379, mas modalUsuario/modalResetPin/
+//       modalPerfil/modalTrocarPipeline/modalOS só são declarados a partir da
+//       L~12383 — no momento da chamada getElementById devolvia null e
+//       _bindModal saía calado (o `if (!overlay) return`);
+//   (b) modalSubLibList/modalSubLib/modalLinkSubLib/modalMergeClient/
+//       modalEmpilhar/modalFilaOficina/modalTipoOS/modalTarefaEditor nunca
+//       estiveram na lista, e o listener global de overlay tinha sido removido.
+// Resultado: "clicar fora fecha" funcionava em uns e não em outros, sem padrão.
+// Aqui varremos TODO .overlay[id] depois do DOM pronto — modal novo passa a
+// nascer com × e clique-fora de graça, sem precisar entrar em lista nenhuma.
+function _bindTodosOsModais() {
+  try {
+    document.querySelectorAll('.overlay[id]').forEach(function(ov){
+      if (ov.dataset.modalBound === '1') return;
+      ov.dataset.modalBound = '1';
+      _bindModal(ov.id);
+    });
+  } catch(e) { console.warn('[V103] _bindTodosOsModais:', e); }
+}
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', _bindTodosOsModais);
+} else {
+  setTimeout(_bindTodosOsModais, 0);
+}
+
+// V103 (P2) — ESC fecha o modal aberto mais acima. Antes o ESC só fechava o menu
+// de coluna do motor XF (L~2704); em 21 modais, nenhum respondia à tecla.
+// Passa pelo closeModalSafe, então a trava de "alterações não salvas" continua valendo.
+document.addEventListener('keydown', function(e){
+  if (e.key !== 'Escape' && e.key !== 'Esc') return;
+  var abertos = [].slice.call(document.querySelectorAll('.overlay.open[id]'));
+  if (!abertos.length) return;
+  var topo = abertos[abertos.length - 1];
+  e.preventDefault();
+  try { closeModalSafe(topo.id); } catch(err) { topo.classList.remove('open'); }
+});
 
 // ─── Sistema de ajuda contextual (base para Etapa 3) ─────────────────────
 let _activeHelpPopover = null;
@@ -6214,9 +6294,16 @@ function openModalModel(id=null){
 function checkModelDuplicates(){
   const brand=document.getElementById('mBrand').value.trim();
   const model=document.getElementById('mModel').value.trim();
-  if(!brand||!model.length<2){document.getElementById('dupModelAlert').classList.remove('show');return}
+  // V103 (P1) — precedência de operador: `!model.length<2` é `(!model.length)<2`,
+  // que é SEMPRE true (true<2 e false<2). A função retornava cedo em 100% das
+  // chamadas e o alerta #dupModelAlert nunca apareceu desde que foi escrito —
+  // o admin cadastrava modelo duplicado sem nenhum aviso. Agora `model.length<2`.
+  if(!brand||model.length<2){document.getElementById('dupModelAlert').classList.remove('show');return}
   const key=modelKey(brand,model);
-  const dups=db.models.filter(m=>modelKey(m.brand,m.model)===key||(m.brand.toLowerCase()===brand.toLowerCase()&&m.model.toLowerCase().includes(model.toLowerCase().slice(0,4))));
+  // V103 — com o if corrigido esta linha passa a EXECUTAR de verdade: guard String()
+  // obrigatório (modelo vindo do Sheets pode ter brand/model vazio ou numérico).
+  const _lc=x=>String(x==null?'':x).toLowerCase();
+  const dups=db.models.filter(m=>modelKey(m.brand,m.model)===key||(_lc(m.brand)===_lc(brand)&&_lc(m.model).includes(_lc(model).slice(0,4))));
   if(dups.length){
     document.getElementById('dupModelAlert').classList.add('show');
     document.getElementById('dupModelList').innerHTML=dups.map(m=>`
@@ -7237,7 +7324,10 @@ function _renderMdetResumo(eq, calib){
   const proj = _pcmProjHorim(eq, calib);
   const hourTotal = proj.ok ? proj.projTotal : (eq.hourTotal||0);
   const hpw = eq.hpw||0;
-  const clientReg = db.clients ? db.clients.find(c=>c.nome.toLowerCase().trim()===(eq.client||'').toLowerCase().trim()) : null;
+  // V103 (P2) — eq.client estava guardado, c.nome NÃO: um único cliente sem nome
+  // no cache (vem do espelho/resolverSolicitacaoCadastro) derrubava a aba Resumo do
+  // modal de detalhe para TODAS as máquinas.
+  const clientReg = db.clients ? db.clients.find(c=>String(c.nome==null?'':c.nome).toLowerCase().trim()===String(eq.client||'').toLowerCase().trim()) : null;
   const driveUrl = clientReg?.drive_url || eq.driveLink || '';
   const titleEl = document.getElementById('modalMachinePartsTitle');
   if(titleEl) titleEl.textContent = `${eq.brand} ${eq.model} — ${eq.client}`;
@@ -8955,7 +9045,7 @@ function renderSolicitacoesCadastro(){
                   : '<div style="font-size:12px;color:var(--text3);margin-bottom:6px"><i>Sem alteração de campo — só a observação abaixo.</i></div>') +
           (sol.justificativa ? '<div style="font-size:12px;background:#f8fafc;border-left:3px solid var(--gray-300,#cbd5e1);padding:6px 9px;border-radius:0 6px 6px 0;margin-bottom:8px">' + _solicEsc(sol.justificativa) + '</div>' : '') +
           '<div style="display:flex;gap:8px;flex-wrap:wrap">' +
-            '<button class="btn btn-primary" style="font-size:11px" onclick="resolverSolicitacaoCadastro(\'' + _solicEsc(sol.solic_id) + '\',\'aprovar\')">✓ Aprovar e aplicar</button>' +
+            '<button class="btn btn-primary" style="font-size:11px" onclick="_semDuploEnvio_(this, () => resolverSolicitacaoCadastro(\'' + _solicEsc(sol.solic_id) + '\',\'aprovar\'))">✓ Aprovar e aplicar</button>' +
             '<button class="btn btn-secondary" style="font-size:11px" onclick="resolverSolicitacaoCadastro(\'' + _solicEsc(sol.solic_id) + '\',\'rejeitar\')">✕ Rejeitar</button>' +
           '</div>' +
         '</div>';
@@ -10771,7 +10861,10 @@ async function saveResetPin() {
 }
 
 async function toggleUsuarioAtivo(id, isAtivo) {
-  if (!confirm(`${isAtivo ? 'Inativar' : 'Ativar'} este usuário?`)) return;
+  // V103 (P3) — "este usuário" não identifica ninguém num confirm nativo disparado
+  // de dentro de uma linha de tabela. Padrão correto já existia em toggleTipoOS.
+  const _nomeUsu = ((_usuList || []).find(u => String(u.id || u.id_usuario) === String(id)) || {}).nome || id;
+  if (!confirm(`${isAtivo ? 'Inativar' : 'Ativar'} o usuário "${_nomeUsu}"?`)) return;
   try {
     await gsPost({ action: 'saveUsuario', id, ativo: isAtivo ? 'NÃO' : 'SIM' });
     toast(`Usuário ${isAtivo ? 'inativado' : 'ativado'}.`, 'success');
@@ -10929,7 +11022,9 @@ async function savePerfilModal() {
 }
 
 async function togglePerfilAtivo(id, isAtivo) {
-  if (!confirm(`${isAtivo ? 'Desativar' : 'Ativar'} este perfil?`)) return;
+  // V103 (P3) — idem: o confirm agora diz QUAL perfil.
+  const _nomePerf = ((_perfilList || []).find(p => String(p.id || p.id_perfil) === String(id)) || {}).nome || id;
+  if (!confirm(`${isAtivo ? 'Desativar' : 'Ativar'} o perfil "${_nomePerf}"?`)) return;
   try {
     await gsPost({ action: isAtivo ? 'deletePerfil' : 'savePerfil',
       id_perfil: id, ativo: isAtivo ? 'NÃO' : 'SIM' });
@@ -10946,6 +11041,23 @@ async function togglePerfilAtivo(id, isAtivo) {
 // o botão e troca seu texto por um indicador visual enquanto a Promise não
 // resolve; restaura estado original (texto + disabled) no finally, mesmo em
 // caso de erro. Uso: async function fn(btn) { await _comLoadingBtn_(btn, async () => { ... }); }
+// V103 (P1/P2) — TESTE SOFT 31/07: trava de DUPLO-ENVIO aplicada no onclick, sem
+// mexer no corpo das funções de save. O padrão do arquivo era `onclick="saveX()"`
+// com o `closeModal` só DEPOIS do await: durante todo o round-trip do GAS o botão
+// "Salvar" continuava clicável. Em cadastro NOVO o payload vai sem id, então dois
+// cliques = dois registros (template, usuário e perfil duplicados). Uso:
+//   onclick="_semDuploEnvio_(this, saveUsuarioModal)"
+//   onclick="_semDuploEnvio_(this, () => resolverSolicitacaoCadastro('X','aprovar'))"
+async function _semDuploEnvio_(btnEl, fn) {
+  if (btnEl && btnEl.dataset.pcmEnviando === '1') return;   // 2º clique: ignora
+  if (btnEl) btnEl.dataset.pcmEnviando = '1';
+  try {
+    return await _comLoadingBtn_(btnEl, fn);
+  } finally {
+    if (btnEl) delete btnEl.dataset.pcmEnviando;
+  }
+}
+
 async function _comLoadingBtn_(btnEl, asyncFn) {
   if (!btnEl) return asyncFn();
   const textoOriginal = btnEl.textContent;
@@ -11550,10 +11662,16 @@ async function openModalOS(id) {
       document.getElementById('osClienteId').value = os.id_cliente || '';
       document.getElementById('osTipoOS').value = os.tipo_os || '';
       document.getElementById('osDescricao').value = os.descricao || '';
-      document.getElementById('osStatus').value = (os.status || 'ABERTA').toUpperCase().replace('-','_');
-      if (os.data_abertura) document.getElementById('osDataAbertura').value = os.data_abertura.slice(0,10);
+      // V103 (P1) — mesma doença do numero_os NUMBER (lição do V84): célula de data
+      // ou de status numérica no Sheets fazia .slice/.toUpperCase estourar NO MEIO do
+      // preenchimento. O bloco tem try/finally SEM catch: o "Carregando…" sumia, o modal
+      // ficava aberto e prioridade/data prevista/local/máquinas ficavam no valor de RESET
+      // — e o Salvar gravava esses brancos por cima da OS. _gosData (L~11212) já fazia
+      // String() nesse mesmo campo; aqui faltava.
+      document.getElementById('osStatus').value = String(os.status || 'ABERTA').toUpperCase().replace('-','_');
+      if (os.data_abertura) document.getElementById('osDataAbertura').value = String(os.data_abertura).slice(0,10);
       document.getElementById('osPrioridade').value = os.prioridade || 'normal';
-      if (os.data_prevista) document.getElementById('osDataPrevista').value = os.data_prevista.slice(0,10);
+      if (os.data_prevista) document.getElementById('osDataPrevista').value = String(os.data_prevista).slice(0,10);
       document.getElementById('osLocalAtendimento').value = (os.local_atendimento === 'interno') ? 'interno' : 'externo';
       _populateOSUsuarioSelect(os.usuario_atual || '');
       try {
@@ -12016,8 +12134,18 @@ async function _resolverDecisao(osId, tarefaId, valor, btnEl) {
 async function _definirDataPrevista(osId, tarefaId, dataAtual) {
   const novaData = prompt('Data prevista (AAAA-MM-DD):', dataAtual ? dataAtual.slice(0,10) : '');
   if (novaData === null) return;
-  const tarefaAtual = (await syncToGS('getPipelineByOS', { os_id: osId })).tarefas
-    .find(t => t.Tarefa_ID === tarefaId);
+  // V103 (P2) — este await e o `.tarefas` estavam FORA do try abaixo e sem guard:
+  // rede caindo (ou GAS sem `tarefas` no envelope) virava unhandled rejection. O
+  // admin digitava a data no prompt, apertava OK e NADA acontecia — sem toast, sem
+  // erro, sem pista. Agora falha com mensagem.
+  let tarefaAtual;
+  try {
+    const _r = await syncToGS('getPipelineByOS', { os_id: osId });
+    tarefaAtual = ((_r && _r.tarefas) || []).find(t => t.Tarefa_ID === tarefaId);
+  } catch (e) {
+    toast('Não foi possível ler o pipeline da OS: ' + (e && e.message || 'erro de conexão'), 'error');
+    return;
+  }
   if (!tarefaAtual) { toast('Tarefa não encontrada.', 'error'); return; }
   try {
     await syncToGS('updateTarefaStatus', {
@@ -12419,7 +12547,7 @@ if(!gsUrl){
     </div>
     <div class="modal-footer">
       <button class="btn btn-secondary" onclick="closeModal('modalUsuario')">Cancelar</button>
-      <button class="btn btn-primary" onclick="saveUsuarioModal()">Salvar</button>
+      <button class="btn btn-primary" onclick="_semDuploEnvio_(this, saveUsuarioModal)">Salvar</button>
     </div>
   </div>
 </div>
@@ -12439,7 +12567,7 @@ if(!gsUrl){
     </div>
     <div class="modal-footer">
       <button class="btn btn-secondary" onclick="closeModal('modalResetPin')">Cancelar</button>
-      <button class="btn btn-primary" onclick="saveResetPin()">Salvar PIN</button>
+      <button class="btn btn-primary" onclick="_semDuploEnvio_(this, saveResetPin)">Salvar PIN</button>
     </div>
   </div>
 </div>
@@ -12472,7 +12600,7 @@ if(!gsUrl){
     </div>
     <div class="modal-footer">
       <button class="btn btn-secondary" onclick="closeModal('modalPerfil')">Cancelar</button>
-      <button class="btn btn-primary" onclick="savePerfilModal()">Salvar</button>
+      <button class="btn btn-primary" onclick="_semDuploEnvio_(this, savePerfilModal)">Salvar</button>
     </div>
   </div>
 </div>
@@ -12644,7 +12772,7 @@ if(!gsUrl){
     </div>
     <div class="modal-footer">
       <button class="btn btn-secondary" onclick="closeModal('modalTipoOS')">Cancelar</button>
-      <button class="btn btn-primary" onclick="saveTipoOSModal()">Salvar</button>
+      <button class="btn btn-primary" onclick="_semDuploEnvio_(this, saveTipoOSModal)">Salvar</button>
     </div>
   </div>
 </div>
@@ -12963,7 +13091,7 @@ function _renderTemplateEditor(el) {
       <button class="btn btn-secondary btn-sm" onclick="_voltarListaTemplates()">← Lista de templates</button>
       <input class="tpl-editor-name-input" id="tplNomeInput" type="text"
         placeholder="Nome do template..." value="${(_editorTemplate.nome||'').replace(/"/g,'&quot;')}">
-      <button class="btn btn-primary" id="btnSalvarTemplate" onclick="saveTemplateEditor()">Salvar template</button>
+      <button class="btn btn-primary" id="btnSalvarTemplate" onclick="_semDuploEnvio_(this, saveTemplateEditor)">Salvar template</button>
     </div>
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
       <span style="font-size:13px;color:var(--text-muted)">Fases do pipeline:</span>
@@ -15008,7 +15136,15 @@ async function renderSaturacao() {
     return;
   }
 
-  const usuarios = result?.usuarios || [];
+  const usuarios = (result?.usuarios || []).map(u => Object.assign({}, u, {
+    // V103 (P1) — GAS antigo (ou payload parcial) devolve usuário SEM `tarefas`, e
+    // _renderGanttSaturacao fazia u.tarefas.filter(...) direto: a exceção subia DEPOIS
+    // do placeholder e a tela ficava presa em "Calculando saturação…" para sempre,
+    // sem erro nenhum na cara do admin. Guard na entrada + try/catch na saída.
+    tarefas: Array.isArray(u && u.tarefas) ? u.tarefas : [],
+    total_tarefas: Number(u && u.total_tarefas) || 0,
+    total_estimado_min: Number(u && u.total_estimado_min) || 0
+  }));
   if (!usuarios.length) {
     el.innerHTML = `<div class="empty">
       <div class="empty-icon">📊</div>
@@ -15019,7 +15155,7 @@ async function renderSaturacao() {
   }
 
   let html = `<div style="font-size:18px;font-weight:700;margin-bottom:4px">Saturação de usuários</div>
-    <div style="font-size:12px;color:var(--text2);margin-bottom:16px">Fila de tarefas designadas, não concluídas · Capacidade diária: ${Math.round(result.capacidade_diaria_min)} min</div>
+    <div style="font-size:12px;color:var(--text2);margin-bottom:16px">Fila de tarefas designadas, não concluídas · Capacidade diária: ${Math.round(Number(result.capacidade_diaria_min) || 0)} min</div>
     <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;margin-bottom:24px">`;
 
   usuarios.forEach((u, idx) => {
@@ -15033,7 +15169,15 @@ async function renderSaturacao() {
     </div>`;
   });
 
-  html += `</div>` + _renderGanttSaturacao(usuarios);
+  // V103 (P1) — o gantt é a parte frágil (depende de u.tarefas e de datas do Sheets).
+  // Se ele falhar, os CARDS de saturação continuam aparecendo, em vez de a tela toda
+  // ficar congelada no "Calculando saturação…".
+  try {
+    html += `</div>` + _renderGanttSaturacao(usuarios);
+  } catch (e) {
+    console.warn('[V103] gantt de saturação falhou:', e);
+    html += `</div><div class="empty" style="padding:20px"><div class="empty-sub">⚠ Não foi possível montar o calendário de tarefas (${escHtml(e && e.message || 'erro')}). Os totais por usuário acima continuam válidos.</div></div>`;
+  }
   el.innerHTML = html;
 }
 
@@ -15060,7 +15204,8 @@ function _renderGanttSaturacao(usuarios) {
       </tr></thead><tbody>`;
 
   usuarios.forEach(u => {
-    const semData = u.tarefas.filter(t => !t.data_prevista);
+    const _tarefas = Array.isArray(u && u.tarefas) ? u.tarefas : []; // V103: guard duplo
+    const semData = _tarefas.filter(t => !t.data_prevista);
     html += `<tr>
       <td style="padding:6px;border-bottom:1px solid var(--border);font-weight:600;white-space:nowrap">${escHtml(u.usuario)}</td>
       <td style="padding:6px;border-bottom:1px solid var(--border);vertical-align:top">
@@ -15068,7 +15213,7 @@ function _renderGanttSaturacao(usuarios) {
       </td>
       ${colunas.map(d => {
         const chave = chaveDia(d);
-        const doDia = u.tarefas.filter(t => t.data_prevista && String(t.data_prevista).slice(0,10) === chave);
+        const doDia = _tarefas.filter(t => t.data_prevista && String(t.data_prevista).slice(0,10) === chave);
         return `<td style="padding:6px;border-bottom:1px solid var(--border);vertical-align:top">
           ${doDia.map(t => `<div style="background:var(--accent);color:#fff;border-radius:4px;padding:2px 6px;margin-bottom:2px;white-space:nowrap" title="${escHtml(t.nome)} (OS ${escHtml(t.os_id)})">${escHtml(t.nome).slice(0,14)}</div>`).join('')}
         </td>`;
