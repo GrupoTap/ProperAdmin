@@ -1,4 +1,28 @@
 <!--
+  PCM V102 — 31/07/2026 — O CLIENTE PARA DE VOLTAR PARA "SEM CADASTRO COMPLETO".
+  Par: GAS v82 + PCF V74 (+sw v74). Fecha o caso EMOP/Herculano por inteiro.
+
+  A METADE QUE ERA DAQUI: `syncToGS` é async e era chamada SEM await, dentro de
+  try/catch SÍNCRONO, em saveClient, _confirmMergeClient, deleteClient e nos 3
+  pontos de saveMachine que mexem em cliente. A rejeição virava unhandled: o
+  admin via "✓ sucesso", a mudança ficava só no localStorage e o refresh
+  seguinte restaurava o estado antigo do servidor. Nunca houve erro na tela —
+  por isso "recadastrei e voltou" parecia bug de servidor.
+  • Toda escrita de cadastro agora é aguardada e falha aparece em VERMELHO,
+    dizendo exatamente o que aconteceu ("salvo SÓ neste PC — planilha não
+    recebeu"). Nenhum "✓" mentiroso sobra.
+  • O ID CANÔNICO devolvido pelo GAS v82 é adotado no cadastro novo (o GAS casa
+    por nome/CNPJ e nesse caso o ID dele é outro — ficar com o local quebrava a
+    poda V93 e todo match por clientId). Reativação avisa na tela.
+  • JANELA PÓS-ESCRITA (35 min): depois de qualquer escrita de cadastro as
+    leituras vão pelo GAS e a poda V93 de CLIENTES fica suspensa — cinto E
+    suspensório caso o push do espelho falhe.
+  • DATA_SCHEMA_VERSION 80 → 82: ressync limpo em todos os PCs no deploy.
+  • NOVO: fila "✏️ Pedidos de correção de cadastro" no topo da tela de Clientes.
+    É o outro lado do cadeado do PCF V74 — dentro de uma OS o técnico não edita
+    mais cadastro de cliente (foi assim que "Herculano Mineradora" nasceu); ele
+    manda um pedido e o admin aprova (aplica) ou rejeita aqui.
+
   PCM V101 — 31/07/2026 — O RELATÓRIO DO ADM FICA COMPLETO.
   Par: GAS v81 + PCF V73. As lacunas "—" da V100 eram de LEITURA, não de dado:
   o GAS gravava telefone/e-mail/cidade/obs_op/regime/OS_Numero/auxiliar/horas
@@ -1770,6 +1794,10 @@ th.xf-filtered .xf-fun{opacity:1;stroke:var(--accent)}
           <button class="btn btn-primary" onclick="openModalClient()">+ Novo cliente</button>
         </div>
       </div>
+      <!-- V102 — pedidos de correção de cadastro mandados pelo técnico em campo
+           (PCF V74). Fica no topo da tela de clientes de propósito: é onde o
+           admin já vai quando desconfia de cadastro errado. -->
+      <div id="solicCadastroWrap" style="display:none;margin-bottom:14px"></div>
       <div id="clientsBody"></div>
     </div>
     <!-- ESTOQUE VIEW -->
@@ -3225,7 +3253,10 @@ function showHelp(el, key) {
 // o localStorage (proper_admin_v2) sozinho no próximo carregamento e ressincroniza
 // do Sheets — sem precisar "limpar dados do site" no Chrome. Suba o número sempre
 // que uma correção exigir reconstruir o cache do zero.
-const DATA_SCHEMA_VERSION = '80';
+// V102: 80 → 82 (pula o 81 de propósito — o V101 subiu sem tocar no schema).
+// Bump força ressync limpo em TODOS os PCs no primeiro load após o deploy, que
+// é justamente o que cura o cache local dos clientes fantasma.
+const DATA_SCHEMA_VERSION = '82';
 try {
   const _sv = localStorage.getItem('proper_schema_version');
   if (_sv !== DATA_SCHEMA_VERSION) {
@@ -3750,7 +3781,12 @@ function openModalClient(id){
   _captureFormSnapshot('modalClient');
 }
 
-function saveClient(){
+// V102 (F-3): era `function saveClient()` chamando `syncToGS(...)` — async — de
+// dentro de um try/catch SÍNCRONO. A rejeição virava unhandled: o admin via
+// "✓ sucesso", a mudança ficava só no localStorage e o próximo refresh
+// restaurava o estado antigo do servidor. É a metade do caso Herculano/EMOP que
+// não estava no GAS: a escrita nunca tinha chegado à planilha.
+async function saveClient(){
   const nome=document.getElementById('clNome').value.trim();
   if(!nome){toast('Informe o nome do cliente','error');return;}
   if(!db.clients) db.clients=[];
@@ -3821,9 +3857,10 @@ function saveClient(){
           const changedMachines = reassignMachinesToClient(sourceId, sourceName, merged);
           db.clients = db.clients.filter(c => c.id !== sourceId || c.id === merged.id);
           try{
-            syncToGS('saveClient', { client: merged });
-            syncToGS('mergeClients', { sourceId, sourceName, targetId: merged.id, targetName: merged.nome, client: merged, deletedBy:'admin' });
-          }catch(e){toast('Mescla local salva; sincronização pendente','warning');}
+            await syncToGS('saveClient', { client: merged });
+            await syncToGS('mergeClients', { sourceId, sourceName, targetId: merged.id, targetName: merged.nome, client: merged, deletedBy:'admin' });
+            _pcmMarcarEscritaCadastro();
+          }catch(e){toast('⚠ Mescla NÃO chegou à planilha (ficou só neste PC): ' + (e && e.message || e),'error');}
           toast(`Cliente mesclado (${changedMachines} máquinas atualizadas)`,'success');
           _pendingClientMergeSourceId = null;
           _pendingClientMergeSourceName = '';
@@ -3836,16 +3873,35 @@ function saveClient(){
         db.clients[idx]=canonical;
         const changedMachines = reassignMachinesToClient(sourceId, sourceName, canonical);
         if(sourceId && sourceId !== canonical.id){ db.clients = db.clients.filter(c => c.id !== sourceId); }
-        try{ syncToGS('saveClient',{client:canonical}); }catch(e){ toast('Cliente salvo localmente; sync pendente','warning'); }
-        if(changedMachines>0){ try{ syncToGS('mergeClients', { sourceId, sourceName, targetId: canonical.id, targetName: canonical.nome, client: canonical, deletedBy:'admin' }); }catch(e){} }
-        toast('Cliente atualizado','success');
+        let _okCanon = true;
+        try{ await syncToGS('saveClient',{client:canonical}); _pcmMarcarEscritaCadastro(); }
+        catch(e){ _okCanon = false; toast('⚠ Cliente salvo SÓ neste PC — planilha não recebeu: ' + (e && e.message || e),'error'); }
+        if(changedMachines>0){
+          try{ await syncToGS('mergeClients', { sourceId, sourceName, targetId: canonical.id, targetName: canonical.nome, client: canonical, deletedBy:'admin' }); _pcmMarcarEscritaCadastro(); }
+          catch(e){ _okCanon = false; toast('⚠ Transferência de máquinas NÃO sincronizada: ' + (e && e.message || e),'error'); }
+        }
+        if(_okCanon) toast('Cliente atualizado','success');
       }
       _pendingClientMergeSourceId = null;
       _pendingClientMergeSourceName = '';
     } else {
       db.clients.push(data);
       console.warn('saveClient: editClientId não encontrado, criou novo:', data.id);
-      toast('Cliente cadastrado','success');
+      // V102 (ACHADO no harness): este ramo criava o cliente e NUNCA sincronizava
+      // — `_wasEdit` é true e o bloco de sync do final só roda quando é false.
+      // Cliente nascido por aqui existia só neste PC e sumia no refresh: a
+      // mesma classe do "volta para sem cadastro completo".
+      try{
+        const _r = await syncToGS('saveClient',{client:data});
+        if (_r && _r.id && _r.id !== data.id) {
+          const _o = data.id; data.id = _r.id;
+          (db.machines||[]).forEach(m=>{ if(m.clientId===_o) m.clientId = _r.id; });
+        }
+        _pcmMarcarEscritaCadastro();
+        toast('Cliente cadastrado ✓','success');
+      }catch(e){
+        toast('⚠ Cliente salvo SÓ neste PC — planilha não recebeu: ' + (e && e.message || e),'error');
+      }
     }
   } else {
     const normNovo = clientKey(data.nome);
@@ -3865,19 +3921,42 @@ function saveClient(){
       });
       toast('Cliente similar já existe — dados mesclados', 'warning');
       save(); closeModal('modalClient'); renderClients();
-      syncToGS('saveClient', { client: existente });
+      try{ await syncToGS('saveClient', { client: existente }); _pcmMarcarEscritaCadastro(); }
+      catch(e){ toast('⚠ Mescla salva SÓ neste PC — planilha não recebeu: ' + (e && e.message || e),'error'); }
       editClientId = null;
       _captureFormSnapshot('modalClient');
       return;
     }
     db.clients.push(data);
-    toast('Cliente cadastrado', 'success');
+    // V102: NÃO cantar vitória aqui. O "Cliente cadastrado ✓" agora só sai
+    // depois que a planilha confirma (abaixo) — era este toast que fazia o
+    // admin acreditar num cadastro que existia só no PC dele.
   }
   const _wasEdit = !!editClientId;
   editClientId=null;
   _captureFormSnapshot('modalClient');
   save(); closeModal('modalClient'); renderClients(); renderMachines(); renderPreventivas(); renderSidebar();
-  if(!_wasEdit){ syncToGS('saveClient',{client:data}); }
+  if(!_wasEdit){
+    try{
+      const resp = await syncToGS('saveClient',{client:data});
+      // V102: adotar o ID CANÔNICO da planilha. O GAS casa por nome/CNPJ e nesse
+      // caso o ID dele é outro; ficar com o ID local quebrava a poda V93 (que
+      // compara IDs vindos do espelho) e todo match por clientId.
+      if (resp && resp.id && resp.id !== data.id) {
+        const _oldId = data.id;
+        data.id = resp.id;
+        const _loc = (db.clients||[]).find(c=>c.id===_oldId);
+        if (_loc) _loc.id = resp.id;
+        (db.machines||[]).forEach(m=>{ if(m.clientId===_oldId) m.clientId = resp.id; });
+        save(); renderClients();
+      }
+      if (resp && resp.reativado) toast('Cliente estava inativo na planilha e foi REATIVADO ✓','success');
+      else toast('Cliente cadastrado ✓','success');
+      _pcmMarcarEscritaCadastro();
+    }catch(e){
+      toast('⚠ Cliente salvo SÓ neste PC — planilha não recebeu: ' + (e && e.message || e),'error');
+    }
+  }
 }
 
 function checkClientDuplicates(val) {
@@ -3997,7 +4076,11 @@ function mergeAllDuplicateClients() {
     const normCanon = clientKey(canon.nome);
     db.clients = db.clients.filter(c => c.id === canon.id || clientKey(c.nome) !== normCanon);
     canon.updatedAt = new Date().toISOString();
-    syncToGS('saveClient', { client: canon });
+    // V102: continua sem await (está dentro de forEach síncrono), mas a rejeição
+    // deixa de ser unhandled e o admin passa a ver que a planilha não recebeu.
+    syncToGS('saveClient', { client: canon })
+      .then(function(){ _pcmMarcarEscritaCadastro(); })
+      .catch(function(e){ toast('⚠ Mescla de "'+(canon.nome||'')+'" NÃO chegou à planilha: ' + (e && e.message || e),'error'); });
   });
   save(); renderClients(); renderMachines();
   toast(total > 0 ? `${total} duplicata(s) mesclada(s)` : 'Nenhuma duplicata encontrada', total > 0 ? 'success' : 'info');
@@ -4071,7 +4154,9 @@ function _selectMergeTarget(id){
   renderMergeTargetList(document.getElementById('mergeTargetSearch').value);
 }
 
-function _confirmMergeClient(){
+// V102 (F-3): mesma doença do saveClient — o syncToGS não era aguardado e a
+// transferência "desfazia" no refresh sem ninguém ver erro nenhum.
+async function _confirmMergeClient(){
   const target = (db.clients||[]).find(c=>c.id===_mergeTargetId);
   if(!target){ toast('Escolha o cliente de destino','error'); return; }
   if(clientKey(target.nome||'')===clientKey(_mergeSourceName||'') && (!_mergeSourceId || _mergeSourceId===target.id)){
@@ -4082,21 +4167,29 @@ function _confirmMergeClient(){
   if(_mergeSourceId && _mergeSourceId!==target.id){
     db.clients = db.clients.filter(c=>c.id!==_mergeSourceId);
   }
+  let _okMerge = true;
   try{
-    syncToGS('mergeClients', { sourceId:_mergeSourceId, sourceName:_mergeSourceName, targetId:target.id, targetName:target.nome, client:target, deletedBy:'admin' });
-  }catch(e){ toast('Transferência salva localmente; sincronização pendente','warning'); }
-  toast(changed+' máquina'+(changed!==1?'s':'')+' transferida'+(changed!==1?'s':'')+' para '+target.nome, 'success');
+    await syncToGS('mergeClients', { sourceId:_mergeSourceId, sourceName:_mergeSourceName, targetId:target.id, targetName:target.nome, client:target, deletedBy:'admin' });
+    _pcmMarcarEscritaCadastro();
+  }catch(e){ _okMerge = false; toast('⚠ Transferência NÃO chegou à planilha (ficou só neste PC): ' + (e && e.message || e),'error'); }
+  if(_okMerge) toast(changed+' máquina'+(changed!==1?'s':'')+' transferida'+(changed!==1?'s':'')+' para '+target.nome, 'success');
   _mergeSourceName=''; _mergeSourceId=null; _mergeTargetId=null;
   save();
   closeModal('modalMergeClient');
   renderClients(); renderMachines(); renderPreventivas(); renderSidebar();
 }
 
-function deleteClient(id){
+async function deleteClient(id){
   if(!confirm('Inativar este cliente? O registro será mantido no histórico.')) return;
   db.clients=db.clients.filter(c=>c.id!==id);
-  save(); renderClients(); toast('Cliente inativado');
-  syncToGS('deleteClient',{id, deletedBy:'admin'});
+  save(); renderClients();
+  try{
+    await syncToGS('deleteClient',{id, deletedBy:'admin'});
+    _pcmMarcarEscritaCadastro();
+    toast('Cliente inativado','success');
+  }catch(e){
+    toast('⚠ Inativação salva SÓ neste PC — planilha não recebeu: ' + (e && e.message || e),'error');
+  }
 }
 
 function connectGS(){
@@ -4645,6 +4738,9 @@ function showView(v){
     document.getElementById('sidebarNewLabel').textContent='Novo cliente';
     document.getElementById('sidebarNewBtn').onclick=()=>openModalClient();
     renderClients();
+    // V102: fila de pedidos do campo. Silenciosa — GAS antigo (sem a rota) não
+    // pode virar erro na cara do admin.
+    try{ carregarSolicitacoesCadastro(true); }catch(e){}
   } else if(v==='estoque'){
     renderEstoque();
   } else if(v==='docs'){
@@ -6905,7 +7001,14 @@ function saveMachine(){
       if(!_c.email    &&eq.email)   {_c.email   =eq.email;   _ch=true;}
       if(!_c.cidade   &&eq.city)    {_c.cidade  =eq.city;    _ch=true;}
       if(!_c.drive_url&&eq.driveLink){_c.drive_url=eq.driveLink;_ch=true;}
-      if(_ch){_c.updatedAt=new Date().toISOString();try{syncToGS('saveClient',{client:_c});}catch(e){}}
+      // V102: era um try/catch síncrono em volta de chamada async — a rejeição
+      // sumia. Agora o admin vê quando o enriquecimento não chegou à planilha.
+      if(_ch){_c.updatedAt=new Date().toISOString();
+        try{ syncToGS('saveClient',{client:_c})
+               .then(function(){ _pcmMarcarEscritaCadastro(); })
+               .catch(function(e){ toast('⚠ Dados do cliente NÃO sincronizados: ' + (e && e.message || e),'error'); });
+        }catch(e){ toast('⚠ Dados do cliente NÃO sincronizados: ' + (e && e.message || e),'error'); }
+      }
     })();
     editMachineId=null;
     toast('Máquina atualizada','success');
@@ -6962,7 +7065,10 @@ function saveMachine(){
         if (!existing.contact  && contactVal) { existing.contact  = contactVal; changed = true; }
         if (changed) {
           existing.updatedAt = new Date().toISOString();
-          try { syncToGS('saveClient', { client: existing }); } catch(e) {}
+          try { syncToGS('saveClient', { client: existing })
+                  .then(function(){ _pcmMarcarEscritaCadastro(); })
+                  .catch(function(e){ toast('⚠ Dados do cliente NÃO sincronizados: ' + (e && e.message || e),'error'); });
+          } catch(e) { toast('⚠ Dados do cliente NÃO sincronizados: ' + (e && e.message || e),'error'); }
         }
       } else {
         const newClient = {
@@ -6982,7 +7088,21 @@ function saveMachine(){
           updatedAt:  new Date().toISOString(),
         };
         db.clients.push(newClient);
-        try { syncToGS('saveClient', { client: newClient }); } catch(e) {}
+        // V102: cliente NOVO nascendo do cadastro de máquina — se este sync
+        // falhava, o cliente existia só neste PC e o refresh o apagava. Era
+        // exatamente o padrão do "cliente que volta para sem cadastro completo".
+        try { syncToGS('saveClient', { client: newClient })
+                .then(function(resp){
+                  _pcmMarcarEscritaCadastro();
+                  if (resp && resp.id && resp.id !== newClient.id) {
+                    const _old = newClient.id;
+                    newClient.id = resp.id;
+                    (db.machines||[]).forEach(function(m){ if(m.clientId===_old) m.clientId = resp.id; });
+                    save();
+                  }
+                })
+                .catch(function(e){ toast('⚠ Cliente novo salvo SÓ neste PC — planilha não recebeu: ' + (e && e.message || e),'error'); });
+        } catch(e) { toast('⚠ Cliente novo salvo SÓ neste PC — planilha não recebeu: ' + (e && e.message || e),'error'); }
       }
     })();
     db.machines.push(data);
@@ -8746,6 +8866,127 @@ async function _confirmDeleteOrphan(withMachines) {
   renderSidebar();
 }
 
+
+// ══════════════════════════════════════════════════════════════════════════
+// V102 — SOLICITAÇÕES DE CORREÇÃO DE CADASTRO VINDAS DO CAMPO
+// Par do PCF V74 (botão "✏️ Solicitar correção") e do GAS v82 (aba
+// SOLICITACOES_CADASTRO + rotas get/resolver).
+//
+// Dentro de uma OS o técnico não edita mais o cadastro do cliente. Para o que
+// ele vê de errado não virar bilhete de papel, o pedido chega aqui: o admin lê
+// o que ele digitou, corrige se quiser, e aprova (aplica em CLIENTES via
+// saveClient) ou rejeita. Nada é aplicado sozinho.
+// ══════════════════════════════════════════════════════════════════════════
+let _solicCadastro = [];        // cache da última leitura
+let _solicCadastroCarregando = false;
+
+const SOLIC_LABELS = {
+  nome:'Razão Social / Nome', cnpj:'CNPJ / CPF', cidade:'Cidade / Estado',
+  telefone:'Telefone', email:'E-mail', contato:'Contato', filial:'Filial / Unidade',
+  endereco:'Endereço', uf:'UF', observacoes:'Observações'
+};
+
+async function carregarSolicitacoesCadastro(silent){
+  if(!gsUrl || !gsConnected){ _solicCadastro = []; renderSolicitacoesCadastro(); return; }
+  if(_solicCadastroCarregando) return;
+  _solicCadastroCarregando = true;
+  try{
+    const r = await gsGet('getSolicitacoesCadastro', { status:'pendente' });
+    _solicCadastro = (r && r.solicitacoes) ? r.solicitacoes : [];
+  }catch(e){
+    // Rota ainda não publicada (GAS < v82) não é erro para o usuário: some.
+    console.warn('[V102] getSolicitacoesCadastro:', e && e.message);
+    _solicCadastro = [];
+    if(!silent) console.info('[V102] fila de solicitações indisponível — GAS v82 publicado?');
+  }finally{
+    _solicCadastroCarregando = false;
+    renderSolicitacoesCadastro();
+  }
+}
+
+function _solicEsc(v){
+  return String(v==null?'':v)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;');
+}
+
+// Valor que o cadastro tem HOJE para um campo, para o admin comparar sem sair
+// da tela. Procura o cliente por id e, se não achar, por nome normalizado.
+function _solicValorAtual(sol, chave){
+  const lista = db.clients || [];
+  let c = sol.entidade_id ? lista.find(x=>x.id===sol.entidade_id) : null;
+  if(!c && sol.entidade_nome) c = lista.find(x=>clientKey(x.nome||'')===clientKey(sol.entidade_nome));
+  if(!c) return '';
+  const mapa = { nome:'nome', cnpj:'cnpj', cidade:'cidade', telefone:'telefone', email:'email',
+                 contato:'contact', filial:'branch', endereco:'endereco', uf:'uf', observacoes:'observacoes' };
+  return String(c[mapa[chave] || chave] || '');
+}
+
+function renderSolicitacoesCadastro(){
+  const wrap = document.getElementById('solicCadastroWrap');
+  if(!wrap) return;
+  const lista = (_solicCadastro||[]).filter(s => String(s.status||'pendente').toLowerCase()==='pendente');
+  if(!lista.length){ wrap.style.display='none'; wrap.innerHTML=''; return; }
+  wrap.style.display='';
+  wrap.innerHTML =
+    '<div style="border:1px solid #fcd34d;background:#fffbeb;border-radius:10px;padding:12px 14px">' +
+      '<div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:10px">' +
+        '<div style="font-size:14px;font-weight:700;color:#92400e">✏️ ' + lista.length +
+          ' pedido' + (lista.length>1?'s':'') + ' de correção de cadastro vindo' + (lista.length>1?'s':'') + ' do campo</div>' +
+        '<button class="btn btn-secondary" style="font-size:11px" onclick="carregarSolicitacoesCadastro()">↻ Atualizar</button>' +
+      '</div>' +
+      lista.map(function(sol){
+        const campos = sol.campos || {};
+        const linhas = Object.keys(campos).map(function(k){
+          const atual = _solicValorAtual(sol, k);
+          return '<tr>' +
+            '<td style="padding:3px 8px 3px 0;font-size:11px;color:var(--text3);white-space:nowrap">' + _solicEsc(SOLIC_LABELS[k]||k) + '</td>' +
+            '<td style="padding:3px 8px 3px 0;font-size:12px;color:var(--text3);text-decoration:line-through">' + (atual?_solicEsc(atual):'<i>vazio</i>') + '</td>' +
+            '<td style="padding:3px 0;font-size:12px;font-weight:700;color:#166534">' + _solicEsc(campos[k]) + '</td>' +
+          '</tr>';
+        }).join('');
+        return '<div style="background:#fff;border:1px solid var(--gray-100,#f0f0f0);border-radius:8px;padding:10px 12px;margin-bottom:8px">' +
+          '<div style="font-size:13px;font-weight:700">' + _solicEsc(sol.entidade_nome||'(cliente sem nome)') +
+            (sol.os_numero ? ' <span style="font-weight:400;color:var(--text3);font-size:11px">· OS ' + _solicEsc(sol.os_numero) + '</span>' : '') + '</div>' +
+          '<div style="font-size:11px;color:var(--text3);margin-bottom:6px">' +
+            _solicEsc(sol.solicitado_por_nome || sol.solicitado_por || 'técnico') +
+            (sol.solicitado_em ? ' · ' + _solicEsc(String(sol.solicitado_em).slice(0,16).replace('T',' ')) : '') + '</div>' +
+          (linhas ? '<table style="border-collapse:collapse;margin-bottom:6px">' + linhas + '</table>'
+                  : '<div style="font-size:12px;color:var(--text3);margin-bottom:6px"><i>Sem alteração de campo — só a observação abaixo.</i></div>') +
+          (sol.justificativa ? '<div style="font-size:12px;background:#f8fafc;border-left:3px solid var(--gray-300,#cbd5e1);padding:6px 9px;border-radius:0 6px 6px 0;margin-bottom:8px">' + _solicEsc(sol.justificativa) + '</div>' : '') +
+          '<div style="display:flex;gap:8px;flex-wrap:wrap">' +
+            '<button class="btn btn-primary" style="font-size:11px" onclick="resolverSolicitacaoCadastro(\'' + _solicEsc(sol.solic_id) + '\',\'aprovar\')">✓ Aprovar e aplicar</button>' +
+            '<button class="btn btn-secondary" style="font-size:11px" onclick="resolverSolicitacaoCadastro(\'' + _solicEsc(sol.solic_id) + '\',\'rejeitar\')">✕ Rejeitar</button>' +
+          '</div>' +
+        '</div>';
+      }).join('') +
+    '</div>';
+}
+
+async function resolverSolicitacaoCadastro(solicId, decisao){
+  const sol = (_solicCadastro||[]).find(s=>s.solic_id===solicId);
+  if(!sol){ toast('Solicitação não encontrada — atualize a lista','error'); return; }
+  const nomeCli = sol.entidade_nome || 'este cliente';
+  if(decisao==='aprovar'){
+    if(!confirm('Aplicar as correções em "' + nomeCli + '"?\n\nIsto escreve na planilha agora.')) return;
+  } else {
+    if(!confirm('Rejeitar o pedido do técnico sobre "' + nomeCli + '"?')) return;
+  }
+  const obs = decisao==='rejeitar' ? (prompt('Motivo (o técnico não vê hoje, fica no registro):','') || '') : '';
+  try{
+    await syncToGS('resolverSolicitacaoCadastro', {
+      solic_id: solicId, decisao: decisao, usuario: 'admin', observacao: obs
+    });
+    _pcmMarcarEscritaCadastro();
+    toast(decisao==='aprovar' ? 'Correção aplicada ✓' : 'Pedido rejeitado', decisao==='aprovar'?'success':'info');
+    _solicCadastro = (_solicCadastro||[]).filter(s=>s.solic_id!==solicId);
+    renderSolicitacoesCadastro();
+    if(decisao==='aprovar'){ try{ await syncFromGS(true); }catch(e){} }
+  }catch(e){
+    toast('⚠ Não foi possível resolver o pedido: ' + (e && e.message || e),'error');
+  }
+}
+
 function renderClients(){
   const el=document.getElementById('clientsBody');
   if(!db.clients) db.clients=[];
@@ -9379,6 +9620,23 @@ async function getCatalogFullSupabaseOrGAS(){
 let _supaTokenCache = null;   // { token, exp } — renova quando faltar <1h
 let _f2cManualRound = false;  // setado por syncFromGS quando o sync é manual
 
+// ── V102 — JANELA PÓS-ESCRITA DE CADASTRO ──────────────────────────────────
+// Cinto E suspensório. Mesmo com o GAS v82 empurrando o espelho na hora, se ESSE
+// push falhar (rede, cota do UrlFetch, Supabase fora) o boot seguinte leria
+// espelho velho e a poda V93 — que decide pelo `clientes.ativo` DO ESPELHO —
+// apagaria do cache local um cliente recém-reativado. Durante 35 min após
+// qualquer escrita de cadastro, as leituras vão pelo GAS (fonte da verdade) e a
+// poda de CLIENTES fica suspensa. A poda de MÁQUINAS segue intocada.
+const PCM_CADASTRO_DIRTY_KEY = 'pcm_cadastro_dirty_until';
+const PCM_CADASTRO_DIRTY_MS  = 35 * 60 * 1000;
+function _pcmMarcarEscritaCadastro(){
+  try{ localStorage.setItem(PCM_CADASTRO_DIRTY_KEY, String(Date.now() + PCM_CADASTRO_DIRTY_MS)); }catch(e){}
+}
+function _pcmEscritaCadastroRecente(){
+  try{ return Date.now() < parseInt(localStorage.getItem(PCM_CADASTRO_DIRTY_KEY)||'0', 10); }
+  catch(e){ return false; }
+}
+
 function _f2cSource(){ try { return localStorage.getItem('f2c_source') || 'supabase'; } catch(e){ return 'supabase'; } }
 function _f2cShadow(){ try { return localStorage.getItem('f2c_shadow') === '1'; } catch(e){ return false; } }
 
@@ -9503,7 +9761,8 @@ async function getMachinesWithPartsFromSupabase(){
 
 // ── Wrappers com fonte/kill-switch/sombra/fallback (padrão F2a) ─────────────
 async function _f2cViaSupabaseOuGAS(nome, fnSupa, fnGas){
-  if (!_f2Configurado() || _f2cSource() === 'gas' || _f2cManualRound) return fnGas();
+  // V102: escrita de cadastro recente ⇒ ler pelo GAS, não pelo espelho.
+  if (!_f2Configurado() || _f2cSource() === 'gas' || _f2cManualRound || _pcmEscritaCadastroRecente()) return fnGas();
   if (_f2cShadow()) {
     const [supa, gas] = await Promise.allSettled([fnSupa(), fnGas()]);
     if (supa.status === 'fulfilled' && gas.status === 'fulfilled') {
@@ -10022,10 +10281,14 @@ async function syncFromGS({ silent = false } = {}){
       db.machines = db.machines.filter(m => !di.maqIds.has(String(m.id||'').trim()));
       _podaM = _nM - db.machines.length;
     }
-    if (di && di.cliIds && di.cliIds.size) {
+    // V102: durante a janela pós-escrita a poda de CLIENTES fica suspensa — era
+    // ela que apagava do cache o cliente que o admin acabara de reativar.
+    if (di && di.cliIds && di.cliIds.size && !_pcmEscritaCadastroRecente()) {
       const _nC = db.clients.length;
       db.clients = db.clients.filter(c => !di.cliIds.has(String(c.id||'').trim()));
       _podaC = _nC - db.clients.length;
+    } else if (di && di.cliIds && di.cliIds.size && _pcmEscritaCadastroRecente()) {
+      console.info('[V93 poda] SUSPENSA para clientes — escrita de cadastro recente (janela de 35 min)');
     }
     if (_podaM || _podaC) console.info('[V93 poda] removidos do cache: ' + _podaM + ' máquina(s), ' + _podaC + ' cliente(s) inativo(s)');
 
