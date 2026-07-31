@@ -1,4 +1,15 @@
 <!--
+  PCM V101 — 31/07/2026 — O RELATÓRIO DO ADM FICA COMPLETO.
+  Par: GAS v81 + PCF V73. As lacunas "—" da V100 eram de LEITURA, não de dado:
+  o GAS gravava telefone/e-mail/cidade/obs_op/regime/OS_Numero/auxiliar/horas
+  desde a v1.9–v42, mas getVisitsByMachine parava no CNPJ. Com o v81 elas
+  voltam e o PDF regerado passa a ter tudo o que o PDF de campo tem.
+  • Regime agora é o DA VISITA (Regime_JSON), não o do cadastro de hoje.
+  • Últ.Troca(h) vem direto (lastChange); a derivação vira fallback.
+  • Cenário do checklist voltou (catálogo SCENARIOS espelhado do PCF).
+  • Motor de desenho re-espelhado do PCF V73: coluna AÇÃO por peça, Nº da OS,
+    título que deixa de mentir em inspeção, ref anterior e VENCIDO*.
+
   PCM V100 — 31/07/2026 — RELATÓRIO DE PREVENTIVA NO PCM (o ADM passa a emitir).
   Par: PCF V72 (+sw v72). NENHUMA mudança de GAS — usa getVisitsByMachine,
   getAttachments, getFotoBase64 e getMaquinasByOS, que já existem.
@@ -770,7 +781,7 @@ v50 — Resiliência de rede: retry/backoff em gsGet e syncToGS
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>ProperCare Manager · Gestão PGP v3.37 (PCM V100)</title>
+<title>ProperCare Manager · Gestão PGP v3.37 (PCM V101)</title>
 <link rel="icon" type="image/jpeg" href="data:image/jpeg;base64,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">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -9087,7 +9098,7 @@ function renderConfigStats(){
     <div class="card">
       <div style="font-size:13px;font-weight:600;margin-bottom:4px">Sobre o sistema</div>
       <div style="font-size:12px;color:var(--text2);line-height:1.8">
-        <strong>Catálogo Administrativo v3.37 · PCM V100</strong> — Proper Compressores<br>
+        <strong>Catálogo Administrativo v3.37 · PCM V101</strong> — Proper Compressores<br>
         Catálogo de modelos · Peças com similares · Fotos · Subsistemas nomeados · Máquinas PGP com dados completos de cliente<br>
         Detecção de duplicados em modelos e máquinas · Google Sheets como backend
       </div>
@@ -13136,6 +13147,16 @@ function pgpCreateReportBuilder() {
   const WHITE  = [255, 255, 255];
 
   let pageNum = 1;
+  // ═════════════════════════════════════════════════════════════════════
+  // V73 (P3) — o título era FIXO em "RELATORIO DE VISITA PREVENTIVA", mas
+  // o mesmo gerarPDF atende preventiva E inspeção: toda inspeção saía com
+  // um cabeçalho que mentia sobre o próprio documento.
+  // renderPreventivaPdf define isto a partir de dados.tipoVisita, ANTES de
+  // chamar addPageHeader.
+  // ═════════════════════════════════════════════════════════════════════
+  let _tipoRel = 'preventiva';
+  function _tituloRel(){ return _tipoRel === 'inspecao' ? 'RELATORIO DE INSPECAO' : 'RELATORIO DE VISITA PREVENTIVA'; }
+  function _tituloRelCurto(){ return _tipoRel === 'inspecao' ? 'Relatorio de Inspecao' : 'Relatorio de Visita Preventiva'; }
   const agora = new Date();
   const dataHoje = agora.toLocaleDateString('pt-BR') + ' ' + agora.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
 
@@ -13159,7 +13180,7 @@ function pgpCreateReportBuilder() {
       doc.setFont('helvetica','bold');
       doc.setFontSize(11);
       doc.setTextColor(...WHITE);
-      doc.text(limparTextoPDF('RELATORIO DE VISITA PREVENTIVA'), PW - MR, 9, {align:'right'});
+      doc.text(limparTextoPDF(_tituloRel()), PW - MR, 9, {align:'right'});
       doc.setFont('helvetica','normal');
       doc.setFontSize(8);
       doc.setTextColor(200, 210, 230);
@@ -13171,7 +13192,7 @@ function pgpCreateReportBuilder() {
       doc.setFont('helvetica','bold');
       doc.setFontSize(9);
       doc.setTextColor(...WHITE);
-      doc.text(limparTextoPDF('PROPER COMPRESSORES · Relatorio de Visita Preventiva'), ML, 11);
+      doc.text(limparTextoPDF('PROPER COMPRESSORES · ' + _tituloRelCurto()), ML, 11);
       doc.text('Pág. ' + pageNum, PW - MR, 11, {align:'right'});
       doc.setFillColor(...ORANGE);
       doc.rect(0, 16, PW, 2, 'F');
@@ -13332,6 +13353,8 @@ function pgpCreateReportBuilder() {
     var prev = d.preventiva || {};
     var ass  = d.assinaturas|| {};
     var ehPistao = (d.perfilId === 'pistao');
+    _tipoRel = (d.tipoVisita === 'inspecao') ? 'inspecao' : 'preventiva';   // V73 (P3)
+    var ehInspecao = (_tipoRel === 'inspecao');
 
     // ── PÁGINA 1: HEADER ──────────────────────────────
     addPageHeader(isFirstPageOfDoc);
@@ -13366,6 +13389,12 @@ function pgpCreateReportBuilder() {
     y = infoRow2(y, [{label:'Tipo de Equipamento', value:maq.tipo}, {label:'Potência', value:maq.potencia}]);
     y = infoRow(y, 'Localização', maq.localizacao, false);
     y = infoRow2(y, [{label:'TAG', value:maq.tag}, {label:'Data da Visita', value:maq.data_visita}]);
+    // V73 (P2) — o relatório de uma visita vinculada a uma OS não dizia a QUAL
+    // OS pertencia. O número já viajava no payload e era gravado em VISITAS.
+    y = infoRow2(y, [
+      {label:'Ordem de Serviço', value: d.osNumero || '—'},
+      {label:'Tipo de Visita',   value: ehInspecao ? 'Inspeção' : 'Preventiva'}
+    ]);
     if (maq.obs_op && maq.obs_op !== '—') y = infoRow(y, 'Obs. Operacional', maq.obs_op, true);
     y += 3;
 
@@ -13410,10 +13439,18 @@ function pgpCreateReportBuilder() {
     // v27: coluna "Referência" dedicada — antes a referência era desenhada
     // sobre a mesma linha de base do nome da peça (colidiam visualmente).
     // Larguras somam exatamente CW (182mm).
-    const colsP = [40, 26, 22, 22, 22, 22, 28];
+    // ═════════════════════════════════════════════════════════════════
+    // V73 (P1) — A AÇÃO EXECUTADA POR PEÇA NÃO SAÍA EM NENHUM RELATÓRIO.
+    // É o dado central de uma preventiva (e o ÚNICO campo por peça que o GAS
+    // valida como obrigatório): trocada × conferida × N/A. Era coletado,
+    // gravado em PECAS_LOG e devolvido na leitura — e o PDF não o imprimia.
+    // Só o resumo de WhatsApp e o histórico do PCM mostravam.
+    // 8 colunas somando exatamente CW (182mm).
+    // ═════════════════════════════════════════════════════════════════
+    const colsP = [34, 18, 24, 22, 20, 20, 20, 24];
     const headP = ehPistao
-      ? ['Item', 'Referência', 'Últ. troca', 'Ciclo (d)', 'Dias', 'Restam', 'Estado']
-      : ['Peça', 'Referência', 'Últ.Troca(h)', 'Intervalo(h)', 'H.Rodadas', 'H.Restantes', 'Status'];
+      ? ['Item', 'Ação', 'Referência', 'Últ. troca', 'Ciclo (d)', 'Dias', 'Restam', 'Estado']
+      : ['Peça', 'Ação', 'Referência', 'Últ.Troca(h)', 'Interv.(h)', 'H.Rodadas', 'H.Restam', 'Status'];
     const rowHP = 7;
 
     y = checkY(y, rowHP + 2);
@@ -13431,6 +13468,7 @@ function pgpCreateReportBuilder() {
     // peças (parts_obs) aparecia no PDF, perdendo o campo de observação
     // por peça (${pk}_obs, ex: "etiqueta ilegível, horímetro zerado...").
     const partsObsList = d.pecasObs || [];
+    let _temConflitoEstado = false;   // V73 (L3)
 
     (d.pecas || []).forEach((pt, pi) => {
       y = checkY(y, rowHP);
@@ -13448,7 +13486,9 @@ function pgpCreateReportBuilder() {
         doc.setTextColor(150, 100, 180);
         doc.text(limparTextoPDF(pt.label), ML + 2, y + 5);
         doc.setFont('helvetica','normal');
-        doc.text(limparTextoPDF('Não Aplicável'), ML + colsP[0] + 2, y + 5);
+        doc.text(limparTextoPDF('N/A'), ML + colsP[0] + 2, y + 5);
+        doc.setFontSize(6.5);
+        doc.text(limparTextoPDF('Não Aplicável'), ML + colsP[0] + colsP[1] + 2, y + 5);
       } else {
         const status = pt.status || '';
         const statusColor = corStatusPeca(status);
@@ -13458,29 +13498,62 @@ function pgpCreateReportBuilder() {
         doc.setTextColor(...DARK);
         doc.text(limparTextoPDF(pt.label), ML + 2, y + 5);
 
+        // V73 (P1) — AÇÃO. Trocada em laranja/negrito porque é a que gera custo
+        // e troca de referência; em inspeção não existe ação e sai '—'.
+        const _acao = String(pt.acao || '').toLowerCase();
+        const _acaoTxt = ehInspecao ? '—'
+          : (_acao === 'trocada' ? 'Trocada' : _acao === 'conferida' ? 'Conferida' : _acao === 'na' ? 'N/A' : '—');
+        doc.setFont('helvetica', _acao === 'trocada' && !ehInspecao ? 'bold' : 'normal');
+        doc.setFontSize(6.8);
+        doc.setTextColor.apply(doc, (_acao === 'trocada' && !ehInspecao) ? ORANGE : DARK);
+        doc.text(limparTextoPDF(_acaoTxt), ML + colsP[0] + 2, y + 5);
+
         // v27: referência em coluna própria, mesma linha de base do nome —
         // não sobrepõe mais nenhum outro texto.
+        // V73 (P4): peça trocada mostra a referência ANTERIOR embaixo — o dado
+        // já existia em PECAS_LOG (Ref_Anterior) e nunca era impresso.
         doc.setFont('helvetica','normal');
         doc.setFontSize(6.5);
         doc.setTextColor(100, 100, 100);
-        doc.text(limparTextoPDF(pt.ref || '—'), ML + colsP[0] + 2, y + 5);
+        const _xRef = ML + colsP[0] + colsP[1] + 2;
+        doc.text(limparTextoPDF(pt.ref || '—'), _xRef, y + 4);
+        if (pt.refAnterior && pt.refAnterior !== pt.ref) {
+          doc.setFontSize(5.5);
+          doc.setTextColor(150, 150, 150);
+          doc.text(limparTextoPDF('era: ' + pt.refAnterior), _xRef, y + 6.6);
+        }
 
         doc.setFont('helvetica','normal');
         doc.setFontSize(7);
         doc.setTextColor(...DARK);
-        let xc = ML + colsP[0] + colsP[1] + 1;
+        let xc = ML + colsP[0] + colsP[1] + colsP[2] + 1;
         [pt.ult || '—', pt.interval || '—', pt.rodadas || '—', pt.restantes || '—'].forEach((v, ci) => {
           doc.text(limparTextoPDF(String(v)), xc + 1, y + 5);
-          xc += colsP[ci + 2];
+          xc += colsP[ci + 3];
         });
         if (status) {
           doc.setFont('helvetica','bold');
           doc.setTextColor(...statusColor);
-          doc.text(limparTextoPDF(status), xc + 1, y + 5);
+          // V73 (L3) — quando o técnico marcou CONFORME mas o PRAZO está
+          // vencido/em atenção, os dois fatos eram fundidos numa palavra só e o
+          // "conforme" sumia. O asterisco preserva ambos (nota abaixo da tabela).
+          const _conflito = (String(pt.estado||'') === 'ok') && (status === 'VENCIDO' || status === 'ATENÇÃO');
+          if (_conflito) _temConflitoEstado = true;
+          doc.text(limparTextoPDF(status + (_conflito ? '*' : '')), xc + 1, y + 5);
         }
       }
       y += rowHP;
     });
+
+    // V73 (L3) — legenda do asterisco, só quando houve conflito de fato.
+    if (_temConflitoEstado) {
+      y = checkY(y, 5);
+      doc.setFont('helvetica','italic');
+      doc.setFontSize(6.5);
+      doc.setTextColor(120, 120, 120);
+      doc.text(limparTextoPDF('* peca encontrada em bom estado (conforme); o PRAZO de troca e que esta vencido/em atencao.'), ML + 1, y + 3.5);
+      y += 5;
+    }
 
     // v27: observações individuais por peça (ver comentário acima do loop)
     if (partsObsList.length) {
@@ -13740,19 +13813,34 @@ function montarNomeArquivo(razao, modelo, serial, dataStr) {
 // ZERO GAS: usa getVisitsByMachine, getAttachments, getFotoBase64 e
 // getMaquinasByOS, todos já existentes.
 //
-// LIMITAÇÕES CONHECIDAS (dado que a planilha não devolve hoje — o PDF do PCM
-// mostra "—" nesses campos, nunca inventa):
-//   • telefone / e-mail / cidade / obs. operacional / regime de trabalho:
-//     existem em VISITAS mas getVisitsByMachine não os inclui no retorno;
-//     quando a máquina está no cadastro local, o que der para completar vem
-//     de lá (regime, h/semana, localização, tipo, potência).
-//   • auxiliar / hora início / hora fim: idem (colunas v42 de VISITAS).
-//   • "Obs. geral do checklist" (parts_obs) não é persistida por visita.
-//   • "Últ.Troca(h)" do parafuso não volta em PECAS_LOG -> é DERIVADA
-//     (horímetro da visita − horas rodadas), a mesma conta do PCF.
+// V101 (31/07) — AS LACUNAS DA V100 FORAM FECHADAS pelo GAS v81 + PCF V73:
+//   • telefone / e-mail / cidade / obs. operacional / auxiliar / hora início
+//     e fim / nº da OS: getVisitsByMachine passou a devolvê-los (já eram
+//     gravados desde a v1.9/v20/v42 — só a LEITURA parava no CNPJ);
+//   • regime de trabalho: agora vem da PRÓPRIA VISITA (Regime_JSON), com o
+//     cadastro da máquina apenas como fallback — a máquina pode ter mudado
+//     de turno desde então;
+//   • data da leitura do horímetro e obs. geral do checklist: colunas novas
+//     (o PCF nem as enviava — morriam no aparelho);
+//   • "Últ.Troca(h)" do parafuso agora vem direto (lastChange); a derivação
+//     por horímetro − horas rodadas ficou como fallback p/ GAS antigo;
+//   • ação por peça, referência anterior e estado encontrado entram no PDF.
+// Rodando contra um GAS ANTERIOR ao v81, tudo isso volta a sair "—" ou pelo
+// fallback — nada quebra, nada é inventado.
 // ══════════════════════════════════════════════════════════════════════════
 
 var _pcmPdfCtx = { maquina: null, visits: [], pecasLog: {} };
+
+// ESPELHADO DO PCF (const SCENARIOS) — só id/title, que é o que o PDF usa.
+// O PCM não tem o catálogo de checklist; sem isto a linha "Cenario X: ..."
+// simplesmente não saía no relatório regerado pelo ADM.
+var PCM_SCENARIOS = [
+  { id: 'A', title: 'Só horímetro total analógico' },
+  { id: 'B', title: 'Total + plano adesivado' },
+  { id: 'C', title: 'Display por peça — não sei ↑ ou ↓' },
+  { id: 'D', title: 'Contador progressivo identificado' },
+  { id: 'E', title: 'Contador regressivo identificado' }
+];
 var _PCM_PDF_MAX_FOTOS = 16;
 
 function _pcmYmd(v) {
@@ -13881,7 +13969,7 @@ function pcmMontarDadosPdf(visita, maquina, pecas, fotos, assinaturas) {
   var linhas = pecas.map(function (p) {
     var nome = p.name || p.partName || 'Peça';
     if (p.obs) pecasObs.push(nome + ': ' + p.obs);
-    if (p.na) return { label: nome, na: true, ref: '', ult: '', interval: '', rodadas: '', restantes: '', status: '' };
+    if (p.na) return { label: nome, na: true, acao: 'na', ref: '', refAnterior: '', estado: '', ult: '', interval: '', rodadas: '', restantes: '', status: '' };
 
     var cont = String(p.tipoContador || '').toLowerCase();
     var ref = p.refNova || p.ref || p.refAnterior || '';
@@ -13895,13 +13983,25 @@ function pcmMontarDadosPdf(visita, maquina, pecas, fotos, assinaturas) {
       // pistão: "última troca" é DATA
       ult = _pcmFmtDataBR(p.valorMostrado) || _pcmFmtDataBR(p.dataTroca) || '—';
     } else {
-      // parafuso: "Últ.Troca(h)" não volta em PECAS_LOG — derivada pela MESMA
-      // conta do PCF (horímetro da visita − horas rodadas).
-      var hr = parseFloat(rodadas);
-      if (!isNaN(hr) && !isNaN(htVisita)) ult = String(Math.max(0, htVisita - hr).toFixed(0));
-      else if (p.horimetro) ult = String(p.horimetro);
+      // V101 — o GAS v81 passou a devolver lastChange (coluna Últ.Troca(h),
+      // que era gravada desde sempre e nunca voltava na leitura). A derivação
+      // vira FALLBACK para visitas lidas por um GAS antigo.
+      if (p.lastChange === 0 || p.lastChange) {
+        ult = String(p.lastChange);
+      } else {
+        var hr = parseFloat(rodadas);
+        if (!isNaN(hr) && !isNaN(htVisita)) ult = String(Math.max(0, htVisita - hr).toFixed(0));
+        else if (p.horimetro) ult = String(p.horimetro);
+      }
     }
-    return { label: nome, na: false, ref: ref, ult: ult, interval: interval, rodadas: rodadas, restantes: restantes, status: status };
+    return {
+      label: nome, na: false,
+      acao: String(p.acao || ''),                 // V101 (P1)
+      ref: ref,
+      refAnterior: String(p.refAnterior || ''),   // V101 (P4)
+      estado: String(p.estado || ''),             // V101 (L3)
+      ult: ult, interval: interval, rodadas: rodadas, restantes: restantes, status: status
+    };
   });
 
   var ass = { tecnico: null, responsavel: null };
@@ -13917,10 +14017,20 @@ function pcmMontarDadosPdf(visita, maquina, pecas, fotos, assinaturas) {
   // Regime de trabalho: o PCM já guarda regimeData no cadastro da máquina
   // (V99 passou a MESCLAR esse campo no sync). Formata igual ao PCF: faixas
   // "dias inicio-fim" separadas por "; ".
+  // ═══════════════════════════════════════════════════════════════════
+  // V101 — REGIME DA ÉPOCA DA VISITA, não o do cadastro de hoje.
+  // O GAS v81 passou a devolver Regime_JSON da própria visita; a máquina
+  // pode ter mudado de turno desde então e o relatório precisa contar o que
+  // valia NAQUELE dia. O cadastro vira fallback (visitas antigas).
+  // ═══════════════════════════════════════════════════════════════════
   var regime = '';
   try {
-    var faixas = maquina && maquina.regimeData;
+    var faixas = (visita && visita.regimeJson) ? visita.regimeJson : (maquina && maquina.regimeData);
     if (typeof faixas === 'string') { try { faixas = JSON.parse(faixas); } catch (e0) { faixas = null; } }
+    if (!(Array.isArray(faixas) && faixas.length) && maquina && maquina.regimeData) {
+      faixas = maquina.regimeData;
+      if (typeof faixas === 'string') { try { faixas = JSON.parse(faixas); } catch (e1) { faixas = null; } }
+    }
     if (Array.isArray(faixas) && faixas.length) {
       regime = faixas.map(function (t) {
         var dias = String((t && t.dias) || '');
@@ -13933,13 +14043,17 @@ function pcmMontarDadosPdf(visita, maquina, pecas, fotos, assinaturas) {
 
   return {
     perfilId: ehCalendario ? 'pistao' : 'parafuso',
+    // V101 — o relatório passa a dizer o que ele é e a que OS pertence
+    tipoVisita: (String((visita && visita.tipo) || '').toLowerCase() === 'inspecao') ? 'inspecao' : 'preventiva',
+    osNumero: String((visita && visita.osNumero) || ''),
     cliente: {
       razao_social: _pcmTxt(visita.client || maquina.client),
       filial: _pcmTxt(maquina.branch),
       cnpj: _pcmTxt(visita.cnpj),
       contato: _pcmTxt(visita.contact),
-      telefone: '—', email: '—',
-      cidade: _pcmTxt(maquina.city || maquina.cidade),
+      telefone: _pcmTxt(visita.phone),        // V101 (GAS v81)
+      email:    _pcmTxt(visita.email),        // V101 (GAS v81)
+      cidade:   _pcmTxt(visita.city || maquina.city || maquina.cidade),
       ult_visita: _pcmTxt(_pcmFmtDataBR(visita.visitDate)),
       prox_visita: _pcmTxt(_pcmFmtDataBR(visita.nextVisit))
     },
@@ -13953,21 +14067,32 @@ function pcmMontarDadosPdf(visita, maquina, pecas, fotos, assinaturas) {
       localizacao: _pcmTxt(maquina.location),
       tag: _pcmTxt(maquina.tag),
       data_visita: _pcmTxt(_pcmFmtDataBR(visita.visitDate)),
-      obs_op: '—'
+      obs_op: _pcmTxt(visita.obsOp)           // V101 (GAS v81)
     },
     horimetro: {
       total: _pcmTxt(visita.hourTotal),
-      data_leitura: _pcmTxt(_pcmFmtDataBR(visita.visitDate)),
+      // V101 — a data da LEITURA é coluna própria desde o GAS v81; antes o PCM
+      // repetia a data da visita, que nem sempre é a mesma.
+      data_leitura: _pcmTxt(_pcmFmtDataBR(visita.dataLeitura) || _pcmFmtDataBR(visita.visitDate)),
       regime: _pcmTxt(regime),
       h_sem_total: _pcmTxt(maquina.hpw),
       tecnico: _pcmTxt(visita.tech)
     },
-    // colunas v42 de VISITAS não voltam em getVisitsByMachine
-    preventiva: { auxiliar: '—', hora_inicio: '—', hora_fim: '—' },
-    cenario: null,
+    // V101 — voltam desde o GAS v81 (eram gravadas desde a v42)
+    preventiva: {
+      auxiliar:    _pcmTxt(visita.auxiliar),
+      hora_inicio: _pcmTxt(visita.horaInicio),
+      hora_fim:    _pcmTxt(visita.horaFim)
+    },
+    cenario: (function () {                       // V101 (M1)
+      var sc = String((visita && visita.scenario) || '').trim().toUpperCase();
+      if (!sc) return null;
+      var achado = PCM_SCENARIOS.find(function (x) { return x.id === sc; });
+      return achado ? { id: achado.id, title: achado.title } : { id: sc, title: '' };
+    })(),
     pecas: linhas,
     pecasObs: pecasObs,
-    partsObs: '',
+    partsObs: String(visita.partsObs || ''),   // V101 (coluna nova do GAS v81)
     obsGerais: _pcmTxt(visita.generalObs),
     // no PCM o "status fotográfico" é o que existe de fato no acervo da visita
     fotosStatus: fotos.map(function (f) { return { name: f.label, stat: 'Fotografado' }; }),
