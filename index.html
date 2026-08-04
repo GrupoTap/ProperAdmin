@@ -840,12 +840,77 @@ v50 — Resiliência de rede: retry/backoff em gsGet e syncToGS
     sincronização silenciosa de boot (syncFromGS).
   - gsGet/syncToGS: assinatura e comportamento de sucesso inalterados.
 -->
+<!-- ══════════════════════════════════════════════════════════════════════════
+     PCM V107 — 04/08/2026 (noite) — RODADA CORRETIVA. A seção "clientes nas
+     máquinas sem cadastro completo" mentia por RÓTULO e por CONTEÚDO:
+       • o card de estatística dizia "Cadastro incompleto" com o tooltip
+         "sem CNPJ, contato ou pasta Drive" — mas o número é `unregistered`,
+         que é outra coisa: nome que aparece em MAQUINAS.Cliente e NÃO tem
+         ficha em CLIENTES. Era esse rótulo que fazia o Fernando procurar um
+         campo faltando num problema de ficha inexistente;
+       • a coluna "Máquinas vinculadas" imprimia `e.tag || e.model` — TAG e
+         modelo na mesma coluna, sem dizer qual é qual ("296-CP-01" parecia
+         nome de máquina, e essa TAG existe em DOIS clientes distintos);
+       • a linha agora mostra a grafia EXATA gravada na máquina × a ficha mais
+         parecida, que é o que resolve o caso na hora.
+     ⚠ A CAUSA da persistência é do GAS (v86): ensureMachineFromVisit
+       re-carimbava o nome sujo a cada visita, desfazendo o ⇄ Transferir.
+     ⚠ NENHUMA normalização nova em clientKey: qualquer fuzzy passa perto de
+       fundir "SORRAG - Matriz" com "SORRAG - Filial", que são clientes
+       distintos DE PROPÓSITO.
+     ─────────────────────────────────────────────────────────────────────
+     PCM V106 — 04/08/2026 — P1 CORREÇÕES + P2 VISUALIZAÇÃO + P3 PRAZOS
+     Par: GAS v85 · PCF V80 (+ sw v80).
+     100% ADITIVO: nenhuma função, id, data-key, data-view ou view renomeada.
+
+     ── P1 ────────────────────────────────────────────────────────────────────
+     C1  _docsClienteCanon na árvore de documentos — SÓ no agrupamento. A árvore
+         sempre esteve certa; o DADO é que está sujo (o PCF até a V77 mandava o
+         rótulo "Cliente · TIPO_OS" como nome do cliente). A coluna CLIENTE da
+         tabela ☰ e o searchText continuam vendo o valor CRU, senão a busca
+         deixa de achar a linha suja e ninguém percebe que ela existe.
+         ⚠ Só corta quando o sufixo é um TIPO DE OS conhecido: "SORRAG · Filial"
+         é nome real e não pode ser mutilado.
+     C2  CTA "➕ Empilhar execução" sobe para primário quando a última camada foi
+         encerrada, com a legenda de etapa encerrada · selo 🏁 no card da tarefa.
+         Nenhuma mudança em canComplete (decisão D4): o PCM continua podendo
+         fechar tarefa de campo — é a válvula de escape do admin.
+     ADM Select `executa_em` na tela de Perfis (o ÚNICO passo de configuração) ·
+         o rótulo do editor de template deixou de dizer "(informativo)", porque o
+         campo passou a ROTEAR · badge 🏢 Adm / 🔧 Campo no pipeline · view nova
+         `tarefasAdm` com ação INLINE (concluir e resolver gateway sem abrir a OS) ·
+         VALIDADOR DE PERFIL ÓRFÃO ao salvar template — pré-requisito, não item
+         opcional: sem ele, renomear um perfil transforma toda tarefa de adm
+         daquele template em tarefa de campo EM SILÊNCIO (a classe do `auto:genérica`).
+
+     ── P2 ────────────────────────────────────────────────────────────────────
+     K1  4ª aba `Oficina` no ribbon de Gestão de OSs. A COLUNA É A FASE DO
+         TEMPLATE — sem tabela de/para, de propósito. Colunas = união das fases
+         DECLARADAS (não só as ocupadas): sem isso a coluna vazia some e o quadro
+         "pula" a cada conclusão. Cor por camada (diagnóstico × execução).
+         ⚠ SEM drag & drop: arrastar seria concluir/pular tarefas pelas costas do
+         motor de dependências — a "segunda verdade" que este projeto evita.
+
+     ── P3 ────────────────────────────────────────────────────────────────────
+     P1  Select `Relogio` (interno/externo) no editor de tarefa.
+     P2  Metas `sla_dias_uteis_interno`/`_total` na tela de Tipos de OS.
+     P3  META × PREVISTO × REAL no cabeçalho do pipeline, com semáforo e a FRASE
+         do maior ofensor — é ela, e não o número solto, que muda decisão.
+     P4  Chip de prazo no card do quadro da oficina.
+     P5  View nova `termometro`: onde estão os 20 dias que sobram, com número.
+         Amostras MEDIDAS e ESTIMADAS (backfill) reportadas SEPARADAS — dado
+         derivado nunca se passa por dado medido.
+     ⚠ Fase_Ordem passa a ser gravada de 10 em 10 ao salvar template: fase nova
+       no meio depois não obriga a renumerar tudo.
+
+     Bancada: 40 asserts de UI em Chromium headless + screenshots conferidos.
+     ══════════════════════════════════════════════════════════════════════════ -->
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>ProperCare Manager · Gestão PGP v3.37 (PCM V101)</title>
+<title>ProperCare Manager · Gestão PGP v3.37 (PCM V107)</title>
 <link rel="icon" type="image/jpeg" href="data:image/jpeg;base64,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">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1517,6 +1582,12 @@ tr:hover td{background:var(--gray-50)}
 .gos-kcard-cli{font-size:13.5px;font-weight:600;color:var(--text)}
 .gos-kcard-maq{font-size:11.5px;color:var(--text-muted);margin-top:2px}
 .gos-kcard-foot{margin-top:8px}
+/* V105 (P2/K1) — aba Oficina: meta em chips e barra de progresso no card. */
+.gos-kcard-meta{display:flex;flex-wrap:wrap;gap:4px;margin-top:6px}
+.gos-kcard-meta .gos-chip{cursor:default;padding:2px 7px;font-size:10.5px}
+.gos-kcard-prog{height:4px;background:var(--border);border-radius:2px;overflow:hidden;margin-top:8px}
+.gos-kcard-progbar{height:100%;background:var(--accent);border-radius:2px}
+.gos-kcard-proglbl{font-size:11px;color:var(--text-muted);margin-top:4px}
 .gos-kcard-date{font-size:11.5px;color:var(--text-muted)}
 .gos-kcard-date.nodate{color:var(--gos-faint);font-style:italic}
 /* calendário */
@@ -1734,6 +1805,20 @@ th.xf-filtered .xf-fun{opacity:1;stroke:var(--accent)}
         </svg>
         <span>Tipos de OS</span>
       </button>
+      <!-- V104 (ADM/P4) — caixa de entrada da administração -->
+      <button class="nav-item" data-view="tarefasAdm" onclick="showView('tarefasAdm')" id="navTarefasAdm">
+        <svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M2 3h12v10H2zM2 7h12M6 3v10"/>
+        </svg>
+        <span>Tarefas do Adm</span>
+      </button>
+      <!-- V106 (P3/P5) — termômetro de espera: onde estão os 20 dias que sobram -->
+      <button class="nav-item" data-view="termometro" onclick="showView('termometro')" id="navTermometro">
+        <svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M8 2v7M8 12.5a2 2 0 100-4 2 2 0 000 4zM6 4h4"/>
+        </svg>
+        <span>Termômetro</span>
+      </button>
       <button class="nav-item" data-view="saturacao" onclick="showView('saturacao')" id="navSaturacao">
         <svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
           <path d="M2 13V8M6 13V3M10 13v6M14 13V6"/>
@@ -1858,6 +1943,10 @@ th.xf-filtered .xf-fun{opacity:1;stroke:var(--accent)}
     <div id="viewTiposOS" style="display:none"></div>
     <!-- SATURAÇÃO VIEW (Sessão E) -->
     <div id="viewSaturacao" style="display:none"></div>
+    <!-- V104 — CAIXA DE ENTRADA DA ADMINISTRAÇÃO -->
+    <div id="viewTarefasAdm" style="display:none"></div>
+    <!-- V106 — TERMÔMETRO DE ESPERA -->
+    <div id="viewTermometro" style="display:none"></div>
   </main>
 </div>
 </div>
@@ -4681,10 +4770,39 @@ function _renderDocsXfV95(list){
 }
 
 // ── V96: montagem e render da árvore Cliente → OS → Máquina ──
+// V104 (P1/C1) — normalização DEFENSIVA do nome do cliente, só no AGRUPAMENTO.
+// A árvore sempre esteve certa; o DADO é que está sujo: o PCF até a V77 mandava
+// o rótulo "Cliente · TIPO_OS" como nome do cliente. O GAS v85 já sanitiza na
+// escrita, mas as linhas ANTIGAS continuam sujas até alguém rodar o one-off.
+// ⚠ Só corta quando o sufixo casa com um TIPO DE OS conhecido. "SORRAG · Filial"
+//   é nome real e não pode ser mutilado — este é o teste bloqueante.
+// ⚠ A coluna CLIENTE da tabela ☰ e o searchText continuam vendo o valor CRU:
+//   senão a busca deixa de achar a linha suja e ninguém percebe que ela existe.
+function _docsClienteCanon(nome){
+  const sRaw = String(nome == null ? '' : nome).trim();
+  const i = sRaw.lastIndexOf(' · ');
+  if (i <= 0) return sRaw;
+  const base = sRaw.slice(0, i).trim();
+  const suf  = sRaw.slice(i + 3).trim().toLowerCase();
+  if (!base) return sRaw;
+  let conhecido = false;
+  try {
+    // _tiposOS é let de módulo (não vive em window). Mesmo bloco <script>, então
+    // está no escopo — e já está preenchido quando esta função roda.
+    const _tipos = (typeof _tiposOS !== 'undefined' && _tiposOS) ? _tiposOS : [];
+    _tipos.forEach(function(t){
+      [t.Tipo_ID, t.Nome].forEach(function(v){
+        if (String(v == null ? '' : v).trim().toLowerCase() === suf) conhecido = true;
+      });
+    });
+  } catch(e) { /* sem catálogo de tipos: não corta nada */ }
+  return conhecido ? base : sRaw;
+}
+
 function _docsTreeBuildV96(rows){
   const cli=new Map();
   rows.forEach(function(it){
-    const cName=_docVal(it?.Cliente);
+    const cName=_docsClienteCanon(_docVal(it?.Cliente));   // V104 (C1)
     const cKey='C::'+String(cName).toLowerCase();
     if(!cli.has(cKey)) cli.set(cKey,{key:cKey,label:cName,os:new Map(),nF:0,nP:0,maxDate:0});
     const C=cli.get(cKey);
@@ -4784,7 +4902,7 @@ function _docsToggleOV96(tr){
 // ═══════════════════════════════════════════════════════════
 function showView(v){
   currentView=v;
-  const allViews=['dashboard','preventivas','catalog','machines','clients','estoque','docs','config','tecnicos','perfis','os','templates','tiposOS','saturacao'];
+  const allViews=['dashboard','preventivas','catalog','machines','clients','estoque','docs','config','tecnicos','perfis','os','templates','tiposOS','saturacao','tarefasAdm','termometro'];
   // A view 'tecnicos' usa IDs viewUsuarios/navUsuarios (renomeados na migração
   // técnico→usuário), que divergem da capitalização automática abaixo — sem este
   // mapa, getElementById procurava viewTecnicos/navTecnicos (inexistentes) e a
@@ -4841,6 +4959,10 @@ function showView(v){
     renderTiposOSList();
   } else if(v==='saturacao'){
     renderSaturacao();
+  } else if(v==='tarefasAdm'){
+    renderTarefasAdm();
+  } else if(v==='termometro'){
+    renderTermometro();
   }
 }
 
@@ -9228,9 +9350,9 @@ function renderClients(){
       <div class="stat-card no-action"><div class="stat-val">${comDrive}</div><div class="stat-lbl">Com pasta Drive</div></div>
       <div class="stat-card ${unregistered.length?'':'no-action'}" ${unregistered.length?`style="cursor:pointer" onclick="document.getElementById('unregistered-section')?.scrollIntoView({behavior:'smooth',block:'start'})" title="Ver clientes com cadastro incompleto"`:''}>
         <div class="stat-val" style="${unregistered.length?'color:var(--orange)':''}">${unregistered.length}</div>
-        <div class="stat-lbl" style="${unregistered.length?'color:var(--orange)':''}">Cadastro incompleto</div>
-        <div style="font-size:10px;color:var(--text3);margin-top:2px">${unregistered.length} cliente${unregistered.length!==1?'s':''}</div>
-        <div class="card-tooltip">Clientes sem CNPJ, contato ou pasta Drive cadastrados</div>
+        <div class="stat-lbl" style="${unregistered.length?'color:var(--orange)':''}">Nomes sem ficha de cliente</div>
+        <div style="font-size:10px;color:var(--text3);margin-top:2px">${unregistered.length} nome${unregistered.length!==1?'s':''}</div>
+        <div class="card-tooltip">V107: este número NÃO é "faltou preencher campo". São nomes que aparecem no campo Cliente de alguma máquina e não têm ficha em CLIENTES — geralmente porque a grafia gravada na máquina difere da cadastrada (ex.: com sufixo entre parênteses).</div>
       </div>
     </div>
 
@@ -9252,8 +9374,36 @@ function renderClients(){
       <div class="table-wrap"><table class="client-table">
         <thead><tr><th>Nome nas máquinas</th><th>Máquinas vinculadas</th><th></th></tr></thead>
         <tbody>${unregistered.sort((a,b)=>a.nome.localeCompare(b.nome)).map(u=>`<tr>
-          <td><div style="font-weight:600">${u.nome}</div></td>
-          <td style="font-size:11px;color:var(--text2)">${u.eqs.map(e=>e.tag||e.model).join(', ')}</td>
+          <td><div style="font-weight:600">${u.nome}</div>${(function(){
+            // V107 — mostra a ficha MAIS PARECIDA. Na esmagadora maioria dos
+            // casos o cliente EXISTE e o que difere é a grafia (sufixo entre
+            // parênteses, razão social por extenso). Sem isto o admin lê
+            // "sem cadastro" e cadastra de novo, criando o 2º cliente.
+            // ⚠ SUGESTÃO VISUAL APENAS — não funde nada, não altera dado.
+            try{
+              // Critério = CONTENÇÃO de tokens, não similaridade difusa: os dois
+              // casos reais são "razão social por extenso" (EMOP ⊂ EMOP Empresa
+              // municipal de obras publicas) e "sufixo entre parênteses"
+              // (SORRAG - Matriz ⊂ SORRAG - Matriz (Betoneiras)).
+              // ⚠ É contenção justamente para NUNCA aproximar Matriz de Filial:
+              //   [sorrag,filial,andaimes] não está contido em
+              //   [sorrag,matriz,betoneiras] em nenhum sentido.
+              // ⚠ Se mais de uma ficha couber (ex.: uma ficha "SORRAG" pelada),
+              //   NÃO sugere nenhuma — ambiguidade é para o humano resolver.
+              const k=clientKey(u.nome||''), toks=k.split(' ').filter(Boolean);
+              if(!toks.length) return '';
+              const contem=(a,b)=>a.length&&a.every(t=>b.indexOf(t)>=0);
+              const cands=(db.clients||[]).map(c=>{
+                const ck2=clientKey(c.nome||''); if(!ck2) return null;
+                const t2=ck2.split(' ').filter(Boolean);
+                return (contem(t2,toks)||contem(toks,t2))? {c:c, n:t2.length} : null;
+              }).filter(Boolean).sort((a,b)=>b.n-a.n);
+              if(!cands.length) return '<div style="font-size:10px;color:var(--text3)">nenhuma ficha parecida — provavelmente é cliente novo</div>';
+              if(cands.length>1) return '<div style="font-size:10px;color:var(--orange)">'+cands.length+' fichas parecidas ('+cands.map(x=>String(x.c.nome||'')).join(' / ')+') — escolha no ⇄ Transferir</div>';
+              return '<div style="font-size:10px;color:var(--text3)">grafia gravada na máquina · ficha parecida: <b>'+String(cands[0].c.nome||'')+'</b> — use ⇄ Transferir</div>';
+            }catch(e){ return ''; }
+          })()}</td>
+          <td style="font-size:11px;color:var(--text2)">${u.eqs.map(e=>[[e.brand,e.model].filter(Boolean).join(' '),e.tag?('TAG '+e.tag):'',e.serial?('NS '+e.serial):''].filter(s=>s&&String(s).trim()).join(' · ')||'(máquina sem identificação)').join('<br>')}</td>
           <td style="white-space:nowrap;display:flex;gap:6px;align-items:center">
             <button class="btn btn-success btn-xs" onclick="openMergeClient('${u.nome.replace(/'/g,"\\'")}', null)" title="Transferir as máquinas deste nome para um cliente já cadastrado (uniformizar grafia)">⇄ Transferir</button>
             <button class="btn btn-secondary btn-xs" onclick="openModalClientPrefill('${u.nome.replace(/'/g,"\\'")}')">Cadastrar →</button>
@@ -9429,7 +9579,7 @@ function renderConfigStats(){
     <div class="card">
       <div style="font-size:13px;font-weight:600;margin-bottom:4px">Sobre o sistema</div>
       <div style="font-size:12px;color:var(--text2);line-height:1.8">
-        <strong>Catálogo Administrativo v3.37 · PCM V101</strong> — Proper Compressores<br>
+        <strong>Catálogo Administrativo v3.37 · PCM V107</strong> — Proper Compressores<br>
         Catálogo de modelos · Peças com similares · Fotos · Subsistemas nomeados · Máquinas PGP com dados completos de cliente<br>
         Detecção de duplicados em modelos e máquinas · Google Sheets como backend
       </div>
@@ -10975,6 +11125,7 @@ function openModalPerfil(id) {
   document.getElementById('perfilId').value = '';
   document.getElementById('perfilNome').value = '';
   document.getElementById('perfilIsAdmin').checked = false;
+  document.getElementById('perfilExecutaEm').value = 'campo';   // V104
   _populatePerfilModulosCheckboxes([]);
 
   if (id) {
@@ -10984,6 +11135,9 @@ function openModalPerfil(id) {
     document.getElementById('perfilId').value   = perf.id_perfil || '';
     document.getElementById('perfilNome').value = perf.nome_perfil || '';
     document.getElementById('perfilIsAdmin').checked = String(perf.is_admin||'').toUpperCase() === 'SIM';
+    // V104 — vazio = 'campo' (retrocompatível: perfis antigos seguem em campo)
+    var _ee = String(perf.executa_em || '').trim().toLowerCase();
+    document.getElementById('perfilExecutaEm').value = (_ee === 'adm' || _ee === 'ambos') ? _ee : 'campo';
     let mods = [];
     try { mods = JSON.parse(perf.modulos_acesso||'[]'); } catch(e){}
     _populatePerfilModulosCheckboxes(mods);
@@ -11002,12 +11156,32 @@ async function savePerfilModal() {
 
   if (!nome) { toast('Preencha o nome do perfil.', 'error'); return; }
 
+  const executaEm = document.getElementById('perfilExecutaEm').value || 'campo';   // V104
+
+  // V104 — renomear perfil marcado como adm quebra o roteamento por NOME dos
+  // templates antigos. Avisa ANTES de salvar, com o número de tarefas afetadas.
+  if (id) {
+    const _antes = (_perfilList || []).find(p => p.id_perfil === id);
+    const _nomeAntes = _antes ? String(_antes.nome_perfil || '') : '';
+    if (_nomeAntes && _nomeAntes !== nome) {
+      const _uso = _contarTarefasPorPerfilNome(_nomeAntes);
+      if (_uso.tarefas > 0 && !confirm(
+          'O perfil "' + _nomeAntes + '" é apontado por ' + _uso.tarefas +
+          ' tarefa(s) em ' + _uso.templates + ' template(s), PELO NOME.\n\n' +
+          'Renomeando para "' + nome + '", essas tarefas deixam de casar e passam ' +
+          'a valer como tarefa de CAMPO nas próximas instanciações.\n\n' +
+          'As OSs já instanciadas não mudam (o Executor é carimbado na criação).\n\n' +
+          'Renomear mesmo assim?')) return;
+    }
+  }
+
   const payload = {
     action: 'savePerfil',
     nome_perfil: nome,
     modulos_acesso: JSON.stringify(mods),
     is_admin: isAdmin ? 'SIM' : 'NÃO',
     ativo: 'SIM',
+    executa_em: executaEm,   // V104
   };
   if (id) payload.id_perfil = id;
 
@@ -11348,6 +11522,9 @@ function _renderOSRibbonShell(){
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="5" height="16" rx="1"/><rect x="10" y="4" width="5" height="11" rx="1"/><rect x="17" y="4" width="4" height="14" rx="1"/></svg>Kanban</div>
         <div class="gos-ribbon-tab ${_osRibbonTab==='calendario'?'active':''}" onclick="gosSetTab('calendario')">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 9h18M8 3v4M16 3v4"/></svg>Calendário</div>
+        <!-- V105 (P2/K1) — 4ª aba. gosSetTab já despacha por string; nada renomeado. -->
+        <div class="gos-ribbon-tab ${_osRibbonTab==='oficina'?'active':''}" onclick="gosSetTab('oficina')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21h18M5 21V9l7-5 7 5v12M9 21v-6h6v6"/></svg>Oficina</div>
         <div class="gos-ribbon-actions">
           <button class="btn btn-primary" onclick="openModalOS()">+ Abrir OS</button>
         </div>
@@ -11358,12 +11535,151 @@ function _renderOSRibbonShell(){
 function _gosRenderActiveTab(){
   if (_osRibbonTab === 'kanban')     return gosRenderKanban();
   if (_osRibbonTab === 'calendario') return gosRenderCalendario();
+  if (_osRibbonTab === 'oficina')    return gosRenderOficina();     // V105 (P2/K1)
   _renderOSTable(_osSearch, _osFilterStatus, _osFilterPrioridade);   // Lista (existente)
 }
 function gosSetTab(tab){
   _osRibbonTab = tab;
   _renderOSRibbonShell();
   _gosRenderActiveTab();
+}
+
+// ════════════════════════════════════════════════════════════════════════════
+// V105 (P2/K1) — ABA OFICINA
+// A COLUNA É A FASE DO TEMPLATE. Não existe tabela de/para, de propósito:
+// roteamento por string digitada é a armadilha que este projeto já pagou com
+// `auto:genérica` / `auto:Form 03` — tarefa que some do quadro sem erro nenhum.
+// A fase já é dado estruturado, ordenado e editável pelo Fernando.
+// ⚠ SEM drag & drop: arrastar um card significaria concluir/pular tarefas pelas
+//   costas do motor de dependências — a "segunda verdade" que este projeto evita.
+//   O caminho honesto já existe: clique → pipeline → concluir a tarefa.
+// ════════════════════════════════════════════════════════════════════════════
+let _oficinaCache = null;
+let _oficinaBusca = '';
+let _oficinaSoAtrasadas = false;
+let _oficinaIncluirConcluidas = true;
+
+async function gosRenderOficina(){
+  const cont = document.getElementById('osRibbonContent');
+  if (!cont) return;
+  if (!_oficinaCache) {
+    cont.innerHTML = `<div style="padding:40px;text-align:center;color:var(--text-muted);font-size:13px">Montando o quadro da oficina…</div>`;
+  }
+  try {
+    const r = await gsGet('getKanbanOficina', { dias_concluidas: _oficinaIncluirConcluidas ? '15' : '0' });
+    _oficinaCache = r;
+  } catch (e) {
+    if (!_oficinaCache) {
+      cont.innerHTML = `<div class="empty"><div class="empty-icon">⚠️</div>
+        <div class="empty-title">Erro ao carregar o quadro</div>
+        <div class="empty-sub">${escHtml(e.message)}</div></div>`;
+      return;
+    }
+    toast('Quadro não atualizou: ' + e.message, 'warn');
+  }
+  _gosPintarOficina();
+}
+
+function _gosPintarOficina(){
+  const cont = document.getElementById('osRibbonContent');
+  if (!cont || !_oficinaCache) return;
+  const busca = String(_oficinaBusca || '').toLowerCase();
+  let cards = (_oficinaCache.cards || []).filter(c => {
+    if (_oficinaSoAtrasadas && !c.atrasada) return false;
+    if (!busca) return true;
+    // ⚠ String(x ?? '') — numero_os é NUMBER e já congelou filtro duas vezes.
+    return (String(c.numero_os ?? '') + ' ' + String(c.cliente ?? '') + ' ' +
+            String(c.tipo_os ?? '')).toLowerCase().indexOf(busca) >= 0;
+  });
+
+  // Colunas = união das fases DECLARADAS (não só as ocupadas): sem isso a coluna
+  // vazia some e o quadro "pula" a cada conclusão, e o admin perde a etapa de vista.
+  const colunas = (_oficinaCache.colunas || []).slice();
+  const porFase = new Map();
+  colunas.forEach(c => porFase.set(String(c.fase).toLowerCase(), []));
+  const terminal = [];
+  cards.forEach(c => {
+    const k = String(c.fase_atual || '').toLowerCase();
+    if (!c.fase_atual) { terminal.push(c); return; }
+    if (!porFase.has(k)) { porFase.set(k, []); colunas.push({ fase: c.fase_atual, fase_ordem: 999, camada_ordem: c.camada_atual || 1, camada_nome: c.camada_nome || '' }); }
+    porFase.get(k).push(c);
+  });
+
+  const barra = `
+    <div style="display:flex;gap:10px;align-items:center;margin:12px 0;flex-wrap:wrap">
+      <input class="form-input" id="ofBusca" style="max-width:260px"
+        placeholder="Buscar por nº, cliente ou tipo"
+        oninput="_oficinaBusca=this.value;_gosPintarOficina()"
+        readonly onfocus="this.removeAttribute('readonly')"
+        autocomplete="off" name="oficina_busca_nofill" data-lpignore="true" data-1p-ignore="true"
+        value="${escHtml(_oficinaBusca)}">
+      <button class="btn btn-sm ${_oficinaSoAtrasadas ? 'btn-primary' : 'btn-secondary'}"
+        onclick="_oficinaSoAtrasadas=!_oficinaSoAtrasadas;_gosPintarOficina()">${_oficinaSoAtrasadas ? '✓ ' : ''}Só atrasadas</button>
+      <button class="btn btn-sm ${_oficinaIncluirConcluidas ? 'btn-primary' : 'btn-secondary'}"
+        onclick="_oficinaIncluirConcluidas=!_oficinaIncluirConcluidas;_oficinaCache=null;gosRenderOficina()">${_oficinaIncluirConcluidas ? '✓ ' : ''}Incluir concluídas (15d)</button>
+      <button class="btn btn-secondary btn-sm" onclick="_oficinaCache=null;gosRenderOficina()">↻ Atualizar</button>
+      <span style="color:var(--text-muted);font-size:12px">${cards.length} OS interna(s)</span>
+    </div>`;
+
+  if (!cards.length && !colunas.length) {
+    cont.innerHTML = barra + `<div class="empty"><div class="empty-icon">🏭</div>
+      <div class="empty-title">Nenhuma OS interna aberta</div>
+      <div class="empty-sub">O quadro mostra só OSs com <b>local de atendimento interno</b>.</div></div>`;
+    return;
+  }
+
+  const colHtml = colunas.map(c => {
+    const itens = porFase.get(String(c.fase).toLowerCase()) || [];
+    // Cor por CAMADA: o admin precisa enxergar de longe onde o pipeline virou
+    // de diagnóstico para execução.
+    const cor = (c.camada_ordem > 1) ? '#7c5cff' : '#0d9488';
+    return `<div class="gos-kcol">
+      <div class="gos-kcol-h" style="border-top:3px solid ${cor}">
+        <span>${escHtml(c.fase)}</span><span class="gos-count">${itens.length}</span>
+      </div>
+      <div class="gos-klist">${itens.map(_gosOficinaCard).join('') || '<div class="gos-kempty">—</div>'}</div>
+    </div>`;
+  }).join('');
+  const terminalHtml = `<div class="gos-kcol">
+      <div class="gos-kcol-h" style="border-top:3px solid #16a34a">
+        <span>✅ Concluídas</span><span class="gos-count">${terminal.length}</span>
+      </div>
+      <div class="gos-klist">${terminal.map(_gosOficinaCard).join('') || '<div class="gos-kempty">—</div>'}</div>
+    </div>`;
+
+  cont.innerHTML = barra + `<div class="gos-kanban">${colHtml}${terminalHtml}</div>`;
+}
+
+function _gosOficinaCard(c){
+  const rank = c.prioridade_rank || 1;
+  const P = { 3:{l:'Urgente',bg:'#fee2e2',cor:'#991b1b'}, 2:{l:'Alta',bg:'#ffedd5',cor:'#9a3412'}, 1:{l:'Normal',bg:'#f1f5f9',cor:'#475569'} };
+  const p = P[rank] || P[1];
+  const prog = (c.progresso && c.progresso.total)
+    ? `${c.progresso.concluidas} de ${c.progresso.total}` : '';
+  const pct = (c.progresso && c.progresso.total)
+    ? Math.round((c.progresso.concluidas / c.progresso.total) * 100) : 0;
+  const tecs = (c.tecnicos || []).length ? `👤 ${escHtml((c.tecnicos || []).join(', '))}` : '';
+  // V106 (P3/P4) — chip de prazo, no mesmo semáforo do cabeçalho do pipeline.
+  let prazo = '';
+  if (c.prazo_estimado_total) {
+    const d = new Date(c.prazo_estimado_total);
+    if (!isNaN(d.getTime())) prazo = `<span class="gos-chip">⏱ ${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}</span>`;
+  }
+  return `<div class="gos-kcard" style="${c.atrasada ? 'border-left:3px solid #dc2626' : ''}"
+      onclick="openOSDetail('${escJs(c.id_os)}')">
+    <div class="gos-kcard-top">
+      <b>OS ${escHtml(String(c.numero_os ?? c.id_os))}</b>
+      <span class="gos-prio" style="background:${p.bg};color:${p.cor}">${p.l}</span>
+    </div>
+    <div class="gos-kcard-cli">${escHtml(c.cliente)}</div>
+    <div class="gos-kcard-meta">
+      <span class="gos-chip">🎫 #${c.posicao_fila || '—'}</span>
+      <span class="gos-chip" style="${c.atrasada ? 'color:#dc2626;font-weight:700' : ''}">⏳ ${c.dias_na_fila}d</span>
+      ${prazo}
+    </div>
+    ${prog ? `<div class="gos-kcard-prog"><div class="gos-kcard-progbar" style="width:${pct}%"></div></div>
+              <div class="gos-kcard-proglbl">${prog}${tecs ? ' · ' + tecs : ''}</div>` : (tecs ? `<div class="gos-kcard-proglbl">${tecs}</div>` : '')}
+  </div>`;
 }
 
 // ── Kanban ──
@@ -11976,19 +12292,42 @@ async function _loadPipelineTab(osId) {
     dispensado:    '⏭️',
   };
 
+  // ── V105 (P1/C2/P2) — CTA de empilhamento onde ele é necessário ──────────
+  // Quando a ÚLTIMA camada foi encerrada por uma tarefa com
+  // Acao_Terminal='fechar_pipeline' e não existe camada posterior, o botão de
+  // empilhar sobe para primário. É a resposta ao "não abriu a opção de empilhar".
+  let _maxCamada = 0, _encerradaEm = '';
+  tarefas.forEach(t => {
+    const c = parseInt(t.Camada_Ordem) || 1;
+    if (c > _maxCamada) { _maxCamada = c; _encerradaEm = ''; }
+    if (c === _maxCamada && t.Camada_Encerrada_Em && !_encerradaEm) _encerradaEm = String(t.Camada_Encerrada_Em);
+  });
+  const _prontoParaEmpilhar = !!_encerradaEm;
+  const _encData = _encerradaEm ? new Date(_encerradaEm) : null;
+  const _encLbl = (_encData && !isNaN(_encData.getTime()))
+    ? (String(_encData.getDate()).padStart(2,'0') + '/' + String(_encData.getMonth()+1).padStart(2,'0')) : '';
+
   let html = `
+    ${_prontoParaEmpilhar ? `<div style="background:#ede9fe;border:1px solid #c4b5fd;color:#5b21b6;border-radius:8px;padding:8px 12px;font-size:12.5px;margin-bottom:10px">
+      🏁 Etapa anterior encerrada${_encLbl ? ' em ' + _encLbl : ''} — pronto para empilhar a execução.</div>` : ''}
+    <div id="pipePrazoBox"></div>
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px">
       <div style="flex:1">
         <div style="font-size:12px;color:var(--text-muted);margin-bottom:4px">${concluidas} de ${total} tarefas concluídas</div>
         <div class="pipeline-progress"><div class="pipeline-progress-bar" style="width:${pct}%"></div></div>
       </div>
       ${window.PROPER_SESSION?.is_admin === true ? `
-        <button class="btn btn-secondary btn-sm" onclick="_abrirEmpilharPipeline(this, '${osId.replace(/'/g,"\\'")}')">➕ Empilhar execução</button>
+        <button class="btn ${_prontoParaEmpilhar ? 'btn-primary' : 'btn-secondary'} btn-sm" onclick="_abrirEmpilharPipeline(this, '${osId.replace(/'/g,"\\'")}')">➕ Empilhar execução</button>
         <button class="btn btn-secondary btn-sm" onclick="_abrirFilaOficina(this)">🏭 Fila da oficina</button>
         <button class="btn btn-secondary btn-sm" onclick="_abrirTrocarPipeline(this, '${osId.replace(/'/g,"\\'")}')">🔄 Trocar pipeline</button>
         <button class="btn btn-secondary btn-sm" onclick="gerarRelatorioReforma('${osId.replace(/'/g,"\\'")}')">📄 Gerar relatório</button>
         <button class="btn btn-secondary btn-sm" onclick="pcmGerarPdfPreventivaOS('${osId.replace(/'/g,"\\'")}')" title="PDF único com a preventiva de todas as máquinas desta OS">🔧 PDF das preventivas</button>` : ''}
     </div>`;
+
+  // V106 (P3/P3) — META × PREVISTO × REAL + a frase do maior ofensor.
+  // Carregado DEPOIS do render e não-bloqueante: o pipeline nunca deixa de
+  // aparecer porque o motor de prazo demorou ou falhou.
+  setTimeout(function(){ _pipeCarregarPrazo(osId); }, 0);
 
   fasesOrdenadas.forEach(fase => {
     html += `<div class="pipeline-phase">
@@ -12010,6 +12349,21 @@ async function _loadPipelineTab(osId) {
         : '';
       const perfilLine = t.Perfil_Responsavel
         ? `<div style="font-size:11px;color:var(--text-muted);margin-top:4px">👤 Responsável sugerido: ${escHtml(t.Perfil_Responsavel)}</div>`
+        : '';
+      // V104 (ADM/P3) — badge de executor. Vazio NÃO renderiza nada: pipeline
+      // antigo não pode virar ruído visual. ⚠ canComplete NÃO muda (decisão D4):
+      // o PCM continua podendo fechar tarefa de campo — é a válvula do admin.
+      const _execT = String(t.Executor || '').trim().toLowerCase();
+      const execBadge = _execT === 'adm'
+        ? '<span style="font-size:10px;color:#0369a1;background:#e0f2fe;padding:1px 6px;border-radius:10px;border:1px solid #7dd3fc;margin-left:6px">🏢 Adm</span>'
+        : (_execT === 'campo'
+            ? '<span style="font-size:10px;color:var(--text-muted);background:var(--bg);padding:1px 6px;border-radius:10px;border:1px solid var(--border);margin-left:6px">🔧 Campo</span>'
+            : (_execT === 'ambos'
+                ? '<span style="font-size:10px;color:#7c3aed;background:#f5f3ff;padding:1px 6px;border-radius:10px;border:1px solid #ddd6fe;margin-left:6px">🔀 Ambos</span>'
+                : ''));
+      // V105 — selo de camada encerrada no card
+      const camEncBadge = t.Camada_Encerrada_Em
+        ? '<span style="font-size:10px;color:#5b21b6;background:#ede9fe;padding:1px 6px;border-radius:10px;border:1px solid #c4b5fd;margin-left:6px">🏁 Etapa encerrada</span>'
         : '';
       const tempoLine = t.Tempo_Estimado_Min
         ? `<div style="font-size:11px;color:var(--text-muted);margin-top:2px">⏱ Estimado: ${escHtml(t.Tempo_Estimado_Min)} min</div>`
@@ -12078,7 +12432,7 @@ async function _loadPipelineTab(osId) {
       html += `<div class="pipeline-card status-${st}" id="pcard-${tid}" ${st==='bloqueado'?'style="pointer-events:none"':''}>
         <div class="pipeline-card-header">
           <span>${icon} <span class="pipeline-card-name">${t.Nome||'—'}</span>${camadaBadge}</span>
-          ${tipoBadge}
+          ${tipoBadge}${execBadge}${camEncBadge}
         </div>
         ${concByLine}
         ${lockLine}
@@ -12597,6 +12951,21 @@ if(!gsUrl){
           Se marcado, este perfil tem acesso a todos os módulos automaticamente.
         </p>
       </div>
+      <!-- V104 (ADM/P1) — o ÚNICO passo de configuração do recurso de tarefas
+           de administração: marcar o perfil "Adm" que já existe. -->
+      <div class="form-row">
+        <label class="form-label">Onde este perfil executa</label>
+        <select class="form-select" id="perfilExecutaEm">
+          <option value="campo">🔧 Campo / Oficina</option>
+          <option value="adm">🏢 Administração</option>
+          <option value="ambos">🔀 Ambos</option>
+        </select>
+        <p style="font-size:11px;color:var(--text-muted);margin-top:4px">
+          Tarefas cujo Perfil Responsável for um perfil de <b>Administração</b> ficam
+          travadas no PCF (o técnico vê, mas não assume) e aparecem na caixa de
+          entrada do adm.
+        </p>
+      </div>
     </div>
     <div class="modal-footer">
       <button class="btn btn-secondary" onclick="closeModal('modalPerfil')">Cancelar</button>
@@ -12769,6 +13138,24 @@ if(!gsUrl){
         <textarea id="tipoOSDescricao" class="form-input" rows="3"
           placeholder="Orientação para o admin ao escolher este tipo..."></textarea>
       </div>
+      <!-- V106 (P3/P2) — a meta é DADO, não constante no código. -->
+      <div style="display:flex;gap:16px;margin-top:14px">
+        <div style="flex:1">
+          <label class="form-label">Meta interna (dias úteis)</label>
+          <input type="number" id="tipoOSSlaInterno" class="form-input" min="0" step="1"
+            placeholder="Ex: 18" autocomplete="off" name="sla_int_nofill" data-lpignore="true" data-1p-ignore="true">
+        </div>
+        <div style="flex:1">
+          <label class="form-label">Meta total (dias úteis)</label>
+          <input type="number" id="tipoOSSlaTotal" class="form-input" min="0" step="1"
+            placeholder="Ex: 20" autocomplete="off" name="sla_tot_nofill" data-lpignore="true" data-1p-ignore="true">
+        </div>
+      </div>
+      <p style="font-size:11px;color:var(--text-muted);margin-top:4px">
+        A meta <b>interna</b> ignora a espera em tarefas marcadas como <i>relógio externo</i>
+        (cliente/fornecedor) — é contra ela que a oficina é cobrada. Vazio = sem meta:
+        a tela mostra previsto × real, sem semáforo. Reforma geral: <b>18 / 20</b>.
+      </p>
     </div>
     <div class="modal-footer">
       <button class="btn btn-secondary" onclick="closeModal('modalTipoOS')">Cancelar</button>
@@ -12855,16 +13242,36 @@ if(!gsUrl){
       </div>
       <div style="display:flex;gap:16px;margin-top:14px">
         <div style="flex:1">
-          <label class="form-label">Perfil responsável (informativo)</label>
+          <!-- V104 (ADM/P2) — deixou de ser "(informativo)": este campo passou a
+               ROTEAR. Manter o rótulo antigo seria armadilha para quem montar
+               template daqui a seis meses. -->
+          <label class="form-label">Perfil responsável</label>
           <select id="tarefaPerfilResponsavel" class="form-select">
             <option value="">— Nenhum —</option>
           </select>
+          <p style="font-size:11px;color:var(--text-muted);margin-top:4px">
+            Se for um perfil de <b>Administração</b>, a tarefa fica travada no PCF
+            e aparece na caixa de entrada do adm.
+          </p>
         </div>
         <div style="flex:1">
           <label class="form-label">Tempo estimado (min)</label>
           <input type="number" id="tarefaTempoEstimadoMin" class="form-input"
             placeholder="Ex: 180" min="0" step="5">
         </div>
+      </div>
+      <!-- V106 (P3/P1) — de quem é o relógio ENQUANTO esta tarefa espera. -->
+      <div class="form-row" style="margin-top:14px">
+        <label class="form-label">Enquanto esta tarefa espera, o relógio é de quem?</label>
+        <select id="tarefaRelogio" class="form-select">
+          <option value="interno">🏭 Proper (interno)</option>
+          <option value="externo">🤝 Cliente / fornecedor (externo)</option>
+        </select>
+        <p style="font-size:11px;color:var(--text-muted);margin-top:4px">
+          Espera em tarefa externa não conta no prazo <b>interno</b> da oficina — só no
+          prazo total. Marque assim o gateway “Cliente aprovou o orçamento?” e as esperas
+          por fornecedor. A <b>execução</b> continua contando nos dois.
+        </p>
       </div>
       <div class="form-row" style="margin-top:14px">
         <label class="form-label">Ao concluir esta tarefa</label>
@@ -13280,6 +13687,7 @@ async function _novaTarefa(fi) {
   document.getElementById('tarefaTempoEstimadoMin').value = '';
   document.getElementById('tarefaDescricao').value = '';
   document.getElementById('tarefaAcaoTerminal').value = ''; // v71 Fase A
+  document.getElementById('tarefaRelogio').value = 'interno'; // V106 (P3)
   _editorFotos = []; _renderFotoSlots();                     // v72 Fase B
   _editorChecklist = []; _renderChecklist();                 // v72 Fase C
   _editorCondicao = [];
@@ -13313,6 +13721,7 @@ async function _editarTarefa(fi, ti) {
   document.getElementById('tarefaTempoEstimadoMin').value = t.tempo_estimado_min || '';
   document.getElementById('tarefaDescricao').value = t.descricao || '';
   document.getElementById('tarefaAcaoTerminal').value = t.acao_terminal || ''; // v71 Fase A
+  document.getElementById('tarefaRelogio').value = (String(t.relogio||'').toLowerCase()==='externo') ? 'externo' : 'interno'; // V106
   _editorFotos = (t.requisitos && Array.isArray(t.requisitos.fotos)) ? t.requisitos.fotos.map(f=>({...f})) : []; // v72 Fase B
   _renderFotoSlots();
   _editorChecklist = (t.requisitos && Array.isArray(t.requisitos.checklist)) ? t.requisitos.checklist.map(q=>({...q})) : []; // v72 Fase C
@@ -14841,6 +15250,7 @@ function saveTarefaModal() {
   const tempoEstimadoMin  = document.getElementById('tarefaTempoEstimadoMin').value;
   const descricao = document.getElementById('tarefaDescricao').value.trim();
   const acaoTerminal = document.getElementById('tarefaAcaoTerminal').value; // v71 Fase A
+  const relogio = document.getElementById('tarefaRelogio').value || 'interno'; // V106 (P3)
   _coletarChecklistOpcoes(); // v72 Fase C
   const requisitos = { fotos: _editorFotos.map(f=>({...f})), checklist: _editorChecklist.map(q=>({...q})) }; // v72 Fases B/C
   const deps = Array.from(document.querySelectorAll('#tarefaDependencias input[type=checkbox]:checked')).map(c => c.value);
@@ -14856,6 +15266,7 @@ function saveTarefaModal() {
     t.form_url = formUrl;
     t.opcoes = opcoes; t.fonte_auto = fonteAuto; t.condicao = condicao;
     t.acao_terminal = acaoTerminal; // v71 Fase A
+    t.relogio = relogio;            // V106 (P3)
     t.requisitos = requisitos; // v72 Fases B/C
   } else {
     const todas = _todasTarefasEditor();
@@ -14876,6 +15287,7 @@ function saveTarefaModal() {
       tempo_estimado_min: tempoEstimadoMin ? parseInt(tempoEstimadoMin) : null,
       form_url: formUrl,
       opcoes, fonte_auto: fonteAuto, condicao, acao_terminal: acaoTerminal,
+      relogio,   // V106 (P3)
       requisitos // v72 Fases B/C
     });
   }
@@ -14903,9 +15315,27 @@ async function saveTemplateEditor() {
   const tarefasFlat = [];
   _editorTemplate.fases.forEach((fase, fi) => {
     fase.tarefas.forEach((t, ti) => {
-      tarefasFlat.push({ ...t, fase: fase.nome, fase_ordem: fi + 1, ordem: ti + 1 });
+      // V105 (P2/1.6) — Fase_Ordem de 10 em 10: fase nova no meio depois não
+      // obriga a renumerar tudo. A ordem RELATIVA é a mesma de antes.
+      tarefasFlat.push({ ...t, fase: fase.nome, fase_ordem: (fi + 1) * 10, ordem: ti + 1 });
     });
   });
+
+  // ══ V104 (ADM/P5) — VALIDADOR DE PERFIL ÓRFÃO — PRÉ-REQUISITO, NÃO OPCIONAL ══
+  // O select do editor grava o NOME do perfil, não o id. Sem esta trava,
+  // renomear ou desativar um perfil transforma toda tarefa de adm daquele
+  // template em tarefa de CAMPO — em silêncio. É exatamente a classe de falha
+  // do `auto:genérica` / `auto:Form 03`, que já custou semanas a este projeto.
+  const _orfas = _validarPerfisDoTemplate(tarefasFlat);
+  if (_orfas.length) {
+    const _lista = _orfas.slice(0, 6).map(o => '• "' + o.perfil + '" — ' +
+      o.tarefas.slice(0, 5).join(', ') + (o.tarefas.length > 5 ? ' (+' + (o.tarefas.length - 5) + ')' : '')).join('\n');
+    toast('Template NÃO salvo: há perfil que não existe mais.', 'error');
+    alert('⚠ ' + _orfas.reduce((n, o) => n + o.tarefas.length, 0) +
+          ' tarefa(s) apontam para um perfil que não existe ou está inativo:\n\n' + _lista +
+          '\n\nCorrija o perfil dessas tarefas ou reative o perfil no cadastro.');
+    return;
+  }
 
   try {
     const payload = {
@@ -14924,6 +15354,358 @@ async function saveTemplateEditor() {
     if (e.message && e.message.includes('AUTH_GOOGLE')) { hubLogout(); return; }
     toast('Erro ao salvar template: ' + e.message, 'error');
   }
+}
+
+// V104 (ADM/P5) — perfis apontados por tarefa que não casam com nenhum perfil
+// ATIVO de CAT_PERFIS. Match por NOME ou por ID (mesma tolerância do GAS).
+// Perfil vazio é legítimo (tarefa sem responsável sugerido) e não é órfão.
+function _validarPerfisDoTemplate(tarefas) {
+  const ativos = new Set();
+  (_perfilList || []).forEach(p => {
+    if (String(p.ativo || 'SIM').toUpperCase() === 'NÃO') return;
+    const n = String(p.nome_perfil || '').trim(); if (n) ativos.add(n);
+    const i = String(p.id_perfil   || '').trim(); if (i) ativos.add(i);
+  });
+  if (!ativos.size) return [];          // catálogo não carregado: não bloqueia
+  const porPerfil = new Map();
+  (tarefas || []).forEach(t => {
+    const perf = String(t.perfil_responsavel || '').trim();
+    if (!perf || ativos.has(perf)) return;
+    if (!porPerfil.has(perf)) porPerfil.set(perf, []);
+    porPerfil.get(perf).push(String(t.id || t.nome || '?'));
+  });
+  return Array.from(porPerfil, ([perfil, tarefas]) => ({ perfil, tarefas }));
+}
+
+// Quantas tarefas, em quantos templates, apontam para este NOME de perfil.
+function _contarTarefasPorPerfilNome(nomePerfil) {
+  const alvo = String(nomePerfil || '').trim();
+  let tarefas = 0; const templates = new Set();
+  if (!alvo) return { tarefas: 0, templates: 0 };
+  (typeof _templatesList !== 'undefined' ? (_templatesList || []) : []).forEach(tpl => {
+    let arr = [];
+    try { arr = JSON.parse(tpl.Tarefas_JSON || '[]') || []; } catch (e) { return; }
+    let achou = 0;
+    arr.forEach(t => { if (String(t.perfil_responsavel || '').trim() === alvo) achou++; });
+    if (achou) { tarefas += achou; templates.add(String(tpl.Template_ID || '')); }
+  });
+  return { tarefas, templates: templates.size };
+}
+
+
+// ════════════════════════════════════════════════════════════════════════════
+// V104 (ADM/P4) — CAIXA DE ENTRADA DA ADMINISTRAÇÃO
+// Sem esta tela o recurso nasce e não é usado: o PCM só mostra o pipeline OS a
+// OS, e ninguém vai caçar 40 OSs procurando o que é seu.
+// ⚠ Ação INLINE na própria linha (reusa _confirmarTarefa/_resolverDecisao) —
+//   obrigar a abrir a OS anularia o ganho.
+// ════════════════════════════════════════════════════════════════════════════
+let _tarefasAdmCache = [];
+let _tarefasAdmIncluirFuturas = false;
+let _tarefasAdmBusca = '';
+
+async function renderTarefasAdm() {
+  const el = document.getElementById('viewTarefasAdm');
+  if (!el) return;
+  el.innerHTML = `<div style="display:flex;align-items:center;justify-content:center;padding:40px">
+    <span style="color:var(--text-muted);font-size:13px">Carregando tarefas da administração…</span></div>`;
+  let r;
+  try {
+    r = await gsGet('getTarefasAdm', { incluir_futuras: _tarefasAdmIncluirFuturas ? 'true' : 'false' });
+  } catch (e) {
+    el.innerHTML = `<div class="empty"><div class="empty-icon">⚠️</div>
+      <div class="empty-title">Erro ao carregar</div>
+      <div class="empty-sub">${escHtml(e.message)}</div></div>`;
+    return;
+  }
+  _tarefasAdmCache = (r && r.tarefas) || [];
+  _renderTarefasAdmUI();
+}
+
+function _renderTarefasAdmUI() {
+  const el = document.getElementById('viewTarefasAdm');
+  if (!el) return;
+  const busca = String(_tarefasAdmBusca || '').toLowerCase();
+  // ⚠ String(x ?? '') SEMPRE: numero_os é NUMBER no Sheets e já congelou filtro
+  //   (V84) e já reabriu o modal da OS em branco (V103).
+  const linhas = _tarefasAdmCache.filter(t => {
+    if (!busca) return true;
+    return (String(t.numero_os ?? '') + ' ' + String(t.cliente ?? '') + ' ' +
+            String(t.nome ?? '') + ' ' + String(t.fase ?? '')).toLowerCase().indexOf(busca) >= 0;
+  });
+
+  const cab = `
+    <div class="gos-topbar">
+      <div class="gos-page-title">Tarefas do Adm</div>
+      <div class="gos-page-sub">Tudo que está esperando a administração, em todas as OSs abertas</div>
+    </div>
+    <div style="display:flex;gap:10px;align-items:center;margin:12px 0;flex-wrap:wrap">
+      <input class="form-input" id="tadmBusca" style="max-width:280px"
+        placeholder="Buscar por OS, cliente ou tarefa"
+        oninput="_tarefasAdmBusca=this.value;_renderTarefasAdmUI()"
+        readonly onfocus="this.removeAttribute('readonly')"
+        autocomplete="off" name="tadm_busca_nofill" data-lpignore="true" data-1p-ignore="true"
+        value="${escHtml(_tarefasAdmBusca)}">
+      <button class="btn btn-sm ${_tarefasAdmIncluirFuturas ? 'btn-primary' : 'btn-secondary'}"
+        onclick="_tarefasAdmIncluirFuturas=!_tarefasAdmIncluirFuturas;renderTarefasAdm()">
+        ${_tarefasAdmIncluirFuturas ? '✓ ' : ''}Incluir tarefas ainda bloqueadas</button>
+      <button class="btn btn-secondary btn-sm" onclick="renderTarefasAdm()">↻ Atualizar</button>
+      <span style="color:var(--text-muted);font-size:12px">${linhas.length} tarefa(s)</span>
+    </div>`;
+
+  if (!linhas.length) {
+    el.innerHTML = cab + `<div class="empty">
+      <div class="empty-icon">🏢</div>
+      <div class="empty-title">Nada esperando a administração</div>
+      <div class="empty-sub">Tarefas só aparecem aqui quando o Perfil Responsável delas
+        é um perfil marcado como <b>🏢 Administração</b> na tela de Perfis.</div></div>`;
+    return;
+  }
+
+  const corpo = linhas.map(t => {
+    const alerta = parseInt(t.alerta_dias) || 0;
+    const dias   = (typeof t.dias_parada === 'number') ? t.dias_parada : null;
+    const atras  = (alerta > 0 && dias !== null && dias > alerta);
+    const tipoIcon = String(t.tipo || '') === 'decisao' ? '🔀 Decisão' : '👤 Manual';
+    const trav = ['bloqueado', 'condicional'].indexOf(String(t.status || '')) >= 0;
+    let acao = '';
+    if (trav) {
+      acao = `<span style="color:var(--text-muted);font-size:12px">🔒 ${escHtml(t.status)}</span>`;
+    } else if (String(t.tipo || '') === 'decisao') {
+      let opts = [];
+      try { opts = JSON.parse(t.opcoes_json || '[]') || []; } catch (e) { opts = []; }
+      acao = opts.length
+        ? opts.map(o => `<button class="btn btn-secondary btn-sm"
+              onclick="_tadmDecidir('${escJs(t.os_id)}','${escJs(t.tarefa_id)}','${escJs(o.valor)}',this)">${escHtml(o.label || o.valor)}</button>`).join(' ')
+        : '<span style="color:var(--text-muted);font-size:12px">Sem opções no template</span>';
+    } else {
+      acao = `<button class="btn btn-primary btn-sm"
+        onclick="_tadmConcluir('${escJs(t.os_id)}','${escJs(t.tarefa_id)}','${escJs(t.nome)}',this)">✓ Marcar concluído</button>`;
+    }
+    const relogio = String(t.relogio || 'interno') === 'externo'
+      ? ' <span class="gos-chip" title="Espera nesta tarefa não conta no prazo interno">🤝 relógio externo</span>' : '';
+    return `<tr>
+      <td><a href="#" onclick="event.preventDefault();showView('os');openOSDetail('${escJs(t.os_id)}')"
+             style="color:var(--accent);font-weight:600">OS ${escHtml(String(t.numero_os ?? t.os_id))}</a>
+          <div style="color:var(--text-muted);font-size:12px">${escHtml(t.cliente)}</div></td>
+      <td>${escHtml(t.fase || '—')}</td>
+      <td>${escHtml(t.nome)}${relogio}</td>
+      <td>${tipoIcon}</td>
+      <td style="${atras ? 'color:#dc2626;font-weight:700' : ''}">${dias === null ? '—' : (dias + 'd')}</td>
+      <td>${t.data_prevista ? escHtml(String(t.data_prevista).slice(0, 10)) : '—'}</td>
+      <td style="white-space:nowrap">${acao}</td>
+    </tr>`;
+  }).join('');
+
+  el.innerHTML = cab + `
+    <div class="table-wrap"><table class="table">
+      <thead><tr><th>OS</th><th>Fase</th><th>Tarefa</th><th>Tipo</th><th>Parada há</th><th>Prevista</th><th>Ação</th></tr></thead>
+      <tbody>${corpo}</tbody>
+    </table></div>`;
+}
+
+async function _tadmConcluir(osId, tarefaId, nome, btnEl) {
+  const obs = prompt('Observação (opcional) ao concluir "' + nome + '":', '');
+  if (obs === null) return;                       // cancelou
+  await _comLoadingBtn_(btnEl, async () => {
+    try {
+      // ⚠ await DENTRO do try: "✓ mentiroso" sem await já apareceu 3× neste projeto.
+      const r = await syncToGS('updateTarefaStatus', {
+        os_id: osId, tarefa_id: tarefaId, status: 'completo',
+        usuario: (window.PROPER_SESSION?.tecnico?.nome || 'adm'),
+        observacao: obs, is_admin: true
+      });
+      if (r && r.os_fechada === false && (r.os_pendentes || []).length) {
+        toast('Concluída. A OS NÃO fechou: faltam ' + r.os_pendentes.length + ' tarefa(s).', 'warn');
+      } else if (r && r.os_fechada === true) {
+        toast('Concluída — OS encerrada.', 'success');
+      } else if (r && r.camada_encerrada) {
+        toast('Etapa encerrada. Pronto para empilhar a execução.', 'success');
+      } else {
+        toast('Tarefa concluída.', 'success');
+      }
+      _invalidarCachePipeline(osId);
+      await renderTarefasAdm();
+    } catch (e) { toast('Erro: ' + e.message, 'error'); }
+  });
+}
+
+async function _tadmDecidir(osId, tarefaId, valor, btnEl) {
+  await _comLoadingBtn_(btnEl, async () => {
+    try {
+      await syncToGS('resolverDecisao', {
+        os_id: osId, tarefa_id: tarefaId, valor: valor,
+        usuario: (window.PROPER_SESSION?.tecnico?.nome || 'adm')
+      });
+      toast('Decisão registrada.', 'success');
+      _invalidarCachePipeline(osId);
+      await renderTarefasAdm();
+    } catch (e) { toast('Erro: ' + e.message, 'error'); }
+  });
+}
+
+// O pipeline daquela OS pode estar em cache — invalida para a próxima abertura
+// não mostrar a tarefa que acabou de ser fechada.
+function _invalidarCachePipeline(osId) {
+  try {
+    Object.keys(localStorage).forEach(k => {
+      if (k.indexOf('pipe') >= 0 && k.indexOf(String(osId)) >= 0) localStorage.removeItem(k);
+    });
+  } catch (e) { /* cache é acessório */ }
+}
+
+// ════════════════════════════════════════════════════════════════════════════
+// V106 (P3/P5) — TERMÔMETRO DE ESPERA
+// Responde "onde estão os 20 dias que sobram" com NÚMERO, não com opinião.
+// ════════════════════════════════════════════════════════════════════════════
+let _termoDe = '', _termoAte = '';
+
+async function renderTermometro() {
+  const el = document.getElementById('viewTermometro');
+  if (!el) return;
+  el.innerHTML = `<div style="display:flex;align-items:center;justify-content:center;padding:40px">
+    <span style="color:var(--text-muted);font-size:13px">Medindo a espera…</span></div>`;
+  let r;
+  try {
+    r = await gsGet('getTermometroEspera', { de: _termoDe, ate: _termoAte });
+  } catch (e) {
+    el.innerHTML = `<div class="empty"><div class="empty-icon">⚠️</div>
+      <div class="empty-title">Erro ao carregar</div>
+      <div class="empty-sub">${escHtml(e.message)}</div></div>`;
+    return;
+  }
+  const linhas = (r && r.linhas) || [];
+  const cab = `
+    <div class="gos-topbar">
+      <div class="gos-page-title">Termômetro de espera</div>
+      <div class="gos-page-sub">Quanto tempo cada fase e cada perfil deixa a OS PARADA, esperando alguém começar</div>
+    </div>
+    <div style="display:flex;gap:10px;align-items:center;margin:12px 0;flex-wrap:wrap">
+      <label style="font-size:12px;color:var(--text-muted)">De</label>
+      <input class="form-input" type="date" style="max-width:160px" value="${escHtml(_termoDe)}"
+        onchange="_termoDe=this.value;renderTermometro()"
+        autocomplete="off" name="termo_de_nofill" data-lpignore="true" data-1p-ignore="true">
+      <label style="font-size:12px;color:var(--text-muted)">até</label>
+      <input class="form-input" type="date" style="max-width:160px" value="${escHtml(_termoAte)}"
+        onchange="_termoAte=this.value;renderTermometro()"
+        autocomplete="off" name="termo_ate_nofill" data-lpignore="true" data-1p-ignore="true">
+      <button class="btn btn-secondary btn-sm" onclick="_termoDe='';_termoAte='';renderTermometro()">Limpar</button>
+      ${r.descartadas ? `<span style="color:#b45309;font-size:12px">⚠ ${r.descartadas} amostra(s) descartada(s) por dado inconsistente</span>` : ''}
+    </div>`;
+
+  if (!linhas.length) {
+    el.innerHTML = cab + `<div class="empty">
+      <div class="empty-icon">🌡️</div>
+      <div class="empty-title">Sem amostra ainda</div>
+      <div class="empty-sub">A medição começa quando as tarefas passam a carregar a data de
+        liberação. Para ter história desde já, rode o one-off <code>backfillDataLiberacao</code>
+        no editor do Apps Script — com a aba PIPELINE_TAREFAS duplicada antes.</div></div>`;
+    return;
+  }
+
+  const max = Math.max.apply(null, linhas.map(l => l.espera_mediana_min || 0)) || 1;
+  const corpo = linhas.map(l => {
+    const pct = Math.round(((l.espera_mediana_min || 0) / max) * 100);
+    const alvo = l.tipo === 'fase' ? (escHtml(l.fase || '—')) : ('👤 ' + escHtml(l.perfil || '—'));
+    // ⚠ n_estimadas vem SEPARADO de n_medidas: dado derivado do backfill nunca
+    //   pode se passar por dado medido.
+    const proc = l.n_estimadas
+      ? `<span title="amostras derivadas do backfill" style="color:#b45309">${l.n_medidas} medida(s) + ${l.n_estimadas} estimada(s)</span>`
+      : `${l.n_medidas} medida(s)`;
+    return `<tr>
+      <td><b>${alvo}</b><div style="color:var(--text-muted);font-size:11px">${escHtml(l.tipo)}${l.template_id ? ' · ' + escHtml(l.template_id) : ''}</div></td>
+      <td style="width:38%">
+        <div style="background:var(--bg-soft,#f1f5f9);border-radius:4px;height:10px;overflow:hidden">
+          <div style="width:${pct}%;height:100%;background:${pct > 66 ? '#dc2626' : (pct > 33 ? '#f59e0b' : '#3b82f6')}"></div>
+        </div>
+      </td>
+      <td style="white-space:nowrap"><b>${l.espera_mediana_dias == null ? '—' : l.espera_mediana_dias}</b> d úteis</td>
+      <td style="white-space:nowrap;color:var(--text-muted)">p90 ${l.espera_p90_min == null ? '—' : Math.round((l.espera_p90_min / (r.minutos_uteis_por_dia || 540)) * 10) / 10} d</td>
+      <td style="white-space:nowrap;color:var(--text-muted)">exec ${l.execucao_mediana_dias == null ? '—' : l.execucao_mediana_dias} d</td>
+      <td style="font-size:11px">${proc}</td>
+      <td>${String(l.relogio || 'interno') === 'externo' ? '<span class="gos-chip">🤝 externo</span>' : ''}</td>
+    </tr>`;
+  }).join('');
+
+  el.innerHTML = cab + `
+    <div class="table-wrap"><table class="table">
+      <thead><tr><th>Fase / Perfil</th><th>Espera</th><th>Mediana</th><th>p90</th><th>Execução</th><th>Amostras</th><th></th></tr></thead>
+      <tbody>${corpo}</tbody>
+    </table></div>
+    <p style="font-size:12px;color:var(--text-muted);margin-top:12px;line-height:1.6">
+      <b>Espera</b> é o tempo entre a tarefa ficar disponível e alguém começar — a FILA.
+      É onde estão os dias que sobram: a soma dos tempos de execução de uma reforma dá
+      4-5 dias úteis, e o real é 35-45 dias corridos.
+      Mediana (não média) para um caso isolado de 60 dias não dobrar a previsão de todas as outras.
+    </p>`;
+}
+
+
+// ════════════════════════════════════════════════════════════════════════════
+// V106 (P3/P3) — META × PREVISTO × REAL no cabeçalho do pipeline
+// É a FRASE do maior ofensor, e não o número solto, que muda decisão:
+//   "meta 18 dias · previsto 34 · corridos 13. Maior ofensor: espera antes de
+//    ORÇAMENTO (mediana histórica: 9,4 dias úteis)."
+// ⚠ Não-bloqueante: falha aqui nunca impede o pipeline de aparecer.
+// ⚠ Sem meta preenchida em CAT_TIPOS_OS, mostra previsto × real SEM semáforo e
+//   SEM inventar meta.
+// ════════════════════════════════════════════════════════════════════════════
+async function _pipeCarregarPrazo(osId) {
+  const box = document.getElementById('pipePrazoBox');
+  if (!box) return;
+  let r;
+  try {
+    r = await gsGet('calcularPrazoOS', { os_id: osId });
+  } catch (e) {
+    // GAS antigo (sem a rota) não pode virar erro na cara do admin.
+    console.warn('[prazo] indisponível:', e && e.message);
+    return;
+  }
+  if (!r || r.status !== 'ok' || !r.previsto) return;
+  if (document.getElementById('pipePrazoBox') !== box) return;   // trocou de OS no meio
+
+  const metaI = r.meta && r.meta.dias_uteis_interno;
+  const prevI = r.previsto.dias_uteis_interno;
+  const prevT = r.previsto.dias_uteis_total;
+  const realC = r.real ? r.real.dias_corridos : null;
+
+  // Semáforo pelo relógio INTERNO (é contra ele que a meta é cobrada).
+  let cor = 'var(--text-muted)', fundo = 'var(--bg)', borda = 'var(--border)';
+  if (metaI) {
+    if (prevI <= metaI)            { cor = '#166534'; fundo = '#dcfce7'; borda = '#86efac'; }
+    else if (prevI <= metaI * 1.2) { cor = '#92400e'; fundo = '#fef3c7'; borda = '#fcd34d'; }
+    else                           { cor = '#991b1b'; fundo = '#fee2e2'; borda = '#fca5a5'; }
+  }
+
+  const confLbl = { alta: '', media: '⚠ confiança média', baixa: '⚠ baixa confiança' }[r.confianca] || '';
+  const confTip = 'Origem predominante das estimativas: ' + escHtml(String(r.confianca)) +
+    '. Amostras medidas: ' + ((r.amostras && r.amostras.medidas) || 0) +
+    ' · estimadas (backfill): ' + ((r.amostras && r.amostras.estimadas) || 0) + '.';
+
+  let ofensor = '';
+  if (r.maior_ofensor && r.maior_ofensor.espera_mediana_min > 0) {
+    const dias = Math.round((r.maior_ofensor.espera_mediana_min / (r.minutos_uteis_por_dia || 540)) * 10) / 10;
+    ofensor = `<div style="margin-top:6px;font-size:12px">
+      Maior ofensor: <b>espera antes de ${escHtml(r.maior_ofensor.fase)}</b>
+      (${dias} dia(s) úteis${r.maior_ofensor.origem ? ' · origem: ' + escHtml(r.maior_ofensor.origem) : ''}).</div>`;
+  }
+
+  box.innerHTML = `
+    <div style="background:${fundo};border:1px solid ${borda};border-radius:8px;padding:10px 12px;margin-bottom:10px;color:${cor}">
+      <div style="display:flex;gap:18px;flex-wrap:wrap;align-items:baseline">
+        <span><b style="font-size:11px;opacity:.8">META</b>
+          <span style="font-size:16px;font-weight:700;margin-left:6px">${metaI ? metaI + ' d' : '—'}</span></span>
+        <span><b style="font-size:11px;opacity:.8">PREVISTO (interno)</b>
+          <span style="font-size:16px;font-weight:700;margin-left:6px">${prevI} d</span></span>
+        <span><b style="font-size:11px;opacity:.8">PREVISTO (total)</b>
+          <span style="font-size:16px;font-weight:700;margin-left:6px">${prevT} d</span></span>
+        <span><b style="font-size:11px;opacity:.8">CORRIDOS</b>
+          <span style="font-size:16px;font-weight:700;margin-left:6px">${realC == null ? '—' : realC} d</span></span>
+        ${confLbl ? `<span title="${confTip}" style="font-size:11px;border:1px dashed currentColor;border-radius:10px;padding:1px 7px">${confLbl}</span>` : ''}
+      </div>
+      ${ofensor}
+      ${!metaI ? `<div style="margin-top:6px;font-size:11px;opacity:.85">Sem meta cadastrada para este tipo de OS — preencha em <b>Tipos de OS</b> para o semáforo funcionar.</div>` : ''}
+    </div>`;
 }
 
 // ── MÓDULO TIPOS DE OS ────────────────────────────────────────────────────────
@@ -15038,6 +15820,8 @@ async function openTipoOSModal(tipoId) {
     document.getElementById('modalTipoOSTitle').textContent = 'Editar tipo de OS';
     document.getElementById('tipoOSNome').value = tipo.Nome || '';
     document.getElementById('tipoOSDescricao').value = tipo.Descricao || '';
+    document.getElementById('tipoOSSlaInterno').value = tipo.sla_dias_uteis_interno || '';   // V106
+    document.getElementById('tipoOSSlaTotal').value   = tipo.sla_dias_uteis_total   || '';
     select.value = tipo.Template_ID_Padrao || '';
     const preview = document.getElementById('tipoOSIdPreview');
     preview.textContent = 'ID: ' + tipoId + ' (fixo)';
@@ -15047,6 +15831,8 @@ async function openTipoOSModal(tipoId) {
     document.getElementById('modalTipoOSTitle').textContent = 'Novo tipo de OS';
     document.getElementById('tipoOSNome').value = '';
     document.getElementById('tipoOSDescricao').value = '';
+    document.getElementById('tipoOSSlaInterno').value = '';   // V106
+    document.getElementById('tipoOSSlaTotal').value   = '';
     select.value = '';
     document.getElementById('tipoOSIdPreview').textContent = 'ID: —';
     document.getElementById('tipoOSNome').setAttribute('oninput', 'atualizarPreviewTipoId()');
@@ -15069,7 +15855,11 @@ async function saveTipoOSModal() {
   if (!templateId) { toast('Selecione um template padrão.', 'error'); return; }
 
   try {
-    const payload = { nome, template_id_padrao: templateId, descricao };
+    // V106 — vazio vai como '' (sem meta), nunca como 0: 0 seria "meta zero".
+    const _slaI = document.getElementById('tipoOSSlaInterno').value.trim();
+    const _slaT = document.getElementById('tipoOSSlaTotal').value.trim();
+    const payload = { nome, template_id_padrao: templateId, descricao,
+                      sla_dias_uteis_interno: _slaI, sla_dias_uteis_total: _slaT };
     if (_editandoTipoId) {
       payload.tipo_id = _editandoTipoId;
     } else {
