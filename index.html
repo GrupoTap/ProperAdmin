@@ -905,12 +905,77 @@ v50 — Resiliência de rede: retry/backoff em gsGet e syncToGS
 
      Bancada: 40 asserts de UI em Chromium headless + screenshots conferidos.
      ══════════════════════════════════════════════════════════════════════════ -->
+<!-- ══════════════════════════════════════════════════════════════════════════
+     PCM V109 — 05/08/2026 (noite) — 3 PEDIDOS DO FERNANDO. Par: GAS v88.
+     100% ADITIVO. Nenhuma action renomeada, nenhum id/data-view alterado.
+
+     ── D1 · GESTÃO DE DOCUMENTOS: a coluna larga e a barra de rolagem escondida ──
+     Duas causas INDEPENDENTES, e por isso duas correções:
+     (a) O NOME que estica a tabela. O PCF nomeia a foto como
+         `<photoKey>_<ms>_<ms>.jpg` — na prática 55 a 70 caracteres. Como a
+         `.xf-table` é table-layout AUTO, esse texto vira largura mínima da
+         coluna ARQUIVO (~600 px) e espreme todo o resto: no print do Fernando o
+         "PGP-2026-0033" quebrava em TRÊS linhas. Agora o nome é encurtado com
+         ELIPSE NO MEIO (`_docFileNameCurto`), não no fim: o fim carrega a hora
+         (`_104637.jpg`), que é justamente o que distingue duas fotos do mesmo
+         minuto — cortar o fim apagaria a informação útil. Nome inteiro no
+         `title` (hover) e, principalmente, INTACTO no `searchText`: a busca
+         continua achando pelo nome completo.
+     (b) A ALTURA da caixa de rolagem. `.xf-wrap` tinha `max-height:
+         calc(100vh - 200px)` — um número FIXO que assume que existem 200px de
+         tela acima da tabela. Na Gestão de Documentos existem ~280px (hero +
+         barra de ferramentas + nota da árvore + chips), então a wrap terminava
+         ~80px ABAIXO da dobra, levando junto a barra de rolagem horizontal, que
+         mora na borda de baixo dela. Era preciso rolar a página para achar a
+         barra — exatamente a queixa. `xfFitWrap()` passa a MEDIR o espaço que
+         sobra dentro do `.main` e escrever a altura; roda em todo `xfRender` e
+         no resize. ⚠ A medição usa offset relativo ao `.main` (rect + scrollTop),
+         NÃO o rect puro: com o rect puro a conta mudaria conforme o scroll e a
+         altura oscilaria a cada render.
+         Isso conserta a barra escondida em TODAS as tabelas XF, não só docs.
+     + hero da tela compactado (o botão Atualizar desceu para a barra de
+       ferramentas) — ~60px a mais de tabela visível.
+
+     ── D2 · "Tarefas do Adm" saiu de CONFIGURAÇÕES para PAINEL DE GESTÃO ──
+     O Fernando levantou duas opções (grupo de gestão × aba dentro de Gestão de
+     OSs). Vale a PRIMEIRA, e a razão é o que a tela é: `getTarefasAdm` varre
+     TODAS as OS abertas e devolve a fila de trabalho do administrativo. É uma
+     caixa de entrada TRANSVERSAL — não pertence a nenhuma OS. Enfiá-la como aba
+     de Gestão de OSs exigiria escolher uma OS antes de ver trabalho que não é
+     de OS nenhuma, e esconderia atrás de 2 cliques a tela que se abre todo dia.
+     CONFIGURAÇÕES é para o que se ajusta uma vez (perfis, templates, tipos);
+     isto é trabalho diário. Fica logo abaixo de Gestão de OSs.
+     id/data-view/onclick/view/render INALTERADOS (`tarefasAdm`, `navTarefasAdm`,
+     `viewTarefasAdm`, `renderTarefasAdm`) — a mudança é só de posição no menu.
+     ⚠ Termômetro e Saturação continuam em CONFIGURAÇÕES por ora — são leitura
+       gerencial e mereciam a mesma discussão, mas não foram pedidos.
+
+     ── D3 · ↩ REABRIR OS (responsabilidade do adm) ──
+     🎯 O achado que economizou meio pacote: `reabrirOS` JÁ EXISTE no GAS desde
+     o v22 (função + `case 'reabrirOS'` no doPost) e NUNCA foi chamada por
+     front nenhum — `grep reabrirOS` = 0 no PCM e 0 no PCF.
+     ⚠ E o achado que impede a solução ingênua: reabrir só a OS NÃO resolve.
+     O PCF libera ação por STATUS DE TAREFA, não por status de OS (os dois
+     gates gêmeos do `pfBuildCard`: `st !== 'bloqueado' && st !== 'completo' &&
+     st !== 'dispensado' && st !== 'condicional'`). Com a OS em `em_andamento` e
+     todas as tarefas `completo`, o técnico vê a OS e NÃO TEM UM BOTÃO SEQUER —
+     a tela de pipeline não tem foto avulsa nem "nova coleta". Pior: a OS volta
+     para a fila da oficina com estágio "—" e `dias_na_fila` contado desde a
+     abertura ORIGINAL, parecendo abandonada.
+     Por isso o modal EXIGE escolher as tarefas que voltam a ficar abertas, e o
+     GAS v88 reabre OS + tarefas na MESMA chamada. Motivo é obrigatório e vai
+     para o evento REABERTURA_OS.
+     ⚠ O adm já conseguia "reabrir" pelo select de status do modal Editar OS —
+     e mal: `saveOS` não limpa `fim_atendimento` na volta e grava EDICAO_OS em
+     vez de REABERTURA_OS. O botão novo é o caminho certo; o select continua lá
+     por compatibilidade.
+     ══════════════════════════════════════════════════════════════════════════ -->
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>ProperCare Manager · Gestão PGP v3.38 (PCM V108)</title>
+<title>ProperCare Manager · Gestão PGP v3.39 (PCM V109)</title>
 <link rel="icon" type="image/jpeg" href="data:image/jpeg;base64,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">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1064,8 +1129,18 @@ tr:hover td{background:var(--gray-50)}
 .docs-group-meta{font-size:11px;color:var(--text3)}
 .docs-thumb{width:42px;height:42px;border-radius:8px;object-fit:cover;border:1px solid var(--border2);background:var(--gray-100);cursor:pointer}
 .docs-actions{display:flex;align-items:center;gap:6px;flex-wrap:wrap;justify-content:flex-end}
-.docs-file-name{font-weight:600;color:var(--text)}
-.docs-caption{font-size:11px;color:var(--text3);margin-top:2px}
+/* V109 (D1a) — o nome do arquivo é encurtado no JS (elipse no MEIO, ver
+   _docFileNameCurto); aqui só se garante que ele NUNCA quebre em duas linhas e
+   que a legenda longa não volte a esticar a coluna pelo caminho de baixo. */
+.docs-file-name{font-weight:600;color:var(--text);white-space:nowrap}
+.docs-caption{font-size:11px;color:var(--text3);margin-top:2px;max-width:195px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+/* V109 (D1a) — tetos de largura por coluna da Gestão de Documentos. Sem eles a
+   table-layout AUTO deixa QUALQUER célula ditar a largura da tabela inteira.
+   Todas carregam o valor cru no title (hover) e no searchText (busca). */
+.docs-cell-os{white-space:nowrap;font-family:var(--font-mono),monospace;font-size:11px;font-weight:600}
+.docs-cell-cli{font-weight:600;font-size:12px;max-width:130px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.docs-cell-maq{display:block;font-size:11px;max-width:140px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.docs-cell-por{display:block;font-size:11px;max-width:90px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .docs-badge{display:inline-flex;align-items:center;background:var(--gray-100);color:var(--text2);font-size:10px;font-weight:800;padding:2px 8px;border-radius:20px;white-space:nowrap}
 .docs-badge.foto{background:var(--blue-light);color:var(--blue-mid)}
 .docs-badge.pdf{background:var(--red-light);color:var(--red)}
@@ -1628,6 +1703,12 @@ tr:hover td{background:var(--gray-50)}
   border:2px solid currentColor; border-right-color:transparent; border-radius:50%; animation:spin .6s linear infinite; color:#fff }
 
 /* ═══ V94 · XF — tabelas com filtro estilo Excel (CSS aditivo, namespace xf-) ═══ */
+/* V109 (D1b) — este `calc(100vh - 200px)` continua como VALOR INICIAL (vale no
+   primeiro pixel, antes do JS medir, e se o JS falhar). A altura real passa a
+   ser escrita por xfFitWrap() em cada xfRender: só assim a barra de rolagem
+   HORIZONTAL, que mora na borda de baixo desta caixa, fica sempre dentro da
+   tela. Com 200px fixos ela caía abaixo da dobra em toda tela cujo cabeçalho
+   passa de 200px — a Gestão de Documentos tem ~280px. */
 .xf-wrap{overflow:auto;max-height:calc(100vh - 200px);background:white}
 .xf-table thead th{position:sticky;top:0;background:var(--gray-50);z-index:10;padding:0;white-space:nowrap;border-bottom:1px solid var(--border2)}
 .xf-table thead th.xf-num{text-align:right}
@@ -1718,7 +1799,7 @@ th.xf-filtered .xf-fun{opacity:1;stroke:var(--accent)}
 <aside class="nav-sidebar" aria-label="Navegação principal">
   <div class="nav-brand">
     <span class="nav-brand-mark">PCM</span>
-    <span class="nav-brand-sub">v3.38 · V108</span>
+    <span class="nav-brand-sub">v3.39 · V109</span>
   </div>
 
   <nav class="nav-groups">
@@ -1747,6 +1828,14 @@ th.xf-filtered .xf-fun{opacity:1;stroke:var(--accent)}
             d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
         </svg>
         Gestão de OSs
+      </button>
+      <!-- V109 (D2) — veio de CONFIGURAÇÕES. Fica colada em Gestão de OSs de
+           propósito: é o trabalho que a OS gera para o administrativo. -->
+      <button class="nav-item" data-view="tarefasAdm" onclick="showView('tarefasAdm')" id="navTarefasAdm">
+        <svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M2 3h12v10H2zM2 7h12M6 3v10"/>
+        </svg>
+        <span>Tarefas do Adm</span>
       </button>
       <button class="nav-item" data-view="docs" onclick="showView('docs')" id="navDocs">
         <svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
@@ -1805,13 +1894,9 @@ th.xf-filtered .xf-fun{opacity:1;stroke:var(--accent)}
         </svg>
         <span>Tipos de OS</span>
       </button>
-      <!-- V104 (ADM/P4) — caixa de entrada da administração -->
-      <button class="nav-item" data-view="tarefasAdm" onclick="showView('tarefasAdm')" id="navTarefasAdm">
-        <svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
-          <path d="M2 3h12v10H2zM2 7h12M6 3v10"/>
-        </svg>
-        <span>Tarefas do Adm</span>
-      </button>
+      <!-- V109 (D2) — "Tarefas do Adm" SAIU daqui para PAINEL DE GESTÃO. É fila
+           de trabalho diário e transversal (getTarefasAdm varre TODAS as OS
+           abertas), não configuração. id/data-view/onclick inalterados. -->
       <!-- V106 (P3/P5) — termômetro de espera: onde estão os 20 dias que sobram -->
       <button class="nav-item" data-view="termometro" onclick="showView('termometro')" id="navTermometro">
         <svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
@@ -2532,7 +2617,7 @@ th.xf-filtered .xf-fun{opacity:1;stroke:var(--accent)}
       var chave = tipo + '|' + String(msg).slice(0, 120);
       if (_vistos[chave] && agora - _vistos[chave] < 15000) return;  // não repete o mesmo em 15s
       _vistos[chave] = agora;
-      console.error('[PCM V108][' + tipo + ']', msg, detalhe || '');
+      console.error('[PCM V109][' + tipo + ']', msg, detalhe || '');
       if (agora - _ultimo < 4000) return;                            // no máx. 1 aviso a cada 4s
       _ultimo = agora;
       var texto = String(msg || 'erro desconhecido');
@@ -2686,7 +2771,49 @@ function xfRender(iid){
     cnt.innerHTML = ativo ? `<b>${xfNum(rows.length)}</b> de ${xfNum(I.data.length)} ${I.cfg.unit||''}` : `<b>${xfNum(I.data.length)}</b> ${I.cfg.unit||''}`;
   }
   if(I.cfg.after) I.cfg.after(rows);
+  xfFitWrap(iid);   // V109 (D1b) — depois do after(), que ainda mexe em texto acima da tabela
 }
+
+// ── V109 (D1b) — xfFitWrap: a barra de rolagem horizontal precisa caber na tela ──
+// A .xf-wrap é a caixa que rola. A barra horizontal dela fica na BORDA DE BAIXO.
+// Com `max-height: calc(100vh - 200px)` a borda de baixo caía fora da tela em
+// qualquer view cujo cabeçalho passe de 200px (Documentos: hero + barra de
+// ferramentas + nota da árvore + chips ≈ 280px) — e aí só se achava a barra
+// rolando a página, que é a queixa do Fernando.
+// Aqui a altura é MEDIDA: quanto sobra da JANELA abaixo do topo da wrap.
+// ⚠ NÃO medir contra o `.main`: ele parece o container de rolagem (tem
+//   `overflow-y:auto`) mas NÃO É. `.app-body` e `.app-main` usam `min-height`,
+//   não `height` — então o `.main` CRESCE com o conteúdo, `scrollHeight` fica
+//   sempre igual a `clientHeight` e quem rola de verdade é a janela. Medir pelo
+//   clientHeight do `.main` dá uma altura grande demais em tela baixa e a barra
+//   volta a cair fora — foi exatamente o que a bancada pegou em 1024×700.
+// ⚠ A conta usa o offset da wrap NO DOCUMENTO (rect + scrollY), não o rect puro:
+//   o rect puro encolhe conforme a página rola, a wrap cresceria a cada render e
+//   a altura ficaria oscilando.
+// ⚠ Sai calado quando a view está escondida (display:none ⇒ rect 0×0): medir ali
+//   gravaria uma altura errada que só apareceria ao trocar de aba.
+function xfFitWrap(iid){
+  try{
+    const wrap = document.getElementById('xf_'+iid+'_wrap'); if(!wrap) return;
+    const rWrap = wrap.getBoundingClientRect();
+    if(!rWrap.width) return;                       // escondida / ainda não pintou
+    const rolagem = window.scrollY || document.documentElement.scrollTop || 0;
+    const topoNoDocumento = rWrap.top + rolagem;
+    const pager = document.getElementById('xf_'+iid+'_pager');
+    const alturaPager = pager ? (pager.offsetHeight || 0) : 0;
+    // 24 = padding-bottom do .main · 10 = respiro para a borda/sombra
+    const alvo = Math.round(window.innerHeight - topoNoDocumento - alturaPager - 34);
+    wrap.style.maxHeight = Math.max(220, alvo) + 'px';
+  }catch(e){ /* nunca derruba o render por causa de layout */ }
+}
+let _xfFitTimer = null;
+window.addEventListener('resize', function(){
+  clearTimeout(_xfFitTimer);
+  _xfFitTimer = setTimeout(function(){
+    try{ Object.keys(XF.inst || {}).forEach(xfFitWrap); }catch(e){}
+  }, 120);
+});
+
 function xfRenderHead(iid,I){
   const tr=document.getElementById('xf_'+iid+'_head'); if(!tr) return;
   tr.innerHTML = I.cfg.columns.map(c=>{
@@ -4633,6 +4760,28 @@ function _docsToggleExpandAll(){
   renderDocsList();
 }
 function _docVal(v){ return (v===undefined || v===null || v==='') ? '—' : String(v); }
+
+// ── V109 (D1a) — nome de arquivo em forma curta, com ELIPSE NO MEIO ──────────
+// O PCF nomeia a foto como `<photoKey>_<ms>_<ms>.jpg` (55 a 70 caracteres). Era
+// esse texto que virava a largura mínima da coluna ARQUIVO e espremia a tabela
+// inteira (no print do Fernando o "PGP-2026-0033" quebrava em três linhas).
+// ⚠ A elipse é no MEIO, não no fim: o fim guarda a hora (`_104637.jpg`), que é
+//   exatamente o que distingue duas fotos do mesmo minuto. `text-overflow:
+//   ellipsis` do CSS corta o fim e apagaria justamente o que serve.
+// O nome INTEIRO continua no title (hover) e no searchText — a busca por
+// qualquer pedaço do nome completo segue funcionando.
+function _docFileNameCurto(nome, max){
+  const s = String(nome == null ? '' : nome);
+  // 30 e não 27: o PDF da OS chama-se `OS_Generica_PGP-2026-0033.pdf` (29
+  // caracteres) e com 27 virava `OS_Generica_PGP…26-0033.pdf` — encurtar um
+  // nome que já cabia, e ainda por cima mutilando o número da OS. Com 30 ele
+  // passa inteiro e o `uid_…` de 72 caracteres continua sendo cortado.
+  const M = (max && max > 12) ? max : 30;
+  if (s.length <= M) return s;
+  const cabeca = Math.max(8, Math.ceil((M - 1) * 0.55));
+  const cauda  = Math.max(6, (M - 1) - cabeca);
+  return s.slice(0, cabeca) + '…' + s.slice(s.length - cauda);
+}
 function _docCatLabel(cat){ return DOCS_CAT_LABELS[cat] || _docVal(cat); }
 function _docCatClass(cat){ if(String(cat||'').startsWith('foto_')) return 'foto'; if(String(cat||'').startsWith('pdf_')) return 'pdf'; if(cat==='assinatura') return 'assinatura'; return 'outro'; }
 function _docDateValue(it){ const d=new Date(it?.Created_At || 0); return isNaN(d.getTime()) ? 0 : d.getTime(); }
@@ -4716,26 +4865,25 @@ function _docThumbErr(img, url){
 async function renderDocs(force){
   const el=document.getElementById('viewDocs');
   if(!el) return;
+  // V109 (D1b) — hero compactado: o bloco alto com título + subtítulo + botão
+  // custava ~100px de tabela e empurrava a barra de rolagem para fora da tela.
+  // Vira uma linha só, e o "Atualizar" desce para a barra de ferramentas, junto
+  // das outras ações. O subtítulo antigo virou o title do cabeçalho.
   el.innerHTML = `
-    <div class="model-hero">
-      <div class="model-hero-top">
-        <div>
-          <div class="model-hero-title">Gestão de Documentos</div>
-          <div class="model-hero-sub">Fotos, PDFs e assinaturas das ordens de serviço, com acesso direto ao Drive.</div>
-        </div>
-        <div class="hero-actions"><button class="btn btn-secondary" onclick="renderDocs(true)">Atualizar</button></div>
-      </div>
+    <div class="docs-toolbar" style="margin-bottom:8px">
+      <div style="font-size:17px;font-weight:700;color:var(--text)" title="Fotos, PDFs e assinaturas das ordens de serviço, com acesso direto ao Drive.">Gestão de Documentos</div>
+      <div id="docsCounter" class="docs-count">Carregando…</div>
     </div>
     <div class="docs-toolbar">
       <div class="docs-controls">
-        <input class="form-input" style="width:280px" placeholder="Buscar arquivo, OS, cliente, máquina…" autocomplete="off" name="pcm_docs_busca_nofill" data-lpignore="true" data-1p-ignore readonly onfocus="this.removeAttribute('readonly')" value="${escHtml(_docsQuery)}" oninput="_docsQuery=this.value;xfQ('docs')">
+        <input class="form-input" style="width:260px" placeholder="Buscar arquivo, OS, cliente, máquina…" autocomplete="off" name="pcm_docs_busca_nofill" data-lpignore="true" data-1p-ignore readonly onfocus="this.removeAttribute('readonly')" value="${escHtml(_docsQuery)}" oninput="_docsQuery=this.value;xfQ('docs')">
         <button class="docs-chip docs-group-chip ${_docsGroupBy!=='flat'?'active':''}" data-group="tree" onclick="_docsGroupBy='tree';renderDocsList()">🗂 Cliente → OS → Máquina</button>
         <button class="docs-chip docs-group-chip ${_docsGroupBy==='flat'?'active':''}" data-group="flat" onclick="_docsGroupBy='flat';renderDocsList()">☰ Tabela</button>
         <button class="docs-chip" id="docsExpandBtn" onclick="_docsToggleExpandAll()">${_docsExpanded?'Recolher tudo':'Expandir tudo'}</button>
+        <button class="docs-chip" onclick="renderDocs(true)">↻ Atualizar</button>
       </div>
-      <div id="docsCounter" class="docs-count">Carregando…</div>
     </div>
-    <div id="docsCats" class="chip-row" style="margin-bottom:12px"></div>
+    <div id="docsCats" class="chip-row" style="margin-bottom:8px"></div>
     <div id="docsList"><div class="empty"><div class="empty-icon">⏳</div><div class="empty-title">Carregando documentos…</div></div></div>`;
   if(_docsCache.length && !force){ renderDocsList(); return; }
   _docsLoading = true;
@@ -4778,19 +4926,22 @@ function _renderDocsXfV95(list){
       {key:'cat',label:'Categoria',filter:'values',
         getValue:it=>_docCatLabel(it?.Categoria),
         render:it=>`<span class="docs-badge ${_docCatClass(it?.Categoria)}">${escHtml(_docCatLabel(it?.Categoria))}</span>`},
+      // V109 (D1a) — nowrap: "PGP-2026-0033" estava quebrando em TRÊS linhas
       {key:'os',label:'Nº OS',sortable:true,
         getValue:it=>it?.OS_Numero?String(it.OS_Numero):'',
-        render:it=>it?.OS_Numero?`<span style="font-family:var(--font-mono),monospace;font-size:11px;font-weight:600">${escHtml(String(it.OS_Numero))}</span>`:'<span class="docs-badge outro">Sem OS</span>'},
+        render:it=>it?.OS_Numero?`<span class="docs-cell-os">${escHtml(String(it.OS_Numero))}</span>`:'<span class="docs-badge outro">Sem OS</span>'},
       {key:'cliente',label:'Cliente',filter:'values',
         getValue:it=>_docVal(it?.Cliente),
-        render:it=>`<div style="font-weight:600;font-size:12px">${escHtml(_docVal(it?.Cliente))}</div>`},
+        render:it=>`<div class="docs-cell-cli" title="${escHtml(_docVal(it?.Cliente))}">${escHtml(_docVal(it?.Cliente))}</div>`},
       {key:'maquina',label:'Máquina',filter:'values',
         getValue:it=>_docVal(it?.Maquina_Label||it?.Maquina_ID),
-        render:it=>`<span style="font-size:11px">${escHtml(_docVal(it?.Maquina_Label||it?.Maquina_ID))}</span>`},
+        render:it=>`<span class="docs-cell-maq" title="${escHtml(_docVal(it?.Maquina_Label||it?.Maquina_ID))}">${escHtml(_docVal(it?.Maquina_Label||it?.Maquina_ID))}</span>`},
       {key:'arquivo',label:'Arquivo',sortable:true,
         getValue:it=>_docVal(it?.File_Name),
         render:it=>{
-          const nome=`<div><div class="docs-file-name">${escHtml(_docVal(it?.File_Name))}</div>${it?.Caption?`<div class="docs-caption">${escHtml(it.Caption)}</div>`:''}</div>`;
+          // V109 (D1a) — curto na tela, inteiro no title. getValue/searchText ficam CRUS.
+          const _fnFull=_docVal(it?.File_Name);
+          const nome=`<div><div class="docs-file-name" title="${escHtml(_fnFull)}">${escHtml(_docFileNameCurto(_fnFull))}</div>${it?.Caption?`<div class="docs-caption" title="${escHtml(String(it.Caption))}">${escHtml(it.Caption)}</div>`:''}</div>`;
           if(_docIsFoto(it) && it?.File_URL){
             return `<div style="display:flex;align-items:center;gap:8px"><img class="xf-doc-thumb" loading="lazy" src="${escHtml(_docThumbUrl(it,64))}" alt="foto" onclick="_docOpen('${escJs(it.File_URL)}')" onerror="_docThumbErr(this,'${escJs(it.File_URL)}')">${nome}</div>`;
           }
@@ -4805,9 +4956,9 @@ function _renderDocsXfV95(list){
         render:it=>`<span style="font-size:11px">${escHtml(_docDateLabel(it?.Created_At))}</span>`},
       {key:'por',label:'Por',filter:'values',
         getValue:it=>_docVal(it?.Created_By),
-        render:it=>`<span style="font-size:11px">${escHtml(_docVal(it?.Created_By))}</span>`},
+        render:it=>`<span class="docs-cell-por" title="${escHtml(_docVal(it?.Created_By))}">${escHtml(_docVal(it?.Created_By))}</span>`},
       {key:'acoes',label:'Ações',thStyle:'text-align:right',
-        render:it=>`<div class="row-actions">${it?.File_URL?`<button class="btn btn-secondary btn-xs" onclick="_docOpen('${escJs(it.File_URL)}')">Ver</button>`:''}${it?.Folder_URL?`<button class="btn btn-secondary btn-xs" onclick="_docOpen('${escJs(it.Folder_URL)}')">Abrir pasta</button>`:''}</div>`}
+        render:it=>`<div class="row-actions">${it?.File_URL?`<button class="btn btn-secondary btn-xs" onclick="_docOpen('${escJs(it.File_URL)}')">Ver</button>`:''}${it?.Folder_URL?`<button class="btn btn-secondary btn-xs" title="Abrir a pasta desta OS no Drive" onclick="_docOpen('${escJs(it.Folder_URL)}')">📁</button>`:''}</div>`}
     ],
     getData:()=>_docsDedupFotos(_docsCache),
     searchText:it=>[it?.Cliente,it?.OS_Numero,it?.Maquina_Label,it?.Maquina_ID,it?.File_Name,it?.Caption,_docCatLabel(it?.Categoria),it?.Created_By].map(v=>String(v==null?'':v)).join(' '),
@@ -9649,7 +9800,7 @@ function renderConfigStats(){
     <div class="card">
       <div style="font-size:13px;font-weight:600;margin-bottom:4px">Sobre o sistema</div>
       <div style="font-size:12px;color:var(--text2);line-height:1.8">
-        <strong>Catálogo Administrativo v3.38 · PCM V108</strong> — Proper Compressores<br>
+        <strong>Catálogo Administrativo v3.39 · PCM V109</strong> — Proper Compressores<br>
         Catálogo de modelos · Peças com similares · Fotos · Subsistemas nomeados · Máquinas PGP com dados completos de cliente<br>
         Detecção de duplicados em modelos e máquinas · Google Sheets como backend
       </div>
@@ -11424,8 +11575,13 @@ function _renderOSTable(search = '', statusFilter = '', priorityFilter = '') {
       {key:'acoes',label:'Ações',thStyle:'text-align:right',
         render:r=>{
           const oid=(r.o.id_os||'').replace(/'/g,"\\'");
+          // V109 (D3) — "↩ Reabrir OS" entra no mesmo menu ⋯, e SÓ quando a
+          // linha está encerrada: item morto em OS aberta é ruído.
           const extra = window.PROPER_SESSION?.is_admin
-            ? xfMenuBtn('os',[{label:'🗑 Excluir OS…',cls:'xf-danger',run:()=>deleteOSFromList(r.o.id_os)}],'Mais ações (excluir fica aqui)')
+            ? xfMenuBtn('os',[
+                ...(_reabrirOsElegivel(r.o) ? [{label:'↩ Reabrir OS…',run:()=>abrirReabrirOS(r.o.id_os)}] : []),
+                {label:'🗑 Excluir OS…',cls:'xf-danger',run:()=>deleteOSFromList(r.o.id_os)}
+              ],'Mais ações (reabrir e excluir ficam aqui)')
             : '';
           return `<div class="row-actions">
             <button class="btn btn-secondary btn-sm" onclick="openOSDetail('${oid}')">Detalhe</button>
@@ -12198,6 +12354,174 @@ const OS_DETAIL_STATUS_LABELS = {
   'CANCELADA':   'Cancelada',
 };
 
+// ══ V109 (D3) — ↩ REABRIR OS ═══════════════════════════════════════════════
+// Pedido do Fernando: "o técnico enviou a OS e ela vai precisar de edição, mas
+// como já enviou não consegue mais abrir no PCF".
+//
+// 🎯 A action `reabrirOS` já existia no GAS desde o v22 e nunca tinha sido
+//    ligada em front nenhum. Ela põe a OS em `em_andamento`, limpa
+//    `fim_atendimento` e grava o evento REABERTURA_OS.
+// ⚠ Mas reabrir SÓ A OS não devolve trabalho ao técnico: o PCF libera ação por
+//    STATUS DE TAREFA (os dois gates gêmeos do pfBuildCard excluem 'completo' e
+//    'dispensado'). Com tudo concluído, ele vê a OS e não tem um botão sequer.
+//    E a OS volta para a fila da oficina com estágio "—" e dias contados desde
+//    a abertura original, parecendo abandonada.
+//    Por isso este modal PEDE quais tarefas voltam a ficar abertas, e o GAS v88
+//    faz OS + tarefas na MESMA chamada.
+// ⚠ Só administrador (`is_admin === true`, não truthy: na planilha o campo é a
+//    string 'SIM'/'NÃO', e 'NÃO' é truthy). Entrar no PCM não implica ser adm —
+//    `pcm_completo`/`pcm_leitura` entram sem is_admin.
+let _reabrirOsId = null;
+let _reabrirTarefasCache = [];
+
+// Um único lugar decide se o botão aparece — lista, detalhe e o próprio modal
+// consultam esta função, para não divergirem.
+function _reabrirOsElegivel(os) {
+  if (window.PROPER_SESSION?.is_admin !== true) return false;
+  const st = String(os?.status || '').trim().toUpperCase().replace('Í','I');
+  return st === 'CONCLUIDA' || st === 'CANCELADA';
+}
+
+async function abrirReabrirOS(osId, btnEl) {
+  await _comLoadingBtn_(btnEl, async () => {
+    const os = _osList.find(o => o.id_os === osId);
+    if (!os) { toast('OS não encontrada na lista carregada. Atualize a tela de OSs.', 'error'); return; }
+    if (window.PROPER_SESSION?.is_admin !== true) { toast('Reabrir OS é ação de administrador.', 'error'); return; }
+    if (!_reabrirOsElegivel(os)) { toast('Esta OS não está encerrada — não há o que reabrir.', 'warning'); return; }
+
+    _reabrirOsId = osId;
+    _reabrirTarefasCache = [];
+
+    const cab = document.getElementById('reabrirOsCab');
+    if (cab) cab.innerHTML = `<b style="font-family:var(--font-mono)">${escHtml(String(os.numero_os || '—'))}</b>
+      <span style="color:var(--text-muted);margin:0 6px">·</span>${escHtml(String(os.cliente || '—'))}
+      <span style="color:var(--text-muted);margin:0 6px">·</span>${escHtml(OS_DETAIL_STATUS_LABELS[String(os.status||'').toUpperCase()] || String(os.status||'—'))}`;
+    const mot = document.getElementById('reabrirMotivo'); if (mot) mot.value = '';
+    const so  = document.getElementById('reabrirSoOS');   if (so)  so.checked = false;
+    const box = document.getElementById('reabrirTarefas');
+    if (box) box.innerHTML = '<p style="font-size:12px;color:var(--text-muted)">Carregando as tarefas do pipeline…</p>';
+    openModal('modalReabrirOS');
+
+    try {
+      const r = await syncToGS('getPipelineByOS', { os_id: osId });
+      _reabrirTarefasCache = (r && r.tarefas) || [];
+    } catch (e) {
+      if (e.message && e.message.includes('AUTH_GOOGLE')) { hubLogout(); return; }
+      // Não é fatal: dá para reabrir só a OS. Mas o adm precisa saber que está
+      // decidindo às cegas — silenciar aqui seria prometer o que não se cumpre.
+      if (box) box.innerHTML = `<div style="font-size:12px;color:var(--red);background:var(--red-light);border-radius:8px;padding:8px 10px">
+        ⚠ Não deu para carregar o pipeline (${escHtml(e.message || 'erro de rede')}).<br>
+        Dá para reabrir só a OS marcando a opção abaixo — mas <b>o técnico não terá nenhuma tarefa aberta para lançar</b>.</div>`;
+      return;
+    }
+    _renderReabrirTarefas();
+  });
+}
+
+function _renderReabrirTarefas() {
+  const box = document.getElementById('reabrirTarefas');
+  if (!box) return;
+  // Só faz sentido reabrir o que está RESOLVIDO. Tarefa já aberta continua aberta.
+  const RESOLVIDOS = ['completo', 'dispensado', 'incompleto'];
+  const cand = (_reabrirTarefasCache || []).filter(t =>
+    RESOLVIDOS.indexOf(String(t.Status || '').toLowerCase().replace(/\s/g, '_')) >= 0);
+
+  if (!cand.length) {
+    box.innerHTML = `<div style="font-size:12px;color:var(--text-muted);background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:8px 10px">
+      Esta OS não tem nenhuma tarefa concluída para reabrir${_reabrirTarefasCache.length ? '' : ' (pipeline vazio)'}.
+      Marcando a opção abaixo, a OS volta a ficar aberta assim mesmo.</div>`;
+    return;
+  }
+
+  cand.sort((a, b) =>
+    ((parseInt(a.Camada_Ordem) || 1) - (parseInt(b.Camada_Ordem) || 1)) ||
+    ((parseInt(a.Ordem) || 0) - (parseInt(b.Ordem) || 0)) ||
+    String(a.Tarefa_ID).localeCompare(String(b.Tarefa_ID), 'pt-BR'));
+
+  // Pré-marca a ÚLTIMA concluída: o caso do Fernando é "o técnico acabou de
+  // enviar", então quase sempre é ela que precisa voltar. Continua desmarcável.
+  let ultimoId = '', ultimoTs = 0;
+  cand.forEach(t => {
+    const d = t.Data_conclusao ? new Date(t.Data_conclusao).getTime() : 0;
+    if (d && d >= ultimoTs) { ultimoTs = d; ultimoId = String(t.Tarefa_ID); }
+  });
+  if (!ultimoId) ultimoId = String(cand[cand.length - 1].Tarefa_ID);
+
+  const ICON = { completo: '🟢', dispensado: '⏭️', incompleto: '🟡' };
+  box.innerHTML = `
+    <div style="font-size:12px;color:var(--text-muted);margin-bottom:6px">
+      Marque as tarefas que voltam a ficar <b>abertas</b> para o técnico lançar de novo.
+      A pré-marcada é a última concluída.</div>
+    <div style="max-height:250px;overflow:auto;display:flex;flex-direction:column;gap:5px;border:1px solid var(--border);border-radius:8px;padding:8px">
+      ${cand.map(t => {
+        const st = String(t.Status || '').toLowerCase().replace(/\s/g, '_');
+        const id = String(t.Tarefa_ID || '');
+        const quem = t.Concluido_por ? ' · ✓ ' + escHtml(String(t.Concluido_por)) : '';
+        return `<label style="display:flex;align-items:flex-start;gap:8px;font-size:12.5px;line-height:1.4">
+          <input type="checkbox" class="reab-tar-chk" data-id="${escHtml(id)}" ${id === ultimoId ? 'checked' : ''} style="margin-top:2px">
+          <span style="flex:1">${ICON[st] || '⬜'} <b>${escHtml(String(t.Nome || id))}</b>
+            <span style="color:var(--text-muted);font-size:11px">${t.Fase ? ' · ' + escHtml(String(t.Fase)) : ''}${quem}</span></span>
+        </label>`;
+      }).join('')}
+    </div>`;
+}
+
+async function confirmarReabrirOS(btnEl) {
+  await _comLoadingBtn_(btnEl, async () => {
+    if (!_reabrirOsId) return;
+    if (window.PROPER_SESSION?.is_admin !== true) { toast('Reabrir OS é ação de administrador.', 'error'); return; }
+    if (!gsConnected) { toast('Google Sheets offline — reabrir OS exige conexão.', 'error'); return; }
+
+    const motivo = String(document.getElementById('reabrirMotivo')?.value || '').trim();
+    // Motivo obrigatório de propósito: ele é a única coisa que explica, meses
+    // depois, por que uma OS fechada voltou a receber lançamento.
+    if (motivo.length < 5) { toast('Escreva o motivo da reabertura (mínimo 5 caracteres).', 'error'); return; }
+
+    const tarefas = Array.from(document.querySelectorAll('.reab-tar-chk'))
+      .filter(c => c.checked).map(c => c.getAttribute('data-id')).filter(Boolean);
+    const soOS = !!document.getElementById('reabrirSoOS')?.checked;
+
+    if (!tarefas.length && !soOS) {
+      toast('Sem tarefa marcada o técnico não vai conseguir lançar nada. Marque ao menos uma, ou confirme a opção "reabrir somente a OS".', 'error');
+      return;
+    }
+
+    const responsavel = window.PROPER_SESSION?.usuario?.nome || window.PROPER_SESSION?.tecnico?.nome || 'adm';
+    try {
+      const r = await gsPost({
+        action: 'reabrirOS',
+        id_os: _reabrirOsId,
+        motivo: motivo,
+        responsavel: responsavel,
+        origem: 'PCM',
+        tarefas: tarefas            // GAS v88 — ignorado com segurança por GAS ≤ v87
+      });
+      if (r && r.status && r.status !== 'ok') throw new Error(r.error || 'O GAS recusou a reabertura.');
+
+      // O GAS v88 devolve quantas tarefas realmente reabriram. Se o GAS no ar
+      // ainda for o v87, `tarefas_reabertas` vem indefinido — e aí a mensagem
+      // NÃO pode dizer que reabriu tarefa, porque não reabriu.
+      const nT = (r && typeof r.tarefas_reabertas === 'number') ? r.tarefas_reabertas : null;
+      if (nT === null && tarefas.length) {
+        toast('OS reaberta, mas as tarefas NÃO voltaram: o GAS no ar ainda não tem o v88.', 'warning');
+      } else if (nT) {
+        toast('OS reaberta · ' + nT + ' tarefa' + (nT === 1 ? '' : 's') + ' de volta para o técnico.', 'success');
+      } else {
+        toast('OS reaberta. Nenhuma tarefa foi reaberta — o técnico não terá o que lançar.', 'warning');
+      }
+
+      closeModal('modalReabrirOS');
+      const oid = _reabrirOsId;
+      _reabrirOsId = null; _reabrirTarefasCache = [];
+      await renderOS();          // recarrega _osList com o status novo
+      openOSDetail(oid);
+    } catch (e) {
+      if (e.message && e.message.includes('AUTH_GOOGLE')) { hubLogout(); return; }
+      toast('Erro ao reabrir a OS: ' + e.message, 'error');
+    }
+  });
+}
+
 // ── Detalhe da OS ────────────────────────────────────────────────────────────
 async function openOSDetail(osId) {
   const el = document.getElementById('viewOs');
@@ -12221,7 +12545,10 @@ async function openOSDetail(osId) {
           <span style="font-size:13px;color:var(--text-muted)">${os.cliente||'—'}</span>
         </div>
       </div>
-      <button class="btn btn-secondary btn-sm" onclick="openModalOS('${osId.replace(/'/g,"\\'")}')">✏ Editar OS</button>
+      <div style="display:flex;gap:6px;flex-wrap:wrap">
+        ${_reabrirOsElegivel(os) ? `<button class="btn btn-primary btn-sm" onclick="abrirReabrirOS('${osId.replace(/'/g,"\\'")}', this)" title="Devolve a OS ao técnico para novos lançamentos">↩ Reabrir OS</button>` : ''}
+        <button class="btn btn-secondary btn-sm" onclick="openModalOS('${osId.replace(/'/g,"\\'")}')">✏ Editar OS</button>
+      </div>
     </div>
 
     <div style="display:flex;gap:2px;margin-bottom:16px;border-bottom:1px solid var(--border)">
@@ -13083,6 +13410,40 @@ if(!gsUrl){
     <div class="modal-footer">
       <button class="btn btn-secondary" onclick="closeModal('modalEmpilhar')">Cancelar</button>
       <button class="btn btn-primary" onclick="confirmarEmpilhar(this)">Empilhar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL REABRIR OS (V109 / D3) -->
+<div class="overlay" id="modalReabrirOS">
+  <div class="modal" style="width:580px">
+    <div class="modal-title">↩ Reabrir OS</div>
+    <div class="modal-body">
+      <div id="reabrirOsCab" style="font-size:13px;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:8px 10px;margin-bottom:12px">—</div>
+      <p style="font-size:12.5px;color:var(--text-muted);margin-bottom:12px;line-height:1.6">
+        A OS volta para <b>Em andamento</b> e o carimbo de fim de atendimento é apagado — ela reaparece
+        na lista do técnico no PCF e na fila da oficina.
+        <br>⚠ <b>Reabrir a OS não basta:</b> o PCF só libera ação em tarefa que esteja aberta. Marque
+        abaixo o que o técnico precisa refazer.
+      </p>
+      <div class="form-row">
+        <label class="form-label">Motivo da reabertura *</label>
+        <input type="text" class="form-input" id="reabrirMotivo" maxlength="200"
+          placeholder="Ex.: faltou a foto do painel elétrico"
+          autocomplete="off" name="pcm_reabrir_motivo_nofill" data-lpignore="true" data-1p-ignore
+          readonly onfocus="this.removeAttribute('readonly')">
+        <div style="font-size:11px;color:var(--text-muted);margin-top:4px">Vai para o log da OS (evento REABERTURA_OS).</div>
+      </div>
+      <div id="reabrirTarefas" style="margin-top:10px"></div>
+      <label style="display:flex;align-items:flex-start;gap:8px;font-size:12.5px;margin-top:12px;line-height:1.4">
+        <input type="checkbox" id="reabrirSoOS" style="margin-top:2px">
+        <span>Reabrir <b>somente a OS</b>, sem devolver nenhuma tarefa
+          <span style="color:var(--text-muted)">(o técnico verá a OS, mas não terá nada para lançar)</span></span>
+      </label>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('modalReabrirOS')">Cancelar</button>
+      <button class="btn btn-primary" onclick="confirmarReabrirOS(this)">↩ Reabrir</button>
     </div>
   </div>
 </div>
