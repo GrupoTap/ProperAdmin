@@ -906,6 +906,52 @@ v50 — Resiliência de rede: retry/backoff em gsGet e syncToGS
      Bancada: 40 asserts de UI em Chromium headless + screenshots conferidos.
      ══════════════════════════════════════════════════════════════════════════ -->
 <!-- ══════════════════════════════════════════════════════════════════════════
+     PCM V112 — 07/08/2026 — ETIQUETA DE IDENTIFICAÇÃO FÍSICA (10,2 × 4 cm).
+     GAS INTOCADO (v90). PCF INTOCADO. 100% ADITIVO: nada renomeado.
+
+     🎯 PEDIDO (Fernando): a tarefa "D02 · Identificação física (plaqueta)" do
+        template de Recebimento exige uma etiqueta que hoje é um Documento1.docx
+        aberto no Word, com os 5 campos digitados à mão a cada máquina que entra
+        na oficina, e impresso numa térmica de 10,2 × 4 cm.
+
+     ── O QUE ENTRA ──────────────────────────────────────────────────────────
+     Botão "🏷 Etiqueta" na tabela de Tarefas do Adm → modal com prévia em
+     tamanho real → Imprimir. Uma etiqueta por máquina vinculada à OS.
+     Conteúdo: Nº da OS, MODELO, CLIENTE (novo), motivo na oficina em faixa
+     preta, ENTRADA, PRAZO, QR (novo) e a marca.
+
+     ── POR QUE ZERO GAS ─────────────────────────────────────────────────────
+     `getMaquinasByOS` (v43) já devolve a OS INTEIRA — numero_os, cliente,
+     tipo_os, data_abertura, data_prevista — junto com as máquinas vinculadas
+     (marca, modelo, série, TAG). Uma chamada resolve a etiqueta toda; nenhuma
+     action nova, nenhuma coluna nova.
+
+     ── AS TRÊS ARMADILHAS QUE ESTE CÓDIGO EVITA ─────────────────────────────
+     1. @page SEQUESTRADO — a folha de estilo é PARTIDA: só `.etq-*` entra no
+        documento do PCM (prévia do modal). `@page { size:102mm 40mm }` vive
+        exclusivamente dentro do iframe de impressão. Injetá-la aqui faria
+        QUALQUER Ctrl+P do admin sair no tamanho da etiqueta.
+     2. TEXTO QUE SOME — a etiqueta tem overflow:hidden. "Atlas Copco GA37 VSD+
+        FF PACK" e "Fundição Santana Ltda ME" estouram a linha, e a linha extra
+        de série empurra ENTRADA/PRAZO para fora. `etqAjustarTudo` faz duas
+        passadas (horizontal por campo, vertical na coluna) DEPOIS do layout —
+        sem isso a etiqueta imprime incompleta e a tela não acusa nada.
+     3. QR SEM CDN — o gerador é embutido (~9 KB). Falha de CDN na hora de
+        imprimir viraria "sumiu o QR" sem explicação, na bancada da oficina.
+        A matriz foi conferida módulo a módulo contra a lib `qrcode` do Python
+        em 288 combinações (texto × nível EC × máscara) e o PNG impresso foi
+        decodificado por leitor independente (ZBar) a 150, 203 e 300 dpi.
+
+     ⚠ `PCF_BASE_URL` continua sendo o texto 'TODO_CONFIRMAR_URL_PCF' (achado
+       desta rodada: o botão "Abrir no PCF" nunca funcionou). O QR NÃO depende
+       disso — usa `ETQ_PCF_URL`, que prefere PCF_BASE_URL quando preenchida e
+       cai na URL publicada do ProperTech enquanto não for.
+
+     Bancada: 34 asserts de UI em Chromium headless + PDF renderizado conferido
+     a olho (a lição que já se repetiu 3× neste projeto: layout passa em assert
+     verde e só aparece na imagem).
+     ══════════════════════════════════════════════════════════════════════════ -->
+<!-- ══════════════════════════════════════════════════════════════════════════
      PCM V111 — 06/08/2026 — REABRIR TAREFA DE OS QUE *NÃO* ESTÁ ENCERRADA.
      Par obrigatório: GAS v90. PCF INTOCADO.
      100% ADITIVO: nada renomeado (função, id, data-view, action, chave de
@@ -1031,7 +1077,7 @@ v50 — Resiliência de rede: retry/backoff em gsGet e syncToGS
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>ProperCare Manager · Gestão PGP v3.40 (PCM V111)</title>
+<title>ProperCare Manager · Gestão PGP v3.41 (PCM V112)</title>
 <link rel="icon" type="image/jpeg" href="data:image/jpeg;base64,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">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1862,7 +1908,7 @@ th.xf-filtered .xf-fun{opacity:1;stroke:var(--accent)}
 <aside class="nav-sidebar" aria-label="Navegação principal">
   <div class="nav-brand">
     <span class="nav-brand-mark">PCM</span>
-    <span class="nav-brand-sub">v3.40 · V111</span>
+    <span class="nav-brand-sub">v3.41 · V112</span>
   </div>
 
   <nav class="nav-groups">
@@ -9863,7 +9909,7 @@ function renderConfigStats(){
     <div class="card">
       <div style="font-size:13px;font-weight:600;margin-bottom:4px">Sobre o sistema</div>
       <div style="font-size:12px;color:var(--text2);line-height:1.8">
-        <strong>Catálogo Administrativo v3.40 · PCM V110</strong> — Proper Compressores<br>
+        <strong>Catálogo Administrativo v3.41 · PCM V112</strong> — Proper Compressores<br>
         Catálogo de modelos · Peças com similares · Fotos · Subsistemas nomeados · Máquinas PGP com dados completos de cliente<br>
         Detecção de duplicados em modelos e máquinas · Google Sheets como backend
       </div>
@@ -13720,6 +13766,68 @@ if(!gsUrl){
   </div>
 </div>
 
+<!-- MODAL ETIQUETA DA MÁQUINA (V112) — 10,2 × 4 cm -->
+<div class="overlay" id="modalEtiqueta">
+  <!-- modal-lg (700px) é a classe larga que o PCM já tem: .modal trava
+       max-width:520px, então largura inline não teria efeito nenhum. -->
+  <div class="modal modal-lg">
+    <div class="modal-title"><span>🏷 Etiqueta de identificação (10,2 × 4 cm)</span></div>
+    <div class="modal-body">
+      <div id="etqCabecalho" style="font-size:13px;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:8px 10px;margin-bottom:12px">—</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start">
+        <div>
+          <label class="form-label">Máquinas — uma etiqueta para cada</label>
+          <div id="etqMaquinas" style="max-height:150px;overflow:auto;border:1px solid var(--border);border-radius:8px;padding:6px 10px;background:var(--bg)"></div>
+          <label style="display:flex;align-items:center;gap:8px;font-size:12.5px;margin-top:10px;cursor:pointer">
+            <input type="checkbox" id="etqComQr" checked onchange="this.dataset.tocado='1';_etqRender()">
+            <span>QR que abre a OS no celular do técnico</span></label>
+          <label style="display:flex;align-items:center;gap:8px;font-size:12.5px;margin-top:6px;cursor:pointer">
+            <input type="checkbox" id="etqComSerie" onchange="_etqRender()">
+            <span>Incluir o nº de série</span></label>
+        </div>
+        <div>
+          <label class="form-label">Motivo na oficina</label>
+          <select class="form-input" id="etqMotivo" onchange="_etqRender()"></select>
+          <div id="etqMotivoLivreWrap" style="display:none;margin-top:6px">
+            <input class="form-input" type="text" id="etqMotivoLivre" maxlength="40"
+              placeholder="Ex.: Garantia — aguardando laudo" oninput="_etqRender()"
+              autocomplete="off" name="pcm_etq_motivo_nofill" data-lpignore="true" data-1p-ignore
+              readonly onfocus="this.removeAttribute('readonly')">
+          </div>
+          <div style="display:flex;gap:10px;margin-top:10px">
+            <div style="flex:1">
+              <label class="form-label">Entrada</label>
+              <input class="form-input" type="date" id="etqEntrada" onchange="_etqRender()">
+            </div>
+            <div style="flex:1">
+              <label class="form-label">Prazo</label>
+              <input class="form-input" type="date" id="etqPrazo" onchange="_etqRender()">
+            </div>
+          </div>
+          <div style="font-size:11px;color:var(--text-muted);margin-top:6px;line-height:1.5">
+            Vêm da OS. Mudar aqui só muda o que é impresso — não altera a OS.
+          </div>
+        </div>
+      </div>
+
+      <label class="form-label" style="margin-top:14px">Prévia em tamanho real</label>
+      <div id="etqPreview" style="display:inline-block;border:1px solid var(--border);border-radius:8px;background:#fff;padding:0;overflow:hidden"></div>
+      <div id="etqAvisoPrev" style="display:none;font-size:11.5px;color:var(--text-muted);margin-top:6px">
+        Prévia da primeira máquina selecionada — as demais saem no mesmo formato.
+      </div>
+      <div style="font-size:11.5px;color:var(--text-muted);margin-top:10px;line-height:1.55;border-top:1px solid var(--border);padding-top:10px">
+        No diálogo do Chrome, escolha a térmica e confira em <b>Mais configurações</b>:
+        <b>Margens = Nenhuma</b>, <b>Escala = 100</b> (nunca “Ajustar à página”) e
+        <b>Cabeçalhos e rodapés</b> desmarcado. Marque “lembrar” e isso vira uma vez só.
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('modalEtiqueta')">Fechar</button>
+      <button class="btn btn-primary" id="etqBtnImprimir" onclick="_etqImprimir(this)">🖨 Imprimir</button>
+    </div>
+  </div>
+</div>
+
 <!-- MODAL FILA DA OFICINA FIFO (v71) -->
 <div class="overlay" id="modalFilaOficina">
   <div class="modal" style="width:560px">
@@ -16248,6 +16356,13 @@ function _renderTarefasAdmUI() {
     }
     const relogio = String(t.relogio || 'interno') === 'externo'
       ? ' <span class="gos-chip" title="Espera nesta tarefa não conta no prazo interno">🤝 relógio externo</span>' : '';
+    // V112 — etiqueta de identificação física. Aparece em TODA linha (reimprimir
+    // plaqueta gasta é rotina), mas só ganha rótulo na tarefa que a exige, para
+    // não competir com a ação principal das outras.
+    const _ehPlaqueta = /plaquet|etiquet|identifica/i.test(String(t.nome ?? ''));
+    const etqBtn = `<button class="btn btn-secondary btn-sm" style="margin-right:6px"
+        title="Gerar e imprimir a etiqueta de identificação (10,2 × 4 cm)"
+        onclick="_etqAbrir('${escJs(t.os_id)}',this)">🏷${_ehPlaqueta ? ' Etiqueta' : ''}</button>`;
     return `<tr>
       <td><a href="#" onclick="event.preventDefault();showView('os');openOSDetail('${escJs(t.os_id)}')"
              style="color:var(--accent);font-weight:600">OS ${escHtml(String(t.numero_os ?? t.os_id))}</a>
@@ -16257,7 +16372,7 @@ function _renderTarefasAdmUI() {
       <td>${tipoIcon}</td>
       <td style="${atras ? 'color:#dc2626;font-weight:700' : ''}">${dias === null ? '—' : (dias + 'd')}</td>
       <td>${t.data_prevista ? escHtml(String(t.data_prevista).slice(0, 10)) : '—'}</td>
-      <td style="white-space:nowrap">${acao}</td>
+      <td style="white-space:nowrap">${etqBtn}${acao}</td>
     </tr>`;
   }).join('');
 
@@ -16778,6 +16893,854 @@ function _renderGanttSaturacao(usuarios) {
   html += `</tbody></table></div>`;
   return html;
 }
+</script>
+
+<!-- ══════════════════════════════════════════════════════════════════════════
+     V112 — BLOCO NOVO: o SEXTO bloco de script inline. Nenhum bloco antigo
+     foi tocado — o motor da etiqueta e o gerador de QR são autocontidos e só
+     falam com o resto do PCM por 4 nomes globais (_etqAbrir/_etqRender/
+     _etqImprimir/_etqEstado) chamadas no clique.
+     ══════════════════════════════════════════════════════════════════════════ -->
+<script>
+/* ══════════════════════════════════════════════════════════════════════════
+   ETQ-QR — gerador de QR Code embutido (modo byte, versões 1–10, EC L/M/Q/H)
+   ─────────────────────────────────────────────────────────────────────────
+   Por que embutido e não CDN: a etiqueta é impressa na oficina, num clique,
+   e uma falha de CDN na hora de imprimir viraria "o QR sumiu" sem explicação.
+   São ~9 KB de código, sem dependência, e o PCM já carrega jsPDF de CDN —
+   este é o caminho que NÃO depende de rede.
+
+   API única:
+     etqQrMatrix(texto, nivelEC)  → array NxN de 0/1 (1 = módulo escuro)
+     etqQrSvg(texto, opts)        → string SVG pronta para <img src="data:...">
+
+   ⚠ Não renomear nada aqui: o motor de etiqueta e a suíte de teste chamam
+   estes dois nomes.
+   ══════════════════════════════════════════════════════════════════════════ */
+(function (root) {
+  'use strict';
+
+  // ── Tabela RS: [ecPorBloco, blocosG1, dadosG1, blocosG2, dadosG2] ─────────
+  // Conferida somando (dados+ec) contra o total de codewords de cada versão.
+  var RS = {
+    1:  { L:[7,1,19,0,0],   M:[10,1,16,0,0],  Q:[13,1,13,0,0],     H:[17,1,9,0,0] },
+    2:  { L:[10,1,34,0,0],  M:[16,1,28,0,0],  Q:[22,1,22,0,0],     H:[28,1,16,0,0] },
+    3:  { L:[15,1,55,0,0],  M:[26,1,44,0,0],  Q:[18,2,17,0,0],     H:[22,2,13,0,0] },
+    4:  { L:[20,1,80,0,0],  M:[18,2,32,0,0],  Q:[26,2,24,0,0],     H:[16,4,9,0,0] },
+    5:  { L:[26,1,108,0,0], M:[24,2,43,0,0],  Q:[18,2,15,2,16],    H:[22,2,11,2,12] },
+    6:  { L:[18,2,68,0,0],  M:[16,4,27,0,0],  Q:[24,4,19,0,0],     H:[28,4,15,0,0] },
+    7:  { L:[20,2,78,0,0],  M:[18,4,31,0,0],  Q:[18,2,14,4,15],    H:[26,4,13,1,14] },
+    8:  { L:[24,2,97,0,0],  M:[22,2,38,2,39], Q:[22,4,18,2,19],    H:[26,4,14,2,15] },
+    9:  { L:[30,2,116,0,0], M:[22,3,36,2,37], Q:[20,4,16,4,17],    H:[24,4,12,4,13] },
+    10: { L:[18,2,68,2,69], M:[26,4,43,1,44], Q:[24,6,19,2,20],    H:[28,6,15,2,16] }
+  };
+
+  var ALIGN = {
+    1:[], 2:[6,18], 3:[6,22], 4:[6,26], 5:[6,30],
+    6:[6,34], 7:[6,22,38], 8:[6,24,42], 9:[6,26,46], 10:[6,28,50]
+  };
+
+  var EC_BITS = { L:1, M:0, Q:3, H:2 };
+
+  // ── GF(256), polinômio primitivo 0x11D ───────────────────────────────────
+  var EXP = new Uint8Array(512), LOG = new Uint8Array(256);
+  (function () {
+    var x = 1;
+    for (var i = 0; i < 255; i++) {
+      EXP[i] = x; LOG[x] = i;
+      x <<= 1; if (x & 0x100) x ^= 0x11D;
+    }
+    for (var j = 255; j < 512; j++) EXP[j] = EXP[j - 255];
+  })();
+  function gfMul(a, b) { return (a === 0 || b === 0) ? 0 : EXP[LOG[a] + LOG[b]]; }
+
+  function gerPoly(n) {
+    var p = [1];
+    for (var i = 0; i < n; i++) {
+      var np = new Array(p.length + 1).fill(0);
+      for (var j = 0; j < p.length; j++) {
+        np[j]     ^= gfMul(p[j], 1);
+        np[j + 1] ^= gfMul(p[j], EXP[i]);
+      }
+      p = np;
+    }
+    return p;
+  }
+
+  function rsEc(dados, nEc) {
+    var g = gerPoly(nEc);
+    var res = dados.slice().concat(new Array(nEc).fill(0));
+    for (var i = 0; i < dados.length; i++) {
+      var c = res[i];
+      if (c === 0) continue;
+      for (var j = 0; j < g.length; j++) res[i + j] ^= gfMul(g[j], c);
+    }
+    return res.slice(dados.length);
+  }
+
+  // ── BCH (formato e versão) ───────────────────────────────────────────────
+  function bch(dado, gerador, bitsGer) {
+    var v = dado << (bitsGer - 1);
+    var topo = function (n) { var b = 0; while (n) { b++; n >>>= 1; } return b; };
+    while (topo(v) >= bitsGer) v ^= gerador << (topo(v) - bitsGer);
+    return v;
+  }
+  function formatoBits(ec, mask) {
+    var d = (EC_BITS[ec] << 3) | mask;
+    return ((d << 10) | bch(d, 0x537, 11)) ^ 0x5412;
+  }
+  function versaoBits(v) { return (v << 12) | bch(v, 0x1F25, 13); }
+
+  // ── UTF-8 ────────────────────────────────────────────────────────────────
+  function utf8(s) {
+    var out = [];
+    for (var i = 0; i < s.length; i++) {
+      var c = s.charCodeAt(i);
+      if (c < 0x80) out.push(c);
+      else if (c < 0x800) { out.push(0xC0 | (c >> 6), 0x80 | (c & 63)); }
+      else if (c >= 0xD800 && c <= 0xDBFF && i + 1 < s.length) {
+        var c2 = s.charCodeAt(++i);
+        var cp = 0x10000 + ((c - 0xD800) << 10) + (c2 - 0xDC00);
+        out.push(0xF0 | (cp >> 18), 0x80 | ((cp >> 12) & 63), 0x80 | ((cp >> 6) & 63), 0x80 | (cp & 63));
+      } else { out.push(0xE0 | (c >> 12), 0x80 | ((c >> 6) & 63), 0x80 | (c & 63)); }
+    }
+    return out;
+  }
+
+  function escolherVersao(nBytes, ec, versaoMin) {
+    for (var v = Math.max(1, versaoMin || 1); v <= 10; v++) {
+      var r = RS[v][ec];
+      var dataCw = r[1] * r[2] + r[3] * r[4];
+      var contBits = (v <= 9) ? 8 : 16;
+      var bitsNecessarios = 4 + contBits + nBytes * 8;
+      if (bitsNecessarios <= dataCw * 8) return v;
+    }
+    return 0;
+  }
+
+  // ── Codificação em bits ──────────────────────────────────────────────────
+  function montarCodewords(bytes, v, ec) {
+    var r = RS[v][ec];
+    var dataCw = r[1] * r[2] + r[3] * r[4];
+    var contBits = (v <= 9) ? 8 : 16;
+    var bits = [];
+    function push(val, n) { for (var i = n - 1; i >= 0; i--) bits.push((val >> i) & 1); }
+    push(4, 4);                    // modo byte
+    push(bytes.length, contBits);
+    for (var i = 0; i < bytes.length; i++) push(bytes[i], 8);
+    // terminador (até 4 bits)
+    var falta = dataCw * 8 - bits.length;
+    push(0, Math.min(4, falta));
+    while (bits.length % 8 !== 0) bits.push(0);
+    var cw = [];
+    for (var b = 0; b < bits.length; b += 8) {
+      var byte = 0;
+      for (var k = 0; k < 8; k++) byte = (byte << 1) | bits[b + k];
+      cw.push(byte);
+    }
+    var pad = [0xEC, 0x11], p = 0;
+    while (cw.length < dataCw) cw.push(pad[p++ % 2]);
+
+    // blocos + intercalação
+    var blocosD = [], blocosE = [], idx = 0, bi;
+    for (bi = 0; bi < r[1]; bi++) { var d1 = cw.slice(idx, idx + r[2]); idx += r[2]; blocosD.push(d1); blocosE.push(rsEc(d1, r[0])); }
+    for (bi = 0; bi < r[3]; bi++) { var d2 = cw.slice(idx, idx + r[4]); idx += r[4]; blocosD.push(d2); blocosE.push(rsEc(d2, r[0])); }
+
+    var out = [], maxD = Math.max(r[2], r[4]), i2, j2;
+    for (i2 = 0; i2 < maxD; i2++) for (j2 = 0; j2 < blocosD.length; j2++) if (i2 < blocosD[j2].length) out.push(blocosD[j2][i2]);
+    for (i2 = 0; i2 < r[0]; i2++) for (j2 = 0; j2 < blocosE.length; j2++) out.push(blocosE[j2][i2]);
+    return out;
+  }
+
+  // ── Matriz ───────────────────────────────────────────────────────────────
+  function novaMatriz(n) {
+    var m = [], reservado = [];
+    for (var i = 0; i < n; i++) { m.push(new Array(n).fill(0)); reservado.push(new Array(n).fill(false)); }
+    return { m: m, res: reservado, n: n };
+  }
+
+  function porFinder(M, r, c) {
+    for (var i = -1; i <= 7; i++) for (var j = -1; j <= 7; j++) {
+      var rr = r + i, cc = c + j;
+      if (rr < 0 || cc < 0 || rr >= M.n || cc >= M.n) continue;
+      var dentro = (i >= 0 && i <= 6 && (j === 0 || j === 6)) ||
+                   (j >= 0 && j <= 6 && (i === 0 || i === 6)) ||
+                   (i >= 2 && i <= 4 && j >= 2 && j <= 4);
+      M.m[rr][cc] = dentro ? 1 : 0;
+      M.res[rr][cc] = true;
+    }
+  }
+
+  function porAlign(M, r, c) {
+    for (var i = -2; i <= 2; i++) for (var j = -2; j <= 2; j++) {
+      M.m[r + i][c + j] = (Math.max(Math.abs(i), Math.abs(j)) !== 1) ? 1 : 0;
+      M.res[r + i][c + j] = true;
+    }
+  }
+
+  function construir(cw, v, ec, mask) {
+    var n = 17 + v * 4;
+    var M = novaMatriz(n), i, j;
+
+    porFinder(M, 0, 0); porFinder(M, 0, n - 7); porFinder(M, n - 7, 0);
+
+    // timing
+    for (i = 8; i < n - 8; i++) {
+      M.m[6][i] = (i % 2 === 0) ? 1 : 0; M.res[6][i] = true;
+      M.m[i][6] = (i % 2 === 0) ? 1 : 0; M.res[i][6] = true;
+    }
+    // alinhamento (pula os cantos ocupados pelos finders)
+    var ce = ALIGN[v];
+    for (i = 0; i < ce.length; i++) for (j = 0; j < ce.length; j++) {
+      var r = ce[i], c = ce[j];
+      if ((r <= 8 && c <= 8) || (r <= 8 && c >= n - 9) || (r >= n - 9 && c <= 8)) continue;
+      porAlign(M, r, c);
+    }
+    // módulo escuro fixo
+    M.m[n - 8][8] = 1; M.res[n - 8][8] = true;
+    // reserva das áreas de formato
+    for (i = 0; i <= 8; i++) { if (!M.res[8][i]) { M.res[8][i] = true; } if (!M.res[i][8]) { M.res[i][8] = true; } }
+    for (i = n - 8; i < n; i++) { M.res[8][i] = true; M.res[i][8] = true; }
+    // reserva da área de versão (v ≥ 7)
+    if (v >= 7) for (i = 0; i < 6; i++) for (j = 0; j < 3; j++) { M.res[i][n - 11 + j] = true; M.res[n - 11 + j][i] = true; }
+
+    // dados em zigue-zague
+    var bitIdx = 0, total = cw.length * 8, subindo = true;
+    for (var col = n - 1; col > 0; col -= 2) {
+      if (col === 6) col--;                       // pula a coluna de timing
+      for (var passo = 0; passo < n; passo++) {
+        var linha = subindo ? (n - 1 - passo) : passo;
+        for (var d = 0; d < 2; d++) {
+          var cc = col - d;
+          if (M.res[linha][cc]) continue;
+          var bit = 0;
+          if (bitIdx < total) bit = (cw[bitIdx >> 3] >> (7 - (bitIdx & 7))) & 1;
+          bitIdx++;
+          if (aplicaMask(mask, linha, cc)) bit ^= 1;
+          M.m[linha][cc] = bit;
+        }
+      }
+      subindo = !subindo;
+    }
+
+    // formato
+    var fmt = formatoBits(ec, mask);
+    // ⚠ ORIENTAÇÃO DAS DUAS CÓPIAS: o bit 0 (menos significativo) fica em
+    // (0,8) e em (8,n-1) — NÃO em (8,0). A versão transposta disto também é
+    // um código de 15 bits coerente consigo mesmo e desenha um QR de aparência
+    // perfeita que NENHUM leitor decodifica. Conferido módulo a módulo contra
+    // a lib `qrcode` do Python em 288 combinações (texto × EC × máscara).
+    for (i = 0; i < 15; i++) {
+      var b = (fmt >> i) & 1;
+      // cópia 1 — coluna 8
+      if (i < 6) M.m[i][8] = b;
+      else if (i < 8) M.m[i + 1][8] = b;
+      else M.m[n - 15 + i][8] = b;
+      // cópia 2 — linha 8
+      if (i < 8) M.m[8][n - 1 - i] = b;
+      else if (i === 8) M.m[8][7] = b;
+      else M.m[8][14 - i] = b;
+    }
+    M.m[n - 8][8] = 1; // módulo escuro: reescrito por último, como na referência
+    // versão
+    if (v >= 7) {
+      var vb = versaoBits(v);
+      for (i = 0; i < 18; i++) {
+        var bb = (vb >> i) & 1;
+        M.m[Math.floor(i / 3)][n - 11 + (i % 3)] = bb;
+        M.m[n - 11 + (i % 3)][Math.floor(i / 3)] = bb;
+      }
+    }
+    return M.m;
+  }
+
+  function aplicaMask(k, r, c) {
+    switch (k) {
+      case 0: return (r + c) % 2 === 0;
+      case 1: return r % 2 === 0;
+      case 2: return c % 3 === 0;
+      case 3: return (r + c) % 3 === 0;
+      case 4: return (Math.floor(r / 2) + Math.floor(c / 3)) % 2 === 0;
+      case 5: return ((r * c) % 2) + ((r * c) % 3) === 0;
+      case 6: return (((r * c) % 2) + ((r * c) % 3)) % 2 === 0;
+      default: return (((r + c) % 2) + ((r * c) % 3)) % 2 === 0;
+    }
+  }
+
+  // ── Penalidade (para escolher a máscara) ─────────────────────────────────
+  function penalidade(m) {
+    var n = m.length, p = 0, i, j, k, run, escuros = 0;
+    // regra 1 — sequências ≥ 5
+    for (i = 0; i < n; i++) {
+      run = 1;
+      for (j = 1; j < n; j++) {
+        if (m[i][j] === m[i][j - 1]) { run++; if (run === 5) p += 3; else if (run > 5) p += 1; }
+        else run = 1;
+      }
+      run = 1;
+      for (j = 1; j < n; j++) {
+        if (m[j][i] === m[j - 1][i]) { run++; if (run === 5) p += 3; else if (run > 5) p += 1; }
+        else run = 1;
+      }
+    }
+    // regra 2 — blocos 2×2
+    for (i = 0; i < n - 1; i++) for (j = 0; j < n - 1; j++) {
+      var v0 = m[i][j];
+      if (v0 === m[i][j + 1] && v0 === m[i + 1][j] && v0 === m[i + 1][j + 1]) p += 3;
+    }
+    // regra 3 — padrão 1011101 com 4 claros de um lado
+    var pA = [1,0,1,1,1,0,1,0,0,0,0], pB = [0,0,0,0,1,0,1,1,1,0,1];
+    function casa(get, idx, pat) {
+      for (var t = 0; t < 11; t++) if (get(idx + t) !== pat[t]) return false;
+      return true;
+    }
+    for (i = 0; i < n; i++) for (j = 0; j <= n - 11; j++) {
+      var linha = (function (r) { return function (x) { return m[r][x]; }; })(i);
+      var colu  = (function (c) { return function (x) { return m[x][c]; }; })(i);
+      if (casa(linha, j, pA) || casa(linha, j, pB)) p += 40;
+      if (casa(colu, j, pA)  || casa(colu, j, pB))  p += 40;
+    }
+    // regra 4 — desvio da proporção 50%
+    for (i = 0; i < n; i++) for (j = 0; j < n; j++) if (m[i][j]) escuros++;
+    var pct = escuros * 100 / (n * n);
+    p += Math.floor(Math.abs(pct - 50) / 5) * 10;
+    return p;
+  }
+
+  function etqQrMatrix(texto, ec, versaoMin, maskFixa) {
+    ec = ec || 'M';
+    var bytes = utf8(String(texto == null ? '' : texto));
+    var v = escolherVersao(bytes.length, ec, versaoMin);
+    if (!v) throw new Error('etqQR: texto longo demais para versão 10 (' + bytes.length + ' bytes, EC ' + ec + ')');
+    var cw = montarCodewords(bytes, v, ec);
+    if (maskFixa != null) return construir(cw, v, ec, maskFixa);
+    var melhor = null, melhorP = Infinity;
+    for (var k = 0; k < 8; k++) {
+      var m = construir(cw, v, ec, k);
+      var p = penalidade(m);
+      if (p < melhorP) { melhorP = p; melhor = m; }
+    }
+    return melhor;
+  }
+
+  function etqQrSvg(texto, opts) {
+    opts = opts || {};
+    var m = etqQrMatrix(texto, opts.ec || 'M');
+    var n = m.length, quiet = (opts.quiet == null ? 2 : opts.quiet);
+    var lado = n + quiet * 2;
+    var d = '';
+    for (var i = 0; i < n; i++) {
+      for (var j = 0; j < n; j++) {
+        if (!m[i][j]) continue;
+        d += 'M' + (j + quiet) + ' ' + (i + quiet) + 'h1v1h-1z';
+      }
+    }
+    return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ' + lado + ' ' + lado + '" ' +
+           'shape-rendering="crispEdges"><rect width="' + lado + '" height="' + lado + '" fill="#fff"/>' +
+           '<path d="' + d + '" fill="#000"/></svg>';
+  }
+
+  root.etqQrMatrix = etqQrMatrix;
+  root.etqQrSvg = etqQrSvg;
+  // _penalidade só é exportado no Node (bancada de teste). No navegador nada muda.
+  if (typeof module !== 'undefined' && module.exports) module.exports = { etqQrMatrix: etqQrMatrix, etqQrSvg: etqQrSvg, _penalidade: penalidade };
+})(typeof window !== 'undefined' ? window : globalThis);
+
+/* ══════════════════════════════════════════════════════════════════════════
+   ETQ-MOTOR — etiqueta de identificação física da máquina (10,2 × 4 cm)
+   ─────────────────────────────────────────────────────────────────────────
+   Substitui o Documento1.docx digitado à mão antes de cada impressão.
+   Só front: nenhuma action nova no GAS. Todos os dados saem de UMA chamada
+   `getMaquinasByOS` (que já devolve a OS inteira + as máquinas vinculadas).
+
+   Nomes públicos (o PCM e a bancada chamam estes):
+     ETQ_CSS                  folha de estilo da etiqueta (mm, não px)
+     etqDados(os, maq, extra) monta o objeto de uma etiqueta
+     etqHtml(d)               <div class="etq"> de UMA etiqueta
+     etqDocumento(lista)      documento completo, pronto para imprimir
+     etqImprimir(lista)       imprime (iframe oculto; janela nova como reserva)
+     etqAjustarTudo(raiz)     encolhe o texto que não coube (roda pós-layout)
+
+   ⚠ MEDIDA: a etiqueta é 102 × 40 mm e o CSS diz isso em MILÍMETROS, com
+   @page size igual. Não trocar por px: 40 mm em px depende do DPI que o
+   navegador assume e é justamente o que faz a etiqueta sair 3 mm menor.
+   ══════════════════════════════════════════════════════════════════════════ */
+(function (root) {
+  'use strict';
+
+  // Fase em barra preta cheia (lê-se de longe na bancada). Se a térmica borrar
+  // área sólida, trocar para false: vira caixa com contorno, mesmo tamanho.
+  var ETQ_FASE_SOLIDA = true;
+
+  // ⚠ A folha é PARTIDA EM DUAS de propósito. A `.etq-*` pode ser injetada no
+  // documento do PCM para a prévia dentro do modal; a de PÁGINA, não — soltar
+  // `@page { size:102mm 40mm }` no PCM passaria a valer para QUALQUER Ctrl+P
+  // feito na tela do admin.
+  var ETQ_CSS_PAGINA = [
+    '@page { size: 102mm 40mm; margin: 0; }',
+    'html, body { margin:0; padding:0; background:#fff; }'
+  ].join('\n');
+
+  var ETQ_CSS_ETIQUETA = [
+    '.etq { position:relative; width:102mm; height:40mm; box-sizing:border-box;',
+    '  overflow:hidden; background:#fff; color:#000;',
+    '  font-family:Arial, Helvetica, "Liberation Sans", sans-serif;',
+    '  -webkit-print-color-adjust:exact; print-color-adjust:exact; }',
+    '.etq + .etq { page-break-before:always; break-before:page; }',
+    '.etq-moldura { position:absolute; left:1.2mm; top:1.2mm; right:1.2mm; bottom:1.2mm;',
+    '  border:0.6mm solid #000; border-radius:4mm; box-sizing:border-box; }',
+    // ⚠ ORÇAMENTO VERTICAL: a coluna da esquerda tem top/bottom fixos e é um
+    // flex-column centrado. Sem isto, uma linha a mais empurra ENTRADA/PRAZO
+    // para fora do overflow:hidden — a etiqueta imprime sem a data e ninguém vê
+    // erro nenhum na tela.
+    '.etq-esq { position:absolute; left:4mm; top:2.6mm; bottom:2.4mm; width:70mm;',
+    '  display:flex; flex-direction:column; justify-content:center; }',
+    '.etq-dir { position:absolute; right:3.2mm; top:2.6mm; bottom:2.4mm; width:23mm;',
+    '  text-align:center; display:flex; flex-direction:column; align-items:center; justify-content:center; }',
+    '.etq-lin { display:flex; align-items:baseline; gap:1.4mm; margin-bottom:0.5mm; white-space:nowrap; }',
+    '.etq-rot { font-size:3.0mm; font-weight:700; letter-spacing:.02em; flex:0 0 auto; }',
+    '.etq-val { font-weight:800; line-height:1.05; flex:1 1 auto; min-width:0;',
+    '  overflow:hidden; text-overflow:ellipsis; }',
+    '.etq-val-g { font-size:6.0mm; }',
+    '.etq-val-m { font-size:4.0mm; }',
+    '.etq-fase { margin:0.9mm 0 0.8mm; height:6.2mm; border-radius:1.5mm; display:flex;',
+    '  align-items:center; justify-content:center; text-align:center;',
+    '  font-weight:800; font-size:4.2mm; letter-spacing:.02em; text-transform:uppercase;',
+    '  padding:0 1.5mm; overflow:hidden; white-space:nowrap; box-sizing:border-box; }',
+    '.etq-fase-solida { background:#000; color:#fff; }',
+    '.etq-fase-contorno { background:#fff; color:#000; border:0.5mm solid #000; }',
+    '.etq-datas { display:flex; gap:4mm; font-size:3.2mm; white-space:nowrap; }',
+    '.etq-datas b { font-size:3.7mm; }',
+    '.etq-qr { width:20mm; height:20mm; display:block; }',
+    '.etq-qr svg, .etq-qr img { width:100%; height:100%; display:block; }',
+    // width:100% é o que torna o estouro MEDÍVEL: num flex-column com
+    // align-items:center o bloco encolhe até o texto e scrollWidth == clientWidth
+    // sempre — o auto-ajuste nunca dispararia e "COMPRESSORES" sairia cortado.
+    '.etq-marca { margin-top:1.0mm; font-size:4.4mm; font-weight:900; letter-spacing:.04em;',
+    '  line-height:1; white-space:nowrap; width:100%; overflow:hidden; }',
+    '.etq-marca-sub { font-size:1.9mm; font-weight:700; letter-spacing:.10em; margin-top:0.5mm;',
+    '  white-space:nowrap; width:100%; overflow:hidden; }',
+    '.etq-semqr .etq-esq { width:93mm; }'
+  ].join('\n');
+
+  var ETQ_CSS = ETQ_CSS_PAGINA + '\n' + ETQ_CSS_ETIQUETA;
+
+  // ── Datas: dd/mm/aaaa sem passar por fuso ────────────────────────────────
+  // Lição do projeto (V65): `new Date('2026-07-30')` é meia-noite UTC e vira
+  // 29/07 no Brasil. Aqui a string YYYY-MM-DD é fatiada, nunca parseada.
+  function etqData(v) {
+    if (v === null || v === undefined || v === '') return '';
+    var s = String(v).trim();
+    var m = s.match(/^(\d{4})-(\d{2})-(\d{2})/);
+    if (m) return m[3] + '/' + m[2] + '/' + m[1];
+    m = s.match(/^(\d{2})\/(\d{2})\/(\d{4})/);
+    if (m) return m[0];
+    var d = new Date(s);
+    if (!isNaN(d.getTime())) {
+      return String(d.getDate()).padStart(2, '0') + '/' +
+             String(d.getMonth() + 1).padStart(2, '0') + '/' + d.getFullYear();
+    }
+    return s;
+  }
+
+  function esc(s) {
+    return String(s === null || s === undefined ? '' : s)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
+
+  // ── Motivo da entrada (a "macro fase" da etiqueta) ───────────────────────
+  // O rótulo diz POR QUE a máquina está na oficina. O tipo de OS é o melhor
+  // palpite disponível, mas não é a mesma coisa (garantia e retrabalho não são
+  // tipo de OS) — por isso o adm sempre pode trocar antes de imprimir.
+  var ETQ_MOTIVOS = [
+    'Diagnóstico / Orçamento',
+    'Aguardando aprovação',
+    'Reforma geral',
+    'Manutenção',
+    'Desmontagem e montagem',
+    'Garantia',
+    'Retrabalho',
+    'Locação',
+    'Aguardando peça',
+    'Pronta / Expedição'
+  ];
+
+  var ETQ_MOTIVO_POR_TIPO = {
+    DIAGNOSTICO:    'Diagnóstico / Orçamento',
+    MANUT_SIMPLES:  'Manutenção',
+    REFORMA_GERAL:  'Reforma geral',
+    DESMONT_MONT:   'Desmontagem e montagem',
+    LOCACAO:        'Locação',
+    CORRETIVA:      'Manutenção',
+    PREVENTIVA:     'Manutenção',
+    INSPECAO:       'Diagnóstico / Orçamento'
+  };
+
+  function etqMotivoPadrao(tipoOs, nomeTipo) {
+    var k = String(tipoOs || '').trim().toUpperCase();
+    if (ETQ_MOTIVO_POR_TIPO[k]) return ETQ_MOTIVO_POR_TIPO[k];
+    if (nomeTipo) return String(nomeTipo);
+    return ETQ_MOTIVOS[0];
+  }
+
+  // ── Um objeto de etiqueta ────────────────────────────────────────────────
+  function etqDados(os, maq, extra) {
+    os = os || {}; maq = maq || {}; extra = extra || {};
+    var modelo = [maq.brand, maq.model].filter(function (x) { return String(x || '').trim(); })
+                   .join(' ').trim() || String(maq.model || '') || '—';
+    if (extra.somenteModelo && maq.model) modelo = String(maq.model);
+    return {
+      numeroOs: String(extra.numeroOs != null ? extra.numeroOs : (os.numero_os != null ? os.numero_os : os.id_os || '')),
+      idOs:     String(os.id_os || ''),
+      modelo:   modelo,
+      // Série entra só quando pedida (ou quando duas máquinas da MESMA OS têm o
+      // mesmo modelo — aí ela é a única coisa que distingue as duas plaquetas).
+      serie:    extra.comSerie ? String(maq.serial || maq.tag || '') : '',
+      cliente:  String(extra.cliente != null ? extra.cliente : (os.cliente_nome || os.cliente || '')),
+      motivo:   String(extra.motivo != null ? extra.motivo : etqMotivoPadrao(os.tipo_os, extra.nomeTipo)),
+      entrada:  etqData(extra.entrada != null ? extra.entrada : os.data_abertura),
+      prazo:    etqData(extra.prazo != null ? extra.prazo : os.data_prevista),
+      url:      String(extra.url || '')
+    };
+  }
+
+  function etqHtml(d) {
+    var comQr = !!d.url;
+    var qr = '';
+    if (comQr) {
+      try {
+        qr = '<div class="etq-qr">' + root.etqQrSvg(d.url, { ec: 'M', quiet: 4 }) + '</div>';
+      } catch (e) {
+        // QR é acessório: uma URL longa demais nunca pode impedir a etiqueta de sair.
+        comQr = false;
+        if (root.console) console.warn('[etiqueta] QR não gerado:', e && e.message);
+      }
+    }
+    var serieLinha = d.serie
+      ? '<div class="etq-lin"><span class="etq-rot">SÉRIE:</span><span class="etq-val etq-val-m" data-fit="1">' + esc(d.serie) + '</span></div>'
+      : '';
+    return '' +
+      '<div class="etq' + (comQr ? '' : ' etq-semqr') + '">' +
+        '<div class="etq-moldura"></div>' +
+        '<div class="etq-esq">' +
+          '<div class="etq-lin"><span class="etq-rot">OS:</span>' +
+            '<span class="etq-val etq-val-g" data-fit="1">' + esc(d.numeroOs) + '</span></div>' +
+          '<div class="etq-lin"><span class="etq-rot">MODELO:</span>' +
+            '<span class="etq-val etq-val-g" data-fit="1">' + esc(d.modelo) + '</span></div>' +
+          '<div class="etq-lin"><span class="etq-rot">CLIENTE:</span>' +
+            '<span class="etq-val etq-val-m" data-fit="1">' + esc(d.cliente) + '</span></div>' +
+          serieLinha +
+          '<div class="etq-fase ' + (ETQ_FASE_SOLIDA ? 'etq-fase-solida' : 'etq-fase-contorno') + '" data-fit="1">' +
+            esc(d.motivo) + '</div>' +
+          '<div class="etq-datas">' +
+            '<span>ENTRADA: <b>' + esc(d.entrada || '—') + '</b></span>' +
+            '<span>PRAZO: <b>' + esc(d.prazo || '—') + '</b></span>' +
+          '</div>' +
+        '</div>' +
+        '<div class="etq-dir">' +
+          qr +
+          '<div class="etq-marca" data-fit="1">PROPER</div>' +
+          '<div class="etq-marca-sub" data-fit="1">COMPRESSORES</div>' +
+        '</div>' +
+      '</div>';
+  }
+
+  // ── Encolher o que não coube ─────────────────────────────────────────────
+  // Só roda depois do layout. "GA37 VSD+ FF PACK" e "Fundição Santana Ltda ME"
+  // são reais e estouram a linha; sem isto o texto some no overflow:hidden e a
+  // etiqueta sai com o modelo cortado pela metade — sem erro nenhum na tela.
+  function etqAjustarTudo(raiz) {
+    var doc = raiz || document;
+
+    // 1) horizontal — encolhe cada valor até caber na própria linha
+    var alvos = doc.querySelectorAll('[data-fit="1"]');
+    for (var i = 0; i < alvos.length; i++) {
+      var el = alvos[i];
+      var base = parseFloat(getComputedStyle(el).fontSize);
+      if (!base || !isFinite(base)) continue;
+      var f = base, guarda = 0;
+      while (el.scrollWidth > el.clientWidth + 1 && f > base * 0.55 && guarda++ < 40) {
+        f = f - Math.max(0.4, base * 0.03);
+        el.style.fontSize = f + 'px';
+      }
+    }
+
+    // 2) vertical — se a pilha da esquerda passar da altura útil, encolhe a
+    //    coluna INTEIRA em degraus. É o que garante que ENTRADA/PRAZO nunca
+    //    caia fora quando o adm liga a linha de série.
+    var colunas = doc.querySelectorAll('.etq-esq');
+    for (var c = 0; c < colunas.length; c++) {
+      var col = colunas[c], passo = 0;
+      while (col.scrollHeight > col.clientHeight + 1 && passo++ < 12) {
+        var filhos = col.querySelectorAll('.etq-rot, .etq-val, .etq-fase, .etq-datas, .etq-datas b');
+        for (var k = 0; k < filhos.length; k++) {
+          var fs = parseFloat(getComputedStyle(filhos[k]).fontSize);
+          if (fs && isFinite(fs)) filhos[k].style.fontSize = (fs * 0.94) + 'px';
+        }
+        var fase = col.querySelector('.etq-fase');
+        if (fase) {
+          var h = parseFloat(getComputedStyle(fase).height);
+          if (h && isFinite(h)) fase.style.height = (h * 0.94) + 'px';
+        }
+      }
+    }
+  }
+
+  function etqDocumento(lista) {
+    var corpo = (lista || []).map(function (d) { return etqHtml(d); }).join('\n');
+    return '<!DOCTYPE html><html lang="pt-BR"><head><meta charset="utf-8">' +
+      '<title>Etiquetas ProperCare</title><style>' + ETQ_CSS + '</style></head><body>' +
+      corpo + '</body></html>';
+  }
+
+  // ── Impressão ────────────────────────────────────────────────────────────
+  // iframe oculto: não é bloqueado por bloqueador de pop-up e não tira o adm da
+  // tela em que ele estava. Janela nova só como reserva, se o iframe falhar.
+  function etqImprimir(lista, aoTerminar) {
+    var doc = etqDocumento(lista);
+    var ifr = document.createElement('iframe');
+    ifr.setAttribute('aria-hidden', 'true');
+    ifr.style.cssText = 'position:fixed;right:0;bottom:0;width:0;height:0;border:0;visibility:hidden';
+    document.body.appendChild(ifr);
+    var limpou = false;
+    function limpar() {
+      if (limpou) return; limpou = true;
+      setTimeout(function () { try { ifr.remove(); } catch (e) {} }, 1500);
+      if (typeof aoTerminar === 'function') aoTerminar();
+    }
+    try {
+      var d = ifr.contentWindow.document;
+      d.open(); d.write(doc); d.close();
+      // O ajuste de fonte precisa do layout PRONTO — daí o duplo rAF antes de imprimir.
+      var w = ifr.contentWindow;
+      var disparar = function () {
+        try { etqAjustarTudo(d); } catch (e) {}
+        try { w.focus(); w.print(); } catch (e) {
+          try { var nw = window.open('', '_blank'); nw.document.write(doc); nw.document.close(); nw.focus(); } catch (e2) {}
+        }
+        limpar();
+      };
+      if (w.requestAnimationFrame) w.requestAnimationFrame(function () { w.requestAnimationFrame(disparar); });
+      else setTimeout(disparar, 120);
+    } catch (e) {
+      try {
+        var nw2 = window.open('', '_blank');
+        nw2.document.write(doc); nw2.document.close();
+        nw2.onload = function () { try { nw2.print(); } catch (e3) {} };
+      } catch (e4) {}
+      limpar();
+    }
+  }
+
+  root.ETQ_CSS = ETQ_CSS;
+  root.ETQ_CSS_PAGINA = ETQ_CSS_PAGINA;
+  root.ETQ_CSS_ETIQUETA = ETQ_CSS_ETIQUETA;
+  root.ETQ_MOTIVOS = ETQ_MOTIVOS;
+  root.etqData = etqData;
+  root.etqMotivoPadrao = etqMotivoPadrao;
+  root.etqDados = etqDados;
+  root.etqHtml = etqHtml;
+  root.etqDocumento = etqDocumento;
+  root.etqImprimir = etqImprimir;
+  root.etqAjustarTudo = etqAjustarTudo;
+  if (typeof module !== 'undefined' && module.exports) {
+    module.exports = { ETQ_CSS: ETQ_CSS, ETQ_MOTIVOS: ETQ_MOTIVOS, etqData: etqData,
+      etqMotivoPadrao: etqMotivoPadrao, etqDados: etqDados, etqHtml: etqHtml, etqDocumento: etqDocumento };
+  }
+})(typeof window !== 'undefined' ? window : globalThis);
+
+/* ══════════════════════════════════════════════════════════════════════════
+   PCM V112 — ETIQUETA DE IDENTIFICAÇÃO FÍSICA (10,2 × 4 cm)
+   ─────────────────────────────────────────────────────────────────────────
+   Fecha o passo manual da tarefa "D02 · Identificação física (plaqueta)":
+   o adm abre a etiqueta pelo painel Tarefas do Adm, confere, imprime.
+   Antes: abrir o Word, digitar 5 campos à mão e imprimir Documento1.docx.
+
+   ZERO GAS. Tudo sai de UMA chamada `getMaquinasByOS`, que já existe desde o
+   v43 e já devolve a OS inteira (numero_os, cliente, tipo_os, data_abertura,
+   data_prevista) + as máquinas vinculadas (marca, modelo, série, TAG).
+
+   Nomes novos (nada renomeado): _etqAbrir, _etqRender, _etqPreview,
+   _etqImprimir, _etqEstado, _etqInjetarEstilo, ETQ_PCF_URL.
+   ══════════════════════════════════════════════════════════════════════════ */
+
+// Destino do QR: a tela de pipeline da OS no PCF, que o técnico já usa.
+// ⚠ `PCF_BASE_URL` do PCM ainda é o texto 'TODO_CONFIRMAR_URL_PCF' (o botão
+// "Abrir no PCF" nunca funcionou por causa disso). Enquanto ele não for
+// preenchido, cai na URL publicada do ProperTech — conferida em 07/08/2026.
+var ETQ_PCF_URL = (typeof PCF_BASE_URL === 'string' && PCF_BASE_URL && PCF_BASE_URL !== 'TODO_CONFIRMAR_URL_PCF')
+  ? PCF_BASE_URL
+  : 'https://grupotap.github.io/ProperTech/';
+
+var _etqEstado = { osId: '', os: null, machines: [], sel: {}, carregando: false };
+
+function _etqInjetarEstilo() {
+  if (document.getElementById('etqEstiloPreview')) return;
+  var st = document.createElement('style');
+  st.id = 'etqEstiloPreview';
+  // ⚠ SÓ a parte .etq-* entra aqui. ETQ_CSS_PAGINA carrega o @page de 102×40mm
+  // e vale só dentro do iframe de impressão — no documento do PCM ele
+  // sequestraria qualquer Ctrl+P que o admin desse na tela.
+  st.textContent = ETQ_CSS_ETIQUETA;
+  document.head.appendChild(st);
+}
+
+function _etqUrlDaOS(idOs) {
+  if (!idOs) return '';
+  var base = String(ETQ_PCF_URL);
+  if (base.indexOf('?') >= 0) base = base.split('?')[0];
+  return base + '?modo=pipeline&os_id=' + encodeURIComponent(idOs);
+}
+
+// ── Abertura ────────────────────────────────────────────────────────────────
+async function _etqAbrir(osId, btnEl) {
+  if (!osId) { toast('OS não identificada.', 'error'); return; }
+  await _comLoadingBtn_(btnEl, async function () {
+    try {
+      _etqInjetarEstilo();
+      // ⚠ await DENTRO do try — o "✓ mentiroso" já apareceu 3× neste projeto.
+      var r = await syncToGS('getMaquinasByOS', { id_os: osId });
+      var os = (r && r.os) || null;
+      if (!os) { toast('OS não encontrada.', 'error'); return; }
+      _etqEstado.osId = osId;
+      _etqEstado.os = os;
+      _etqEstado.machines = Array.isArray(r.machines) ? r.machines : [];
+      _etqEstado.sel = {};
+      _etqEstado.machines.forEach(function (m, i) { _etqEstado.sel[i] = true; });
+      _etqPreencherCampos();
+      _etqRender();
+      openModal('modalEtiqueta');
+    } catch (e) {
+      if (e.message && e.message.indexOf('AUTH_GOOGLE') >= 0) { hubLogout(); return; }
+      toast('Não consegui carregar os dados da OS: ' + e.message, 'error');
+    }
+  });
+}
+
+function _etqPreencherCampos() {
+  var os = _etqEstado.os || {};
+  var sel = document.getElementById('etqMotivo');
+  if (sel && !sel.options.length) {
+    ETQ_MOTIVOS.forEach(function (m) {
+      var o = document.createElement('option'); o.value = m; o.textContent = m; sel.appendChild(o);
+    });
+    var outro = document.createElement('option');
+    outro.value = '__outro__'; outro.textContent = 'Outro (escrever abaixo)…';
+    sel.appendChild(outro);
+  }
+  // Nome do tipo de OS, quando o catálogo já estiver em memória — só como
+  // reserva do de/para: o rótulo da etiqueta é o MOTIVO, não o tipo.
+  var nomeTipo = '';
+  try {
+    var t = (_tiposOS || []).find(function (x) { return String(x.Tipo_ID) === String(os.tipo_os); });
+    if (t) nomeTipo = String(t.Nome || '');
+  } catch (e) {}
+  var padrao = etqMotivoPadrao(os.tipo_os, nomeTipo);
+  if (sel) sel.value = (ETQ_MOTIVOS.indexOf(padrao) >= 0) ? padrao : '__outro__';
+  var livre = document.getElementById('etqMotivoLivre');
+  if (livre) livre.value = (sel && sel.value === '__outro__') ? padrao : '';
+
+  var ent = document.getElementById('etqEntrada');
+  var prz = document.getElementById('etqPrazo');
+  if (ent) ent.value = String(os.data_abertura || '').slice(0, 10);
+  if (prz) prz.value = String(os.data_prevista || '').slice(0, 10);
+
+  // Série entra sozinha quando duas máquinas da OS têm o MESMO modelo — sem
+  // ela as duas plaquetas sairiam idênticas e trocar as duas na bancada seria
+  // questão de tempo.
+  var modelos = _etqEstado.machines.map(function (m) {
+    return String((m.brand || '') + ' ' + (m.model || '')).trim().toLowerCase();
+  });
+  var repetido = modelos.some(function (v, i) { return v && modelos.indexOf(v) !== i; });
+  var cs = document.getElementById('etqComSerie');
+  if (cs) cs.checked = repetido;
+  var cq = document.getElementById('etqComQr');
+  if (cq && cq.dataset.tocado !== '1') cq.checked = true;
+}
+
+// ── Dados da impressão ──────────────────────────────────────────────────────
+function _etqMotivoAtual() {
+  var sel = document.getElementById('etqMotivo');
+  var livre = document.getElementById('etqMotivoLivre');
+  var v = sel ? sel.value : '';
+  if (v === '__outro__') return String((livre && livre.value) || '').trim() || ETQ_MOTIVOS[0];
+  return v || ETQ_MOTIVOS[0];
+}
+
+function _etqListaSelecionada() {
+  var os = _etqEstado.os || {};
+  var comQr = !!(document.getElementById('etqComQr') || {}).checked;
+  var comSerie = !!(document.getElementById('etqComSerie') || {}).checked;
+  var entrada = (document.getElementById('etqEntrada') || {}).value || '';
+  var prazo = (document.getElementById('etqPrazo') || {}).value || '';
+  var motivo = _etqMotivoAtual();
+  var url = comQr ? _etqUrlDaOS(os.id_os || _etqEstado.osId) : '';
+  var extraComum = { motivo: motivo, entrada: entrada, prazo: prazo, url: url, comSerie: comSerie };
+
+  var escolhidas = _etqEstado.machines.filter(function (m, i) { return _etqEstado.sel[i]; });
+  // OS sem máquina vinculada ainda precisa de plaqueta: sai uma etiqueta com o
+  // modelo em branco, para o adm escrever à mão. Melhor do que não imprimir.
+  if (!escolhidas.length) return [etqDados(os, {}, extraComum)];
+  return escolhidas.map(function (m) { return etqDados(os, m, extraComum); });
+}
+
+// ── Render do modal ─────────────────────────────────────────────────────────
+function _etqRender() {
+  var os = _etqEstado.os || {};
+  var cab = document.getElementById('etqCabecalho');
+  if (cab) {
+    cab.innerHTML = '<b>OS ' + escHtml(String(os.numero_os != null ? os.numero_os : os.id_os || '—')) + '</b>' +
+      ' · ' + escHtml(String(os.cliente_nome || os.cliente || '—'));
+  }
+
+  var box = document.getElementById('etqMaquinas');
+  if (box) {
+    if (!_etqEstado.machines.length) {
+      box.innerHTML = '<div style="font-size:12px;color:var(--text-muted);padding:6px 0">' +
+        'Nenhuma máquina vinculada a esta OS — sai <b>1 etiqueta</b> com o modelo em branco.</div>';
+    } else {
+      box.innerHTML = _etqEstado.machines.map(function (m, i) {
+        var rot = [m.brand, m.model].filter(Boolean).join(' ') || '(sem modelo)';
+        var sub = [m.serial ? 'NS ' + m.serial : '', m.tag ? 'TAG ' + m.tag : ''].filter(Boolean).join(' · ');
+        return '<label style="display:flex;align-items:flex-start;gap:8px;font-size:13px;padding:4px 0;cursor:pointer">' +
+          '<input type="checkbox" class="etq-maq-check" data-i="' + i + '" ' + (_etqEstado.sel[i] ? 'checked' : '') +
+          ' onchange="_etqEstado.sel[' + i + ']=this.checked;_etqRender()" style="margin-top:3px">' +
+          '<span><b>' + escHtml(rot) + '</b>' +
+          (sub ? '<span style="color:var(--text-muted);font-size:11.5px"><br>' + escHtml(sub) + '</span>' : '') +
+          '</span></label>';
+      }).join('');
+    }
+  }
+
+  var livreWrap = document.getElementById('etqMotivoLivreWrap');
+  var sel = document.getElementById('etqMotivo');
+  if (livreWrap && sel) livreWrap.style.display = (sel.value === '__outro__') ? '' : 'none';
+
+  var lista = _etqListaSelecionada();
+  var prev = document.getElementById('etqPreview');
+  if (prev) {
+    prev.innerHTML = etqHtml(lista[0]);
+    // ⚠ o ajuste de fonte mede o layout; tem de rodar DEPOIS de o navegador
+    // desenhar, senão scrollWidth vem 0 e nada encolhe.
+    requestAnimationFrame(function () { try { etqAjustarTudo(prev); } catch (e) {} });
+  }
+  var btn = document.getElementById('etqBtnImprimir');
+  if (btn) btn.textContent = '🖨 Imprimir ' + lista.length + (lista.length > 1 ? ' etiquetas' : ' etiqueta');
+  var aviso = document.getElementById('etqAvisoPrev');
+  if (aviso) aviso.style.display = (lista.length > 1) ? '' : 'none';
+}
+
+function _etqImprimir(btnEl) {
+  var lista = _etqListaSelecionada();
+  if (!lista.length) { toast('Selecione ao menos uma máquina.', 'error'); return; }
+  try {
+    etqImprimir(lista);
+    toast(lista.length + (lista.length > 1 ? ' etiquetas enviadas' : ' etiqueta enviada') + ' para a impressora.', 'success');
+  } catch (e) {
+    toast('Não consegui abrir a impressão: ' + e.message, 'error');
+  }
+}
+
 </script>
 
 </body>
