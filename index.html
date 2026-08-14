@@ -906,6 +906,94 @@ v50 — Resiliência de rede: retry/backoff em gsGet e syncToGS
      Bancada: 40 asserts de UI em Chromium headless + screenshots conferidos.
      ══════════════════════════════════════════════════════════════════════════ -->
 <!-- ══════════════════════════════════════════════════════════════════════════
+     PCM V122 — 14/08/2026 — A COLUNA "AÇÃO" DE TAREFAS DO ADM.
+     Feita EM CIMA da V121. 100% ADITIVA: nenhuma função, id, data-key ou
+     data-view renomeado ou removido. Nenhuma chamada nova ao GAS na pintura
+     da tela (o único endpoint novo é sob clique explícito).
+
+     Origem: print do Fernando, 14/08/2026 13:36. Duas linhas na caixa do adm —
+     "Busca de referências de peças" (Orçamento) e "Identificação física
+     (plaqueta)" (Recebimento). As DUAS abriam o modal da etiqueta, e a coluna
+     AÇÃO estava cortada na borda direita do painel.
+
+     1  A COLUNA CORTADA ERA CSS, NÃO LAYOUT DA TELA.
+        `.table-wrap` era `overflow:hidden` e a célula de ação era
+        `white-space:nowrap`: três botões numa linha só empurram a tabela para
+        além do painel, e `hidden` corta o excedente SEM barra de rolagem —
+        não há nem sinal de que existe conteúdo além da borda. Agora o wrap é
+        `overflow-x:auto` (vale para TODAS as tabelas do PCM: onde já cabia,
+        nada muda; onde não cabia, aparece rolagem em vez de sumiço) e a célula
+        de ação virou `.tadm-acoes`, um flex que QUEBRA em vez de estourar.
+
+     2  A ETIQUETA SÓ APARECE NA TAREFA QUE É A ETIQUETA.
+        A V112 pôs o botão em TODA linha (reimprimir plaqueta gasta é rotina),
+        sem rótulo fora da tarefa de plaqueta — um 🏷 mudo, na mesma posição em
+        que a linha vizinha mostrava "🏷 Etiqueta". Ícone sem rótulo não diz o
+        que faz, e etiqueta não é ação de tarefa de orçamento.
+        A reimpressão avulsa não se perdeu: subiu para o cabeçalho de
+        Gestão de OSs → OS, mesma função `_etqAbrir`.
+        ⚠ Também deixa de aparecer em linha travada (bloqueado/condicional),
+          pela mesma regra que já valia para "📄 Abrir formulário".
+
+     3  O DIAGNÓSTICO DEIXA DE MANDAR O ADM RODAR CÓDIGO.
+        O aviso de carimbo divergente terminava em "rode a ação
+        reconciliarExecutorPipeline com dry_run=false" — instrução de console
+        numa tela de escritório. Eram 30 tarefas nessa condição, com o aviso no
+        ar havia dias e ninguém podendo agir. Agora tem botão
+        (`_tadmReconciliarExecutor`): simula com dry_run=true, mostra quantas
+        linhas mudariam e quantas ficam de fora por perfil órfão, e só grava
+        depois do confirm.
+        Entrou também `perfis_conflitantes`, que o GAS v98 já devolvia e esta
+        tela ignorava: é a ÚNICA explicação possível para "0 tarefa(s)" com
+        perfil marcado como Administração (duas linhas do mesmo perfil em
+        CAT_PERFIS discordando).
+        ⚠ Saiu o literal "GAS v92" da frase: estava escrito v92 com o v97 no
+          ar. Número de build em texto de tela envelhece sozinho e vira mentira.
+
+     4  `d.perfis_adm.map` sem guarda derrubava a TELA INTEIRA se o envelope
+        viesse com total > 0 e a lista faltando. `(d.perfis_adm || [])`.
+
+     5  ASPA DUPLA EM NOME DE TAREFA/CLIENTE MATAVA O BOTÃO DA LINHA.
+        `escJs` escapa \ ' \n — não a aspa DUPLA, que é o delimitador do
+        atributo `onclick="…"`. Uma tarefa chamada  Trocar o "kit de reparo"
+        fecha o atributo no meio: botão morto, nada no console, sintoma
+        "cliquei e não aconteceu nada". Novo helper `escAttrJs` = escHtml(escJs)
+        aplicado a nome, cliente e Form_URL desta tela. `escJs` INTACTO —
+        nenhuma outra chamada do arquivo mudou.
+
+     ── Achados da revisão adversarial do diff, corrigidos na mesma versão ──
+
+     6  "OS NÃO ENCONTRADA" NUMA OS QUE EXISTE (pré-existente, agora no caminho).
+        `showView('os'); openOSDetail(id)` do link de Tarefas do Adm dispara
+        `renderOS()` SEM await: em sessão fria `_osList` está vazia e o find
+        falha. E como `openOSDetail` já reescreveu #viewOs, o `renderOS` que
+        volta não acha o #osRibbonContent e a tela fica travada até o "Voltar".
+        Já era assim na V121, mas ali era irrelevante; com o item 2 este virou
+        o caminho para a etiqueta avulsa. Agora, find vazio ⇒ espera a lista e
+        tenta de novo. Caminho normal (lista em memória) segue síncrono.
+
+     7  Miudezas da mesma revisão:
+        · `renderTarefasAdm()` saiu de DENTRO do try de `_tadmReconciliarExecutor`
+          — falha ao repintar não pode virar "Erro ao realinhar" DEPOIS de a
+          planilha já ter sido gravada com sucesso.
+        · `perfis_conflitantes` protegido com `Array.isArray`, não `|| []`:
+          campo que chegue como string passa no `.length` e morre no `.map`.
+          E `c.linhas` passou a sair por `escHtml`, como os irmãos.
+        · `.toast.warn` finalmente tem cor. `toast(msg,'warn')` era chamado em
+          5 lugares e nunca teve classe — saía no cinza neutro do `.toast`,
+          igual a um aviso informativo.
+        · `.tadm-acoes` é `justify-content:flex-start`: o `td` da V121 alinhava
+          à esquerda e o `th` também. `flex-end` teria mudado a aparência.
+        ⚠ `dry_run: 'true'/'false'` como STRING é intencional e conferido contra
+          o GAS: `String(params.dry_run) !== 'false'`. String e booleano dão o
+          mesmo resultado; a string é o que a documentação da ação usa.
+
+     Bancada: 31 asserts em Node sobre _renderTarefasAdmUI/_tadmDiagnosticoHtml
+     + 9 em Chromium headless (clique real com aspas duplas no nome e no
+     cliente, botões dentro da borda a 800 px e a 520 px, ordem dos botões na
+     linha da plaqueta, nenhuma linha de Orçamento com 🏷).
+     ══════════════════════════════════════════════════════════════════════════ -->
+<!-- ══════════════════════════════════════════════════════════════════════════
      PCM V121 — 13/08/2026 — O FILTRO DE COLUNA QUE PERDIA "LIMPAR/APLICAR".
      Feita EM CIMA da V120. 100% ADITIVA.
 
@@ -1485,7 +1573,7 @@ v50 — Resiliência de rede: retry/backoff em gsGet e syncToGS
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>ProperCare Manager · Gestão PGP v3.46 (PCM V121)</title>
+<title>ProperCare Manager · Gestão PGP v3.47 (PCM V122)</title>
 <link rel="icon" type="image/jpeg" href="data:image/jpeg;base64,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">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1642,7 +1730,22 @@ body{font-size:13px;line-height:1.5;min-height:100vh;margin:0}
 .tab-btn.active .badge{background:var(--blue-light);color:var(--blue-mid)}
 
 /* ── TABLE ── */
-.table-wrap{border:1px solid var(--border);border-radius:var(--radius);overflow:hidden}
+/* V122 (1) — era `overflow:hidden`: tabela mais larga que o painel tinha a
+   coluna AÇÃO CORTADA, sem barra de rolagem e sem qualquer sinal de que havia
+   conteúdo além da borda. `auto` faz o excedente virar rolagem em vez de
+   sumiço. Nenhuma tabela que já cabia muda de aparência. */
+.table-wrap{border:1px solid var(--border);border-radius:var(--radius);overflow-x:auto}
+/* V122 (1) — célula de ação que QUEBRA em vez de estourar a largura. Substitui
+   o `white-space:nowrap` das linhas de Tarefas do Adm: em tela estreita os
+   botões descem de linha e continuam clicáveis. */
+/* ⚠ flex-start, não flex-end: o `td` da V121 alinhava os botões à ESQUERDA e o
+   `th` da coluna também é text-align:left. Alinhar à direita afastaria os
+   botões do próprio rótulo "AÇÃO" em tela larga — mudança de aparência que
+   esta versão não pediu. */
+.tadm-acoes{display:flex;flex-wrap:wrap;gap:6px;justify-content:flex-start;align-items:center}
+/* O RÓTULO do botão não quebra — quem quebra é a FILA de botões. Sem isto,
+   "✓ Marcar concluído" vira duas linhas dentro do botão em coluna estreita. */
+.tadm-acoes .btn{white-space:nowrap}
 table{width:100%;border-collapse:collapse}
 th{text-align:left;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--text3);padding:7px 12px;border-bottom:1px solid var(--border);background:var(--gray-50)}
 td{padding:8px 12px;border-bottom:1px solid var(--gray-100);color:var(--text);vertical-align:top}
@@ -1833,6 +1936,11 @@ tr:hover td{background:var(--gray-50)}
 .toast.success{background:var(--green)}
 .toast.error{background:var(--red)}
 .toast.info{background:var(--blue-mid)}
+/* V122 — `toast(msg,'warn')` era chamado em 5 lugares e NUNCA teve classe: a
+   mensagem saía com o cinza neutro do `.toast`, indistinguível de um aviso
+   informativo. "Nada a realinhar — 30 tarefas com perfil inexistente" tem de
+   parecer um alerta. */
+.toast.warn{background:var(--orange)}
 
 /* ── LIGHTBOX ── */
 .lightbox{display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:500;align-items:center;justify-content:center;cursor:zoom-out}
@@ -2377,7 +2485,7 @@ th.xf-filtered .xf-fun{opacity:1;stroke:var(--accent)}
 <aside class="nav-sidebar" aria-label="Navegação principal">
   <div class="nav-brand">
     <span class="nav-brand-mark">PCM</span>
-    <span class="nav-brand-sub">v3.46 · V121</span>
+    <span class="nav-brand-sub">v3.47 · V122</span>
   </div>
 
   <nav class="nav-groups">
@@ -3933,6 +4041,22 @@ function escJs(v) {
     .replace(/\n/g, '\\n')
     .replace(/\r/g, '');
 }
+// ════════════════════════════════════════════════════════════════════════════
+// V122 (5) — TEXTO LIVRE DENTRO DE onclick="…": escJs SOZINHO NÃO BASTA.
+// escJs escapa \ ' \n — o suficiente para a string JS entre aspas simples.
+// Só que essa string mora dentro de um ATRIBUTO delimitado por aspas DUPLAS,
+// e a aspa dupla escJs não toca. Um nome de tarefa digitado no template como
+//   Trocar o "kit de reparo"
+// fecha o onclick no meio: o resto da linha vira atributo solto, o botão fica
+// morto e NADA aparece no console — o sintoma é "cliquei e não aconteceu
+// nada". Nome de tarefa, nome de cliente e Form_URL vêm da planilha, digitados
+// por gente, e são exatamente os campos onde isso acontece.
+// escHtml por cima devolve &quot;, que o parser HTML decodifica para " já
+// DENTRO da string JS — com a barra de escape do escJs preservada.
+// ⚠ A ORDEM importa: escJs primeiro (barra e aspa simples), escHtml depois.
+//   Invertido, o &amp; do escHtml levaria barra do escJs e sairia literal.
+// ════════════════════════════════════════════════════════════════════════════
+function escAttrJs(v) { return escHtml(escJs(v)); }
 
 // Normaliza referência para comparação: remove pontos, traços, espaços, uppercase
 function normalizeRef(ref) {
@@ -14413,11 +14537,35 @@ async function confirmarReabrirOS(btnEl) {
 }
 
 // ── Detalhe da OS ────────────────────────────────────────────────────────────
+// V122 (2) — o cabeçalho ganhou "🏷 Etiqueta": a reimpressão avulsa da plaqueta
+// SAIU de toda linha de Tarefas do Adm (onde competia com a ação da tarefa e,
+// sem rótulo, não dizia o que fazia) e veio para cá, que é onde se está quando
+// o assunto é a OS inteira. Mesma função _etqAbrir, nada renomeado.
+// ⚠ Comentário AQUI, fora do template literal do innerHTML: um acento grave
+//   dentro daquela string fecharia o literal no meio e derrubaria o arquivo.
 async function openOSDetail(osId) {
   const el = document.getElementById('viewOs');
   if (!el) return;
 
-  const os = _osList.find(o => o.id_os === osId);
+  let os = _osList.find(o => o.id_os === osId);
+  // ══════════════════════════════════════════════════════════════════════════
+  // V122 (6) — SESSÃO FRIA: "OS NÃO ENCONTRADA" NUMA OS QUE EXISTE.
+  // Quem chega aqui pelo link de outra tela (Tarefas do Adm, notificações) faz
+  // `showView('os'); openOSDetail(id)` — e `showView` dispara `renderOS()` SEM
+  // await. Se o adm ainda não tinha aberto Gestão de OSs nesta sessão,
+  // `_osList` está vazia neste instante e o find falha: a tela anuncia "OS não
+  // encontrada" para uma OS que está bem viva. Pior, este innerHTML remove o
+  // #osRibbonContent, então o renderOS que ainda está no ar volta e não acha
+  // onde pintar — a tela fica travada até o "← Voltar às OS".
+  // Agora, em vez de acusar, espera a lista chegar e tenta de novo.
+  // ⚠ Só quando o find falha: o caminho normal (lista já em memória) segue
+  //   síncrono, sem round-trip novo e sem piscar.
+  if (!os) {
+    el.innerHTML = `<div style="display:flex;align-items:center;justify-content:center;padding:40px">
+      <span style="color:var(--text-muted);font-size:13px">Carregando OS…</span></div>`;
+    try { await renderOS(); } catch (e) { console.warn('[openOSDetail] carga da lista falhou:', e.message); }
+    os = _osList.find(o => o.id_os === osId);
+  }
   if (!os) {
     el.innerHTML = `<div class="empty"><div class="empty-icon">⚠️</div>
       <div class="empty-title">OS não encontrada</div>
@@ -14437,6 +14585,8 @@ async function openOSDetail(osId) {
       </div>
       <div style="display:flex;gap:6px;flex-wrap:wrap">
         ${_reabrirOsElegivel(os) ? `<button class="btn btn-primary btn-sm" onclick="abrirReabrirOS('${osId.replace(/'/g,"\\'")}', this)" title="Devolve tarefas ao técnico para novo lançamento">${_reabrirOsEncerrada(os) ? '↩ Reabrir OS' : '↩ Reabrir tarefa'}</button>` : ''}
+        <button class="btn btn-secondary btn-sm" title="Gerar e imprimir a etiqueta de identificação desta OS (10,2 × 4 cm)"
+          onclick="_etqAbrir('${osId.replace(/'/g,"\\'")}', this)">🏷 Etiqueta</button>
         <button class="btn btn-secondary btn-sm" onclick="openModalOS('${osId.replace(/'/g,"\\'")}')">✏ Editar OS</button>
       </div>
     </div>
@@ -18290,17 +18440,53 @@ function _tadmDiagnosticoHtml() {
       Corrija em <b>Perfis</b> → editar o perfil → campo <i>onde este perfil
       executa</i> → <i>Administração</i>.`);
   } else {
+    // V122 (4) — `|| []` defensivo: o envelope sempre manda perfis_adm junto de
+    // perfis_adm_total, mas um total > 0 com a lista faltando derrubava o
+    // `.map` e, com ele, a TELA INTEIRA — a caixa de entrada do adm sumia por
+    // causa da linha que existe só para explicar o roteamento.
     avisos.push(`Perfis marcados como 🏢 Administração:
-      <b>${d.perfis_adm.map(p => escHtml(p.nome)).join(', ')}</b>.`);
+      <b>${(d.perfis_adm || []).map(p => escHtml(p && p.nome)).join(', ') || '—'}</b>.`);
   }
 
+  // ════════════════════════════════════════════════════════════════════════
+  // V122 (3) — O DIAGNÓSTICO DEIXA DE MANDAR O ADM RODAR CÓDIGO.
+  // O texto anterior terminava em "rode a ação reconciliarExecutorPipeline
+  // com dry_run=false" — instrução de console de desenvolvedor, escrita numa
+  // tela de escritório. Em 14/08/2026 eram 30 tarefas nessa condição e o
+  // aviso estava no ar havia dias sem que ninguém pudesse agir sobre ele.
+  // Agora tem botão. Ele SIMULA primeiro e só grava depois da confirmação,
+  // que é exatamente o contrato de `dry_run` do GAS.
+  // ⚠ A versão do GAS saiu da frase de propósito: estava escrito "v92" com o
+  //   v97 no ar. Número de versão em texto de tela envelhece sozinho e vira
+  //   mentira; o que o adm precisa saber é o comportamento, não o build.
+  // ════════════════════════════════════════════════════════════════════════
   if ((d.carimbos_divergentes || 0) > 0) {
     avisos.push(`${d.carimbos_divergentes} tarefa(s) abertas têm o carimbo
       <code>Executor</code> da planilha <b>contradizendo</b> o perfil de hoje —
-      sinal de OS instanciada antes de o perfil virar Administração. O GAS v92
-      já as trata pelo perfil (por isso elas aparecem na lista acima), mas a
-      planilha segue com o valor velho. Para realinhar, rode a ação
-      <code>reconciliarExecutorPipeline</code> com <code>dry_run=false</code>.`);
+      sinal de OS instanciada antes de o perfil virar Administração. Esta tela
+      já as trata pelo perfil (por isso elas aparecem na lista abaixo), mas a
+      planilha segue com o valor velho.
+      <div style="margin-top:6px"><button class="btn btn-secondary btn-sm"
+        title="Simula a correção, mostra o que seria alterado e só grava depois da sua confirmação"
+        onclick="_tadmReconciliarExecutor(this)">🔧 Realinhar carimbos</button></div>`);
+  }
+
+  // V122 (3) — campo que o GAS v98 já devolvia e esta tela ignorava. É o
+  // caso em que a lista vem vazia COM perfil marcado como Administração: duas
+  // linhas do mesmo perfil em CAT_PERFIS discordando sobre onde ele executa.
+  // Sem esta frase, o sintoma não tem explicação possível pela tela.
+  // ⚠ Array.isArray, não `|| []`: um campo que chegue como STRING passa no
+  //   `.length` e morre no `.map` — e este `.map` roda dentro da função que
+  //   pinta a tela inteira, então o estouro apagaria a caixa de entrada do adm.
+  const _conf = Array.isArray(d.perfis_conflitantes) ? d.perfis_conflitantes : [];
+  if (_conf.length) {
+    avisos.push(`Perfil(is) com <b>mais de uma linha</b> em CAT_PERFIS,
+      discordando sobre onde executam:
+      ${_conf.map(c => `<b>${escHtml(c && c.chave)}</b>
+        (${escHtml((c && c.linhas) || '?')} linhas, valendo
+        <code>${escHtml((c && c.vencedor) || '?')}</code>)`).join(', ')}.
+      Enquanto a duplicidade existir, o roteamento vale o desempate — não a
+      configuração. Apague a linha repetida em <b>Perfis</b>.`);
   }
 
   if ((d.perfis_orfaos || []).length) {
@@ -18383,13 +18569,13 @@ function _renderTarefasAdmUI() {
       try { opts = JSON.parse(t.opcoes_json || '[]') || []; } catch (e) { opts = []; }
       acao = opts.length
         ? opts.map(o => `<button class="btn btn-secondary btn-sm"
-              onclick="_tadmDecidir('${escJs(t.os_id)}','${escJs(t.tarefa_id)}','${escJs(o.valor)}',this)">${escHtml(o.label || o.valor)}</button>`).join(' ')
+              onclick="_tadmDecidir('${escAttrJs(t.os_id)}','${escAttrJs(t.tarefa_id)}','${escAttrJs(o.valor)}',this)">${escHtml(o.label || o.valor)}</button>`).join(' ')
         : '<span style="color:var(--text-muted);font-size:12px">Sem opções no template</span>';
     } else {
       // V116 — tarefa COM formulário: concluir sem abrir o form vira ato
       // consciente, não o caminho de menor esforço. Ver `_tadmConcluir`.
       acao = `<button class="btn btn-primary btn-sm"
-        onclick="_tadmConcluir('${escJs(t.os_id)}','${escJs(t.tarefa_id)}','${escJs(t.nome)}',this,${_temForm ? 'true' : 'false'})">✓ Marcar concluído</button>`;
+        onclick="_tadmConcluir('${escAttrJs(t.os_id)}','${escAttrJs(t.tarefa_id)}','${escAttrJs(t.nome)}',this,${_temForm ? 'true' : 'false'})">✓ Marcar concluído</button>`;
     }
     // ══════════════════════════════════════════════════════════════════════
     // V116 — "📄 Abrir formulário". Vem ANTES da ação principal porque, numa
@@ -18402,21 +18588,35 @@ function _renderTarefasAdmUI() {
     //   filtro/busca em que ele estava.
     // ══════════════════════════════════════════════════════════════════════
     const formBtn = (_temForm && !trav)
-      ? `<button class="btn btn-secondary btn-sm" style="margin-right:6px"
+      ? `<button class="btn btn-secondary btn-sm"
            title="Abrir o formulário desta tarefa em uma nova aba, já vinculado a esta OS"
-           onclick="_tadmAbrirForm('${escJs(t.os_id)}','${escJs(t.tarefa_id)}','${escJs(String(t.numero_os ?? ''))}','${escJs(t.cliente || '')}','${escJs(_formUrl)}')">📄 Abrir formulário</button>`
+           onclick="_tadmAbrirForm('${escAttrJs(t.os_id)}','${escAttrJs(t.tarefa_id)}','${escAttrJs(String(t.numero_os ?? ''))}','${escAttrJs(t.cliente || '')}','${escAttrJs(_formUrl)}')">📄 Abrir formulário</button>`
       : '';
     const relogio = String(t.relogio || 'interno') === 'externo'
       ? ' <span class="gos-chip" title="Espera nesta tarefa não conta no prazo interno">🤝 relógio externo</span>' : '';
-    // V112 — etiqueta de identificação física. Aparece em TODA linha (reimprimir
-    // plaqueta gasta é rotina), mas só ganha rótulo na tarefa que a exige, para
-    // não competir com a ação principal das outras.
+    // ══════════════════════════════════════════════════════════════════════
+    // V122 (2) — A ETIQUETA SÓ APARECE NA TAREFA QUE É A ETIQUETA.
+    // A V112 desenhou este botão em TODA linha, com o argumento de que
+    // reimprimir plaqueta gasta é rotina; nas linhas que não são de plaqueta
+    // ele saía SEM rótulo, só o 🏷. O resultado no uso real (print do
+    // Fernando, 14/08/2026): a linha "Busca de referências de peças" da fase
+    // Orçamento exibia um ícone mudo, na mesma posição em que a linha de
+    // baixo exibia "🏷 Etiqueta" — e clicar nele abria o modal da plaqueta
+    // no meio de um orçamento. Ícone sem rótulo não explica o que faz; e a
+    // etiqueta não é ação de tarefa de orçamento.
+    // A reimpressão avulsa não se perdeu: ela subiu para o cabeçalho de
+    // Gestão de OSs → OS (ver `openOSDetail`), que é onde se vai quando o
+    // assunto é a OS e não uma tarefa dela.
+    // ⚠ Mantido o mesmo `_etqAbrir(os_id)` — nada renomeado, nada removido.
+    // ══════════════════════════════════════════════════════════════════════
     const _ehPlaqueta = /plaquet|etiquet|identifica/i.test(String(t.nome ?? ''));
-    const etqBtn = `<button class="btn btn-secondary btn-sm" style="margin-right:6px"
-        title="Gerar e imprimir a etiqueta de identificação (10,2 × 4 cm)"
-        onclick="_etqAbrir('${escJs(t.os_id)}',this)">🏷${_ehPlaqueta ? ' Etiqueta' : ''}</button>`;
+    const etqBtn = (_ehPlaqueta && !trav)
+      ? `<button class="btn btn-secondary btn-sm"
+          title="Gerar e imprimir a etiqueta de identificação (10,2 × 4 cm)"
+          onclick="_etqAbrir('${escAttrJs(t.os_id)}',this)">🏷 Etiqueta</button>`
+      : '';
     return `<tr>
-      <td><a href="#" onclick="event.preventDefault();showView('os');openOSDetail('${escJs(t.os_id)}')"
+      <td><a href="#" onclick="event.preventDefault();showView('os');openOSDetail('${escAttrJs(t.os_id)}')"
              style="color:var(--accent);font-weight:600">OS ${escHtml(String(t.numero_os ?? t.os_id))}</a>
           <div style="color:var(--text-muted);font-size:12px">${escHtml(t.cliente)}</div></td>
       <td>${escHtml(t.fase || '—')}</td>
@@ -18424,7 +18624,7 @@ function _renderTarefasAdmUI() {
       <td>${tipoIcon}</td>
       <td style="${atras ? 'color:#dc2626;font-weight:700' : ''}">${dias === null ? '—' : (dias + 'd')}</td>
       <td>${t.data_prevista ? escHtml(String(t.data_prevista).slice(0, 10)) : '—'}</td>
-      <td style="white-space:nowrap">${etqBtn}${formBtn}${acao}</td>
+      <td><div class="tadm-acoes">${etqBtn}${formBtn}${acao}</div></td>
     </tr>`;
   }).join('');
 
@@ -18531,6 +18731,55 @@ async function _tadmDecidir(osId, tarefaId, valor, btnEl) {
       await renderTarefasAdm();
     } catch (e) { toast('Erro: ' + e.message, 'error'); }
   });
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+// V122 (3) — REALINHAR OS CARIMBOS `Executor`, PELA TELA.
+//
+// Dois passos, sempre nesta ordem, porque é o contrato de `dry_run` do GAS:
+//   1. dry_run=true  → não grava nada, devolve quantas linhas mudariam;
+//   2. confirm()     → e só então dry_run=false.
+// Pular o passo 1 seria oferecer ao adm um botão que reescreve a planilha sem
+// ele saber o tamanho do que pediu.
+//
+// ⚠ `orfaos_total` NÃO é erro e não bloqueia: são tarefas cujo
+//   Perfil_Responsavel não existe mais em CAT_PERFIS. O GAS pula essas de
+//   propósito (sem perfil não há autoridade para reescrever o carimbo) — mas
+//   quem clicou precisa saber que sobraram, senão o número "0 realinhadas" com
+//   o aviso ainda na tela vira mistério.
+// ⚠ Nada de `_semDuploEnvio_` aqui: `_comLoadingBtn_` já desabilita o botão
+//   durante o round-trip, e entre os dois passos existe um confirm() bloqueante.
+// ══════════════════════════════════════════════════════════════════════════════
+async function _tadmReconciliarExecutor(btnEl) {
+  let gravou = false;   // V122 — ver o `finally`: repintar NÃO pode virar "erro ao realinhar"
+  await _comLoadingBtn_(btnEl, async () => {
+    try {
+      // ⚠ await DENTRO do try: "✓ mentiroso" sem await já apareceu 3× neste projeto.
+      const sim = await syncToGS('reconciliarExecutorPipeline', { dry_run: 'true' });
+      const n = (sim && sim.tarefas_carimbadas) || 0;
+      const orf = (sim && sim.orfaos_total) || 0;
+      if (!n) {
+        toast(orf
+          ? 'Nada a realinhar automaticamente. ' + orf + ' tarefa(s) têm Perfil Responsável que não existe mais em Perfis — corrija o perfil primeiro.'
+          : 'Nada a realinhar: os carimbos já estão de acordo com os Perfis.', 'warn');
+        return;
+      }
+      if (!confirm(
+          'Realinhar o carimbo Executor de ' + n + ' tarefa(s), em ' +
+          ((sim && sim.os_afetadas) || '?') + ' OS?\n\n' +
+          'Só tarefas ABERTAS de OSs ativas são tocadas — histórico concluído não muda.\n' +
+          (orf ? '\n' + orf + ' tarefa(s) NÃO serão tocadas: o Perfil Responsável delas não existe mais em Perfis.\n' : '') +
+          '\nRecomendado duplicar a aba PIPELINE_TAREFAS antes.')) return;
+      const r = await syncToGS('reconciliarExecutorPipeline', { dry_run: 'false' });
+      gravou = true;
+      toast(((r && r.tarefas_carimbadas) || 0) + ' tarefa(s) realinhada(s).', 'success');
+    } catch (e) { toast('Erro ao realinhar: ' + e.message, 'error'); }
+  });
+  // ⚠ FORA do try, e depois do _comLoadingBtn_. Se a repintura falhasse dentro
+  //   do try, o adm veria "N tarefa(s) realinhada(s)" seguido de "Erro ao
+  //   realinhar" — sem ter como saber se a planilha foi ou não escrita. A
+  //   gravação e o desenho da lista são coisas diferentes e falham separado.
+  if (gravou) { try { await renderTarefasAdm(); } catch (e) { console.warn('[reconciliar] repintura falhou:', e.message); } }
 }
 
 // O pipeline daquela OS pode estar em cache — invalida para a próxima abertura
