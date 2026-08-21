@@ -1,4 +1,70 @@
 <!--
+  PCM V127 — 21/08/2026 — FECHAR OS PELA TELA, VER QUEM ESTÁ EXECUTANDO, E A
+  PEÇA QUE CHEGA SOZINHA. Par: GAS v107 + PCF V91 + NEWFILE_P8_SUBSISTEMAS.sql.
+  100% ADITIVO: nenhuma função, id, data-view ou chave de payload renomeada.
+
+  1  FECHAR OS PELA TELA ERA IMPOSSÍVEL — e ninguém tinha percebido.
+     `saveOS` valida ANTES de gravar: concluir OS de tipo ≠ PREVENTIVA exige
+     `observacao_fechamento` (guarda FECHAMENTO_INCOMPLETO, GAS ~L8330). O modal
+     oferecia "Concluída" no select, NÃO tinha o campo e NÃO o enviava. O GAS
+     recusava, o `syncToGS` lançava, e o erro cru falava de um campo invisível.
+     Resultado: a única forma de fechar OS na mão era editar a planilha — sem
+     evento em LOG_OPERACIONAL. Agora o campo aparece quando o status ENCERRA,
+     o hint muda por tipo (preventiva aceita visita vinculada no lugar), e o
+     erro FECHAMENTO_INCOMPLETO revela e foca o campo em vez de repetir o texto.
+     ⚠ A chave já era aceita pelo GAS desde sempre — não houve mudança de back.
+
+  2  O TEMPLATE QUE NUNCA FECHA A OS.
+     Só existe UM caminho de fechamento automático: tarefa com
+     `Acao_Terminal='fechar_os'` → `_finalizarAtendimentoOS_`. Template sem
+     nenhuma gera OS que chega a 100% e fica `em_andamento` PARA SEMPRE,
+     entulhando a lista do PCF — era o caso das OS presas em 21/08.
+     saveTemplateEditor agora avisa (não trava: camada empilhada termina
+     legitimamente em `fechar_pipeline`).
+
+  3  O KANBAN NÃO DIZIA QUEM ESTAVA EM QUAL TAREFA.
+     `tecnicos` (v62) trazia só NOMES: "👤 João, Pedro", sem dizer em que cada
+     um está. O card agora lê `em_execucao` (GAS v107) e mostra
+     "🔧 João — Desmontagem".
+     ⚠ O servidor NUNCA permitiu dupla assunção: `assumirTarefa` é atômica sob
+       LockService e devolve status:'locked'. O que faltava era a tela AVISAR
+       antes, em vez de o técnico descobrir no erro.
+     ⚠ Zero requisição nova: o campo viaja no envelope que a tela já pede.
+
+  4  A MÁQUINA SEM PLACA E O `NS001`.
+     Série inventada é pior que série ausente: parece de fábrica no laudo, e o
+     dia em que alguém repetir "NS001" no mesmo modelo, `sameMachine` FUNDE as
+     duas máquinas numa linha só, em silêncio. Botão "Sem número de série" gera
+     `PRP-SN-<AAMMDD>-<hex>` — prefixo reservado, único por construção,
+     distinguível de série real por qualquer consulta futura.
+
+  5  SUBSISTEMA AVULSO (par do GAS v107).
+     Modal de balcão aberto DE DENTRO da abertura da OS, com o cliente
+     congelado; catálogo com `<option value="">` (a H2 da PGP-2026-0039 não se
+     repete aqui); dedupe por série dentro do mesmo Sub_Lib_ID com opção de
+     REUSAR o registro — é onde mora o ganho de histórico; etiqueta
+     `PRP-SUB-…` gerada quando não há série nem TAG; máquina-mãe OPCIONAL, com
+     o aviso explícito de não inventar uma.
+     Seletor da OS dividido em Máquinas / Subsistemas. Contadores do parque
+     separados (senão "Máquinas PGP" incha sem explicação).
+     ⚠ `_osMachineLabel` continua TEXTO PURO (é usada dentro de escHtml em
+       _renderOSLinkedMachinesDetail); o selo estilizado vive em
+       `_osMachineLabelHtml`.
+
+  6  CUSTÓDIA — fluxo híbrido (decisão do Fernando, 21/08).
+     Ao concluir a OS, o modal pergunta o que JÁ SAIU com o cliente; o que fica
+     desmarcado continua na oficina. O botão manual de baixa vive na aba
+     Tarefas do Adm, para o dia da retirada — que quase nunca coincide com o
+     fechamento da OS. Sem caminho de baixa a lista "o que está na oficina" só
+     cresce e em três meses ninguém confia nela.
+     ⚠ `getItensNaOficina` é chamada SEPARADA e não-bloqueante: com GAS v106 no
+       ar a seção some e a tela fica idêntica à V126.
+
+  Bancada: node --check nos 5 blocos <script> reais (o "bloco 0" das extrações
+  é texto dentro do comentário de changelog — falso positivo que já existia na
+  V126 intocada).
+-->
+<!--
   PCM V103 — 31/07/2026 — TESTE SOFT GERAL (pré-migração Supabase/React). Par: PCF V75.
     Varredura de bugs LEVES de UX no sistema inteiro (14 views percorridas, 173 botões
     clicados, 21 modais auditados em Chromium headless). 10 correções, todas ADITIVAS —
@@ -3291,6 +3357,23 @@ th.xf-filtered .xf-fun{opacity:1;stroke:var(--accent)}
       <div class="form-group">
         <label class="form-label">Número de Série</label>
         <input class="form-input" id="mcSerial" placeholder="ex: 41805" oninput="checkMachineDuplicateCandidate()">
+        <!-- ══ V127 · A MÁQUINA SEM PLACA ═══════════════════════════════════
+             Chegam máquinas sem série legível, e vão continuar chegando. O que
+             se fazia era inventar ("NS001") — e isso é pior que não ter:
+             1. parece série de fábrica e sai assim no laudo do cliente;
+             2. `sameMachine` casa por série+marca+modelo, então o dia em que
+                alguém repetir "NS001" no mesmo modelo, `saveMachine` FUNDE as
+                duas máquinas numa linha só, em silêncio;
+             3. `machineKey` embute a série — série falsa, chave falsa.
+             O prefixo reservado PRP-SN- resolve os três: é único por
+             construção, é reconhecível como interno (o laudo pode dizer "série
+             interna Proper") e código futuro consegue distingui-lo de série
+             de fábrica. ⚠ Gerado, nunca digitado. -->
+        <div style="display:flex;align-items:center;gap:8px;margin-top:5px;flex-wrap:wrap">
+          <button type="button" class="btn btn-secondary btn-sm" onclick="_v127GerarSerieInterna()">
+            🏷 Sem número de série</button>
+          <span id="mcSerialInternaHint" style="font-size:11px;color:var(--text-muted)"></span>
+        </div>
       </div>
       <div class="form-group">
         <label class="form-label">Ano Fabricação</label>
@@ -3361,6 +3444,73 @@ th.xf-filtered .xf-fun{opacity:1;stroke:var(--accent)}
     <div class="modal-footer">
       <button class="btn btn-secondary" onclick="closeModal('modalMachine')">Cancelar</button>
       <button class="btn btn-primary" onclick="_semDuploEnvio_(this, saveMachine)">Salvar máquina</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ V127 · MODAL SUBSISTEMA AVULSO ══════════════════════════════════════
+     Cadastro de BALCÃO: a peça está na mão do adm agora. Por isso é enxuto e
+     abre DE DENTRO do fluxo de abertura da OS, com o cliente já congelado.
+     ⚠ O cliente NÃO é editável aqui, de propósito: ele vem do modal da OS. Um
+       segundo campo de cliente seria a chance de o item nascer com dono
+       diferente do da OS — e `_marcarMaquinaAtendidaOS_` (guarda v59) REJEITA
+       em silêncio o vínculo quando os dois divergem, no campo, dias depois. -->
+<div class="overlay" id="modalSubsistemaAvulso">
+  <div class="modal" style="width:560px">
+    <div class="modal-title">⚙ Subsistema avulso</div>
+    <div class="modal-body">
+      <div style="font-size:11.5px;color:var(--text-muted);background:var(--bg-alt);border-radius:8px;padding:8px 10px;margin-bottom:12px">
+        Peça que chegou <b>solta</b> na oficina, sem a máquina. Ela passa a existir no parque do
+        cliente e guarda histórico entre visitas.
+      </div>
+      <div class="form-row">
+        <label class="form-label">Cliente</label>
+        <input class="form-input" id="subavCliente" readonly style="background:var(--bg-alt);color:var(--text-muted)">
+      </div>
+      <div class="form-row" style="margin-top:12px">
+        <label class="form-label">Subsistema (catálogo) *</label>
+        <select class="form-select" id="subavSubLib" onchange="_v127SubavChecarDup()"></select>
+        <div style="font-size:11px;color:var(--text-muted);margin-top:4px">
+          Não está na lista?
+          <a href="#" onclick="closeModal('modalSubsistemaAvulso');switchTab('subs');showView('catalog');return false">cadastre no catálogo</a>
+          — o cadastro do exemplar continua daqui.
+        </div>
+      </div>
+      <div class="form-row" style="margin-top:12px">
+        <label class="form-label">Número de série <span style="font-weight:400;color:var(--text-muted)">se houver</span></label>
+        <input class="form-input" id="subavSerie" placeholder="ex: 8891-B" oninput="_v127SubavChecarDup()">
+        <div id="subavDupAviso" style="display:none;font-size:11.5px;margin-top:6px;padding:8px 10px;border-radius:8px;background:var(--orange-light,#fff7ed);border:1px solid var(--orange,#f59e0b);color:#9a3412"></div>
+      </div>
+      <div class="form-row" style="margin-top:12px">
+        <label class="form-label">Etiqueta / TAG</label>
+        <input class="form-input" id="subavTag" placeholder="identificação física colada na peça">
+        <div style="display:flex;align-items:center;gap:8px;margin-top:5px;flex-wrap:wrap">
+          <button type="button" class="btn btn-secondary btn-sm" onclick="_v127SubavGerarEtiqueta()">🏷 Gerar etiqueta</button>
+          <span style="font-size:11px;color:var(--text-muted)">sem série, a etiqueta é a única identidade física</span>
+        </div>
+      </div>
+      <div class="form-row" style="margin-top:12px">
+        <label class="form-label">Máquina-mãe <span style="font-weight:400;color:var(--text-muted)">opcional</span></label>
+        <select class="form-select" id="subavPai"></select>
+        <div style="font-size:11px;color:var(--text-muted);margin-top:4px">
+          Deixe em branco se a máquina não está cadastrada — <b>não invente uma</b>.
+          Dá para vincular depois, sem recadastrar nada.
+        </div>
+      </div>
+      <div class="form-row" style="margin-top:12px">
+        <label class="form-label">Observações</label>
+        <textarea class="form-input" id="subavObs" rows="2"
+          placeholder="Estado em que chegou, quem entregou, peculiaridades…" style="resize:vertical"></textarea>
+      </div>
+      <label style="display:flex;gap:8px;align-items:center;margin-top:12px;font-size:12.5px">
+        <input type="checkbox" id="subavCustodia" checked>
+        <span>A peça está <b>em posse da oficina</b></span>
+      </label>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('modalSubsistemaAvulso')">Cancelar</button>
+      <button class="btn btn-primary" id="subavSalvarBtn"
+        onclick="_semDuploEnvio_(this, _v127SalvarSubsistemaAvulso)">Cadastrar e vincular à OS</button>
     </div>
   </div>
 </div>
@@ -11431,7 +11581,7 @@ function renderClients(){
         <div class="stat-lbl">Clientes cadastrados →</div>
       </div>
       <div class="stat-card" style="cursor:pointer" onclick="showView('machines')" title="Ver todas as máquinas">
-        <div class="stat-val">${db.machines.length}</div>
+        <div class="stat-val">${_v127ContaMaquinas()}</div>
         <div class="stat-lbl">Total de máquinas →</div>
       </div>
       <div class="stat-card no-action"><div class="stat-val">${comDrive}</div><div class="stat-lbl">Com pasta Drive</div></div>
@@ -11615,7 +11765,8 @@ function renderConfigStats(){
     <div class="stats-grid" style="margin-bottom:12px">
       <div class="stat-card"><div class="stat-val">${db.models.length}</div><div class="stat-lbl">Modelos no catálogo</div></div>
       <div class="stat-card"><div class="stat-val">${nParts}</div><div class="stat-lbl">Peças cadastradas</div></div>
-      <div class="stat-card"><div class="stat-val">${db.machines.length}</div><div class="stat-lbl">Máquinas PGP</div></div>
+      <div class="stat-card"><div class="stat-val">${_v127ContaMaquinas()}</div><div class="stat-lbl">Máquinas PGP</div></div>
+      ${_v127ContaSubsistemas() ? `<div class="stat-card"><div class="stat-val">${_v127ContaSubsistemas()}</div><div class="stat-lbl">Subsistemas</div></div>` : ''}
     </div>
 
     <div class="card">
@@ -12547,6 +12698,20 @@ async function syncFromGS({ silent = false } = {}){
         if(sm.type     || sm['Tipo_Equip']) eq.type    = sm.type     || sm['Tipo_Equip'] || eq.type    || '';
         if(sm.obsOp    || sm['Obs_Op'])     eq.obsOp   = sm.obsOp    || sm['Obs_Op']     || eq.obsOp   || '';
         eq.hpw      = parseInt(sm.hpw || sm['h/Semana']) || eq.hpw || 0;
+        // ── V127 (par do GAS v107) — subsistema avulso ─────────────────────
+        // ⚠ MESMA LIÇÃO DO V99 logo abaixo (o regime que nunca era mesclado):
+        //   campo que existe no servidor e não é copiado aqui simplesmente
+        //   NUNCA chega ao cache local, e a tela abre sem ele para sempre.
+        // ⚠ `custodia` é a exceção que precisa aceitar VAZIO: quando a peça sai
+        //   da oficina o servidor manda '', e um `||` preservaria 'OFICINA' no
+        //   cache — o item nunca sairia da lista da oficina na tela.
+        if (sm.itemTipo !== undefined || sm['Item_Tipo'] !== undefined)
+          eq.itemTipo = String(sm.itemTipo || sm['Item_Tipo'] || '').toUpperCase();
+        if (sm.paiId    !== undefined || sm['Pai_ID']     !== undefined) eq.paiId    = sm.paiId    || sm['Pai_ID']     || '';
+        if (sm.subLibId !== undefined || sm['Sub_Lib_ID'] !== undefined) eq.subLibId = sm.subLibId || sm['Sub_Lib_ID'] || '';
+        if (sm.custodia !== undefined || sm['Custodia']   !== undefined)
+          eq.custodia = String(sm.custodia || sm['Custodia'] || '').toUpperCase();  // '' é valor
+        if (sm.custodiaDesde !== undefined) eq.custodiaDesde = sm.custodiaDesde || '';
         // ═══════════════════════════════════════════════════════════════════
         // V99 (30/07/2026) — O REGIME NUNCA ERA MESCLADO AQUI.
         // Este bloco mescla TODOS os campos da máquina vindos da planilha
@@ -12627,6 +12792,12 @@ async function syncFromGS({ silent = false } = {}){
           hourTotal: newHour,
           hpw:       parseInt(sm.hpw || sm['h/Semana']) || 0,
           obs:       sm.obs || sm['Observações'] || '',
+          // V127 (par do GAS v107) — idem ao merge acima.
+          itemTipo:  String(sm.itemTipo || sm['Item_Tipo'] || '').toUpperCase(),
+          paiId:     sm.paiId    || sm['Pai_ID']     || '',
+          subLibId:  sm.subLibId || sm['Sub_Lib_ID'] || '',
+          custodia:  String(sm.custodia || sm['Custodia'] || '').toUpperCase(),
+          custodiaDesde: sm.custodiaDesde || '',
           driveLink:'',
           photos:[],
           parts: sm.parts || {},
@@ -14141,7 +14312,20 @@ function _gosOficinaCard(c){
     ? `${c.progresso.concluidas} de ${c.progresso.total}` : '';
   const pct = (c.progresso && c.progresso.total)
     ? Math.round((c.progresso.concluidas / c.progresso.total) * 100) : 0;
-  const tecs = (c.tecnicos || []).length ? `👤 ${escHtml((c.tecnicos || []).join(', '))}` : '';
+  // ── V127 — QUEM ESTÁ EM QUAL TAREFA, AGORA ────────────────────────────────
+  // O `tecnicos` (v62) só trazia NOMES: o card dizia "👤 João, Pedro" sem dizer
+  // em que cada um está. Para o adm isso não responde a pergunta que ele faz
+  // olhando o quadro — "essa tarefa já tem dono?" — e para o técnico que olha
+  // por cima do ombro, muito menos.
+  // ⚠ O servidor NUNCA permitiu dupla assunção: `assumirTarefa` é atômica sob
+  //   LockService e devolve status:'locked'. O que faltava era a TELA AVISAR
+  //   antes, em vez de o técnico descobrir no erro.
+  // ⚠ `em_execucao` vem do GAS v107. Com GAS v106 no ar a chave não existe e o
+  //   card cai no formato da V126 — velho, não errado.
+  const _exec = Array.isArray(c.em_execucao) ? c.em_execucao : null;
+  const tecs = (_exec && _exec.length)
+    ? _exec.map(x => `🔧 ${escHtml(x.por)}<span style="opacity:.75"> — ${escHtml(x.nome || 'tarefa')}</span>`).join(' &nbsp;·&nbsp; ')
+    : ((c.tecnicos || []).length ? `👤 ${escHtml((c.tecnicos || []).join(', '))}` : '');
   // ── V113 (K1/K2) — SEMÁFORO E CHIPS DE PRAZO ─────────────────────────────
   // Tudo abaixo vem do envelope do GAS v91; o PCM não recalcula NADA. Se o GAS
   // ainda for o v90 (deploy fora de ordem), `_gosTemV91` é falso e o card volta
@@ -14382,6 +14566,42 @@ function _populateOSUsuarioSelect(selectedId) {
 }
 
 
+// ══════════════════════════════════════════════════════════════════════════════
+// V127 — SÉRIE INTERNA para máquina sem placa legível.
+// Formato: PRP-SN-<AAMMDD>-<4 hex>. O prefixo é RESERVADO — nada de fábrica
+// começa assim, então dá para separar "não tem série" de "tem série X" em
+// qualquer consulta futura, o que `NS001` nunca permitiria.
+// ⚠ Ela só vale se for COLADA na máquina. Sem a etiqueta física, o próximo
+//   técnico não tem como chegar ao mesmo registro e cadastra outra.
+// ══════════════════════════════════════════════════════════════════════════════
+function _v127GerarSerieInterna() {
+  const el = document.getElementById('mcSerial');
+  if (!el) return;
+  const atual = String(el.value || '').trim();
+  if (atual && !/^PRP-SN-/i.test(atual)) {
+    if (!confirm('Já existe um número de série preenchido ("' + atual + '").\n\n' +
+                 'Substituir por uma série interna? Use isto só se o número atual for inventado.')) return;
+  }
+  const d = new Date();
+  const aammdd = String(d.getFullYear()).slice(2) +
+                 String(d.getMonth() + 1).padStart(2, '0') +
+                 String(d.getDate()).padStart(2, '0');
+  const hex = Math.floor(Math.random() * 0x10000).toString(16).toUpperCase().padStart(4, '0');
+  el.value = 'PRP-SN-' + aammdd + '-' + hex;
+  const hint = document.getElementById('mcSerialInternaHint');
+  if (hint) hint.textContent = '⚠ Imprima e cole esta identificação na máquina antes que ela saia da oficina.';
+  try { checkMachineDuplicateCandidate(); } catch(_) {}
+}
+
+// ── V127 — o parque não pode inchar sem explicação ─────────────────────────
+// Subsistema avulso é linha em MAQUINAS (decisão do GAS v107). Sem separar,
+// "Máquinas PGP: 91" vira 118 de um mês para o outro e ninguém sabe por quê.
+function _v127EhSubsistema(m) {
+  return String(m?.itemTipo || m?.item_tipo || '').toUpperCase() === 'SUBSISTEMA';
+}
+function _v127ContaMaquinas()    { return (db.machines || []).filter(m => !_v127EhSubsistema(m)).length; }
+function _v127ContaSubsistemas() { return (db.machines || []).filter(_v127EhSubsistema).length; }
+
 let _osMachineSelection = new Set();
 
 function _osMachineId(m) {
@@ -14389,9 +14609,32 @@ function _osMachineId(m) {
 }
 
 function _osMachineLabel(m) {
-  const marcaModelo = [m?.brand, m?.model].filter(Boolean).join(' ').trim() || 'Máquina sem modelo';
+  // V127 — subsistema avulso caía em "Máquina sem modelo" (ele herda marca/modelo
+  // do catálogo, mas nem sempre os dois) e ficava indistinguível de máquina.
+  const ehSub = String(m?.itemTipo || m?.item_tipo || '').toUpperCase() === 'SUBSISTEMA';
+  const marcaModelo = [m?.brand, m?.model].filter(Boolean).join(' ').trim() ||
+                      (ehSub ? 'Subsistema sem modelo' : 'Máquina sem modelo');
   const serieTag = String(m?.serial || m?.tag || '').trim() || 'sem série';
-  return `${marcaModelo} — ${serieTag}`;
+  const selo = ehSub
+    ? ' · subsistema' + (String(m?.custodia || '').toUpperCase() === 'OFICINA' ? ' (na oficina)' : '')
+    : '';
+  return `${marcaModelo} — ${serieTag}${selo}`;
+}
+
+// ⚠ V127 — SEPARADA de propósito. `_osMachineLabel` é TEXTO PURO e continua
+//    sendo usada dentro de escHtml() por _renderOSLinkedMachinesDetail; devolver
+//    HTML dali faria a marcação aparecer literal na tela. Quem quer o selo
+//    estilizado chama esta.
+function _osMachineLabelHtml(m) {
+  const ehSub = String(m?.itemTipo || m?.item_tipo || '').toUpperCase() === 'SUBSISTEMA';
+  const marcaModelo = [m?.brand, m?.model].filter(Boolean).join(' ').trim() ||
+                      (ehSub ? 'Subsistema sem modelo' : 'Máquina sem modelo');
+  const serieTag = String(m?.serial || m?.tag || '').trim() || 'sem série';
+  const selo = ehSub
+    ? ` <span style="font-size:10px;font-weight:700;color:var(--blue-mid)">SUBSISTEMA${
+        String(m?.custodia || '').toUpperCase() === 'OFICINA' ? ' · na oficina' : ''}</span>`
+    : '';
+  return `${escHtml(marcaModelo)} — ${escHtml(serieTag)}${selo}`;
 }
 
 function _getOSClientMachineOptions() {
@@ -14432,14 +14675,174 @@ function _renderOSMachineSelector(selectedIds) {
     wrap.innerHTML = '<div style="font-size:12px;color:var(--text-muted);padding:8px 0">Nenhuma máquina cadastrada para este cliente.</div>';
     return;
   }
-  wrap.innerHTML = machines.map(m => {
+  // ── V127 — duas seções: MÁQUINAS e SUBSISTEMAS. Misturados, o adm não
+  //    distingue o compressor da unidade compressora dele na hora de marcar.
+  const _ehSub = m => String(m?.itemTipo || m?.item_tipo || '').toUpperCase() === 'SUBSISTEMA';
+  const _linha = m => {
     const id = _osMachineId(m);
     const checked = _osMachineSelection.has(id) ? 'checked' : '';
     return `<label style="display:flex;align-items:flex-start;gap:8px;padding:7px 8px;border:1px solid var(--border);border-radius:8px;margin-bottom:6px;background:var(--surface)">
       <input type="checkbox" class="os-machine-check" value="${escHtml(id)}" ${checked} onchange="_osMachineSelection=this.checked?_osMachineSelection.add(this.value)||_osMachineSelection:_osMachineSelection.delete(this.value)||_osMachineSelection">
-      <span style="font-size:12px;color:var(--text)">${escHtml(_osMachineLabel(m))}</span>
+      <span style="font-size:12px;color:var(--text)">${_osMachineLabelHtml(m)}</span>
     </label>`;
-  }).join('');
+  };
+  const _sec = t => `<div style="font-size:10px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.05em;margin:2px 0 5px">${t}</div>`;
+  const maqs = machines.filter(m => !_ehSub(m));
+  const subs = machines.filter(_ehSub);
+  wrap.innerHTML =
+    (maqs.length ? _sec('Máquinas') + maqs.map(_linha).join('') : '') +
+    (subs.length ? _sec('Subsistemas') + subs.map(_linha).join('') : '') +
+    _v127BotaoSubsistemaAvulso();
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+// V127 — CADASTRO DO EXEMPLAR DE SUBSISTEMA (par do GAS v107)
+// `SUBSISTEMAS_LIB` é CATÁLOGO — o modelo da peça, sem dono e sem série. O que
+// faltava era o EXEMPLAR: aquela unidade compressora, daquele cliente, que está
+// na bancada agora. Ele vive em MAQUINAS (ver HEADERS.MAQUINAS no GAS v107).
+// ⚠ Série e etiqueta são do EXEMPLAR e nunca do catálogo. Gravar série no
+//   catálogo transformaria "que peça é essa" em "qual peça é essa" e o modelo
+//   deixaria de ser reutilizável.
+// ══════════════════════════════════════════════════════════════════════════════
+function _v127AbrirSubsistemaAvulso() {
+  const cliente   = document.getElementById('osCliente')?.value?.trim() || '';
+  const clienteId = document.getElementById('osClienteId')?.value?.trim() || '';
+  if (!cliente || !clienteId) {
+    toast('Selecione o cliente da OS antes de cadastrar um subsistema.', 'error');
+    return;
+  }
+  document.getElementById('subavCliente').value = cliente;
+  document.getElementById('subavSerie').value = '';
+  document.getElementById('subavTag').value = '';
+  document.getElementById('subavObs').value = '';
+  document.getElementById('subavCustodia').checked = true;
+  document.getElementById('subavDupAviso').style.display = 'none';
+
+  const libs = (db.subsistemasLib || []).slice()
+    .sort((a, b) => String(a.name || '').localeCompare(String(b.name || '')));
+  // ⚠ `<option value="">` PRIMEIRO, sempre. Sem placeholder o browser
+  //   pré-seleciona o índice 0 e o adm cadastra o primeiro item da lista sem
+  //   ter escolhido nada — é literalmente a H2 do diagnóstico da PGP-2026-0039.
+  document.getElementById('subavSubLib').innerHTML =
+    '<option value="">Selecione o subsistema *</option>' +
+    libs.map(l => `<option value="${escHtml(l.id)}">${escHtml(l.name)}${
+      l.category ? ' · ' + escHtml(l.category) : ''}</option>`).join('');
+
+  const ck = clientKey(cliente);
+  const maqs = (db.machines || []).filter(m =>
+    clientKey(m.client || '') === ck &&
+    String(m.itemTipo || '').toUpperCase() !== 'SUBSISTEMA');
+  document.getElementById('subavPai').innerHTML =
+    '<option value="">— sem máquina-mãe cadastrada —</option>' +
+    maqs.map(m => `<option value="${escHtml(String(m.id))}">${escHtml(_osMachineLabel(m))}</option>`).join('');
+
+  openModal('modalSubsistemaAvulso');
+}
+
+// Etiqueta física: mesma lógica da série interna de máquina (prefixo reservado,
+// gerado e nunca digitado), com prefixo próprio para separar as duas classes.
+function _v127SubavGerarEtiqueta() {
+  const d = new Date();
+  const aammdd = String(d.getFullYear()).slice(2) +
+                 String(d.getMonth() + 1).padStart(2, '0') +
+                 String(d.getDate()).padStart(2, '0');
+  const hex = Math.floor(Math.random() * 0x10000).toString(16).toUpperCase().padStart(4, '0');
+  document.getElementById('subavTag').value = 'PRP-SUB-' + aammdd + '-' + hex;
+  toast('Etiqueta gerada — imprima e cole na peça antes que ela saia da bancada.', 'success');
+}
+
+// ── DEDUPE POR SÉRIE — é aqui que mora o ganho de histórico ─────────────────
+// Sem isto o recurso vira um campo de texto mais caro: a mesma peça voltando
+// em seis meses nasceria como registro novo e o histórico anterior ficaria
+// órfão. ⚠ Compara série DENTRO do mesmo Sub_Lib_ID — série repetida entre
+// fabricantes diferentes é comum e não é duplicata.
+function _v127SubavChecarDup() {
+  const av = document.getElementById('subavDupAviso');
+  const serie = String(document.getElementById('subavSerie')?.value || '').trim().toLowerCase();
+  const sub   = String(document.getElementById('subavSubLib')?.value || '').trim();
+  if (!serie || !sub) { av.style.display = 'none'; return; }
+  const achado = (db.machines || []).find(m =>
+    String(m.itemTipo || '').toUpperCase() === 'SUBSISTEMA' &&
+    String(m.subLibId || '') === sub &&
+    String(m.serial || '').trim().toLowerCase() === serie);
+  if (!achado) { av.style.display = 'none'; return; }
+  av.style.display = '';
+  av.innerHTML = `⚠ Esta peça já está cadastrada para <b>${escHtml(achado.client || 'outro cliente')}</b>
+    (${escHtml(_osMachineLabel(achado))}).<br>
+    <button type="button" class="btn btn-secondary btn-sm" style="margin-top:6px"
+      onclick="_v127SubavReusar('${escAttrJs(String(achado.id))}')">É esta mesma — vincular à OS</button>
+    <span style="margin-left:6px">ou continue para cadastrar outra peça.</span>`;
+}
+
+function _v127SubavReusar(id) {
+  _osMachineSelection.add(String(id));
+  closeModal('modalSubsistemaAvulso');
+  _renderOSMachineSelector(Array.from(_osMachineSelection));
+  toast('Subsistema existente vinculado — o histórico dele foi preservado.', 'success');
+}
+
+async function _v127SalvarSubsistemaAvulso() {
+  const subLibId = String(document.getElementById('subavSubLib').value || '').trim();
+  if (!subLibId) { toast('Selecione o subsistema no catálogo.', 'error'); return; }
+  const cliente   = document.getElementById('osCliente')?.value?.trim() || '';
+  const clienteId = document.getElementById('osClienteId')?.value?.trim() || '';
+  if (!cliente || !clienteId) { toast('Cliente da OS não identificado.', 'error'); return; }
+
+  const serie = String(document.getElementById('subavSerie').value || '').trim();
+  let tag = String(document.getElementById('subavTag').value || '').trim();
+  // ⚠ Sem série E sem etiqueta a peça não tem identidade FÍSICA nenhuma: o
+  //   registro existe e ninguém consegue ligá-lo ao objeto na bancada. Gera.
+  if (!serie && !tag) { _v127SubavGerarEtiqueta(); tag = document.getElementById('subavTag').value; }
+
+  const payload = {
+    cliente, cliente_id: clienteId,
+    sub_lib_id: subLibId,
+    serie, tag,
+    pai_id: String(document.getElementById('subavPai').value || '').trim(),
+    obs: String(document.getElementById('subavObs').value || '').trim(),
+    custodia: document.getElementById('subavCustodia').checked ? 'OFICINA' : '',
+    client_uid: pgpUid(),   // V98 F-08 — duplo clique não cria duas peças físicas
+  };
+
+  try {
+    const r = await syncToGS('saveSubsistemaCliente', payload);
+    const novoId = String(r?.id || '');
+    if (!novoId) { toast('Subsistema salvo, mas o servidor não devolveu o ID.', 'warning'); return; }
+    if (r.duplicate) toast('Cadastro já registrado — reaproveitado.', 'success');
+
+    // Insere no cache local para o seletor mostrá-lo AGORA, sem esperar o
+    // próximo sync — o adm está no meio da abertura da OS.
+    const lib = (db.subsistemasLib || []).find(l => String(l.id) === subLibId);
+    db.machines.push({
+      id: novoId, client: cliente, branch: '',
+      brand: (lib?.fabricante || ''), model: (lib?.name || 'Subsistema'),
+      serial: serie, tag, year: '', location: '',
+      hourTotal: 0, hpw: 0, obs: payload.obs, parts: {}, photos: [], driveLink: '',
+      itemTipo: 'SUBSISTEMA', paiId: payload.pai_id, subLibId,
+      custodia: payload.custodia, custodiaDesde: new Date().toISOString(),
+    });
+    save();
+
+    _osMachineSelection.add(novoId);
+    closeModal('modalSubsistemaAvulso');
+    _renderOSMachineSelector(Array.from(_osMachineSelection));
+    toast('Subsistema cadastrado e marcado nesta OS.' +
+          (r.pecas_semeadas ? ` ${r.pecas_semeadas} peça(s) do catálogo semeadas.` : ''), 'success');
+  } catch (e) {
+    if (e.message && e.message.includes('AUTH_GOOGLE')) { hubLogout(); return; }
+    toast('Erro ao cadastrar subsistema: ' + e.message, 'error');
+  }
+}
+
+// V127 — cadastrar a peça SEM SAIR do fluxo de abertura da OS. Mandar o adm ao
+// catálogo e voltar é o tipo de ida-e-volta que faz a peça ser digitada na
+// descrição em texto livre, que é exatamente o problema que este recurso resolve.
+function _v127BotaoSubsistemaAvulso() {
+  return `<div style="border-top:1px dashed var(--border);margin-top:8px;padding-top:8px">
+    <button type="button" class="btn btn-secondary btn-sm" onclick="_v127AbrirSubsistemaAvulso()">
+      + Subsistema avulso</button>
+    <span style="font-size:11px;color:var(--text-muted);margin-left:8px">peça que chegou solta na oficina</span>
+  </div>`;
 }
 
 function _getSelectedOSMachineIds() {
@@ -14489,6 +14892,64 @@ function _openPCFFromOS(osId) {
 let _osClientUid = '';
 function _novoOsClientUid(){ _osClientUid = pgpUid(); return _osClientUid; }
 
+// ══════════════════════════════════════════════════════════════════════════════
+// V127 — FECHAR OS PELA TELA. Antes disto era impossível.
+//
+// O `saveOS` do GAS valida ANTES de gravar qualquer coisa (guarda
+// FECHAMENTO_INCOMPLETO): concluir OS de tipo ≠ PREVENTIVA exige
+// `observacao_fechamento`; PREVENTIVA exige a observação OU visita vinculada.
+// O modal nunca teve o campo — então "Concluída" + Salvar sempre devolvia erro,
+// e o admin acabava editando a planilha na mão (sem evento em LOG_OPERACIONAL).
+//
+// ⚠ O texto do hint MUDA por tipo de OS, de propósito: dizer "obrigatória" numa
+//   preventiva com visita vinculada seria mentira, e regra que mente é regra que
+//   o usuário aprende a contornar.
+// ⚠ CANCELADA não exige observação no GAS (só `concluida` é validada). O campo
+//   aparece assim mesmo, como `motivo` opcional — OS cancelada sem motivo é
+//   exatamente o registro que ninguém consegue auditar depois.
+// ══════════════════════════════════════════════════════════════════════════════
+let _v127CustodiaDaOS = [];   // itens desta OS com Custodia='OFICINA' (GAS v107)
+
+function _v127StatusEncerra(v) {
+  const st = String(v || '').toUpperCase().replace('-', '_');
+  return st === 'CONCLUIDA' || st === 'CANCELADA';
+}
+
+function _v127ToggleFechamento() {
+  const wrap = document.getElementById('osFechamentoWrap');
+  if (!wrap) return;
+  const st = document.getElementById('osStatus')?.value || '';
+  const encerra = _v127StatusEncerra(st);
+  wrap.style.display = encerra ? '' : 'none';
+  const cw = document.getElementById('osCustodiaWrap');
+  if (cw) cw.style.display = (encerra && _v127CustodiaDaOS.length) ? '' : 'none';
+  if (!encerra) return;
+
+  const cancelando = String(st).toUpperCase() === 'CANCELADA';
+  const tipo = String(document.getElementById('osTipoOS')?.value || '');
+  const tipoNome = (_tiposOS.find(t => t.Tipo_ID === tipo)?.Nome) || tipo;
+  const ehPrev = String(tipoNome || '').trim().toUpperCase().indexOf('PREVENT') >= 0;
+
+  document.getElementById('osFechamentoLabel').textContent =
+    cancelando ? 'Motivo do cancelamento' : ('Observação de fechamento' + (ehPrev ? '' : ' *'));
+  document.getElementById('osFechamentoHint').textContent = cancelando
+    ? 'Opcional para o sistema, mas é o único registro de por que a OS não foi executada.'
+    : (ehPrev
+        ? 'Obrigatória se a preventiva não tiver visita vinculada. O GAS recusa o fechamento sem uma das duas.'
+        : 'Obrigatória para concluir OS deste tipo — o GAS recusa o fechamento sem ela.');
+
+  if (_v127CustodiaDaOS.length) {
+    document.getElementById('osCustodiaLista').innerHTML = _v127CustodiaDaOS.map(it => `
+      <label style="display:flex;gap:8px;align-items:flex-start;padding:7px 8px;border:1px solid var(--border);border-radius:8px;margin-bottom:6px;background:var(--surface)">
+        <input type="checkbox" class="os-custodia-check" value="${escHtml(it.id)}">
+        <span>${escHtml(it.nome)} — ${escHtml(it.serie || it.tag || 'sem série')}
+          <span style="color:var(--text-muted)">· na oficina há ${it.dias_na_oficina ?? '?'}d</span></span>
+      </label>`).join('') +
+      `<div style="font-size:11px;color:var(--text-muted)">Marque o que JÁ SAIU com o cliente. O que ficar desmarcado
+       continua na oficina e some da lista só quando alguém der baixa em <b>Tarefas do Adm</b>.</div>`;
+  }
+}
+
 async function openModalOS(id) {
   // v56 — Reset síncrono roda antes de qualquer await, e o modal já abre em
   // seguida (com indicador de carregamento no título) em vez de só aparecer
@@ -14501,6 +14962,12 @@ async function openModalOS(id) {
   document.getElementById('osTipoOS').value = '';
   document.getElementById('osDescricao').value = '';
   document.getElementById('osStatus').value = 'ABERTA';
+  // V127 — o reset precisa limpar os campos novos ANTES de qualquer await, como
+  // todo o resto deste bloco (lição do V103 A2: reset parcial + erro no meio =
+  // Salvar gravando brancos por cima da OS).
+  document.getElementById('osObservacaoFechamento').value = '';
+  _v127CustodiaDaOS = [];
+  _v127ToggleFechamento();
   document.getElementById('osDataAbertura').value = new Date().toISOString().slice(0,10);
   document.getElementById('osPrioridade').value = 'normal';
   document.getElementById('osDataPrevista').value = '';
@@ -14562,6 +15029,10 @@ async function openModalOS(id) {
       // — e o Salvar gravava esses brancos por cima da OS. _gosData (L~11212) já fazia
       // String() nesse mesmo campo; aqui faltava.
       document.getElementById('osStatus').value = String(os.status || 'ABERTA').toUpperCase().replace('-','_');
+      // V127 — traz a observação já gravada (reabrir e re-salvar não pode apagá-la)
+      // e revela o campo se a OS já está encerrada.
+      document.getElementById('osObservacaoFechamento').value = String(os.observacao_fechamento || '');
+      _v127ToggleFechamento();
       if (os.data_abertura) document.getElementById('osDataAbertura').value = String(os.data_abertura).slice(0,10);
       document.getElementById('osPrioridade').value = os.prioridade || 'normal';
       if (os.data_prevista) document.getElementById('osDataPrevista').value = String(os.data_prevista).slice(0,10);
@@ -14570,6 +15041,19 @@ async function openModalOS(id) {
       try {
         const linkedMachineIds = await _loadOSLinkedMachines(id);
         _renderOSMachineSelector(linkedMachineIds);
+        // V127 — quais itens DESTA OS estão em posse da oficina. É o que faz o
+        // bloco de custódia aparecer ao concluir. Lê do cache local (já
+        // sincronizado): nenhuma requisição nova no caminho de abrir a OS.
+        _v127CustodiaDaOS = (db.machines || [])
+          .filter(m => linkedMachineIds.map(String).includes(String(m.id)) &&
+                       String(m.custodia || '').toUpperCase() === 'OFICINA')
+          .map(m => ({
+            id: String(m.id), nome: _osMachineLabel(m),
+            serie: m.serial || '', tag: m.tag || '',
+            dias_na_oficina: m.custodiaDesde
+              ? Math.floor((Date.now() - new Date(m.custodiaDesde).getTime()) / 86400000) : null
+          }));
+        _v127ToggleFechamento();
       } catch(e) {
         if (e.message && e.message.includes('AUTH_GOOGLE')) { hubLogout(); return; }
         toast('Não foi possível carregar máquinas vinculadas: ' + e.message, 'warning');
@@ -14643,6 +15127,13 @@ async function saveOSModal(btnEl) {
     local_atendimento: localAtendimento,
     maquinas_vinculadas: _getSelectedOSMachineIds(),
   };
+  // ── V127 — a chave que faltava. `saveOS` já a aceita (ALLOWED, GAS ~L8310);
+  //    o modal é que nunca a enviava. Só vai quando o status ENCERRA, para não
+  //    sobrescrever com vazio a observação de uma OS já fechada que está sendo
+  //    editada por outro motivo.
+  if (_v127StatusEncerra(status)) {
+    payload.observacao_fechamento = document.getElementById('osObservacaoFechamento').value.trim();
+  }
   if (id) payload.id_os = id;
   // V98 F-08: só na CRIAÇÃO. O uid nasce em openModalOS e permanece o mesmo em
   // toda re-submissão deste formulário (duplo-clique, retry manual) e em todo
@@ -14713,9 +15204,32 @@ async function saveOSModal(btnEl) {
     }
     _tipoAntesDoSave = '';
 
+    // V127 — baixa de custódia dos itens marcados como "já saiu com o cliente".
+    // ⚠ NÃO-BLOQUEANTE: a OS já foi salva. Falhar aqui não pode desfazer nada
+    //   nem virar erro de fechamento — a peça continua na lista da oficina e o
+    //   botão manual de Tarefas do Adm resolve.
+    if (_v127StatusEncerra(status) && _v127CustodiaDaOS.length) {
+      const saiu = Array.from(document.querySelectorAll('.os-custodia-check:checked')).map(el => el.value);
+      for (const itemId of saiu) {
+        try { await syncToGS('baixarCustodiaItem', { id: itemId, custodia: '', usuario: usuario || 'admin' }); }
+        catch (ec) { console.warn('[V127] baixa de custódia falhou para ' + itemId + ':', ec.message); }
+      }
+      if (saiu.length) toast(saiu.length + ' item(ns) baixado(s) da oficina.', 'success');
+    }
+
     renderOS();
   } catch(e) {
     if (e.message && e.message.includes('AUTH_GOOGLE')) { hubLogout(); return; }
+    // ── V127 — o erro que o admin não conseguia decifrar ────────────────────
+    // `FECHAMENTO_INCOMPLETO: observacao_fechamento é obrigatória para concluir
+    // OS do tipo X` chegava cru na toast. Agora aponta para o campo e o revela
+    // — antes disto o campo nem existia, e a mensagem falava de algo invisível.
+    if (e.message && e.message.indexOf('FECHAMENTO_INCOMPLETO') >= 0) {
+      _v127ToggleFechamento();
+      try { document.getElementById('osObservacaoFechamento').focus(); } catch(_) {}
+      toast('Para encerrar esta OS, preencha a observação de fechamento (campo destacado).', 'error');
+      return;
+    }
     toast('Erro ao salvar OS: ' + e.message, 'error');
   }
   });
@@ -16695,12 +17209,35 @@ if(!gsUrl){
       </div>
       <div class="form-row">
         <label class="form-label">Status</label>
-        <select class="form-select" id="osStatus">
+        <select class="form-select" id="osStatus" onchange="_v127ToggleFechamento()">
           <option value="ABERTA">Aberta</option>
           <option value="EM_ANDAMENTO">Em andamento</option>
           <option value="CONCLUIDA">Concluída</option>
           <option value="CANCELADA">Cancelada</option>
         </select>
+      </div>
+      <!-- ══ V127 · O CAMPO QUE FALTAVA PARA FECHAR OS PELA TELA ═══════════════
+           O saveOS do GAS EXIGE `observacao_fechamento` para concluir OS de tipo
+           ≠ PREVENTIVA (guarda FECHAMENTO_INCOMPLETO, GAS ~L8330) — e este modal
+           nunca teve o campo nem o enviava. Resultado: o admin escolhia
+           "Concluída", clicava Salvar, o GAS recusava e o `syncToGS` lançava o
+           erro. Fechar OS manualmente era IMPOSSÍVEL pela tela desde sempre; a
+           saída era editar a planilha na mão.
+           ⚠ Só aparece quando o status escolhido ENCERRA a OS. Campo permanente
+             pediria justificativa para salvar uma edição trivial. -->
+      <div class="form-row" id="osFechamentoWrap" style="display:none">
+        <label class="form-label" id="osFechamentoLabel">Observação de fechamento *</label>
+        <textarea class="form-input" id="osObservacaoFechamento" rows="3"
+          placeholder="O que foi entregue, ou por que a OS está sendo encerrada…"
+          style="resize:vertical;min-height:60px"></textarea>
+        <div style="font-size:11px;color:var(--text-muted);margin-top:4px" id="osFechamentoHint"></div>
+      </div>
+      <!-- V127 — custódia: par do GAS v107. Só aparece quando a OS que está
+           sendo concluída tem item em posse da oficina. Decisão do Fernando
+           (21/08): híbrido — pergunta aqui, botão manual em Tarefas do Adm. -->
+      <div class="form-row" id="osCustodiaWrap" style="display:none">
+        <label class="form-label">Itens em posse da oficina nesta OS</label>
+        <div id="osCustodiaLista" style="font-size:12px"></div>
       </div>
       <div class="form-row">
         <label class="form-label">Data de abertura</label>
@@ -19043,6 +19580,34 @@ async function saveTemplateEditor() {
     return;
   }
 
+  // ══ V127 — O TEMPLATE QUE NUNCA FECHA A OS ════════════════════════════════
+  // Só existe UM caminho de fechamento automático em todo o sistema: concluir
+  // uma tarefa com `Acao_Terminal='fechar_os'` dispara `_finalizarAtendimentoOS_`
+  // (GAS L13326). Template sem nenhuma tarefa assim gera OS que NUNCA fecha
+  // sozinha — o pipeline chega a 100% e a OS fica `em_andamento` para sempre,
+  // entulhando a lista do PCF e confundindo o técnico sobre o que ainda é
+  // trabalho de verdade. Era o caso das OS presas em 21/08.
+  //
+  // ⚠ AVISO, NÃO TRAVA. Template de CAMADA empilhada legitimamente termina em
+  //   `fechar_pipeline` e não deve fechar a OS — travar aqui impediria o uso
+  //   correto. Quem sabe qual é o caso é quem está salvando.
+  // ⚠ `fechar_pipeline` presente conta como intenção declarada: nesse caso o
+  //   aviso explica a diferença em vez de sugerir que falta algo.
+  const _temFecharOs   = tarefasFlat.some(t => String(t.acao_terminal || '') === 'fechar_os');
+  const _temFecharPipe = tarefasFlat.some(t => String(t.acao_terminal || '') === 'fechar_pipeline');
+  if (!_temFecharOs) {
+    const _msg = _temFecharPipe
+      ? 'Este template encerra a CAMADA (fechar_pipeline), mas nenhuma tarefa fecha a OS.\n\n' +
+        'Se ele for usado como pipeline principal, a OS chegará a 100% e continuará ABERTA, ' +
+        'esperando alguém empilhar a próxima camada ou encerrar à mão.\n\n' +
+        'É o comportamento correto para uma camada intermediária. Salvar assim mesmo?'
+      : 'Nenhuma tarefa deste template tem "Ao concluir: Fechar OS".\n\n' +
+        'Sem ela NÃO EXISTE fechamento automático: a OS chegará a 100% das tarefas e ficará ' +
+        'ABERTA para sempre, entulhando a lista dos técnicos no PCF.\n\n' +
+        'Normalmente a última tarefa do fluxo é quem carrega essa ação.\n\nSalvar assim mesmo?';
+    if (!confirm('⚠ ' + _msg)) return;
+  }
+
   try {
     const payload = {
       nome,
@@ -19191,7 +19756,77 @@ async function renderTarefasAdm() {
   // V125 (par do GAS v100) — ADITIVO: GAS antigo não manda a chave, a seção
   // não aparece, e a tela fica byte a byte a V124.
   _tarefasAdmAguardando = (r && r.os_aguardando) || [];
+  // ── V127 (par do GAS v107) — ITENS EM CUSTÓDIA DA OFICINA ────────────────
+  // ⚠ Chamada SEPARADA e NÃO-BLOQUEANTE: `getTarefasAdm` é a fila de trabalho
+  //   do adm e não pode ficar mais lenta nem quebrar por causa de uma seção
+  //   acessória. GAS v106 no ar → action inexistente → catch → seção não
+  //   aparece → a tela fica byte a byte a V126.
+  try {
+    const _ri = await gsGet('getItensNaOficina', {});
+    _tadmItensOficina = (_ri && _ri.itens) || [];
+  } catch (e) {
+    console.warn('[V127] getItensNaOficina indisponível (GAS < v107?):', e.message);
+    _tadmItensOficina = [];
+  }
   _renderTarefasAdmUI();
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+// V127 — A BAIXA DA PEÇA (decisão do Fernando, 21/08: fluxo híbrido).
+// `Custodia='OFICINA'` é o que sustenta a pergunta "o que está na oficina
+// agora". Sem um caminho de BAIXA a lista só cresce: em três meses ela mostra
+// 40 peças com 12 fisicamente lá, e aí ninguém mais olha para ela — que é o
+// jeito mais caro de perder um recurso, porque o dado continua sendo coletado.
+// O modal de OS pergunta ao concluir; este botão é para o dia da retirada,
+// que quase nunca coincide com o fechamento da OS.
+// ══════════════════════════════════════════════════════════════════════════════
+let _tadmItensOficina = [];
+
+function _tadmCustodiaHtml() {
+  const lista = Array.isArray(_tadmItensOficina) ? _tadmItensOficina : [];
+  if (!lista.length) return '';
+  const linhas = lista.map(it => {
+    const dias = (typeof it.dias_na_oficina === 'number') ? it.dias_na_oficina : null;
+    // ⚠ Cor só a partir de 30 dias. Pintar de laranja tudo que entrou ontem
+    //   ensina o adm a ignorar a cor — mesma regra do `pendente` no kanban.
+    const cor = (dias !== null && dias >= 30) ? '#9a3412' : 'var(--text-muted)';
+    const selo = it.item_tipo === 'SUBSISTEMA'
+      ? '<span style="font-size:10px;font-weight:700;color:var(--blue-mid)">SUBSISTEMA</span> ' : '';
+    return `<div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:8px 10px;border-top:1px solid #fde68a">
+      <div style="flex:1;min-width:220px">
+        <div style="font-weight:600;font-size:13px">${selo}${escHtml(it.nome)} — ${escHtml(it.serie || it.tag || 'sem série')}</div>
+        <div style="font-size:11.5px;color:${cor}">${escHtml(it.cliente || 'sem cliente')}${
+          dias !== null ? ' · na oficina há ' + dias + ' dia' + (dias === 1 ? '' : 's') : ''}</div>
+      </div>
+      <button class="btn btn-secondary btn-sm"
+        onclick="_semDuploEnvio_(this, () => _tadmBaixarCustodia('${escAttrJs(String(it.id))}','${escAttrJs(String(it.nome))}'))">
+        📤 Registrar saída</button>
+    </div>`;
+  }).join('');
+  return `<div style="border:1px solid #fbbf24;background:#fffbeb;border-radius:10px;margin-bottom:14px">
+    <div style="padding:10px;font-weight:700;font-size:13px;color:#92400e">
+      🔧 Na oficina agora — ${lista.length} item(ns)</div>
+    <div style="padding:0 10px 4px;font-size:11.5px;color:#92400e">
+      Peças em posse da Proper. Dê baixa quando o cliente retirar.</div>
+    ${linhas}</div>`;
+}
+
+async function _tadmBaixarCustodia(id, nome) {
+  if (!confirm('Registrar a saída de "' + nome + '" da oficina?\n\n' +
+               'Ela continua no parque do cliente, com todo o histórico — só deixa de constar como em posse da Proper.')) return;
+  try {
+    await syncToGS('baixarCustodiaItem', { id, custodia: '', usuario: 'admin' });
+    _tadmItensOficina = _tadmItensOficina.filter(x => String(x.id) !== String(id));
+    // Cache local: sem isto o item volta a aparecer "na oficina" no seletor da
+    // próxima OS até o sync seguinte.
+    const m = (db.machines || []).find(x => String(x.id) === String(id));
+    if (m) { m.custodia = ''; m.custodiaDesde = ''; save(); }
+    _renderTarefasAdmUI();
+    toast('Saída registrada.', 'success');
+  } catch (e) {
+    if (e.message && e.message.includes('AUTH_GOOGLE')) { hubLogout(); return; }
+    toast('Erro ao registrar saída: ' + e.message, 'error');
+  }
 }
 
 // ══════════════════════════════════════════════════════════════════════════════
@@ -19431,7 +20066,7 @@ function _renderTarefasAdmUI() {
   // V125 — a seção vem ANTES da lista: é a decisão mais cara parada (uma
   // reforma inteira à espera de um clique), e ela some da tela de quem só olha
   // tarefa.
-  const _aguardHtml = _tadmAguardandoHtml();
+  const _aguardHtml = _tadmAguardandoHtml() + _tadmCustodiaHtml();   // V127
 
   if (!linhas.length) {
     // ⚠ V125 — com OS aguardando, "Nada esperando a administração" seria falso.
