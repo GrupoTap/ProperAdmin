@@ -74,6 +74,37 @@
         convidava a dar baixa numa peça recém-recebida. Virou inventário no texto,
         e o confirm avisa que a baixa normalmente é automática no fecho da OS.
 
+  V127.2 (mesmo dia) — O CARD DA OFICINA NÃO DIZIA QUAL MÁQUINA ESTÁ NA BANCADA.
+     Pedido do Fernando olhando o quadro: duas OS da MINERITA lado a lado, o
+     card mostrando cliente e fase e nada sobre O QUE está lá dentro. O admin
+     abria card por card.
+     🔑 O dado JÁ CHEGAVA: `getKanbanOficina` manda `it.maquinas` desde o v84
+        (GAS ~L16987) e o PCM nunca leu a chave. Zero requisição nova, zero
+        mudança de GAS — roda igual com o v106 ou o v107 no ar. Mesmo padrão do
+        `tarefa_atual` na V123.
+     Formato: primeira máquina + `+N`, rótulo truncando e contador nunca (um
+     `+2` cortado pela reticência recria a omissão que a linha veio consertar);
+     lista completa no title. `_osMachineLabelHtml` já rotula subsistema, então
+     "Unidade compressora — SUBSISTEMA · na oficina" sai de graça.
+     ⚠ Índice `id → máquina` memoizado por `_pcmDbGen`: o quadro repinta a cada
+       tecla da busca, e sem índice seria 40 cards × 91 máquinas por letra.
+     ⚠ LISTA VAZIA NÃO IMPRIME NADA — e isso é decisão, não descuido.
+       `maquinas_vinculadas` é escrita pelo `saveOS`; o caminho de CAMPO
+       (`_marcarMaquinaAtendidaOS_`) grava só em `OS_MAQUINAS` e não reflete
+       aqui. Card sem a linha significa "não informado no cadastro da OS", nunca
+       "não tem máquina" — por isso a ausência é silenciosa em vez de afirmar
+       "sem máquina". Ler de OS_MAQUINAS é o certo e custa uma leitura de aba
+       inteira por carga do quadro: rodada de GAS, com medição.
+     ⚠ Id órfão aparece como "máquina fora do cadastro" em laranja, com o id no
+       title. Esconder é como o admin passa a confiar num quadro incompleto.
+     De quebra: o 🏭 do card da aba KANBAN era linha morta desde que foi escrito
+     (`o.maquina`/`o.maquina_label` não existem no envelope do getOS) e ainda
+     interpolava o valor sem escHtml. Passou a usar o mesmo helper, lendo
+     `maquinas_vinculadas`, que o getOS já normaliza (GAS ~L9910).
+     ⚠ O CARIMBO CONTINUA "PCM V127" — sub-revisão do mesmo pacote, não versão
+       nova. Mexer no title faria o `gerar_versoes.py` acusar divergência com o
+       arquivo publicado sem que nada de contrato tenha mudado.
+
   Bancada: node --check nos 5 blocos <script> reais (o "bloco 0" das extrações
   é texto dentro do comentário de changelog — falso positivo que já existia na
   V126 intocada).
@@ -2542,7 +2573,13 @@ tr:hover td{background:var(--gray-50)}
 /* Mesma exposição, pré-existente e pior (cliente de 84 chars levava a coluna
    a 863px). Uma linha resolve as duas. */
 .gos-kcard-cli{overflow-wrap:anywhere}
-.gos-kcard-maq{font-size:11.5px;color:var(--text-muted);margin-top:2px}
+.gos-kcard-maq{font-size:11.5px;color:var(--text-muted);margin-top:2px;display:flex;gap:4px;align-items:baseline}
+/* V127.2 — o rotulo trunca, o contador NAO: `+2` cortado pela reticencia e o
+   card volta a mentir por omissao, que e exatamente o que esta linha existe
+   para consertar. min-width:0 e obrigatorio — sem ele o flex item nao encolhe
+   e o texto longo empurra o `+2` para fora do card. */
+.gos-kcard-maq .gos-maq-lbl{flex:1 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.gos-kcard-maq .gos-maq-n{flex:0 0 auto;opacity:.75;font-weight:600}
 .gos-kcard-foot{margin-top:8px}
 /* V105 (P2/K1) — aba Oficina: meta em chips e barra de progresso no card. */
 .gos-kcard-meta{display:flex;flex-wrap:wrap;gap:4px;margin-top:6px}
@@ -14324,6 +14361,82 @@ function _gosChipTarefaAtual(c) {
       title="${escHtml(e.tt + '\n\nTarefa: ' + t.nome)}">${e.ic} ${escHtml(e.lbl)}: ${escHtml(t.nome)}</div>`;
 }
 
+// ═════════════════════════════════════════════════════════════════════════════
+// V127.2 — QUAL MÁQUINA (OU SUBSISTEMA) ESTÁ NESTA OS.
+//
+// Pergunta do Fernando, 21/08/2026, olhando o quadro da Oficina: o card diz o
+// cliente e a fase, mas não O QUE está na bancada. Numa oficina que recebe três
+// máquinas do mesmo cliente — MINERITA com duas OS abertas no print — o nome do
+// cliente não identifica nada, e o admin abre card por card até achar.
+//
+// 🔑 O DADO JÁ CHEGAVA. `getKanbanOficina` monta
+//    `it.maquinas = _arrSeguro_(o.maquinas_vinculadas)` desde o v84 (GAS
+//    ~L16987) e o PCM NUNCA leu essa chave — zero ocorrências no arquivo antes
+//    desta versão. Mesmo caso do `tarefa_atual` na V123: não é requisição nova
+//    nem campo novo, é ler o que já vem. Roda igual com o GAS v106 ou v107 no ar.
+//
+// ⚠ São IDs (`db.machines[].id` — `EQ-…`, `SUB-…` ou a `MK-…` legada), não
+//   rótulos. A resolução é LOCAL, contra o `db.machines` que a tela já tem
+//   carregado. Nenhuma ida ao GAS por card — o quadro carrega em UMA requisição
+//   e tem de continuar assim.
+// ⚠ ÍNDICE MEMOIZADO por `_pcmDbGen` (V118 A9). Sem ele seria um
+//   `db.machines.find()` por máquina por card por repintura, e o quadro repinta
+//   a cada tecla do campo de busca: 40 cards × 91 máquinas × cada letra.
+// ⚠ LISTA VAZIA NÃO É "OS SEM MÁQUINA" — por isso não imprime nada, em vez de
+//   imprimir "sem máquina". `maquinas_vinculadas` é escrita pelo `saveOS` (o
+//   cadastro da OS pelo PCM); o caminho de CAMPO (`_marcarMaquinaAtendidaOS_`,
+//   GAS) grava só em `OS_MAQUINAS` e NÃO reflete aqui. Card sem a linha
+//   significa "não informado no cadastro da OS", nunca "não tem máquina".
+//   Fazer a linha vir de OS_MAQUINAS é o certo, mas custa uma leitura de aba
+//   inteira por carga do quadro — fica para uma rodada de GAS, com medição.
+// ⚠ ID que não resolve NÃO É ESCONDIDO. Sumir da tela é como o admin passa a
+//   confiar num quadro incompleto: ele aparece como "máquina fora do cadastro",
+//   em laranja, com o id no title. Mesma escolha do
+//   `_renderOSLinkedMachinesDetail`.
+// ═════════════════════════════════════════════════════════════════════════════
+let _gosMaqIdx = null, _gosMaqIdxGen = -1;
+function _gosMaqIndex(){
+  if (_gosMaqIdx && _gosMaqIdxGen === _pcmDbGen) return _gosMaqIdx;
+  const idx = new Map();
+  (db.machines || []).forEach(m => {
+    const k = String((m && m.id) || '').trim();
+    if (k) idx.set(k, m);
+  });
+  _gosMaqIdx = idx; _gosMaqIdxGen = _pcmDbGen;
+  return idx;
+}
+
+function _gosLinhaMaquinas(lista){
+  // ⚠ String em vez de array não pode virar linha em branco: o GAS normaliza
+  //   (`_arrSeguro_`, `parseJsonArray_`), mas um caminho futuro que mande a
+  //   chave crua faria o card silenciar — e silêncio aqui significa "não
+  //   informado", que seria mentira.
+  const ids = (Array.isArray(lista) ? lista : (lista ? [lista] : []))
+    .map(x => String(x == null ? '' : x).trim())
+    .filter(Boolean);
+  if (!ids.length) return '';
+  const idx = _gosMaqIndex();
+  const itens = ids.map(id => ({ id: id, m: idx.get(id) || null }));
+
+  // A primeira RESOLVIDA manda no rótulo: se a OS tem uma máquina conhecida e
+  // um id órfão, o card mostra a que o admin reconhece — não o erro.
+  const primeira = itens.find(i => i.m) || itens[0];
+  const rotulo = primeira.m
+    ? _osMachineLabelHtml(primeira.m)
+    : '<span style="color:var(--orange)">máquina fora do cadastro</span>';
+
+  const extra = itens.length - 1;
+  const mais = extra > 0
+    ? `<span class="gos-maq-n" title="Esta OS tem ${itens.length} itens vinculados.">+${extra}</span>`
+    : '';
+
+  const title = itens
+    .map(i => i.m ? _osMachineLabel(i.m) : 'Máquina não encontrada no cadastro: ' + i.id)
+    .join('\n');
+
+  return `<div class="gos-kcard-maq" title="${escHtml(title)}"><span class="gos-maq-lbl">⚙ ${rotulo}</span>${mais}</div>`;
+}
+
 function _gosOficinaCard(c){
   const rank = c.prioridade_rank || 1;
   const P = { 3:{l:'Urgente',bg:'#fee2e2',cor:'#991b1b'}, 2:{l:'Alta',bg:'#ffedd5',cor:'#9a3412'}, 1:{l:'Normal',bg:'#f1f5f9',cor:'#475569'} };
@@ -14418,6 +14531,7 @@ function _gosOficinaCard(c){
       <span class="gos-prio" style="background:${p.bg};color:${p.cor}">${p.l}</span>
     </div>
     <div class="gos-kcard-cli">${escHtml(c.cliente)}</div>
+    ${_gosLinhaMaquinas(c.maquinas)}
     ${_gosChipTarefaAtual(c)}
     <div class="gos-kcard-meta">
       ${chips.join('')}
@@ -14490,11 +14604,17 @@ function _gosKcard(o){
   const right = _gosKanbanGroupBy==='status'
     ? `<span class="gos-tp"><span class="gos-sw" style="background:${tipoColor[tnome]}"></span>${tnome}</span>`
     : `<span class="gos-badge" style="color:${(_GOS_STATUS[sk]||{}).color||'var(--text-muted)'}">${(_GOS_STATUS[sk]||{}).label||o.status||'—'}</span>`;
-  const maq = o.maquina || o.maquina_label || '';
+  // V127.2 — ERA LINHA MORTA: `maquina`/`maquina_label` NÃO são campos do
+  // envelope do getOS (conferido no GAS v107) — `maq` era '' em 100% dos cards
+  // desde que este render foi escrito, e o 🏭 nunca apareceu. Mesma classe do
+  // `alerta_dias` que o v91 achou no GAS. O getOS JÁ devolve
+  // `maquinas_vinculadas` normalizada (GAS ~L9910), então é o mesmo helper.
+  // ⚠ De quebra fecha um buraco de escape: o render antigo interpolava `maq`
+  //   CRU no HTML, sem escHtml.
   return `<div class="gos-kcard" draggable="true" ondragstart="gosKanbanDragStart(event)" onclick="openOSDetail('${_gosOid(o)}')">
     <div class="gos-kcard-top"><span class="gos-osnum">${o.numero_os||'—'}</span>${_gosPrioTag(o)}<span style="margin-left:auto">${right}</span></div>
     <div class="gos-kcard-cli">${o.cliente||'—'}</div>
-    ${maq?`<div class="gos-kcard-maq">🏭 ${maq}</div>`:''}
+    ${_gosLinhaMaquinas(o.maquinas_vinculadas)}
     <div class="gos-kcard-foot"><span class="gos-kcard-date ${d?'':'nodate'}">📅 ${d?_gosFmt(d):'Sem data'}</span></div>
   </div>`;
 }
