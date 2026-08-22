@@ -1,3 +1,42 @@
+<!-- V127.3 (21/08/2026) — SUB-REVISÃO DO PACOTE V127 (NADA PUBLICADO AINDA).
+     Entra DENTRO do pacote v107/V127/V91; ordem de publicação e bump do sw.js
+     inalterados. `<title>` e carimbos NÃO mudam. 100% ADITIVO: nenhuma função,
+     id, chave ou action renomeada. GAS v107 INTOCADO.
+
+     P2  "AÇÃO = TROCADA" × "STATUS = VENCIDO" — ESPELHO DO PCF V91.1.
+         CAUSA: o bloco de PDF deste arquivo é o MESMO motor do PCF (bloco
+         espelhado, alterar sempre nos dois). O status da peça vinha só do
+         contador encontrado e a ação não entrava na conta: o relatório dizia
+         "Trocada" numa coluna e "VENCIDO" na outra, na mesma linha.
+         CORREÇÃO (apresentação): `acao === 'trocada'` imprime TROCADA em
+         verde; prazo vencido/em atenção acrescenta `**` + legenda ao pé.
+         ⚠ Como este motor RE-RENDERIZA PDFs de visitas ANTIGAS a partir do
+           JSON já gravado, a regra vale RETROATIVAMENTE — sem migração e sem
+           tocar em nada que está na planilha.
+         ⚠ Nada do payload/histórico mudou: `partStatus` continua sendo o
+           estado ENCONTRADO.
+
+     P5  O PDF DE UM LAUDO DE CAMPO PODE NUNCA TER CHEGADO — E O PCM NÃO SABIA.
+         CAUSA: quando a geração do PDF falha no aparelho, a pendência ficava
+         SÓ no IndexedDB do celular (`pdfPending` no rascunho). O
+         `saveFormulario` não levava, o GAS não registrava e nenhuma tela do
+         PCM mostrava: a tarefa fechava ✅ no pipeline com o laudo sem PDF e o
+         sistema inteiro ficava coerente… e errado (caso real: OS
+         PGP-2026-0053 · MINERITA).
+         CORREÇÃO (1): os formulários passam a declarar `pdf_pendente` (e
+         `pdf_erro`) DENTRO do `campos_json` — que já viaja e já é gravado
+         inteiro, sem coluna nova no GAS e sem action nova. O relatório da OS
+         imprime um alerta vermelho no bloco do formulário que declarou a
+         pendência, com o motivo registrado.
+         CORREÇÃO (2): a Gestão de Documentos ganhou os rótulos das categorias
+         que o campo já grava e o mapa não conhecia — foto_/pdf_diag_oficina,
+         corretiva, generica, locacao, diagnostico, form05 e inspecao. Era por
+         isso que a tela mostrava a categoria crua `foto_diag_oficina`.
+         ⚠ Formulário antigo não tem a chave: `pdf_pendente` vem undefined e o
+           relatório sai exatamente como antes.
+         ⚠ `_docCatLabel` continua caindo na categoria crua para o que não
+           estiver no mapa — categoria nova amanhã não quebra nada.
+-->
 <!--
   PCM V127 — 21/08/2026 — FECHAR OS PELA TELA, VER QUEM ESTÁ EXECUTANDO, E A
   PEÇA QUE CHEGA SOZINHA. Par: GAS v107 + PCF V91 + NEWFILE_P8_SUBSISTEMAS.sql.
@@ -6483,6 +6522,21 @@ const DOCS_CAT_LABELS = {
   pdf_preventiva:'PDF Preventiva', pdf_relatorio:'PDF Relatório', pdf_formulario:'PDF Formulário',
   pdf_form01:'PDF Recebimento (F01)', pdf_form02:'PDF Diagnóstico (F02)',
   pdf_form03:'PDF Peritagem Mec. (F03)', pdf_form04:'PDF Peritagem Elét. (F04)', pdf_termo_desmontagem:'PDF Termo Desmontagem (F05)',
+  // ── V127.3 (P5) — CATEGORIAS QUE O CAMPO JÁ GRAVA E O MAPA NÃO CONHECIA ──
+  // A Gestão de Documentos mostrava a categoria CRUA ('foto_diag_oficina') por
+  // falta de rótulo — foi esse o sinal que apareceu na conferência da OS
+  // PGP-2026-0053. Conferido por grep nos formulários publicados: estas são
+  // TODAS as categorias em uso hoje que faltavam aqui.
+  // ⚠ Só ACRESCENTA chaves: nenhum rótulo existente foi alterado, e
+  //   `_docCatLabel` continua caindo na categoria crua para o que não estiver
+  //   no mapa (nada quebra se aparecer uma categoria nova amanhã).
+  foto_diag_oficina:'Foto Diagnóstico de Oficina', pdf_diag_oficina:'PDF Diagnóstico de Oficina',
+  foto_corretiva:'Foto Corretiva',                pdf_corretiva:'PDF Laudo Corretiva',
+  foto_generica:'Foto OS Genérica',               pdf_generica:'PDF OS Genérica',
+  foto_locacao:'Foto Locação',                    pdf_locacao:'PDF Termo de Locação',
+  foto_diagnostico:'Foto Diagnóstico de Campo',   pdf_diagnostico:'PDF Laudo de Diagnóstico',
+  foto_form05:'Foto Termo Desmontagem (F05)',
+  pdf_inspecao:'PDF Inspeção',                    foto_inspecao:'Foto Inspeção',
   assinatura:'Assinatura', outro:'Outro'
 };
 // Um anexo é "foto" se o MIME é imagem ou a categoria começa com foto_.
@@ -18613,6 +18667,7 @@ function pgpCreateReportBuilder() {
     // por peça (${pk}_obs, ex: "etiqueta ilegível, horímetro zerado...").
     const partsObsList = d.pecasObs || [];
     let _temConflitoEstado = false;   // V73 (L3)
+    let _temTrocaVencida  = false;   // V127.3 (P2)
 
     (d.pecas || []).forEach((pt, pi) => {
       y = checkY(y, rowHP);
@@ -18675,15 +18730,34 @@ function pgpCreateReportBuilder() {
           doc.text(limparTextoPDF(String(v)), xc + 1, y + 5);
           xc += colsP[ci + 3];
         });
-        if (status) {
+        // ═══════════════════════════════════════════════════════════════
+        // V127.3 (P2) — ESPELHO EXATO do PCF V91.1. "Trocada" na coluna Ação
+        // e "VENCIDO" na coluna Status na mesma linha faziam o relatório
+        // parecer errado: o número registrado é o estado NO RECEBIMENTO — o
+        // que JUSTIFICA a troca —, mas "Status" se lê como estado ATUAL.
+        // Quando a ação foi 'trocada', a coluna Status imprime TROCADA em
+        // verde; prazo vencido/em atenção acrescenta ** + legenda ao pé.
+        // ⚠ Como este motor re-renderiza PDFs de visitas ANTIGAS a partir do
+        //   JSON já gravado, a regra vale RETROATIVAMENTE, sem migração de
+        //   dado e sem tocar em nada gravado.
+        // ═══════════════════════════════════════════════════════════════
+        const _trocadaAqui = (_acao === 'trocada') && !ehInspecao;
+        const _prazoRuim   = (status === 'VENCIDO' || status === 'ATENÇÃO');
+        if (status || _trocadaAqui) {
           doc.setFont('helvetica','bold');
-          doc.setTextColor(...statusColor);
           // V73 (L3) — quando o técnico marcou CONFORME mas o PRAZO está
           // vencido/em atenção, os dois fatos eram fundidos numa palavra só e o
           // "conforme" sumia. O asterisco preserva ambos (nota abaixo da tabela).
-          const _conflito = (String(pt.estado||'') === 'ok') && (status === 'VENCIDO' || status === 'ATENÇÃO');
+          const _conflito = (String(pt.estado||'') === 'ok') && _prazoRuim && !_trocadaAqui;
           if (_conflito) _temConflitoEstado = true;
-          doc.text(limparTextoPDF(status + (_conflito ? '*' : '')), xc + 1, y + 5);
+          if (_trocadaAqui) {
+            if (_prazoRuim) _temTrocaVencida = true;
+            doc.setTextColor(...GREEN);
+            doc.text(limparTextoPDF('TROCADA' + (_prazoRuim ? '**' : '')), xc + 1, y + 5);
+          } else {
+            doc.setTextColor(...statusColor);
+            doc.text(limparTextoPDF(status + (_conflito ? '*' : '')), xc + 1, y + 5);
+          }
         }
       }
       y += rowHP;
@@ -18696,6 +18770,16 @@ function pgpCreateReportBuilder() {
       doc.setFontSize(6.5);
       doc.setTextColor(120, 120, 120);
       doc.text(limparTextoPDF('* peca encontrada em bom estado (conforme); o PRAZO de troca e que esta vencido/em atencao.'), ML + 1, y + 3.5);
+      y += 5;
+    }
+
+    // V127.3 (P2) — legenda do duplo asterisco (espelho do PCF V91.1).
+    if (_temTrocaVencida) {
+      y = checkY(y, 5);
+      doc.setFont('helvetica','italic');
+      doc.setFontSize(6.5);
+      doc.setTextColor(120, 120, 120);
+      doc.text(limparTextoPDF('** peca encontrada com prazo vencido/em atencao e SUBSTITUIDA nesta visita.'), ML + 1, y + 3.5);
       y += 5;
     }
 
@@ -19543,6 +19627,28 @@ async function gerarRelatorioReforma(os_id) {
 
       let campos = {};
       try { campos = JSON.parse(String((f && f.Campos_JSON) ?? '{}') || '{}'); } catch(e){ campos = {}; }
+
+      // ── V127.3 (P5) — O FORMULÁRIO DECLARA QUANDO O PDF NÃO SAIU ──────────
+      // O `pdfPending` do formulário de campo vivia SÓ no IndexedDB do aparelho:
+      // a tarefa fechava ✅ no pipeline, o laudo em PDF nunca chegava ao Drive e
+      // nenhuma tela do PCM tinha como saber. Os formulários passam a mandar
+      // `pdf_pendente` DENTRO do campos_json (que já viaja e já é gravado
+      // inteiro — sem coluna nova no GAS, sem action nova) e o relatório da OS
+      // passa a gritar isso em vez de deixar passar batido.
+      // ⚠ Formulário antigo não tem a chave: `pdf_pendente` vem undefined e
+      //   nada muda no relatório.
+      const _pdfPend = !!(campos && (campos.pdf_pendente === true || campos.pdf_pendente === 'true'));
+      if (_pdfPend) {
+        if (y > 275) { doc.addPage(); y = 15; }
+        const _erroPdf = _relTxt((campos && campos.pdf_erro) || '', 90);
+        doc.setFont(undefined, 'bold'); doc.setTextColor(192, 57, 43); doc.setFontSize(9);
+        doc.text('!! PDF DESTE LAUDO NAO FOI GERADO NO APARELHO — cobrar a regeracao no formulario.', 18, y);
+        y += 4;
+        if (_erroPdf) { doc.setFont(undefined, 'normal'); doc.setFontSize(8);
+                        doc.text('   motivo: ' + _erroPdf, 18, y); y += 4; }
+        doc.setTextColor(0, 0, 0); doc.setFont(undefined, 'normal'); doc.setFontSize(10);
+      }
+
       const pares = _relFlattenCampos(campos, '', [], 0);
       if (!pares.length) {
         doc.setFontSize(8); doc.text('(sem campos preenchidos)', 18, y); doc.setFontSize(10); y += 5;
