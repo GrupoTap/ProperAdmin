@@ -38,6 +38,42 @@
            estiver no mapa — categoria nova amanhã não quebra nada.
 -->
 <!--
+  PCM V128 — 22/08/2026 — A CAIXA DO ADM VIRA QUADRO, E O KANBAN DA OFICINA
+  PARA DE MENTIR NO TAMANHO. Sem par de GAS: front-only, contra o v107/v108.
+  100% ADITIVO: nenhuma função, id, data-view ou chave de payload renomeada.
+
+  1 · TAREFAS DO ADM EM KANBAN (derivado, decisão do Fernando 22/08).
+      Três colunas CALCULADAS: 🏁 Aguardando decisão (os_aguardando do v100),
+      📌 Tarefas pendentes (a mesma lista de sempre) e ✅ Resolvidas (15d).
+      ⚠ NÃO há arrastar, de propósito — as duas primeiras colunas são estado
+      DERIVADO do pipeline; arrastar criaria uma segunda fonte de verdade
+      (mesmo invariante K1 do kanban da oficina, V105). A coluna Resolvidas
+      vem de um DIÁRIO LOCAL (localStorage pcm_tadm_diario_v1, 200 entradas):
+      cada ação resolvida POR ESTA TELA (concluir, decidir, empilhar, encerrar,
+      baixa de custódia) grava {quando, quem, o quê}. É por navegador — o
+      histórico global continua sendo LOG_OPERACIONAL/planilha, e a coluna diz
+      isso no subtítulo. A LISTA continua existindo (botão alterna; modo fica
+      em pcm_tadm_modo). A lógica de ações por linha saiu do map da tabela para
+      _tadmPartesDaLinha() — movida VERBATIM, tabela e kanban consomem a mesma.
+  2 · 🏁 ENCERRAR OS — o banner de "OS aguardando decisão" dizia "empilhar OU
+      encerrar" e só oferecia empilhar. Botão novo abre o modal da OS já com
+      status Concluída + campo de observação em foco (reusa TODA a validação
+      V127/FECHAMENTO_INCOMPLETO — nada de action nova).
+  3 · CARDS-PAINEL DA LISTA VIRAM FAIXA FINA (só CSS, decisão 22/08): em tela
+      de 15" os 5 cartões roubavam ~120px da lista de OS.
+  4 · KANBAN OFICINA — LARGURA UNIFORME. `flex-basis:262px` não segura coluna:
+      min-width:auto de flex item deixa o rótulo nowrap da máquina (V127.2)
+      alargar a coluna inteira (o caso real: subsistema Wayne Cabeçote + id
+      PRP-SUB → Recebimento com ~470px). max-width + min-width:0 na cadeia.
+  5 · KANBAN OFICINA — FASES AGRUPADAS. Cada template nomeia sua fase de
+      diagnóstico e o quadro nascia com 4 colunas de diagnóstico quase vazias.
+      _GOS_GRUPOS_FASE agrupa por regex (/diagn/i → "Diagnósticos"); o CARD
+      ganha a linha 📍 com a fase exata quando difere do grupo. Meta da coluna
+      agrupada = a MAIOR meta entre as fases (a mais folgada — meta apertada
+      em coluna agrupada gritaria atraso falso); saúde 🔴/🟡 é SOMADA.
+      Agrupamento é só APRESENTAÇÃO: fase, template e pipeline não mudam.
+-->
+<!--
   PCM V127 — 21/08/2026 — FECHAR OS PELA TELA, VER QUEM ESTÁ EXECUTANDO, E A
   PEÇA QUE CHEGA SOZINHA. Par: GAS v107 + PCF V91 + NEWFILE_P8_SUBSISTEMAS.sql.
   100% ADITIVO: nenhuma função, id, data-view ou chave de payload renomeada.
@@ -1869,7 +1905,7 @@ v50 — Resiliência de rede: retry/backoff em gsGet e syncToGS
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>ProperCare Manager · Gestão PGP v3.51 (PCM V127)</title>
+<title>ProperCare Manager · Gestão PGP v3.52 (PCM V128)</title>
 <link rel="icon" type="image/jpeg" href="data:image/jpeg;base64,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">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -2791,6 +2827,30 @@ th.xf-filtered .xf-fun{opacity:1;stroke:var(--accent)}
 .xf-gmeta{font-weight:500;color:var(--text3);font-size:11px}
 .xf-doc-thumb{width:34px;height:34px;object-fit:cover;border-radius:7px;border:1px solid var(--border2);cursor:zoom-in;flex:none}
 
+
+/* ══ V128 ══════════════════════════════════════════════════════════════════ */
+/* 4 · A coluna do kanban NÃO cresce com rótulo comprido. flex-basis:262px não
+   é teto: min-width:auto (default de flex item) deixa o min-content de um
+   nowrap interno (o rótulo de máquina da V127.2) alargar a coluna inteira.
+   O caso real: "Wayne Cabeçote pistão W700 — PRP-SUB-260821-E936" levava
+   Recebimento a ~470px enquanto as vizinhas ficavam em 262px. */
+.gos-kcol{max-width:262px}
+.gos-kcol,.gos-klist,.gos-kcard{min-width:0}
+.gos-kcard{overflow:hidden}
+/* 5 · A fase exata dentro da coluna agrupada (📍 só aparece quando difere). */
+.gos-kcard-fase{font-size:10.5px;font-weight:700;color:#0d9488;margin-top:2px;overflow-wrap:anywhere}
+/* 3 · Cards-painel da Lista viram faixa fina: número e rótulo lado a lado.
+   Só CSS — o markup e o _gosRenderCardsV94 ficam intocados. */
+#gosCardsV94{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px}
+#gosCardsV94 .stat-card{display:flex;align-items:baseline;gap:8px;padding:6px 14px;flex:0 1 auto}
+#gosCardsV94 .stat-val{font-size:17px}
+#gosCardsV94 .stat-lbl{margin-top:0;font-size:11px}
+/* 1 · Kanban da caixa do adm — colunas mais largas que as da oficina (os cards
+   carregam botões de ação) e um subtítulo por coluna. */
+.tadm-kanban .gos-kcol{flex:0 0 340px;max-width:340px}
+.tadm-kcol-sub{font-size:10.5px;color:var(--text-muted);padding:0 12px 8px;line-height:1.4}
+.tadm-kcard-ok{opacity:.92}
+.tadm-kanban .tadm-acoes{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
 </style>
 </head>
 <body>
@@ -2799,7 +2859,7 @@ th.xf-filtered .xf-fun{opacity:1;stroke:var(--accent)}
 <aside class="nav-sidebar" aria-label="Navegação principal">
   <div class="nav-brand">
     <span class="nav-brand-mark">PCM</span>
-    <span class="nav-brand-sub">v3.51 · V127</span>
+    <span class="nav-brand-sub">v3.52 · V128</span>
   </div>
 
   <nav class="nav-groups">
@@ -14257,14 +14317,43 @@ function _gosPintarOficina(){
 
   // Colunas = união das fases DECLARADAS (não só as ocupadas): sem isso a coluna
   // vazia some e o quadro "pula" a cada conclusão, e o admin perde a etapa de vista.
-  const colunas = (_oficinaCache.colunas || []).slice();
+  // ── V128 — AGRUPAMENTO DE FASES (só apresentação; fase/template/pipeline
+  //   intocados). Fases que casam no mesmo grupo viram UMA coluna; o card
+  //   ganha a linha 📍 com a fase exata quando ela difere do nome do grupo.
+  //   Meta da coluna agrupada = a MAIOR entre as fases (a mais folgada: meta
+  //   apertada aqui gritaria atraso falso — e alerta falso gasta o alerta);
+  //   o semáforo POR CARD continua usando a meta da fase real, do envelope.
+  //   Saúde 🔴/🟡 da coluna é SOMADA.
+  const colunasCruas = (_oficinaCache.colunas || []).slice();
+  const colunas = [];
+  const _v128Idx = new Map();
+  colunasCruas.forEach(c => {
+    const g = _gosGrupoDaFase(c.fase);
+    const chave = String(g || c.fase).toLowerCase();
+    const ja = _v128Idx.get(chave);
+    if (ja) {
+      ja.fase_ordem = Math.min(ja.fase_ordem ?? 999, c.fase_ordem ?? 999);
+      if ((c.meta_dias || 0) > (ja.meta_dias || 0)) ja.meta_dias = c.meta_dias;
+      if (c.saude) {
+        ja.saude = ja.saude || { atrasada: 0, risco: 0 };
+        ja.saude.atrasada = (ja.saude.atrasada || 0) + (c.saude.atrasada || 0);
+        ja.saude.risco    = (ja.saude.risco    || 0) + (c.saude.risco    || 0);
+      }
+      return;
+    }
+    const nova = Object.assign({}, c, { fase: g || c.fase });
+    _v128Idx.set(chave, nova);
+    colunas.push(nova);
+  });
   const porFase = new Map();
   colunas.forEach(c => porFase.set(String(c.fase).toLowerCase(), []));
   const terminal = [];
   cards.forEach(c => {
-    const k = String(c.fase_atual || '').toLowerCase();
-    if (!c.fase_atual) { terminal.push(c); return; }
-    if (!porFase.has(k)) { porFase.set(k, []); colunas.push({ fase: c.fase_atual, fase_ordem: 999, camada_ordem: c.camada_atual || 1, camada_nome: c.camada_nome || '' }); }
+    if (!c.fase_atual) { c._v128FaseLbl = ''; terminal.push(c); return; }
+    const g = _gosGrupoDaFase(c.fase_atual);
+    const k = String(g || c.fase_atual).toLowerCase();
+    c._v128FaseLbl = (g && String(c.fase_atual) !== g) ? String(c.fase_atual) : '';
+    if (!porFase.has(k)) { porFase.set(k, []); colunas.push({ fase: g || c.fase_atual, fase_ordem: 999, camada_ordem: c.camada_atual || 1, camada_nome: c.camada_nome || '' }); }
     porFase.get(k).push(c);
   });
 
@@ -14491,6 +14580,21 @@ function _gosLinhaMaquinas(lista){
   return `<div class="gos-kcard-maq" title="${escHtml(title)}"><span class="gos-maq-lbl">⚙ ${rotulo}</span>${mais}</div>`;
 }
 
+// V128 — grupos de fase do quadro da oficina. Regex por grupo, extensível
+// (peritagens, etc.). ⚠ Grupo novo entra AQUI, com data e motivo — igual a
+// V108_SLUG_EXCECOES do GAS: lista sem disciplina vira lixo.
+const _GOS_GRUPOS_FASE = [
+  { nome: 'Diagnósticos', re: /diagn/i }   // 22/08 — 4 colunas de diagnóstico quase vazias viravam 1
+];
+function _gosGrupoDaFase(fase) {
+  const f = String(fase || '');
+  if (!f) return '';
+  for (let i = 0; i < _GOS_GRUPOS_FASE.length; i++) {
+    if (_GOS_GRUPOS_FASE[i].re.test(f)) return _GOS_GRUPOS_FASE[i].nome;
+  }
+  return '';
+}
+
 function _gosOficinaCard(c){
   const rank = c.prioridade_rank || 1;
   const P = { 3:{l:'Urgente',bg:'#fee2e2',cor:'#991b1b'}, 2:{l:'Alta',bg:'#ffedd5',cor:'#9a3412'}, 1:{l:'Normal',bg:'#f1f5f9',cor:'#475569'} };
@@ -14585,6 +14689,7 @@ function _gosOficinaCard(c){
       <span class="gos-prio" style="background:${p.bg};color:${p.cor}">${p.l}</span>
     </div>
     <div class="gos-kcard-cli">${escHtml(c.cliente)}</div>
+    ${c._v128FaseLbl ? `<div class="gos-kcard-fase" title="Fase real do pipeline — a coluna é o grupo.">📍 ${escHtml(c._v128FaseLbl)}</div>` : ''}
     ${_gosLinhaMaquinas(c.maquinas)}
     ${_gosChipTarefaAtual(c)}
     <div class="gos-kcard-meta">
@@ -15386,6 +15491,14 @@ async function saveOSModal(btnEl) {
       toast('OS salva com sucesso.', 'success');
     }
     closeModal('modalOS');
+
+    // V128 — diário local do adm: encerramento/cancelamento de OS pela tela.
+    if (id && _v127StatusEncerra(status)) {
+      _tadmDiarioAdd({
+        acao: String(status).toUpperCase() === 'CANCELADA' ? 'OS cancelada' : 'OS encerrada',
+        os: String(document.getElementById('osNumero')?.value || id),
+        cliente: String(document.getElementById('osCliente')?.value || '') });
+    }
 
     // Após criar nova OS, instanciar pipeline automaticamente
     // V98 F-08: em duplicate:true a OS (e o pipeline dela) já existem — instanciar
@@ -16622,7 +16735,15 @@ async function confirmarEmpilhar(btnEl) {
       // V125 — quando veio da caixa do adm, é ELA que precisa ser repintada:
       // `_loadPipelineTab` não acha o container e sai calado, deixando a linha
       // "aguardando" na tela depois de resolvida.
-      if (_empilharVoltarParaAdm) { _empilharVoltarParaAdm = false; renderTarefasAdm(); }
+      if (_empilharVoltarParaAdm) {
+        _empilharVoltarParaAdm = false;
+        // V128 — diário local: empilhada a partir da caixa do adm.
+        try {
+          const _ag = (_tarefasAdmAguardando || []).find(o => String(o.os_id) === String(_empilharOsId)) || {};
+          _tadmDiarioAdd({ acao: 'Execução empilhada', os: String(_ag.numero_os ?? _empilharOsId ?? ''), cliente: String(_ag.cliente ?? '') });
+        } catch (eD) { /* diário nunca propaga */ }
+        renderTarefasAdm();
+      }
       else _loadPipelineTab(_empilharOsId);
     } catch(e) {
       if (e.message && e.message.includes('AUTH_GOOGLE')) { hubLogout(); return; }
@@ -20119,6 +20240,7 @@ async function _tadmBaixarCustodia(id, nome) {
     const m = (db.machines || []).find(x => String(x.id) === String(id));
     if (m) { m.custodia = ''; m.custodiaDesde = ''; save(); }
     _renderTarefasAdmUI();
+    _tadmDiarioAdd({ acao: 'Saída de item registrada', titulo: String(nome ?? '') });   // V128 — diário local
     toast('Saída registrada.', 'success');
   } catch (e) {
     if (e.message && e.message.includes('AUTH_GOOGLE')) { hubLogout(); return; }
@@ -20164,6 +20286,8 @@ function _tadmAguardandoHtml() {
           ${o.tarefas_total || 0} tarefa(s) resolvida(s)${dias !== null ? ' · parada há ' + dias + 'd' : ''}</div>
       </div>
       <button class="btn btn-primary btn-sm" onclick="_tadmEmpilhar(this, '${idAttr}')">➕ Empilhar execução</button>
+      <button class="btn btn-secondary btn-sm" title="Abrir a OS já no fechamento: status Concluída + observação obrigatória"
+        onclick="_tadmEncerrarOS('${idAttr}')">🏁 Encerrar OS</button>
       <button class="btn btn-secondary btn-sm"
         onclick="showView('os');openOSDetail('${idAttr}')">Abrir OS</button>
     </div>`;
@@ -20354,6 +20478,9 @@ function _renderTarefasAdmUI() {
       <button class="btn btn-sm ${_tarefasAdmIncluirFuturas ? 'btn-primary' : 'btn-secondary'}"
         onclick="_tarefasAdmIncluirFuturas=!_tarefasAdmIncluirFuturas;renderTarefasAdm()">
         ${_tarefasAdmIncluirFuturas ? '✓ ' : ''}Incluir tarefas ainda bloqueadas</button>
+      <button class="btn btn-sm btn-secondary" title="Alternar entre o quadro e a lista (a escolha fica salva neste navegador)"
+        onclick="_tadmSetModo(_tadmModo()==='kanban'?'lista':'kanban')">
+        ${_tadmModo()==='kanban' ? '≡ Ver como lista' : '🗂 Ver como quadro'}</button>
       <button class="btn btn-secondary btn-sm" onclick="renderTarefasAdm()">↻ Atualizar</button>
       <span style="color:var(--text-muted);font-size:12px">${linhas.length} tarefa(s)${
         (Array.isArray(_tarefasAdmAguardando) && _tarefasAdmAguardando.length)
@@ -20364,6 +20491,15 @@ function _renderTarefasAdmUI() {
   // reforma inteira à espera de um clique), e ela some da tela de quem só olha
   // tarefa.
   const _aguardHtml = _tadmAguardandoHtml() + _tadmCustodiaHtml();   // V127
+
+  // ── V128 — MODO QUADRO (padrão). A lista continua logo abaixo, intacta:
+  //   o kanban é DERIVADO e as ações são as MESMAS funções das linhas da
+  //   tabela (_tadmPartesDaLinha), então os dois modos não podem divergir.
+  //   A custódia fica FORA do quadro nos dois modos — é inventário, não fila.
+  if (_tadmModo() === 'kanban') {
+    el.innerHTML = cab + _tadmCustodiaHtml() + _tadmDiagnosticoHtml(linhas) + _tadmKanbanHtml(linhas);
+    return;
+  }
 
   if (!linhas.length) {
     // ⚠ V125 — com OS aguardando, "Nada esperando a administração" seria falso.
@@ -20382,6 +20518,35 @@ function _renderTarefasAdmUI() {
   }
 
   const corpo = linhas.map(t => {
+    // V128 — miolo movido VERBATIM para _tadmPartesDaLinha (tabela e kanban usam o mesmo).
+    const { atras, dias, tipoIcon, acao, formBtn, etqBtn, relogio } = _tadmPartesDaLinha(t);
+    return `<tr>
+      <td><a href="#" onclick="event.preventDefault();showView('os');openOSDetail('${escAttrJs(t.os_id)}')"
+             style="color:var(--accent);font-weight:600">OS ${escHtml(String(t.numero_os ?? t.os_id))}</a>
+          <div style="color:var(--text-muted);font-size:12px">${escHtml(t.cliente)}</div></td>
+      <td>${escHtml(t.fase || '—')}</td>
+      <td>${escHtml(t.nome)}${relogio}</td>
+      <td>${tipoIcon}</td>
+      <td style="${atras ? 'color:#dc2626;font-weight:700' : ''}">${dias === null ? '—' : (dias + 'd')}</td>
+      <td>${t.data_prevista ? escHtml(String(t.data_prevista).slice(0, 10)) : '—'}</td>
+      <td><div class="tadm-acoes">${etqBtn}${formBtn}${acao}</div></td>
+    </tr>`;
+  }).join('');
+
+  // V114 — o diagnóstico também vale com a lista CHEIA: carimbo divergente e
+  // perfil órfão são exatamente os casos em que a lista está certa e a planilha
+  // está errada. Ele só se desenha quando tem o que dizer.
+  el.innerHTML = cab + _aguardHtml + _tadmDiagnosticoHtml(linhas) + `
+    <div class="table-wrap"><table class="table">
+      <thead><tr><th>OS</th><th>Fase</th><th>Tarefa</th><th>Tipo</th><th>Parada há</th><th>Prevista</th><th>Ação</th></tr></thead>
+      <tbody>${corpo}</tbody>
+    </table></div>`;
+}
+
+// V128 — código MOVIDO VERBATIM do map da tabela de _renderTarefasAdmUI.
+// Uma fonte só para as ações da linha: a tabela e o card do quadro chamam
+// esta função — bloco espelhado é como o par PCM/PCF de PDF quebra (21/08).
+function _tadmPartesDaLinha(t) {
     const alerta = parseInt(t.alerta_dias) || 0;
     const dias   = (typeof t.dias_parada === 'number') ? t.dias_parada : null;
     const atras  = (alerta > 0 && dias !== null && dias > alerta);
@@ -20445,27 +20610,132 @@ function _renderTarefasAdmUI() {
           title="Gerar e imprimir a etiqueta de identificação (10,2 × 4 cm)"
           onclick="_etqAbrir('${escAttrJs(t.os_id)}',this)">🏷 Etiqueta</button>`
       : '';
-    return `<tr>
-      <td><a href="#" onclick="event.preventDefault();showView('os');openOSDetail('${escAttrJs(t.os_id)}')"
-             style="color:var(--accent);font-weight:600">OS ${escHtml(String(t.numero_os ?? t.os_id))}</a>
-          <div style="color:var(--text-muted);font-size:12px">${escHtml(t.cliente)}</div></td>
-      <td>${escHtml(t.fase || '—')}</td>
-      <td>${escHtml(t.nome)}${relogio}</td>
-      <td>${tipoIcon}</td>
-      <td style="${atras ? 'color:#dc2626;font-weight:700' : ''}">${dias === null ? '—' : (dias + 'd')}</td>
-      <td>${t.data_prevista ? escHtml(String(t.data_prevista).slice(0, 10)) : '—'}</td>
-      <td><div class="tadm-acoes">${etqBtn}${formBtn}${acao}</div></td>
-    </tr>`;
-  }).join('');
+    return { alerta, dias, atras, tipoIcon, trav, acao, formBtn, etqBtn, relogio };
+}
 
-  // V114 — o diagnóstico também vale com a lista CHEIA: carimbo divergente e
-  // perfil órfão são exatamente os casos em que a lista está certa e a planilha
-  // está errada. Ele só se desenha quando tem o que dizer.
-  el.innerHTML = cab + _aguardHtml + _tadmDiagnosticoHtml(linhas) + `
-    <div class="table-wrap"><table class="table">
-      <thead><tr><th>OS</th><th>Fase</th><th>Tarefa</th><th>Tipo</th><th>Parada há</th><th>Prevista</th><th>Ação</th></tr></thead>
-      <tbody>${corpo}</tbody>
-    </table></div>`;
+// ══════════════════════════════════════════════════════════════════════════════
+// V128 — A CAIXA DO ADM COMO QUADRO (ver o changelog no topo do arquivo).
+// Derivado, sem arrastar: coluna é ESTADO DO PIPELINE, não opinião de quem olha.
+// ══════════════════════════════════════════════════════════════════════════════
+function _tadmModo() {
+  try { return localStorage.getItem('pcm_tadm_modo') || 'kanban'; } catch (e) { return 'kanban'; }
+}
+function _tadmSetModo(m) {
+  try { localStorage.setItem('pcm_tadm_modo', m); } catch (e) { /* sem storage = sem persistência, só */ }
+  _renderTarefasAdmUI();
+}
+
+// ── O DIÁRIO LOCAL. O que o adm resolve POR ESTA TELA fica registrado aqui
+//    (localStorage, 200 entradas, por navegador). Não substitui o histórico
+//    oficial (LOG_OPERACIONAL/planilha) e a coluna diz isso no subtítulo.
+//    ⚠ try/catch em TUDO: diário é conveniência; falha dele não pode travar
+//      a ação que o gerou.
+const _TADM_DIARIO_KEY = 'pcm_tadm_diario_v1';
+function _tadmDiarioLer() {
+  try { const a = JSON.parse(localStorage.getItem(_TADM_DIARIO_KEY) || '[]'); return Array.isArray(a) ? a : []; }
+  catch (e) { return []; }
+}
+function _tadmDiarioAdd(ev) {
+  try {
+    const a = _tadmDiarioLer();
+    a.unshift(Object.assign({
+      ts: new Date().toISOString(),
+      quem: window.PROPER_SESSION?.usuario?.nome || window.PROPER_SESSION?.tecnico?.nome || 'admin'
+    }, ev || {}));
+    localStorage.setItem(_TADM_DIARIO_KEY, JSON.stringify(a.slice(0, 200)));
+  } catch (e) { /* nunca propaga */ }
+}
+// Acha numero/cliente da tarefa no cache para o registro não sair só com id.
+function _tadmDiarioDaTarefa(osId, tarefaId, acao, titulo) {
+  const t = (_tarefasAdmCache || []).find(x =>
+    String(x.os_id) === String(osId) && String(x.tarefa_id) === String(tarefaId)) || {};
+  _tadmDiarioAdd({ acao: acao, titulo: String(titulo ?? ''),
+    os: String(t.numero_os ?? osId ?? ''), cliente: String(t.cliente ?? '') });
+}
+
+// ── 🏁 ENCERRAR OS — atalho para o fluxo V127 (modal da OS já no fechamento).
+//    Reusa TODA a validação (FECHAMENTO_INCOMPLETO, custódia, tipos): nada de
+//    caminho paralelo de encerramento.
+async function _tadmEncerrarOS(osId) {
+  await openModalOS(osId);
+  const sel = document.getElementById('osStatus');
+  if (sel) { sel.value = 'CONCLUIDA'; _v127ToggleFechamento(); }
+  // foco depois do toggle revelar o campo
+  setTimeout(() => { try { document.getElementById('osObservacaoFechamento').focus(); } catch (e) {} }, 200);
+  toast('Confira os dados, preencha a observação de fechamento e Salvar encerra a OS.', 'warning');
+}
+
+// ── OS cards e colunas do quadro ─────────────────────────────────────────────
+function _tadmCardAguardando(o) {
+  const num = String(o.numero_os ?? '');
+  const dias = (typeof o.dias_parada === 'number') ? o.dias_parada : null;
+  const idAttr = escAttrJs(String(o.os_id ?? ''));
+  return `<div class="gos-kcard" style="border-left:3px solid #7c3aed">
+    <div class="gos-kcard-top"><b>OS ${escHtml(num || String(o.os_id ?? ''))}</b></div>
+    <div class="gos-kcard-cli">${escHtml(String(o.cliente ?? ''))}</div>
+    <div class="gos-kcard-tarefa">${escHtml(String(o.camada_nome ?? '')) || 'Camada ' + (o.camadas || 1)} ·
+      ${o.tarefas_total || 0} tarefa(s) resolvida(s)${dias !== null ? ' · parada há ' + dias + 'd' : ''}</div>
+    <div class="tadm-acoes">
+      <button class="btn btn-primary btn-sm" onclick="_tadmEmpilhar(this, '${idAttr}')">➕ Empilhar</button>
+      <button class="btn btn-secondary btn-sm" title="Abrir a OS já no fechamento"
+        onclick="_tadmEncerrarOS('${idAttr}')">🏁 Encerrar</button>
+      <button class="btn btn-secondary btn-sm" onclick="showView('os');openOSDetail('${idAttr}')">Abrir OS</button>
+    </div></div>`;
+}
+
+function _tadmCardTarefa(t) {
+  const p = _tadmPartesDaLinha(t);
+  return `<div class="gos-kcard"${p.atras ? ' style="border-left:3px solid #dc2626"' : ''}>
+    <div class="gos-kcard-top">
+      <b><a href="#" onclick="event.preventDefault();showView('os');openOSDetail('${escAttrJs(t.os_id)}')"
+        style="color:var(--accent)">OS ${escHtml(String(t.numero_os ?? t.os_id))}</a></b>
+      <span class="gos-chip">${p.tipoIcon}</span>
+    </div>
+    <div class="gos-kcard-cli">${escHtml(String(t.cliente ?? ''))}</div>
+    <div class="gos-kcard-tarefa">${escHtml(String(t.fase ?? '—'))} · ${escHtml(String(t.nome ?? ''))}${p.relogio}</div>
+    <div style="font-size:11px;margin-top:4px;${p.atras ? 'color:#dc2626;font-weight:700' : 'color:var(--text-muted)'}">
+      ${p.dias === null ? '' : 'parada há ' + p.dias + 'd'}${t.data_prevista ? ' · prevista ' + escHtml(String(t.data_prevista).slice(0, 10)) : ''}</div>
+    <div class="tadm-acoes">${p.etqBtn}${p.formBtn}${p.acao}</div>
+  </div>`;
+}
+
+function _tadmCardResolvida(e) {
+  const d = new Date(e.ts);
+  const quando = isNaN(d.getTime()) ? '' :
+    `${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+  return `<div class="gos-kcard tadm-kcard-ok" style="border-left:3px solid #16a34a">
+    <div class="gos-kcard-top"><b>${escHtml(e.os ? 'OS ' + e.os : String(e.titulo ?? ''))}</b></div>
+    ${e.cliente ? `<div class="gos-kcard-cli">${escHtml(e.cliente)}</div>` : ''}
+    <div class="gos-kcard-tarefa">${escHtml(String(e.acao ?? ''))}${e.os && e.titulo ? ': ' + escHtml(String(e.titulo)) : ''}</div>
+    <div style="font-size:11px;color:var(--text-muted);margin-top:4px">✅ ${escHtml(String(e.quem ?? ''))}${quando ? ' · ' + quando : ''}</div>
+  </div>`;
+}
+
+function _tadmKanbanHtml(linhas) {
+  const ag = Array.isArray(_tarefasAdmAguardando) ? _tarefasAdmAguardando : [];
+  const corte = Date.now() - 15 * 24 * 3600 * 1000;
+  const feitas = _tadmDiarioLer().filter(e => {
+    const t = Date.parse(e && e.ts);
+    return isFinite(t) && t >= corte;
+  });
+  const col = (titulo, cor, sub, cards, vazio) => `
+    <div class="gos-kcol">
+      <div class="gos-kcol-h" style="border-top:3px solid ${cor}">
+        <span>${titulo}</span><span class="gos-count">${cards.length}</span>
+      </div>
+      ${sub ? `<div class="tadm-kcol-sub">${sub}</div>` : ''}
+      <div class="gos-klist">${cards.join('') || `<div class="gos-kempty">${vazio}</div>`}</div>
+    </div>`;
+  return `<div class="gos-kanban tadm-kanban">` +
+    col('🏁 Aguardando decisão', '#7c3aed',
+      'O pipeline resolveu tudo e a OS segue aberta: empilhar a próxima etapa ou encerrar.',
+      ag.map(_tadmCardAguardando), 'Nenhuma OS esperando decisão') +
+    col('📌 Tarefas pendentes', '#d97706', '',
+      linhas.map(_tadmCardTarefa), 'Nenhuma tarefa esperando a administração') +
+    col('✅ Resolvidas (15d)', '#16a34a',
+      'Registrado NESTE navegador ao resolver pela tela. O histórico oficial segue na planilha (LOG_OPERACIONAL).',
+      feitas.map(_tadmCardResolvida), 'Nada resolvido por aqui nos últimos 15 dias') +
+    `</div>`;
 }
 
 // ══════════════════════════════════════════════════════════════════════════════
@@ -20539,6 +20809,7 @@ async function _tadmConcluir(osId, tarefaId, nome, btnEl, temForm) {
         toast('Tarefa concluída.', 'success');
       }
       _invalidarCachePipeline(osId);
+      _tadmDiarioDaTarefa(osId, tarefaId, 'Tarefa concluída', nome);   // V128 — diário local
       await renderTarefasAdm();
     } catch (e) { toast('Erro: ' + e.message, 'error'); }
   });
@@ -20558,6 +20829,7 @@ async function _tadmDecidir(osId, tarefaId, valor, btnEl) {
       });
       toast('Decisão registrada.', 'success');
       _invalidarCachePipeline(osId);
+      _tadmDiarioDaTarefa(osId, tarefaId, 'Decisão registrada', valor);   // V128 — diário local
       await renderTarefasAdm();
     } catch (e) { toast('Erro: ' + e.message, 'error'); }
   });
