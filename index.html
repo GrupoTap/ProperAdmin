@@ -65,6 +65,27 @@
       min-width:auto de flex item deixa o rótulo nowrap da máquina (V127.2)
       alargar a coluna inteira (o caso real: subsistema Wayne Cabeçote + id
       PRP-SUB → Recebimento com ~470px). max-width + min-width:0 na cadeia.
+  6 · "SALVAR SENHA?" DO CHROME EXTERMINADO NA RAIZ (pedido 22/08): os DOIS
+      únicos <input type="password"> da página eram os PINs (modalUsuario e
+      modalResetPin) — vivos no DOM o tempo todo, faziam o Chrome tratar o PCM
+      inteiro como formulário de login e parear qualquer e-mail digitado com
+      eles. Viraram type=text + máscara CSS (.pin-mask) + guard anti-autofill.
+      ⚠ Firefox não tem -webkit-text-security e mostra o PIN — aceitável em
+      tela interna de admin; o balão de senha morre em todos.
+  7 · CLIENTE BARRADO NÃO VIRA FANTASMA (caso EMOP, 22/08): quando o GAS
+      devolve blocked (CNPJ pertence a outra ficha) e o admin recusa a
+      sobrescrita, o cliente já tinha sido empurrado no db LOCAL e ficava na
+      tela como cadastrado até o sync apagá-lo. Agora faz rollback local e a
+      toast diz POR QUE não gravou. (A raiz do caso EMOP era DADO: o CNPJ dela
+      estava gravado na ficha "Fernando Guimarães de Sousa".)
+  9 · 🔎 BUSCAR CNPJ no cadastro de cliente: consulta a base pública oficial
+      da Receita (BrasilAPI, sem chave, CORS provado no navegador em 22/08 com
+      a própria EMOP) e preenche SÓ os campos vazios — razão social divergente
+      vira dica clicável, nunca sobrescrita. Sem GAS: fetch direto do front.
+  8 · ENDEREÇO DESMEMBRADO no cadastro de cliente (modelo SIGE): rua, Número,
+      Complemento, Bairro e CEP em campos próprios (par do GAS v109 + SQL
+      NEWFILE_CADASTRO_ENDERECO; contra GAS antigo os campos novos apenas não
+      persistem — nada quebra). `clEndereco`/chave `endereco` = a RUA, preservados.
   5 · KANBAN OFICINA — FASES AGRUPADAS. Cada template nomeia sua fase de
       diagnóstico e o quadro nascia com 4 colunas de diagnóstico quase vazias.
       _GOS_GRUPOS_FASE agrupa por regex (/diagn/i → "Diagnósticos"); o CARD
@@ -2845,6 +2866,9 @@ th.xf-filtered .xf-fun{opacity:1;stroke:var(--accent)}
 #gosCardsV94 .stat-card{display:flex;align-items:baseline;gap:8px;padding:6px 14px;flex:0 1 auto}
 #gosCardsV94 .stat-val{font-size:17px}
 #gosCardsV94 .stat-lbl{margin-top:0;font-size:11px}
+/* 1b · máscara do PIN sem type=password (Chrome/Edge; no Firefox o PIN
+   aparece — aceitável para tela interna de admin, e o balão de senha morre). */
+.pin-mask{-webkit-text-security:disc}
 /* 1 · Kanban da caixa do adm — colunas mais largas que as da oficina (os cards
    carregam botões de ação) e um subtítulo por coluna. */
 .tadm-kanban .gos-kcol{flex:0 0 340px;max-width:340px}
@@ -3711,7 +3735,14 @@ th.xf-filtered .xf-fun{opacity:1;stroke:var(--accent)}
     <div class="form-row">
       <div class="form-group">
         <label class="form-label">CNPJ <span>opcional</span></label>
-        <input class="form-input" id="clCnpj" placeholder="ex: 11.863.418/0001-49" oninput="_v126MascaraCnpj(this)">
+        <div style="display:flex;gap:6px">
+          <input class="form-input" id="clCnpj" placeholder="ex: 11.863.418/0001-49" oninput="_v126MascaraCnpj(this)" style="flex:1">
+          <!-- V128 — consulta na base pública da Receita (BrasilAPI) e
+               preenche SÓ os campos vazios. Ver _v128BuscarCnpj. -->
+          <button type="button" class="btn btn-secondary btn-sm" id="clCnpjBuscar"
+            title="Buscar os dados deste CNPJ na base pública da Receita Federal e preencher os campos vazios"
+            onclick="_v128BuscarCnpj(this)">🔎 Buscar</button>
+        </div>
         <!-- V126 — o aviso é ao vivo e NÃO reescreve o campo enquanto se digita.
              ⚠ CNPJ repetido entre clientes NÃO é erro: SORRAG Matriz e Filial
              têm o mesmo. É por isso que `unique (cnpj)` é proibido no banco —
@@ -3723,10 +3754,34 @@ th.xf-filtered .xf-fun{opacity:1;stroke:var(--accent)}
         <input class="form-input" id="clCidade" placeholder="ex: Divinópolis">
       </div>
     </div>
+    <!-- V128 — endereço desmembrado (pedido 22/08, modelo SIGE): rua, número,
+         complemento, bairro e CEP em campos próprios. `clEndereco` continua
+         sendo a RUA (id e chave `endereco` preservados — invariante aditivo);
+         cadastro antigo com tudo numa linha só continua aparecendo inteiro. -->
+    <div class="form-row">
+      <div class="form-group" style="flex:2.5">
+        <label class="form-label">Endereço (rua/av.) <span>opcional</span></label>
+        <input class="form-input" id="clEndereco" placeholder="ex: Rua José Balbino Pereira">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Número <span>opcional</span></label>
+        <input class="form-input" id="clNumero" placeholder="ex: 171">
+      </div>
+    </div>
     <div class="form-row">
       <div class="form-group">
-        <label class="form-label">Endereço <span>opcional</span></label>
-        <input class="form-input" id="clEndereco" placeholder="ex: Rua das Flores, 123 – Centro">
+        <label class="form-label">Complemento <span>opcional</span></label>
+        <input class="form-input" id="clComplemento" placeholder="ex: Galpão 2">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Bairro <span>opcional</span></label>
+        <input class="form-input" id="clBairro" placeholder="ex: Niterói">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">CEP <span>opcional</span></label>
+        <input class="form-input" id="clCep" placeholder="ex: 35500-254" maxlength="9" inputmode="numeric">
       </div>
       <div class="form-group">
         <label class="form-label">UF <span>opcional</span></label>
@@ -5857,6 +5912,10 @@ function normalizeClientObject(c) {
   out.drive_url  = getClientField(out, 'drive_url', 'driveLink', 'Drive_URL');
   out.observacoes= getClientField(out, 'observacoes', 'obs', 'Observações');
   out.endereco   = getClientField(out, 'endereco', 'Endereco');
+  out.numero     = getClientField(out, 'numero', 'Numero');          // V128
+  out.complemento= getClientField(out, 'complemento', 'Complemento');// V128
+  out.bairro     = getClientField(out, 'bairro', 'Bairro');          // V128
+  out.cep        = getClientField(out, 'cep', 'CEP');                // V128
   out.uf         = getClientField(out, 'uf', 'UF').toUpperCase();
   out.branch     = getClientField(out, 'branch', 'filial', 'Filial');
   out.filial     = out.branch;
@@ -5921,6 +5980,10 @@ function openModalClient(id){
     document.getElementById('clDrive').value=c.drive_url||'';
     document.getElementById('clObs').value=c.observacoes||'';
     document.getElementById('clEndereco').value=c.endereco||'';
+    document.getElementById('clNumero').value=c.numero||'';
+    document.getElementById('clComplemento').value=c.complemento||'';
+    document.getElementById('clBairro').value=c.bairro||'';
+    document.getElementById('clCep').value=c.cep||'';
     document.getElementById('clUF').value=c.uf||'';
     document.getElementById('clFilial').value=c.branch||c.filial||'';
     document.getElementById('clContato').value=c.contact||c.contato||'';
@@ -5929,7 +5992,7 @@ function openModalClient(id){
   } else {
     document.getElementById('modalClientTitle').textContent='Novo cliente';
     document.getElementById('dupClientAlert')?.classList.remove('show');
-    ['clNome','clCnpj','clCidade','clEndereco','clUF','clFilial','clContato','clLastVisit','clNextVisit','clTelefone','clEmail','clDrive','clObs'].forEach(f=>{const el=document.getElementById(f);if(el)el.value='';});
+    ['clNome','clCnpj','clCidade','clEndereco','clNumero','clComplemento','clBairro','clCep','clUF','clFilial','clContato','clLastVisit','clNextVisit','clTelefone','clEmail','clDrive','clObs'].forEach(f=>{const el=document.getElementById(f);if(el)el.value='';});
     document.getElementById('clAlerta').value=30;
   }
   openModal('modalClient');
@@ -5995,6 +6058,10 @@ async function saveClient(){
     drive_url:  document.getElementById('clDrive').value.trim(),
     observacoes:document.getElementById('clObs').value.trim(),
     endereco:   document.getElementById('clEndereco').value.trim(),
+    numero:     document.getElementById('clNumero').value.trim(),
+    complemento:document.getElementById('clComplemento').value.trim(),
+    bairro:     document.getElementById('clBairro').value.trim(),
+    cep:        document.getElementById('clCep').value.trim(),
     uf:         document.getElementById('clUF').value.trim().toUpperCase(),
     branch:     document.getElementById('clFilial').value.trim(),
     contact:    document.getElementById('clContato').value.trim(),
@@ -6087,7 +6154,17 @@ async function saveClient(){
       // mesma classe do "volta para sem cadastro completo".
       try{
         const _r = await _v126EnviarCliente(data, _v126SobrescreverCnpj);
-        if (_r === null) return;   // V126 — o servidor barrou e o usuário desistiu
+        if (_r === null) {
+          // V128 — o cliente já tinha sido empurrado no db LOCAL; sem este
+          // rollback ele fica na tela como "cadastrado" até o próximo sync
+          // apagá-lo — o "volta para sem cadastro completo" (caso real: EMOP,
+          // 22/08 — o CNPJ dela estava gravado em OUTRA ficha e o blocked
+          // era recusado a cada tentativa).
+          db.clients = db.clients.filter(c => c.id !== data.id);
+          save(); renderClients();
+          toast('Cadastro NÃO gravado: o CNPJ pertence a outra ficha. Corrija o CNPJ da ficha existente (ou desta) e salve de novo.', 'warning');
+          return;
+        }
         if (_r && _r.id && _r.id !== data.id) {
           const _o = data.id; data.id = _r.id;
           (db.machines||[]).forEach(m=>{ if(m.clientId===_o) m.clientId = _r.id; });
@@ -6134,7 +6211,13 @@ async function saveClient(){
   if(!_wasEdit){
     try{
       const resp = await _v126EnviarCliente(data, _v126SobrescreverCnpj);
-      if (resp === null) return;   // V126 — o servidor barrou e o usuário desistiu
+      if (resp === null) {
+        // V128 — mesmo rollback do ramo acima (o push local já aconteceu).
+        db.clients = db.clients.filter(c => c.id !== data.id);
+        save(); renderClients();
+        toast('Cadastro NÃO gravado: o CNPJ pertence a outra ficha. Corrija o CNPJ da ficha existente (ou desta) e salve de novo.', 'warning');
+        return;
+      }
       // V102: adotar o ID CANÔNICO da planilha. O GAS casa por nome/CNPJ e nesse
       // caso o ID dele é outro; ficar com o ID local quebrava a poda V93 (que
       // compara IDs vindos do espelho) e todo match por clientId.
@@ -12387,7 +12470,8 @@ async function _f2cFrescor(tabelas, maxHoras){
 const _F2C_CLIMAP = r => ({ ID:r.id, Nome:r.nome, CNPJ:r.cnpj, Cidade:r.cidade, Telefone:r.telefone,
   Email:r.email, 'Observações':r.observacoes, Antecedencia_Alerta_Dias:r.antecedencia_alerta_dias,
   Drive_URL:r.drive_url, Ativo:r.ativo, Tipo_Registro:r.tipo_registro, Contato:r.contato,
-  Filial:r.filial, Prox_Visita:r.prox_visita, Ult_Visita:r.ult_visita, Endereco:r.endereco, UF:r.uf });
+  Filial:r.filial, Prox_Visita:r.prox_visita, Ult_Visita:r.ult_visita, Endereco:r.endereco, UF:r.uf,
+  Numero:r.numero, Complemento:r.complemento, Bairro:r.bairro, CEP:r.cep });   // V128
 
 async function getClientsFromSupabase(){
   await _f2cFrescor(['clientes'], 48);
@@ -12781,6 +12865,10 @@ async function syncFromGS({ silent = false } = {}){
         if (!existing.nextVisit && sc.Prox_Visita) existing.nextVisit = sc.Prox_Visita;
         if (!existing.lastVisit && sc.Ult_Visita)  existing.lastVisit = sc.Ult_Visita;
         if (!existing.endereco && sc.Endereco)  existing.endereco = sc.Endereco;
+        if (!existing.numero      && sc.Numero)      existing.numero      = sc.Numero;      // V128
+        if (!existing.complemento && sc.Complemento) existing.complemento = sc.Complemento; // V128
+        if (!existing.bairro      && sc.Bairro)      existing.bairro      = sc.Bairro;      // V128
+        if (!existing.cep         && sc.CEP)         existing.cep         = sc.CEP;         // V128
         if (!existing.uf       && sc.UF)        existing.uf       = sc.UF;
       } else {
         const _novoCliente = {
@@ -12798,6 +12886,10 @@ async function syncFromGS({ silent = false } = {}){
           nextVisit: sc.Prox_Visita || '',
           lastVisit: sc.Ult_Visita  || '',
           endereco:  sc.Endereco    || '',
+          numero:    sc.Numero      || '',   // V128
+          complemento: sc.Complemento || '', // V128
+          bairro:    sc.Bairro      || '',   // V128
+          cep:       sc.CEP         || '',   // V128
           uf:        sc.UF          || '',
         };
         db.clients.push(_novoCliente);
@@ -17251,8 +17343,15 @@ if(!gsUrl){
       </div>
       <div class="form-row" id="usuarioPinRow">
         <label class="form-label">PIN (6 dígitos numéricos) *</label>
-        <input class="form-input" type="password" id="usuarioPin" inputmode="numeric"
-          maxlength="6" placeholder="••••••">
+        <!-- V128 — era type="password": os DOIS únicos inputs password da página
+             (este e o resetPinInput) faziam o Chrome tratar o PCM inteiro como
+             formulário de login — qualquer e-mail digitado em qualquer modal
+             virava "usuário" no balão "Salvar senha?". PIN não é credencial de
+             navegador: vira text com máscara CSS (.pin-mask) + guard anti-
+             autofill completo (invariante do projeto). -->
+        <input class="form-input pin-mask" type="text" id="usuarioPin" inputmode="numeric"
+          maxlength="6" placeholder="••••••" autocomplete="off"
+          name="usuario_pin_nofill" data-lpignore="true" data-1p-ignore="true">
       </div>
       <div class="form-row">
         <label class="form-label">Telefone</label>
@@ -17285,8 +17384,9 @@ if(!gsUrl){
       <p id="resetPinNome" style="font-size:13px;color:var(--text-muted);margin-bottom:12px"></p>
       <div class="form-row">
         <label class="form-label">Novo PIN (6 dígitos) *</label>
-        <input class="form-input" type="password" id="resetPinInput" inputmode="numeric"
-          maxlength="6" placeholder="••••••">
+        <input class="form-input pin-mask" type="text" id="resetPinInput" inputmode="numeric"
+          maxlength="6" placeholder="••••••" autocomplete="off"
+          name="reset_pin_nofill" data-lpignore="true" data-1p-ignore="true">
       </div>
     </div>
     <div class="modal-footer">
@@ -20736,6 +20836,75 @@ function _tadmKanbanHtml(linhas) {
       'Registrado NESTE navegador ao resolver pela tela. O histórico oficial segue na planilha (LOG_OPERACIONAL).',
       feitas.map(_tadmCardResolvida), 'Nada resolvido por aqui nos últimos 15 dias') +
     `</div>`;
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+// V128 — 🔎 BUSCAR CNPJ (pedido 22/08). Fonte: BrasilAPI (brasilapi.com.br),
+// que serve os DADOS ABERTOS oficiais da Receita Federal (base pública mensal,
+// via projeto Minha Receita). Gratuita, sem chave, CORS aberto — PROVADO no
+// navegador do Fernando em 22/08 com o CNPJ da EMOP (voltou razão social,
+// rua, número 171, bairro Niterói, CEP 35500-254, Divinópolis/MG).
+// ⚠ Não é o site da Receita em tempo real (aquele exige captcha; o oficial
+//   em tempo real é o Serpro, pago). Para cadastro, a base mensal basta — e
+//   a situação cadastral vem junto para o aviso.
+// 🔑 REGRA DE OURO: preenche SÓ CAMPO VAZIO. O que o admin digitou é soberano
+//   (mesma semântica do mergeVal do GAS). Razão social diferente do que já
+//   está em Nome NÃO sobrescreve — vira dica clicável.
+function _v128TitleCase(v) {
+  return String(v || '').toLowerCase().replace(/(^|\s)([a-zà-ú])/g, function (m) { return m.toUpperCase(); });
+}
+async function _v128BuscarCnpj(btnEl) {
+  const digits = String(document.getElementById('clCnpj')?.value || '').replace(/\D/g, '');
+  if (digits.length !== 14) { toast('Digite o CNPJ completo (14 dígitos) antes de buscar.', 'warning'); return; }
+  const btn = btnEl; const txt0 = btn.textContent;
+  btn.disabled = true; btn.textContent = '…';
+  try {
+    const r = await fetch('https://brasilapi.com.br/api/cnpj/v1/' + digits);
+    if (r.status === 404) { toast('CNPJ não encontrado na base pública da Receita.', 'warning'); return; }
+    if (!r.ok) { toast('A consulta pública de CNPJ não respondeu agora (HTTP ' + r.status + '). Tente de novo em instantes.', 'warning'); return; }
+    const d = await r.json();
+
+    const fill = (id, val) => {
+      const el = document.getElementById(id);
+      if (el && !el.value.trim() && String(val || '').trim()) { el.value = String(val).trim(); return true; }
+      return false;
+    };
+    let n = 0;
+    const rua = [d.descricao_tipo_de_logradouro, d.logradouro].filter(Boolean).join(' ');
+    if (fill('clEndereco', _v128TitleCase(rua))) n++;
+    if (fill('clNumero', d.numero)) n++;
+    if (fill('clComplemento', _v128TitleCase(d.complemento))) n++;
+    if (fill('clBairro', _v128TitleCase(d.bairro))) n++;
+    if (fill('clCep', String(d.cep || '').replace(/^(\d{5})(\d{3})$/, '$1-$2'))) n++;
+    if (fill('clCidade', _v128TitleCase(d.municipio))) n++;
+    if (fill('clUF', d.uf)) n++;
+    if (fill('clTelefone', d.ddd_telefone_1)) n++;
+    if (fill('clEmail', String(d.email || '').toLowerCase())) n++;
+
+    // Razão social: preenche se vazio; se divergente, vira dica — nunca sobrescreve.
+    const nomeEl = document.getElementById('clNome');
+    const razao = String(d.razao_social || '').trim();
+    if (nomeEl && razao) {
+      if (!nomeEl.value.trim()) { nomeEl.value = _v128TitleCase(razao); n++; }
+      else if (clientKey(nomeEl.value) !== clientKey(razao)) {
+        const aviso = document.getElementById('clCnpjAviso');
+        if (aviso) aviso.innerHTML = 'Na Receita este CNPJ é <b>' + escHtml(_v128TitleCase(razao)) +
+          '</b> — <a href="#" onclick="event.preventDefault();document.getElementById(\'clNome\').value=' +
+          "'" + escAttrJs(_v128TitleCase(razao)) + "'" + '">usar este nome</a>.';
+      }
+    }
+    const sit = String(d.descricao_situacao_cadastral || '').toUpperCase();
+    if (sit && sit !== 'ATIVA') {
+      toast('⚠ Situação cadastral na Receita: ' + sit + '. Preenchi mesmo assim (' + n + ' campo(s)).', 'warning');
+    } else {
+      toast(n ? ('Receita: ' + n + ' campo(s) preenchido(s). O que você já tinha digitado foi preservado.')
+              : 'Receita respondeu, mas todos os campos já estavam preenchidos — nada foi alterado.', 'success');
+    }
+  } catch (e) {
+    toast('Sem acesso à consulta pública agora (' + (e && e.message || e) + '). Preencha manualmente ou tente de novo.', 'warning');
+  } finally {
+    btn.disabled = false; btn.textContent = txt0;
+  }
 }
 
 // ══════════════════════════════════════════════════════════════════════════════
