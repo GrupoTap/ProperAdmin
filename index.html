@@ -1,3 +1,78 @@
+<!-- PCM V130 — 23/08/2026 — O PCM CABE NO BOLSO (par do GAS v112).
+     100% ADITIVO sobre a V129: nenhuma função, id, data-key ou action da V129
+     foi renomeada ou removida. Todo código novo usa prefixo _mob*/mob-*, e o
+     bloco do modo app vive DEPOIS de todo o app desktop — no computador ele
+     não pinta um pixel.
+     ORDEM DE PUBLICAÇÃO: SQL (NEWFILE_AGENDA_DEMANDAS.sql) → GAS v112 → PCM.
+
+     POR QUÊ (pedido do Fernando, 23/08): "ao longo do dia surgem muitas
+     demandas que, se não agendadas imediatamente, caem no esquecimento" — e o
+     PCM, feito para telas grandes, era inutilizável no celular justamente na
+     hora em que a urgência acontece (na rua, no cliente, no pátio).
+
+     M1  MODO APP. No celular (largura ≤820px OU ponteiro grosso) o PCM abre
+         numa casca própria: cabeçalho, barra inferior de 5 destinos e telas
+         desenhadas para o polegar. O desktop continua EXATAMENTE como estava —
+         não há media query reescrevendo tela crítica nenhuma; o app antigo é
+         apenas escondido enquanto o modo app está ligado, e volta inteiro por
+         "Abrir versão completa" (guarda em localStorage pcm_mob_off).
+         Para conferir no computador: acrescente ?mobile=1 na URL.
+     M2  HOJE. Cartões do que está acontecendo AGORA (tarefa assumida no PCF),
+         do que é de hoje, do que atrasou e do que está sem responsável.
+     M3  AGENDA DA EQUIPE. Faixa de 14 dias com barra de carga por dia, filtro
+         por pessoa e linha do tempo do dia com marcador de AGORA. Demandas e
+         tarefas de OS aparecem NA MESMA agenda — decisão de 23/08: duas listas
+         separadas viram duas verdades.
+     M4  NOVA DEMANDA em 3 toques (título → quando → responsável). Grava na aba
+         nova AGENDA_DEMANDAS via `saveAgendaDemanda` do GAS v112.
+         🔑 A data vai LOCAL e verbatim ('AAAA-MM-DD' / 'AAAA-MM-DDTHH:mm'),
+            nunca toISOString() — é o mesmo escorregão de 1 dia que a V129 (P4)
+            consertou nas tarefas.
+     M5  ABRIR OS pelo celular, em 4 passos (cliente → máquinas → tipo →
+         confirmar), pela MESMA action `saveOS` do modal do desktop, com o
+         mesmo client_uid idempotente. Uma demanda pode virar OS pré-preenchida:
+         a demanda não some, fica marcada como convertida com o id_os do lado.
+     M6  DESKTOP: a Agenda de Empenho ganhou a faixa "Demandas agendadas" —
+         a mesma fonte do celular, sem tela nova.
+-->
+<!-- PCM V129 — 22/08/2026 — SATURAÇÃO VIRA AGENDA DE EMPENHO (par do GAS v111).
+     100% ADITIVO: nenhuma função/id/data-key/action renomeada; o módulo da
+     Saturação foi reescrito POR DENTRO (mesmos nomes renderSaturacao/
+     _renderGanttSaturacao) e todo código novo usa prefixo _sat*/satMd*.
+     ORDEM DE PUBLICAÇÃO: GAS v111 PRIMEIRO (a tela nova consome o envelope
+     novo; contra ≤v110 cai no render legado, intacto, com aviso).
+
+     POR QUÊ (diagnóstico 22/08): a tela nascia vazia — "Nenhuma tarefa
+     designada" com 59 tarefas abertas — porque agrupava por Usuario_Designado
+     (0/59; só o botão 👤 escreve nele) e o Gantt posicionava por Data_Prevista
+     (0/59). O sistema migrou para Perfil→Executor (v92) e Lock_Por (assumir);
+     a tela ficou no eixo do v40. Pedido do Fernando: agenda para ORIENTAR a
+     distribuição ("Paulo tem preventiva 2ª feira até 13h → nada em cima"),
+     com o assumir tarefa atualizando o quadro para perto da realidade.
+
+     P1  AGENDA POR HORA: usuários × próximos 10 dias; bloco posicionado pela
+         hora dentro do turno (parametros_turno do GAS v110). 🔵 planejada ·
+         🟢 em execução (Lock ativo, entra SOZINHA via assumir do PCF — posição
+         pelo Lock_Em real) · 🔴 atrasada (fim previsto no passado) · ⚠ borda
+         vermelha = conflito. Sem hora = chip tracejado na faixa do dia.
+         Carga do dia (Σ estimado / capacidade) tinge a célula: âmbar >70%,
+         vermelho >100%; dia não útil hachurado. Coluna 0 = atrasadas/a definir.
+     P2  POOL "SEM DESIGNAÇÃO": tarefas abertas sem responsável e sem execução
+         (inclui lock EXPIRADO) — cada linha abre o modal de designar.
+     P3  MODAL DESIGNAR & AGENDAR (substitui o prompt() do 👤): usuário + dia +
+         hora opcional + duração; CONFLITO É AVISO com confirmação, nunca trava
+         (decisão 22/08 — atrasos/adiantamentos acontecem, o admin decide);
+         avisa também fora-do-turno e dia já ocupado sem hora. Grava via
+         designarUsuarioTarefa v2 do GAS v111 (data_prevista + tempo_estimado_min).
+     P4  DATA LOCAL, FIM DO ESCORREGÃO DE 1 DIA: _definirDataPrevista gravava
+         new Date('AAAA-MM-DD').toISOString() = meia-noite UTC = 21h da VÉSPERA
+         no fuso da oficina. Agora grava 'AAAA-MM-DD' ou 'AAAA-MM-DDTHH:mm'
+         LOCAL, verbatim (aceita hora opcional no prompt), e o card do pipeline
+         formata pelo TEXTO da data (não por new Date) — vale RETROATIVAMENTE
+         para o legado …T00:00:00Z já gravado.
+     P5  Cards de saturação ganham 🟢 em-execução-agora e ⚠ nº de conflitos;
+         cache V118 (B10) preservado; ↻ Atualizar invalida o cache.
+     Bancada: _testes/NEWFILE_T_PCM_V129_saturacao.mjs (headless Chromium). -->
 <!-- V127.3 (21/08/2026) — SUB-REVISÃO DO PACOTE V127 (NADA PUBLICADO AINDA).
      Entra DENTRO do pacote v107/V127/V91; ordem de publicação e bump do sw.js
      inalterados. `<title>` e carimbos NÃO mudam. 100% ADITIVO: nenhuma função,
@@ -1926,7 +2001,7 @@ v50 — Resiliência de rede: retry/backoff em gsGet e syncToGS
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>ProperCare Manager · Gestão PGP v3.52 (PCM V128)</title>
+<title>ProperCare Manager · Gestão PGP v3.54 (PCM V130)</title>
 <link rel="icon" type="image/jpeg" href="data:image/jpeg;base64,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">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -2883,7 +2958,7 @@ th.xf-filtered .xf-fun{opacity:1;stroke:var(--accent)}
 <aside class="nav-sidebar" aria-label="Navegação principal">
   <div class="nav-brand">
     <span class="nav-brand-mark">PCM</span>
-    <span class="nav-brand-sub">v3.52 · V128</span>
+    <span class="nav-brand-sub">v3.53 · V129</span>
   </div>
 
   <nav class="nav-groups">
@@ -16321,7 +16396,13 @@ async function _loadPipelineTab(osId) {
                : ''}
            </div>`
         : '';
-      const dataPrevistaStr = t.Data_Prevista ? new Date(t.Data_Prevista).toLocaleDateString('pt-BR') : '';
+      // V129 — formata pelo TEXTO da data ('YYYY-MM-DD…'), não por new Date():
+      // meia-noite UTC (legado) e data-só local escorregavam 1 dia no fuso -03.
+      const _dpRaw = String(t.Data_Prevista || '');
+      const _dpHora = /T(\d{2}:\d{2})/.exec(_dpRaw);
+      const dataPrevistaStr = _dpRaw
+        ? _dpRaw.slice(0, 10).split('-').reverse().join('/') + (_dpHora && _dpHora[1] !== '00:00' ? ' ' + _dpHora[1] : '')
+        : '';
       const dataPrevistaLine = window.PROPER_SESSION?.is_admin === true
         ? `<div style="font-size:11px;color:var(--text-muted);margin-top:2px;display:flex;align-items:center;gap:6px">
              ${dataPrevistaStr ? '📅 Previsto: ' + dataPrevistaStr : ''}
@@ -16436,8 +16517,15 @@ async function _resolverDecisao(osId, tarefaId, valor, btnEl) {
 }
 
 async function _definirDataPrevista(osId, tarefaId, dataAtual) {
-  const novaData = prompt('Data prevista (AAAA-MM-DD):', dataAtual ? dataAtual.slice(0,10) : '');
+  // V129 — hora opcional ('AAAA-MM-DD HH:MM'); com hora a tarefa ganha janela
+  // na agenda da Saturação (fim = início + Tempo_Estimado_Min).
+  const novaData = prompt('Data prevista (AAAA-MM-DD ou AAAA-MM-DD HH:MM):', dataAtual ? dataAtual.slice(0,10) : '');
   if (novaData === null) return;
+  const _mDP = /^\s*(\d{4}-\d{2}-\d{2})(?:[ T](\d{1,2}:\d{2}))?\s*$/.exec(novaData || '');
+  if (novaData && !_mDP) { toast('Formato inválido — use AAAA-MM-DD ou AAAA-MM-DD HH:MM.', 'error'); return; }
+  // Grava LOCAL, verbatim. new Date('AAAA-MM-DD').toISOString() era meia-noite
+  // UTC = 21h da VÉSPERA no fuso da oficina — a data prevista escorregava 1 dia.
+  const _dpLocal = _mDP ? (_mDP[2] ? _mDP[1] + 'T' + _mDP[2].padStart(5, '0') : _mDP[1]) : '';
   // V103 (P2) — este await e o `.tarefas` estavam FORA do try abaixo e sem guard:
   // rede caindo (ou GAS sem `tarefas` no envelope) virava unhandled rejection. O
   // admin digitava a data no prompt, apertava OK e NADA acontecia — sem toast, sem
@@ -16457,7 +16545,7 @@ async function _definirDataPrevista(osId, tarefaId, dataAtual) {
       tarefa_id: tarefaId,
       status: tarefaAtual.Status,
       usuario: window.PROPER_SESSION?.tecnico?.nome || '',
-      data_prevista: novaData ? new Date(novaData).toISOString() : '',
+      data_prevista: _dpLocal,   // V129 — local, sem toISOString (ver acima)
       is_admin: true   // V114 — declaração de origem PCM (ver _resolverDecisao)
     });
     toast('Data prevista atualizada.', 'success');
@@ -16486,29 +16574,18 @@ async function _ajustarTempoEfetivo(osId, tarefaId, valorAtual) {
   }
 }
 
+// V129 — o prompt() virou o modal de designar & agendar (usuário + dia + hora
+// + duração + aviso de conflito). Assinatura preservada; `atual` vira pré-seleção.
 async function _designarUsuario(btnEl, osId, tarefaId, atual) {
   await _comLoadingBtn_(btnEl, async () => {
-  if (!_usuList || !_usuList.length) {
+    // contexto da tarefa direto do pipeline (o payload da Saturação pode não existir aqui)
+    let tempo = 60, dataPrev = '';
     try {
-      const r = await gsGet('getUsuarios');
-      _usuList = r?.tecnicos || r?.usuarios || r?.data || [];
-    } catch(e) { /* segue com lista vazia — prompt simples ainda funciona */ }
-  }
-  const nomes = (_usuList || []).map(u => u.nome).filter(Boolean).join(', ');
-  const novoUsuario = prompt('Designar usuário para esta tarefa' + (nomes ? ' (' + nomes + ')' : '') + ':', atual || '');
-  if (novoUsuario === null) return;
-  try {
-    await syncToGS('designarUsuarioTarefa', {
-      os_id: osId,
-      tarefa_id: tarefaId,
-      usuario_designado: novoUsuario.trim(),
-      usuario: window.PROPER_SESSION?.tecnico?.nome || ''
-    });
-    toast('Usuário designado.', 'success');
-    _loadPipelineTab(osId);
-  } catch(e) {
-    toast('Erro ao designar: ' + e.message, 'error');
-  }
+      const _r = await syncToGS('getPipelineByOS', { os_id: osId });
+      const t = ((_r && _r.tarefas) || []).find(x => x.Tarefa_ID === tarefaId);
+      if (t) { tempo = parseInt(t.Tempo_Estimado_Min, 10) || 60; dataPrev = t.Data_Prevista || ''; }
+    } catch (e) { /* modal abre mesmo sem contexto */ }
+    _satAbrirDesignar(osId, tarefaId, { usuario: atual || '', tempo: tempo, data: dataPrev, origem: 'pipeline' });
   });
 }
 
@@ -21432,7 +21509,14 @@ async function deleteTipoOSAction(tipoId, nome) {
   }
 }
 
-// ── MÓDULO SATURAÇÃO (Sessão E) ────────────────────────────────────────────
+// ── MÓDULO SATURAÇÃO (Sessão E) — V129: AGENDA DE EMPENHO ──────────────────
+// Até a V128 esta tela agrupava por `Usuario_Designado` (0/59 na medição de
+// 22/08) e o Gantt posicionava por `Data_Prevista` (também 0/59): nascia vazia
+// com a oficina cheia. A V129 consome o envelope v111 do GAS: designado
+// EFETIVO (designação → lock ativo), janela início/fim por tarefa, conflitos,
+// pool de não-designadas e parâmetros de turno. O "assumir tarefa" do PCF
+// entra sozinho na agenda (origem 'execucao') — o Gantt acompanha a realidade.
+// Contra GAS ≤v110 (sem `agenda` no envelope) cai no render antigo, intacto.
 
 async function renderSaturacao() {
   const el = document.getElementById('viewSaturacao');
@@ -21453,11 +21537,256 @@ async function renderSaturacao() {
     return;
   }
 
+  // V129 — payload guardado para o modal de designação checar conflito local
+  window._satPayload = result;
+
+  if (!Array.isArray(result?.agenda)) {           // GAS ≤v109: render legado
+    _satRenderLegado(el, result);
+    return;
+  }
+
+  const usuarios = result.usuarios || [];
+  const temAlgo = usuarios.length || (result.nao_designadas || []).length;
+  let html = `<div style="display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:4px">
+      <div style="font-size:18px;font-weight:700">Saturação &amp; agenda de empenho</div>
+      <button class="btn btn-secondary btn-sm" style="padding:2px 10px;font-size:11px" onclick="_saturacaoCacheHtml=null;renderSaturacao()">↻ Atualizar</button>
+    </div>
+    <div style="font-size:12px;color:var(--text2);margin-bottom:16px">
+      Fila designada/assumida, não concluída · Capacidade diária: ${Math.round(Number(result.capacidade_diaria_min) || 0)} min
+      (turno ${escHtml(result.parametros_turno?.turno_inicio || '08:00')}–${escHtml(result.parametros_turno?.turno_fim || '18:00')})
+      · 🔵 planejada · 🟢 em execução (assumida) · 🔴 atrasada · ⚠ conflito de horário
+    </div>`;
+
+  // ── V130 (M6) — DEMANDAS no mesmo quadro ──────────────────────────────────
+  // A demanda agendada no celular é um compromisso da equipe como qualquer
+  // outro: se ela não aparecesse aqui, o admin planejaria o dia sem ver metade
+  // dos compromissos. Fonte única: `demandas`, do MESMO envelope da saturação.
+  html += _v130FaixaDemandas(result);
+
+  if (!temAlgo) {
+    html += `<div class="empty">
+      <div class="empty-icon">📊</div>
+      <div class="empty-title">Nenhuma tarefa aberta</div>
+      <div class="empty-sub">Quando houver tarefas no pipeline das OS, a agenda aparece aqui.</div>
+    </div>`;
+    el.innerHTML = html; _saturacaoCacheHtml = html; return;
+  }
+
+  html += _satRenderCards(result);
+
+  try {
+    html += _satRenderAgenda(result);
+  } catch (e) {
+    console.warn('[V129] agenda de saturação falhou:', e);
+    html += `<div class="empty" style="padding:20px"><div class="empty-sub">⚠ Não foi possível montar a agenda (${escHtml(e && e.message || 'erro')}). Os totais por usuário acima continuam válidos.</div></div>`;
+  }
+  try {
+    html += _satRenderPool(result);
+  } catch (e) { console.warn('[V129] pool de não designadas falhou:', e); }
+
+  el.innerHTML = html;
+  _saturacaoCacheHtml = html;   // V118 (B10)
+}
+
+// V129 — cards de saturação (evolução dos cards V103: + em execução + conflitos)
+function _satRenderCards(result) {
+  const usuarios = result.usuarios || [];
+  if (!usuarios.length) return '';
+  let html = `<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px;margin-bottom:20px">`;
+  usuarios.forEach((u, idx) => {
+    const destaque = idx === 0 && usuarios.length > 1;
+    const nConf = (u.conflitos || []).length;
+    html += `<div class="card" style="${destaque ? 'border-color:var(--red)' : ''}">
+      ${destaque ? '<div style="font-size:11px;font-weight:700;color:var(--red);margin-bottom:4px">🔥 MAIS SATURADO</div>' : ''}
+      <div style="font-size:14px;font-weight:700;margin-bottom:6px">${escHtml(u.usuario)}</div>
+      <div style="font-size:12px;color:var(--text2)">${u.total_tarefas} tarefa(s) na fila</div>
+      <div style="font-size:12px;color:var(--text2)">${Math.round((u.total_estimado_min || 0) / 60 * 10) / 10}h estimadas</div>
+      <div style="font-size:13px;font-weight:600;margin-top:6px">${u.dias_de_fila != null ? u.dias_de_fila + ' dia(s) de fila' : '—'}</div>
+      ${u.em_execucao_agora ? `<div style="font-size:11px;color:#16a34a;font-weight:600;margin-top:4px">🟢 ${u.em_execucao_agora} em execução agora</div>` : ''}
+      ${nConf ? `<div style="font-size:11px;color:var(--red);font-weight:600;margin-top:4px">⚠ ${nConf} conflito(s) de horário</div>` : ''}
+    </div>`;
+  });
+  return html + `</div>`;
+}
+
+// V129 — helpers de tempo (tudo LOCAL: o GAS v110 manda ISO local sem offset)
+// ── V130 (M6) · faixa de demandas do desktop ────────────────────────────────
+function _v130FaixaDemandas(result) {
+  const dems = (result && result.demandas) || [];
+  if (!dems.length) return '';
+  const hoje = new Date(); hoje.setHours(0,0,0,0);
+  const hojeKey = _satDiaKeyLocal(hoje);
+  const proximas = dems.filter(d => !d.dia || d.dia >= hojeKey || d.atrasada).slice(0, 24);
+  if (!proximas.length) return '';
+  const chip = d => {
+    const quando = d.sem_hora
+      ? (d.dia ? _v130DiaCurto(d.dia) : 'sem data')
+      : _v130DiaCurto(d.dia) + ' ' + String(d.inicio_previsto || '').slice(11, 16);
+    const cor = d.atrasada ? 'var(--red)' : (d.prioridade === 'alta' ? 'var(--orange)' : 'var(--purple)');
+    const bg  = d.atrasada ? 'var(--red-light)' : (d.prioridade === 'alta' ? 'var(--orange-light)' : 'var(--purple-light)');
+    return `<div title="${escHtml(d.descricao || d.titulo || '')}" style="flex:0 0 auto;max-width:260px;
+        background:${bg};border:1px solid ${cor}33;border-left:3px solid ${cor};
+        border-radius:8px;padding:7px 10px">
+      <div style="font-size:12.5px;font-weight:650;color:var(--text);white-space:nowrap;
+        overflow:hidden;text-overflow:ellipsis">${escHtml(d.titulo || 'Demanda')}</div>
+      <div style="font-size:11px;color:var(--text2);margin-top:2px">
+        ${escHtml(quando)}${d.responsavel ? ' · ' + escHtml(d.responsavel) : ''}${d.cliente ? ' · ' + escHtml(d.cliente) : ''}
+      </div></div>`;
+  };
+  return `<div style="margin:-6px 0 18px">
+      <div style="font-size:12px;font-weight:700;color:var(--text2);margin-bottom:7px">
+        🗓️ DEMANDAS AGENDADAS <span style="font-weight:500">· agendadas no celular, no mesmo quadro</span>
+      </div>
+      <div style="display:flex;gap:8px;overflow-x:auto;padding-bottom:4px">${proximas.map(chip).join('')}</div>
+    </div>`;
+}
+function _v130DiaCurto(chave) {
+  const p = String(chave || '').split('-');
+  if (p.length < 3) return String(chave || '');
+  return new Date(+p[0], (+p[1]) - 1, +p[2]).toLocaleDateString('pt-BR', { weekday: 'short', day: '2-digit', month: '2-digit' });
+}
+
+function _satMinDoDia(iso) { const d = new Date(iso); return d.getHours() * 60 + d.getMinutes(); }
+function _satHHMM(iso) { const d = new Date(iso); const p = n => String(n).padStart(2, '0'); return p(d.getHours()) + ':' + p(d.getMinutes()); }
+function _satHmmToMin(hhmm) { const m = /^(\d{1,2}):(\d{2})/.exec(String(hhmm || '')); return m ? (+m[1]) * 60 + (+m[2]) : null; }
+function _satDiaKeyLocal(d) { const p = n => String(n).padStart(2, '0'); return d.getFullYear() + '-' + p(d.getMonth() + 1) + '-' + p(d.getDate()); }
+
+// V129 — A AGENDA: usuários × próximos 10 dias, blocos posicionados pela HORA
+// dentro do turno. Sem hora = chip na faixa do dia. Coluna 0 = atrasadas/sem dia.
+function _satRenderAgenda(result) {
+  const agenda = result.agenda || [];
+  const pt = result.parametros_turno || {};
+  const tIni = _satHmmToMin(pt.turno_inicio) ?? 480;
+  const tFim = Math.max(_satHmmToMin(pt.turno_fim) ?? 1080, tIni + 60);
+  const diasUteis = Array.isArray(pt.dias_uteis) && pt.dias_uteis.length ? pt.dias_uteis : [1,2,3,4,5];
+  const capMin = Number(result.capacidade_diaria_min) || 480;
+
+  const HOJE = new Date(); HOJE.setHours(0,0,0,0);
+  const DIAS = 10;
+  const colunas = [];
+  for (let i = 0; i < DIAS; i++) { const d = new Date(HOJE); d.setDate(d.getDate() + i); colunas.push(d); }
+  const hojeKey = _satDiaKeyLocal(HOJE);
+  const fmtDia = d => d.toLocaleDateString('pt-BR', { weekday: 'short', day: '2-digit', month: '2-digit' });
+
+  // agrupamento usuário → dia → tarefas (na ordem dos cards, p/ bater com eles)
+  const usuarios = (result.usuarios || []).map(u => u.usuario);
+  const porUsuario = {};
+  const conflitantes = {}; // usuario -> Set(tarefa_id) p/ marcar ⚠ no bloco
+  (result.usuarios || []).forEach(u => {
+    conflitantes[u.usuario] = new Set();
+    (u.conflitos || []).forEach(c => { conflitantes[u.usuario].add(c.tarefa_a); conflitantes[u.usuario].add(c.tarefa_b); });
+  });
+  agenda.forEach(t => {
+    if (!porUsuario[t.usuario]) porUsuario[t.usuario] = { dias: {}, atras: [] };
+    const slot = porUsuario[t.usuario];
+    if (!t.dia || t.dia < hojeKey) {
+      // sem dia OU dia já passado (não cabe nas colunas) → coluna "Atrasadas / a definir".
+      // Exceção: em execução AGORA cai no dia de hoje, onde está de fato.
+      if (t.em_execucao && t.inicio_real) { (slot.dias[hojeKey] = slot.dias[hojeKey] || []).push(t); return; }
+      slot.atras.push(t); return;
+    }
+    (slot.dias[t.dia] = slot.dias[t.dia] || []).push(t);
+  });
+
+  const pct = min => Math.max(0, Math.min(100, (min - tIni) / (tFim - tIni) * 100));
+
+  function bloco(t, usuario) {
+    const conflito = conflitantes[usuario] && conflitantes[usuario].has(t.tarefa_id);
+    const ini = t.em_execucao && t.inicio_real ? t.inicio_real : t.inicio_previsto;
+    const fimIso = t.em_execucao && t.inicio_real
+      ? new Date(new Date(t.inicio_real).getTime() + (t.tempo_estimado_min || 60) * 60000)
+      : (t.fim_previsto ? new Date(t.fim_previsto) : null);
+    const a = _satMinDoDia(ini);
+    const b = fimIso ? Math.max(_satMinDoDia(new Date(fimIso).toString() === 'Invalid Date' ? ini : fimIso), a + 20) : a + 60;
+    const left = pct(a), width = Math.max(pct(b) - left, 4);
+    const cor = t.em_execucao ? '#16a34a' : (t.atrasada ? 'var(--red)' : 'var(--accent)');
+    const tip = `${t.nome} · OS ${t.os_numero || t.os_id}${t.cliente ? ' · ' + t.cliente : ''} · ${_satHHMM(ini)}${fimIso ? '–' + _satHHMM(fimIso) : ''}${t.sem_estimativa ? ' (sem estimativa: 60min)' : ''}${t.em_execucao ? ' · EM EXECUÇÃO' : ''}${conflito ? ' · ⚠ CONFLITO' : ''}`;
+    return `<div onclick="_satAbrirDesignar('${escJs(t.os_id)}','${escJs(t.tarefa_id)}',{usuario:'${escJs(usuario)}',origem:'agenda'})"
+      title="${escHtml(tip)}"
+      style="position:absolute;left:${left}%;width:${width}%;top:2px;bottom:2px;background:${cor};opacity:.92;border-radius:3px;cursor:pointer;overflow:hidden;white-space:nowrap;color:#fff;font-size:9px;line-height:1.1;padding:1px 3px;${conflito ? 'outline:2px solid var(--red);outline-offset:-1px;' : ''}">
+      ${conflito ? '⚠' : ''}${escHtml(String(t.nome || '').slice(0, 16))}</div>`;
+  }
+
+  function chipSemHora(t, usuario) {
+    const conflito = false;
+    const tip = `${t.nome} · OS ${t.os_numero || t.os_id}${t.cliente ? ' · ' + t.cliente : ''} · dia inteiro (sem hora)`;
+    return `<div onclick="_satAbrirDesignar('${escJs(t.os_id)}','${escJs(t.tarefa_id)}',{usuario:'${escJs(usuario)}',origem:'agenda'})"
+      title="${escHtml(tip)}"
+      style="display:inline-block;background:var(--bg);border:1px dashed var(--border);border-radius:4px;padding:1px 5px;margin:1px 2px 0 0;font-size:9px;color:var(--text2);cursor:pointer;white-space:nowrap;max-width:100%;overflow:hidden;text-overflow:ellipsis">${escHtml(String(t.nome || '').slice(0, 18))}${t.atrasada ? '' : ''}</div>`;
+  }
+
+  let html = `<div style="font-size:15px;font-weight:700;margin:6px 0 8px">📅 Agenda (próximos ${DIAS} dias)</div>
+    <div style="overflow-x:auto"><table style="border-collapse:collapse;width:100%;font-size:11px;min-width:${140 + 90 + DIAS * 95}px">
+    <thead><tr>
+      <th style="text-align:left;padding:6px;border-bottom:1px solid var(--border);white-space:nowrap;position:sticky;left:0;background:var(--surface,var(--bg))">Usuário</th>
+      <th style="text-align:left;padding:6px;border-bottom:1px solid var(--border);white-space:nowrap;color:var(--text-muted)">Atrasadas / a definir</th>
+      ${colunas.map(d => {
+        const util = diasUteis.indexOf(d.getDay() === 0 ? 7 : d.getDay()) >= 0;
+        const hoje = _satDiaKeyLocal(d) === hojeKey;
+        return `<th style="text-align:left;padding:6px;border-bottom:1px solid var(--border);white-space:nowrap;${hoje ? 'color:var(--accent);font-weight:700;' : ''}${util ? '' : 'color:var(--text-muted);opacity:.6;'}">${fmtDia(d)}${hoje ? ' · hoje' : ''}</th>`;
+      }).join('')}
+    </tr></thead><tbody>`;
+
+  usuarios.forEach(usuario => {
+    const slot = porUsuario[usuario] || { dias: {}, atras: [] };
+    html += `<tr>
+      <td style="padding:6px;border-bottom:1px solid var(--border);font-weight:600;white-space:nowrap;position:sticky;left:0;background:var(--surface,var(--bg))">${escHtml(usuario)}</td>
+      <td style="padding:4px 6px;border-bottom:1px solid var(--border);vertical-align:top;min-width:90px;max-width:130px">
+        ${slot.atras.map(t => `<div onclick="_satAbrirDesignar('${escJs(t.os_id)}','${escJs(t.tarefa_id)}',{usuario:'${escJs(usuario)}',origem:'agenda'})" title="${escHtml(t.nome + ' · OS ' + (t.os_numero || t.os_id) + (t.dia ? ' · previsto ' + t.dia.split('-').reverse().join('/') : ' · sem data'))}"
+            style="background:${t.dia ? 'rgba(220,38,38,.12)' : 'var(--bg)'};border:1px solid ${t.dia ? 'var(--red)' : 'var(--border)'};border-radius:4px;padding:1px 5px;margin-bottom:2px;font-size:9px;cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;${t.dia ? 'color:var(--red);' : 'color:var(--text2);'}">${t.dia ? '🔴 ' : ''}${escHtml(String(t.nome || '').slice(0, 16))}</div>`).join('') || '<span style="color:var(--text-muted)">—</span>'}
+      </td>
+      ${colunas.map(d => {
+        const key = _satDiaKeyLocal(d);
+        const doDia = slot.dias[key] || [];
+        const util = diasUteis.indexOf(d.getDay() === 0 ? 7 : d.getDay()) >= 0;
+        const minDia = doDia.reduce((s, t) => s + (t.tempo_estimado_min || 60), 0);
+        const carga = capMin > 0 ? minDia / capMin : 0;
+        const fundo = !util ? 'background:repeating-linear-gradient(45deg,transparent,transparent 6px,var(--border) 6px,var(--border) 7px);'
+          : (carga > 1 ? 'background:rgba(220,38,38,.10);' : (carga > .7 ? 'background:rgba(217,119,6,.10);' : ''));
+        const comHora = doDia.filter(t => (t.inicio_previsto && !t.sem_hora) || (t.em_execucao && t.inicio_real));
+        const semHora = doDia.filter(t => !comHora.includes(t));
+        return `<td style="padding:2px 3px;border-bottom:1px solid var(--border);border-left:1px solid var(--border);vertical-align:top;min-width:92px;${fundo}">
+          <div style="position:relative;height:26px;background:var(--bg);border-radius:3px">${comHora.map(t => bloco(t, usuario)).join('')}</div>
+          <div style="margin-top:2px">${semHora.map(t => chipSemHora(t, usuario)).join('')}</div>
+          ${minDia ? `<div style="font-size:8px;color:${carga > 1 ? 'var(--red)' : 'var(--text-muted)'};margin-top:1px">${Math.round(minDia / 60 * 10) / 10}h / ${Math.round(capMin / 60 * 10) / 10}h${carga > 1 ? ' ⚠' : ''}</div>` : ''}
+        </td>`;
+      }).join('')}
+    </tr>`;
+  });
+  html += `</tbody></table></div>`;
+  return html;
+}
+
+// V129 — o POOL: tarefas abertas sem designação e sem execução. É daqui que o
+// admin distribui — cada linha abre o modal de designar já no contexto.
+function _satRenderPool(result) {
+  const pool = result.nao_designadas || [];
+  if (!pool.length) return `<div style="font-size:12px;color:#16a34a;margin-top:16px">✓ Todas as tarefas abertas têm responsável designado ou em execução.</div>`;
+  const badgeExec = ex => ex === 'adm' ? '🏢 Adm' : (ex === 'ambos' ? '🔀 Ambos' : '🔧 Campo');
+  let html = `<div style="font-size:15px;font-weight:700;margin:20px 0 4px">📥 Sem designação (${pool.length})</div>
+    <div style="font-size:12px;color:var(--text2);margin-bottom:8px">Tarefas abertas sem responsável e sem execução em andamento — designe para entrarem na agenda.</div>
+    <div style="overflow-x:auto"><table style="border-collapse:collapse;width:100%;font-size:12px">
+    <thead><tr>
+      ${['OS','Cliente','Tarefa','Executor','Estimado','Status',''].map(h => `<th style="text-align:left;padding:6px;border-bottom:1px solid var(--border);white-space:nowrap">${h}</th>`).join('')}
+    </tr></thead><tbody>`;
+  pool.forEach(t => {
+    html += `<tr>
+      <td style="padding:6px;border-bottom:1px solid var(--border);white-space:nowrap">${escHtml(t.os_numero || t.os_id)}</td>
+      <td style="padding:6px;border-bottom:1px solid var(--border);max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${escHtml(t.cliente || '—')}</td>
+      <td style="padding:6px;border-bottom:1px solid var(--border)">${escHtml(t.nome)}</td>
+      <td style="padding:6px;border-bottom:1px solid var(--border);white-space:nowrap;font-size:11px">${badgeExec(t.executor)}</td>
+      <td style="padding:6px;border-bottom:1px solid var(--border);white-space:nowrap">${t.tempo_estimado_min ? t.tempo_estimado_min + ' min' : '<span style="color:var(--text-muted)">—</span>'}</td>
+      <td style="padding:6px;border-bottom:1px solid var(--border);white-space:nowrap;font-size:11px">${escHtml(t.status)}</td>
+      <td style="padding:6px;border-bottom:1px solid var(--border);white-space:nowrap">
+        <button class="btn btn-secondary btn-sm" style="padding:2px 8px;font-size:11px" onclick="_satAbrirDesignar('${escJs(t.os_id)}','${escJs(t.tarefa_id)}',{tempo:${t.tempo_estimado_min || 60},origem:'agenda'})">👤 Designar</button>
+      </td></tr>`;
+  });
+  return html + `</tbody></table></div>`;
+}
+
+// V129 — fallback para GAS ≤v110 (sem `agenda` no envelope): render antigo.
+function _satRenderLegado(el, result) {
   const usuarios = (result?.usuarios || []).map(u => Object.assign({}, u, {
-    // V103 (P1) — GAS antigo (ou payload parcial) devolve usuário SEM `tarefas`, e
-    // _renderGanttSaturacao fazia u.tarefas.filter(...) direto: a exceção subia DEPOIS
-    // do placeholder e a tela ficava presa em "Calculando saturação…" para sempre,
-    // sem erro nenhum na cara do admin. Guard na entrada + try/catch na saída.
     tarefas: Array.isArray(u && u.tarefas) ? u.tarefas : [],
     total_tarefas: Number(u && u.total_tarefas) || 0,
     total_estimado_min: Number(u && u.total_estimado_min) || 0
@@ -21466,16 +21795,14 @@ async function renderSaturacao() {
     el.innerHTML = `<div class="empty">
       <div class="empty-icon">📊</div>
       <div class="empty-title">Nenhuma tarefa designada</div>
-      <div class="empty-sub">Designe usuários nas tarefas do pipeline das OS para ver a saturação aqui.</div>
+      <div class="empty-sub">Designe usuários nas tarefas do pipeline das OS para ver a saturação aqui. (Publique o GAS v111 para a agenda de empenho completa.)</div>
     </div>`;
-    _saturacaoCacheHtml = el.innerHTML;   // V118 (B10)
+    _saturacaoCacheHtml = el.innerHTML;
     return;
   }
-
   let html = `<div style="font-size:18px;font-weight:700;margin-bottom:4px">Saturação de usuários</div>
     <div style="font-size:12px;color:var(--text2);margin-bottom:16px">Fila de tarefas designadas, não concluídas · Capacidade diária: ${Math.round(Number(result.capacidade_diaria_min) || 0)} min</div>
     <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;margin-bottom:24px">`;
-
   usuarios.forEach((u, idx) => {
     const destaque = idx === 0;
     html += `<div class="card" style="${destaque ? 'border-color:var(--red)' : ''}">
@@ -21486,10 +21813,6 @@ async function renderSaturacao() {
       <div style="font-size:13px;font-weight:600;margin-top:6px">${u.dias_de_fila != null ? u.dias_de_fila + ' dia(s) de fila' : '—'}</div>
     </div>`;
   });
-
-  // V103 (P1) — o gantt é a parte frágil (depende de u.tarefas e de datas do Sheets).
-  // Se ele falhar, os CARDS de saturação continuam aparecendo, em vez de a tela toda
-  // ficar congelada no "Calculando saturação…".
   try {
     html += `</div>` + _renderGanttSaturacao(usuarios);
   } catch (e) {
@@ -21500,6 +21823,7 @@ async function renderSaturacao() {
   _saturacaoCacheHtml = html;   // V118 (B10)
 }
 
+// Gantt ANTIGO (V103) — mantido intacto como fallback do render legado acima.
 function _renderGanttSaturacao(usuarios) {
   const HOJE = new Date();
   HOJE.setHours(0, 0, 0, 0);
@@ -21542,6 +21866,145 @@ function _renderGanttSaturacao(usuarios) {
 
   html += `</tbody></table></div>`;
   return html;
+}
+
+// ── V129 — MODAL DE DESIGNAÇÃO/AGENDAMENTO ─────────────────────────────────
+// Um modal só, para os 3 pontos de entrada: pipeline da OS (_designarUsuario),
+// pool de não-designadas e clique num bloco da agenda. Usuário + dia + hora
+// (opcional) + duração; conflito de horário é AVISO com confirmação — nunca
+// trava (decisão de 22/08: atrasos/adiantamentos acontecem, o admin decide).
+let _satModalCtx = null;
+
+async function _satAbrirDesignar(osId, tarefaId, opts) {
+  opts = opts || {};
+  document.getElementById('satModalOverlay')?.remove();
+  _satModalCtx = { osId, tarefaId, origem: opts.origem || 'agenda' };
+
+  if (!_usuList || !_usuList.length) {
+    try {
+      const r = await gsGet('getUsuarios');
+      _usuList = r?.tecnicos || r?.usuarios || r?.data || [];
+    } catch (e) { _usuList = _usuList || []; }
+  }
+
+  // contexto atual da tarefa (payload da tela, se houver)
+  let linha = null;
+  const pay = window._satPayload;
+  if (pay && Array.isArray(pay.agenda)) {
+    linha = pay.agenda.find(t => t.os_id === osId && t.tarefa_id === tarefaId)
+         || (pay.nao_designadas || []).find(t => t.os_id === osId && t.tarefa_id === tarefaId) || null;
+  }
+  const usuarioAtual = opts.usuario || (linha && linha.usuario) || '';
+  const tempoAtual = opts.tempo || (linha && linha.tempo_estimado_min) || 60;
+  let diaAtual = '', horaAtual = '';
+  const dpBase = opts.data || (linha && (linha.inicio_previsto || (linha.dia ? linha.dia : ''))) || '';
+  if (dpBase) {
+    diaAtual = String(dpBase).slice(0, 10);
+    if (String(dpBase).length > 10 && !(linha && linha.sem_hora)) horaAtual = String(dpBase).slice(11, 16);
+  }
+
+  const nomes = (_usuList || []).map(u => u.nome).filter(Boolean);
+  if (usuarioAtual && nomes.indexOf(usuarioAtual) < 0) nomes.unshift(usuarioAtual);
+
+  const ov = document.createElement('div');
+  ov.id = 'satModalOverlay';
+  ov.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:9000;display:flex;align-items:center;justify-content:center;padding:16px';
+  ov.addEventListener('click', e => { if (e.target === ov) _satFecharModal(); });
+  ov.innerHTML = `<div style="background:var(--surface,var(--bg));border:1px solid var(--border);border-radius:8px;max-width:420px;width:100%;padding:18px;box-shadow:0 10px 40px rgba(0,0,0,.35)">
+    <div style="font-size:15px;font-weight:700;margin-bottom:2px">👤 Designar &amp; agendar</div>
+    <div style="font-size:11px;color:var(--text2);margin-bottom:12px">${escHtml((linha && linha.nome) || 'Tarefa')} · OS ${escHtml((linha && (linha.os_numero || linha.os_id)) || osId)}${linha && linha.cliente ? ' · ' + escHtml(linha.cliente) : ''}</div>
+    <label style="font-size:11px;color:var(--text2)">Usuário</label>
+    <select id="satMdUsuario" style="width:100%;margin:2px 0 10px;padding:6px;border:1px solid var(--border);border-radius:5px;background:var(--bg);color:inherit">
+      <option value="">— sem designação —</option>
+      ${nomes.map(n => `<option value="${escHtml(n)}" ${n === usuarioAtual ? 'selected' : ''}>${escHtml(n)}</option>`).join('')}
+    </select>
+    <div style="display:flex;gap:8px">
+      <div style="flex:1"><label style="font-size:11px;color:var(--text2)">Dia</label>
+        <input type="date" id="satMdDia" value="${escHtml(diaAtual)}" style="width:100%;margin-top:2px;padding:6px;border:1px solid var(--border);border-radius:5px;background:var(--bg);color:inherit"></div>
+      <div style="width:100px"><label style="font-size:11px;color:var(--text2)">Hora <span style="opacity:.6">(opc.)</span></label>
+        <input type="time" id="satMdHora" value="${escHtml(horaAtual)}" style="width:100%;margin-top:2px;padding:6px;border:1px solid var(--border);border-radius:5px;background:var(--bg);color:inherit"></div>
+      <div style="width:90px"><label style="font-size:11px;color:var(--text2)">Duração (min)</label>
+        <input type="number" id="satMdTempo" value="${tempoAtual}" min="0" step="15" style="width:100%;margin-top:2px;padding:6px;border:1px solid var(--border);border-radius:5px;background:var(--bg);color:inherit"></div>
+    </div>
+    <div id="satMdAviso" style="min-height:18px;font-size:11px;margin:10px 0 4px"></div>
+    <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:8px">
+      <button class="btn btn-secondary btn-sm" onclick="_satFecharModal()">Cancelar</button>
+      <button class="btn btn-primary btn-sm" id="satMdOk" onclick="_satConfirmarDesignar(this)">Salvar</button>
+    </div>
+  </div>`;
+  document.body.appendChild(ov);
+  ['satMdUsuario','satMdDia','satMdHora','satMdTempo'].forEach(id =>
+    document.getElementById(id).addEventListener('input', _satChecarConflito));
+  _satChecarConflito();
+}
+
+function _satFecharModal() { document.getElementById('satModalOverlay')?.remove(); _satModalCtx = null; }
+
+// Conflito calculado LOCALMENTE contra o último payload — é aviso, não trava.
+function _satChecarConflito() {
+  const box = document.getElementById('satMdAviso');
+  if (!box || !_satModalCtx) return;
+  const usuario = document.getElementById('satMdUsuario').value;
+  const dia = document.getElementById('satMdDia').value;
+  const hora = document.getElementById('satMdHora').value;
+  const dur = parseInt(document.getElementById('satMdTempo').value, 10) || 60;
+  const avisos = [];
+  const pay = window._satPayload;
+  if (usuario && dia && hora && pay && Array.isArray(pay.agenda)) {
+    const iniNovo = new Date(dia + 'T' + hora + ':00').getTime();
+    const fimNovo = iniNovo + dur * 60000;
+    // fora do turno?
+    const pt = pay.parametros_turno || {};
+    const tIni = _satHmmToMin(pt.turno_inicio), tFim = _satHmmToMin(pt.turno_fim);
+    const minIni = _satHmmToMin(hora);
+    if (tIni != null && tFim != null && (minIni < tIni || minIni + dur > tFim)) {
+      avisos.push(`<span style="color:#d97706">⚠ Fora do turno (${escHtml(pt.turno_inicio)}–${escHtml(pt.turno_fim)}).</span>`);
+    }
+    pay.agenda.filter(t => t.usuario === usuario && t.dia === dia &&
+        !(t.os_id === _satModalCtx.osId && t.tarefa_id === _satModalCtx.tarefaId)).forEach(t => {
+      if (t.inicio_previsto && t.fim_previsto) {
+        const a = new Date(t.inicio_previsto).getTime(), b = new Date(t.fim_previsto).getTime();
+        if (iniNovo < b && a < fimNovo) {
+          avisos.push(`<span style="color:var(--red)">⚠ Conflito: <b>${escHtml(usuario)}</b> já tem "${escHtml(t.nome)}" (OS ${escHtml(t.os_numero || t.os_id)}) das ${_satHHMM(t.inicio_previsto)} às ${_satHHMM(t.fim_previsto)}.</span>`);
+        }
+      } else {
+        avisos.push(`<span style="color:#d97706">ℹ ${escHtml(usuario)} já tem "${escHtml(t.nome)}" neste dia (sem hora definida).</span>`);
+      }
+    });
+  }
+  box.innerHTML = avisos.length
+    ? avisos.join('<br>') + '<br><span style="color:var(--text2)">Você ainda pode salvar — o aviso não trava.</span>'
+    : (usuario && dia ? '<span style="color:#16a34a">✓ Sem conflito de horário para este usuário.</span>' : '');
+}
+
+async function _satConfirmarDesignar(btnEl) {
+  if (!_satModalCtx) return;
+  const { osId, tarefaId, origem } = _satModalCtx;
+  const usuario = document.getElementById('satMdUsuario').value.trim();
+  const dia = document.getElementById('satMdDia').value;
+  const hora = document.getElementById('satMdHora').value;
+  const dur = document.getElementById('satMdTempo').value;
+  // Data LOCAL, sem toISOString: 'YYYY-MM-DD' (sem hora) ou 'YYYY-MM-DDTHH:mm'.
+  // (Meia-noite UTC gravada até a V128 escorregava a data para a véspera.)
+  const dataPrev = dia ? (hora ? dia + 'T' + hora : dia) : '';
+  await _comLoadingBtn_(btnEl, async () => {
+    try {
+      await syncToGS('designarUsuarioTarefa', {
+        os_id: osId, tarefa_id: tarefaId,
+        usuario_designado: usuario,
+        usuario: window.PROPER_SESSION?.tecnico?.nome || '',
+        data_prevista: dataPrev,
+        tempo_estimado_min: dur === '' ? null : parseInt(dur, 10)
+      });
+      toast(usuario ? 'Designação salva.' : 'Designação removida.', 'success');
+      _satFecharModal();
+      if (origem === 'pipeline' && typeof _loadPipelineTab === 'function') _loadPipelineTab(osId);
+      _saturacaoCacheHtml = null;
+      if (document.getElementById('viewSaturacao')?.style.display !== 'none') renderSaturacao();
+    } catch (e) {
+      toast('Erro ao designar: ' + e.message, 'error');
+    }
+  });
 }
 </script>
 
@@ -22488,5 +22951,1155 @@ function _etqImprimir(btnEl) {
 
 </script>
 
+<!-- ═══════════════════════════════════════════════════════════════════════════
+     PCM V130 · MODO APP (MOBILE) — bloco 100% autocontido.
+     Tudo aqui é prefixado _mob*/mob-* e vive DEPOIS do app desktop. No desktop
+     este bloco não pinta um pixel: só acorda quando a tela é de celular.
+     ═══════════════════════════════════════════════════════════════════════ -->
+<style id="mobCss">
+:root{
+  --mob-accent:#f07725; --mob-accent-2:#ff9d4d; --mob-ink:#0e0e12;
+  --mob-bg:#f4f4f5; --mob-card:#ffffff; --mob-line:rgba(0,0,0,.07);
+  --mob-muted:#6b7280; --mob-nav-h:64px;
+  --mob-safe-b:env(safe-area-inset-bottom,0px);
+  --mob-safe-t:env(safe-area-inset-top,0px);
+}
+#mobApp{display:none}
+body.mob-on{overflow:hidden}
+body.mob-on #mobApp{
+  display:block;position:fixed;inset:0;z-index:9000;background:var(--mob-bg);
+  font-family:var(--font-sans);color:var(--mob-ink);overflow:hidden;
+  -webkit-tap-highlight-color:transparent;
+}
+/* O app desktop DORME, não morre — "Abrir versão completa" religa tudo sem
+   recarregar dado. ⚠ A lista de exceções não é decorativa: sem ela as folhas
+   (#mobSheet) e o #toast, que são filhos diretos do body, sumiam junto — e o
+   app ficava sem nenhum caminho de criar nem nenhum aviso. Quem entra aqui
+   ganha a classe .mob-keep. */
+body.mob-on > *:not(#mobApp):not(.mob-keep):not(script):not(style){display:none !important}
+body.mob-on #toast{z-index:9800}
+
+.mob-scroll{
+  position:absolute;top:0;left:0;right:0;
+  bottom:calc(var(--mob-nav-h) + var(--mob-safe-b));
+  overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior-y:contain;
+}
+.mob-pad{padding:0 16px 28px}
+
+/* ── cabeçalho ───────────────────────────────────────────────────────────── */
+.mob-hero{
+  background:linear-gradient(150deg,#f07725 0%,#e2620f 55%,#b64a06 100%);
+  color:#fff;padding:calc(var(--mob-safe-t) + 18px) 18px 60px;position:relative;
+}
+.mob-hero::after{
+  content:'';position:absolute;left:0;right:0;bottom:-1px;height:26px;
+  background:var(--mob-bg);border-radius:26px 26px 0 0;
+}
+.mob-hero-top{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.mob-hello{font-size:13px;opacity:.86;letter-spacing:.2px}
+.mob-title{font-size:24px;font-weight:800;letter-spacing:-.5px;margin-top:2px}
+.mob-avatar{
+  width:38px;height:38px;border-radius:50%;background:rgba(255,255,255,.18);
+  display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;
+  border:1px solid rgba(255,255,255,.3);flex:0 0 auto
+}
+.mob-kpis{display:flex;gap:8px;margin-top:16px;overflow-x:auto;padding-bottom:2px;scrollbar-width:none}
+.mob-kpis::-webkit-scrollbar{display:none}
+.mob-kpi{
+  flex:0 0 auto;min-width:88px;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.22);
+  border-radius:14px;padding:10px 12px;backdrop-filter:blur(4px)
+}
+.mob-kpi b{display:block;font-size:22px;font-weight:800;line-height:1.1}
+.mob-kpi span{font-size:11px;opacity:.9}
+.mob-kpi.is-alert{background:rgba(185,28,28,.32);border-color:rgba(255,255,255,.35)}
+
+/* ── cartões ─────────────────────────────────────────────────────────────── */
+.mob-sec{margin-top:22px}
+.mob-sec-h{display:flex;align-items:center;justify-content:space-between;margin:0 2px 10px}
+.mob-sec-t{font-size:13px;font-weight:700;letter-spacing:.3px;text-transform:uppercase;color:#3f3f46}
+.mob-sec-a{font-size:12px;font-weight:600;color:var(--mob-accent);background:none;border:0;padding:6px}
+.mob-card{
+  background:var(--mob-card);border:1px solid var(--mob-line);border-radius:16px;
+  padding:14px;margin-bottom:10px;box-shadow:0 1px 2px rgba(0,0,0,.04);
+  display:flex;gap:12px;align-items:flex-start;width:100%;text-align:left
+}
+.mob-card:active{transform:scale(.985)}
+.mob-dot{width:10px;height:10px;border-radius:50%;flex:0 0 auto;margin-top:5px;background:#94a3b8}
+.mob-dot.d-exec{background:#16a34a;box-shadow:0 0 0 4px rgba(22,163,74,.15)}
+.mob-dot.d-late{background:#dc2626;box-shadow:0 0 0 4px rgba(220,38,38,.14)}
+.mob-dot.d-dem{background:#7c3aed}
+.mob-dot.d-plan{background:#2563eb}
+/* ⚠ display:block obrigatório — são <span> dentro de <button> (botão não pode
+   conter <div>), e sem isto título e subtítulo saem colados na mesma linha. */
+.mob-card-b{flex:1;min-width:0;display:block}
+.mob-card-t{display:block;font-size:15px;font-weight:650;line-height:1.3;word-break:break-word}
+.mob-card-s{display:block;font-size:12.5px;color:var(--mob-muted);margin-top:3px;line-height:1.4}
+.mob-pick .p-t,.mob-pick .p-s,.mob-big .b-t,.mob-big .b-s{display:block}
+.mob-pick>span:last-child,.mob-big>span:last-child{flex:1;min-width:0}
+.mob-tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.mob-tag{font-size:11px;font-weight:600;padding:3px 9px;border-radius:999px;background:#f1f5f9;color:#475569}
+.mob-tag.t-time{background:#eff6ff;color:#1d4ed8}
+.mob-tag.t-exec{background:#dcfce7;color:#15803d}
+.mob-tag.t-late{background:#fee2e2;color:#b91c1c}
+.mob-tag.t-dem{background:#f3e8ff;color:#6d28d9}
+.mob-tag.t-alta{background:#ffedd5;color:#c2410c}
+.mob-empty{
+  text-align:center;padding:34px 16px;color:var(--mob-muted);
+  background:var(--mob-card);border:1px dashed var(--mob-line);border-radius:16px
+}
+.mob-empty .e-i{font-size:34px;display:block;margin-bottom:8px}
+.mob-empty .e-t{font-weight:650;color:#3f3f46;font-size:14px}
+.mob-empty .e-s{font-size:12.5px;margin-top:3px}
+
+/* ── faixa de dias ───────────────────────────────────────────────────────── */
+.mob-days{display:flex;gap:8px;overflow-x:auto;padding:2px 16px 12px;scrollbar-width:none}
+.mob-days::-webkit-scrollbar{display:none}
+.mob-day{
+  flex:0 0 auto;width:58px;border-radius:14px;background:var(--mob-card);
+  border:1px solid var(--mob-line);padding:9px 0 7px;text-align:center
+}
+.mob-day.is-sel{background:var(--mob-ink);border-color:var(--mob-ink);color:#fff}
+.mob-day.is-off{opacity:.5}
+.mob-day .d-w{font-size:10.5px;text-transform:uppercase;letter-spacing:.4px;opacity:.75}
+.mob-day .d-n{font-size:19px;font-weight:750;line-height:1.2}
+.mob-day .d-bar{height:3px;border-radius:2px;background:#e4e4e7;margin:5px 8px 0;overflow:hidden}
+.mob-day .d-bar i{display:block;height:100%;background:var(--mob-accent);border-radius:2px}
+.mob-day.is-sel .d-bar{background:rgba(255,255,255,.25)}
+
+/* ── filtro de pessoas ───────────────────────────────────────────────────── */
+.mob-chips{display:flex;gap:7px;overflow-x:auto;padding:0 16px 12px;scrollbar-width:none}
+.mob-chips::-webkit-scrollbar{display:none}
+.mob-chip{
+  flex:0 0 auto;font-size:12.5px;font-weight:600;padding:7px 13px;border-radius:999px;
+  background:var(--mob-card);border:1px solid var(--mob-line);color:#3f3f46
+}
+.mob-chip.is-on{background:var(--mob-ink);color:#fff;border-color:var(--mob-ink)}
+
+/* ── linha do tempo ──────────────────────────────────────────────────────── */
+.mob-tl{position:relative;padding-left:60px}
+.mob-tl::before{content:'';position:absolute;left:45px;top:6px;bottom:6px;width:2px;background:var(--mob-line)}
+.mob-tl-i{position:relative;margin-bottom:10px}
+.mob-tl-h{
+  position:absolute;left:-60px;top:14px;width:44px;text-align:right;
+  font-size:12px;font-weight:700;color:#52525b;font-variant-numeric:tabular-nums
+}
+.mob-tl-i::before{
+  content:'';position:absolute;left:-16px;top:19px;width:9px;height:9px;border-radius:50%;
+  background:#fff;border:2px solid var(--mob-accent)
+}
+.mob-now{display:flex;align-items:center;gap:8px;margin:2px 0 12px -60px;color:#dc2626}
+.mob-now i{flex:1;height:2px;background:#dc2626;opacity:.45}
+.mob-now b{font-size:11px;font-weight:800;letter-spacing:.5px}
+
+/* ── navegação inferior ──────────────────────────────────────────────────── */
+.mob-nav{
+  position:absolute;left:0;right:0;bottom:0;height:calc(var(--mob-nav-h) + var(--mob-safe-b));
+  padding-bottom:var(--mob-safe-b);background:rgba(255,255,255,.94);
+  backdrop-filter:blur(12px);border-top:1px solid var(--mob-line);
+  display:flex;align-items:center;justify-content:space-around;z-index:2
+}
+.mob-nav-b{
+  flex:1;background:none;border:0;padding:6px 0;display:flex;flex-direction:column;
+  align-items:center;gap:3px;color:#a1a1aa;font-size:10.5px;font-weight:600
+}
+.mob-nav-b .n-i{font-size:20px;line-height:1}
+.mob-nav-b.is-on{color:var(--mob-accent)}
+.mob-fab{
+  flex:0 0 auto;width:56px;height:56px;border-radius:20px;border:0;margin-top:-22px;
+  background:linear-gradient(145deg,var(--mob-accent-2),var(--mob-accent));
+  color:#fff;font-size:28px;font-weight:300;line-height:1;
+  box-shadow:0 8px 20px rgba(240,119,37,.42);display:flex;align-items:center;justify-content:center
+}
+.mob-fab:active{transform:scale(.94)}
+
+/* ── folhas (sheets) e formulários ───────────────────────────────────────── */
+.mob-sheet-bg{
+  position:fixed;inset:0;z-index:9500;background:rgba(0,0,0,.45);
+  opacity:0;pointer-events:none;transition:opacity .18s ease
+}
+.mob-sheet-bg.is-open{opacity:1;pointer-events:auto}
+.mob-sheet{
+  position:fixed;left:0;right:0;bottom:0;z-index:9600;background:var(--mob-bg);
+  border-radius:22px 22px 0 0;max-height:92vh;display:flex;flex-direction:column;
+  transform:translateY(102%);transition:transform .24s cubic-bezier(.2,.8,.2,1);
+  padding-bottom:var(--mob-safe-b)
+}
+.mob-sheet.is-open{transform:translateY(0)}
+.mob-sheet-h{
+  display:flex;align-items:center;gap:10px;padding:14px 16px 10px;
+  border-bottom:1px solid var(--mob-line);background:var(--mob-card);
+  border-radius:22px 22px 0 0
+}
+.mob-sheet-h b{flex:1;font-size:16px;font-weight:750}
+.mob-sheet-x{background:none;border:0;font-size:22px;color:var(--mob-muted);padding:2px 6px;line-height:1}
+.mob-sheet-b{overflow-y:auto;padding:16px;flex:1;-webkit-overflow-scrolling:touch}
+.mob-grab{width:38px;height:4px;border-radius:2px;background:#d4d4d8;margin:8px auto 0}
+
+.mob-big{
+  width:100%;display:flex;align-items:center;gap:14px;background:var(--mob-card);
+  border:1px solid var(--mob-line);border-radius:18px;padding:18px;margin-bottom:12px;text-align:left
+}
+.mob-big .b-i{
+  width:46px;height:46px;border-radius:14px;display:flex;align-items:center;
+  justify-content:center;font-size:22px;flex:0 0 auto
+}
+.mob-big .b-t{font-size:16px;font-weight:700}
+.mob-big .b-s{font-size:12.5px;color:var(--mob-muted);margin-top:2px}
+
+.mob-f{margin-bottom:15px}
+.mob-f label{display:block;font-size:12px;font-weight:700;color:#3f3f46;margin-bottom:7px;letter-spacing:.2px}
+.mob-in{
+  width:100%;font-size:16px;padding:13px 14px;border-radius:13px;
+  border:1px solid var(--mob-line);background:var(--mob-card);color:var(--mob-ink);
+  font-family:inherit;-webkit-appearance:none
+}
+.mob-in:focus{outline:none;border-color:var(--mob-accent);box-shadow:0 0 0 3px rgba(240,119,37,.14)}
+textarea.mob-in{min-height:88px;resize:vertical}
+.mob-opts{display:flex;gap:7px;flex-wrap:wrap}
+.mob-opt{
+  font-size:13px;font-weight:600;padding:9px 14px;border-radius:12px;
+  background:var(--mob-card);border:1px solid var(--mob-line);color:#3f3f46
+}
+.mob-opt.is-on{background:var(--mob-accent);border-color:var(--mob-accent);color:#fff}
+.mob-go{
+  width:100%;padding:16px;border-radius:15px;border:0;font-size:16px;font-weight:700;
+  background:var(--mob-ink);color:#fff;margin-top:6px
+}
+.mob-go:disabled{opacity:.45}
+.mob-go.g-accent{background:linear-gradient(145deg,var(--mob-accent-2),var(--mob-accent))}
+.mob-ghost{
+  width:100%;padding:14px;border-radius:15px;border:1px solid var(--mob-line);
+  background:var(--mob-card);font-size:14px;font-weight:650;color:#3f3f46;margin-top:8px
+}
+.mob-steps{display:flex;gap:6px;padding:0 16px 12px}
+.mob-steps i{flex:1;height:4px;border-radius:2px;background:#e4e4e7}
+.mob-steps i.is-on{background:var(--mob-accent)}
+.mob-pick{
+  width:100%;background:var(--mob-card);border:1px solid var(--mob-line);border-radius:14px;
+  padding:14px;margin-bottom:8px;text-align:left;display:flex;align-items:center;gap:12px
+}
+.mob-pick.is-on{border-color:var(--mob-accent);background:#fff7ed}
+.mob-pick .p-t{font-size:14.5px;font-weight:650}
+.mob-pick .p-s{font-size:12px;color:var(--mob-muted);margin-top:2px}
+.mob-pick .p-c{
+  width:22px;height:22px;border-radius:7px;border:2px solid #d4d4d8;flex:0 0 auto;
+  display:flex;align-items:center;justify-content:center;font-size:13px;color:#fff
+}
+.mob-pick.is-on .p-c{background:var(--mob-accent);border-color:var(--mob-accent)}
+.mob-load{text-align:center;padding:30px;color:var(--mob-muted);font-size:13px}
+.mob-spin{
+  width:22px;height:22px;border:2.5px solid var(--mob-line);border-top-color:var(--mob-accent);
+  border-radius:50%;margin:0 auto 10px;animation:mobSpin .7s linear infinite
+}
+@keyframes mobSpin{to{transform:rotate(360deg)}}
+.mob-badge{
+  position:absolute;top:2px;right:calc(50% - 20px);min-width:17px;height:17px;padding:0 4px;
+  border-radius:9px;background:#dc2626;color:#fff;font-size:10px;font-weight:800;
+  display:flex;align-items:center;justify-content:center
+}
+.mob-nav-b{position:relative}
+/* desktop com o modo app forçado (teste): trava a largura p/ ficar honesto */
+body.mob-forced #mobApp{max-width:430px;margin:0 auto;box-shadow:0 0 60px rgba(0,0,0,.25)}
+</style>
+
+<div id="mobApp" aria-label="ProperCare Manager — modo celular">
+  <div class="mob-scroll" id="mobScroll"><div id="mobView"></div></div>
+  <nav class="mob-nav">
+    <button class="mob-nav-b is-on" data-mobtab="hoje" onclick="_mobIr('hoje')"><span class="n-i">🏠</span>Hoje</button>
+    <button class="mob-nav-b" data-mobtab="agenda" onclick="_mobIr('agenda')"><span class="n-i">🗓️</span>Agenda</button>
+    <button class="mob-fab" onclick="_mobSheetNovo()" aria-label="Criar">+</button>
+    <button class="mob-nav-b" data-mobtab="os" onclick="_mobIr('os')"><span class="n-i">📋</span>OS</button>
+    <button class="mob-nav-b" data-mobtab="mais" onclick="_mobIr('mais')"><span class="n-i">⋯</span>Mais</button>
+  </nav>
+</div>
+<div class="mob-sheet-bg mob-keep" id="mobSheetBg" onclick="_mobFechaSheet()"></div>
+<div class="mob-sheet mob-keep" id="mobSheet" role="dialog" aria-modal="true">
+  <div class="mob-grab"></div>
+  <div class="mob-sheet-h"><b id="mobSheetT">—</b><button class="mob-sheet-x" onclick="_mobFechaSheet()">✕</button></div>
+  <div class="mob-steps" id="mobSteps" style="display:none"></div>
+  <div class="mob-sheet-b" id="mobSheetB"></div>
+</div>
+
+<script>
+/* ═══════════════════════════════════════════════════════════════════════════
+   PCM V130 · MODO APP (MOBILE) — lógica.
+   Regra de ouro deste bloco: ele NÃO reimplementa regra de negócio. Tudo que
+   escreve passa pelas MESMAS actions do desktop (saveOS, saveAgendaDemanda,
+   designarUsuarioTarefa) e pelos mesmos helpers (gsGet/gsPost/toast/escHtml).
+   O que muda é só a forma — dedo, uma coluna, três toques.
+   ═══════════════════════════════════════════════════════════════════════ */
+(function () {
+  'use strict';
+
+  // ── quando o modo app acorda ─────────────────────────────────────────────
+  // Largura OU ponteiro grosso. O usuário pode desligar (fica no localStorage)
+  // e pode forçar no desktop (?mobile=1) para testar sem celular na mão.
+  function _mobDeveLigar() {
+    try {
+      var q = new URLSearchParams(location.search);
+      if (q.get('mobile') === '1') return 'forcado';
+      if (q.get('mobile') === '0') return false;
+      if (localStorage.getItem('pcm_mob_off') === '1') return false;
+    } catch (e) {}
+    var estreita = window.matchMedia('(max-width: 820px)').matches;
+    var dedo = window.matchMedia('(pointer: coarse)').matches && window.matchMedia('(max-width: 1180px)').matches;
+    return (estreita || dedo) ? 'auto' : false;
+  }
+
+  var _mobEstado = {
+    // ⚠ `boot` é a tela de carga do PRIMEIRO paint (fase 1) e é diferente de
+    //    `carregando`, que é o guard de reentrância do fetch. Misturar os dois
+    //    faz o _mobCarregar desistir antes de buscar — o app fica eternamente
+    //    "Buscando sua agenda…".
+    tab: 'hoje', dados: null, carregando: false, boot: false, erro: null,
+    diaSel: null, pessoaSel: '', os: null, osCarregando: false,
+    step: 0, novaOS: null, ts: 0
+  };
+  window._mobEstado = _mobEstado;
+
+  // ── utilidades de data, sem fuso (mesma regra do GAS v112) ───────────────
+  function p2(n) { return (n < 10 ? '0' : '') + n; }
+  function _mobDiaKey(d) { return d.getFullYear() + '-' + p2(d.getMonth() + 1) + '-' + p2(d.getDate()); }
+  function _mobHoje() { var d = new Date(); d.setHours(0, 0, 0, 0); return d; }
+  function _mobHHMM(iso) {
+    var m = /T(\d{2}):(\d{2})/.exec(String(iso || ''));
+    return m ? m[1] + ':' + m[2] : '';
+  }
+  function _mobDiaCurto(chave) {
+    var p = String(chave || '').split('-');
+    if (p.length < 3) return chave || '';
+    var d = new Date(+p[0], (+p[1]) - 1, +p[2]);
+    return d.toLocaleDateString('pt-BR', { weekday: 'short', day: '2-digit', month: '2-digit' });
+  }
+  function esc(v) { return (typeof escHtml === 'function') ? escHtml(v) : String(v == null ? '' : v); }
+  function _mobToast(m, t) { if (typeof toast === 'function') toast(m, t); }
+
+  // ── carga: uma chamada serve as três telas ───────────────────────────────
+  // getSaturacaoUsuarios do GAS v112 já devolve agenda + pool + DEMANDAS.
+  async function _mobCarregar(forcar) {
+    if (_mobEstado.carregando) return;
+    if (!forcar && _mobEstado.dados && (Date.now() - _mobEstado.ts) < 60000) return;
+    _mobEstado.carregando = true; _mobEstado.erro = null; _mobPintar();
+    try {
+      _mobEstado.dados = await gsGet('getSaturacaoUsuarios');
+      _mobEstado.ts = Date.now();
+    } catch (e) {
+      _mobEstado.erro = e.message || 'Falha ao carregar';
+    } finally {
+      _mobEstado.carregando = false; _mobEstado.boot = false; _mobPintar();
+    }
+  }
+
+  // Junta tarefa de OS e demanda numa lista só — é a decisão de 23/08:
+  // "compromisso" e "tarefa" moram na MESMA agenda, senão nascem duas verdades.
+  function _mobItens() {
+    var d = _mobEstado.dados || {};
+    var out = [];
+    (d.agenda || []).forEach(function (t) {
+      out.push({
+        kind: 'tarefa', id: t.tarefa_id, os_id: t.os_id,
+        titulo: t.nome || 'Tarefa sem nome',
+        sub: (t.os_numero ? t.os_numero + ' · ' : '') + (t.usuario || 'sem responsável'),
+        usuario: t.usuario || '', dia: t.dia || '', inicio: t.inicio_previsto || '',
+        fim: t.fim_previsto || '', sem_hora: !!t.sem_hora, atrasada: !!t.atrasada,
+        exec: !!t.em_execucao, min: t.tempo_estimado_min || 0, status: t.status || ''
+      });
+    });
+    (d.demandas || []).forEach(function (dm) {
+      out.push({
+        kind: 'demanda', id: dm.demanda_id, os_id: dm.os_id || '',
+        titulo: dm.titulo || 'Demanda',
+        sub: [dm.cliente, dm.responsavel].filter(Boolean).join(' · ') || 'sem cliente',
+        usuario: dm.responsavel || '', dia: dm.dia || '', inicio: dm.inicio_previsto || '',
+        fim: dm.fim_previsto || '', sem_hora: !!dm.sem_hora, atrasada: !!dm.atrasada,
+        exec: false, min: dm.tempo_estimado_min || 0, status: dm.status || 'aberta',
+        prioridade: dm.prioridade || 'normal', bruto: dm
+      });
+    });
+    out.sort(function (a, b) {
+      var ka = (a.dia || '9999-99-99') + (a.inicio || 'ZZ');
+      var kb = (b.dia || '9999-99-99') + (b.inicio || 'ZZ');
+      return ka < kb ? -1 : (ka > kb ? 1 : 0);
+    });
+    return out;
+  }
+
+  // ── cartão ───────────────────────────────────────────────────────────────
+  function _mobCard(it) {
+    var cls = it.exec ? 'd-exec' : (it.atrasada ? 'd-late' : (it.kind === 'demanda' ? 'd-dem' : 'd-plan'));
+    var tags = [];
+    if (it.exec) tags.push('<span class="mob-tag t-exec">▶ em execução</span>');
+    if (it.atrasada && !it.exec) tags.push('<span class="mob-tag t-late">atrasada</span>');
+    if (it.kind === 'demanda') tags.push('<span class="mob-tag t-dem">demanda</span>');
+    if (it.prioridade === 'alta') tags.push('<span class="mob-tag t-alta">prioridade alta</span>');
+    if (!it.sem_hora && it.inicio) tags.push('<span class="mob-tag t-time">' + _mobHHMM(it.inicio) + (it.fim ? '–' + _mobHHMM(it.fim) : '') + '</span>');
+    else if (it.dia) tags.push('<span class="mob-tag">dia todo</span>');
+    if (it.min) tags.push('<span class="mob-tag">' + it.min + ' min</span>');
+    var acao = it.kind === 'demanda'
+      ? "_mobAbrirDemanda('" + esc(it.id) + "')"
+      : "_mobAbrirTarefa('" + esc(it.os_id) + "','" + esc(it.id) + "')";
+    return '<button class="mob-card" onclick="' + acao + '">' +
+      '<span class="mob-dot ' + cls + '"></span>' +
+      '<span class="mob-card-b">' +
+        '<span class="mob-card-t">' + esc(it.titulo) + '</span>' +
+        '<span class="mob-card-s">' + esc(it.sub) + '</span>' +
+        (tags.length ? '<span class="mob-tags">' + tags.join('') + '</span>' : '') +
+      '</span></button>';
+  }
+  function _mobVazio(icone, titulo, sub) {
+    return '<div class="mob-empty"><span class="e-i">' + icone + '</span>' +
+      '<div class="e-t">' + esc(titulo) + '</div><div class="e-s">' + esc(sub) + '</div></div>';
+  }
+
+  // ── TELA · HOJE ──────────────────────────────────────────────────────────
+  function _mobTelaHoje() {
+    var itens = _mobItens();
+    var hoje = _mobDiaKey(_mobHoje());
+    var doDia = itens.filter(function (i) { return i.dia === hoje; });
+    var exec = itens.filter(function (i) { return i.exec; });
+    var atras = itens.filter(function (i) { return i.atrasada && !i.exec; });
+    var pool = ((_mobEstado.dados || {}).nao_designadas || []);
+    var nome = _mobNomeUsuario();
+    var h = new Date().getHours();
+    var saud = h < 12 ? 'Bom dia' : (h < 18 ? 'Boa tarde' : 'Boa noite');
+
+    var html = '<div class="mob-hero">' +
+      '<div class="mob-hero-top"><div>' +
+        '<div class="mob-hello">' + saud + (nome ? ', ' + esc(nome.split(' ')[0]) : '') + '</div>' +
+        '<div class="mob-title">' + new Date().toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long' }) + '</div>' +
+      '</div><div class="mob-avatar">' + esc((nome || 'P').slice(0, 1).toUpperCase()) + '</div></div>' +
+      '<div class="mob-kpis">' +
+        '<div class="mob-kpi"><b>' + doDia.length + '</b><span>hoje</span></div>' +
+        '<div class="mob-kpi"><b>' + exec.length + '</b><span>em execução</span></div>' +
+        '<div class="mob-kpi' + (atras.length ? ' is-alert' : '') + '"><b>' + atras.length + '</b><span>atrasadas</span></div>' +
+        '<div class="mob-kpi"><b>' + pool.length + '</b><span>sem dono</span></div>' +
+      '</div></div>';
+
+    html += '<div class="mob-pad">';
+    if (_mobEstado.erro) {
+      html += _mobVazio('⚠️', 'Não consegui carregar', _mobEstado.erro) +
+        '<button class="mob-ghost" onclick="_mobRecarregar()">Tentar de novo</button>';
+    }
+    if (exec.length) {
+      html += '<div class="mob-sec"><div class="mob-sec-h"><span class="mob-sec-t">Acontecendo agora</span></div>' +
+        exec.map(_mobCard).join('') + '</div>';
+    }
+    html += '<div class="mob-sec"><div class="mob-sec-h"><span class="mob-sec-t">Hoje</span>' +
+      '<button class="mob-sec-a" onclick="_mobIr(\'agenda\')">ver agenda →</button></div>' +
+      (doDia.length ? doDia.map(_mobCard).join('')
+        : _mobVazio('☕', 'Nada marcado para hoje', 'Toque no + para agendar uma demanda em segundos.')) +
+      '</div>';
+    if (atras.length) {
+      html += '<div class="mob-sec"><div class="mob-sec-h"><span class="mob-sec-t">Atrasadas</span></div>' +
+        atras.slice(0, 12).map(_mobCard).join('') + '</div>';
+    }
+    if (pool.length) {
+      html += '<div class="mob-sec"><div class="mob-sec-h"><span class="mob-sec-t">Sem responsável</span>' +
+        '<span class="mob-sec-a">' + pool.length + '</span></div>' +
+        pool.slice(0, 8).map(function (t) {
+          return '<button class="mob-card" onclick="_mobAbrirTarefa(\'' + esc(t.os_id) + '\',\'' + esc(t.tarefa_id) + '\')">' +
+            '<span class="mob-dot"></span><span class="mob-card-b">' +
+            '<span class="mob-card-t">' + esc(t.nome || 'Tarefa') + '</span>' +
+            '<span class="mob-card-s">' + esc(t.os_numero || t.os_id || '') + '</span>' +
+            '<span class="mob-tags"><span class="mob-tag">' + esc(t.executor || 'campo') + '</span>' +
+            (t.lock_expirado ? '<span class="mob-tag t-late">largada</span>' : '') + '</span>' +
+            '</span></button>';
+        }).join('') + '</div>';
+    }
+    html += '</div>';
+    return html;
+  }
+
+  // ── TELA · AGENDA ────────────────────────────────────────────────────────
+  function _mobTelaAgenda() {
+    var itens = _mobItens();
+    var hoje = _mobHoje();
+    if (!_mobEstado.diaSel) _mobEstado.diaSel = _mobDiaKey(hoje);
+    var pt = (_mobEstado.dados || {}).parametros_turno || {};
+    var cap = Number((_mobEstado.dados || {}).capacidade_diaria_min) || 480;
+    var diasUteis = [];
+    try { diasUteis = JSON.parse(pt.dias_uteis_json || '[1,2,3,4,5]'); } catch (e) { diasUteis = [1, 2, 3, 4, 5]; }
+
+    var pessoas = ((_mobEstado.dados || {}).usuarios || []).map(function (u) { return u.usuario; });
+    var filtro = _mobEstado.pessoaSel;
+
+    var html = '<div class="mob-hero" style="padding-bottom:44px">' +
+      '<div class="mob-hero-top"><div>' +
+      '<div class="mob-hello">Agenda da equipe</div>' +
+      '<div class="mob-title">' + _mobDiaCurto(_mobEstado.diaSel) + '</div>' +
+      '</div><button class="mob-avatar" onclick="_mobRecarregar()" aria-label="Atualizar">↻</button></div></div>';
+
+    html += '<div style="padding-top:14px"><div class="mob-days">';
+    for (var i = 0; i < 14; i++) {
+      var d = new Date(hoje); d.setDate(d.getDate() + i);
+      var k = _mobDiaKey(d);
+      var doDia = itens.filter(function (x) { return x.dia === k && (!filtro || x.usuario === filtro); });
+      var carga = doDia.reduce(function (s, x) { return s + (x.min || 0); }, 0);
+      var pct = cap > 0 ? Math.min(100, Math.round(carga / cap * 100)) : 0;
+      var util = diasUteis.indexOf(d.getDay()) >= 0;
+      html += '<button class="mob-day' + (k === _mobEstado.diaSel ? ' is-sel' : '') + (util ? '' : ' is-off') +
+        '" onclick="_mobDia(\'' + k + '\')">' +
+        '<div class="d-w">' + d.toLocaleDateString('pt-BR', { weekday: 'short' }).replace('.', '') + '</div>' +
+        '<div class="d-n">' + p2(d.getDate()) + '</div>' +
+        '<div class="d-bar"><i style="width:' + pct + '%"></i></div></button>';
+    }
+    html += '</div>';
+
+    if (pessoas.length > 1) {
+      html += '<div class="mob-chips"><button class="mob-chip' + (filtro ? '' : ' is-on') +
+        '" onclick="_mobPessoa(\'\')">Todos</button>' +
+        pessoas.map(function (p) {
+          return '<button class="mob-chip' + (filtro === p ? ' is-on' : '') +
+            '" onclick="_mobPessoa(\'' + esc(p).replace(/'/g, "\\'") + '\')">' + esc(p) + '</button>';
+        }).join('') + '</div>';
+    }
+    html += '</div>';
+
+    var lista = itens.filter(function (x) {
+      return x.dia === _mobEstado.diaSel && (!filtro || x.usuario === filtro);
+    });
+    var comHora = lista.filter(function (x) { return !x.sem_hora && x.inicio; });
+    var semHora = lista.filter(function (x) { return x.sem_hora || !x.inicio; });
+
+    html += '<div class="mob-pad">';
+    if (!lista.length) {
+      html += _mobVazio('🗓️', 'Dia livre', 'Nada agendado aqui. Toque no + para marcar.');
+    } else {
+      if (comHora.length) {
+        var agoraKey = _mobDiaKey(new Date());
+        var agoraMin = new Date().getHours() * 60 + new Date().getMinutes();
+        var jaMarcou = false;
+        html += '<div class="mob-tl">';
+        comHora.forEach(function (it) {
+          var m = /T(\d{2}):(\d{2})/.exec(it.inicio);
+          var min = m ? (+m[1]) * 60 + (+m[2]) : 0;
+          if (!jaMarcou && _mobEstado.diaSel === agoraKey && min > agoraMin) {
+            html += '<div class="mob-now"><b>AGORA</b><i></i></div>'; jaMarcou = true;
+          }
+          html += '<div class="mob-tl-i"><span class="mob-tl-h">' + _mobHHMM(it.inicio) + '</span>' + _mobCard(it) + '</div>';
+        });
+        if (!jaMarcou && _mobEstado.diaSel === agoraKey) html += '<div class="mob-now"><b>AGORA</b><i></i></div>';
+        html += '</div>';
+      }
+      if (semHora.length) {
+        html += '<div class="mob-sec"><div class="mob-sec-h"><span class="mob-sec-t">Sem horário</span></div>' +
+          semHora.map(_mobCard).join('') + '</div>';
+      }
+    }
+    html += '</div>';
+    return html;
+  }
+
+  // ── TELA · OS ────────────────────────────────────────────────────────────
+  function _mobTelaOS() {
+    var html = '<div class="mob-hero" style="padding-bottom:44px">' +
+      '<div class="mob-hero-top"><div><div class="mob-hello">Ordens de serviço</div>' +
+      '<div class="mob-title">Abertas</div></div>' +
+      '<button class="mob-avatar" onclick="_mobCarregarOS(true)" aria-label="Atualizar">↻</button></div></div>';
+    html += '<div class="mob-pad" style="padding-top:14px">';
+    if (_mobEstado.osCarregando) {
+      html += '<div class="mob-load"><div class="mob-spin"></div>Carregando ordens…</div>';
+    } else if (!_mobEstado.os) {
+      html += _mobVazio('📋', 'Toque para carregar', 'A lista de OS não vem junto com a agenda para o app abrir rápido.') +
+        '<button class="mob-go" onclick="_mobCarregarOS(true)">Carregar OS</button>';
+    } else if (!_mobEstado.os.length) {
+      html += _mobVazio('✅', 'Nenhuma OS aberta', 'Tudo fechado por aqui.');
+    } else {
+      html += '<div class="mob-f"><input class="mob-in" id="mobOsBusca" placeholder="Buscar cliente ou número…" ' +
+        'oninput="_mobFiltraOS(this.value)" autocomplete="off"></div><div id="mobOsLista">' +
+        _mobListaOSHtml(_mobEstado.os) + '</div>';
+    }
+    html += '</div>';
+    return html;
+  }
+  function _mobListaOSHtml(lista) {
+    if (!lista.length) return _mobVazio('🔍', 'Nada encontrado', 'Tente outro termo.');
+    return lista.slice(0, 60).map(function (o) {
+      var st = String(o.status || '').toLowerCase();
+      var cls = st.indexOf('andamento') >= 0 ? 'd-exec' : (st.indexOf('aguard') >= 0 ? 'd-late' : 'd-plan');
+      return '<button class="mob-card" onclick="_mobAbrirOS(\'' + esc(o.id_os) + '\')">' +
+        '<span class="mob-dot ' + cls + '"></span><span class="mob-card-b">' +
+        '<span class="mob-card-t">' + esc(o.cliente || 'Sem cliente') + '</span>' +
+        '<span class="mob-card-s">' + esc(o.numero_os || o.id_os) + ' · ' + esc(o.tipo_os || '') + '</span>' +
+        '<span class="mob-tags"><span class="mob-tag">' + esc(o.status || '—') + '</span>' +
+        (o.prioridade && o.prioridade !== 'normal' ? '<span class="mob-tag t-alta">' + esc(o.prioridade) + '</span>' : '') +
+        '</span></span></button>';
+    }).join('');
+  }
+
+  // ── TELA · MAIS ──────────────────────────────────────────────────────────
+  function _mobTelaMais() {
+    var nome = _mobNomeUsuario();
+    return '<div class="mob-hero" style="padding-bottom:44px">' +
+      '<div class="mob-hero-top"><div><div class="mob-hello">Você</div>' +
+      '<div class="mob-title">' + esc(nome || 'ProperCare') + '</div></div>' +
+      '<div class="mob-avatar">' + esc((nome || 'P').slice(0, 1).toUpperCase()) + '</div></div></div>' +
+      '<div class="mob-pad" style="padding-top:16px">' +
+      '<button class="mob-big" onclick="_mobRecarregar()"><span class="b-i" style="background:#eff6ff">↻</span>' +
+      '<span><span class="b-t">Sincronizar agora</span><span class="b-s">Recarrega agenda, demandas e fila</span></span></button>' +
+      '<button class="mob-big" onclick="_mobDesktop()"><span class="b-i" style="background:#f3e8ff">🖥️</span>' +
+      '<span><span class="b-t">Abrir versão completa</span><span class="b-s">Todas as telas do PCM neste aparelho</span></span></button>' +
+      '<div class="mob-sec"><div class="mob-sec-h"><span class="mob-sec-t">Sobre</span></div>' +
+      '<div class="mob-card" style="display:block"><div class="mob-card-s">' +
+      'Modo app do PCM V130. A agenda e a abertura de OS gravam pelas mesmas rotinas do desktop — ' +
+      'o que você faz aqui aparece lá, e vice-versa.</div></div></div></div>';
+  }
+
+  function _mobNomeUsuario() {
+    try {
+      var raw = localStorage.getItem('proper_session') || sessionStorage.getItem('proper_session');
+      if (!raw) return '';
+      var s = JSON.parse(raw);
+      return s.nome || s.usuario || s.name || '';
+    } catch (e) { return ''; }
+  }
+
+  // ── pintura ──────────────────────────────────────────────────────────────
+  function _mobPintar() {
+    var el = document.getElementById('mobView');
+    if (!el) return;
+    if ((_mobEstado.carregando || _mobEstado.boot) && !_mobEstado.dados) {
+      el.innerHTML = '<div class="mob-hero"><div class="mob-hero-top"><div>' +
+        '<div class="mob-hello">ProperCare</div><div class="mob-title">Carregando…</div>' +
+        '</div></div></div><div class="mob-load"><div class="mob-spin"></div>Buscando sua agenda…</div>';
+      return;
+    }
+    var t = _mobEstado.tab;
+    el.innerHTML = t === 'agenda' ? _mobTelaAgenda()
+      : t === 'os' ? _mobTelaOS()
+      : t === 'mais' ? _mobTelaMais()
+      : _mobTelaHoje();
+    Array.prototype.forEach.call(document.querySelectorAll('[data-mobtab]'), function (b) {
+      b.classList.toggle('is-on', b.getAttribute('data-mobtab') === t);
+    });
+  }
+
+  // ── navegação ────────────────────────────────────────────────────────────
+  window._mobIr = function (tab) {
+    _mobEstado.tab = tab;
+    var sc = document.getElementById('mobScroll'); if (sc) sc.scrollTop = 0;
+    _mobPintar();
+    if (tab === 'os' && !_mobEstado.os && !_mobEstado.osCarregando) _mobCarregarOS(false);
+  };
+  window._mobDia = function (k) { _mobEstado.diaSel = k; _mobPintar(); };
+  window._mobPessoa = function (p) { _mobEstado.pessoaSel = p; _mobPintar(); };
+  window._mobRecarregar = function () { _mobCarregar(true); };
+  window._mobDesktop = function () {
+    try { localStorage.setItem('pcm_mob_off', '1'); } catch (e) {}
+    document.body.classList.remove('mob-on', 'mob-forced');
+    _mobToast('Versão completa. Recarregue para voltar ao modo app.', 'success');
+  };
+
+  window._mobCarregarOS = async function (forcar) {
+    if (_mobEstado.osCarregando) return;
+    if (_mobEstado.os && !forcar) return;
+    _mobEstado.osCarregando = true; _mobPintar();
+    try {
+      var r = await gsGet('getOS', {});
+      var lista = (r && (r.os || r.ordens || r.data)) || [];
+      _mobEstado.os = lista.filter(function (o) {
+        var st = String(o.status || '').toLowerCase();
+        return st.indexOf('conclu') < 0 && st.indexOf('cancel') < 0;
+      });
+    } catch (e) {
+      _mobEstado.os = null; _mobToast('Não consegui carregar as OS: ' + e.message, 'error');
+    } finally { _mobEstado.osCarregando = false; _mobPintar(); }
+  };
+  window._mobFiltraOS = function (termo) {
+    var t = String(termo || '').toLowerCase().trim();
+    var alvo = document.getElementById('mobOsLista'); if (!alvo) return;
+    var lista = (_mobEstado.os || []).filter(function (o) {
+      if (!t) return true;
+      return (String(o.cliente || '') + ' ' + String(o.numero_os || '') + ' ' + String(o.tipo_os || ''))
+        .toLowerCase().indexOf(t) >= 0;
+    });
+    alvo.innerHTML = _mobListaOSHtml(lista);
+  };
+
+  // ── folhas ───────────────────────────────────────────────────────────────
+  function _mobSheet(titulo, corpo, passos) {
+    document.getElementById('mobSheetT').textContent = titulo;
+    document.getElementById('mobSheetB').innerHTML = corpo;
+    var st = document.getElementById('mobSteps');
+    if (passos && passos.total) {
+      st.style.display = 'flex';
+      st.innerHTML = Array.apply(null, { length: passos.total }).map(function (_, i) {
+        return '<i class="' + (i <= passos.atual ? 'is-on' : '') + '"></i>';
+      }).join('');
+    } else { st.style.display = 'none'; }
+    document.getElementById('mobSheetBg').classList.add('is-open');
+    document.getElementById('mobSheet').classList.add('is-open');
+  }
+  window._mobFechaSheet = function () {
+    document.getElementById('mobSheetBg').classList.remove('is-open');
+    document.getElementById('mobSheet').classList.remove('is-open');
+  };
+
+  window._mobSheetNovo = function () {
+    _mobSheet('Criar', 
+      '<button class="mob-big" onclick="_mobFormDemanda()">' +
+      '<span class="b-i" style="background:#f3e8ff">🗓️</span><span>' +
+      '<span class="b-t">Nova demanda</span>' +
+      '<span class="b-s">Um compromisso que ainda não é OS — 3 toques</span></span></button>' +
+      '<button class="mob-big" onclick="_mobFormOS()">' +
+      '<span class="b-i" style="background:#ffedd5">📋</span><span>' +
+      '<span class="b-t">Abrir OS</span>' +
+      '<span class="b-s">Cliente, máquina e tipo — direto do celular</span></span></button>');
+  };
+
+  // ── formulário · DEMANDA ─────────────────────────────────────────────────
+  var _mobDem = null;
+  window._mobFormDemanda = function (pre) {
+    _mobDem = Object.assign({
+      titulo: '', tipo: '', prioridade: 'normal', cliente: '', cliente_id: '',
+      responsavel: '', dia: _mobDiaKey(_mobHoje()), hora: '', minutos: 60, descricao: ''
+    }, pre || {});
+    _mobPintaFormDemanda();
+  };
+  function _mobPintaFormDemanda() {
+    var d = _mobDem;
+    var pessoas = ((_mobEstado.dados || {}).usuarios || []).map(function (u) { return u.usuario; });
+    if (d.responsavel && pessoas.indexOf(d.responsavel) < 0) pessoas.unshift(d.responsavel);
+    var clientes = ((typeof db === 'object' && db && db.clients) || []).slice(0, 400);
+    var hoje = _mobHoje();
+    var amanha = new Date(hoje); amanha.setDate(amanha.getDate() + 1);
+
+    function opt(valor, rotulo, campo) {
+      return '<button class="mob-opt' + (d[campo] === valor ? ' is-on' : '') +
+        '" onclick="_mobDemSet(\'' + campo + '\',\'' + String(valor).replace(/'/g, "\\'") + '\')">' + esc(rotulo) + '</button>';
+    }
+    var corpo =
+      '<div class="mob-f"><label>O que precisa ser feito?</label>' +
+      '<input class="mob-in" id="mobDemTit" value="' + esc(d.titulo) + '" placeholder="Ex.: ligar para a FERTEC sobre o rotor" ' +
+      'oninput="_mobDemSet(\'titulo\',this.value,1)" autocomplete="off"></div>' +
+
+      '<div class="mob-f"><label>Tipo</label><div class="mob-opts">' +
+      opt('visita', '🚚 Visita', 'tipo') + opt('orcamento', '💰 Orçamento', 'tipo') +
+      opt('contato', '📞 Contato', 'tipo') + opt('interno', '🔧 Interno', 'tipo') +
+      '</div></div>' +
+
+      '<div class="mob-f"><label>Quando</label><div class="mob-opts">' +
+      opt(_mobDiaKey(hoje), 'Hoje', 'dia') + opt(_mobDiaKey(amanha), 'Amanhã', 'dia') +
+      '</div><input class="mob-in" type="date" style="margin-top:8px" value="' + esc(d.dia) + '" ' +
+      'onchange="_mobDemSet(\'dia\',this.value)"></div>' +
+
+      '<div class="mob-f"><label>Hora (opcional)</label>' +
+      '<input class="mob-in" type="time" value="' + esc(d.hora) + '" onchange="_mobDemSet(\'hora\',this.value,1)"></div>' +
+
+      '<div class="mob-f"><label>Duração</label><div class="mob-opts">' +
+      opt(30, '30 min', 'minutos') + opt(60, '1 h', 'minutos') +
+      opt(120, '2 h', 'minutos') + opt(240, '4 h', 'minutos') +
+      '</div></div>' +
+
+      '<div class="mob-f"><label>Responsável</label><div class="mob-opts">' +
+      (pessoas.length ? pessoas.map(function (p) { return opt(p, p, 'responsavel'); }).join('')
+        : '<span class="mob-card-s">Nenhum usuário na fila ainda — pode deixar em branco.</span>') +
+      '</div></div>' +
+
+      '<div class="mob-f"><label>Cliente (opcional)</label>' +
+      '<input class="mob-in" list="mobDemCli" value="' + esc(d.cliente) + '" placeholder="Comece a digitar…" ' +
+      'oninput="_mobDemCliente(this.value)" autocomplete="off">' +
+      '<datalist id="mobDemCli">' + clientes.map(function (c) {
+        return '<option value="' + esc(c.nome || '') + '"></option>';
+      }).join('') + '</datalist></div>' +
+
+      '<div class="mob-f"><label>Prioridade</label><div class="mob-opts">' +
+      opt('normal', 'Normal', 'prioridade') + opt('alta', '🔥 Alta', 'prioridade') +
+      '</div></div>' +
+
+      '<div class="mob-f"><label>Detalhes (opcional)</label>' +
+      '<textarea class="mob-in" placeholder="Contexto, contato, o que combinar…" ' +
+      'oninput="_mobDemSet(\'descricao\',this.value,1)">' + esc(d.descricao) + '</textarea></div>' +
+
+      '<button class="mob-go g-accent" id="mobDemSalvar" onclick="_mobSalvarDemanda()"' +
+      (d.titulo.trim() ? '' : ' disabled') + '>Agendar demanda</button>';
+    _mobSheet('Nova demanda', corpo);
+  }
+  window._mobDemSet = function (campo, valor, silencioso) {
+    if (campo === 'minutos') valor = parseInt(valor, 10) || 0;
+    _mobDem[campo] = valor;
+    if (silencioso) {
+      var b = document.getElementById('mobDemSalvar');
+      if (b) b.disabled = !String(_mobDem.titulo || '').trim();
+      return;
+    }
+    _mobPintaFormDemanda();
+  };
+  window._mobDemCliente = function (nome) {
+    _mobDem.cliente = nome;
+    var m = ((typeof db === 'object' && db && db.clients) || []).find(function (c) {
+      return String(c.nome || '').toLowerCase() === String(nome || '').toLowerCase();
+    });
+    _mobDem.cliente_id = m ? (m.id || '') : '';
+    var b = document.getElementById('mobDemSalvar');
+    if (b) b.disabled = !String(_mobDem.titulo || '').trim();
+  };
+  window._mobSalvarDemanda = async function () {
+    var d = _mobDem;
+    if (!String(d.titulo || '').trim()) { _mobToast('Escreva o que precisa ser feito.', 'error'); return; }
+    var btn = document.getElementById('mobDemSalvar');
+    if (btn) { btn.disabled = true; btn.textContent = 'Agendando…'; }
+    // 🔑 data LOCAL verbatim: 'AAAA-MM-DD' ou 'AAAA-MM-DDTHH:mm'. Nunca toISOString()
+    //    — foi exatamente isso que fazia a tarefa cair na véspera (P4 da V129).
+    var dataPrev = d.dia ? (d.hora ? d.dia + 'T' + d.hora : d.dia) : '';
+    try {
+      var r = await gsPost({
+        action: 'saveAgendaDemanda',
+        demanda: {
+          titulo: String(d.titulo).trim(), descricao: d.descricao, tipo: d.tipo,
+          prioridade: d.prioridade, cliente: d.cliente, cliente_id: d.cliente_id,
+          responsavel: d.responsavel, data_prevista: dataPrev,
+          tempo_estimado_min: d.minutos, status: 'aberta', origem: 'pcm_mobile'
+        },
+        usuario: _mobNomeUsuario() || 'admin'
+      });
+      if (r && r.status === 'error') throw new Error(r.error || 'Erro ao salvar');
+      _mobFechaSheet();
+      _mobToast('Demanda agendada.', 'success');
+      _mobEstado.diaSel = d.dia || _mobEstado.diaSel;
+      await _mobCarregar(true);
+      _mobIr('agenda');
+    } catch (e) {
+      _mobToast('Não consegui agendar: ' + e.message, 'error');
+      if (btn) { btn.disabled = false; btn.textContent = 'Agendar demanda'; }
+    }
+  };
+
+  // ── detalhe de demanda ───────────────────────────────────────────────────
+  window._mobAbrirDemanda = function (id) {
+    var dm = ((_mobEstado.dados || {}).demandas || []).find(function (x) { return x.demanda_id === id; });
+    if (!dm) { _mobToast('Demanda não encontrada.', 'error'); return; }
+    var quando = dm.sem_hora ? (dm.dia ? _mobDiaCurto(dm.dia) : 'sem data')
+      : _mobDiaCurto(dm.dia) + ' · ' + _mobHHMM(dm.inicio_previsto);
+    _mobSheet(dm.titulo || 'Demanda',
+      '<div class="mob-card" style="display:block">' +
+      '<div class="mob-card-s"><b>Quando:</b> ' + esc(quando) + '</div>' +
+      (dm.responsavel ? '<div class="mob-card-s"><b>Responsável:</b> ' + esc(dm.responsavel) + '</div>' : '') +
+      (dm.cliente ? '<div class="mob-card-s"><b>Cliente:</b> ' + esc(dm.cliente) + '</div>' : '') +
+      (dm.tipo ? '<div class="mob-card-s"><b>Tipo:</b> ' + esc(dm.tipo) + '</div>' : '') +
+      (dm.descricao ? '<div class="mob-card-s" style="margin-top:8px">' + esc(dm.descricao) + '</div>' : '') +
+      '</div>' +
+      '<button class="mob-go g-accent" onclick="_mobDemandaViraOS(\'' + esc(id) + '\')">Transformar em OS →</button>' +
+      '<button class="mob-ghost" onclick="_mobConcluirDemanda(\'' + esc(id) + '\')">✓ Concluir demanda</button>' +
+      '<button class="mob-ghost" onclick="_mobFormDemanda(' + _mobJson({
+        demanda_id: dm.demanda_id, titulo: dm.titulo, tipo: dm.tipo, prioridade: dm.prioridade,
+        cliente: dm.cliente, cliente_id: dm.cliente_id, responsavel: dm.responsavel,
+        dia: dm.dia, hora: dm.sem_hora ? '' : _mobHHMM(dm.inicio_previsto),
+        minutos: dm.tempo_estimado_min || 60, descricao: dm.descricao
+      }) + ')">✎ Editar</button>' +
+      '<button class="mob-ghost" style="color:#b91c1c" onclick="_mobApagarDemanda(\'' + esc(id) + '\')">Excluir</button>');
+  };
+  function _mobJson(o) { return JSON.stringify(o).replace(/"/g, '&quot;'); }
+
+  window._mobConcluirDemanda = async function (id) {
+    try {
+      var r = await gsPost({ action: 'concluirDemanda', demanda_id: id, usuario: _mobNomeUsuario() || 'admin' });
+      if (r && r.status === 'error') throw new Error(r.error);
+      _mobFechaSheet(); _mobToast('Demanda concluída.', 'success'); await _mobCarregar(true);
+    } catch (e) { _mobToast('Erro: ' + e.message, 'error'); }
+  };
+  window._mobApagarDemanda = async function (id) {
+    if (!confirm('Excluir esta demanda? (ela sai da agenda, mas fica no histórico)')) return;
+    try {
+      var r = await gsPost({ action: 'deleteAgendaDemanda', demanda_id: id, usuario: _mobNomeUsuario() || 'admin' });
+      if (r && r.status === 'error') throw new Error(r.error);
+      _mobFechaSheet(); _mobToast('Demanda excluída.', 'success'); await _mobCarregar(true);
+    } catch (e) { _mobToast('Erro: ' + e.message, 'error'); }
+  };
+  window._mobDemandaViraOS = function (id) {
+    var dm = ((_mobEstado.dados || {}).demandas || []).find(function (x) { return x.demanda_id === id; });
+    if (!dm) return;
+    // a demanda PRÉ-PREENCHE a OS; o stepper continua sendo o mesmo, com as
+    // mesmas validações — não existe atalho que pule template/máquina.
+    _mobFormOS({
+      cliente: dm.cliente || '', cliente_id: dm.cliente_id || '',
+      descricao: [dm.titulo, dm.descricao].filter(Boolean).join(' — '),
+      prioridade: dm.prioridade === 'alta' ? 'alta' : 'normal',
+      demanda_id: dm.demanda_id
+    });
+  };
+
+  window._mobAbrirTarefa = function (osId, tarefaId) {
+    var it = _mobItens().find(function (x) { return x.kind === 'tarefa' && x.id === tarefaId; });
+    var d = _mobEstado.dados || {};
+    if (!it) {
+      it = (d.nao_designadas || []).find(function (x) { return x.tarefa_id === tarefaId; });
+      if (it) it = { titulo: it.nome, sub: it.os_numero, usuario: '', dia: '', min: it.tempo_estimado_min };
+    }
+    if (!it) { _mobToast('Tarefa não encontrada.', 'error'); return; }
+    var pessoas = (d.usuarios || []).map(function (u) { return u.usuario; });
+    _mobSheet(it.titulo || 'Tarefa',
+      '<div class="mob-card" style="display:block">' +
+      '<div class="mob-card-s"><b>OS:</b> ' + esc(it.sub || '—') + '</div>' +
+      (it.usuario ? '<div class="mob-card-s"><b>Responsável:</b> ' + esc(it.usuario) + '</div>' : '') +
+      (it.dia ? '<div class="mob-card-s"><b>Quando:</b> ' + esc(_mobDiaCurto(it.dia)) +
+        (it.inicio && !it.sem_hora ? ' · ' + _mobHHMM(it.inicio) : '') + '</div>' : '') +
+      (it.min ? '<div class="mob-card-s"><b>Estimativa:</b> ' + it.min + ' min</div>' : '') +
+      '</div>' +
+      '<div class="mob-f" style="margin-top:14px"><label>Designar para</label><div class="mob-opts">' +
+      (pessoas.length ? pessoas.map(function (p) {
+        return '<button class="mob-opt' + (it.usuario === p ? ' is-on' : '') + '" onclick="_mobDesignar(\'' +
+          esc(osId) + '\',\'' + esc(tarefaId) + '\',\'' + esc(p).replace(/'/g, "\\'") + '\')">' + esc(p) + '</button>';
+      }).join('') : '<span class="mob-card-s">Sem usuários na fila.</span>') + '</div></div>' +
+      '<div class="mob-f"><label>Agendar para</label>' +
+      '<input class="mob-in" type="date" id="mobTarDia" value="' + esc(it.dia || _mobDiaKey(_mobHoje())) + '">' +
+      '<input class="mob-in" type="time" style="margin-top:8px" id="mobTarHora" value="' +
+      esc(it.inicio && !it.sem_hora ? _mobHHMM(it.inicio) : '') + '"></div>' +
+      '<button class="mob-go" onclick="_mobAgendarTarefa(\'' + esc(osId) + '\',\'' + esc(tarefaId) + '\',\'' +
+      esc(it.usuario || '') + '\')">Salvar agendamento</button>');
+  };
+  window._mobDesignar = async function (osId, tarefaId, pessoa) {
+    try {
+      var r = await gsPost({ action: 'designarUsuarioTarefa', os_id: osId, tarefa_id: tarefaId,
+        usuario_designado: pessoa, usuario: _mobNomeUsuario() || 'admin' });
+      if (r && r.status === 'error') throw new Error(r.error);
+      _mobToast('Designada para ' + pessoa + '.', 'success');
+      await _mobCarregar(true); _mobFechaSheet();
+    } catch (e) { _mobToast('Erro: ' + e.message, 'error'); }
+  };
+  window._mobAgendarTarefa = async function (osId, tarefaId, pessoa) {
+    var dia = (document.getElementById('mobTarDia') || {}).value || '';
+    var hora = (document.getElementById('mobTarHora') || {}).value || '';
+    var data = dia ? (hora ? dia + 'T' + hora : dia) : '';
+    try {
+      var r = await gsPost({ action: 'designarUsuarioTarefa', os_id: osId, tarefa_id: tarefaId,
+        usuario_designado: pessoa, usuario: _mobNomeUsuario() || 'admin', data_prevista: data });
+      if (r && r.status === 'error') throw new Error(r.error);
+      _mobToast('Agendada.', 'success');
+      _mobEstado.diaSel = dia || _mobEstado.diaSel;
+      await _mobCarregar(true); _mobFechaSheet(); _mobIr('agenda');
+    } catch (e) { _mobToast('Erro: ' + e.message, 'error'); }
+  };
+  window._mobAbrirOS = function (osId) {
+    _mobSheet('Ordem de serviço',
+      '<div class="mob-card" style="display:block"><div class="mob-card-s">' +
+      'O detalhe completo da OS (pipeline, anexos, fechamento) vive na versão completa. ' +
+      'O modo app cobre o que é urgente: agendar e abrir.</div></div>' +
+      '<button class="mob-go" onclick="_mobDesktop()">Abrir versão completa</button>');
+  };
+
+  // ── stepper · ABRIR OS ───────────────────────────────────────────────────
+  window._mobFormOS = function (pre) {
+    _mobEstado.novaOS = Object.assign({
+      cliente: '', cliente_id: '', maquinas: [], tipo: '', prioridade: 'normal',
+      descricao: '', dataPrevista: '', demanda_id: '', _maqs: null, _tipos: null
+    }, pre || {});
+    _mobEstado.step = pre && pre.cliente_id ? 1 : 0;
+    if (_mobEstado.step === 1) _mobCarregaMaquinas();
+    _mobPintaOS();
+  };
+  function _mobPintaOS() {
+    var s = _mobEstado.step, o = _mobEstado.novaOS;
+    var corpo = '', titulo = 'Abrir OS';
+    if (s === 0) {
+      titulo = 'Qual cliente?';
+      // ⚠ NÃO filtre por `ativo` aqui: o normalizeClientObject do PCM não
+      //    guarda esse campo em db.clients — um filtro nele parece proteção e
+      //    não filtra nada. A lista já chega só com ativos do getClients, e é
+      //    exatamente a mesma fonte que o modal de OS do desktop usa.
+      var clientes = ((typeof db === 'object' && db && db.clients) || []);
+      corpo = '<div class="mob-f"><input class="mob-in" id="mobOsCli" placeholder="Buscar cliente…" ' +
+        'oninput="_mobBuscaCli(this.value)" autocomplete="off"></div><div id="mobCliLista">' +
+        _mobCliHtml(clientes.slice(0, 25)) + '</div>';
+    } else if (s === 1) {
+      titulo = 'Quais máquinas?';
+      if (!o._maqs) {
+        corpo = '<div class="mob-load"><div class="mob-spin"></div>Buscando máquinas de ' + esc(o.cliente) + '…</div>';
+      } else if (!o._maqs.length) {
+        corpo = _mobVazio('🔧', 'Sem máquinas cadastradas', 'Dá para abrir a OS sem vincular máquina e ajustar depois.') +
+          '<button class="mob-go" onclick="_mobStep(2)">Continuar sem máquina</button>';
+      } else {
+        corpo = o._maqs.map(function (m) {
+          var on = o.maquinas.indexOf(m.id) >= 0;
+          return '<button class="mob-pick' + (on ? ' is-on' : '') + '" onclick="_mobToggleMaq(\'' + esc(m.id) + '\')">' +
+            '<span class="p-c">' + (on ? '✓' : '') + '</span><span>' +
+            '<span class="p-t">' + esc([m.marca, m.modelo].filter(Boolean).join(' ') || 'Máquina') + '</span>' +
+            '<span class="p-s">' + esc([m.tag, m.serie].filter(Boolean).join(' · ') || m.id) + '</span></span></button>';
+        }).join('') +
+        '<button class="mob-go" onclick="_mobStep(2)">Continuar' +
+        (o.maquinas.length ? ' com ' + o.maquinas.length : ' sem máquina') + '</button>';
+      }
+    } else if (s === 2) {
+      titulo = 'Que tipo de OS?';
+      var tipos = o._tipos || [];
+      corpo = '<div class="mob-f"><label>Tipo</label><div class="mob-opts">' +
+        (tipos.length ? tipos.map(function (t) {
+          var nome = t.nome || t.tipo || t;
+          return '<button class="mob-opt' + (o.tipo === nome ? ' is-on' : '') + '" onclick="_mobOsSet(\'tipo\',\'' +
+            esc(nome).replace(/'/g, "\\'") + '\')">' + esc(nome) + '</button>';
+        }).join('') : '<span class="mob-card-s">Carregando tipos…</span>') + '</div></div>' +
+        '<div class="mob-f"><label>Prioridade</label><div class="mob-opts">' +
+        '<button class="mob-opt' + (o.prioridade === 'normal' ? ' is-on' : '') + '" onclick="_mobOsSet(\'prioridade\',\'normal\')">Normal</button>' +
+        '<button class="mob-opt' + (o.prioridade === 'alta' ? ' is-on' : '') + '" onclick="_mobOsSet(\'prioridade\',\'alta\')">🔥 Alta</button>' +
+        '</div></div>' +
+        '<div class="mob-f"><label>Prazo (opcional)</label>' +
+        '<input class="mob-in" type="date" value="' + esc(o.dataPrevista) + '" onchange="_mobOsSet(\'dataPrevista\',this.value,1)"></div>' +
+        '<div class="mob-f"><label>Descrição</label>' +
+        '<textarea class="mob-in" placeholder="O que o cliente relatou…" ' +
+        'oninput="_mobOsSet(\'descricao\',this.value,1)">' + esc(o.descricao) + '</textarea></div>' +
+        '<button class="mob-go" onclick="_mobStep(3)"' + (o.tipo ? '' : ' disabled') + '>Revisar</button>';
+    } else {
+      titulo = 'Confirmar';
+      var maqNomes = (o._maqs || []).filter(function (m) { return o.maquinas.indexOf(m.id) >= 0; })
+        .map(function (m) { return [m.marca, m.modelo, m.tag].filter(Boolean).join(' '); });
+      corpo = '<div class="mob-card" style="display:block">' +
+        '<div class="mob-card-t">' + esc(o.cliente) + '</div>' +
+        '<div class="mob-card-s" style="margin-top:6px"><b>Tipo:</b> ' + esc(o.tipo) + '</div>' +
+        '<div class="mob-card-s"><b>Prioridade:</b> ' + esc(o.prioridade) + '</div>' +
+        (o.dataPrevista ? '<div class="mob-card-s"><b>Prazo:</b> ' + esc(_mobDiaCurto(o.dataPrevista)) + '</div>' : '') +
+        '<div class="mob-card-s"><b>Máquinas:</b> ' + esc(maqNomes.length ? maqNomes.join(' · ') : 'nenhuma') + '</div>' +
+        (o.descricao ? '<div class="mob-card-s" style="margin-top:8px">' + esc(o.descricao) + '</div>' : '') +
+        (o.demanda_id ? '<div class="mob-tags" style="margin-top:10px"><span class="mob-tag t-dem">vem de uma demanda</span></div>' : '') +
+        '</div>' +
+        '<button class="mob-go g-accent" id="mobOsGo" onclick="_mobCriarOS()">Criar ordem de serviço</button>' +
+        '<button class="mob-ghost" onclick="_mobStep(2)">← Voltar</button>';
+    }
+    _mobSheet(titulo, corpo, { total: 4, atual: s });
+  }
+  function _mobCliHtml(lista) {
+    if (!lista.length) return _mobVazio('🔍', 'Nenhum cliente', 'Tente outro nome.');
+    return lista.map(function (c) {
+      return '<button class="mob-pick" onclick="_mobEscolheCli(\'' + esc(c.id) + '\')">' +
+        '<span class="p-c"></span><span><span class="p-t">' + esc(c.nome || '') + '</span>' +
+        '<span class="p-s">' + esc([c.cidade, c.uf].filter(Boolean).join('/') || c.cnpj || '') + '</span></span></button>';
+    }).join('');
+  }
+  window._mobBuscaCli = function (termo) {
+    var t = String(termo || '').toLowerCase().trim();
+    var lista = ((typeof db === 'object' && db && db.clients) || [])
+      .filter(function (c) { return !t || String(c.nome || '').toLowerCase().indexOf(t) >= 0; });
+    var el = document.getElementById('mobCliLista');
+    if (el) el.innerHTML = _mobCliHtml(lista.slice(0, 25));
+  };
+  window._mobEscolheCli = function (id) {
+    var c = ((typeof db === 'object' && db && db.clients) || []).find(function (x) { return x.id === id; });
+    if (!c) return;
+    _mobEstado.novaOS.cliente = c.nome || '';
+    _mobEstado.novaOS.cliente_id = c.id;
+    _mobEstado.novaOS._maqs = null;
+    _mobStep(1);
+  };
+  window._mobStep = function (s) {
+    _mobEstado.step = s;
+    if (s === 1 && !_mobEstado.novaOS._maqs) _mobCarregaMaquinas();
+    if (s === 2 && !_mobEstado.novaOS._tipos) _mobCarregaTipos();
+    _mobPintaOS();
+  };
+  window._mobToggleMaq = function (id) {
+    var arr = _mobEstado.novaOS.maquinas;
+    var i = arr.indexOf(id);
+    if (i >= 0) arr.splice(i, 1); else arr.push(id);
+    _mobPintaOS();
+  };
+  window._mobOsSet = function (campo, valor, silencioso) {
+    _mobEstado.novaOS[campo] = valor;
+    if (!silencioso) _mobPintaOS();
+  };
+  async function _mobCarregaMaquinas() {
+    try {
+      var r = await gsGet('getMachinesByClient', { cliente_id: _mobEstado.novaOS.cliente_id,
+        cliente: _mobEstado.novaOS.cliente });
+      var lista = (r && (r.machines || r.maquinas || r.data)) || [];
+      _mobEstado.novaOS._maqs = lista.map(function (m) {
+        return { id: m.id || m.ID || '', marca: m.marca || m.brand || '', modelo: m.modelo || m.model || '',
+                 tag: m.tag || m.TAG || '', serie: m.serie || m['Série'] || '' };
+      }).filter(function (m) { return m.id; });
+    } catch (e) {
+      _mobEstado.novaOS._maqs = [];
+      _mobToast('Não consegui listar as máquinas: ' + e.message, 'error');
+    }
+    if (_mobEstado.step === 1) _mobPintaOS();
+  }
+  async function _mobCarregaTipos() {
+    try {
+      var r = await gsGet('getTiposOS');
+      var lista = (r && (r.tipos || r.tiposOS || r.data)) || [];
+      _mobEstado.novaOS._tipos = lista.filter(function (t) {
+        return String(t.ativo || t.Ativo || 'SIM').toUpperCase() !== 'NÃO';
+      });
+    } catch (e) { _mobEstado.novaOS._tipos = []; }
+    if (_mobEstado.step === 2) _mobPintaOS();
+  }
+  window._mobCriarOS = async function () {
+    var o = _mobEstado.novaOS;
+    if (!o.cliente_id) { _mobToast('Escolha o cliente.', 'error'); return; }
+    if (!o.tipo) { _mobToast('Escolha o tipo de OS.', 'error'); return; }
+    var btn = document.getElementById('mobOsGo');
+    if (btn) { btn.disabled = true; btn.textContent = 'Criando…'; }
+    try {
+      // MESMA action e MESMO formato do modal do desktop — inclusive o
+      // client_uid, que torna a criação idempotente (retry não duplica OS).
+      var uid = 'mob-' + Date.now() + '-' + Math.random().toString(36).slice(2, 8);
+      var r = await gsPost({
+        action: 'saveOS', numero_os: '', cliente: o.cliente, id_cliente: o.cliente_id,
+        tipo_os: o.tipo, descricao: o.descricao, status: 'aberta',
+        data_abertura: _mobDiaKey(new Date()),
+        usuario_atual: _mobNomeUsuario() || '',
+        usuarios_vinculados: _mobNomeUsuario() ? [_mobNomeUsuario()] : [],
+        prioridade: o.prioridade, data_prevista: o.dataPrevista, local_atendimento: '',
+        maquinas_vinculadas: o.maquinas, client_uid: uid
+      });
+      if (r && r.status === 'error') throw new Error(r.error || 'Erro ao criar OS');
+      var num = (r && (r.numero_os || r.id_os)) || '';
+      // a demanda não some: fica marcada como convertida, com o id_os do lado
+      if (o.demanda_id && r && r.id_os) {
+        try {
+          await gsPost({ action: 'vincularDemandaAOS', demanda_id: o.demanda_id,
+            os_id: r.id_os, usuario: _mobNomeUsuario() || 'admin' });
+        } catch (e2) { _mobToast('OS criada, mas não consegui marcar a demanda como convertida.', 'error'); }
+      }
+      _mobFechaSheet();
+      _mobToast('OS ' + (num || 'criada') + ' aberta.', 'success');
+      _mobEstado.os = null;
+      await _mobCarregar(true);
+      _mobIr('hoje');
+    } catch (e) {
+      _mobToast('Não consegui criar a OS: ' + e.message, 'error');
+      if (btn) { btn.disabled = false; btn.textContent = 'Criar ordem de serviço'; }
+    }
+  };
+
+  // ── ligar, em duas fases ─────────────────────────────────────────────────
+  // FASE 1 · SÍNCRONA, no próprio parse deste bloco (que está no fim do body,
+  // com o DOM do desktop já montado). A classe entra ANTES do primeiro paint.
+  // ⚠ Por que não deixar tudo no setTimeout: o celular piscaria a tela de
+  //   computador por um terço de segundo antes de virar app — e é exatamente
+  //   esse primeiro segundo que decide se a pessoa acha que "funciona no
+  //   celular". Quem vem do ProperHub → Administração tem de cair no app já
+  //   como app, sem transição nenhuma.
+  var _mobModo = _mobDeveLigar();
+  if (_mobModo) {
+    document.body.classList.add('mob-on');
+    if (_mobModo === 'forcado') document.body.classList.add('mob-forced');
+    // o #toast é filho direto do body: sem a marca ele some junto com o
+    // desktop e o app fica mudo (nem sucesso, nem erro).
+    ['toast', 'mobSheet', 'mobSheetBg'].forEach(function (id) {
+      var el = document.getElementById(id);
+      if (el && el.parentElement === document.body) el.classList.add('mob-keep');
+    });
+    _mobEstado.boot = true;   // pinta a tela de carga, nunca um branco
+    _mobPintar();
+  }
+
+  // FASE 2 · depois que o app desktop terminou de acordar (checkHubSession,
+  // db, catálogo). Só então buscamos os dados.
+  function _mobLigar() {
+    var modo = _mobModo || _mobDeveLigar();
+    if (!modo) return;
+    document.body.classList.add('mob-on');
+    if (modo === 'forcado') document.body.classList.add('mob-forced');
+    ['toast', 'mobSheet', 'mobSheetBg'].forEach(function (id) {
+      var el = document.getElementById(id);
+      if (el && el.parentElement === document.body) el.classList.add('mob-keep');
+    });
+    _mobCarregar(true);
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', function () { setTimeout(_mobLigar, 350); });
+  } else { setTimeout(_mobLigar, 350); }
+  window._mobLigar = _mobLigar;
+})();
+
+</script>
 </body>
 </html>
