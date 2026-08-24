@@ -24,6 +24,20 @@
            título perde o chip de tipo e nada mais.
          Mais de uma máquina na OS vira `PRIMEIRA +N`, com a lista inteira no
          title do elemento.
+
+     L3  A ÁRVORE PASSA A RESPEITAR A ORDENAÇÃO DO CABEÇALHO (defeito apontado
+         pelo Fernando na mesma tarde: escolher A→Z em CLIENTE acendia a
+         setinha e não mudava nada — a árvore reordenava clientes/OS/arquivos
+         por data, sempre, descartando o sort do motor XF).
+         🔑 O xfFiltered JÁ entrega as linhas ordenadas e o Map preserva ordem
+            de inserção: a correção é NÃO reordenar os níveis iguais ou acima
+            do da coluna ordenada (`_docsSortNivel_`), deixando a 1ª aparição
+            de cada grupo seguir a ordem das linhas. Sem sort ativo, tudo fica
+            como sempre foi (data desc). "Atendimentos sem OS" e "Sem máquina"
+            continuam por último em qualquer ordenação.
+         Os FILTROS de coluna já valiam na árvore (ela nasce só das linhas
+         filtradas) — o que não respondia era a ordenação; a bancada agora
+         prova os dois.
      ─────────────────────────────────────────────────────────────────────────
      PCM V131 — 23/08/2026 — OS ACESSOS DO PORTAL VIRAM TELA (par do GAS v113).
      Item A5. Uma view nova (`portalAcessos`), um item de nav e o dispatch —
@@ -7246,10 +7260,22 @@ function _docsTreeBuildV96(rows){
 }
 function _docsFmtMs(ms){ if(!ms) return '—'; const d=new Date(ms); return String(d.getDate()).padStart(2,'0')+'/'+String(d.getMonth()+1).padStart(2,'0')+'/'+d.getFullYear(); }
 function _docsCounts(nF,nP){ return (nF?'📷 '+nF:'')+(nF&&nP?' · ':'')+(nP?'📄 '+nP:''); }
+// V133 (L3) — em que NÍVEL da árvore a coluna ordenada vive. A árvore usa a
+// ordem das LINHAS (que o xfFiltered já ordenou) em todo nível igual ou acima
+// do da coluna; abaixo dele, mantém a ordem padrão daquele nível.
+function _docsSortNivel_(k){ return k==='cliente'?1:k==='os'?2:k==='maquina'?3:k?4:0; }
 function _docsRenderTreeV96(body,rows,inst){
   const I=inst||XF.inst['docs'];
   const cli=_docsTreeBuildV96(rows);
-  const cKeys=[...cli.keys()].sort(function(a,b){
+  // V133 (L3) — a árvore passa a RESPEITAR a ordenação do cabeçalho (defeito
+  // apontado pelo Fernando em 24/08: a setinha aparecia e nada mudava). O
+  // xfFiltered JÁ entrega as linhas ordenadas; como o Map preserva ordem de
+  // inserção, basta NÃO reordenar o nível — a 1ª aparição de cada cliente/OS
+  // segue a ordem das linhas. Sem sort ativo, tudo fica como sempre foi
+  // (clientes e OS por data desc, máquinas A→Z, arquivos por data desc).
+  const _srtNivel=_docsSortNivel_((I.s&&I.s.sort)?I.s.sort.key:null);
+  const cKeys=[...cli.keys()];
+  if(_srtNivel<1) cKeys.sort(function(a,b){
     const A=cli.get(a),B=cli.get(b);
     return B.maxDate-A.maxDate || A.label.localeCompare(B.label,'pt-BR');
   });
@@ -7273,6 +7299,7 @@ function _docsRenderTreeV96(body,rows,inst){
     const oKeys=[...C.os.keys()].sort(function(a,b){
       const A=C.os.get(a),B=C.os.get(b);
       if(A.semOS!==B.semOS) return A.semOS?1:-1;          // "Atendimentos sem OS" por último dentro do cliente
+      if(_srtNivel>=2) return 0;                          // V133 (L3) — sort estável preserva a ordem das linhas
       return B.maxDate-A.maxDate || A.label.localeCompare(B.label,'pt-BR');
     });
     oKeys.forEach(function(ok){
@@ -7297,12 +7324,13 @@ function _docsRenderTreeV96(body,rows,inst){
       const mKeys=[...O.maq.keys()].sort(function(a,b){
         const A=O.maq.get(a),B=O.maq.get(b);
         if((A.label==='Sem máquina')!==(B.label==='Sem máquina')) return A.label==='Sem máquina'?1:-1;
+        if(_srtNivel>=3) return 0;                        // V133 (L3)
         return A.label.localeCompare(B.label,'pt-BR');
       });
       mKeys.forEach(function(mk){
         const M=O.maq.get(mk);
         html+='<tr class="xf-lvl3"><td colspan="'+nCols+'"><div style="padding-left:52px;display:flex;align-items:center;gap:7px">🔧 <b>'+escHtml(M.label)+'</b><span class="xf-gmeta">'+M.items.length+' arquivo'+(M.items.length===1?'':'s')+'</span></div></td></tr>';
-        M.items.sort(function(a,b){ return _docDateValue(b)-_docDateValue(a); });
+        if(_srtNivel<4) M.items.sort(function(a,b){ return _docDateValue(b)-_docDateValue(a); });   // V133 (L3)
         M.items.forEach(function(it){
           html+='<tr class="xf-filerow">'+I.cfg.columns.map(function(c){ return '<td class="'+(c.type==='num'?'xf-num':'')+'"'+(c.tdStyle?(' style="'+c.tdStyle+'"'):'')+'>'+(c.render?c.render(it):escHtml(xfGV(c,it)==null?'—':xfGV(c,it)))+'</td>'; }).join('')+'</tr>';
         });
