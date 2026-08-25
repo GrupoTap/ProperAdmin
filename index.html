@@ -1,3 +1,95 @@
+<!-- PCM V141 — 25/08/2026 — O RESPONSÁVEL VOLTA A TER NOME.
+     🔴 REBASE. Feito EM CIMA do **V140 das quatro vistas** — este arquivo
+     CONTÉM aquela rodada inteira (e, por ela, o V139). O V141 existe porque
+     duas sessões paralelas batizaram entregas DIFERENTES de "V140" no mesmo
+     dia e uma sobrescreveu a outra em disco; ver
+     `00_EM_ABERTO/NEWFILE_RODADA_PREVENTIVA_2026-08-25.md`, seção final.
+     ⚠ Publicar QUALQUER V140 no lugar deste perde metade do trabalho do dia.
+     100% ADITIVO:
+     nenhum id, função, data-key, data-view ou rota renomeada.
+     Par obrigatório: **GAS v122** (contém o v120 e o v121) e **PCF V95**.
+
+     🔑 CHAMADO DO FERNANDO (25/08): "na tela do PCM fica faltando o nome do
+        responsável — e o responsável foi designado na abertura da OS e, nesse
+        caso, foi o mesmo que efetuou a preventiva."
+
+     R1  HISTÓRICO DE VISITAS DIZ DE ONDE VEIO O NOME. O GAS v122 passa a
+         devolver `tech_fonte` ('visita' | 'os' | '') e `responsavel_os`. Quando
+         a visita foi gravada sem técnico (o caso de todo o histórico antigo), a
+         tela mostra o responsável DA OS com o rótulo "· da OS" — em vez do "—"
+         que não ajudava ninguém. Contra o GAS antigo o campo não vem e a tela
+         se comporta exatamente como na V140.
+         🔑 Por que não preencher calado: quem ABRIU a OS não é necessariamente
+            quem EXECUTOU. O dado da OS é uma pista boa, não a verdade — e uma
+            pista rotulada vale mais que uma verdade inventada.
+
+     R2  O FORMULÁRIO "REGISTRAR VISITA / PREVENTIVA" JÁ NASCE ASSINADO. O campo
+         Responsável era um input vazio e ficava vazio: era essa a origem do
+         "—" no histórico E no PDF que vai para o cliente. Agora vem
+         pré-preenchido com quem está logado (editável, e só quando vazio).
+
+     R3  COLUNA "RESPONSÁVEL" DAS VISTAS NOVAS (Fila · Painel · Raias · Matriz).
+         `_g8Quem(o)` lia `o.tecnicos` — chave que o `getOS` NUNCA devolve (ela
+         só existe no envelope da fila da oficina). Resultado: a coluna vinha
+         "—" para TODA OS, e a classificação "esperando quem pegar" × "em
+         andamento" tratava todas como livres. Passa a ler `usuario_atual` /
+         `usuarios_vinculados` — as colunas que o PCM grava na abertura da OS —
+         traduzindo id→nome pela lista de usuários já carregada, e mantém
+         `o.tecnicos` como primeira opção para não mudar nada onde ele existe.
+-->
+<!-- PCM V140 — 25/08/2026 — AS QUATRO VISTAS CONSERTADAS, E O QUE ELAS
+     ESCONDIAM. Feito EM CIMA do V139. Front puro: **zero GAS, zero SQL**.
+
+     Achado na tela pelo Fernando: "o Painel não está conforme os mockups".
+     Estava certo — e puxando esse fio apareceram mais quatro coisas, três
+     delas da mesma família: **a tela afirmando o que não sabe.**
+
+     1) 🔴 PAINEL QUEBRADO — a causa. A tabela é `table-layout: auto` (padrão)
+        com `white-space: nowrap` nas células. A coluna Máquina traz o
+        machineKey inteiro, e uma OS com três máquinas vira uma linha de ~110
+        caracteres que NÃO pode quebrar. O navegador faz a única coisa que
+        pode: alarga a coluna até caber, empurrando as outras cinco para fora
+        do contêiner — que corta. Por isso a tela mostrava UMA coluna de
+        machineKeys laranja e um cabeçalho só com "MÁQUINA": as outras colunas
+        existiam, renderizadas, fora da área visível.
+        🔑 As larguras já estavam declaradas nos `<th>` (26%, 22%, 18%…) e
+        eram IGNORADAS — porcentagem em `table-layout:auto` é sugestão, não
+        regra. Uma palavra de CSS (`fixed`) é a diferença entre o mockup e o
+        que ele virou.
+     2) 🔴 "HOJE" INVENTADO. `dias_na_fila` vale 0 tanto para OS aberta hoje
+        quanto para OS **sem data de abertura** — e 0 virava "hoje" na tela.
+        Vinte OS dizendo "hoje" não era coincidência: era ausência de dado
+        exibida como fato. Agora sem data escreve "—".
+     3) 🔴 A NOTA CULPAVA O SOFTWARE. Ela dizia "a data de chegada... ainda não
+        chega até esta tela (patch GAS v119)". O patch CHEGOU — o `getOS`
+        entrega `custodia_desde` e `dias_na_oficina` desde o v119, que está no
+        ar. O que não existe é o DADO: nenhuma máquina tem chegada registrada.
+        A nota mandava esperar um conserto que já tinha acontecido, em vez de
+        pedir a única coisa que resolve — dar baixa de custódia no recebimento.
+        Agora ela distingue os três estados e conta quantas OS estão em cada um.
+     4) 🔴 A MATRIZ ESCONDIA OS. Duas fugas silenciosas: `.slice(0,6)` cortava
+        as etapas da sétima em diante, e OS **travada sem dono** não entrava em
+        nenhuma célula (a linha "Sem dono" exclui travadas; as linhas de técnico
+        pedem técnico). Sumiam da tela sem uma palavra. Agora: rolagem em vez de
+        corte, linha "Travadas" própria, e uma **auditoria de contagem** que
+        acusa em vermelho se alguma OS não couber em célula nenhuma.
+     5) A RAIA "FILA" ERA VERDE — a mesma cor de quem está trabalhando. Numa
+        tela cujo trabalho é distinguir os dois, isso é ruído. Virou laranja, e
+        as travadas viraram âmbar. O "+12" mudo virou botão que abre.
+
+     6) AGENDA DA EQUIPE — a barra do mês media a carga contra a capacidade
+        SOMADA de dez pessoas (90h). Um dia com 3h de trabalho pintava 3% e
+        parecia vazio: a barra existia e não informava nada. No modo "toda a
+        equipe" ela passa a ser RELATIVA ao dia mais cheio do mês (a pergunta
+        real é "qual dia está pesado"); no modo de uma pessoa segue medindo
+        contra a capacidade dela, que aí é a pergunta certa. Mais: clicar num
+        dia que TEM compromissos abre o que tem nele em vez de pular direto
+        para o formulário — clicar num dia cheio e cair em "Nova demanda" é a
+        tela ignorando o que o olho acabou de ver.
+
+     Linhas pré-existentes alteradas: as declaradas acima. Nenhum id,
+     data-view, nome de função ou rota foi renomeado.
+-->
 <!-- PCM V139 — 25/08/2026 — A DEMANDA GANHA DONO, MOTIVO E CIENTE; O DESKTOP
      GANHA O MÊS E O DIREITO DE AGENDAR. Feito EM CIMA do V138 (clonado do
      GitHub e conferido por md5 — o V138 ESTÁ no ar).
@@ -2295,7 +2387,7 @@ v50 — Resiliência de rede: retry/backoff em gsGet e syncToGS
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>ProperCare Manager · Gestão PGP v3.63 (PCM V139)</title>
+<title>ProperCare Manager · Gestão PGP v3.65 (PCM V141)</title>
 <link rel="icon" type="image/jpeg" href="data:image/jpeg;base64,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">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -3302,7 +3394,26 @@ th.xf-filtered .xf-fun{opacity:1;stroke:var(--accent)}
 .g8-chip.urg{background:#fee2e2;color:#991b1b} .g8-chip.bq{background:#fef3c7;color:#92400e}
 .g8-chip.who{background:#dbeafe;color:#1e40af} .g8-chip.free{background:#f1f5f9;color:#475569}
 /* painel de aeroporto */
-.g8-tab{width:100%;border-collapse:collapse}
+/* 🔑 V140 — `table-layout:fixed` é o conserto. Sem ele o navegador usa o modo
+   AUTO, em que as larguras em % dos <th> são só sugestão: uma célula com
+   `nowrap` e 110 caracteres (OS com três máquinas) alarga a coluna até caber e
+   empurra as outras cinco para fora do contêiner. A tela mostrava uma coluna
+   só, e parecia que as outras não tinham sido renderizadas. */
+.g8-tabw{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.g8-tab{width:100%;min-width:720px;border-collapse:collapse;table-layout:fixed}
+.g8-maqn{font-size:11px;font-weight:700;color:var(--text-muted);
+  font-family:var(--font-sans);margin-left:6px;white-space:nowrap}
+.g8-semdata{color:var(--text3);font-weight:700}
+.g8-mais{background:transparent;border:1px dashed var(--border2);color:var(--text-muted);
+  border-radius:999px;padding:3px 11px;font-size:11.5px;font-weight:700;cursor:pointer;font-family:inherit}
+.g8-mais:hover{color:var(--text);border-color:var(--text-muted)}
+.g8-mxw{overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:4px}
+.g8-audit{margin-top:10px;font-size:12px;font-weight:700;color:var(--red);
+  background:var(--red-light,#fee2e2);border-radius:8px;padding:8px 11px}
+/* V140 — a fila NÃO é verde: verde é quem está trabalhando. */
+.g8-lane.fila .w::before{background:var(--accent)}
+.g8-lane.bq .w::before{background:#f59e0b}
+.g8-lane.bq .w .s{color:#b45309;font-weight:800}
 .g8-tab th{font-size:10.5px;letter-spacing:.12em;color:var(--text3);font-weight:800;text-align:left;
   padding:9px 12px;border-bottom:2px solid var(--border);text-transform:uppercase}
 .g8-tab td{padding:9px 12px;border-bottom:1px solid var(--border);font-size:14px;font-weight:600;
@@ -3362,7 +3473,7 @@ th.xf-filtered .xf-fun{opacity:1;stroke:var(--accent)}
 <aside class="nav-sidebar" aria-label="Navegação principal">
   <div class="nav-brand">
     <span class="nav-brand-mark">PCM</span>
-    <span class="nav-brand-sub">v3.63 · V139</span>
+    <span class="nav-brand-sub">v3.65 · V141</span>
   </div>
 
   <nav class="nav-groups">
@@ -3668,6 +3779,19 @@ th.xf-filtered .xf-fun{opacity:1;stroke:var(--accent)}
       <button class="btn btn-secondary" onclick="closeModal('modalDemandaDesk')">Fechar</button>
       <button class="btn btn-danger btn-sm" id="mdemExcluir">Excluir</button>
       <button class="btn btn-primary" id="mdemConcluir">✓ Concluir demanda</button>
+    </div>
+  </div>
+</div>
+
+<!-- V140 · o que tem no dia (clique numa célula cheia do calendário) -->
+<div class="overlay" id="modalDiaAgenda">
+  <div class="modal" style="max-width:560px">
+    <div class="modal-title">📅 <span id="v139DiaTitulo">Dia</span></div>
+    <div id="v139DiaResumo" style="font-size:13px;margin-bottom:12px"></div>
+    <div id="v139DiaLista" style="max-height:46vh;overflow-y:auto"></div>
+    <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:14px;padding-top:12px;border-top:1px solid var(--border)">
+      <button class="btn btn-secondary" onclick="closeModal('modalDiaAgenda')">Fechar</button>
+      <button class="btn btn-primary" id="v139DiaNova">＋ Nova demanda neste dia</button>
     </div>
   </div>
 </div>
@@ -11076,7 +11200,10 @@ function renderFormNovaPreventiva(eq){
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
       <div class="form-group" style="margin:0">
         <label class="form-label">Responsável</label>
-        <input class="form-input" type="text" id="prevTecnico" placeholder="Nome do técnico">
+        <!-- V140 (R2) — pré-preenchido com quem está logado. Era este input
+             vazio que gravava VISITAS.Técnico em branco e imprimia
+             "Responsável: —" no histórico e no PDF do cliente. Editável. -->
+        <input class="form-input" type="text" id="prevTecnico" placeholder="Nome do técnico" value="${escHtml(_pcmNomeSessao())}">
       </div>
       <div class="form-group" style="margin:0">
         <label class="form-label">Tipo</label>
@@ -11240,7 +11367,8 @@ async function salvarPreventiva() {
     visitDate:  new Date(dataVal + 'T12:00:00').toISOString(),
     hourTotal:  horimetro,
     hpw:        eq.hpw || 0,
-    tech:       responsavel,
+    tech:       (responsavel || _pcmNomeSessao()),   // V140 (R2)
+    usuario_atual: _pcmNomeSessao(),                  // V140 (R2) — cadeia do GAS v122
     tipo:       tipo,
     generalObs: obs,
     parts:      parts
@@ -11318,6 +11446,47 @@ async function carregarHistoricoPreventivas(eq) {
   }
 }
 
+// ══════════════════════════════════════════════════════════════════════════
+// V140 (R1) — O RESPONSÁVEL, E DE ONDE ELE VEIO.
+//
+// `VISITAS.Técnico` é preenchido por um input livre ("Seu nome") que quase
+// ninguém digitava — então o histórico inteiro imprimia "Responsável: —", na
+// tela e no PDF regerado que vai para o cliente. O GAS v122 conserta a ESCRITA
+// (daqui pra frente) e, na LEITURA, devolve `responsavel_os` + `tech_fonte`
+// para as visitas antigas.
+//
+// ⚠ O rótulo "· da OS" não é decoração: quem ABRIU a OS não é necessariamente
+//   quem EXECUTOU a visita. Mostrar o nome sem dizer a procedência transformaria
+//   uma pista boa numa afirmação falsa — e é exatamente assim que um dado
+//   inventado vira dado oficial três meses depois.
+// ⚠ Contra GAS ≤ v121 os dois campos não vêm e a função devolve o mesmo '—' de
+//   sempre: a tela não quebra, só não melhora.
+// ══════════════════════════════════════════════════════════════════════════
+function _pcmRespVisita(v){
+  try{
+    const t = String((v && v.tech) || '').trim();
+    const fonte = String((v && v.tech_fonte) || '').trim();
+    if (t && fonte === 'os') {
+      return escHtml(t) + ' <span style="color:var(--text3);font-size:11px">· da OS</span>';
+    }
+    if (t) return escHtml(t);
+    const ro = String((v && v.responsavel_os) || '').trim();
+    if (ro) return escHtml(ro) + ' <span style="color:var(--text3);font-size:11px">· da OS</span>';
+    return '—';
+  }catch(e){ return '—'; }
+}
+
+// V140 (R2) — o nome de quem está logado. Só LEITURA da sessão; quem decide
+// escrever é o campo (que continua editável) e o GAS v122 (que só usa esta
+// cadeia quando o campo vem vazio).
+function _pcmNomeSessao(){
+  try{
+    const S = window.PROPER_SESSION || {};
+    const t = S.tecnico || {};
+    return String(t.nome || S.nome_tecnico || S.nome || '').trim();
+  }catch(e){ return ''; }
+}
+
 function renderHistoricoPreventivas(visits, pecasLog) {
   const items = (visits || []);
   if(!items.length){
@@ -11379,7 +11548,7 @@ function renderHistoricoPreventivas(visits, pecasLog) {
         <span style="${tipoStyle};font-size:10px;font-weight:700;padding:2px 8px;border-radius:999px">${tipoLabel}</span>
         <span style="font-size:12px;color:var(--text2)">${dataFmt}</span>
         <span style="font-size:12px">Horímetro: <strong>${hour.toLocaleString('pt-BR')}h</strong></span>
-        <span style="font-size:12px;color:var(--text2)">Responsável: ${v.tech||'—'}</span>
+        <span style="font-size:12px;color:var(--text2)">Responsável: ${_pcmRespVisita(v)}</span>
         ${isPrev ? `<button class="btn btn-secondary btn-sm" style="margin-left:auto"
           onclick="_semDuploEnvio_(this, () => pcmGerarPdfPreventiva('${String(visitId).replace(/'/g,"\\'")}'))"
           title="Relatório desta preventiva — mesmo motor de PDF do PCF">📄 PDF</button>` : ''}
@@ -15320,15 +15489,39 @@ function _renderOSRibbonShell(){
 //   o cabeçalho DIZ QUAL — nunca escreve "na oficina" com o número da abertura.
 // ═══════════════════════════════════════════════════════════════════════════
 function _g8Idade(o){
-  if (!o) return { n:0, txt:'—', real:false };
+  if (!o) return { n:0, txt:'—', real:false, semData:true };
   let d = (typeof o.dias_na_oficina === 'number') ? o.dias_na_oficina : null;
   if (d == null && o.custodia_desde){
     const t = new Date(o.custodia_desde).getTime();
     if (!isNaN(t)) d = Math.floor((Date.now()-t)/86400000);
   }
-  if (d != null) return { n:d, txt: d<=0 ? 'hoje' : d+'d', real:true };
+  if (d != null) return { n:d, txt: d<=0 ? 'hoje' : d+'d', real:true, semData:false };
+  // 🔴 V140 — SEM DATA NÃO É "HOJE". O GAS calcula `dias_na_fila` a partir de
+  // `data_abertura`; quando ela está vazia, `new Date('')` é NaN e o próprio
+  // GAS grava 0 (está escrito lá: `isNaN(_abMs) ? 0 : ...`). Aqui esse 0 virava
+  // "hoje" — e vinte OS antigas apareciam todas como abertas hoje. Ausência de
+  // dado exibida como fato é a mesma falha do "ok" que não apagava nada.
+  const temAb = !!String(o.data_abertura || '').trim();
+  if (!temAb) return { n:0, txt:'—', real:false, semData:true };
   const f = (typeof o.dias_na_fila === 'number') ? o.dias_na_fila : 0;
-  return { n:f, txt: f<=0 ? 'hoje' : f+'d', real:false };
+  return { n:f, txt: f<=0 ? 'hoje' : f+'d', real:false, semData:false };
+}
+// V140 — a coluna Máquina cabe em 26% da tabela; o machineKey inteiro, não.
+// Mostra o primeiro e diz quantos faltam; o `title` leva a lista completa.
+// 🔑 E OS SEM MÁQUINA MOSTRA "sem máquina", não o tipo da OS. O `_g8Maq` cai
+//    em `_gosTipoNome(o)` quando não há máquina vinculada — foi assim que
+//    "INSPECAO_COLETA" apareceu na coluna MÁQUINA do print do Fernando, ao lado
+//    de uma coluna ETAPA que já dizia a mesma coisa. Duas colunas repetindo o
+//    mesmo dado é uma coluna desperdiçada; e chamar um tipo de OS de "máquina"
+//    é a tela mentindo baixinho. (Visto na CAPTURA, não no código.)
+function _g8TemMaq(o){
+  return Array.isArray(o.maquinas_vinculadas) && o.maquinas_vinculadas.filter(Boolean).length > 0;
+}
+function _g8MaqCurto(o){
+  const arr = Array.isArray(o.maquinas_vinculadas) ? o.maquinas_vinculadas.filter(Boolean) : [];
+  if (!arr.length) return '<span class="g8-semdata">sem máquina</span>';
+  if (arr.length === 1) return escHtml(String(arr[0]));
+  return escHtml(String(arr[0])) + '<span class="g8-maqn">+' + (arr.length - 1) + '</span>';
 }
 function _g8Bloqueada(o){ return !!(o && o.bloqueada === true); }
 function _g8MotivoBq(o){ return (o && o.motivo_bloqueio) ? String(o.motivo_bloqueio) : 'travada'; }
@@ -15362,15 +15555,78 @@ function _g8Maq(o){
           : String(o.maquinas_vinculadas||'');
   return m || _gosTipoNome(o);
 }
+// ══════════════════════════════════════════════════════════════════════════
+// V140 (R3) — A COLUNA "RESPONSÁVEL" QUE NUNCA MOSTROU NINGUÉM.
+//
+// Até a V139 esta função lia `o.tecnicos` — uma chave que o `getOS` NUNCA
+// devolve: ela só existe no envelope da FILA DA OFICINA (`_filaItem_`, e lá
+// significa "quem tem lock ativo", que também não é o responsável designado).
+// Nas quatro vistas novas (Fila · Painel · Raias · Matriz) a coluna vinha "—"
+// para TODA OS, e a leitura "esperando quem pegar" × "em andamento" tratava
+// todas como livres.
+//
+// O dado sempre existiu em `usuario_atual` (ID, gravado pelo select da abertura
+// da OS) e em `usuarios_vinculados`. Falta só o tradutor: `_usuList`, que o PCM
+// já carrega. Sem a lista carregada devolve o id cru — visível e conferível,
+// melhor que um travessão que esconde o problema.
+// ⚠ `o.tecnicos` continua tendo prioridade: onde ele existir, nada muda.
+// ══════════════════════════════════════════════════════════════════════════
 function _g8Quem(o){
-  const t = Array.isArray(o.tecnicos) ? o.tecnicos : [];
-  return t.filter(Boolean);
+  try{
+    const t = Array.isArray(o.tecnicos) ? o.tecnicos.filter(Boolean) : [];
+    if (t.length) return t;
+    const nomeDe = (id) => {
+      const v = String(id || '').trim();
+      if (!v) return '';
+      try{
+        const u = (_usuList || []).find(x => String(x.id || x.id_usuario || '') === v);
+        return String((u && u.nome) || v).trim();
+      }catch(e){ return v; }
+    };
+    const atual = nomeDe(o.usuario_atual);
+    if (atual) return [atual];
+    let vin = o.usuarios_vinculados;
+    if (typeof vin === 'string') {
+      try { vin = (vin.indexOf('[') === 0) ? JSON.parse(vin) : vin.split(','); } catch(e){ vin = vin.split(','); }
+    }
+    if (Array.isArray(vin)) return vin.map(nomeDe).filter(Boolean);
+    return [];
+  }catch(e){ return []; }
 }
+// 🔑 V140 — TRÊS ESTADOS, não dois. A versão anterior dizia "a data de chegada
+// ainda não chega até esta tela (patch GAS v119)" — e isso **culpava o software
+// por um buraco de DADO**. O patch chegou: o `getOS(com_fila)` entrega
+// `custodia_desde` e `dias_na_oficina` desde o v119, que está no ar. O que não
+// existe é a baixa de custódia das máquinas. Quem lesse a nota ficava esperando
+// um conserto que já tinha acontecido, em vez de ir registrar a chegada.
+// A distinção é possível porque campo AUSENTE e campo NULO são coisas
+// diferentes em JSON: `'dias_na_oficina' in o` separa backend velho de dado vazio.
 function _g8NotaIdade(){
-  const alguma = _g8Ativas().some(o=>_g8Idade(o).real);
-  return alguma
-    ? 'A ordem conta da <b>chegada da máquina na oficina</b>. Urgente fura a fila; travada não concorre.'
-    : 'A ordem conta da <b>abertura da OS</b> — a data de chegada da máquina existe na planilha mas ainda não chega até esta tela (patch GAS v119). Urgente fura a fila; travada não concorre.';
+  const at = _g8Ativas();
+  const regra = ' Urgente fura a fila; travada não concorre.';
+  if (!at.length) return 'Sem OS ativas.' + regra;
+  const temCampo = at.some(o => ('dias_na_oficina' in o) || ('custodia_desde' in o));
+  const comCust  = at.filter(o => _g8Idade(o).real).length;
+  const semData  = at.filter(o => _g8Idade(o).semData).length;
+  const rodape   = semData
+    ? ' ⚠ <b>' + semData + '</b> OS sem data de abertura aparecem com <b>—</b> no tempo.'
+    : '';
+  if (!temCampo) {
+    return 'A ordem conta da <b>abertura da OS</b>. O servidor no ar é anterior ao ' +
+           '<b>GAS v119</b> e não manda a chegada da máquina.' + regra + rodape;
+  }
+  if (comCust === 0) {
+    return 'A ordem conta da <b>abertura da OS</b> — <b>nenhuma das ' + at.length +
+           ' OS tem a chegada da máquina registrada</b>. Isso não é limitação do sistema: ' +
+           'a chegada é carimbada na <b>baixa de custódia</b>, no recebimento. ' +
+           'Enquanto ninguém registrar, a fila conta da abertura.' + regra + rodape;
+  }
+  if (comCust < at.length) {
+    return '<b>' + comCust + ' de ' + at.length + '</b> OS contam da <b>chegada da máquina</b>; ' +
+           'as outras <b>' + (at.length - comCust) + '</b> contam da abertura da OS, ' +
+           'porque a máquina delas não teve baixa de custódia.' + regra + rodape;
+  }
+  return 'A ordem conta da <b>chegada da máquina na oficina</b>.' + regra + rodape;
 }
 function _g8Vazio(msg){
   return `<div class="empty" style="padding:38px 16px"><div class="empty-icon">🗂</div>
@@ -15388,13 +15644,17 @@ function gosRenderFila(){
     const id=_g8Idade(o), cor=_g8Cor(o), quem=_g8Quem(o);
     const pct=Math.max(3,Math.round((id.n/max)*100));
     const cbar = cor==='red' ? '#ef4444' : (cor==='amb' ? '#f59e0b' : '#22c55e');
+    // V140 — sem data não desenha barra: barra de 3% sobre nada é gráfico de
+    // um número que não existe.
+    const BARRA = '<div class="g8-bar"><i style="width:'+pct+'%;background:'+cbar+'"></i></div>';
     return `<div class="g8-r ${cor}" onclick="openOSDetail('${_gosOid(o)}')" style="cursor:pointer">
       <div class="g8-pos">${pos}</div>
       <div class="g8-nome"><div class="c">${escHtml(String(o.cliente||'—'))}</div>
-        <div class="m">${escHtml(_g8Maq(o))}</div></div>
+        <div class="m">${_g8TemMaq(o) ? escHtml(_g8Maq(o)) : '<span class="g8-semdata">sem máquina vinculada</span>'}</div></div>
       <div class="g8-fase">${escHtml(String(o.estagio&&o.estagio!=='—'?o.estagio:_gosTipoNome(o)))}</div>
-      <div class="g8-idade"><div class="g8-bar"><i style="width:${pct}%;background:${cbar}"></i></div>
-        <span class="g8-d" style="color:${cbar}">${escHtml(id.txt)}</span></div>
+      <div class="g8-idade">${id.semData ? '' : BARRA}
+        <span class="g8-d ${id.semData?'g8-semdata':''}" style="${id.semData?'':'color:'+cbar}"
+              title="${id.semData?'Sem data de abertura na planilha':''}">${escHtml(id.txt)}</span></div>
       <div class="g8-sit">${_g8Rank(o)>=3?'<span class="g8-chip urg">URGENTE</span>':''}
         ${quem.length?quem.map(t=>`<span class="g8-chip who">${escHtml(t)}</span>`).join(''):'<span class="g8-chip free">livre</span>'}</div>
     </div>`;
@@ -15426,10 +15686,11 @@ function gosRenderPainel(){
     const id=_g8Idade(o), quem=_g8Quem(o), cor=_g8Cor(o);
     const c = cor==='red' ? '#ef4444' : (cor==='amb' ? '#b45309' : '#16a34a');
     return `<tr onclick="openOSDetail('${_gosOid(o)}')" style="cursor:pointer">
-      <td class="g8-maq">${escHtml(_g8Maq(o))}</td>
+      <td class="g8-maq" title="${escHtml(_g8Maq(o))}">${_g8MaqCurto(o)}</td>
       <td>${escHtml(String(o.cliente||'—'))}</td>
       <td>${escHtml(String(o.estagio&&o.estagio!=='—'?o.estagio:_gosTipoNome(o)))}</td>
-      <td class="g8-num" style="color:${c}">${escHtml(_g8Idade(o).txt)}</td>
+      <td class="g8-num ${id.semData?'g8-semdata':''}" style="${id.semData?'':'color:'+c}"
+          title="${id.semData?'Esta OS não tem data de abertura na planilha.':''}">${escHtml(id.txt)}</td>
       <td>${quem.length?escHtml(quem.join(', ')):'<span style="color:var(--text3)">—</span>'}</td>
       <td>${_g8Bloqueada(o)?`<span class="g8-chip bq">${escHtml(_g8MotivoBq(o))}</span>`
         :(_g8Rank(o)>=3?'<span class="g8-chip urg">URGENTE</span>':(quem.length?'<span class="g8-chip who">em andamento</span>':'<span class="g8-chip free">livre</span>'))}</td>
@@ -15438,14 +15699,14 @@ function gosRenderPainel(){
   const grupo=(t,arr)=> arr.length?`<tr class="g"><td colspan="6">${escHtml(t)} · ${arr.length}</td></tr>`+arr.map(linha).join(''):'';
   cont.innerHTML=`<div class="g8-wrap">
     <div class="g8-nota">${_g8NotaIdade()} Esta leitura é para <b>varrer por coluna</b> — desça só a coluna Tempo, ou só a Situação.</div>
-    <table class="g8-tab"><thead><tr>
+    <div class="g8-tabw"><table class="g8-tab"><thead><tr>
       <th style="width:26%">Máquina</th><th style="width:22%">Cliente</th><th style="width:18%">Etapa</th>
       <th style="width:8%;text-align:right">Tempo</th><th style="width:12%">Responsável</th><th style="width:14%">Situação</th>
     </tr></thead><tbody>
       ${grupo('Esperando quem pegar',livres)}
       ${grupo('Em andamento',emAnd)}
       ${grupo('Travadas — escritório destrava',trav)}
-    </tbody></table>
+    </tbody></table></div>
   </div>`;
 }
 
@@ -15457,56 +15718,117 @@ function gosRenderRaias(){
   const porTec=new Map();
   ativas.forEach(o=>_g8Quem(o).forEach(t=>{ if(!porTec.has(t)) porTec.set(t,[]); porTec.get(t).push(o); }));
   const semDono=fila.filter(o=>!_g8Quem(o).length);
-  const mini=o=>`<div class="g8-mini ${_g8Cor(o)}" onclick="openOSDetail('${_gosOid(o)}')" style="cursor:pointer">
-    <div class="c">${escHtml(String(o.cliente||'—'))}</div>
-    <div class="s">${escHtml(_g8Maq(o))} · ${escHtml(_g8Idade(o).txt)}${_g8Rank(o)>=3?' · URGENTE':''}</div></div>`;
+  // V140 — na reunião de distribuição a ETAPA é o que decide para quem vai; o
+  // machineKey não diz nada a ninguém em voz alta. Etapa primeiro, máquina no title.
+  const mini=o=>{
+    const et = String(o.estagio&&o.estagio!=='—'?o.estagio:_gosTipoNome(o));
+    const id = _g8Idade(o);
+    return `<div class="g8-mini ${_g8Cor(o)}" onclick="openOSDetail('${_gosOid(o)}')"
+      style="cursor:pointer" title="${escHtml(_g8Maq(o))}">
+      <div class="c">${escHtml(String(o.cliente||'—'))}</div>
+      <div class="s">${escHtml(et)} · <span class="${id.semData?'g8-semdata':''}">${escHtml(id.txt)}</span>${_g8Rank(o)>=3?' · URGENTE':''}</div></div>`;
+  };
   const tecs=[...porTec.keys()].sort((a,b)=>a.localeCompare(b,'pt-BR'));
+  // V140 — o "+12" era um rótulo mudo: a informação existia e a tela não deixava
+  // chegar nela. Vira botão. `_g8RaiaTudo` mora fora da função para sobreviver
+  // ao repintar.
+  const LIM = 8;
+  const mostrar = _g8RaiaTudo ? semDono : semDono.slice(0, LIM);
+  const resto = semDono.length - mostrar.length;
   cont.innerHTML=`<div class="g8-wrap">
     <div class="g8-nota">${_g8NotaIdade()} Esta é a leitura da <b>reunião de distribuição</b>: quem está livre e o que está esperando dono.</div>
-    <div class="g8-lane"><div class="w" style="background:var(--bg)"><div class="n">Fila</div>
+    <div class="g8-lane fila"><div class="w" style="background:var(--bg)"><div class="n">Fila</div>
       <div class="s">${semDono.length} sem dono</div></div>
-      <div class="b">${semDono.length?semDono.slice(0,8).map(mini).join(''):'<span class="g8-vazio">Nada esperando dono.</span>'}
-      ${semDono.length>8?`<span class="g8-vazio">+${semDono.length-8}</span>`:''}</div></div>
+      <div class="b">${semDono.length?mostrar.map(mini).join(''):'<span class="g8-vazio">Nada esperando dono.</span>'}
+      ${resto>0?`<button class="g8-mais" onclick="_g8RaiaVerTudo(1)">＋ ver as outras ${resto}</button>`:''}
+      ${(_g8RaiaTudo && semDono.length>LIM)?'<button class="g8-mais" onclick="_g8RaiaVerTudo(0)">− recolher</button>':''}</div></div>
     ${tecs.map(t=>`<div class="g8-lane"><div class="w"><div class="n">${escHtml(t)}</div>
       <div class="s">${porTec.get(t).length} OS</div></div>
       <div class="b">${porTec.get(t).map(mini).join('')}</div></div>`).join('')}
     ${tecs.length?'':'<div class="g8-nota">Nenhuma OS com técnico em execução no momento — só o quadro da Oficina mostra lock por tarefa.</div>'}
-    ${trav.length?`<div class="g8-lane livre"><div class="w"><div class="n">Travadas</div>
-      <div class="s">fora da fila</div></div><div class="b">${trav.map(mini).join('')}</div></div>`:''}
+    ${trav.length?`<div class="g8-lane bq"><div class="w"><div class="n">Travadas</div>
+      <div class="s">${trav.length} fora da fila</div></div><div class="b">${trav.map(mini).join('')}</div></div>`:''}
   </div>`;
 }
+let _g8RaiaTudo = false;
+function _g8RaiaVerTudo(v){ _g8RaiaTudo = !!v; gosRenderRaias(); }
 
 // ── 4 · MATRIZ — etapa × técnico ───────────────────────────────────────────
+// V140 — quais células o usuário abriu. Fora da função para sobreviver ao
+// repintar; limpo quando a aba troca não é necessário (célula que sumiu some do Set).
+const _g8MxAberta = new Set();
+function _g8MxVerTudo(k, recolher){
+  if (recolher) _g8MxAberta.delete(k); else _g8MxAberta.add(k);
+  gosRenderMatriz();
+}
 function gosRenderMatriz(){
   const cont=document.getElementById('osRibbonContent'); if(!cont) return;
   if(!_osList.length){ cont.innerHTML=_g8Vazio('Nenhuma OS carregada'); return; }
   const ativas=_g8Ativas();
+  // 🔴 V140 — o `.slice(0,6)` daqui CORTAVA as etapas da sétima em diante, e as
+  // OS delas sumiam da tela sem uma palavra. Corte silencioso é a pior espécie:
+  // quem olha conclui que não existe trabalho ali. Agora a matriz ROLA.
   const etapas=[...new Set(ativas.map(o=>String(o.estagio&&o.estagio!=='—'?o.estagio:_gosTipoNome(o))))]
-    .sort((a,b)=>a.localeCompare(b,'pt-BR')).slice(0,6);
+    .sort((a,b)=>a.localeCompare(b,'pt-BR'));
   const porTec=new Map();
-  ativas.forEach(o=>_g8Quem(o).forEach(t=>{ if(!porTec.has(t)) porTec.set(t,[]); porTec.get(t).push(o); }));
+  ativas.forEach(o=>{ if(_g8Bloqueada(o)) return;
+    _g8Quem(o).forEach(t=>{ if(!porTec.has(t)) porTec.set(t,[]); porTec.get(t).push(o); }); });
   const tecs=[...porTec.keys()].sort((a,b)=>a.localeCompare(b,'pt-BR'));
+  const travadas=ativas.filter(_g8Bloqueada);
+  // 🔴 V140 — a linha "Travadas". Antes, OS travada SEM dono não entrava em
+  // célula nenhuma: a linha "Sem dono" exclui travadas e as linhas de técnico
+  // exigem técnico. Ela simplesmente não aparecia na matriz.
   const linhas=[{k:'__fila__',nome:'Sem dono',cls:'fila',sub:'a fila'},
-    ...tecs.map(t=>({k:t,nome:t,cls:'',sub:porTec.get(t).length+' OS'}))];
+    ...tecs.map(t=>({k:t,nome:t,cls:'',sub:porTec.get(t).length+' OS'})),
+    ...(travadas.length?[{k:'__trav__',nome:'Travadas',cls:'livre',sub:travadas.length+' fora da fila'}]:[])];
   const etapaDe=o=>String(o.estagio&&o.estagio!=='—'?o.estagio:_gosTipoNome(o));
   const daCelula=(rk,et)=> ativas.filter(o=>{
     if(etapaDe(o)!==et) return false;
-    const q=_g8Quem(o);
-    return rk==='__fila__' ? (q.length===0 && !_g8Bloqueada(o)) : q.indexOf(rk)>=0;
+    const q=_g8Quem(o), bq=_g8Bloqueada(o);
+    if(rk==='__trav__') return bq;
+    if(bq) return false;                       // travada mora só na linha dela
+    return rk==='__fila__' ? q.length===0 : q.indexOf(rk)>=0;
   });
   const mini=o=>`<div class="g8-mini ${_g8Cor(o)}" onclick="openOSDetail('${_gosOid(o)}')" style="cursor:pointer;max-width:100%">
     <div class="c">${escHtml(String(o.cliente||'—'))}</div>
-    <div class="s">${escHtml(_g8Idade(o).txt)}${_g8Rank(o)>=3?' · URG':''}</div></div>`;
-  const cols=`170px repeat(${etapas.length||1}, minmax(0,1fr))`;
+    <div class="s"><span class="${_g8Idade(o).semData?'g8-semdata':''}">${escHtml(_g8Idade(o).txt)}</span>${_g8Rank(o)>=3?' · URG':''}</div></div>`;
+  // V140 — teto POR CÉLULA, com botão. Sem ele, uma coluna com 11 OS estica a
+  // linha inteira para mil pixels e a matriz deixa de caber num olhar — que é a
+  // única coisa que ela faz melhor que a Fila. 🔑 O teto é VISÍVEL e abre: a
+  // diferença entre este e o `.slice(0,6)` que acabou de sair não é o número, é
+  // o fato de o usuário SABER que há mais e conseguir chegar lá.
+  const TETO_CEL = 6;
+  const cel = (cs, k) => {
+    if (!cs.length) return '';
+    const aberta = _g8MxAberta.has(k);
+    const vis = aberta ? cs : cs.slice(0, TETO_CEL);
+    const resto = cs.length - vis.length;
+    return vis.map(mini).join('')
+      + (resto > 0 ? `<button class="g8-mais" onclick="event.stopPropagation();_g8MxVerTudo('${escJs(k)}')">＋ ${resto} ${resto===1?'OS':'OS'}</button>` : '')
+      + (aberta && cs.length > TETO_CEL ? `<button class="g8-mais" onclick="event.stopPropagation();_g8MxVerTudo('${escJs(k)}',1)">− recolher</button>` : '');
+  };
+  // 🔑 V140 · AUDITORIA DE CONTAGEM. Toda OS ativa tem de cair em exatamente uma
+  // célula. Se a conta não fechar, a matriz DIZ — em vez de deixar o gerente
+  // planejar o dia com um pedaço da oficina invisível. É a mesma regra do
+  // `notificado:false` e do "não encontrado é erro": quando a tela não sabe, ela
+  // fala. (E é este teste que teria pegado o `.slice(0,6)` no dia em que nasceu.)
+  let _mostradas = 0;
+  const _cel = {};
+  linhas.forEach(l => etapas.forEach(e => {
+    const cs = daCelula(l.k, e); _cel[l.k+'\u0000'+e] = cs; _mostradas += cs.length;
+  }));
+  const _faltam = ativas.length - _mostradas;
+  const cols=`170px repeat(${etapas.length||1}, minmax(150px,1fr))`;
   cont.innerHTML=`<div class="g8-wrap">
-    <div class="g8-nota">${_g8NotaIdade()} A matriz responde <b>etapa e dono ao mesmo tempo</b> — e as células vazias mostram a ociosidade. Com muitas etapas ela fica apertada; nesse caso a Fila ou o Painel leem melhor.</div>
-    <div class="g8-mx" style="grid-template-columns:${cols}">
+    <div class="g8-nota">${_g8NotaIdade()} A matriz responde <b>etapa e dono ao mesmo tempo</b> — e as células vazias mostram a ociosidade. Com muitas etapas ela <b>rola para o lado</b>; se ficar cansativo, a Fila ou o Painel leem melhor.</div>
+    <div class="g8-mxw"><div class="g8-mx" style="grid-template-columns:${cols}">
       <div class="h" style="background:transparent;border-color:transparent"></div>
       ${etapas.map(e=>`<div class="h">${escHtml(e)}</div>`).join('')}
       ${linhas.map(l=>`<div class="rh ${l.cls}"><div class="n">${escHtml(l.nome)}</div><div class="s">${escHtml(l.sub)}</div></div>
-        ${etapas.map(e=>{const cs=daCelula(l.k,e);
-          return `<div class="cell${cs.length?'':' v'}">${cs.map(mini).join('')}</div>`;}).join('')}`).join('')}
-    </div>
+        ${etapas.map(e=>{const kk=l.k+'\u0000'+e; const cs=_cel[kk];
+          return `<div class="cell${cs.length?'':' v'}">${cel(cs,kk)}</div>`;}).join('')}`).join('')}
+    </div></div>
+    ${_faltam!==0?`<div class="g8-audit">⚠ ${Math.abs(_faltam)} OS ${_faltam>0?'não apareceram em nenhuma célula':'foram contadas duas vezes'} — de ${ativas.length} ativas, ${_mostradas} estão na matriz. Use a Fila ou o Painel até isto ser corrigido.</div>`:''}
   </div>`;
 }
 
@@ -26825,12 +27147,18 @@ function _v139Compromissos(pessoa, diaKey, ignorarDemandaId) {
   return out;
 }
 
+// 🔴 V140 — ESTA FUNÇÃO ESTAVA CERTA E ERA INÚTIL. Somar a capacidade de dez
+// pessoas dá 90h; um dia com 3h de trabalho real pintava 3% e parecia vazio.
+// A barra existia e não informava nada — pior que barra nenhuma, porque ocupa
+// espaço e ensina o olho a ignorá-la.
+// 🔑 A pergunta muda com o modo, então a régua muda junto:
+//   • uma pessoa → "ela cabe no dia?" ⇒ régua = a capacidade DELA. 100% = cheio.
+//   • toda a equipe → "que dia está pesado?" ⇒ régua = o dia MAIS CHEIO do mês.
+// Duas réguas, cada uma dita na legenda. A alternativa (uma régua só) responde
+// bem a uma pergunta e mal à outra.
 function _v139Capacidade(pessoa) {
   const pay = window._satPayload || {};
-  const cap = Number(pay.capacidade_diaria_min) || 480;
-  if (pessoa) return cap;
-  const n = ((pay.equipe || []).length) || ((pay.usuarios || []).length) || 1;
-  return cap * n;                       // equipe inteira = soma das capacidades
+  return Number(pay.capacidade_diaria_min) || 480;
 }
 
 // ── V139 · o calendário do mês ──────────────────────────────────────────────
@@ -26855,35 +27183,54 @@ function _v139Calendario(result) {
   const totalDias = new Date(_v139Cal.ano, _v139Cal.mes + 1, 0).getDate();
   const hojeKey = _v139DiaKey(hoje);
 
-  let cels = '';
-  for (let i = 0; i < primeiroDow; i++) cels += '<div style="min-height:74px"></div>';
+  // V140 — duas passadas: a 1ª mede o mês inteiro (para saber qual é o dia mais
+  // cheio), a 2ª desenha. Sem isso a régua da equipe não existe.
+  const medida = [];
   for (let dia = 1; dia <= totalDias; dia++) {
     const dt = new Date(_v139Cal.ano, _v139Cal.mes, dia);
     const key = _v139DiaKey(dt);
+    const itens = _v139Compromissos(_v139Cal.pessoa, key);
+    medida.push({ dia, dt, key, itens, carga: itens.reduce((s, x) => s + x.min, 0) });
+  }
+  const pico = Math.max(0, ...medida.map(d => d.carga));
+  const regua = _v139Cal.pessoa ? cap : Math.max(pico, 1);   // pessoa=capacidade · equipe=dia mais cheio
+  const h1 = m => (Math.round(m / 60 * 10) / 10) + 'h';
+
+  let cels = '';
+  for (let i = 0; i < primeiroDow; i++) cels += '<div style="min-height:74px"></div>';
+  medida.forEach(d => {
+    const { dia, dt, key, itens, carga } = d;
     const dow = dt.getDay() === 0 ? 7 : dt.getDay();
     const util = diasUteis.indexOf(dow) >= 0;
-    const itens = _v139Compromissos(_v139Cal.pessoa, key);
-    const carga = itens.reduce((s, x) => s + x.min, 0);
-    const pct = cap > 0 ? Math.min(100, Math.round(carga / cap * 100)) : 0;
+    const pct = regua > 0 ? Math.min(100, Math.round(carga / regua * 100)) : 0;
     const nDem = itens.filter(x => x.kind === 'demanda').length;
     const atras = itens.some(x => x.atrasada);
     // 🔑 O calor é da CARGA, não da contagem: 4 tarefas de 30 min não são um dia
     //    cheio, e 1 de 8 h é. Contar cartões pintaria o dia errado de vermelho.
-    const cor = !carga ? 'transparent' : (carga > cap ? 'var(--red)' : (carga > cap * 0.7 ? 'var(--orange)' : 'var(--green,#16a34a)'));
+    // ⚠ E o VERMELHO só existe quando há régua de capacidade (modo pessoa):
+    //    no modo equipe, "o dia mais cheio do mês" não quer dizer "estourado".
+    const estourou = !!_v139Cal.pessoa && carga > cap;
+    const cor = !carga ? 'transparent'
+      : (estourou ? 'var(--red)'
+      : (_v139Cal.pessoa && carga > cap * 0.7 ? 'var(--orange)' : 'var(--accent)'));
     const eHoje = key === hojeKey;
-    cels += `<div onclick="_v139CalDia('${key}')" title="${escHtml(itens.length + ' compromisso(s) · ' + (Math.round(carga / 60 * 10) / 10) + 'h de ' + (Math.round(cap / 60 * 10) / 10) + 'h — clique para agendar')}"
+    const tit = itens.length
+      ? itens.length + (itens.length === 1 ? ' compromisso' : ' compromissos') + ' · ' + h1(carga) +
+        (_v139Cal.pessoa ? ' de ' + h1(cap) : '') + ' — clique para ver'
+      : 'Nada agendado — clique para agendar neste dia';
+    cels += `<div onclick="_v139CalDia('${key}')" title="${escHtml(tit)}"
       style="min-height:74px;border:1px solid ${eHoje ? 'var(--orange)' : 'var(--border)'};border-radius:6px;padding:4px 5px;
-      cursor:pointer;background:${util ? 'var(--bg)' : 'var(--bg-alt)'};${eHoje ? 'box-shadow:inset 0 0 0 1px var(--orange)' : ''}">
+      cursor:pointer;background:${util ? 'var(--bg)' : 'var(--bg-alt)'};${util ? '' : 'opacity:.72;'}${eHoje ? 'box-shadow:inset 0 0 0 1px var(--orange)' : ''}">
       <div style="display:flex;justify-content:space-between;align-items:center">
-        <span style="font-size:11.5px;font-weight:${eHoje ? 800 : 600};color:${util ? 'var(--text)' : 'var(--text-muted)'}">${dia}</span>
-        ${atras ? '<span style="font-size:9px;color:var(--red)">🔴</span>' : ''}
+        <span style="font-size:11.5px;font-weight:${eHoje ? 800 : 600};color:${util ? 'var(--text)' : 'var(--text-muted)'}">${dia}${util ? '' : '<span style="font-size:8.5px;font-weight:600;margin-left:3px;opacity:.7">fds</span>'}</span>
+        ${atras ? '<span style="font-size:9px;color:var(--red)" title="algo atrasado neste dia">🔴</span>' : ''}
       </div>
       ${itens.length ? `<div style="height:4px;border-radius:2px;background:var(--border);margin:3px 0 2px;overflow:hidden">
         <div style="height:100%;width:${pct}%;background:${cor}"></div></div>
-      <div style="font-size:9.5px;color:var(--text2);line-height:1.25">${itens.length} item(s)${nDem ? ' · ' + nDem + '🗓️' : ''}</div>
-      <div style="font-size:9.5px;color:${carga > cap ? 'var(--red)' : 'var(--text-muted)'};line-height:1.25">${Math.round(carga / 60 * 10) / 10}h</div>` : ''}
+      <div style="font-size:9.5px;color:var(--text2);line-height:1.25">${itens.length} ${itens.length === 1 ? 'item' : 'itens'}${nDem ? ' · ' + nDem + '🗓️' : ''}</div>
+      <div style="font-size:9.5px;color:${estourou ? 'var(--red)' : 'var(--text-muted)'};line-height:1.25">${h1(carga)}</div>` : ''}
     </div>`;
-  }
+  });
 
   const semana = ['dom', 'seg', 'ter', 'qua', 'qui', 'sex', 'sáb']
     .map(d => `<div style="font-size:10px;font-weight:700;color:var(--text-muted);text-align:center;padding:2px 0">${d}</div>`).join('');
@@ -26909,8 +27256,10 @@ function _v139Calendario(result) {
       A lista completa da equipe chega com o <strong>GAS v120</strong>.</div>` : ''}
     <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:3px">${semana}${cels}</div>
     <div style="font-size:10.5px;color:var(--text-muted);margin-top:6px">
-      Barra = carga do dia sobre a capacidade ${_v139Cal.pessoa ? 'de ' + escHtml(_v139Cal.pessoa) : 'somada da equipe'}
-      (${Math.round(cap / 60 * 10) / 10}h) · 🗓️ = demandas · 🔴 = algo atrasado
+      ${_v139Cal.pessoa
+        ? 'Barra = carga do dia sobre a capacidade de <strong>' + escHtml(_v139Cal.pessoa) + '</strong> (' + h1(cap) + '/dia). Vermelho = passou.'
+        : 'Barra = carga do dia <strong>comparada ao dia mais cheio do mês</strong>' + (pico ? ' (' + h1(pico) + ')' : '') + '. Para medir contra a capacidade de alguém, escolha a pessoa no seletor.'}
+      · 🗓️ = demandas · 🔴 = algo atrasado · <strong>fds</strong> = fora dos dias úteis
     </div></div>`;
 }
 
@@ -26930,7 +27279,60 @@ function _v139CalNav(delta) {
   _v139CalRepintar();
 }
 function _v139CalPessoa(v) { _v139Cal.pessoa = String(v || ''); _v139CalRepintar(); }
-function _v139CalDia(diaKey) { _v139NovaDemanda({ dia: diaKey, responsavel: _v139Cal.pessoa || '' }); }
+// 🔑 V140 — clicar num dia que TEM compromissos e cair direto no formulário de
+// nova demanda é a tela ignorando o que o olho acabou de ver: o número, a barra
+// e o 🔴 estão ali justamente para chamar o clique. Dia cheio abre o que tem
+// dentro; dia vazio continua indo direto para o agendamento (é o que resta a
+// fazer nele).
+function _v139CalDia(diaKey) {
+  const itens = _v139Compromissos(_v139Cal.pessoa, diaKey);
+  if (!itens.length) { _v139NovaDemanda({ dia: diaKey, responsavel: _v139Cal.pessoa || '' }); return; }
+  _v139AbrirDia(diaKey, itens);
+}
+
+function _v139AbrirDia(diaKey, itens) {
+  const p = String(diaKey).split('-');
+  const dt = new Date(+p[0], (+p[1]) - 1, +p[2]);
+  const cap = _v139Capacidade(_v139Cal.pessoa);
+  const carga = itens.reduce((s, x) => s + x.min, 0);
+  const h1 = m => (Math.round(m / 60 * 10) / 10) + 'h';
+  const hhmm = min => min == null ? '' : _v139MinHmm(min);
+  const ordem = itens.slice().sort((a, b) => (a.ini == null ? 1e9 : a.ini) - (b.ini == null ? 1e9 : b.ini));
+  document.getElementById('v139DiaTitulo').textContent =
+    dt.toLocaleDateString('pt-BR', { weekday: 'long', day: '2-digit', month: '2-digit' });
+  document.getElementById('v139DiaResumo').innerHTML =
+    '<strong>' + itens.length + (itens.length === 1 ? ' compromisso' : ' compromissos') + '</strong> · ' + h1(carga) +
+    (_v139Cal.pessoa ? ' de ' + h1(cap) + ' · ' + escHtml(_v139Cal.pessoa)
+                     : ' somadas · <span style="color:var(--text-muted)">toda a equipe</span>');
+  document.getElementById('v139DiaLista').innerHTML = ordem.map(x => {
+    const janela = x.ini == null ? 'dia inteiro' : hhmm(x.ini) + '–' + hhmm(x.ini + x.min);
+    const cor = x.atrasada ? 'var(--red)' : (x.kind === 'demanda' ? 'var(--purple)' : 'var(--blue)');
+    const conf = x.kind === 'demanda' && x.confirmacao === 'recusada'
+      ? '<span style="color:var(--red);font-weight:600"> · ⚠ não consegue</span>'
+      : (x.kind === 'demanda' && x.confirmacao === 'pendente'
+        ? '<span style="color:var(--orange);font-weight:600"> · ⏳ sem ciente</span>' : '');
+    // 🔑 só a demanda abre daqui: tarefa de OS mora na OS, e esta lista não tem
+    //    o id_os para chegar lá sem inventar. Dizer isso é melhor que um clique
+    //    que não faz nada.
+    const clique = x.kind === 'demanda'
+      ? ' onclick="closeModal(\'modalDiaAgenda\');_v135AbrirDemanda(\'' + escJs(String(x.id)) + '\')" style="cursor:pointer"'
+      : ' title="Tarefa de OS — abra pela Gestão de OSs"';
+    return '<div' + clique + ' style="display:flex;gap:10px;align-items:baseline;padding:8px 10px;' +
+      'border-left:3px solid ' + cor + ';background:var(--bg-alt);border-radius:0 6px 6px 0;margin-bottom:6px">' +
+      // ⚠ `gap` do flex não separou hora e título na captura — a hora saía
+      //    colada ("09:00–11:00Levar rotor"). Margem explícita não depende de
+      //    nenhuma cascata para funcionar.
+      '<span style="font-family:var(--font-mono);font-size:11.5px;color:var(--text-muted);white-space:nowrap;margin-right:10px">' + escHtml(janela) + '</span>' +
+      '<span style="flex:1;min-width:0"><strong style="font-size:13.5px">' + escHtml(x.titulo) + '</strong>' +
+      '<div style="font-size:11.5px;color:var(--text2)">' + escHtml(x.usuario || 'sem responsável') +
+      ' · ' + (x.kind === 'demanda' ? 'demanda' : 'tarefa de OS') + conf + '</div></span></div>';
+  }).join('');
+  document.getElementById('v139DiaNova').onclick = () => {
+    closeModal('modalDiaAgenda');
+    _v139NovaDemanda({ dia: diaKey, responsavel: _v139Cal.pessoa || '' });
+  };
+  openModal('modalDiaAgenda');
+}
 
 // ── V139 · nova demanda NO DESKTOP ──────────────────────────────────────────
 // Antes, agendar uma demanda só existia no celular. Quem planeja o mês está
