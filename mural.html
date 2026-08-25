@@ -1,0 +1,635 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Proper · Mural da Oficina · build MURAL_V1</title>
+<!-- ═══════════════════════════════════════════════════════════════════════════
+     MURAL DA OFICINA — build MURAL_V1 · 25/08/2026
+     Arquivo servido em: GrupoTap/ProperAdmin/mural.html
+     (arquivo NOVO no repo do PCM — NÃO encosta no index.html)
+
+     O QUE É
+     ───────
+     A gestão à vista que existia no quadro físico e sumiu quando tudo virou
+     mobile. Uma tela, sempre ligada, sem ninguém tocar nela.
+
+     🔑 REGRAS DE DESENHO (todas pagas com lição registrada no CLAUDE.md)
+
+     1. ZERO GAS NOVO. Duas actions de LEITURA que já existem no doGet do v119:
+          getKanbanOficina   → cards, colunas, resumo, bloqueada, dias_na_oficina
+          getItensNaOficina  → nome/série da máquina por ID (só isso)
+        Nenhuma escrita. Nenhum campo novo. Nenhuma coluna nova.
+
+     2. ZERO SEGUNDA VERDADE. A posição da fila (`posicao_fila`), a situação do
+        semáforo (`situacao`) e o travamento (`bloqueada`) vêm PRONTOS do GAS.
+        Esta página não recalcula NADA disso. Se o PCF diz "#3" e o mural
+        dissesse "#5" para a mesma OS, o mural estaria errado por construção.
+
+     3. A FAIXA DE TRAVADAS NUNCA CHUTA. Só entra card com `bloqueada === true`.
+        GAS anterior ao v119 ⇒ a faixa simplesmente NÃO APARECE. Faixa vazia é
+        melhor que faixa que adivinha (lição "alerta falso gasta o alerta").
+
+     4. RÓTULO NUNCA MENTE. Sem `Custodia_Desde` a máquina não tem chegada
+        registrada: o card diz "desde a abertura", com o número de
+        `dias_na_fila` — nunca "na oficina" com número derivado.
+
+     5. ZERO INTERAÇÃO E ZERO ROTAÇÃO. Não há botão, não há aba, a tela não
+        gira. Estabilidade é o que ensina o olho onde olhar. Decisão do
+        Fernando em 25/08: uma tela só, travadas na faixa de baixo.
+
+     6. NÃO ROLA. Coluna que não cabe corta no fim e mostra "+N". Barra de
+        rolagem em quadro de parede é informação que ninguém nunca vai ver.
+
+     7. DEGRADAÇÃO HONESTA. Rede caiu ⇒ continua pintado o último quadro bom, e
+        o carimbo do topo diz de que horas ele é (âmbar > 6 min, vermelho >
+        15 min). Nunca tela em branco, nunca número velho fingindo ser de agora.
+
+     8. SEM WEBFONT. Fonte do sistema — a parede tem de subir com a internet
+        oscilando.
+
+     TAMANHO DA LETRA (o único parâmetro que existe)
+     ──────────────────────────────────────────────
+        mural.html?dist=0.6&pol=15     ← monitor de mesa 15" a 60 cm (padrão)
+        mural.html?dist=6&pol=55       ← a TV, quando ela existir
+     A conta: altura de letra ≥ distância/200 (regra de sinalização), convertida
+     para pixels pela densidade real da tela (diagonal em px ÷ diagonal em mm).
+     Sem parâmetro nenhum a página assume 15" a 60 cm.
+
+     OUTROS PARÂMETROS (todos opcionais)
+        ?ref=180            segundos entre releituras (mín. 60)
+        ?concluidas=0       dias de OS concluída no quadro (0 = só o que está na oficina)
+        ?debug=1            mostra o rodapé técnico (versão, tempos, erro da última leitura)
+
+     ATALHOS DE TECLADO (não há UI para eles, de propósito)
+        F = tela cheia · R = releitura imediata
+
+     ⚠ O QUE ESTA PÁGINA NÃO FAZ, E POR QUÊ
+     · Não mostra "quem está livre agora". `getKanbanOficina` traz `em_execucao`
+       (quem está EM tarefa), e é isso que o mural mostra. Técnico OCIOSO exige
+       cruzar a lista de usuários ativos com os locks — é a action de leitura
+       `getMural` da fase 2, e inventá-la por heurística aqui produziria "Bruno
+       está livre" na parede com o Bruno em pé ao lado. Não vale.
+     · Não mostra OS externa/preventiva: o quadro é o que está NA oficina
+       (`somenteInternas` no GAS). Externas ganham mural próprio.
+
+     ⚠ ACHADO PARA O FERNANDO (não corrigido aqui, de propósito)
+       `posicao_fila` ordena por prioridade e depois por `data_abertura` — não
+       por `custodia_desde`. Ou seja: o v119 já MOSTRA os dias de oficina, mas a
+       ORDEM da fila ainda conta da abertura da OS. Numa máquina que ficou duas
+       semanas no pátio antes de a OS ser aberta, o "➊" e o "35d na oficina"
+       discordam. Corrigir isso é mexer no `_filaOficinaCalc_` (GAS) e muda a
+       fila do PCF junto — decisão sua, não minha, e fora desta entrega.
+     ═══════════════════════════════════════════════════════════════════════════ -->
+<style>
+  :root{
+    --bg:#070c16; --panel:#0f1930; --card:#14203a; --line:#22345c;
+    --txt:#eef4ff; --mut:#94a8cd; --brand:#3b82f6;
+    --grn:#22c55e; --amb:#f59e0b; --red:#ef4444; --gry:#64748b; --rox:#a78bfa;
+    --base:20px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%;overflow:hidden}
+  body{
+    background:var(--bg);color:var(--txt);
+    font-family:system-ui,-apple-system,'Segoe UI',Roboto,Arial,sans-serif;
+    font-size:var(--base);line-height:1.2;
+    display:flex;flex-direction:column;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  /* ── topo ─────────────────────────────────────────────────────────────── */
+  .hd{display:flex;align-items:center;gap:.8em;padding:.5em .8em;
+      background:#0b1426;border-bottom:1px solid var(--line);flex:none}
+  .hd .brand{font-size:.95em;font-weight:900;letter-spacing:.02em;white-space:nowrap}
+  .hd .brand small{display:block;font-size:.5em;color:var(--mut);font-weight:700;letter-spacing:.06em}
+  .kpis{margin-left:auto;display:flex;gap:.45em}
+  .kpi{display:flex;align-items:baseline;gap:.3em;background:var(--panel);
+       border:1px solid var(--line);border-radius:.5em;padding:.25em .6em}
+  .kpi b{font-size:1.5em;font-weight:900;font-variant-numeric:tabular-nums;line-height:1}
+  .kpi span{font-size:.55em;color:var(--mut);font-weight:800;text-transform:uppercase;letter-spacing:.04em}
+  .kpi.red b{color:var(--red)} .kpi.amb b{color:var(--amb)} .kpi.grn b{color:var(--grn)}
+  .kpi.rox b{color:var(--rox)}
+  .clock{font-size:1.15em;font-weight:900;font-variant-numeric:tabular-nums;white-space:nowrap}
+  .clock .fresc{display:block;font-size:.38em;font-weight:800;color:var(--mut);letter-spacing:.04em;text-align:right}
+  .clock .fresc.velho{color:var(--amb)} .clock .fresc.morto{color:var(--red)}
+
+  /* ── quadro ───────────────────────────────────────────────────────────── */
+  .board{flex:1 1 auto;display:flex;gap:.4em;padding:.45em;min-height:0;min-width:0}
+  .col{flex:1 1 0;min-width:0;background:var(--panel);border:1px solid var(--line);
+       border-radius:.55em;display:flex;flex-direction:column;min-height:0}
+  .col>.ch{display:flex;align-items:center;gap:.35em;padding:.35em .5em;
+       border-bottom:1px solid var(--line);border-top:.18em solid var(--gry);
+       border-radius:.5em .5em 0 0;flex:none}
+  .col>.ch .nm{font-size:.62em;font-weight:900;text-transform:uppercase;letter-spacing:.04em;
+       white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .col>.ch .sd{margin-left:auto;font-size:.55em;font-weight:900;white-space:nowrap}
+  .col>.ch .sd i{font-style:normal;margin-left:.25em}
+  .col>.ch .n{font-size:.6em;font-weight:900;color:var(--mut);background:var(--card);
+       border-radius:.6em;padding:0 .45em;font-variant-numeric:tabular-nums}
+  .cards{flex:1 1 auto;min-height:0;overflow:hidden;padding:.3em;display:flex;
+       flex-direction:column;gap:.3em}
+  .col .kempty{color:#40557f;font-size:.6em;text-align:center;padding:.5em 0;font-weight:700}
+  .mais{flex:none;font-size:.55em;font-weight:900;color:var(--mut);text-align:center;
+       padding:.15em 0;letter-spacing:.03em}
+
+  .mc{flex:none;background:var(--card);border:1px solid var(--line);
+      border-left:.22em solid var(--gry);border-radius:.4em;padding:.32em .45em}
+  .mc.s-atrasada{border-left-color:var(--red)}
+  .mc.s-risco{border-left-color:var(--amb)}
+  .mc.s-ok{border-left-color:var(--grn)}
+  .mc.s-concluida{border-left-color:#334155;opacity:.72}
+  .mc.trav{background:#1b1526;border-color:#4b3a6b;border-left-color:var(--rox)}
+  .mc.prox{outline:.14em solid var(--brand);outline-offset:-1px;background:#16264a}
+  .mc .fifo{display:inline-block;background:var(--brand);color:#fff;border-radius:.6em;
+      font-size:.45em;font-weight:900;padding:.05em .5em;margin-bottom:.2em;letter-spacing:.05em}
+  .mc .cli{font-size:.78em;font-weight:900;line-height:1.12;
+      white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .mc .maq{font-size:.58em;color:#c3d4f2;font-weight:700;margin-top:.08em;
+      white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .mc .ft{display:flex;align-items:center;gap:.3em;margin-top:.22em;flex-wrap:wrap}
+  .mc .ft span{font-size:.52em;font-weight:800;color:var(--mut);font-variant-numeric:tabular-nums;
+      white-space:nowrap}
+  .mc .ft .dias.ruim{color:var(--red);font-weight:900}
+  .mc .ft .quem{background:#12325c;color:#a9cbff;border-radius:.8em;padding:.05em .45em}
+  .mc .ft .trv{background:#2e2148;color:#d3befd;border-radius:.8em;padding:.05em .45em}
+  .mc .fase{font-size:.5em;color:#8fa6ce;font-weight:800;margin-top:.15em;
+      white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+  /* ── faixa de travadas ────────────────────────────────────────────────── */
+  .faixa{flex:none;display:none;gap:.4em;align-items:stretch;padding:.35em .45em;
+     background:#160f24;border-top:.14em solid #4b3a6b}
+  .faixa.on{display:flex}
+  .faixa .cab{flex:none;display:flex;flex-direction:column;justify-content:center;
+     padding-right:.5em;border-right:1px solid #3b2d59;margin-right:.2em}
+  .faixa .cab .t{font-size:.65em;font-weight:900;color:#d3befd;white-space:nowrap}
+  .faixa .cab .s{font-size:.45em;font-weight:700;color:#9a8bbd;white-space:nowrap;margin-top:.1em}
+  .faixa .lst{flex:1 1 auto;display:flex;gap:.35em;overflow:hidden}
+  .bq{flex:1 1 0;min-width:0;background:#1e1630;border:1px solid #3b2d59;border-radius:.4em;
+     padding:.25em .45em}
+  .bq .l1{font-size:.62em;font-weight:900;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .bq .l2{font-size:.5em;color:#b6a6d8;font-weight:700;margin-top:.05em;
+     white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .bq .l3{font-size:.5em;color:#f0d9a8;font-weight:800;margin-top:.1em;
+     white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .bq .d{color:#fca5a5;font-weight:900;margin-left:.35em}
+
+  /* ── rodapé técnico (só com ?debug=1) ─────────────────────────────────── */
+  .dbg{flex:none;display:none;padding:.2em .6em;background:#050810;border-top:1px solid var(--line);
+     font-size:.45em;color:var(--mut);font-weight:700;letter-spacing:.03em;
+     white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .dbg.on{display:block}
+
+  /* ── tela de primeira carga / erro sem cache ──────────────────────────── */
+  .splash{position:fixed;inset:0;background:var(--bg);display:flex;flex-direction:column;
+     align-items:center;justify-content:center;gap:.6em;text-align:center;padding:2em;z-index:9}
+  .splash.off{display:none}
+  .splash .ic{font-size:3em}
+  .splash .t{font-size:1.1em;font-weight:900}
+  .splash .s{font-size:.7em;color:var(--mut);font-weight:700;max-width:24em;line-height:1.4}
+</style>
+</head>
+<body>
+
+<div class="hd">
+  <div class="brand">🔧 OFICINA PROPER<small id="hdSub">gestão à vista</small></div>
+  <div class="kpis" id="kpis"></div>
+  <div class="clock"><span id="relogio">--:--</span><span class="fresc" id="fresc">—</span></div>
+</div>
+
+<div class="board" id="board"></div>
+
+<div class="faixa" id="faixa">
+  <div class="cab"><div class="t" id="faixaT">🚧 Travadas</div>
+    <div class="s">fora da fila — quem destrava é o escritório</div></div>
+  <div class="lst" id="faixaL"></div>
+</div>
+
+<div class="dbg" id="dbg"></div>
+
+<div class="splash" id="splash">
+  <div class="ic">🏭</div>
+  <div class="t" id="splashT">Montando o quadro da oficina…</div>
+  <div class="s" id="splashS">Lendo as ordens de serviço internas.</div>
+</div>
+
+<script>
+(function(){
+'use strict';
+
+// ══════════════════════════════════════════════════════════════════════════
+// 0 · CONTRATO DE REDE — as mesmas constantes dos outros fronts
+// ⚠ A API_KEY é o sha256 de "123456" e já está embutida nos 5 fronts públicos.
+//   Ela NÃO é segredo (o CLAUDE.md registra isso desde 24/08). Quando o Bloco C
+//   rodar a chave, este arquivo entra na mesma varredura dos outros.
+// ══════════════════════════════════════════════════════════════════════════
+var GAS_URL = 'https://script.google.com/macros/s/AKfycbz_qSb4Ib6VoZs4TE15EYp9qO5sSEhrjadY71yK0Sd4vqnu4msidsObXnQtkCGXpIqq/exec';
+var API_KEY = '8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92';
+var BUILD   = 'MURAL_V1';
+
+var Q = new URLSearchParams(location.search);
+var CFG = {
+  dist:       Math.max(0.3, parseFloat(Q.get('dist')) || 0.6),   // metros
+  pol:        Math.max(7,   parseFloat(Q.get('pol'))  || 15),    // polegadas
+  ref:        Math.max(60,  parseInt(Q.get('ref'), 10) || 180),  // segundos
+  concluidas: String(parseInt(Q.get('concluidas'), 10) || 0),
+  debug:      Q.get('debug') === '1'
+};
+
+// ══════════════════════════════════════════════════════════════════════════
+// 1 · TAMANHO DA LETRA — regra de sinalização, aplicada à tela REAL
+// ──────────────────────────────────────────────────────────────────────────
+// altura mínima de caractere ≈ distância / 200. Converter mm→px exige a
+// densidade da tela, e ela sai da diagonal em px ÷ diagonal em mm (a polegada
+// é o único dado que o navegador NÃO sabe — por isso `?pol=`).
+// O clamp existe porque um `?pol=` errado não pode transformar o quadro em
+// duas palavras gigantes: erro de parâmetro degrada o tamanho, não a tela.
+// ══════════════════════════════════════════════════════════════════════════
+function calcularBase(dist, pol, w, h){
+  var diagPx = Math.sqrt(w*w + h*h);
+  var ppmm   = diagPx / (pol * 25.4);
+  var capMm  = (dist * 1000) / 200;
+  var capPx  = capMm * ppmm;
+  var base   = capPx / 0.72;              // cap-height ≈ 0,72 do corpo
+  return Math.round(Math.max(15, Math.min(78, base)));
+}
+function aplicarBase(){
+  var b = calcularBase(CFG.dist, CFG.pol,
+                       window.innerWidth || 1920, window.innerHeight || 1080);
+  document.documentElement.style.setProperty('--base', b + 'px');
+  return b;
+}
+
+// ══════════════════════════════════════════════════════════════════════════
+// 2 · AGRUPAMENTO DE FASES — cópia EXATA do _GOS_GRUPOS_FASE do PCM V128
+// ⚠ Se o PCM ganhar um grupo novo, ele entra AQUI TAMBÉM, com data e motivo.
+//   Duas listas que divergem = mural e PCM com colunas diferentes para o mesmo
+//   dado, que é a pior coisa que uma tela de parede pode fazer.
+// ══════════════════════════════════════════════════════════════════════════
+var GRUPOS_FASE = [
+  { nome: 'Diagnósticos', re: /diagn/i }   // 22/08 — 4 colunas quase vazias viravam 1
+];
+function grupoDaFase(fase){
+  var f = String(fase == null ? '' : fase);
+  if (!f) return '';
+  for (var i = 0; i < GRUPOS_FASE.length; i++){
+    if (GRUPOS_FASE[i].re.test(f)) return GRUPOS_FASE[i].nome;
+  }
+  return '';
+}
+
+// ══════════════════════════════════════════════════════════════════════════
+// 3 · FUNÇÕES PURAS (é o que a bancada testa)
+// ══════════════════════════════════════════════════════════════════════════
+
+// 3.1 — o rótulo dos dias. NUNCA diz "na oficina" sem custódia registrada.
+function rotuloDias(c){
+  var d = c && c.dias_na_oficina;
+  if (typeof d === 'number' && isFinite(d) && d >= 0){
+    // 0 é MEDIDO (chegou hoje) — e "0d na oficina" numa parede lê-se como
+    // "sem dado". A palavra é mais clara que o número; o valor não mudou.
+    return { n: d, texto: (d === 0 ? 'chegou hoje' : d + 'd na oficina'), medido: true };
+  }
+  var f = (c && typeof c.dias_na_fila === 'number') ? c.dias_na_fila : null;
+  if (f === null) return { n: null, texto: '', medido: false };
+  return { n: f, texto: f + 'd desde a abertura', medido: false };
+}
+
+// 3.2 — travadas. ÚNICA fonte: o campo do GAS v119. Zero heurística.
+function travadas(cards){
+  return (cards || []).filter(function(c){ return c && c.bloqueada === true; });
+}
+
+// 3.3 — a próxima da fila. `posicao_fila` vem PRONTA do servidor; aqui só se
+// escolhe, entre as OS que ainda estão na fila, a de menor posição. Travada
+// não concorre (decisão do Fernando: bloqueada SAI da fila até destravar), e
+// concluída também não.
+function proximaDaFila(cards){
+  var cand = (cards || []).filter(function(c){
+    return c && c.bloqueada !== true && c.situacao !== 'concluida'
+             && typeof c.posicao_fila === 'number' && c.posicao_fila > 0;
+  });
+  if (!cand.length) return null;
+  return cand.reduce(function(a, b){ return b.posicao_fila < a.posicao_fila ? b : a; });
+}
+
+// 3.4 — colunas do quadro: as do GAS, agrupadas, mais a terminal se houver
+// card concluído carregado. Mesma lógica do _gosPintarOficina do PCM V138.
+var ORD_SIT = { atrasada:5, risco:4, ok:3, sem_meta:2, concluida:1 };
+function montarColunas(cache){
+  var cards = (cache && cache.cards) || [];
+  var cols = [], idx = {};
+  ((cache && cache.colunas) || []).forEach(function(c){
+    var g = grupoDaFase(c.fase);
+    var k = String(g || c.fase).toLowerCase();
+    var ja = idx[k];
+    if (ja){
+      ja.fase_ordem = Math.min(ja.fase_ordem == null ? 999 : ja.fase_ordem,
+                               c.fase_ordem  == null ? 999 : c.fase_ordem);
+      if ((c.meta_dias||0) > (ja.meta_dias||0)) ja.meta_dias = c.meta_dias;
+      if (c.saude){
+        ja.saude = ja.saude || { atrasada:0, risco:0 };
+        ja.saude.atrasada = (ja.saude.atrasada||0) + (c.saude.atrasada||0);
+        ja.saude.risco    = (ja.saude.risco   ||0) + (c.saude.risco   ||0);
+      }
+      return;
+    }
+    var nova = { fase: g || c.fase, fase_ordem: c.fase_ordem, camada_ordem: c.camada_ordem,
+                 meta_dias: c.meta_dias || 0,
+                 saude: c.saude ? { atrasada: c.saude.atrasada||0, risco: c.saude.risco||0 } : null,
+                 itens: [] };
+    idx[k] = nova; cols.push(nova);
+  });
+
+  var terminal = { fase: '✅ Concluídas', terminal: true, itens: [] };
+  cards.forEach(function(c){
+    if (!c.fase_atual){ terminal.itens.push(c); return; }
+    var g = grupoDaFase(c.fase_atual);
+    var k = String(g || c.fase_atual).toLowerCase();
+    if (!idx[k]){
+      idx[k] = { fase: g || c.fase_atual, fase_ordem: 999, camada_ordem: c.camada_atual || 1,
+                 meta_dias: 0, saude: null, itens: [] };
+      cols.push(idx[k]);
+    }
+    c._faseReal = (g && String(c.fase_atual) !== g) ? String(c.fase_atual) : '';
+    idx[k].itens.push(c);
+  });
+
+  function ord(arr){
+    arr.sort(function(a,b){
+      var d = (ORD_SIT[b.situacao]||0) - (ORD_SIT[a.situacao]||0); if (d) return d;
+      var f = (b.dias_na_fase||0) - (a.dias_na_fase||0);           if (f) return f;
+      return (b.prioridade_rank||0) - (a.prioridade_rank||0);
+    });
+  }
+  cols.forEach(function(c){ ord(c.itens); });
+  ord(terminal.itens);
+  if (terminal.itens.length) cols.push(terminal);
+  return cols;
+}
+
+// 3.5 — índice de máquinas (id → rótulo). Vem de getItensNaOficina.
+function indiceMaquinas(env){
+  var m = {};
+  ((env && env.itens) || []).forEach(function(i){
+    var id = String(i.id || '').trim(); if (!id) return;
+    var nome = String(i.nome || '').trim();
+    var serie = String(i.serie || '').trim();
+    m[id] = nome + (serie ? ' · ' + serie : '');
+  });
+  return m;
+}
+// Rótulo da máquina do card. Sem resolver ⇒ cai para o TIPO da OS; jamais
+// exibe o ID cru (código de banco em parede não informa ninguém).
+function rotuloMaquina(c, idx){
+  var ids = Array.isArray(c && c.maquinas) ? c.maquinas : [];
+  for (var i = 0; i < ids.length; i++){
+    var r = idx[String(ids[i]).trim()];
+    if (r) return r + (ids.length > 1 ? '  +' + (ids.length-1) : '');
+  }
+  return String((c && c.tipo_os) || '').trim();
+}
+
+// 3.6 — frescor do dado: quanto tempo desde a última leitura BOA.
+function frescor(tsMs, agoraMs){
+  if (!tsMs) return { texto: 'sem leitura', nivel: 'morto' };
+  var min = Math.floor((agoraMs - tsMs) / 60000);
+  var hh  = new Date(tsMs);
+  var rel = 'dados de ' + String(hh.getHours()).padStart(2,'0') + ':' +
+                          String(hh.getMinutes()).padStart(2,'0');
+  if (min >= 15) return { texto: rel, nivel: 'morto' };
+  if (min >= 6)  return { texto: rel, nivel: 'velho' };
+  return { texto: rel, nivel: 'ok' };
+}
+
+// ══════════════════════════════════════════════════════════════════════════
+// 4 · REDE — só GET, só leitura, sem header (nada de preflight no Apps Script)
+// ══════════════════════════════════════════════════════════════════════════
+function gsGet(action, params){
+  var qs = new URLSearchParams(Object.assign({ action: action, key: API_KEY }, params || {}));
+  var opts = {};
+  try { opts.signal = AbortSignal.timeout(25000); } catch(e){}
+  return fetch(GAS_URL + '?' + qs.toString(), opts).then(function(r){ return r.json(); });
+}
+
+// ══════════════════════════════════════════════════════════════════════════
+// 5 · ESTADO
+// ══════════════════════════════════════════════════════════════════════════
+var ST = { quadro:null, quadroTs:0, maqIdx:{}, maqTs:0, erro:'', ciclos:0 };
+
+function esc(s){
+  return String(s == null ? '' : s)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;');
+}
+
+// ══════════════════════════════════════════════════════════════════════════
+// 6 · PINTURA
+// ══════════════════════════════════════════════════════════════════════════
+function pintar(){
+  if (!ST.quadro) return;
+  var cache = ST.quadro;
+  var cards = cache.cards || [];
+  var R = cache.resumo || {};
+  var prox = proximaDaFila(cards);
+  var trav = travadas(cards);
+
+  // KPIs — todos vêm do `resumo` do GAS. `travadas` é contagem do próprio
+  // campo, não estimativa.
+  var kp = [];
+  kp.push('<div class="kpi"><b>' + (R.abertas != null ? R.abertas : cards.length) +
+          '</b><span>na oficina</span></div>');
+  if (R.atrasadas) kp.push('<div class="kpi red"><b>' + R.atrasadas + '</b><span>atrasadas</span></div>');
+  if (R.risco)     kp.push('<div class="kpi amb"><b>' + R.risco + '</b><span>em risco</span></div>');
+  if (trav.length) kp.push('<div class="kpi rox"><b>' + trav.length + '</b><span>travadas</span></div>');
+  if (R.concluidas)kp.push('<div class="kpi grn"><b>' + R.concluidas + '</b><span>concluídas</span></div>');
+  document.getElementById('kpis').innerHTML = kp.join('');
+
+  // Colunas
+  var cols = montarColunas(cache);
+  var html = cols.map(function(col){
+    var cor = col.terminal ? '#16a34a' : ((col.camada_ordem > 1) ? '#7c5cff' : '#0d9488');
+    var s = col.saude;
+    var saude = s ? ((s.atrasada ? '<i style="color:#ef4444">🔴' + s.atrasada + '</i>' : '') +
+                     (s.risco    ? '<i style="color:#f59e0b">🟡' + s.risco    + '</i>' : '')) : '';
+    var itens = col.itens.map(function(c){ return cardHtml(c, prox); }).join('') ||
+                '<div class="kempty">—</div>';
+    return '<div class="col"><div class="ch" style="border-top-color:' + cor + '">' +
+             '<span class="nm">' + esc(col.fase) + '</span>' +
+             '<span class="sd">' + saude + '</span>' +
+             '<span class="n">' + col.itens.length + '</span>' +
+           '</div><div class="cards">' + itens + '</div></div>';
+  }).join('');
+  document.getElementById('board').innerHTML = html;
+
+  // Faixa de travadas — some inteira quando não há campo/quando não há travada.
+  var fx = document.getElementById('faixa');
+  if (trav.length){
+    document.getElementById('faixaT').innerHTML = '🚧 Travadas · ' + trav.length;
+    document.getElementById('faixaL').innerHTML = trav.slice(0, 6).map(function(c){
+      var d = (typeof c.dias_bloqueada === 'number') ? '<span class="d">' + c.dias_bloqueada + 'd parada</span>' : '';
+      var maq = rotuloMaquina(c, ST.maqIdx);
+      return '<div class="bq"><div class="l1">' + esc(c.cliente || '—') + d + '</div>' +
+             '<div class="l2">' + esc(maq) +
+               (c.etapa_bloqueio ? ' · estava em ' + esc(c.etapa_bloqueio) : '') + '</div>' +
+             '<div class="l3">' + esc(c.motivo_bloqueio || 'travada') + '</div></div>';
+    }).join('');
+    fx.classList.add('on');
+  } else {
+    fx.classList.remove('on');
+    document.getElementById('faixaL').innerHTML = '';
+  }
+
+  document.getElementById('splash').classList.add('off');
+  cortarColunas();
+  pintarCabecalho();
+}
+
+function cardHtml(c, prox){
+  var sit  = String(c.situacao || 'sem_meta');
+  var dias = rotuloDias(c);
+  var maq  = rotuloMaquina(c, ST.maqIdx);
+  var ehProx = (prox && prox.id_os === c.id_os);
+  var cls = 'mc s-' + sit + (c.bloqueada === true ? ' trav' : '') + (ehProx ? ' prox' : '');
+
+  var ft = [];
+  if (dias.texto){
+    var ruim = (sit === 'atrasada') ? ' ruim' : '';
+    ft.push('<span class="dias' + ruim + '">' + esc(dias.texto) + '</span>');
+  }
+  if (c.bloqueada === true){
+    ft.push('<span class="trv">🚧 ' + esc(c.motivo_bloqueio || 'travada') + '</span>');
+  } else if (Array.isArray(c.em_execucao) && c.em_execucao.length){
+    ft.push('<span class="quem">🔧 ' + esc(c.em_execucao.map(function(x){ return x.por; }).join(', ')) + '</span>');
+  }
+  if (c.prioridade_rank >= 3) ft.push('<span style="color:#fca5a5">URGENTE</span>');
+
+  return '<div class="' + cls + '">' +
+    (ehProx ? '<span class="fifo">➊ PRÓXIMA DA FILA</span>' : '') +
+    '<div class="cli">' + esc(c.cliente || '—') + '</div>' +
+    (maq ? '<div class="maq">⚙ ' + esc(maq) + '</div>' : '') +
+    '<div class="ft">' + ft.join('') + '</div>' +
+    (c._faseReal ? '<div class="fase">📍 ' + esc(c._faseReal) + '</div>' : '') +
+  '</div>';
+}
+
+// ── NÃO ROLA (regra 6) ─────────────────────────────────────────────────────
+// Corta o que não coube e diz quantos ficaram de fora. Fazer isso no CSS não
+// dá: `overflow:hidden` esconderia os cards SEM avisar, e uma coluna com 9 OS
+// mostrando 5 sem dizer nada é uma tela que MENTE por omissão.
+function cortarColunas(){
+  var cols = document.querySelectorAll('.col');
+  for (var i = 0; i < cols.length; i++){
+    var lista = cols[i].querySelector('.cards');
+    if (!lista) continue;
+    var fora = 0, guarda = 0;
+    while (lista.scrollHeight > lista.clientHeight + 1 && lista.children.length > 1 && guarda++ < 100){
+      lista.removeChild(lista.lastElementChild);
+      fora++;
+    }
+    if (fora){
+      var m = document.createElement('div');
+      m.className = 'mais';
+      m.textContent = '+ ' + fora + ' não cabe' + (fora > 1 ? 'm' : '') + ' na tela';
+      cols[i].appendChild(m);
+      // o rodapé "+N" ocupa altura: pode ser preciso tirar mais um card
+      if (lista.scrollHeight > lista.clientHeight + 1 && lista.children.length > 1){
+        lista.removeChild(lista.lastElementChild);
+        m.textContent = '+ ' + (fora + 1) + ' não cabem na tela';
+      }
+    }
+  }
+}
+
+function pintarCabecalho(){
+  var agora = new Date();
+  document.getElementById('relogio').textContent =
+    String(agora.getHours()).padStart(2,'0') + ':' + String(agora.getMinutes()).padStart(2,'0');
+  var dias = ['dom','seg','ter','qua','qui','sex','sáb'];
+  document.getElementById('hdSub').textContent =
+    'gestão à vista · ' + dias[agora.getDay()] + ' ' +
+    String(agora.getDate()).padStart(2,'0') + '/' + String(agora.getMonth()+1).padStart(2,'0');
+
+  var f = frescor(ST.quadroTs, agora.getTime());
+  var el = document.getElementById('fresc');
+  el.textContent = f.texto;
+  el.className = 'fresc' + (f.nivel === 'ok' ? '' : ' ' + f.nivel);
+
+  if (CFG.debug){
+    var d = document.getElementById('dbg');
+    d.classList.add('on');
+    d.textContent = 'build ' + BUILD + ' · base ' +
+      getComputedStyle(document.documentElement).getPropertyValue('--base').trim() +
+      ' · dist ' + CFG.dist + 'm · ' + CFG.pol + '" · ciclo ' + ST.ciclos +
+      ' · refresh ' + CFG.ref + 's · concluídas ' + CFG.concluidas + 'd' +
+      (ST.erro ? ' · ÚLTIMO ERRO: ' + ST.erro : '');
+  }
+}
+
+// ══════════════════════════════════════════════════════════════════════════
+// 7 · CICLO
+// ══════════════════════════════════════════════════════════════════════════
+function falhaSemCache(msg){
+  document.getElementById('splashT').textContent = 'Não consegui ler o quadro';
+  document.getElementById('splashS').textContent =
+    msg + ' — vou tentar de novo em ' + CFG.ref + 's. A tela não mostra dado velho como se fosse de agora.';
+  document.getElementById('splash').classList.remove('off');
+}
+
+function ciclo(){
+  ST.ciclos++;
+  // getItensNaOficina muda devagar (é entrada/saída de máquina): 1ª vez e a
+  // cada 30 min. Não vale uma leitura da aba MAQUINAS a cada 3 minutos.
+  var precisaMaq = (!ST.maqTs || (Date.now() - ST.maqTs) > 30*60000);
+  var pMaq = precisaMaq
+    ? gsGet('getItensNaOficina').then(function(env){
+        if (env && env.status === 'ok'){ ST.maqIdx = indiceMaquinas(env); ST.maqTs = Date.now(); }
+      }).catch(function(){ /* o nome da máquina é acessório — nunca derruba o quadro */ })
+    : Promise.resolve();
+
+  return pMaq.then(function(){
+    return gsGet('getKanbanOficina', { dias_concluidas: CFG.concluidas });
+  }).then(function(env){
+    if (!env || env.status !== 'ok') throw new Error((env && env.error) || 'envelope inválido');
+    ST.quadro = env; ST.quadroTs = Date.now(); ST.erro = '';
+    pintar();
+  }).catch(function(e){
+    ST.erro = String((e && e.message) || e);
+    if (!ST.quadro) falhaSemCache(ST.erro);
+    else pintarCabecalho();   // mantém o último quadro bom e envelhece o carimbo
+  });
+}
+
+// ══════════════════════════════════════════════════════════════════════════
+// 8 · PARTIDA
+// ══════════════════════════════════════════════════════════════════════════
+aplicarBase();
+pintarCabecalho();
+ciclo();
+setInterval(ciclo, CFG.ref * 1000);
+setInterval(pintarCabecalho, 20000);          // relógio e carimbo de frescor
+window.addEventListener('resize', function(){ aplicarBase(); if (ST.quadro) pintar(); });
+
+// Atalhos sem UI (regra 5: nada clicável na tela).
+document.addEventListener('keydown', function(e){
+  var k = String(e.key || '').toLowerCase();
+  if (k === 'f'){
+    if (document.fullscreenElement) document.exitFullscreen();
+    else if (document.documentElement.requestFullscreen) document.documentElement.requestFullscreen();
+  }
+  if (k === 'r') ciclo();
+});
+
+// Superfície para a bancada. Não é API: é o que o teste headless dirige.
+window.__mural = {
+  build: BUILD, CFG: CFG, ST: ST,
+  calcularBase: calcularBase, grupoDaFase: grupoDaFase, rotuloDias: rotuloDias,
+  travadas: travadas, proximaDaFila: proximaDaFila, montarColunas: montarColunas,
+  indiceMaquinas: indiceMaquinas, rotuloMaquina: rotuloMaquina, frescor: frescor,
+  ciclo: ciclo, pintar: pintar
+};
+})();
+</script>
+</body>
+</html>
