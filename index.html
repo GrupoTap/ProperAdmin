@@ -1,3 +1,63 @@
+<!-- PCM V142 — 25/08/2026 — CÓDIGO DE BANCO NÃO É NOME.
+     Feito EM CIMA do V141 — este arquivo CONTÉM o V141 (responsável), o V140
+     (as quatro vistas) e, por ele, o V139. É o único PCM a publicar.
+     100% ADITIVO: nenhum id, função, data-key, data-view ou rota renomeada.
+     Front puro: ZERO GAS novo, ZERO SQL. Roda igual com o GAS v119 ou v122.
+     Par recomendado: GAS v122 · PCF V95 (nenhum dos dois é pré-requisito
+     desta rodada).
+
+     🔑 CHAMADO DO FERNANDO (25/08, com print do Painel): "por que a máquina
+        ainda continua com essa id longa? não deveria ser o nome visual da
+        máquina, tipo esses do print da tela de máquinas? Preciso que corrija
+        isso de forma definitiva, verifique essas vistas que criou em busca
+        desse tipo de erro e corrija todos."
+
+     🔴 O DEFEITO ERA MAIOR QUE A COLUNA MÁQUINA. Varrendo as quatro vistas
+        atrás do MESMO tipo de erro — a tela imprimindo a chave de banco no
+        lugar do nome — apareceram TRÊS colunas das seis do print, e não uma:
+
+     A1  MÁQUINA mostrava `MK-fundicaorealezaltda-techto-sd30…` / `EQ-1784…`.
+         A V140 ENCURTOU o machineKey e nunca o TRADUZIU — encurtar um código
+         não o transforma em nome. O tradutor já existia no arquivo desde a
+         V127.2 (`_gosMaqIndex` + `_osMachineLabel`, usados pelos cards da
+         Oficina) e as vistas nasceram sem chamá-lo.
+         ⇒ Agora: "Techto SD40 HP" em cima, "S/N 3565" embaixo — a mesma
+           leitura da tela de Máquinas — e a lista completa no `title`.
+
+     A2  RESPONSÁVEL mostrava `TEC-72699`, `TEC-001`.
+         🔴 A causa NÃO era o `_g8Quem` (consertado na V141): era o `renderOS`,
+         que NUNCA carregava `getUsuarios`. Quem abrisse o PCM direto em Gestão
+         de OSs via `_usuList` vazio e todo id saía cru; quem tivesse passado
+         antes por Usuários via os nomes. Daí parecer intermitente — no print,
+         uma OS diz "Fernando" e as vizinhas dizem `TEC-72699`.
+         ⇒ `getUsuarios` entra no `Promise.all` do `renderOS`, tolerante e só
+           quando a lista está vazia.
+
+     A3  ETAPA mostrava `INSPECAO_COLETA` ao lado de "Preventiva" e "Reforma
+         geral". É o `Tipo_ID`, vazando porque o mapa `Tipo_ID→Nome` não tinha
+         a chave — efeito que o próprio GAS já descreve no comentário do v98
+         (D-2): *"a tela mostra a string crua"*.
+         ⇒ De-para explícito dos ids vivos + humanizador genérico. O `Nome` do
+           catálogo continua saindo byte a byte como sempre.
+
+     A4  A FAIXA "BLOQUEADAS" do quadro da Oficina (V138) tinha o mesmo
+         vazamento de máquina — e ali dói mais, porque a faixa existe para o
+         escritório saber QUAL máquina está parada.
+
+     A5  `_gosMaqIndex` passa a aceitar também a **machineKey derivada**
+         (`machineKey(cliente,marca,modelo,série)`), como o passo 2 do
+         `findMachineByKey` já fazia desde o v68: OS antiga guardou `MK-…`,
+         a máquina de hoje tem id `EQ-…`, e o índice por id exato não casava
+         as duas. Sem isso o conserto A1 deixaria OS legada em "fora do
+         cadastro".
+
+     ⚠ TRÊS ESTADOS, NÃO DOIS — a regra do `_g8NotaIdade`, aplicada à máquina:
+       id resolve → nome; catálogo local não carregado → o id, marcado COMO
+       id (cinza, monoespaçado) e a nota da vista manda sincronizar; catálogo
+       carregado e id ausente dele → "máquina fora do cadastro", laranja, id no
+       `title`. Chamar de "fora do cadastro" uma máquina que a tela apenas não
+       carregou seria acusá-la de um defeito do navegador.
+-->
 <!-- PCM V141 — 25/08/2026 — O RESPONSÁVEL VOLTA A TER NOME.
      🔴 REBASE. Feito EM CIMA do **V140 das quatro vistas** — este arquivo
      CONTÉM aquela rodada inteira (e, por ela, o V139). O V141 existe porque
@@ -2387,7 +2447,7 @@ v50 — Resiliência de rede: retry/backoff em gsGet e syncToGS
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>ProperCare Manager · Gestão PGP v3.65 (PCM V141)</title>
+<title>ProperCare Manager · Gestão PGP v3.66 (PCM V142)</title>
 <link rel="icon" type="image/jpeg" href="data:image/jpeg;base64,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">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -3393,6 +3453,11 @@ th.xf-filtered .xf-fun{opacity:1;stroke:var(--accent)}
 .g8-chip{border-radius:999px;padding:1px 9px;font-size:11px;font-weight:800;white-space:nowrap}
 .g8-chip.urg{background:#fee2e2;color:#991b1b} .g8-chip.bq{background:#fef3c7;color:#92400e}
 .g8-chip.who{background:#dbeafe;color:#1e40af} .g8-chip.free{background:#f1f5f9;color:#475569}
+/* V142 — chip de RESPONSÁVEL que ainda é um id: sai do azul de "pessoa" e vira
+   código cinza monoespaçado. Não some (o id é a única pista de quem é), mas
+   também não se disfarça de nome. */
+.g8-chip.g8-chip-cod{background:var(--bg);color:var(--text-muted);border:1px solid var(--border);
+  font-family:var(--font-mono),monospace;font-weight:700}
 /* painel de aeroporto */
 /* 🔑 V140 — `table-layout:fixed` é o conserto. Sem ele o navegador usa o modo
    AUTO, em que as larguras em % dos <th> são só sugestão: uma célula com
@@ -3420,7 +3485,24 @@ th.xf-filtered .xf-fun{opacity:1;stroke:var(--accent)}
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .g8-tab tr.g td{background:var(--bg);font-size:10.5px;letter-spacing:.12em;color:var(--text-muted);
   font-weight:800;padding:5px 12px;text-transform:uppercase}
-.g8-maq{font-family:var(--font-mono);font-weight:700;color:var(--accent)}
+/* 🔑 V142 — a coluna MÁQUINA deixou de ser um campo de banco. Enquanto ela
+   imprimia o machineKey, monoespaçado e laranja era a fonte certa para um
+   código; agora ela imprime NOME DE MÁQUINA, e nome de máquina se lê como
+   texto. A série/TAG desce para a 2ª linha, monoespaçada — igual à tela de
+   Máquinas, que é onde o admin aprendeu a reconhecer o parque dele. */
+.g8-maq{font-family:inherit;font-weight:700;color:var(--text);white-space:normal}
+.g8-maq .n{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.g8-maq .sn{font-family:var(--font-mono),monospace;font-size:10.5px;font-weight:600;
+  color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:1px}
+/* id que NÃO resolve não é escondido — vira aviso laranja, com o id no title.
+   Mesma escolha do `_gosLinhaMaquinas` (V127.2) e do `_renderOSLinkedMachinesDetail`. */
+.g8-maq-orf{color:var(--orange);font-weight:700}
+/* ⚠ E "catálogo não carregado" NÃO é "fora do cadastro": aí o id aparece como
+   id — cinza, monoespaçado — porque a tela não sabe o nome, não porque a
+   máquina não exista. Campo ausente e campo nulo são coisas diferentes. */
+.g8-cod{font-family:var(--font-mono),monospace;font-size:11px;font-weight:700;
+  color:var(--text-muted);background:var(--bg);border:1px solid var(--border);
+  border-radius:5px;padding:1px 5px;white-space:nowrap}
 .g8-num{text-align:right;font-variant-numeric:tabular-nums;font-weight:800}
 /* raias */
 .g8-lane{display:flex;align-items:stretch;background:var(--surface);border:1px solid var(--border);
@@ -3473,7 +3555,7 @@ th.xf-filtered .xf-fun{opacity:1;stroke:var(--accent)}
 <aside class="nav-sidebar" aria-label="Navegação principal">
   <div class="nav-brand">
     <span class="nav-brand-mark">PCM</span>
-    <span class="nav-brand-sub">v3.65 · V141</span>
+    <span class="nav-brand-sub">v3.66 · V142</span>
   </div>
 
   <nav class="nav-groups">
@@ -15133,12 +15215,21 @@ async function renderOS() {
 
   let result = null;
   try {
-    const [resOS, resTipos] = await Promise.all([
+    // 🔴 V142 — `getUsuarios` ENTRA AQUI. Sem ele `_usuList` fica vazio e o
+    //    `_g8Quem` das quatro vistas devolve o id cru (`TEC-72699`) para toda
+    //    OS. Em paralelo com as outras duas (não custa uma volta a mais),
+    //    SÓ quando a lista ainda está vazia, e tolerante: falha em carregar
+    //    nomes não pode derrubar a tela de OS.
+    const [resOS, resTipos, resUsu] = await Promise.all([
       gsGet('getOS', { includeClosed: 'true' }),
-      _tiposOS.length ? Promise.resolve({ tipos: _tiposOS }) : gsGet('getTiposOS').catch(() => ({ tipos: [] }))
+      _tiposOS.length ? Promise.resolve({ tipos: _tiposOS }) : gsGet('getTiposOS').catch(() => ({ tipos: [] })),
+      _usuList.length ? Promise.resolve(null) : gsGet('getUsuarios').catch(() => null)
     ]);
     result = resOS;
     if (!_tiposOS.length) _tiposOS = (resTipos?.tipos || []);
+    if (!_usuList.length && resUsu) {
+      _usuList = (resUsu.tecnicos || resUsu.usuarios || resUsu.data || []);
+    }
   } catch(e) {
     const cont = document.getElementById('osRibbonContent');
     if (!temCache && cont) {
@@ -15406,7 +15497,54 @@ function _gosTipoMapGet(){
   _gosTipoMapSrc = src; _gosTipoMap = m;
   return m;
 }
-function _gosTipoNome(o){ return (_gosTipoMapGet().get(String(o.tipo_os ?? '')) || undefined) || o.tipo_os || '—'; }
+// ════════════════════════════════════════════════════════════════════════════
+// V142 — QUANDO O CATÁLOGO NÃO TEM O TIPO, A TELA NÃO CUSPE A CHAVE.
+//
+// `INSPECAO_COLETA` na coluna ETAPA do print não é um nome: é o `Tipo_ID`. Ele
+// chega aqui porque o mapa `Tipo_ID → Nome` não tinha a chave — e o próprio GAS
+// já descreve o efeito, no comentário do v98 (D-2): *"a tela mostra a string
+// crua, o find do PCM devolve undefined"*. O fallback `|| o.tipo_os` foi escrito
+// para não esconder o problema, e isso continua certo; o que estava errado era
+// imprimir MAIÚSCULA_COM_UNDERLINE como se fosse português.
+//
+// ⚠ NÃO TOCA no caminho feliz: `Nome` vindo do CAT_TIPOS_OS sai byte a byte
+//   como sempre. O de-para abaixo só entra quando o catálogo não respondeu pela
+//   chave — por lista ainda não carregada, tipo inativo, ou linha ausente.
+// ⚠ A tabela é EXPLÍCITA e datada, como `V108_SLUG_EXCECOES` no GAS: são os
+//   ids que a planilha viva usa (conferidos no GAS v122 — semente do
+//   `getTiposOS`, `ensureTipoInspecao_` e o comentário do v98 D-2). Chave que
+//   não estiver aqui ainda sai legível pelo humanizador genérico, só sem acento.
+// ════════════════════════════════════════════════════════════════════════════
+const _G8_TIPO_LEGIVEL = {
+  DIAGNOSTICO:'Diagnóstico', MANUT_SIMPLES:'Manutenção simples', REFORMA_GERAL:'Reforma geral',
+  DESMONT_MONT:'Desmontagem e montagem', PREVENTIVA:'Preventiva', CORRETIVA:'Corretiva',
+  INSPECAO:'Inspeção', INSPECAO_COLETA:'Inspeção / Coleta',
+  INSPECAO_E_COMERCIAL:'Inspeção e Comercial', GENERICA:'Genérica',
+  PREVENTIVA_PISTAO:'Preventiva de pistão', ENTREGA_LOCACAO:'Entrega de locação',
+  LOCACAO:'Locação', GARANTIA:'Garantia', RETRABALHO:'Retrabalho'
+};
+function _g8Humanizar(chave){
+  const v = String(chave == null ? '' : chave).trim();
+  if (!v) return '';
+  // Já é texto humano (tem minúscula, acento, espaço ou barra) ⇒ devolve intacto.
+  if (!/^[A-Z0-9][A-Z0-9_]*$/.test(v)) return v;
+  if (_G8_TIPO_LEGIVEL[v]) return _G8_TIPO_LEGIVEL[v];
+  const t = v.toLowerCase().replace(/_+/g, ' ').trim();
+  return t.charAt(0).toUpperCase() + t.slice(1);
+}
+function _gosTipoNome(o){
+  const n = _gosTipoMapGet().get(String(o.tipo_os ?? ''));
+  if (n) return n;
+  return _g8Humanizar(o.tipo_os) || '—';
+}
+// A ETAPA de uma OS: a fase da tarefa candidata (GAS) e, sem pipeline, o tipo.
+// ⚠ Existia como a MESMA expressão copiada em cinco lugares das quatro vistas —
+//   e as cinco cópias tinham de mudar juntas para o conserto valer. Agora é uma.
+function _g8Etapa(o){
+  const e = String((o && o.estagio) || '').trim();
+  if (e && e !== '—') return _g8Humanizar(e);
+  return _gosTipoNome(o);
+}
 function _gosTipoColorMap(){
   const m = {};
   [...new Set(_osList.map(_gosTipoNome))].forEach((n,i)=> m[n] = _GOS_TIPO_PALETTE[i % _GOS_TIPO_PALETTE.length]);
@@ -15506,22 +15644,132 @@ function _g8Idade(o){
   const f = (typeof o.dias_na_fila === 'number') ? o.dias_na_fila : 0;
   return { n:f, txt: f<=0 ? 'hoje' : f+'d', real:false, semData:false };
 }
-// V140 — a coluna Máquina cabe em 26% da tabela; o machineKey inteiro, não.
-// Mostra o primeiro e diz quantos faltam; o `title` leva a lista completa.
-// 🔑 E OS SEM MÁQUINA MOSTRA "sem máquina", não o tipo da OS. O `_g8Maq` cai
-//    em `_gosTipoNome(o)` quando não há máquina vinculada — foi assim que
-//    "INSPECAO_COLETA" apareceu na coluna MÁQUINA do print do Fernando, ao lado
-//    de uma coluna ETAPA que já dizia a mesma coisa. Duas colunas repetindo o
-//    mesmo dado é uma coluna desperdiçada; e chamar um tipo de OS de "máquina"
-//    é a tela mentindo baixinho. (Visto na CAPTURA, não no código.)
+// ════════════════════════════════════════════════════════════════════════════
+// V142 — CÓDIGO DE BANCO NÃO É NOME.                            25/08/2026
+//
+// Pergunta do Fernando, olhando o Painel: "por que a máquina ainda continua com
+// essa id longa? não deveria ser o nome visual da máquina, tipo esses do print
+// da tela de máquinas?"
+//
+// 🔑 O DEFEITO NÃO ERA DA COLUNA MÁQUINA — ERA DE TODA VISTA NOVA. A V140
+//    encurtou o machineKey (mostra o 1º e "+N") e nunca o TRADUZIU: encurtar um
+//    código não o transforma em nome. E o mesmo vazamento aparecia em outras
+//    DUAS colunas do mesmo print:
+//      · RESPONSÁVEL mostrava `TEC-72699` / `TEC-001` — ids de usuário;
+//      · ETAPA mostrava `INSPECAO_COLETA` — a chave do tipo de OS.
+//    Três colunas de seis. É uma só doença: **a tela imprimindo a chave quando
+//    o tradutor não estava à mão**, e não uma escolha em nenhum dos três casos.
+//
+// 🔑 O TRADUTOR JÁ EXISTIA E NÃO FOI CHAMADO. `_gosMaqIndex()` +
+//    `_osMachineLabel()` resolvem id→máquina desde a V127.2, e os cards da
+//    Oficina os usam. As quatro vistas nasceram sem eles. Mesma classe do
+//    `o.tecnicos` que o `getOS` nunca devolveu (V141) — não falta dado, falta
+//    ligar o que já está no arquivo.
+//
+// ⚠ TRÊS ESTADOS, NÃO DOIS (a regra do `_g8NotaIdade`, aplicada aqui):
+//      1. id resolve            → nome visual + série/TAG;
+//      2. catálogo NÃO carregado→ o id, marcado COMO id (cinza, monoespaçado),
+//         e a nota da vista diz para sincronizar. Dizer "fora do cadastro" aqui
+//         seria acusar a máquina de um defeito do navegador;
+//      3. catálogo carregado e o id não está nele → "máquina fora do cadastro",
+//         laranja, id no title. Sumir com ele é como o admin passa a confiar
+//         num quadro incompleto.
+// ⚠ RESOLUÇÃO 100% LOCAL, contra o `db.machines` que a tela já tem. Zero ida ao
+//   GAS por linha — `getMachines` está desativado no servidor desde o v87 e o
+//   Painel repinta a cada tecla da busca.
+// ════════════════════════════════════════════════════════════════════════════
 function _g8TemMaq(o){
   return Array.isArray(o.maquinas_vinculadas) && o.maquinas_vinculadas.filter(Boolean).length > 0;
 }
+// O catálogo local está carregado? (índice vazio = navegador sem sync, NÃO
+// "nenhuma máquina cadastrada" — a diferença muda a mensagem na tela.)
+function _g8SemCatalogo(){
+  try { return !(db && Array.isArray(db.machines) && db.machines.length); }
+  catch(e){ return true; }
+}
+// Um item por id vinculado, já resolvido. É a função que todas as vistas usam.
+function _g8MaqItens(o){
+  const bruto = Array.isArray(o && o.maquinas_vinculadas) ? o.maquinas_vinculadas
+              : ((o && o.maquinas_vinculadas) ? [o.maquinas_vinculadas] : []);
+  const ids = bruto.map(x => String(x == null ? '' : x).trim()).filter(Boolean);
+  if (!ids.length) return [];
+  const semCat = _g8SemCatalogo();
+  let idx = null;
+  try { idx = semCat ? null : _gosMaqIndex(); } catch(e){ idx = null; }
+  return ids.map(id => {
+    const m = idx ? (idx.get(id) || null) : null;
+    return {
+      id: id,
+      m: m,
+      nome:  m ? _osMachineNomeCurto(m)  : '',
+      serie: m ? _osMachineSerieCurta(m) : '',
+      texto: m ? _osMachineLabel(m)
+               : (semCat ? id + '  (catálogo de máquinas não carregado neste navegador)'
+                         : 'Máquina não encontrada no cadastro: ' + id),
+      orfa: !m && !semCat,
+      semCatalogo: !m && semCat
+    };
+  });
+}
+// A primeira RESOLVIDA manda no rótulo: OS com uma máquina conhecida e um id
+// órfão mostra a que o admin reconhece — não o erro. (Regra da V127.2.)
+function _g8MaqPrim(itens){ return itens.find(i => i.m) || itens[0] || null; }
+// TEXTO PURO — para `title`. ⚠ Continua sendo o que `_g8Maq` sempre devolveu
+//   (uma string), só que agora legível. Assinatura intocada.
+function _g8Maq(o){
+  const it = _g8MaqItens(o);
+  if (!it.length) return _gosTipoNome(o);
+  return it.map(x => x.texto).join('\n');
+}
+// Marcação do rótulo de UM item, sem o "+N".
+function _g8MaqRotuloHtml(p){
+  if (!p) return '<span class="g8-semdata">sem máquina</span>';
+  if (p.m) return escHtml(p.nome);
+  if (p.semCatalogo) return '<span class="g8-cod">' + escHtml(p.id) + '</span>';
+  return '<span class="g8-maq-orf">máquina fora do cadastro</span>';
+}
+function _g8MaqMaisHtml(itens){
+  const extra = itens.length - 1;
+  return extra > 0 ? '<span class="g8-maqn">+' + extra + '</span>' : '';
+}
+// CÉLULA DO PAINEL — duas linhas, como a tela de Máquinas: nome em cima,
+// série/TAG embaixo. A coluna tem 26% e `table-layout:fixed` (V140): o que não
+// couber corta com reticências, e o title leva a lista inteira.
 function _g8MaqCurto(o){
-  const arr = Array.isArray(o.maquinas_vinculadas) ? o.maquinas_vinculadas.filter(Boolean) : [];
-  if (!arr.length) return '<span class="g8-semdata">sem máquina</span>';
-  if (arr.length === 1) return escHtml(String(arr[0]));
-  return escHtml(String(arr[0])) + '<span class="g8-maqn">+' + (arr.length - 1) + '</span>';
+  const it = _g8MaqItens(o);
+  if (!it.length) return '<span class="g8-semdata">sem máquina</span>';
+  const p = _g8MaqPrim(it);
+  const sn = (p && p.m && p.serie) ? '<div class="sn">' + escHtml(p.serie) + '</div>' : '';
+  return '<div class="n">' + _g8MaqRotuloHtml(p) + _g8MaqMaisHtml(it) + '</div>' + sn;
+}
+// TEXTO do `title` — a lista COMPLETA, uma por linha. Nada é perdido no
+// encurtamento: some da célula, continua no title.
+function _g8MaqTitulo(o){
+  const it = _g8MaqItens(o);
+  if (!it.length) return 'Sem máquina vinculada no cadastro desta OS.';
+  return it.map(x => x.texto).join('\n');
+}
+// ⚠ A vista AVISA quando não sabe. Se o catálogo local está vazio e existem OS
+//   com máquina vinculada, nenhum nome vai aparecer — e a tela tem de dizer por
+//   quê, em vez de deixar o admin achar que o parque sumiu. (Mesma regra da
+//   nota de idade: três estados, e o estado "não sei" é escrito.)
+function _g8NotaCatalogo(){
+  try{
+    if (!_g8SemCatalogo()) return '';
+    const tem = _g8Ativas().some(o => _g8MaqItens(o).length);
+    if (!tem) return '';
+    return ' ⚠ O <b>catálogo de máquinas ainda não foi carregado neste navegador</b>, ' +
+           'então a coluna Máquina mostra o <b>id</b> em vez do nome. Abra a tela ' +
+           '<b>Máquinas</b> (ou recarregue o PCM) para sincronizar.';
+  }catch(e){ return ''; }
+}
+// LINHA ÚNICA — Fila e faixa de travadas: "Techto SD40 HP · S/N 3565".
+function _g8MaqLinha(o){
+  const it = _g8MaqItens(o);
+  if (!it.length) return '<span class="g8-semdata">sem máquina vinculada</span>';
+  const p = _g8MaqPrim(it);
+  const sn = (p && p.m && p.serie) ? ' · ' + escHtml(p.serie) : '';
+  return _g8MaqRotuloHtml(p) + sn + _g8MaqMaisHtml(it);
 }
 function _g8Bloqueada(o){ return !!(o && o.bloqueada === true); }
 function _g8MotivoBq(o){ return (o && o.motivo_bloqueio) ? String(o.motivo_bloqueio) : 'travada'; }
@@ -15549,11 +15797,6 @@ function _g8Cor(o){
   if (o.atrasada===true || i>=30) return 'red';
   if (i>=14) return 'amb';
   return 'grn';
-}
-function _g8Maq(o){
-  const m = Array.isArray(o.maquinas_vinculadas) ? o.maquinas_vinculadas.join(' · ')
-          : String(o.maquinas_vinculadas||'');
-  return m || _gosTipoNome(o);
 }
 // ══════════════════════════════════════════════════════════════════════════
 // V140 (R3) — A COLUNA "RESPONSÁVEL" QUE NUNCA MOSTROU NINGUÉM.
@@ -15593,6 +15836,42 @@ function _g8Quem(o){
     return [];
   }catch(e){ return []; }
 }
+// ════════════════════════════════════════════════════════════════════════════
+// V142 — `TEC-72699` NA COLUNA RESPONSÁVEL.
+//
+// 🔴 A CAUSA NÃO ERA `_g8Quem`, ERA `renderOS`. O tradutor id→nome é o
+//    `_usuList`, e a tela de OS NUNCA o carregava: `renderOS` pedia `getOS` e
+//    `getTiposOS` e mais nada. Quem abrisse o PCM direto em Gestão de OSs — o
+//    caminho normal — via as quatro vistas com a lista VAZIA e todo id saía cru.
+//    Bastava ter passado antes por Usuários (ou aberto o modal de OS) para o
+//    problema desaparecer, e é por isso que ele parecia intermitente: no print
+//    do Fernando uma OS diz "Fernando" (ali o `usuario_atual` já guardava NOME)
+//    e as outras dizem `TEC-72699`. Conserto no `renderOS`, abaixo.
+//
+// ⚠ `_g8Quem` continua devolvendo o ID CRU quando o usuário não está no
+//   cadastro — de propósito, e a bancada da V141 exige isso. O que muda é que
+//   a TELA passa a dizer que aquilo é um código, em vez de fingir que é gente.
+//   Raias e Matriz AGRUPAM por essa string: mexer no valor mudaria as raias.
+// ════════════════════════════════════════════════════════════════════════════
+function _g8QuemEhCodigo(t){
+  const v = String(t == null ? '' : t).trim();
+  if (!v) return false;
+  try { return !(_usuList || []).some(u => String((u && u.nome) || '').trim() === v); }
+  catch(e){ return false; }
+}
+function _g8QuemChip(t, cls){
+  const cod = _g8QuemEhCodigo(t);
+  const tit = cod ? ' title="Código de usuário — este id não está no cadastro de Usuários (ou a lista ainda não carregou). O nome só aparece quando ele existir lá."' : '';
+  return '<span class="g8-chip ' + (cls || 'who') + (cod ? ' g8-chip-cod' : '') + '"' + tit + '>' +
+         escHtml(String(t)) + '</span>';
+}
+function _g8QuemTexto(o){
+  const q = _g8Quem(o);
+  if (!q.length) return '<span style="color:var(--text3)">—</span>';
+  return q.map(t => _g8QuemEhCodigo(t)
+    ? '<span class="g8-cod" title="Código de usuário — este id não está no cadastro de Usuários (ou a lista ainda não carregou).">' + escHtml(String(t)) + '</span>'
+    : escHtml(String(t))).join(', ');
+}
 // 🔑 V140 — TRÊS ESTADOS, não dois. A versão anterior dizia "a data de chegada
 // ainda não chega até esta tela (patch GAS v119)" — e isso **culpava o software
 // por um buraco de DADO**. O patch chegou: o `getOS(com_fila)` entrega
@@ -15608,9 +15887,9 @@ function _g8NotaIdade(){
   const temCampo = at.some(o => ('dias_na_oficina' in o) || ('custodia_desde' in o));
   const comCust  = at.filter(o => _g8Idade(o).real).length;
   const semData  = at.filter(o => _g8Idade(o).semData).length;
-  const rodape   = semData
+  const rodape   = (semData
     ? ' ⚠ <b>' + semData + '</b> OS sem data de abertura aparecem com <b>—</b> no tempo.'
-    : '';
+    : '') + _g8NotaCatalogo();
   if (!temCampo) {
     return 'A ordem conta da <b>abertura da OS</b>. O servidor no ar é anterior ao ' +
            '<b>GAS v119</b> e não manda a chegada da máquina.' + regra + rodape;
@@ -15650,13 +15929,13 @@ function gosRenderFila(){
     return `<div class="g8-r ${cor}" onclick="openOSDetail('${_gosOid(o)}')" style="cursor:pointer">
       <div class="g8-pos">${pos}</div>
       <div class="g8-nome"><div class="c">${escHtml(String(o.cliente||'—'))}</div>
-        <div class="m">${_g8TemMaq(o) ? escHtml(_g8Maq(o)) : '<span class="g8-semdata">sem máquina vinculada</span>'}</div></div>
-      <div class="g8-fase">${escHtml(String(o.estagio&&o.estagio!=='—'?o.estagio:_gosTipoNome(o)))}</div>
+        <div class="m" title="${escHtml(_g8MaqTitulo(o))}">${_g8MaqLinha(o)}</div></div>
+      <div class="g8-fase">${escHtml(_g8Etapa(o))}</div>
       <div class="g8-idade">${id.semData ? '' : BARRA}
         <span class="g8-d ${id.semData?'g8-semdata':''}" style="${id.semData?'':'color:'+cbar}"
               title="${id.semData?'Sem data de abertura na planilha':''}">${escHtml(id.txt)}</span></div>
       <div class="g8-sit">${_g8Rank(o)>=3?'<span class="g8-chip urg">URGENTE</span>':''}
-        ${quem.length?quem.map(t=>`<span class="g8-chip who">${escHtml(t)}</span>`).join(''):'<span class="g8-chip free">livre</span>'}</div>
+        ${quem.length?quem.map(t=>_g8QuemChip(t)).join(''):'<span class="g8-chip free">livre</span>'}</div>
     </div>`;
   };
   cont.innerHTML=`<div class="g8-wrap">
@@ -15668,8 +15947,9 @@ function gosRenderFila(){
     ${trav.length?`<div class="g8-cab" style="margin-top:16px">Travadas — fora da fila</div>
       ${trav.map(o=>`<div class="g8-r trav" onclick="openOSDetail('${_gosOid(o)}')" style="cursor:pointer">
         <div class="g8-pos">—</div>
-        <div class="g8-nome"><div class="c">${escHtml(String(o.cliente||'—'))}</div><div class="m">${escHtml(_g8Maq(o))}</div></div>
-        <div class="g8-fase">${escHtml(String(o.estagio||'—'))}</div>
+        <div class="g8-nome"><div class="c">${escHtml(String(o.cliente||'—'))}</div>
+          <div class="m" title="${escHtml(_g8MaqTitulo(o))}">${_g8MaqLinha(o)}</div></div>
+        <div class="g8-fase">${escHtml(_g8Etapa(o))}</div>
         <div class="g8-idade"><span class="g8-d">${escHtml(_g8Idade(o).txt)}</span></div>
         <div class="g8-sit"><span class="g8-chip bq">${escHtml(_g8MotivoBq(o))}</span></div></div>`).join('')}`:''}
   </div>`;
@@ -15686,12 +15966,12 @@ function gosRenderPainel(){
     const id=_g8Idade(o), quem=_g8Quem(o), cor=_g8Cor(o);
     const c = cor==='red' ? '#ef4444' : (cor==='amb' ? '#b45309' : '#16a34a');
     return `<tr onclick="openOSDetail('${_gosOid(o)}')" style="cursor:pointer">
-      <td class="g8-maq" title="${escHtml(_g8Maq(o))}">${_g8MaqCurto(o)}</td>
+      <td class="g8-maq" title="${escHtml(_g8MaqTitulo(o))}">${_g8MaqCurto(o)}</td>
       <td>${escHtml(String(o.cliente||'—'))}</td>
-      <td>${escHtml(String(o.estagio&&o.estagio!=='—'?o.estagio:_gosTipoNome(o)))}</td>
+      <td>${escHtml(_g8Etapa(o))}</td>
       <td class="g8-num ${id.semData?'g8-semdata':''}" style="${id.semData?'':'color:'+c}"
           title="${id.semData?'Esta OS não tem data de abertura na planilha.':''}">${escHtml(id.txt)}</td>
-      <td>${quem.length?escHtml(quem.join(', ')):'<span style="color:var(--text3)">—</span>'}</td>
+      <td>${_g8QuemTexto(o)}</td>
       <td>${_g8Bloqueada(o)?`<span class="g8-chip bq">${escHtml(_g8MotivoBq(o))}</span>`
         :(_g8Rank(o)>=3?'<span class="g8-chip urg">URGENTE</span>':(quem.length?'<span class="g8-chip who">em andamento</span>':'<span class="g8-chip free">livre</span>'))}</td>
     </tr>`;
@@ -15700,8 +15980,11 @@ function gosRenderPainel(){
   cont.innerHTML=`<div class="g8-wrap">
     <div class="g8-nota">${_g8NotaIdade()} Esta leitura é para <b>varrer por coluna</b> — desça só a coluna Tempo, ou só a Situação.</div>
     <div class="g8-tabw"><table class="g8-tab"><thead><tr>
-      <th style="width:26%">Máquina</th><th style="width:22%">Cliente</th><th style="width:18%">Etapa</th>
-      <th style="width:8%;text-align:right">Tempo</th><th style="width:12%">Responsável</th><th style="width:14%">Situação</th>
+      <!-- V142 — larguras rebalanceadas: com NOMES no lugar dos ids, Máquina
+           precisa de menos (o machineKey era o que estourava) e Responsável
+           precisa de mais ("Jonathan Alves" não cabia em 12%). Soma = 100. -->
+      <th style="width:24%">Máquina</th><th style="width:20%">Cliente</th><th style="width:18%">Etapa</th>
+      <th style="width:7%;text-align:right">Tempo</th><th style="width:16%">Responsável</th><th style="width:15%">Situação</th>
     </tr></thead><tbody>
       ${grupo('Esperando quem pegar',livres)}
       ${grupo('Em andamento',emAnd)}
@@ -15721,10 +16004,10 @@ function gosRenderRaias(){
   // V140 — na reunião de distribuição a ETAPA é o que decide para quem vai; o
   // machineKey não diz nada a ninguém em voz alta. Etapa primeiro, máquina no title.
   const mini=o=>{
-    const et = String(o.estagio&&o.estagio!=='—'?o.estagio:_gosTipoNome(o));
+    const et = _g8Etapa(o);
     const id = _g8Idade(o);
     return `<div class="g8-mini ${_g8Cor(o)}" onclick="openOSDetail('${_gosOid(o)}')"
-      style="cursor:pointer" title="${escHtml(_g8Maq(o))}">
+      style="cursor:pointer" title="${escHtml(_g8MaqTitulo(o))}">
       <div class="c">${escHtml(String(o.cliente||'—'))}</div>
       <div class="s">${escHtml(et)} · <span class="${id.semData?'g8-semdata':''}">${escHtml(id.txt)}</span>${_g8Rank(o)>=3?' · URGENTE':''}</div></div>`;
   };
@@ -15742,7 +16025,7 @@ function gosRenderRaias(){
       <div class="b">${semDono.length?mostrar.map(mini).join(''):'<span class="g8-vazio">Nada esperando dono.</span>'}
       ${resto>0?`<button class="g8-mais" onclick="_g8RaiaVerTudo(1)">＋ ver as outras ${resto}</button>`:''}
       ${(_g8RaiaTudo && semDono.length>LIM)?'<button class="g8-mais" onclick="_g8RaiaVerTudo(0)">− recolher</button>':''}</div></div>
-    ${tecs.map(t=>`<div class="g8-lane"><div class="w"><div class="n">${escHtml(t)}</div>
+    ${tecs.map(t=>`<div class="g8-lane"><div class="w"><div class="n${_g8QuemEhCodigo(t)?' g8-cod':''}"${_g8QuemEhCodigo(t)?' title="Código de usuário — este id não está no cadastro de Usuários (ou a lista ainda não carregou)."':''}>${escHtml(t)}</div>
       <div class="s">${porTec.get(t).length} OS</div></div>
       <div class="b">${porTec.get(t).map(mini).join('')}</div></div>`).join('')}
     ${tecs.length?'':'<div class="g8-nota">Nenhuma OS com técnico em execução no momento — só o quadro da Oficina mostra lock por tarefa.</div>'}
@@ -15768,7 +16051,7 @@ function gosRenderMatriz(){
   // 🔴 V140 — o `.slice(0,6)` daqui CORTAVA as etapas da sétima em diante, e as
   // OS delas sumiam da tela sem uma palavra. Corte silencioso é a pior espécie:
   // quem olha conclui que não existe trabalho ali. Agora a matriz ROLA.
-  const etapas=[...new Set(ativas.map(o=>String(o.estagio&&o.estagio!=='—'?o.estagio:_gosTipoNome(o))))]
+  const etapas=[...new Set(ativas.map(_g8Etapa))]
     .sort((a,b)=>a.localeCompare(b,'pt-BR'));
   const porTec=new Map();
   ativas.forEach(o=>{ if(_g8Bloqueada(o)) return;
@@ -15781,7 +16064,7 @@ function gosRenderMatriz(){
   const linhas=[{k:'__fila__',nome:'Sem dono',cls:'fila',sub:'a fila'},
     ...tecs.map(t=>({k:t,nome:t,cls:'',sub:porTec.get(t).length+' OS'})),
     ...(travadas.length?[{k:'__trav__',nome:'Travadas',cls:'livre',sub:travadas.length+' fora da fila'}]:[])];
-  const etapaDe=o=>String(o.estagio&&o.estagio!=='—'?o.estagio:_gosTipoNome(o));
+  const etapaDe=_g8Etapa;
   const daCelula=(rk,et)=> ativas.filter(o=>{
     if(etapaDe(o)!==et) return false;
     const q=_g8Quem(o), bq=_g8Bloqueada(o);
@@ -15789,7 +16072,7 @@ function gosRenderMatriz(){
     if(bq) return false;                       // travada mora só na linha dela
     return rk==='__fila__' ? q.length===0 : q.indexOf(rk)>=0;
   });
-  const mini=o=>`<div class="g8-mini ${_g8Cor(o)}" onclick="openOSDetail('${_gosOid(o)}')" style="cursor:pointer;max-width:100%">
+  const mini=o=>`<div class="g8-mini ${_g8Cor(o)}" onclick="openOSDetail('${_gosOid(o)}')" style="cursor:pointer;max-width:100%" title="${escHtml(_g8MaqTitulo(o))}">
     <div class="c">${escHtml(String(o.cliente||'—'))}</div>
     <div class="s"><span class="${_g8Idade(o).semData?'g8-semdata':''}">${escHtml(_g8Idade(o).txt)}</span>${_g8Rank(o)>=3?' · URG':''}</div></div>`;
   // V140 — teto POR CÉLULA, com botão. Sem ele, uma coluna com 11 OS estica a
@@ -15824,7 +16107,7 @@ function gosRenderMatriz(){
     <div class="g8-mxw"><div class="g8-mx" style="grid-template-columns:${cols}">
       <div class="h" style="background:transparent;border-color:transparent"></div>
       ${etapas.map(e=>`<div class="h">${escHtml(e)}</div>`).join('')}
-      ${linhas.map(l=>`<div class="rh ${l.cls}"><div class="n">${escHtml(l.nome)}</div><div class="s">${escHtml(l.sub)}</div></div>
+      ${linhas.map(l=>`<div class="rh ${l.cls}"><div class="n${(l.k!=='__fila__'&&l.k!=='__trav__'&&_g8QuemEhCodigo(l.nome))?' g8-cod':''}">${escHtml(l.nome)}</div><div class="s">${escHtml(l.sub)}</div></div>
         ${etapas.map(e=>{const kk=l.k+'\u0000'+e; const cs=_cel[kk];
           return `<div class="cell${cs.length?'':' v'}">${cel(cs,kk)}</div>`;}).join('')}`).join('')}
     </div></div>
@@ -16023,12 +16306,15 @@ function _gosFaixaBloqueadas(cards){
   if (!bq.length) return '';
   const item = c => {
     const dias = (typeof c.dias_bloqueada === 'number') ? c.dias_bloqueada : null;
-    const maq = Array.isArray(c.maquinas_vinculadas) ? c.maquinas_vinculadas.join(' · ')
-              : String(c.maquinas_vinculadas || '');
-    return `<div class="g8-bqc" onclick="openOSDetail('${_gosOid(c)}')" style="cursor:pointer">
-      <div class="l1"><span class="m">${escHtml(maq || String(c.cliente||'—'))}</span>
+    // V142 — a faixa nasceu com o mesmo vazamento das quatro vistas: imprimia
+    // `maquinas_vinculadas` cru. Aqui o estrago é maior, porque a faixa existe
+    // justamente para o escritório saber QUAL máquina está parada.
+    const temMaq = _g8MaqItens(c).length > 0;
+    return `<div class="g8-bqc" onclick="openOSDetail('${_gosOid(c)}')" style="cursor:pointer"
+      title="${escHtml(_g8MaqTitulo(c))}">
+      <div class="l1"><span class="m">${temMaq ? _g8MaqLinha(c) : escHtml(String(c.cliente||'—'))}</span>
         ${dias!=null?`<span class="d">${dias}d parada</span>`:''}</div>
-      <div class="l2">${escHtml(String(c.cliente||'—'))}${c.estagio&&c.estagio!=='—'?' · estava em '+escHtml(String(c.estagio)):''}</div>
+      <div class="l2">${escHtml(String(c.cliente||'—'))}${c.estagio&&c.estagio!=='—'?' · estava em '+escHtml(_g8Humanizar(c.estagio)):''}</div>
       <div class="l3">${escHtml(String(c.motivo_bloqueio||'travada'))}</div>
     </div>`;
   };
@@ -16291,6 +16577,22 @@ function _gosMaqIndex(){
     const k = String((m && m.id) || '').trim();
     if (k) idx.set(k, m);
   });
+  // ── V142 · a CHAVE DERIVADA, como 2º passo ──────────────────────────────
+  // Máquina cadastrada hoje ganha id `EQ-…`; OS antiga guardou a `MK-…` que o
+  // `machineKey(cliente,marca,modelo,série)` produz. São a MESMA máquina e o
+  // índice por id exato não as casava — a linha vinha "fora do cadastro" para
+  // OS legada. É exatamente o passo 2 do `findMachineByKey`, que já existe e
+  // resolve isso desde o v68; aqui ele entra no índice, sem custo por linha.
+  // ⚠ NUNCA sobrescreve uma entrada por id exato: id vale mais que derivada.
+  try {
+    if (typeof machineKey === 'function') {
+      (db.machines || []).forEach(m => {
+        if (!m) return;
+        const mk = machineKey(m.client, m.brand, m.model, m.serial);
+        if (mk && mk !== 'MK-' && !idx.has(mk)) idx.set(mk, m);
+      });
+    }
+  } catch(e) { /* índice por id continua valendo */ }
   _gosMaqIdx = idx; _gosMaqIdxGen = _pcmDbGen;
   return idx;
 }
@@ -16664,6 +16966,23 @@ function _osMachineLabel(m) {
     ? ' · subsistema' + (String(m?.custodia || '').toUpperCase() === 'OFICINA' ? ' (na oficina)' : '')
     : '';
   return `${marcaModelo} — ${serieTag}${selo}`;
+}
+
+// ── V142 — as DUAS METADES do rótulo, separadas ───────────────────────────
+// `_osMachineLabel` devolve "Marca Modelo — série" numa linha só, e é o que o
+// title precisa. A tabela do Painel precisa das metades: nome em cima, série
+// embaixo, como na tela de Máquinas. Extraí sem tocar em `_osMachineLabel` —
+// ele tem 6 chamadores e nenhum pode mudar de saída por causa desta rodada.
+function _osMachineNomeCurto(m) {
+  const ehSub = String(m?.itemTipo || m?.item_tipo || '').toUpperCase() === 'SUBSISTEMA';
+  return [m?.brand, m?.model].filter(Boolean).join(' ').trim() ||
+         (ehSub ? 'Subsistema sem modelo' : 'Máquina sem modelo');
+}
+function _osMachineSerieCurta(m) {
+  const s = String(m?.serial || '').trim();
+  if (s) return 'S/N ' + s;
+  const t = String(m?.tag || '').trim();
+  return t ? 'TAG ' + t : 'sem série';
 }
 
 // ⚠ V127 — SEPARADA de propósito. `_osMachineLabel` é TEXTO PURO e continua
