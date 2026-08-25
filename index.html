@@ -1,3 +1,73 @@
+<!-- PCM V138 — 25/08/2026 — QUATRO LEITURAS DA MESMA FILA + A FAIXA DE BLOQUEADAS.
+     🔴 CONSTRUÍDO EM CIMA DO V137 (rodada do portal), NÃO do V136 que está no ar.
+        Era a única opção não destrutiva: construir sobre o V136 e publicar
+        apagaria a rodada do portal inteira. ⇒ PUBLICAR O V138 EXIGE a ordem da
+        rodada do portal antes (SQL → EDGE_ANEXO_KEY → GAS v118). O V138 carrega
+        o V137 dentro dele.
+     100% ADITIVO E FRONT-ONLY: nenhum id, função, aba ou action existente foi
+     renomeado ou removido. GAS INTOCADO.
+
+     Q1  QUATRO ABAS NOVAS em Gestão de OSs — Fila · Painel · Raias · Matriz.
+         Pedido do Fernando (24/08): "cada tela tem finalidade gerencial
+         diferente; o gerente escolhe a mais conveniente para o momento."
+         🔑 É AQUI que escolher faz sentido, e não na parede: o mural da oficina
+            fica com UMA vista fixa de propósito (é a estabilidade que ensina o
+            olho onde olhar, e sem interação ninguém escolhe numa TV). Quem
+            escolhe está SENTADO.
+         Todas leem o MESMO `_osList` que a aba Lista já carrega — zero
+         requisição nova. `gosSetTab` já despachava por string; só entraram
+         quatro `if` no `_gosRenderActiveTab`.
+         · Fila   — a ordem, sem ambiguidade, com barra de envelhecimento.
+         · Painel — varredura por coluna, cresce até dezenas de linhas.
+         · Raias  — por técnico, com a fila sem dono no topo (a leitura da
+                    reunião de distribuição).
+         · Matriz — etapa × técnico; as células vazias mostram a ociosidade.
+
+     Q2  A FAIXA HORIZONTAL DE BLOQUEADAS no quadro da Oficina.
+         Decisão do Fernando (24/08): bloqueada sai da fila; e "pode colocar na
+         faixa horizontal como você sugeriu".
+         🔑 Bloqueio não é ETAPA, é ESTADO — a máquina não deixou de ser de
+            Execução, ela parou dentro dela. Como 6ª coluna viraria par das
+            etapas, sumiria a informação de onde voltar, e espremeria as outras
+            cinco (o nome do cliente começa a truncar).
+
+     Q3  ⚠ A HONESTIDADE DO NÚMERO — e a degradação. A idade usada na ordem é
+         `dias_na_fila`, que conta da ABERTURA DA OS. A chegada física da
+         máquina existe na planilha (`MAQUINAS.Custodia_Desde`, gravada no
+         evento "entrada na oficina") mas o `getOS` ainda não a entrega. Até o
+         patch GAS v119 (entregue junto), `_g8Idade()` usa o que existe e a nota
+         no topo de cada aba DIZ QUAL. E a faixa de bloqueadas, que depende de
+         `bloqueada` no envelope do kanban, simplesmente NÃO APARECE enquanto o
+         GAS não mandar — faixa vazia é melhor que faixa que chuta.
+     ─────────────────────────────────────────────────────────────────────────
+     PCM V137 — 25/08/2026 — O CHAMADO DO CLIENTE PASSA A CHEGAR EM ALGUÉM.
+     Feito EM CIMA do V136 (o que está no ar). ADITIVO.
+
+     🔴 O BURACO: o portal grava em `portal_chamado` desde que subiu, e um grep
+        por essa tabela no V136 devolvia ZERO. Cliente pedia, ninguém via.
+
+     O que entra:
+       · view NOVA `chamadosPortal` + item de nav em PAINEL DE GESTÃO com
+         CONTADOR (o mesmo padrão da Calibração, V135 C1);
+       · aprovar (com data prevista) · recusar (com resposta que o cliente lê) ·
+         vincular o chamado à OS depois de criada;
+       · "Abrir OS com estes dados" PRÉ-PREENCHE o modal de sempre. Não existe
+         segundo caminho de criação de OS, e o `saveOSModal` não foi tocado.
+
+     Trava: a MESMA do V132 — PIN de admin no servidor, 15 min só em memória,
+     reusando `_paPost`/`_paPinHash`. O contador do menu fica FORA da trava
+     (pede só um número): badge que exige PIN é badge que ninguém vê.
+
+     🔴 Depende do GAS v118 (actions `portalChamados*`) e do SQL da rodada 2.
+        Publicar o GAS PRIMEIRO. Com GAS antigo a tela mostra erro tratado e o
+        contador simplesmente não acende.
+
+     Linhas pré-existentes alteradas: TRÊS, todas declaradas — o `<title>`, o
+     carimbo da barra lateral e a lista `allViews`. Mais os três pontos de
+     encaixe (nav, div da view, dispatch do showView) e o boot do contador.
+
+     Bancada: _testes/NEWFILE_T_PCM_V137_chamados.mjs (com --negativo).
+-->
 <!-- PCM V136 — 24/08/2026 — A AGENDA GANHA UMA PORTA DO TAMANHO DO VENDEDOR, E O
      FORMULÁRIO DE DEMANDA MOSTRA A SATURAÇÃO ANTES DE AGENDAR. 100% ADITIVO
      sobre a V135: nenhum id, data-view, onclick, função ou rota renomeada.
@@ -2182,7 +2252,7 @@ v50 — Resiliência de rede: retry/backoff em gsGet e syncToGS
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>ProperCare Manager · Gestão PGP v3.60 (PCM V136)</title>
+<title>ProperCare Manager · Gestão PGP v3.62 (PCM V138)</title>
 <link rel="icon" type="image/jpeg" href="data:image/jpeg;base64,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">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -3149,6 +3219,98 @@ th.xf-filtered .xf-fun{opacity:1;stroke:var(--accent)}
 /* ══ V133 · L2 — cabeçalho da OS na árvore de Documentos ══════════════════ */
 .docs-os-tipo{font-size:10px;font-weight:800;letter-spacing:.02em;padding:1px 7px;border-radius:999px;background:#eef2ff;color:#4338ca;white-space:nowrap;flex-shrink:0}
 .docs-os-maq{font-size:11.5px;font-weight:600;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:340px}
+/* ══ V138 · QUATRO LEITURAS DA MESMA FILA ═════════════════════════════════
+   Todas leem o mesmo `_osList`. Só CSS novo, com prefixo g8- para não
+   encostar em nada que já existe. */
+/* V138 — a tira do andon da própria ferramenta. Discreta de propósito:
+   âmbar, não vermelha. Não é defeito, é lembrete. */
+.g8-lembrete{display:flex;align-items:center;gap:12px;flex-wrap:wrap;
+  background:rgba(245,158,11,.10);border:1px solid rgba(245,158,11,.35);
+  border-radius:8px;padding:9px 13px;margin:12px 0 0;font-size:13px;color:var(--text)}
+.g8-lembrete-ico{font-size:15px;line-height:1}
+.g8-lembrete b{font-weight:700}
+.g8-lembrete-btn{margin-left:auto;background:#f59e0b;color:#1a1300;border:0;
+  border-radius:6px;padding:6px 13px;font-size:12.5px;font-weight:700;cursor:pointer}
+.g8-lembrete-x{background:transparent;color:var(--text-muted);border:1px solid var(--border);
+  border-radius:6px;padding:6px 11px;font-size:12.5px;cursor:pointer}
+@media(max-width:640px){ .g8-lembrete-btn{margin-left:0} }
+.g8-wrap{padding:14px 0}
+.g8-nota{font-size:12px;color:var(--text-muted);line-height:1.6;background:var(--bg);
+  border:1px dashed var(--border2);border-radius:10px;padding:11px 13px;margin-bottom:14px}
+.g8-nota b{color:var(--text)}
+/* fila única */
+.g8-r{display:flex;align-items:center;gap:14px;background:var(--surface);border:1px solid var(--border);
+  border-left:5px solid var(--text3);border-radius:10px;padding:9px 13px;margin-bottom:7px}
+.g8-r.red{border-left-color:#ef4444} .g8-r.amb{border-left-color:#f59e0b} .g8-r.grn{border-left-color:#22c55e}
+.g8-r.trav{opacity:.62;border-left-color:var(--text3)}
+.g8-pos{width:42px;flex-shrink:0;font-size:22px;font-weight:800;color:var(--text-muted);text-align:right;font-variant-numeric:tabular-nums}
+.g8-nome{flex:0 0 300px;min-width:0}
+.g8-nome .c{font-size:15px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.g8-nome .m{font-size:12.5px;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.g8-fase{flex:0 0 170px;font-size:13px;color:var(--text-muted);font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.g8-idade{flex:1;display:flex;align-items:center;gap:10px;min-width:0}
+.g8-bar{flex:1;height:9px;background:var(--bg);border:1px solid var(--border);border-radius:999px;overflow:hidden;max-width:220px}
+.g8-bar i{display:block;height:100%}
+.g8-d{width:66px;flex-shrink:0;text-align:right;font-size:15px;font-weight:800;font-variant-numeric:tabular-nums}
+.g8-sit{flex:0 0 200px;display:flex;justify-content:flex-end;gap:6px}
+.g8-cab{display:flex;align-items:center;gap:14px;padding:0 13px 6px;font-size:10.5px;color:var(--text3);
+  font-weight:800;letter-spacing:.1em;text-transform:uppercase}
+.g8-chip{border-radius:999px;padding:1px 9px;font-size:11px;font-weight:800;white-space:nowrap}
+.g8-chip.urg{background:#fee2e2;color:#991b1b} .g8-chip.bq{background:#fef3c7;color:#92400e}
+.g8-chip.who{background:#dbeafe;color:#1e40af} .g8-chip.free{background:#f1f5f9;color:#475569}
+/* painel de aeroporto */
+.g8-tab{width:100%;border-collapse:collapse}
+.g8-tab th{font-size:10.5px;letter-spacing:.12em;color:var(--text3);font-weight:800;text-align:left;
+  padding:9px 12px;border-bottom:2px solid var(--border);text-transform:uppercase}
+.g8-tab td{padding:9px 12px;border-bottom:1px solid var(--border);font-size:14px;font-weight:600;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.g8-tab tr.g td{background:var(--bg);font-size:10.5px;letter-spacing:.12em;color:var(--text-muted);
+  font-weight:800;padding:5px 12px;text-transform:uppercase}
+.g8-maq{font-family:var(--font-mono);font-weight:700;color:var(--accent)}
+.g8-num{text-align:right;font-variant-numeric:tabular-nums;font-weight:800}
+/* raias */
+.g8-lane{display:flex;align-items:stretch;background:var(--surface);border:1px solid var(--border);
+  border-radius:12px;margin-bottom:9px;overflow:hidden}
+.g8-lane .w{width:190px;flex-shrink:0;padding:11px 14px;border-right:1px solid var(--border);
+  display:flex;flex-direction:column;justify-content:center;position:relative}
+.g8-lane .w::before{content:'';position:absolute;left:0;top:0;bottom:0;width:5px;background:#22c55e}
+.g8-lane.livre .w::before{background:var(--text3)}
+.g8-lane .w .n{font-size:16px;font-weight:800}
+.g8-lane .w .s{font-size:11.5px;color:var(--text-muted);font-weight:700;margin-top:2px}
+.g8-lane.livre .w .s{color:#b45309;font-weight:800}
+.g8-lane .b{flex:1;display:flex;gap:8px;padding:9px 12px;align-items:center;flex-wrap:wrap;min-width:0}
+.g8-mini{background:var(--bg);border:1px solid var(--border);border-left:4px solid var(--text3);
+  border-radius:9px;padding:7px 10px;min-width:0;max-width:280px}
+.g8-mini.red{border-left-color:#ef4444} .g8-mini.amb{border-left-color:#f59e0b} .g8-mini.grn{border-left-color:#22c55e}
+.g8-mini .c{font-size:13.5px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.g8-mini .s{font-size:11.5px;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.g8-vazio{font-size:12.5px;color:var(--text3);font-style:italic}
+/* matriz */
+.g8-mx{display:grid;gap:7px}
+.g8-mx .h{background:var(--bg);border:1px solid var(--border);border-radius:9px;padding:7px 9px;
+  font-size:11.5px;font-weight:800;text-align:center;letter-spacing:.02em}
+.g8-mx .rh{background:var(--surface);border:1px solid var(--border);border-radius:9px;padding:9px 11px;
+  display:flex;flex-direction:column;justify-content:center;position:relative;overflow:hidden}
+.g8-mx .rh::before{content:'';position:absolute;left:0;top:0;bottom:0;width:5px;background:#22c55e}
+.g8-mx .rh.fila::before{background:var(--accent)} .g8-mx .rh.livre::before{background:var(--text3)}
+.g8-mx .rh .n{font-size:14.5px;font-weight:800}
+.g8-mx .rh .s{font-size:11px;color:var(--text-muted);font-weight:700}
+.g8-mx .cell{background:var(--bg);border:1px solid var(--border);border-radius:9px;padding:5px;
+  display:flex;flex-direction:column;gap:5px;min-height:52px}
+.g8-mx .cell.v{border-style:dashed;opacity:.5}
+/* faixa horizontal de bloqueadas no quadro da oficina */
+.g8-bq{margin-top:14px;background:#fffbeb;border:1px solid #fcd34d;border-radius:12px;display:flex}
+.g8-bq .cab{width:190px;flex-shrink:0;padding:12px 15px;border-right:1px solid #fcd34d;
+  display:flex;flex-direction:column;justify-content:center}
+.g8-bq .cab .t{font-size:14px;font-weight:800;color:#92400e}
+.g8-bq .cab .s{font-size:11.5px;color:#a16207;font-weight:600;margin-top:3px;line-height:1.35}
+.g8-bq .lst{flex:1;display:flex;gap:9px;padding:10px 13px;flex-wrap:wrap;min-width:0}
+.g8-bqc{background:#fff;border:1px solid #fcd34d;border-radius:10px;padding:8px 11px;min-width:0;max-width:300px}
+.g8-bqc .l1{display:flex;align-items:baseline;gap:8px}
+.g8-bqc .l1 .m{font-size:14px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.g8-bqc .l1 .d{margin-left:auto;font-size:12.5px;font-weight:800;color:#b45309;flex-shrink:0}
+.g8-bqc .l2{font-size:12px;color:var(--text-muted);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.g8-bqc .l3{font-size:12px;color:#92400e;font-weight:700;margin-top:5px}
 </style>
 </head>
 <body>
@@ -3157,7 +3319,7 @@ th.xf-filtered .xf-fun{opacity:1;stroke:var(--accent)}
 <aside class="nav-sidebar" aria-label="Navegação principal">
   <div class="nav-brand">
     <span class="nav-brand-mark">PCM</span>
-    <span class="nav-brand-sub">v3.60 · V136</span>
+    <span class="nav-brand-sub">v3.62 · V138</span>
   </div>
 
   <nav class="nav-groups">
@@ -3218,6 +3380,16 @@ th.xf-filtered .xf-fun{opacity:1;stroke:var(--accent)}
           <circle cx="8" cy="8" r="6"/><path d="M8 4.5V8l2.5 1.5"/>
         </svg>
         <span>Calibração</span><span class="nav-count" id="navCalibCount"></span>
+      </button>
+      <!-- V137 — fila de chamados abertos pelo cliente no portal. Fica em
+           PAINEL DE GESTÃO, não em CONFIGURAÇÕES: é trabalho do dia, como
+           "Tarefas do Adm". O contador segue a regra da Calibração — só
+           aparece quando há pendência, porque menu que mostra zero vira ruído. -->
+      <button class="nav-item" data-view="chamadosPortal" onclick="showView('chamadosPortal')" id="navChamadosPortal">
+        <svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M2.5 3h11v8h-6l-3.5 3v-3h-1.5z"/><path d="M5.5 6h5M5.5 8.5h3"/>
+        </svg>
+        <span>Chamados do portal</span><span class="nav-count" id="navChamadosCount"></span>
       </button>
       <button class="nav-item" data-view="docs" onclick="showView('docs')" id="navDocs">
         <svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
@@ -3438,6 +3610,8 @@ th.xf-filtered .xf-fun{opacity:1;stroke:var(--accent)}
     <div id="viewPortalAcessos" style="display:none"></div>
     <!-- V135 (C1) — FILA DE CALIBRAÇÃO DO HORÍMETRO (aceite em lote) -->
     <div id="viewCalibracao" style="display:none"></div>
+    <!-- V137 — CHAMADOS DO PORTAL -->
+    <div id="viewChamadosPortal" style="display:none"></div>
   </main>
 
 <!-- V135 (A4) · detalhe da demanda no DESKTOP. O celular tem o dele
@@ -7527,7 +7701,7 @@ function _docsToggleOV96(tr){
 // ═══════════════════════════════════════════════════════════
 function showView(v){
   currentView=v;
-  const allViews=['dashboard','preventivas','catalog','machines','clients','estoque','docs','config','tecnicos','perfis','os','templates','tiposOS','saturacao','tarefasAdm','termometro','unidades','portalAcessos','calibracao'];
+  const allViews=['dashboard','preventivas','catalog','machines','clients','estoque','docs','config','tecnicos','perfis','os','templates','tiposOS','saturacao','tarefasAdm','termometro','unidades','portalAcessos','calibracao','chamadosPortal'];
   // A view 'tecnicos' usa IDs viewUsuarios/navUsuarios (renomeados na migração
   // técnico→usuário), que divergem da capitalização automática abaixo — sem este
   // mapa, getElementById procurava viewTecnicos/navTecnicos (inexistentes) e a
@@ -7594,6 +7768,8 @@ function showView(v){
     _paCarregar();
   } else if(v==='calibracao'){
     renderCalibracao();
+  } else if(v==='chamadosPortal'){
+    renderChamadosPortal();
   }
 }
 
@@ -7624,6 +7800,7 @@ function _usuarioEstaDigitandoEm_(el) {
     saturacao: 'Saturação',
     unidades:  'Unidades',
     portalAcessos: 'Acessos do Portal',
+    chamadosPortal: 'Chamados do portal',
   };
   window.showView = function(view) {
     // v79 — trava de não-salvo: sair do editor de template (sidebar) com edições
@@ -14992,24 +15169,317 @@ function _renderOSRibbonShell(){
         <!-- V105 (P2/K1) — 4ª aba. gosSetTab já despacha por string; nada renomeado. -->
         <div class="gos-ribbon-tab ${_osRibbonTab==='oficina'?'active':''}" onclick="gosSetTab('oficina')">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21h18M5 21V9l7-5 7 5v12M9 21v-6h6v6"/></svg>Oficina</div>
+        <!-- ══ V138 — QUATRO LEITURAS DA MESMA FILA ═══════════════════════════
+             Pedido do Fernando (24/08): "cada tela tem finalidade gerencial
+             diferente; o gerente escolhe a mais conveniente para o momento."
+             É AQUI que a escolha faz sentido — o gerente está sentado. A parede
+             da oficina fica com UMA vista fixa, de propósito.
+             Todas leem o MESMO _osList que a Lista já carrega: nenhuma
+             requisição nova, nenhuma mudança de GAS.
+             (Sem crase aqui: este comentário vive DENTRO de um template
+             literal — uma crase fecharia a string e quebraria o bloco.) -->
+        <div class="gos-ribbon-tab ${_osRibbonTab==='fila'?'active':''}" onclick="gosSetTab('fila')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h10"/></svg>Fila</div>
+        <div class="gos-ribbon-tab ${_osRibbonTab==='painel'?'active':''}" onclick="gosSetTab('painel')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M8 4v16"/></svg>Painel</div>
+        <div class="gos-ribbon-tab ${_osRibbonTab==='raias'?'active':''}" onclick="gosSetTab('raias')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="5" rx="1"/><rect x="3" y="12" width="18" height="5" rx="1"/><path d="M3 20h18"/></svg>Raias</div>
+        <div class="gos-ribbon-tab ${_osRibbonTab==='matriz'?'active':''}" onclick="gosSetTab('matriz')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M3 15h18M9 3v18M15 3v18"/></svg>Matriz</div>
         <div class="gos-ribbon-actions">
           <button class="btn btn-primary" onclick="openModalOS()">+ Abrir OS</button>
         </div>
       </div>
+      <div id="g8Lembrete"></div>
       <div id="osRibbonContent"></div>
     </div>`;
+  _g8AtualizarLembrete();
 }
+
+// ═══════════════════════════════════════════════════════════════════════════
+// V138 · QUATRO LEITURAS DA MESMA FILA                       25/08/2026
+//
+// Pedido do Fernando (24/08): "cada tela tem finalidade gerencial diferente;
+// o gerente escolhe a mais conveniente para o momento."
+//
+// 🔑 POR QUE AQUI E NÃO NA PAREDE. O mural da oficina fica com UMA vista fixa
+//    de propósito — é a estabilidade que ensina o olho onde olhar, e sem
+//    interação ninguém "escolhe" numa TV. Escolher faz sentido para quem está
+//    SENTADO: o gerente, no PCM. Estas quatro abas são esse lugar.
+//
+// Todas leem o MESMO `_osList` que a aba Lista já carrega (getOS com_fila):
+// zero requisição nova, zero mudança de GAS, zero função renomeada.
+//
+// ⚠ SOBRE A IDADE. `dias_na_fila` conta da ABERTURA DA OS. A chegada física da
+//   máquina existe na planilha (`MAQUINAS.Custodia_Desde`) mas o getOS ainda
+//   não a entrega (patch v119 entregue junto). `_g8Idade` usa o que existe e
+//   o cabeçalho DIZ QUAL — nunca escreve "na oficina" com o número da abertura.
+// ═══════════════════════════════════════════════════════════════════════════
+function _g8Idade(o){
+  if (!o) return { n:0, txt:'—', real:false };
+  let d = (typeof o.dias_na_oficina === 'number') ? o.dias_na_oficina : null;
+  if (d == null && o.custodia_desde){
+    const t = new Date(o.custodia_desde).getTime();
+    if (!isNaN(t)) d = Math.floor((Date.now()-t)/86400000);
+  }
+  if (d != null) return { n:d, txt: d<=0 ? 'hoje' : d+'d', real:true };
+  const f = (typeof o.dias_na_fila === 'number') ? o.dias_na_fila : 0;
+  return { n:f, txt: f<=0 ? 'hoje' : f+'d', real:false };
+}
+function _g8Bloqueada(o){ return !!(o && o.bloqueada === true); }
+function _g8MotivoBq(o){ return (o && o.motivo_bloqueio) ? String(o.motivo_bloqueio) : 'travada'; }
+function _g8Ativas(){
+  return (_osList||[]).filter(o=>{
+    const st = String(o.status||'aberta').toLowerCase();
+    return st==='aberta' || st==='em_andamento';
+  });
+}
+function _g8Rank(o){
+  if (typeof o.prioridade_rank === 'number') return o.prioridade_rank;
+  const s = String(o.prioridade||'').trim().toLowerCase();
+  return s==='urgente' ? 3 : (s==='alta' ? 2 : 1);
+}
+// A ORDEM DA FILA — a mesma do PCF e a mesma do mural. Uma regra só.
+function _g8Fila(){
+  return _g8Ativas().filter(o=>!_g8Bloqueada(o)).slice().sort((a,b)=>{
+    const ra=_g8Rank(a), rb=_g8Rank(b);
+    if (rb!==ra) return rb-ra;
+    return _g8Idade(b).n - _g8Idade(a).n;
+  });
+}
+function _g8Cor(o){
+  const i=_g8Idade(o).n;
+  if (o.atrasada===true || i>=30) return 'red';
+  if (i>=14) return 'amb';
+  return 'grn';
+}
+function _g8Maq(o){
+  const m = Array.isArray(o.maquinas_vinculadas) ? o.maquinas_vinculadas.join(' · ')
+          : String(o.maquinas_vinculadas||'');
+  return m || _gosTipoNome(o);
+}
+function _g8Quem(o){
+  const t = Array.isArray(o.tecnicos) ? o.tecnicos : [];
+  return t.filter(Boolean);
+}
+function _g8NotaIdade(){
+  const alguma = _g8Ativas().some(o=>_g8Idade(o).real);
+  return alguma
+    ? 'A ordem conta da <b>chegada da máquina na oficina</b>. Urgente fura a fila; travada não concorre.'
+    : 'A ordem conta da <b>abertura da OS</b> — a data de chegada da máquina existe na planilha mas ainda não chega até esta tela (patch GAS v119). Urgente fura a fila; travada não concorre.';
+}
+function _g8Vazio(msg){
+  return `<div class="empty" style="padding:38px 16px"><div class="empty-icon">🗂</div>
+    <div class="empty-title">${escHtml(msg)}</div>
+    <div class="empty-sub">Abra a aba Lista para carregar as OS.</div></div>`;
+}
+
+// ── 1 · FILA — a ordem, sem ambiguidade ────────────────────────────────────
+function gosRenderFila(){
+  const cont=document.getElementById('osRibbonContent'); if(!cont) return;
+  const fila=_g8Fila(), trav=_g8Ativas().filter(_g8Bloqueada);
+  if(!_osList.length){ cont.innerHTML=_g8Vazio('Nenhuma OS carregada'); return; }
+  const max=Math.max(1,...fila.map(o=>_g8Idade(o).n));
+  const linha=(o,pos)=>{
+    const id=_g8Idade(o), cor=_g8Cor(o), quem=_g8Quem(o);
+    const pct=Math.max(3,Math.round((id.n/max)*100));
+    const cbar = cor==='red' ? '#ef4444' : (cor==='amb' ? '#f59e0b' : '#22c55e');
+    return `<div class="g8-r ${cor}" onclick="openOSDetail('${_gosOid(o)}')" style="cursor:pointer">
+      <div class="g8-pos">${pos}</div>
+      <div class="g8-nome"><div class="c">${escHtml(String(o.cliente||'—'))}</div>
+        <div class="m">${escHtml(_g8Maq(o))}</div></div>
+      <div class="g8-fase">${escHtml(String(o.estagio&&o.estagio!=='—'?o.estagio:_gosTipoNome(o)))}</div>
+      <div class="g8-idade"><div class="g8-bar"><i style="width:${pct}%;background:${cbar}"></i></div>
+        <span class="g8-d" style="color:${cbar}">${escHtml(id.txt)}</span></div>
+      <div class="g8-sit">${_g8Rank(o)>=3?'<span class="g8-chip urg">URGENTE</span>':''}
+        ${quem.length?quem.map(t=>`<span class="g8-chip who">${escHtml(t)}</span>`).join(''):'<span class="g8-chip free">livre</span>'}</div>
+    </div>`;
+  };
+  cont.innerHTML=`<div class="g8-wrap">
+    <div class="g8-nota">${_g8NotaIdade()}</div>
+    <div class="g8-cab"><span class="g8-pos">#</span><span class="g8-nome">Cliente e máquina</span>
+      <span class="g8-fase">Etapa</span><span class="g8-idade">Tempo</span>
+      <span class="g8-sit" style="justify-content:flex-end">Situação</span></div>
+    ${fila.map((o,i)=>linha(o,i+1)).join('') || _g8Vazio('Nenhuma OS na fila')}
+    ${trav.length?`<div class="g8-cab" style="margin-top:16px">Travadas — fora da fila</div>
+      ${trav.map(o=>`<div class="g8-r trav" onclick="openOSDetail('${_gosOid(o)}')" style="cursor:pointer">
+        <div class="g8-pos">—</div>
+        <div class="g8-nome"><div class="c">${escHtml(String(o.cliente||'—'))}</div><div class="m">${escHtml(_g8Maq(o))}</div></div>
+        <div class="g8-fase">${escHtml(String(o.estagio||'—'))}</div>
+        <div class="g8-idade"><span class="g8-d">${escHtml(_g8Idade(o).txt)}</span></div>
+        <div class="g8-sit"><span class="g8-chip bq">${escHtml(_g8MotivoBq(o))}</span></div></div>`).join('')}`:''}
+  </div>`;
+}
+
+// ── 2 · PAINEL — varredura por coluna, cresce sem redesenhar ───────────────
+function gosRenderPainel(){
+  const cont=document.getElementById('osRibbonContent'); if(!cont) return;
+  if(!_osList.length){ cont.innerHTML=_g8Vazio('Nenhuma OS carregada'); return; }
+  const fila=_g8Fila(), trav=_g8Ativas().filter(_g8Bloqueada);
+  const emAnd=fila.filter(o=>_g8Quem(o).length);
+  const livres=fila.filter(o=>!_g8Quem(o).length);
+  const linha=o=>{
+    const id=_g8Idade(o), quem=_g8Quem(o), cor=_g8Cor(o);
+    const c = cor==='red' ? '#ef4444' : (cor==='amb' ? '#b45309' : '#16a34a');
+    return `<tr onclick="openOSDetail('${_gosOid(o)}')" style="cursor:pointer">
+      <td class="g8-maq">${escHtml(_g8Maq(o))}</td>
+      <td>${escHtml(String(o.cliente||'—'))}</td>
+      <td>${escHtml(String(o.estagio&&o.estagio!=='—'?o.estagio:_gosTipoNome(o)))}</td>
+      <td class="g8-num" style="color:${c}">${escHtml(_g8Idade(o).txt)}</td>
+      <td>${quem.length?escHtml(quem.join(', ')):'<span style="color:var(--text3)">—</span>'}</td>
+      <td>${_g8Bloqueada(o)?`<span class="g8-chip bq">${escHtml(_g8MotivoBq(o))}</span>`
+        :(_g8Rank(o)>=3?'<span class="g8-chip urg">URGENTE</span>':(quem.length?'<span class="g8-chip who">em andamento</span>':'<span class="g8-chip free">livre</span>'))}</td>
+    </tr>`;
+  };
+  const grupo=(t,arr)=> arr.length?`<tr class="g"><td colspan="6">${escHtml(t)} · ${arr.length}</td></tr>`+arr.map(linha).join(''):'';
+  cont.innerHTML=`<div class="g8-wrap">
+    <div class="g8-nota">${_g8NotaIdade()} Esta leitura é para <b>varrer por coluna</b> — desça só a coluna Tempo, ou só a Situação.</div>
+    <table class="g8-tab"><thead><tr>
+      <th style="width:26%">Máquina</th><th style="width:22%">Cliente</th><th style="width:18%">Etapa</th>
+      <th style="width:8%;text-align:right">Tempo</th><th style="width:12%">Responsável</th><th style="width:14%">Situação</th>
+    </tr></thead><tbody>
+      ${grupo('Esperando quem pegar',livres)}
+      ${grupo('Em andamento',emAnd)}
+      ${grupo('Travadas — escritório destrava',trav)}
+    </tbody></table>
+  </div>`;
+}
+
+// ── 3 · RAIAS — por técnico, com a fila sem dono no topo ───────────────────
+function gosRenderRaias(){
+  const cont=document.getElementById('osRibbonContent'); if(!cont) return;
+  if(!_osList.length){ cont.innerHTML=_g8Vazio('Nenhuma OS carregada'); return; }
+  const ativas=_g8Ativas(), fila=_g8Fila(), trav=ativas.filter(_g8Bloqueada);
+  const porTec=new Map();
+  ativas.forEach(o=>_g8Quem(o).forEach(t=>{ if(!porTec.has(t)) porTec.set(t,[]); porTec.get(t).push(o); }));
+  const semDono=fila.filter(o=>!_g8Quem(o).length);
+  const mini=o=>`<div class="g8-mini ${_g8Cor(o)}" onclick="openOSDetail('${_gosOid(o)}')" style="cursor:pointer">
+    <div class="c">${escHtml(String(o.cliente||'—'))}</div>
+    <div class="s">${escHtml(_g8Maq(o))} · ${escHtml(_g8Idade(o).txt)}${_g8Rank(o)>=3?' · URGENTE':''}</div></div>`;
+  const tecs=[...porTec.keys()].sort((a,b)=>a.localeCompare(b,'pt-BR'));
+  cont.innerHTML=`<div class="g8-wrap">
+    <div class="g8-nota">${_g8NotaIdade()} Esta é a leitura da <b>reunião de distribuição</b>: quem está livre e o que está esperando dono.</div>
+    <div class="g8-lane"><div class="w" style="background:var(--bg)"><div class="n">Fila</div>
+      <div class="s">${semDono.length} sem dono</div></div>
+      <div class="b">${semDono.length?semDono.slice(0,8).map(mini).join(''):'<span class="g8-vazio">Nada esperando dono.</span>'}
+      ${semDono.length>8?`<span class="g8-vazio">+${semDono.length-8}</span>`:''}</div></div>
+    ${tecs.map(t=>`<div class="g8-lane"><div class="w"><div class="n">${escHtml(t)}</div>
+      <div class="s">${porTec.get(t).length} OS</div></div>
+      <div class="b">${porTec.get(t).map(mini).join('')}</div></div>`).join('')}
+    ${tecs.length?'':'<div class="g8-nota">Nenhuma OS com técnico em execução no momento — só o quadro da Oficina mostra lock por tarefa.</div>'}
+    ${trav.length?`<div class="g8-lane livre"><div class="w"><div class="n">Travadas</div>
+      <div class="s">fora da fila</div></div><div class="b">${trav.map(mini).join('')}</div></div>`:''}
+  </div>`;
+}
+
+// ── 4 · MATRIZ — etapa × técnico ───────────────────────────────────────────
+function gosRenderMatriz(){
+  const cont=document.getElementById('osRibbonContent'); if(!cont) return;
+  if(!_osList.length){ cont.innerHTML=_g8Vazio('Nenhuma OS carregada'); return; }
+  const ativas=_g8Ativas();
+  const etapas=[...new Set(ativas.map(o=>String(o.estagio&&o.estagio!=='—'?o.estagio:_gosTipoNome(o))))]
+    .sort((a,b)=>a.localeCompare(b,'pt-BR')).slice(0,6);
+  const porTec=new Map();
+  ativas.forEach(o=>_g8Quem(o).forEach(t=>{ if(!porTec.has(t)) porTec.set(t,[]); porTec.get(t).push(o); }));
+  const tecs=[...porTec.keys()].sort((a,b)=>a.localeCompare(b,'pt-BR'));
+  const linhas=[{k:'__fila__',nome:'Sem dono',cls:'fila',sub:'a fila'},
+    ...tecs.map(t=>({k:t,nome:t,cls:'',sub:porTec.get(t).length+' OS'}))];
+  const etapaDe=o=>String(o.estagio&&o.estagio!=='—'?o.estagio:_gosTipoNome(o));
+  const daCelula=(rk,et)=> ativas.filter(o=>{
+    if(etapaDe(o)!==et) return false;
+    const q=_g8Quem(o);
+    return rk==='__fila__' ? (q.length===0 && !_g8Bloqueada(o)) : q.indexOf(rk)>=0;
+  });
+  const mini=o=>`<div class="g8-mini ${_g8Cor(o)}" onclick="openOSDetail('${_gosOid(o)}')" style="cursor:pointer;max-width:100%">
+    <div class="c">${escHtml(String(o.cliente||'—'))}</div>
+    <div class="s">${escHtml(_g8Idade(o).txt)}${_g8Rank(o)>=3?' · URG':''}</div></div>`;
+  const cols=`170px repeat(${etapas.length||1}, minmax(0,1fr))`;
+  cont.innerHTML=`<div class="g8-wrap">
+    <div class="g8-nota">${_g8NotaIdade()} A matriz responde <b>etapa e dono ao mesmo tempo</b> — e as células vazias mostram a ociosidade. Com muitas etapas ela fica apertada; nesse caso a Fila ou o Painel leem melhor.</div>
+    <div class="g8-mx" style="grid-template-columns:${cols}">
+      <div class="h" style="background:transparent;border-color:transparent"></div>
+      ${etapas.map(e=>`<div class="h">${escHtml(e)}</div>`).join('')}
+      ${linhas.map(l=>`<div class="rh ${l.cls}"><div class="n">${escHtml(l.nome)}</div><div class="s">${escHtml(l.sub)}</div></div>
+        ${etapas.map(e=>{const cs=daCelula(l.k,e);
+          return `<div class="cell${cs.length?'':' v'}">${cs.map(mini).join('')}</div>`;}).join('')}`).join('')}
+    </div>
+  </div>`;
+}
+
 function _gosRenderActiveTab(){
   if (_osRibbonTab === 'kanban')     return gosRenderKanban();
   if (_osRibbonTab === 'calendario') return gosRenderCalendario();
   if (_osRibbonTab === 'oficina')    return gosRenderOficina();     // V105 (P2/K1)
+  if (_osRibbonTab === 'fila')       return gosRenderFila();        // V138
+  if (_osRibbonTab === 'painel')     return gosRenderPainel();      // V138
+  if (_osRibbonTab === 'raias')      return gosRenderRaias();       // V138
+  if (_osRibbonTab === 'matriz')     return gosRenderMatriz();      // V138
   _renderOSTable(_osSearch, _osFilterStatus, _osFilterPrioridade);   // Lista (existente)
 }
 function gosSetTab(tab){
   _osRibbonTab = tab;
+  _g8TabDesde = Date.now();          // V138 — o relógio da vista atual
   _renderOSRibbonShell();
   _gosRenderActiveTab();
 }
+
+// ════════════════════════════════════════════════════════════════════════════
+// V138 · O ANDON DA PRÓPRIA FERRAMENTA                        25/08/2026
+// ────────────────────────────────────────────────────────────────────────────
+// Pergunta do Fernando (24/08): "se eu mudar pra tela de raias para a reunião
+// e esquecer de voltar pra tela de oficina, o que pode acontecer pra ajudar a
+// não ficar o dia inteiro na tela errada?"
+//
+// 🔑 A RESPOSTA NÃO É TROCAR A TELA SOZINHO. Tela que muda embaixo da mão de
+//    quem está olhando é a definição de ferramenta hostil — e, pior, ensina o
+//    gerente a desconfiar do que vê. O que a ferramenta pode fazer é AVISAR e
+//    deixar a decisão com ele: uma tira discreta, com o tempo real, e um botão.
+//    Mesmo princípio do andon da fábrica: acende, não age.
+//
+// 🔑 E NÃO É UM ALERTA. Alerta falso é pior que alerta nenhum: se aparecesse
+//    aos 2 minutos, em uma semana ninguém mais leria a tira. 30 minutos é o
+//    tempo de uma reunião de fila — abaixo disso o gerente está USANDO a vista,
+//    não esquecido nela.
+//
+// A "casa" é a Oficina — a vista do dia a dia, nas palavras dele. Fica em
+// localStorage para quem preferir outra, sem virar tela de configuração.
+// ════════════════════════════════════════════════════════════════════════════
+var _g8TabDesde   = Date.now();
+var _G8_LEMBRAR_MIN = 30;
+var _G8_NOMES = { lista:'Lista', kanban:'Kanban', calendario:'Calendário',
+                  oficina:'Oficina', fila:'Fila', painel:'Painel',
+                  raias:'Raias', matriz:'Matriz' };
+function _g8Casa(){
+  try { return localStorage.getItem('pcm_vista_casa_v138') || 'oficina'; }
+  catch(e){ return 'oficina'; }
+}
+function _g8AtualizarLembrete(){
+  var el = document.getElementById('g8Lembrete');
+  if (!el) return;
+  var casa = _g8Casa();
+  if (_osRibbonTab === casa) { el.innerHTML = ''; return; }
+  var min = Math.floor((Date.now() - _g8TabDesde) / 60000);
+  if (min < _G8_LEMBRAR_MIN) { el.innerHTML = ''; return; }
+  // ⚠ O tempo exibido é MEDIDO (desde o clique nesta aba), não estimado.
+  el.innerHTML = '<div class="g8-lembrete">'
+    + '<span class="g8-lembrete-ico">\u23F1</span>'
+    + '<span>Você está na visão <b>' + (_G8_NOMES[_osRibbonTab] || _osRibbonTab)
+    + '</b> há ' + min + ' min. A vista do dia a dia é a <b>'
+    + (_G8_NOMES[casa] || casa) + '</b>.</span>'
+    + '<button class="g8-lembrete-btn" onclick="gosSetTab(\'' + casa + '\')">Voltar para '
+    + (_G8_NOMES[casa] || casa) + '</button>'
+    + '<button class="g8-lembrete-x" title="Deixar esta vista como a do dia a dia" '
+    + 'onclick="_g8FixarCasa()">Fixar esta</button>'
+    + '</div>';
+}
+function _g8FixarCasa(){
+  try { localStorage.setItem('pcm_vista_casa_v138', _osRibbonTab); } catch(e){}
+  _g8AtualizarLembrete();
+}
+// Um relógio só, de 60 em 60s, e que NÃO redesenha a vista — só a tira.
+// Redesenhar a tela do gerente por causa de um lembrete seria trocar um
+// incômodo pequeno por um grande.
+try { setInterval(_g8AtualizarLembrete, 60000); } catch(e){}
 
 // ════════════════════════════════════════════════════════════════════════════
 // V105 (P2/K1) — ABA OFICINA
@@ -15104,6 +15574,42 @@ async function gosRenderOficina(){
     toast('Quadro não atualizou: ' + e.message, 'warn');
   }
   _gosPintarOficina();
+}
+
+
+// ══ V138 · A FAIXA HORIZONTAL DE BLOQUEADAS ═════════════════════════════════
+// Decisão do Fernando (24/08): "bloqueada sai da fila até destravar" — e, sobre
+// o formato, "pode colocar na faixa horizontal como você sugeriu".
+//
+// 🔑 POR QUE FAIXA E NÃO 6ª COLUNA. Bloqueio não é uma ETAPA, é um ESTADO: a
+//    máquina não deixou de ser de Execução, ela parou DENTRO da Execução. Como
+//    coluna ela vira par das etapas e some a informação de onde voltar. Além
+//    disso, a 6ª coluna espremeria as outras cinco (o nome do cliente começa a
+//    truncar) — e a faixa cabe embaixo sem tirar largura de ninguém.
+//
+// ⚠ DEGRADAÇÃO HONESTA: o `getKanbanOficina` de hoje NÃO devolve estado de
+//   bloqueio (o `_filaItem_` expõe estágio, tarefa_atual e tarefas_abertas, mas
+//   não `bloqueada`). Enquanto o GAS não mandar — patch v119 entregue junto —
+//   esta faixa simplesmente NÃO APARECE. Ela nunca inventa um bloqueio a partir
+//   de heurística: faixa vazia é melhor que faixa que chuta.
+function _gosFaixaBloqueadas(cards){
+  const bq = (cards||[]).filter(c => c && c.bloqueada === true);
+  if (!bq.length) return '';
+  const item = c => {
+    const dias = (typeof c.dias_bloqueada === 'number') ? c.dias_bloqueada : null;
+    const maq = Array.isArray(c.maquinas_vinculadas) ? c.maquinas_vinculadas.join(' · ')
+              : String(c.maquinas_vinculadas || '');
+    return `<div class="g8-bqc" onclick="openOSDetail('${_gosOid(c)}')" style="cursor:pointer">
+      <div class="l1"><span class="m">${escHtml(maq || String(c.cliente||'—'))}</span>
+        ${dias!=null?`<span class="d">${dias}d parada</span>`:''}</div>
+      <div class="l2">${escHtml(String(c.cliente||'—'))}${c.estagio&&c.estagio!=='—'?' · estava em '+escHtml(String(c.estagio)):''}</div>
+      <div class="l3">${escHtml(String(c.motivo_bloqueio||'travada'))}</div>
+    </div>`;
+  };
+  return `<div class="g8-bq"><div class="cab">
+      <div class="t">🚧 Bloqueadas · ${bq.length}</div>
+      <div class="s">fora da fila — quem destrava é o escritório</div>
+    </div><div class="lst">${bq.map(item).join('')}</div></div>`;
 }
 
 function _gosPintarOficina(){
@@ -15250,7 +15756,9 @@ function _gosPintarOficina(){
       <div class="gos-klist">${terminal.map(_gosOficinaCard).join('') || '<div class="gos-kempty">—</div>'}</div>
     </div>`;
 
-  cont.innerHTML = barra + `<div class="gos-kanban">${colHtml}${terminalHtml}</div>`;
+  // V138 — a faixa de bloqueadas fica ABAIXO do quadro, na horizontal.
+  cont.innerHTML = barra + `<div class="gos-kanban">${colHtml}${terminalHtml}</div>`
+                 + _gosFaixaBloqueadas(cards);
 }
 
 // ══════════════════════════════════════════════════════════════════════════════
@@ -17698,6 +18206,9 @@ window.addEventListener('DOMContentLoaded', function() {
   // V135 (C1) — contador de fatores aguardando decisão. Silencioso por contrato:
   // GAS sem a action (≤ v115) simplesmente não acende número nenhum.
   setTimeout(function(){ try { _calibAtualizarContador(); } catch(e){} }, 2500);
+  // V137 — chamados esperando decisão. Mesmo contrato silencioso: GAS sem a
+  // action (≤ v117) simplesmente não acende número nenhum.
+  setTimeout(function(){ try { _cpAtualizarContador(); } catch(e){} }, 3500);
 });
 
 // ════════════════════════════════════════════════════════════════════════════
@@ -25069,6 +25580,7 @@ body.mob-forced #mobApp{max-width:430px;margin:0 auto;box-shadow:0 0 60px rgba(0
 
 let _paLista = [];          // usuários do portal (de portalListarAcessos)
 let _paClientes = [];       // clientes concedíveis (do espelho)
+let _paGrupos = [];         // V137 — grupos econômicos (escopo mais amplo)
 let _paBusca = '';
 let _paCarregando = false;
 let _paErro = '';
@@ -25208,6 +25720,10 @@ async function _paCarregar() {
     try {
       const rc = await _paPost({ action: 'portalClientesConcediveis' });
       _paClientes = (rc && rc.clientes) || [];
+      // V137 — GAS ≤ v117 não manda `grupos`; aí a lista fica vazia e a tela
+      // simplesmente não oferece a seção. Sem erro, sem aviso: é a mesma regra
+      // silenciosa dos contadores.
+      _paGrupos = (rc && rc.grupos) || [];
     } catch (e) { _paClientes = []; }
   } else {
     _paClientes = [];
@@ -25333,6 +25849,22 @@ function _paAbrirConvite(emailExistente) {
         (vazio ? '  ⚠ sem máquina' : '') + '</option>';
     }).join('');
 
+  // ── V137 · GRUPO ECONÔMICO ────────────────────────────────────────────
+  // 🔑 O caso que exige isto é a SORRAG: Matriz e Filial são dois id_cliente
+  //    com o MESMO CNPJ. Concedendo um a um, quem administra precisa lembrar
+  //    dos dois para sempre — e da terceira filial no dia em que ela nascer.
+  //    Uma concessão de grupo resolve de uma vez, e é exatamente para isso que
+  //    a `portal_cliente_grupo` existe desde o P8.
+  // ⚠ O VALOR do option carrega o escopo (`grupo:` / `cliente:`), e é o
+  //    `_paEnviar` que o desmonta. Sem prefixo, a tela teria de adivinhar pelo
+  //    formato do id — e `GRP-...` × `CLI-...` é convenção, não contrato.
+  const optsGrupo = !(_paGrupos && _paGrupos.length) ? '' :
+    '<optgroup label="Grupos econômicos — o acesso alcança todas as empresas do grupo">' +
+    _paGrupos.slice().sort((a, b) => String(a.nome || '').localeCompare(String(b.nome || '')))
+      .map(g => '<option value="grupo:' + _paEsc(g.id) + '">' + _paEsc(g.nome) +
+        ' — ' + g.empresas + ' empresa(s) · ' + g.maquinas + ' máq · ' + g.os + ' OS</option>')
+      .join('') + '</optgroup>';
+
   alvo.innerHTML =
     '<div style="border:1px solid var(--border);border-radius:8px;padding:16px;margin-bottom:14px;background:var(--bg-alt)">' +
       '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">' +
@@ -25345,7 +25877,9 @@ function _paAbrirConvite(emailExistente) {
           (emailExistente ? 'value="' + _paEsc(emailExistente) + '" readonly ' : '') +
           'autocomplete="off" name="pa_email_nofill" data-lpignore="true" data-1p-ignore></div>' +
         '<div><label style="font-size:12px;color:var(--text-muted)">Empresa que ele vai enxergar</label>' +
-          '<select id="paCliente" class="input"><option value="">— escolha —</option>' + opts + '</select></div>' +
+          '<select id="paCliente" class="input"><option value="">— escolha —</option>' + optsGrupo +
+          (optsGrupo ? '<optgroup label="Empresas">' + opts + '</optgroup>' : opts) +
+          '</select></div>' +
       '</div>' +
       '<div style="margin-top:12px;display:flex;gap:8px;align-items:center">' +
         '<button class="btn btn-primary" onclick="_paEnviar(' + (emailExistente ? 'true' : 'false') + ')">' +
@@ -25358,6 +25892,23 @@ function _paAbrirConvite(emailExistente) {
     '</div>';
   const e = document.getElementById('paEmail');
   if (e && !emailExistente) e.focus();
+
+  // ── V137 · O E-MAIL QUE JÁ ESTÁ NO CADASTRO ───────────────────────────
+  // Escolher a empresa preenche o campo com o e-mail da aba CLIENTES, quando
+  // ele existe E o campo ainda está vazio.
+  // ⚠ NUNCA sobrescreve o que a pessoa digitou, e nunca vale para grupo (que
+  //   não tem e-mail próprio). É sugestão: quem loga é uma PESSOA, e o e-mail
+  //   do cadastro é o da empresa — coincide muitas vezes, não sempre.
+  const selC = document.getElementById('paCliente');
+  if (selC && e && !emailExistente) {
+    selC.addEventListener('change', () => {
+      if (String(e.value || '').trim()) return;
+      const v = String(selC.value || '');
+      if (v.indexOf('grupo:') === 0) return;
+      const cli = _paClientes.find(x => String(x.id) === v);
+      if (cli && cli.email) { e.value = cli.email; e.focus(); }
+    });
+  }
 }
 
 function _paFecharConvite() {
@@ -25368,14 +25919,25 @@ function _paFecharConvite() {
 async function _paEnviar(soConceder) {
   const email = String((document.getElementById('paEmail') || {}).value || '').trim().toLowerCase();
   const sel = document.getElementById('paCliente');
-  const clienteId = String((sel || {}).value || '').trim();
+  const bruto = String((sel || {}).value || '').trim();
 
   if (!email) { toast('Informe o e-mail.', 'error'); return; }
-  if (!clienteId) { toast('Escolha a empresa.', 'error'); return; }
+  if (!bruto) { toast('Escolha a empresa ou o grupo.', 'error'); return; }
+
+  // V137 — o escopo vem do próprio valor escolhido. Sem prefixo = cliente,
+  // que é como o V132 gravava: opção antiga continua funcionando igual.
+  const ehGrupo = bruto.indexOf('grupo:') === 0;
+  const escopoSel = ehGrupo ? 'grupo' : 'cliente';
+  const clienteId = ehGrupo ? bruto.slice(6) : bruto;
 
   // ⚠ Avisa ANTES de conceder quando o cliente não tem máquina ativa: o portal
   //   abriria vazio e o cliente acharia que está quebrado.
-  const c = _paClientes.find(x => String(x.id) === clienteId);
+  const g = ehGrupo ? _paGrupos.find(x => String(x.id) === clienteId) : null;
+  if (g && g.maquinas === 0) {
+    if (!confirm('O grupo "' + g.nome + '" não tem nenhuma máquina ativa no espelho.\n\n' +
+                 'O portal vai abrir VAZIO para essa pessoa.\n\nQuer conceder mesmo assim?')) return;
+  }
+  const c = ehGrupo ? null : _paClientes.find(x => String(x.id) === clienteId);
   if (c && c.maquinas === 0) {
     if (!confirm('A empresa "' + c.nome + '" não tem nenhuma máquina ativa no espelho.\n\n' +
                  'O portal vai abrir VAZIO para essa pessoa.\n\nQuer conceder mesmo assim?')) return;
@@ -25385,10 +25947,10 @@ async function _paEnviar(soConceder) {
     if (soConceder) {
       const u = _paLista.find(x => String(x.email || '').toLowerCase() === email);
       if (!u) { toast('Não achei esse usuário na lista. Atualize e tente de novo.', 'error'); return; }
-      await _paPost({ action: 'portalConceder', user_id: u.user_id, escopo: 'cliente', alvo_id: clienteId });
+      await _paPost({ action: 'portalConceder', user_id: u.user_id, escopo: escopoSel, alvo_id: clienteId });
       toast('Acesso concedido.');
     } else {
-      const r = await _paPost({ action: 'portalConvidar', email: email, alvo_id: clienteId, escopo: 'cliente' });
+      const r = await _paPost({ action: 'portalConvidar', email: email, alvo_id: clienteId, escopo: escopoSel });
       if (r && r.concedido === false) {
         // 🔴 O pior caso deste fluxo: o e-mail JÁ SAIU e a concessão falhou.
         //    Não pode passar em silêncio — o cliente clicaria e veria nada.
@@ -25439,6 +26001,500 @@ async function _paBloquear() {
   _paPinEsquecer();
   _paLista = []; _paClientes = []; _paErro = '';
   await renderPortalAcessos();
+}
+
+
+// ════════════════════════════════════════════════════════════════════════════
+// V137 — CHAMADOS DO PORTAL: A FILA QUE FALTAVA                       25/08/26
+//
+// 🔴 O QUE ESTAVA ERRADO: `portal_chamado` existe no banco desde o P8, a RLS
+//    está certa, o botão do portal grava — e um `grep portal_chamado` no PCM
+//    V136 devolvia ZERO. O cliente abria o chamado e ninguém do lado de cá
+//    ficava sabendo. Não era bug de tela: a tela não existia.
+//
+// ── O DESENHO, E O QUE ELE RECUSA FAZER ────────────────────────────────────
+// O chamado NÃO cria OS — nem aqui, nem no GAS, nem no banco. Era o desenho do
+// escopo de 15/08 e continua sendo o certo: o cliente PEDE, a administração
+// DECIDE. Então esta tela faz três coisas e para:
+//   · aprovar, com data prevista (que o cliente lê no portal dele);
+//   · recusar, com uma resposta escrita (idem);
+//   · vincular o chamado à OS depois que ela existe.
+//
+// 🔑 POR QUE NÃO EXISTE UM BOTÃO "CRIAR OS AUTOMATICAMENTE": a OS nasce pelo
+//    modal de sempre, pela mesma `saveOS`, com o mesmo `client_uid`, o mesmo
+//    pipeline instanciado e as mesmas validações. Um segundo caminho de criação
+//    de OS seria a segunda fonte da verdade que este projeto já pagou caro para
+//    não ter. O que esta tela faz é PRÉ-PREENCHER o modal de sempre — e depois
+//    amarrar o chamado à OS que saiu de lá.
+//    ⚠ E por isso o `saveOSModal` NÃO foi embrulhado nem tocado: ele não devolve
+//      o id da OS criada, e arrancar esse id de dentro dele seria acoplar esta
+//      tela ao coração do sistema para economizar um clique. O clique fica.
+//
+// ── A TRAVA ────────────────────────────────────────────────────────────────
+// A MESMA do V132: PIN de administrador, verificado no servidor, válido 15 min
+// só em memória. Esta tela REUSA o `_paPost`/`_paPinHash` do bloco de Acessos —
+// um PIN destranca as duas, porque é a mesma pergunta ("você é admin?") feita
+// ao mesmo servidor. Nada de PIN novo, nada de storage.
+// ⚠ Ler chamado é ler texto escrito por cliente com o nome da empresa ao lado:
+//   é dado de cliente, e o CLAUDE.md manda copiar esta trava exatamente aqui.
+//
+// ⚠ O CONTADOR do menu NÃO passa pela trava, de propósito: ele pede só um
+//   número (`portalChamadosPendentes`). Se acender o badge exigisse PIN,
+//   ninguém veria a fila crescer — e a fila que ninguém vê é a fila de hoje.
+//
+// Bancada: `_testes/NEWFILE_T_PCM_V137_chamados.mjs` (com `--negativo`).
+// ════════════════════════════════════════════════════════════════════════════
+
+let _cpLista = [];
+let _cpFiltro = 'fila';
+let _cpCarregando = false;
+let _cpErro = '';
+let _cpAberto = '';          // id do chamado com o formulário de decisão aberto
+let _cpModo = '';            // 'aprovar' | 'recusar' | 'vincular'
+let _cpUltimoAberto = null;  // {id, cliente, quando} — chamado que abriu o modal de OS
+
+function _cpEsc(s) {
+  return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+// AAAA-MM-DD → DD/MM/AAAA sem passar por Date.
+// 🔑 Antifuso, a mesma regra da V129/P4: `new Date('2026-09-01')` devolve
+//    31/08 em UTC-3. Data que já é texto continua texto.
+function _cpData(iso) {
+  const m = /^(\d{4})-(\d{2})-(\d{2})/.exec(String(iso || ''));
+  return m ? (m[3] + '/' + m[2] + '/' + m[1]) : '—';
+}
+
+function _cpQuando(iso) {
+  if (!iso) return '—';
+  try {
+    const d = new Date(iso);
+    if (isNaN(d.getTime())) return '—';
+    const min = Math.round((Date.now() - d.getTime()) / 60000);
+    if (min < 1) return 'agora';
+    if (min < 60) return 'há ' + min + ' min';
+    const h = Math.round(min / 60);
+    if (h < 24) return 'há ' + h + ' h';
+    const dias = Math.round(h / 24);
+    return dias === 1 ? 'ontem' : ('há ' + dias + ' dias');
+  } catch (e) { return '—'; }
+}
+
+const _CP_STATUS = {
+  fila:       { rotulo: 'Na fila',   cls: 'status-warn' },
+  aprovado:   { rotulo: 'Aprovado',  cls: 'status-ok' },
+  recusado:   { rotulo: 'Recusado',  cls: 'status-late' },
+  convertido: { rotulo: 'Virou OS',  cls: 'status-ok' }
+};
+
+// ── Entrada da view ────────────────────────────────────────────────────────
+async function renderChamadosPortal() {
+  const el = document.getElementById('viewChamadosPortal');
+  if (!el) return;
+  if (!_paPinValido()) { el.innerHTML = _cpHtmlPin(); _cpFocarPin(); return; }
+  el.innerHTML = _cpHtml();
+  _cpLigarEventos();
+}
+
+function _cpHtmlPin() {
+  return '' +
+    '<div style="max-width:420px;margin:40px auto;border:1px solid var(--border);' +
+    'border-radius:8px;padding:22px;background:var(--bg-alt)">' +
+      '<h2 style="margin:0 0 6px;font-size:16px">Chamados do portal</h2>' +
+      '<div style="font-size:12px;color:var(--text-muted);margin-bottom:16px">' +
+        'Os chamados trazem o texto que o cliente escreveu e o nome da empresa dele. ' +
+        'Ver e decidir exige o seu PIN de administrador — o mesmo do ProperHub. ' +
+        'Vale por 15 minutos e não fica gravado.' +
+      '</div>' +
+      (_cpErro
+        ? '<div style="padding:10px 12px;border:1px solid var(--red);border-radius:6px;' +
+          'background:rgba(220,38,38,.06);color:var(--red);font-size:12px;margin-bottom:12px">' +
+          _cpEsc(_cpErro) + '</div>'
+        : '') +
+      '<input id="cpPin" class="input pin-mask" type="text" inputmode="numeric" ' +
+        'placeholder="PIN" autocomplete="off" name="cp_pin_nofill" readonly ' +
+        'onfocus="this.removeAttribute(\'readonly\')" ' +
+        'data-lpignore="true" data-1p-ignore ' +
+        'onkeydown="if(event.key===\'Enter\'){event.preventDefault();_cpConfirmarPin();}">' +
+      '<button class="btn btn-primary" style="margin-top:12px;width:100%" ' +
+        'onclick="_cpConfirmarPin()">Confirmar</button>' +
+    '</div>';
+}
+
+function _cpFocarPin() {
+  const i = document.getElementById('cpPin');
+  if (i) { try { i.focus(); } catch (e) {} }
+}
+
+async function _cpConfirmarPin() {
+  const campo = document.getElementById('cpPin');
+  const pin = String((campo || {}).value || '').trim();
+  if (!pin) { _cpErro = 'Digite o PIN.'; await renderChamadosPortal(); return; }
+  // ⚠ O PIN em claro morre aqui. Só o hash sobe, e o hash é o MESMO estado que
+  //   a tela de Acessos usa — uma trava, duas telas.
+  _paPinHash = await pinToHash(pin);
+  _paPinAte  = Date.now() + _PA_PIN_MIN * 60 * 1000;
+  if (campo) campo.value = '';
+  _cpErro = '';
+  await _cpCarregar();
+}
+
+async function _cpCarregar() {
+  if (!_paPinValido()) { await renderChamadosPortal(); return; }
+  _cpCarregando = true; _cpErro = '';
+  const el = document.getElementById('viewChamadosPortal');
+  if (el && !_cpLista.length) {
+    el.innerHTML = '<div style="padding:24px;color:var(--text-muted);font-size:13px">Carregando chamados…</div>';
+  }
+  try {
+    const r = await _paPost({ action: 'portalChamadosListar', filtro: _cpFiltro });
+    _cpLista = (r && r.chamados) || [];
+    _cpErro = '';
+    _cpAtualizarBadge((r && r.pendentes) || 0);
+  } catch (e) {
+    if (e && e.paPrecisaPin) {
+      _cpErro = e.message; _cpLista = [];
+      _cpCarregando = false;
+      await renderChamadosPortal();
+      return;
+    }
+    _cpErro = (e && e.message) || 'Não consegui carregar os chamados.';
+  } finally {
+    _cpCarregando = false;
+  }
+  await renderChamadosPortal();
+}
+
+// ── A tela ─────────────────────────────────────────────────────────────────
+function _cpHtml() {
+  const pendentes = _cpLista.filter(c => c.status === 'fila').length;
+
+  const abas = [['fila', 'Na fila'], ['decididos', 'Já decididos'], ['todos', 'Todos']]
+    .map(([k, r]) => '<button class="btn btn-sm ' + (_cpFiltro === k ? 'btn-primary' : 'btn-secondary') +
+      '" data-cpfiltro="' + k + '">' + r + '</button>').join(' ');
+
+  let html = '' +
+    '<div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:6px">' +
+      '<h2 style="margin:0;font-size:18px">Chamados do portal</h2>' +
+      (pendentes ? '<span class="status-warn">' + pendentes + ' na fila</span>' : '') +
+      '<div style="margin-left:auto;display:flex;gap:6px">' + abas +
+        ' <button class="btn btn-sm btn-secondary" id="cpAtualizar">Atualizar</button>' +
+        ' <button class="btn btn-sm btn-secondary" id="cpBloquear" title="Esquecer o PIN sem sair da tela">🔒</button>' +
+      '</div>' +
+    '</div>' +
+    '<div style="font-size:12px;color:var(--text-muted);margin-bottom:14px">' +
+      'O cliente pede; quem decide é a Proper. Aprovar exige data prevista, recusar exige uma resposta — ' +
+      'os dois textos aparecem na tela do cliente.' +
+    '</div>';
+
+  if (_cpErro) {
+    html += '<div style="padding:10px 12px;border:1px solid var(--red);border-radius:6px;' +
+      'background:rgba(220,38,38,.06);color:var(--red);font-size:12px;margin-bottom:12px">' +
+      _cpEsc(_cpErro) + '</div>';
+  }
+
+  // Lembrete do chamado que mandou abrir o modal de OS. Sem isto, quem cria a
+  // OS e volta não lembra qual chamado amarrar — e o vínculo nunca acontece.
+  if (_cpUltimoAberto) {
+    html += '<div style="padding:10px 12px;border:1px solid var(--accent);border-radius:6px;' +
+      'background:rgba(37,99,235,.06);font-size:12px;margin-bottom:12px">' +
+      '⏳ Você abriu o modal de OS a partir do chamado de <b>' + _cpEsc(_cpUltimoAberto.cliente) + '</b>. ' +
+      'Depois que a OS estiver salva, clique em <b>Vincular à OS</b> no card dele.' +
+      ' <button class="btn btn-sm btn-secondary" id="cpEsquecerUltimo" style="margin-left:8px">Ok, esquecer</button>' +
+      '</div>';
+  }
+
+  if (!_cpLista.length) {
+    html += '<div class="empty"><div class="empty-title">' +
+      (_cpFiltro === 'fila' ? 'Nenhum chamado esperando' : 'Nenhum chamado') + '</div>' +
+      '<div class="empty-sub">' +
+      (_cpFiltro === 'fila'
+        ? 'Quando um cliente abrir um chamado no portal, ele aparece aqui — e o número acende no menu.'
+        : 'Nada por aqui com este filtro.') +
+      '</div></div>';
+    return html;
+  }
+
+  html += '<div style="display:flex;flex-direction:column;gap:10px">' +
+    _cpLista.map(_cpCard).join('') + '</div>';
+  return html;
+}
+
+function _cpCard(c) {
+  const st = _CP_STATUS[c.status] || { rotulo: c.status, cls: '' };
+  const naFila = c.status === 'fila';
+
+  let acoes = '';
+  if (naFila) {
+    acoes =
+      '<button class="btn btn-sm btn-primary" data-cpacao="aprovar" data-cpid="' + _cpEsc(c.id) + '">Aprovar</button> ' +
+      '<button class="btn btn-sm btn-secondary" data-cpacao="recusar" data-cpid="' + _cpEsc(c.id) + '">Recusar</button> ' +
+      '<button class="btn btn-sm btn-secondary" data-cpacao="abriros" data-cpid="' + _cpEsc(c.id) + '">Abrir OS com estes dados</button>';
+  } else if (c.status === 'aprovado') {
+    acoes =
+      '<button class="btn btn-sm btn-secondary" data-cpacao="abriros" data-cpid="' + _cpEsc(c.id) + '">Abrir OS com estes dados</button> ' +
+      '<button class="btn btn-sm btn-primary" data-cpacao="vincular" data-cpid="' + _cpEsc(c.id) + '">Vincular à OS</button>';
+  } else if (c.status === 'convertido' && c.os_id) {
+    acoes = '<button class="btn btn-sm btn-secondary" data-cpacao="veros" data-cpid="' + _cpEsc(c.id) +
+            '" data-cposid="' + _cpEsc(c.os_id) + '">Ver a OS</button>';
+  }
+
+  const maq = c.maquina_id
+    ? ('<span title="' + _cpEsc(c.maquina_id) + '">🛠 ' + _cpEsc(c.maquina_rotulo || c.maquina_id) +
+       (c.maquina_orfa ? ' <span style="color:var(--orange,#f97316)" title="Esta máquina não está mais no espelho — confira o cadastro">⚠ fora do cadastro</span>' : '') +
+       '</span>')
+    : '<span style="color:var(--text-muted)">sem máquina indicada</span>';
+
+  return '' +
+  '<div class="card" style="padding:14px" data-cpcard="' + _cpEsc(c.id) + '">' +
+    '<div style="display:flex;align-items:baseline;gap:10px;flex-wrap:wrap">' +
+      '<strong style="font-size:14px">' + _cpEsc(c.cliente_nome) + '</strong>' +
+      '<span class="' + st.cls + '">' + st.rotulo + '</span>' +
+      '<span style="font-size:11px;color:var(--text-muted)">' + _cpQuando(c.criado_em) +
+        (c.aberto_por_email ? ' · ' + _cpEsc(c.aberto_por_email) : '') +
+        (c.origem === 'qrcode' ? ' · pelo QR' : '') +
+      '</span>' +
+    '</div>' +
+    '<div style="font-size:12px;color:var(--text-muted);margin:6px 0">' + maq + '</div>' +
+    // O texto do cliente é o conteúdo da tela: fonte legível, sem cortar.
+    '<div style="white-space:pre-wrap;font-size:13px;line-height:1.5;padding:10px 12px;' +
+      'background:var(--bg-alt);border-radius:6px;border:1px solid var(--border)">' +
+      _cpEsc(c.descricao) + '</div>' +
+    (c.data_prevista
+      ? '<div style="font-size:12px;margin-top:8px">📅 Previsto para <b>' + _cpData(c.data_prevista) + '</b></div>' : '') +
+    (c.resposta
+      ? '<div style="font-size:12px;margin-top:6px;color:var(--text-muted)">↳ resposta ao cliente: “' +
+        _cpEsc(c.resposta) + '”</div>' : '') +
+    (c.os_id
+      ? '<div style="font-size:12px;margin-top:6px">🔗 OS <b>' + _cpEsc(c.os_id) + '</b></div>' : '') +
+    (c.decidido_por
+      ? '<div style="font-size:11px;margin-top:6px;color:var(--text-muted)">decidido por ' +
+        _cpEsc(c.decidido_por) + '</div>' : '') +
+    '<div style="margin-top:10px;display:flex;gap:6px;flex-wrap:wrap">' + acoes + '</div>' +
+    (_cpAberto === c.id ? _cpFormulario(c) : '') +
+  '</div>';
+}
+
+// Formulário de decisão, aberto DENTRO do card — nunca em modal: quem decide
+// precisa reler o texto do cliente enquanto escreve a resposta.
+function _cpFormulario(c) {
+  if (_cpModo === 'aprovar') {
+    const hoje = new Date();
+    const min = hoje.getFullYear() + '-' + String(hoje.getMonth() + 1).padStart(2, '0') +
+                '-' + String(hoje.getDate()).padStart(2, '0');
+    return '' +
+      '<div style="margin-top:12px;padding-top:12px;border-top:1px dashed var(--border)">' +
+        '<div style="font-size:12px;margin-bottom:6px"><b>Aprovar</b> — a data abaixo aparece na tela do cliente.</div>' +
+        '<div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">' +
+          '<input type="date" class="input" id="cpData" min="' + min + '" style="max-width:180px">' +
+          '<input type="text" class="input" id="cpResposta" placeholder="Resposta ao cliente (opcional)" ' +
+            'autocomplete="off" name="cp_resp_nofill" data-lpignore="true" data-1p-ignore style="flex:1;min-width:220px">' +
+          '<button class="btn btn-sm btn-primary" data-cpacao="confirmar" data-cpdecisao="aprovado" data-cpid="' + _cpEsc(c.id) + '">Confirmar</button>' +
+          '<button class="btn btn-sm btn-secondary" data-cpacao="cancelar">Cancelar</button>' +
+        '</div>' +
+      '</div>';
+  }
+  if (_cpModo === 'recusar') {
+    return '' +
+      '<div style="margin-top:12px;padding-top:12px;border-top:1px dashed var(--border)">' +
+        '<div style="font-size:12px;margin-bottom:6px"><b>Recusar</b> — escreva o motivo. ' +
+        'O cliente lê este texto, então escreva para ele, não para nós.</div>' +
+        '<div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">' +
+          '<input type="text" class="input" id="cpResposta" placeholder="Ex.: esta máquina está em contrato de locação — abrimos sem custo pelo telefone" ' +
+            'autocomplete="off" name="cp_resp_nofill" data-lpignore="true" data-1p-ignore style="flex:1;min-width:280px">' +
+          '<button class="btn btn-sm btn-primary" data-cpacao="confirmar" data-cpdecisao="recusado" data-cpid="' + _cpEsc(c.id) + '">Confirmar</button>' +
+          '<button class="btn btn-sm btn-secondary" data-cpacao="cancelar">Cancelar</button>' +
+        '</div>' +
+      '</div>';
+  }
+  if (_cpModo === 'vincular') {
+    const doCliente = (_osList || []).filter(o => String(o.id_cliente || '') === String(c.id_cliente))
+      .sort((a, b) => String(b.data_abertura || '').localeCompare(String(a.data_abertura || '')));
+    const ops = doCliente.slice(0, 40).map(o =>
+      '<option value="' + _cpEsc(o.id_os) + '">' + _cpEsc(o.numero_os || o.id_os) +
+      ' · ' + _cpEsc(o.tipo_os || '') + ' · ' + _cpData(o.data_abertura) + '</option>').join('');
+    return '' +
+      '<div style="margin-top:12px;padding-top:12px;border-top:1px dashed var(--border)">' +
+        '<div style="font-size:12px;margin-bottom:6px"><b>Vincular à OS</b> — só OS <b>deste cliente</b> aparecem aqui, ' +
+        'e o servidor recusa qualquer outra.</div>' +
+        (doCliente.length
+          ? '<div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">' +
+              '<select class="input" id="cpOsId" style="flex:1;min-width:280px">' + ops + '</select>' +
+              '<button class="btn btn-sm btn-primary" data-cpacao="confirmarvinculo" data-cpid="' + _cpEsc(c.id) + '">Vincular</button>' +
+              '<button class="btn btn-sm btn-secondary" data-cpacao="cancelar">Cancelar</button>' +
+            '</div>'
+          : '<div style="font-size:12px;color:var(--text-muted)">Nenhuma OS deste cliente na lista. ' +
+            'Crie a OS primeiro (botão "Abrir OS com estes dados") e volte aqui. ' +
+            '<button class="btn btn-sm btn-secondary" data-cpacao="cancelar">Fechar</button></div>') +
+      '</div>';
+  }
+  return '';
+}
+
+function _cpLigarEventos() {
+  const el = document.getElementById('viewChamadosPortal');
+  if (!el) return;
+
+  el.querySelectorAll('[data-cpfiltro]').forEach(b => {
+    b.onclick = async () => { _cpFiltro = b.dataset.cpfiltro; _cpAberto = ''; _cpModo = ''; await _cpCarregar(); };
+  });
+  const at = document.getElementById('cpAtualizar');
+  if (at) at.onclick = () => _cpCarregar();
+  const bl = document.getElementById('cpBloquear');
+  if (bl) bl.onclick = async () => { _paPinEsquecer(); _cpLista = []; _cpErro = ''; await renderChamadosPortal(); };
+  const eu = document.getElementById('cpEsquecerUltimo');
+  if (eu) eu.onclick = async () => { _cpUltimoAberto = null; await renderChamadosPortal(); };
+
+  el.querySelectorAll('[data-cpacao]').forEach(b => {
+    b.onclick = () => _cpAcao(b.dataset.cpacao, b.dataset.cpid, b.dataset);
+  });
+}
+
+async function _cpAcao(acao, id, ds) {
+  if (acao === 'cancelar') { _cpAberto = ''; _cpModo = ''; await renderChamadosPortal(); return; }
+  if (acao === 'aprovar' || acao === 'recusar') {
+    _cpAberto = id; _cpModo = acao;
+    await renderChamadosPortal();
+    const f = document.getElementById(acao === 'aprovar' ? 'cpData' : 'cpResposta');
+    if (f) { try { f.focus(); } catch (e) {} }
+    return;
+  }
+  if (acao === 'confirmar')        { await _cpConfirmarDecisao(id, ds.cpdecisao); return; }
+  if (acao === 'abriros')          { await _cpAbrirOSCom(id); return; }
+  if (acao === 'vincular')         { await _cpAbrirVinculo(id); return; }
+  if (acao === 'confirmarvinculo') { await _cpConfirmarVinculo(id); return; }
+  if (acao === 'veros') {
+    // Não reimplementa nada: leva para a Gestão de OSs, que já sabe abrir.
+    showView('os');
+    try { if (typeof openOSDetail === 'function') openOSDetail(ds.cposid); } catch (e) {}
+    return;
+  }
+}
+
+async function _cpConfirmarDecisao(id, decisao) {
+  const data = String((document.getElementById('cpData') || {}).value || '').trim();
+  const resposta = String((document.getElementById('cpResposta') || {}).value || '').trim();
+
+  // As mesmas duas exigências que o servidor faz — checadas aqui só para dar
+  // resposta imediata. Quem recusa de verdade é o GAS.
+  if (decisao === 'aprovado' && !data) { toast('Informe a data prevista — é o que o cliente vai ver.', 'error'); return; }
+  if (decisao === 'recusado' && !resposta) { toast('Escreva a resposta ao cliente antes de recusar.', 'error'); return; }
+
+  try {
+    await _paPost({ action: 'portalChamadoDecidir', chamado_id: id,
+                    decisao: decisao, data_prevista: data, resposta: resposta });
+    toast(decisao === 'aprovado' ? 'Chamado aprovado — o cliente já vê a data.' : 'Chamado recusado com resposta.', 'success');
+    _cpAberto = ''; _cpModo = '';
+    await _cpCarregar();
+  } catch (e) {
+    if (e && e.paPrecisaPin) { _cpErro = e.message; await renderChamadosPortal(); return; }
+    const motivo = e && e.gsEnvelope && e.gsEnvelope.motivo;
+    if (motivo === 'ja_decidido') {
+      toast('Alguém decidiu este chamado antes de você. Atualizei a lista.', 'warn');
+      _cpAberto = ''; _cpModo = '';
+      await _cpCarregar();
+      return;
+    }
+    toast((e && e.message) || 'Não consegui gravar a decisão.', 'error');
+  }
+}
+
+// Pré-preenche o modal de OS de SEMPRE. Nada de OS nova por outro caminho.
+async function _cpAbrirOSCom(id) {
+  const c = _cpLista.find(x => String(x.id) === String(id));
+  if (!c) return;
+  try {
+    await openModalOS();                 // reset completo + tipos + usuários
+
+    const inp = document.getElementById('osCliente');
+    if (inp) inp.value = c.cliente_nome || '';
+    // O handler de sempre popula os candidatos de máquina a partir do nome…
+    try { _osClienteInputHandler(c.cliente_nome || ''); } catch (e) {}
+    // …e AQUI o id do chamado sobrescreve o casamento por nome.
+    // 🔑 A ordem importa e não é estilo: `_osClienteInputHandler` ZERA o
+    //    `osClienteId` e o repõe casando NOME contra o cadastro local. O
+    //    chamado carrega o `id_cliente` de verdade, vindo do banco. Se o nome
+    //    tiver mudado (ou for a Filial renumerada de 16/08), o casamento por
+    //    nome erra — e a OS nasceria no cliente errado, que é a classe de bug
+    //    que mais voltou neste projeto.
+    const hid = document.getElementById('osClienteId');
+    if (hid) hid.value = c.id_cliente || '';
+
+    if (c.maquina_id && !c.maquina_orfa) {
+      try {
+        _osMachineSelection.add(String(c.maquina_id));
+        _renderOSMachineSelector(Array.from(_osMachineSelection));
+      } catch (e) {}
+    }
+
+    const desc = document.getElementById('osDescricao');
+    if (desc) desc.value = 'Chamado do portal: ' + String(c.descricao || '');
+    if (c.data_prevista) {
+      const dp = document.getElementById('osDataPrevista');
+      if (dp) dp.value = c.data_prevista;
+    }
+
+    _cpUltimoAberto = { id: c.id, cliente: c.cliente_nome, quando: Date.now() };
+    toast('Modal de OS preenchido. Depois de salvar, volte para vincular o chamado.', 'info');
+  } catch (e) {
+    toast('Não consegui abrir o modal de OS: ' + ((e && e.message) || ''), 'error');
+  }
+}
+
+async function _cpAbrirVinculo(id) {
+  _cpAberto = id; _cpModo = 'vincular';
+  // A lista de OS é a mesma da Gestão de OSs. Carrega só se ainda não tiver.
+  if (!_osList || !_osList.length) {
+    try {
+      const r = await gsGet('getOS', { includeClosed: 'true' });
+      _osList = (r && (r.os || r.data)) || [];
+    } catch (e) { /* segue sem lista: o formulário explica */ }
+  }
+  await renderChamadosPortal();
+}
+
+async function _cpConfirmarVinculo(id) {
+  const osId = String((document.getElementById('cpOsId') || {}).value || '').trim();
+  if (!osId) { toast('Escolha a OS.', 'error'); return; }
+  try {
+    const r = await _paPost({ action: 'portalChamadoVincular', chamado_id: id, os_id: osId });
+    toast('Chamado vinculado à OS ' + ((r && r.numero_os) || osId) + '.', 'success');
+    _cpAberto = ''; _cpModo = '';
+    if (_cpUltimoAberto && String(_cpUltimoAberto.id) === String(id)) _cpUltimoAberto = null;
+    await _cpCarregar();
+  } catch (e) {
+    if (e && e.paPrecisaPin) { _cpErro = e.message; await renderChamadosPortal(); return; }
+    const motivo = e && e.gsEnvelope && e.gsEnvelope.motivo;
+    if (motivo === 'os_fora_do_espelho') {
+      toast('Essa OS ainda não chegou ao espelho (o push roda a cada 15 min). Tente daqui a pouco.', 'warn');
+      return;
+    }
+    if (motivo === 'cliente_diferente') {
+      toast('Essa OS é de outro cliente — o servidor recusou, e ainda bem.', 'error');
+      return;
+    }
+    toast((e && e.message) || 'Não consegui vincular.', 'error');
+  }
+}
+
+// ── O contador do menu ─────────────────────────────────────────────────────
+// ⚠ Silencioso por contrato: roda no boot, e GAS antigo (≤ v117) simplesmente
+//   não acende número nenhum. Erro aqui NUNCA aparece para o usuário — a mesma
+//   regra do contador da Calibração (V135).
+function _cpAtualizarBadge(n) {
+  const el = document.getElementById('navChamadosCount');
+  if (el) el.textContent = n ? String(n) : '';
+}
+
+async function _cpAtualizarContador() {
+  try {
+    const r = await gsPost({ action: 'portalChamadosPendentes' });
+    if (!r || r.status !== 'ok') { _cpAtualizarBadge(0); return 0; }
+    const n = Number(r.pendentes || 0);
+    _cpAtualizarBadge(n);
+    return n;
+  } catch (e) { _cpAtualizarBadge(0); return 0; }
 }
 
 </script>
