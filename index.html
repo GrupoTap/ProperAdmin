@@ -1,3 +1,84 @@
+<!-- PCM V151 — 27/08/2026 — A OS GANHA HORA, E O MOTOR DE OS PERDE 10 DEFEITOS.
+     Feito EM CIMA do V150 — CONTÉM o V150 (Serviços Externos, coluna Máquina na
+     Lista, abrir OS a partir da Máquina, a tira do vigia da Agenda) inteiro.
+
+     🔴 POR QUE V151 E NÃO V150 — A TERCEIRA COLISÃO DE NOME DO PROJETO.
+        Esta rodada começou às 14h sobre o V149 (o `index.html` publicado) sem
+        saber que outra sessão entregava, às 14h37, um `NEWFILE_PCM_V150.html`.
+        A colisão foi vista no momento de GRAVAR — não no início da sessão —
+        exatamente como a memória do V140 mandou fazer depois da 1ª vez. O
+        trabalho foi REBASEADO sobre o V150 alheio: nada dele foi desfeito, e
+        os símbolos desta rodada usam o prefixo `_v151` para não disputar nome
+        com os `_v150` de lá.
+
+     ══ O QUE FOI PEDIDO ══════════════════════════════════════════════════
+     "Campo para agendamento com horário previsto, a fim de organizar a agenda."
+     A OS já tinha PRAZO (uma data). Uma data não agenda nada: não diz a que
+     horas a equipe sai, não colide com nada e não cabe numa grade de agenda.
+     Agora a OS tem uma JANELA — hora de início + duração prevista — e é ela
+     que atravessa o Calendário, a Lista, o Kanban e a Agenda da equipe.
+     🔴 Depende do GAS v126 e do NEWFILE_V151_AGENDA_OS.sql (as duas colunas
+        `hora_prevista` e `duracao_prevista_min`). Sem o GAS novo a tela grava
+        a hora e o servidor a descarta EM SILÊNCIO — publicar na ordem.
+
+     🔑 O horário só existe pendurado numa data. Salvar hora sem PRAZO é
+        recusado com a razão escrita, em vez de guardar um dado que nenhuma
+        tela consegue posicionar.
+     🔑 O choque de horário é mostrado ENQUANTO se digita, contra as outras
+        OSs do mesmo responsável no mesmo dia — não depois de salvar.
+     ⚠ Isto NÃO é o item da Parte B do NEWFILE_SINCRONIZACAO_E_CALENDARIOS
+       (a barra de ocupação no calendário de OS): aquilo continua em aberto,
+       esperando as três decisões do Fernando. Aqui a OS ganha o DADO que
+       aquele desenho vai precisar — e o ganha na unidade certa (minutos).
+
+     ══ OS DEZ DEFEITOS DO MOTOR DE OS (auditoria pedida junto) ════════════
+     B1 🔴 PERDA DE DADO. Se `getMaquinasByOS` falhasse ao abrir a OS, o
+        seletor de máquinas era desenhado VAZIO (só um toast amarelo) e o
+        Salvar seguinte mandava `maquinas_vinculadas: []` — a OS perdia todos
+        os vínculos. É a doença do V103 A2 (reset parcial + erro no meio),
+        agora no seletor. Agora a chave NÃO VAI no payload quando a leitura
+        falhou, e o bloco fica com tarja vermelha dizendo por quê.
+     B2 🔴 OS DUPLICADA. `openModalOS(id)` procurava a OS em `_osList` — que
+        só é preenchida por quem passa pela tela de OSs. Entrar direto em
+        "Tarefas do Adm" e clicar "🏁 Encerrar OS" abria o modal EM BRANCO
+        com `osId` vazio: preencher e Salvar CRIAVA UMA OS NOVA em vez de
+        encerrar a existente. Agora, quando a OS não está no cache, ela é
+        buscada no servidor; se não vier, o modal NÃO abre e diz o motivo.
+     B3 🔴 `_osMachineSelection` virava `true`. O onchange do checkbox fazia
+        `Set.delete(v) || Set` — e `delete` devolve TRUE quando o item
+        existia. Desmarcar uma máquina destruía o Set; trocar o cliente em
+        seguida deixava na tela as máquinas do cliente ANTERIOR, marcadas,
+        e o Salvar as gravava no cliente novo.
+     B4 · Caixa alta na planilha zerava o campo. `select.value = 'Alta'` não
+        casa a opção `alta`: o campo aparecia VAZIO e o Salvar gravava ''.
+        Valia para prioridade, status e local de atendimento.
+     B5 · Data ilegível virava data de hoje. Sem `data_abertura`, o campo
+        ficava com a data de HOJE (valor do reset) e o Salvar a carimbava
+        como abertura. Em formato não-ISO ("27/08/2026") o input rejeitava,
+        ficava vazio e o Salvar APAGAVA a data. Agora a data é normalizada,
+        e o que não for legível é dito na tela e NÃO é regravado.
+     B6 · Responsável sumia do select por comparação estrita (id NUMBER do
+        Sheets, ou OS criada no celular que grava o NOME) — e o Salvar
+        gravava `usuario_atual: ''`. Agora casa por id OU por nome, com
+        String() nas duas pontas, e usuário inativo ainda aparece (marcado).
+     B7 · Kanban interpolava cliente, número e tipo CRUS no HTML. `&` e `<`
+        no nome do cliente quebravam o card. É o buraco que o V117 fechou no
+        calendário e que ficou aberto aqui.
+     B8 · Kanban por status ESCONDIA OS. Status fora dos quatro conhecidos
+        (o GAS deixa passar qualquer texto) não caía em coluna nenhuma.
+        Agora há coluna "Outro status" e a soma bate com o total.
+     B9 · Coluna Abertura da Lista mostrava o dia ANTERIOR: `new Date`
+        sobre 'AAAA-MM-DD' é meia-noite UTC, que em -03 é o dia de antes. O
+        mesmo bloco já fazia certo duas linhas acima, no prazo.
+     B10 · Agenda da equipe: demanda com vários responsáveis criava uma linha
+        fantasma chamada "Fulano; Beltrano" e não entrava na carga de
+        ninguém. O V149 corrigiu isso no celular e no painel do dia; a grade
+        da Agenda ficou de fora.
+     B11 · Calendário perdia OS com data em formato não-ISO: ela não caía em
+        dia nenhum E também não entrava em "Sem data prevista".
+
+     Bancada: _testes/NEWFILE_T_PCM_V151_agenda_os.mjs (com --negativo).
+-->
 <!-- PCM V147 — 27/08/2026 — A IDENTIDADE VISUAL DO CLIENTE, REPOSTA.
      Feito EM CIMA do V146 — 🔴 CONTÉM o V146 e o V145 inteiros.
 
@@ -2586,7 +2667,7 @@ v50 — Resiliência de rede: retry/backoff em gsGet e syncToGS
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>ProperCare Manager · Gestão PGP v3.73 (PCM V149)</title>
+<title>ProperCare Manager · Gestão PGP v3.75 (PCM V151)</title>
 <link rel="icon" type="image/jpeg" href="data:image/jpeg;base64,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">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -3752,6 +3833,113 @@ tr.tadm-feito td{background:#dcfce7 !important;color:#15803d;font-weight:700}
 .g8-bqc .l1 .d{margin-left:auto;font-size:12.5px;font-weight:800;color:#b45309;flex-shrink:0}
 .g8-bqc .l2{font-size:12px;color:var(--text-muted);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .g8-bqc .l3{font-size:12px;color:#92400e;font-weight:700;margin-top:5px}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   V150 — A BARRA DE ROLAGEM QUE NUNCA ESTAVA ONDE SE OLHA
+   ──────────────────────────────────────────────────────────────────────────
+   Pedido do Fernando (27/08), olhando o Kanban: "incluir rolagem individual
+   dos cards por coluna e não sumir o título; incluir barra de rolagem
+   horizontal visível sempre".
+
+   🔑 A BARRA HORIZONTAL NUNCA ESTEVE INVISÍVEL — ESTAVA ABAIXO DA DOBRA.
+      `.gos-kanban` é um flex com `overflow-x:auto` e ALTURA LIVRE: a coluna
+      "Concluída" com 27 cards estica o quadro para ~3.000 px, e a barra do
+      contêiner fica no rodapé DELE, três telas abaixo. Para tocá-la é preciso
+      rolar a PÁGINA até o fim — e aí o cabeçalho das colunas já saiu de vista,
+      que é a segunda metade da queixa. As duas reclamações são o MESMO defeito:
+      quadro sem teto de altura.
+
+   ⇒ O conserto é um só: TETO DE ALTURA no quadro. Com ele,
+      · a rolagem passa a ser DENTRO de cada coluna (`.gos-klist`);
+      · o cabeçalho fica `sticky` e não sai da tela;
+      · e a barra horizontal volta para dentro do campo de visão.
+   `overflow-x:scroll` (e não `auto`) mantém a barra desenhada mesmo quando
+   não há coluna escondida: trilho vazio é informação — diz "não há mais nada
+   à direita" —, enquanto barra que aparece e some ensina a duvidar da tela.
+
+   ⚠ NADA de render foi tocado aqui: são só regras novas, no fim da folha, com
+     os MESMOS seletores que já existiam. Vale para os três quadros que usam
+     `.gos-kcol` (Serviços Externos, Oficina e Tarefas do Adm) porque os três
+     têm o defeito idêntico.
+   ⚠ O teto é em `vh` e desconta o cabeçalho + a fita de abas + a barra de
+     filtros — medido, não chutado. `min-height` impede que uma janela baixa
+     (notebook em 768 px) transforme a coluna numa fresta.
+   ══════════════════════════════════════════════════════════════════════════ */
+:root{ --pcm-quadro-h:calc(100vh - 300px); }
+
+/* ── 1 · os quadros de cartão ─────────────────────────────────────────── */
+.gos-kanban{ overflow-x:scroll; overflow-y:hidden; }
+.gos-kcol{ display:flex; flex-direction:column;
+  max-height:var(--pcm-quadro-h); min-height:170px; }
+.gos-kcol-h{ position:sticky; top:0; z-index:3; background:var(--bg);
+  border-bottom:1px solid var(--border);
+  border-radius:var(--radius) var(--radius) 0 0; }
+.gos-klist{ overflow-y:auto; overscroll-behavior:contain; flex:1 1 auto; }
+
+/* ── 2 · as tabelas largas com o mesmo defeito ────────────────────────────
+   Aplicada por CLASSE EXPLÍCITA, nunca em `.table-wrap` inteiro: `.table-wrap`
+   embrulha dezenas de tabelas do PCM, e pôr teto de altura em todas mudaria a
+   rolagem de telas que ninguém reclamou. Aqui só entram as que foram medidas.
+   O `thead` sticky é o par obrigatório do teto — tabela que rola por dentro
+   sem cabeçalho fixo troca um problema por outro. */
+.pcm-scrollbox{ overflow:auto; max-height:var(--pcm-quadro-h); }
+.pcm-scrollbox thead th{ position:sticky; top:0; z-index:5; }
+.mach-table thead th{ background:var(--gray-50); }
+.g8-tabw{ overflow:auto; max-height:var(--pcm-quadro-h); }
+.g8-tabw .g8-tab thead th{ position:sticky; top:0; z-index:5; background:var(--bg); }
+.g8-mxw{ overflow:auto; max-height:var(--pcm-quadro-h); }
+
+/* ── 3 · a barra em si, visível de propósito ──────────────────────────────
+   Padrão do Windows/Chrome é uma barra fina e cinza-claro sobre fundo claro —
+   o contraste que ninguém enxerga. Aqui ela é grossa, com trilho desenhado.
+   `scrollbar-width:auto` + `scrollbar-color` cobrem Firefox. */
+.gos-kanban,.gos-klist,.pcm-scrollbox,.g8-tabw,.g8-mxw,.xf-wrap{
+  scrollbar-width:auto; scrollbar-color:var(--text3) var(--gray-100); }
+.gos-kanban::-webkit-scrollbar,.gos-klist::-webkit-scrollbar,
+.pcm-scrollbox::-webkit-scrollbar,.g8-tabw::-webkit-scrollbar,
+.g8-mxw::-webkit-scrollbar,.xf-wrap::-webkit-scrollbar{ width:12px; height:14px; }
+.gos-kanban::-webkit-scrollbar-track,.gos-klist::-webkit-scrollbar-track,
+.pcm-scrollbox::-webkit-scrollbar-track,.g8-tabw::-webkit-scrollbar-track,
+.g8-mxw::-webkit-scrollbar-track,.xf-wrap::-webkit-scrollbar-track{
+  background:var(--gray-100); border-radius:7px; }
+.gos-kanban::-webkit-scrollbar-thumb,.gos-klist::-webkit-scrollbar-thumb,
+.pcm-scrollbox::-webkit-scrollbar-thumb,.g8-tabw::-webkit-scrollbar-thumb,
+.g8-mxw::-webkit-scrollbar-thumb,.xf-wrap::-webkit-scrollbar-thumb{
+  background:var(--text3); border-radius:7px; border:3px solid var(--gray-100); }
+.gos-kanban::-webkit-scrollbar-thumb:hover,.gos-klist::-webkit-scrollbar-thumb:hover,
+.pcm-scrollbox::-webkit-scrollbar-thumb:hover,.g8-tabw::-webkit-scrollbar-thumb:hover,
+.g8-mxw::-webkit-scrollbar-thumb:hover,.xf-wrap::-webkit-scrollbar-thumb:hover{
+  background:var(--text-muted); }
+
+/* ⚠ VISTO NA CAPTURA, NÃO NO CÓDIGO (a lição do V135/A4). Com uma coluna a
+   mais, a tabela `auto` espremeu a 1ª e o número da OS passou a quebrar em
+   TRÊS linhas — "PGP-\n2026-\n0034". Número de OS é IDENTIFICADOR: quebrado
+   ele deixa de ser conferível de relance, que é a única coisa que ele faz. O
+   mesmo vale para o `.gos-osnum` dos cards do quadro. */
+#viewOs .xf-table thead th:first-child,
+#viewOs .xf-table tbody td:first-child{ white-space:nowrap; }
+.gos-osnum{ white-space:nowrap; }
+
+/* A coluna Máquina da Lista: a reticência do `.g8-maq .n` só existe se a
+   célula tiver um teto — a tabela XF é `auto`, e sem isto um nome comprido
+   alargaria a coluna e empurraria Prazo/Status para fora. */
+.xf-table .g8-maq{ max-width:230px; }
+
+/* ── 4 · a nota que explica o recorte da aba Serviços Externos ─────────── */
+.gos-recorte{ font-size:12px; color:var(--text-muted); margin:-6px 0 12px;
+  padding:7px 11px; border:1px dashed var(--border); border-radius:var(--radius-sm);
+  background:var(--surface-2); }
+.gos-recorte b{ color:var(--text); }
+
+/* ── 5 · V150 · a tira de "a agenda mudou" ────────────────────────────────
+   Fica no fluxo (não flutua): faixa que cobre conteúdo é a razão de gente
+   fechar aviso sem ler. Laranja da casa, mesma linguagem do lembrete V138. */
+.sat-mudou{ display:flex; align-items:center; gap:10px; flex-wrap:wrap;
+  margin:0 0 14px; padding:9px 13px; border-radius:var(--radius-sm);
+  border:1px solid var(--orange,#d97706); background:#fff7ed; color:#7c2d12;
+  font-size:12.5px; font-weight:600; }
+.sat-mudou .sat-mudou-b{ margin-left:auto; display:flex; gap:8px; }
+
 </style>
 </head>
 <body>
@@ -3760,7 +3948,7 @@ tr.tadm-feito td{background:#dcfce7 !important;color:#15803d;font-weight:700}
 <aside class="nav-sidebar" aria-label="Navegação principal">
   <div class="nav-brand">
     <span class="nav-brand-mark">PCM</span>
-    <span class="nav-brand-sub">v3.73 · V149</span>
+    <span class="nav-brand-sub">v3.75 · V151</span>
   </div>
 
   <nav class="nav-groups">
@@ -4734,6 +4922,10 @@ tr.tadm-feito td{background:#dcfce7 !important;color:#15803d;font-weight:700}
     </div>
     <div class="modal-footer">
       <button class="btn btn-secondary" onclick="closeModal('modalMachineParts')">Fechar</button>
+      <!-- V150 — o mesmo atalho do botão da lista, aqui onde o adm está OLHANDO
+           a máquina e decide abrir a OS. Fecha o detalhe antes de abrir o modal
+           da OS: dois overlays empilhados é como se perde o Esc. -->
+      <button class="btn btn-secondary" onclick="_v150AbrirOSDaMaquina(_mdetMachineId, true)">＋ Abrir OS desta máquina</button>
       <button class="btn btn-primary" id="mdetSaveBtn" style="display:none" onclick="_semDuploEnvio_(this, saveMachineParts)">💾 Salvar peças</button>
     </div>
   </div>
@@ -12853,8 +13045,9 @@ function renderMachines(){
       </div>
     </div>
 
-    <!-- Tabela densa -->
-    <div class="table-wrap">
+    <!-- Tabela densa · V150: pcm-scrollbox = teto de altura + thead fixo +
+         barra horizontal dentro do campo de visão (ver bloco V150 no CSS) -->
+    <div class="table-wrap pcm-scrollbox">
       <table class="mach-table">
         <thead><tr>
           <th>TAG</th>
@@ -12907,6 +13100,7 @@ function _machTbodyHtml(machines){
             <td>
               <div class="row-actions">
                 <button class="btn btn-secondary btn-xs" onclick="openMachineDetail('${eq.id}')">Detalhes</button>
+                <button class="btn btn-secondary btn-xs" onclick="_v150AbrirOSDaMaquina('${eq.id}')" title="Abrir uma OS já com este cliente e esta máquina marcados">＋ OS</button>
                 <button class="btn btn-secondary btn-xs" onclick="openModalMachine('${eq.id}')">Editar</button>
                 ${(String(eq.tipoRegistro||'').toUpperCase()==='TESTE')
                   ? `<button class="btn btn-danger btn-xs"
@@ -15558,6 +15752,8 @@ async function renderOS() {
 // V118 (A2/A3) — cache do array derivado de linhas da Gestão de OSs.
 // Invalidado por identidade de _osList / _tiposOS e pela virada do dia.
 let _gosRowsCache = null, _gosRowsSrcOs = null, _gosRowsSrcTipos = null, _gosRowsDia = null;
+// V150 — 4ª entrada: geração do cadastro local (a coluna Máquina depende dela).
+let _gosRowsDbGen = -1;
 
 const _GOS_STATUS_LABELS_V94 = { ABERTA:'Aberta', EM_ANDAMENTO:'Em andamento', CONCLUIDA:'Concluída', CANCELADA:'Cancelada' };
 const _GOS_STATUS_CLS_V94 = { ABERTA:'status-ok', EM_ANDAMENTO:'status-warn', CONCLUIDA:'status-ok', CANCELADA:'status-late' };
@@ -15577,6 +15773,33 @@ function _renderOSTable(search = '', statusFilter = '', priorityFilter = '') {
       {key:'cliente',label:'Cliente',filter:'values',
         getValue:r=>String(r.o.cliente||'—'),
         render:r=>`<span class="td-name">${escHtml(String(r.o.cliente||'—'))}</span>`},
+      // ══════════════════════════════════════════════════════════════════════
+      // V150 — A COLUNA MÁQUINA NA LISTA.
+      //
+      // Pedido do Fernando (27/08): "incluir coluna com o nome da máquina nessa
+      // tela de Lista". A Lista era a ÚNICA das oito vistas sem ela: Painel
+      // (`_g8MaqCurto`), Fila e faixa de travadas (`_g8MaqLinha`), Serviços
+      // Externos e Oficina (`_gosLinhaMaquinas`) já mostram — e a Lista é
+      // justamente a que se usa para procurar. Cliente com três OS abertas dava
+      // três linhas indistinguíveis.
+      //
+      // 🔑 ZERO REQUISIÇÃO NOVA E ZERO CAMPO NOVO: `maquinas_vinculadas` já vem
+      //    no envelope do `getOS`, e a resolução id→nome é LOCAL contra
+      //    `db.machines`, pelo índice memoizado `_gosMaqIndex` (V118 A9). É o
+      //    MESMO helper das outras vistas — `_g8MaqCurto` / `_g8MaqTitulo` —,
+      //    então as sete telas dizem sempre a mesma coisa sobre a mesma OS.
+      //
+      // ⚠ `getValue` devolve TEXTO PURO (`maqTxt`, calculado no getData), nunca
+      //   marcação: o filtro estilo Excel monta a lista de valores a partir
+      //   dele, e HTML ali viraria opção ilegível no menu.
+      // ⚠ Lista vazia NÃO é "OS sem máquina" (regra da V127.2: o caminho de
+      //   campo grava só em OS_MAQUINAS e não reflete aqui) — por isso o valor
+      //   de filtro é "— não informado —", e não "sem máquina".
+      // ⚠ O id que não resolve continua VISÍVEL em laranja, nunca escondido.
+      // ══════════════════════════════════════════════════════════════════════
+      {key:'maquina',label:'Máquina',filter:'values',
+        getValue:r=>r.maqTxt,
+        render:r=>`<div class="g8-maq" title="${escHtml(_g8MaqTitulo(r.o))}">${_g8MaqCurto(r.o)}</div>`},
       {key:'tipo',label:'Tipo',filter:'values',
         getValue:r=>r.tipoNome,
         render:r=>escHtml(r.tipoNome)},
@@ -15598,9 +15821,14 @@ function _renderOSTable(search = '', statusFilter = '', priorityFilter = '') {
           {label:'Próx. 30 dias',get:()=>({min:xfHoje(),max:xfAddDias(xfHoje(),30)})}],
         render:r=>{
           const s=r.prazoISO?_gosFmt(r.prazoISO):'—';
+          // V151 — a hora entra ao lado da data, na MESMA célula: uma coluna
+          // nova só para HH:MM roubaria largura da Máquina, que é a coluna que
+          // o V140 acabou de resgatar do estouro de layout.
+          const jan=_v151JanelaTxt(r.o);
+          const sub=jan?`<div class="xf-sub" style="font-weight:600">🕒 ${escHtml(jan)}</div>`:'';
           return r.atrasada
-            ? `<span style="font-size:11px;color:#dc2626;font-weight:700">${s} ⚠</span><div class="xf-sub" style="color:#dc2626;font-weight:700">${r.diasAtraso}d atrasada</div>`
-            : `<span style="font-size:11px">${s}</span>`;}},
+            ? `<span style="font-size:11px;color:#dc2626;font-weight:700">${s} ⚠</span><div class="xf-sub" style="color:#dc2626;font-weight:700">${r.diasAtraso}d atrasada</div>${sub}`
+            : `<span style="font-size:11px">${s}</span>${sub}`;}},
       {key:'abertura',label:'Abertura',type:'date',filter:'range',
         getValue:r=>r.aberturaISO,
         presets:[
@@ -15646,7 +15874,13 @@ function _renderOSTable(search = '', statusFilter = '', priorityFilter = '') {
       const hoje=new Date(); hoje.setHours(0,0,0,0);
       const _diaAtual = hoje.getTime();
       const _srcTipos = (typeof _tiposOS !== 'undefined' && Array.isArray(_tiposOS)) ? _tiposOS : null;
-      if (_gosRowsCache && _gosRowsSrcOs === _osList && _gosRowsSrcTipos === _srcTipos && _gosRowsDia === _diaAtual) {
+      // V150 — QUARTA ENTRADA DO CACHE: a geração do cadastro local.
+      // A coluna Máquina resolve id→nome contra `db.machines`. Sem `_pcmDbGen`
+      // aqui, a Lista aberta ANTES do sync do cadastro guardaria "máquina fora
+      // do cadastro" e repetiria essa linha até o dia virar — mostrando como
+      // fato ("essa OS tem id órfão") o que era só "ainda não carregou".
+      const _srcDbGen = (typeof _pcmDbGen !== 'undefined') ? _pcmDbGen : 0;
+      if (_gosRowsCache && _gosRowsSrcOs === _osList && _gosRowsSrcTipos === _srcTipos && _gosRowsDia === _diaAtual && _gosRowsDbGen === _srcDbGen) {
         return _gosRowsCache;
       }
       const _out = _osList.map(o=>{
@@ -15659,19 +15893,36 @@ function _renderOSTable(search = '', statusFilter = '', priorityFilter = '') {
           atrasada = prazo.getTime()<hoje.getTime();
           if(atrasada) diasAtraso=Math.max(1,Math.round((hoje.getTime()-prazo.getTime())/864e5));
         }
-        let aberturaISO='';
-        if(o.data_abertura){ const d=new Date(o.data_abertura); if(!isNaN(d.getTime())) aberturaISO=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+        // V151 (B9) — `new Date('2026-08-27')` é meia-noite **UTC**, que em -03
+        // é 26/08 21:00: a coluna Abertura mostrava o DIA ANTERIOR, e o preset
+        // "Últimos 7 dias" recortava a janela deslocada. Duas linhas acima, o
+        // prazo já fazia certo (parsing por componentes, comentado como "sem
+        // shift UTC") — a mesma tela discordava de si mesma.
+        const aberturaISO=_v151DataISO(o.data_abertura);
+        // V150 — texto puro da máquina, calculado UMA vez por linha (o motor XF
+        // chama getValue a cada render, a cada tecla e a cada abertura de menu
+        // de filtro; `_g8MaqItens` por chamada seria O(linhas × teclas)).
+        const _mit = _g8MaqItens(o);
+        const _mp  = _g8MaqPrim(_mit);
+        const _maqTxt = !_mit.length ? '— não informado —'
+          : ((_mp && _mp.m) ? _mp.nome : (_mp && _mp.semCatalogo ? String(_mp.id) : 'máquina fora do cadastro'))
+            + (_mit.length > 1 ? ' +' + (_mit.length - 1) : '');
         return {o, st, atrasada, diasAtraso, prazoISO: ds||'', aberturaISO,
+          maqTxt:_maqTxt,
           tipoNome:_gosTipoNome(o),
           local:(o.local_atendimento==='interno')?'Interno':'Externo',
           statusLabel:_GOS_STATUS_LABELS_V94[st]||String(o.status||'—'),
           prioLabel:_GOS_PRIO_LABELS_V94[String(o.prioridade||'normal').toLowerCase()]||'Normal'};
       });
-      _gosRowsCache = _out; _gosRowsSrcOs = _osList; _gosRowsSrcTipos = _srcTipos; _gosRowsDia = _diaAtual;
+      _gosRowsCache = _out; _gosRowsSrcOs = _osList; _gosRowsSrcTipos = _srcTipos; _gosRowsDia = _diaAtual; _gosRowsDbGen = _srcDbGen;
       return _out;
     },
     // v84: String() em TODOS os campos — numero_os pode chegar como NUMBER do Sheets.
-    searchText:r=>[r.o.numero_os,r.o.cliente,r.tipoNome,r.statusLabel,r.prioLabel,r.local].map(v=>String(v==null?'':v)).join(' '),
+    // V150 — a máquina entra na busca livre: "SRP3040" e "51725" passam a
+    // achar a OS. `_g8MaqTitulo` traz a lista COMPLETA (nome + série de cada
+    // item), não só o rótulo curto — buscar pela 2ª máquina de uma OS tem de
+    // funcionar igual à 1ª.
+    searchText:r=>[r.o.numero_os,r.o.cliente,r.tipoNome,r.statusLabel,r.prioLabel,r.local,r.maqTxt,_g8MaqTitulo(r.o)].map(v=>String(v==null?'':v)).join(' '),
     getQuery:()=>_osSearch||'',
     clearQuery:()=>{_osSearch='';const i=document.getElementById('osSearchInputV94');if(i)i.value='';},
     rowAttrs:r=>r.atrasada?'class="xf-late-row"':'',
@@ -15854,9 +16105,236 @@ function _gosFmt(d){ if(!d) return null; const [y,m,dd]=d.split('-'); return `${
 function _gosOid(o){ return String(o.id_os||'').replace(/'/g,"\\'"); }
 function _gosPrioTag(o){
   const P = { urgente:{l:'Urgente',bg:'#fee2e2',c:'#991b1b'}, alta:{l:'Alta',bg:'#ffedd5',c:'#9a3412'}, normal:{l:'Normal',bg:'#f1f5f9',c:'#475569'} };
-  const p = P[(o.prioridade||'normal').toLowerCase()] || P.normal;
+  // V151 — String() antes do toLowerCase: célula numérica na coluna PRIORIDADE
+  // derrubava o Kanban INTEIRO (o innerHTML nunca era atribuído e o quadro
+  // ficava em branco, sem mensagem). A Lista já se protegia; aqui faltava.
+  const p = P[String(o.prioridade == null ? 'normal' : o.prioridade).toLowerCase()] || P.normal;
   return `<span class="gos-prio" style="background:${p.bg};color:${p.c}">${p.l}</span>`;
 }
+
+// ══════════════════════════════════════════════════════════════════════════════
+// V151 · A JANELA PREVISTA DA OS — hora de início + duração
+//
+// 🔑 Por que DUAS colunas e não uma string "08:30-10:30": a grade da Agenda
+//    mede CARGA em minutos (`tempo_estimado_min`), e a tarefa já guarda
+//    duração desse jeito desde o v111. Guardar a mesma grandeza em dois
+//    formatos diferentes é o começo de toda divergência.
+//
+// ⚠ A hora NUNCA volta do Sheets como se foi digitada. Se a célula estiver
+//   formatada como HORA, o Apps Script devolve um Date (que vira ISO no JSON);
+//   se estiver como número, volta a FRAÇÃO DO DIA (0,354166 = 08:30). Este
+//   normalizador aceita os três, porque quem depende de "vem sempre string"
+//   está apostando na formatação de uma célula que ninguém controla.
+// ══════════════════════════════════════════════════════════════════════════════
+function _v151Pad2(n){ return String(n).padStart(2,'0'); }
+
+// ⚠ `instanceof Date` falha entre contextos (iframe, `vm`, worker): o Date de
+//   lá não é instância do Date daqui. `Object.prototype.toString` vale sempre.
+function _v151EhData(v){ return Object.prototype.toString.call(v) === '[object Date]'; }
+
+function _v151Hora(v){
+  if (v === null || v === undefined || v === '') return '';
+  if (_v151EhData(v)) {
+    if (isNaN(v.getTime())) return '';
+    return _v151Pad2(v.getHours()) + ':' + _v151Pad2(v.getMinutes());
+  }
+  if (typeof v === 'number') {
+    if (!isFinite(v)) return '';
+    var fr = v - Math.floor(v);                     // serial do Sheets: só a fração é hora
+    var tot = Math.round(fr * 1440);
+    return _v151Pad2(Math.floor(tot / 60) % 24) + ':' + _v151Pad2(tot % 60);
+  }
+  var s = String(v).trim();
+  if (!s) return '';
+  var m = /^(\d{1,2}):(\d{2})/.exec(s);
+  if (m) {
+    var h = Number(m[1]), mi = Number(m[2]);
+    if (h > 23 || mi > 59) return '';
+    return _v151Pad2(h) + ':' + _v151Pad2(mi);
+  }
+  if (/\d{4}-\d{2}-\d{2}T/.test(s)) {
+    var d = new Date(s);
+    if (!isNaN(d.getTime())) return _v151Pad2(d.getHours()) + ':' + _v151Pad2(d.getMinutes());
+  }
+  return '';
+}
+
+// Duração em minutos. 0, vazio e lixo devolvem null — "não informado" e "zero
+// minutos" são a MESMA coisa para a agenda, e null é o único dos dois que as
+// telas sabem não desenhar.
+function _v151Dur(v){
+  if (v === null || v === undefined || v === '') return null;
+  var n = Number(String(v).replace(',', '.'));
+  if (!isFinite(n) || n <= 0) return null;
+  return Math.round(n);
+}
+
+function _v151MinParaHHMM(min){
+  var m = ((Math.round(min) % 1440) + 1440) % 1440;
+  return _v151Pad2(Math.floor(m / 60)) + ':' + _v151Pad2(m % 60);
+}
+function _v151HHMMParaMin(hhmm){
+  var m = /^(\d{1,2}):(\d{2})$/.exec(String(hhmm || ''));
+  return m ? (Number(m[1]) * 60 + Number(m[2])) : null;
+}
+
+// A janela de uma OS: {ini:'HH:MM', dur:min|null, fim:'HH:MM'|null, viraDia:bool}
+// Devolve null quando não há hora — e é por isso que nenhuma tela precisa
+// repetir a pergunta "tem hora?".
+function _v151JanelaOS(o){
+  var ini = _v151Hora(o && (o.hora_prevista !== undefined ? o.hora_prevista : o.horaPrevista));
+  if (!ini) return null;
+  var dur = _v151Dur(o && (o.duracao_prevista_min !== undefined ? o.duracao_prevista_min : o.duracaoPrevistaMin));
+  var a = _v151HHMMParaMin(ini);
+  var fim = (dur && a !== null) ? _v151MinParaHHMM(a + dur) : null;
+  return { ini: ini, dur: dur, fim: fim, viraDia: !!(dur && a !== null && a + dur >= 1440) };
+}
+function _v151JanelaTxt(o){
+  var j = _v151JanelaOS(o);
+  if (!j) return '';
+  return j.fim ? (j.ini + '–' + j.fim + (j.viraDia ? ' (+1d)' : '')) : j.ini;
+}
+
+// ⚠ Data que veio do Sheets pode ser Date, serial ou "27/08/2026". O
+//   `<input type=date>` só aceita AAAA-MM-DD e SANITIZA o resto para vazio —
+//   e campo vazio, no Salvar, é campo APAGADO. Este normalizador existe para
+//   que a tela nunca apague por não ter entendido.
+function _v151DataISO(v){
+  if (v === null || v === undefined || v === '') return '';
+  if (_v151EhData(v)) {
+    if (isNaN(v.getTime())) return '';
+    return v.getFullYear() + '-' + _v151Pad2(v.getMonth() + 1) + '-' + _v151Pad2(v.getDate());
+  }
+  if (typeof v === 'number') {
+    if (!isFinite(v) || v <= 0) return '';
+    // serial do Sheets (dias desde 30/12/1899), em hora LOCAL para não escorregar um dia
+    var base = new Date(1899, 11, 30);
+    base.setDate(base.getDate() + Math.floor(v));
+    return base.getFullYear() + '-' + _v151Pad2(base.getMonth() + 1) + '-' + _v151Pad2(base.getDate());
+  }
+  var s = String(v).trim();
+  if (!s) return '';
+  var iso = /^(\d{4})-(\d{2})-(\d{2})/.exec(s);
+  if (iso) return iso[1] + '-' + iso[2] + '-' + iso[3];
+  var br = /^(\d{1,2})\/(\d{1,2})\/(\d{4})/.exec(s);
+  if (br) return br[3] + '-' + _v151Pad2(Number(br[2])) + '-' + _v151Pad2(Number(br[1]));
+  return '';
+}
+
+// ⚠ `select.value = 'Alta'` num select cujas opções são `alta` NÃO seleciona
+//   nada: o campo fica vazio e o Salvar grava vazio por cima. Este atribuidor
+//   casa sem diferenciar caixa/acento; e quando o valor gravado não existe
+//   entre as opções, ele CRIA a opção em vez de escolher outra coisa — a tela
+//   passa a mostrar o que está gravado, que é a única resposta honesta.
+function _v151SetSelect(el, valor, padrao){
+  if (!el) return;
+  var alvo = String(valor === null || valor === undefined ? '' : valor).trim();
+  if (!alvo) { el.value = padrao === undefined ? '' : padrao; return; }
+  var norm = function(x){
+    return String(x).trim().toUpperCase().replace(/[ÁÀÂÃ]/g,'A').replace(/[ÉÊ]/g,'E')
+      .replace(/[Í]/g,'I').replace(/[ÓÔÕ]/g,'O').replace(/[ÚÜ]/g,'U').replace(/[Ç]/g,'C')
+      .replace(/[\s-]+/g,'_');
+  };
+  var alvoN = norm(alvo);
+  for (var i = 0; i < el.options.length; i++) {
+    if (norm(el.options[i].value) === alvoN) { el.selectedIndex = i; return; }
+  }
+  var opt = document.createElement('option');
+  opt.value = alvo;
+  opt.textContent = alvo + ' (valor gravado, fora da lista)';
+  el.appendChild(opt);
+  el.value = alvo;
+}
+
+// ── Estado do modal que o Salvar precisa consultar ──────────────────────────
+// B1 e B5: o que a tela NÃO conseguiu ler não pode ser regravado.
+var _v151MaqLidas = true;                 // false = getMaquinasByOS falhou nesta abertura
+var _v151Ilegivel = { abertura: '', prevista: '' };   // valor cru que o campo não soube exibir
+
+function _v151ResetLeitura(){
+  _v151MaqLidas = true;
+  _v151Ilegivel = { abertura: '', prevista: '' };
+  var av = document.getElementById('osAvisoLeitura');
+  if (av) { av.style.display = 'none'; av.innerHTML = ''; }
+}
+function _v151Avisar(msg){
+  var av = document.getElementById('osAvisoLeitura');
+  if (!av) return;
+  av.style.display = '';
+  av.innerHTML += '<div style="margin:2px 0">⚠ ' + msg + '</div>';
+}
+
+// ── Chips de duração ────────────────────────────────────────────────────────
+function _v151SetDur(min){
+  var el = document.getElementById('osDuracaoPrevista');
+  if (!el) return;
+  el.value = (String(_v151Dur(el.value) || '') === String(min)) ? '' : String(min);
+  _v151AtualizarJanela();
+}
+
+// ── A linha que diz o que foi digitado, enquanto se digita ──────────────────
+// 🔑 Aviso de choque DEPOIS de salvar não organiza agenda nenhuma: quem salvou
+//    já foi embora. Ele acende aqui, contra as outras OSs do mesmo responsável
+//    no mesmo dia, com os números à vista.
+function _v151AtualizarJanela(){
+  var hint = document.getElementById('osAgendaHint');
+  if (!hint) return;
+  var hora = _v151Hora((document.getElementById('osHoraPrevista') || {}).value);
+  var dur  = _v151Dur((document.getElementById('osDuracaoPrevista') || {}).value);
+  var dia  = String((document.getElementById('osDataPrevista') || {}).value || '');
+  var partes = [];
+
+  if (!hora && !dur) {
+    hint.innerHTML = '<span style="color:var(--text-muted)">Sem horário: a OS aparece no dia do prazo, sem posição na agenda.</span>';
+    return;
+  }
+  if (hora && !dia) {
+    hint.innerHTML = '<span style="color:var(--red,#dc2626);font-weight:600">Horário sem PRAZO não agenda nada — preencha a data prevista acima.</span>';
+    return;
+  }
+  if (!hora && dur) {
+    hint.innerHTML = '<span style="color:var(--red,#dc2626);font-weight:600">Duração sem horário de início não posiciona a OS — informe a hora.</span>';
+    return;
+  }
+  var j = _v151JanelaOS({ hora_prevista: hora, duracao_prevista_min: dur });
+  partes.push('<b>' + escHtml(j.fim ? (j.ini + ' → ' + j.fim) : j.ini) + '</b>' +
+              (j.dur ? ' · ' + (Math.round(j.dur / 6) / 10) + 'h' : ' · sem duração informada') +
+              (j.viraDia ? ' <span style="color:var(--orange)">(passa da meia-noite)</span>' : ''));
+
+  var choques = _v151Choques(dia, j, document.getElementById('osId').value.trim(),
+                             (document.getElementById('osUsuario') || {}).value || '');
+  if (choques.length) {
+    partes.push('<span style="color:var(--red,#dc2626);font-weight:600">⚠ choca com ' +
+      choques.map(function(c){ return escHtml(c); }).join(' · ') + '</span>');
+  }
+  hint.innerHTML = partes.join('<br>');
+}
+
+// Outras OSs do MESMO responsável, no MESMO dia, cuja janela cruza esta.
+// ⚠ Só olha o que está no cache `_osList`: quando ele não foi carregado a
+//   função devolve lista vazia e a tela NÃO afirma que está livre — por isso
+//   o texto do aviso fala em "choca com", nunca em "sem conflitos".
+function _v151Choques(dia, j, idAtual, usuarioAtual){
+  if (!dia || !j || !Array.isArray(_osList) || !_osList.length) return [];
+  var a = _v151HHMMParaMin(j.ini);
+  var b = a + (j.dur || 60);
+  var out = [];
+  _osList.forEach(function(o){
+    if (String(o.id_os || '') === String(idAtual || '')) return;
+    var st = String(o.status || '').toUpperCase();
+    if (st === 'CONCLUIDA' || st === 'CANCELADA') return;
+    if (_v151DataISO(o.data_prevista) !== dia) return;
+    if (usuarioAtual && String(o.usuario_atual || '') !== String(usuarioAtual)) return;
+    var jo = _v151JanelaOS(o);
+    if (!jo) return;
+    var c = _v151HHMMParaMin(jo.ini), d = c + (jo.dur || 60);
+    if (a < d && c < b) {
+      out.push(String(o.numero_os || o.id_os || 'OS') + ' (' + (_v151JanelaTxt(o) || jo.ini) + ')');
+    }
+  });
+  return out.slice(0, 4);
+}
+
 function gosEmConstrucao(feature){ toast('🚧 ' + (feature||'Recurso') + ' — em construção, chega em breve.', 'warn'); }
 
 // ── Shell + dispatch de aba ──
@@ -15867,13 +16345,13 @@ function _renderOSRibbonShell(){
     <div class="gos-root">
       <div class="gos-topbar">
         <div class="gos-page-title">Gestão de OSs</div>
-        <div class="gos-page-sub">Kanban e calendário de agendamento das ordens de serviço</div>
+        <div class="gos-page-sub">Oito leituras da mesma fila · <b>Serviços Externos</b> = campo &nbsp;·&nbsp; <b>Oficina</b> = interno</div>
       </div>
       <div class="gos-ribbon">
         <div class="gos-ribbon-tab ${_osRibbonTab==='lista'?'active':''}" onclick="gosSetTab('lista')">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg>Lista</div>
         <div class="gos-ribbon-tab ${_osRibbonTab==='kanban'?'active':''}" onclick="gosSetTab('kanban')">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="5" height="16" rx="1"/><rect x="10" y="4" width="5" height="11" rx="1"/><rect x="17" y="4" width="4" height="14" rx="1"/></svg>Kanban</div>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="5" height="16" rx="1"/><rect x="10" y="4" width="5" height="11" rx="1"/><rect x="17" y="4" width="4" height="14" rx="1"/></svg>Serviços Externos</div>
         <div class="gos-ribbon-tab ${_osRibbonTab==='calendario'?'active':''}" onclick="gosSetTab('calendario')">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 9h18M8 3v4M16 3v4"/></svg>Calendário</div>
         <!-- V105 (P2/K1) — 4ª aba. gosSetTab já despacha por string; nada renomeado. -->
@@ -16454,7 +16932,7 @@ function gosSetTab(tab){
 // ════════════════════════════════════════════════════════════════════════════
 var _g8TabDesde   = Date.now();
 var _G8_LEMBRAR_MIN = 30;
-var _G8_NOMES = { lista:'Lista', kanban:'Kanban', calendario:'Calendário',
+var _G8_NOMES = { lista:'Lista', kanban:'Serviços Externos', calendario:'Calendário',
                   oficina:'Oficina', fila:'Fila', painel:'Painel',
                   raias:'Raias', matriz:'Matriz' };
 function _g8Casa(){
@@ -17064,16 +17542,53 @@ function _gosLegendaOficina(){
   </div>`;
 }
 
-// ── Kanban ──
+// ── Kanban → SERVIÇOS EXTERNOS (V150) ──
+// ════════════════════════════════════════════════════════════════════════════
+// V150 — A ABA PASSA A TER UM RECORTE, E O RECORTE É DITO NA TELA.
+//
+// Pedido do Fernando (27/08): "diria de mudar o nome para Serviços Externos,
+// visto que já temos uma aba para oficina que já mostra o Kanban de internos.
+// Mostrar nessa aba somente as OS externas."
+//
+// 🔑 O par já existia e ninguém tinha nomeado: a aba **Oficina** diz, no
+//    próprio vazio dela, *"O quadro mostra só OSs com local de atendimento
+//    interno"*. O "Kanban" mostrava TUDO — interno e externo misturados —, o
+//    que fazia dele um terceiro quadro que repetia metade do outro. Com o
+//    recorte, as duas abas viram as duas metades de uma divisão só, e a
+//    pergunta "onde vejo essa OS?" passa a ter uma resposta.
+//
+// ⚠ NADA foi renomeado no código: `data-view`, `gosSetTab('kanban')`,
+//   `gosRenderKanban`, `_gosKanbanGroupBy` e `_gosKanbanTipoFilter` seguem
+//   iguais (invariante da casa: mudança só ADITIVA). Só o RÓTULO mudou.
+// ⚠ 🔴 A OS QUE SAI DE UMA VISTA TEM DE APARECER EM OUTRA, E A TELA TEM DE
+//   DIZER ONDE. Filtro silencioso é como o admin aprende que "sumiu OS do
+//   sistema" — por isso a faixa `.gos-recorte`, com a CONTAGEM do que ficou
+//   de fora e o caminho para achá-lo. Contagem medida, nunca estimada.
+// ⚠ Os chips de tipo passam a listar só os tipos PRESENTES no recorte: chip de
+//   um tipo que só existe em OS interna filtraria para zero, sempre.
+// ⚠ `local_atendimento` é o mesmo campo da coluna "Local" da Lista e do
+//   detalhe da OS; a regra é a mesma dos dois (`==='interno'`), para as três
+//   telas nunca discordarem sobre a mesma OS.
+// ════════════════════════════════════════════════════════════════════════════
+function _gosEhInterna(o){ return String(o && o.local_atendimento || '') === 'interno'; }
+
 function gosRenderKanban(){
   const cont = document.getElementById('osRibbonContent');
   if (!cont) return;
   const tipoColor = _gosTipoColorMap();
-  const tiposPresentes = [...new Set(_osList.map(_gosTipoNome))];
+
+  // O recorte vem ANTES de tudo: chips, colunas e contagens descrevem o que a
+  // aba mostra, não o universo.
+  const externas = _osList.filter(o => !_gosEhInterna(o));
+  const nInternas = _osList.length - externas.length;
+  const tiposPresentes = [...new Set(externas.map(_gosTipoNome))];
 
   const chips = tiposPresentes.map(t=>{
-    const on = _gosKanbanTipoFilter.has(t); const tt = t.replace(/'/g,"\\'");
-    return `<span class="gos-chip ${on?'on':''}" onclick="gosToggleTipoFilter('${tt}')"><span class="gos-sw" style="background:${tipoColor[t]}"></span>${t}</span>`;
+    // V151 (B7) — o nome do tipo vem do cadastro e entrava cru no texto E no
+    // onclick. `escJs` para o atributo, `escHtml` para o texto: um apóstrofo
+    // fechava a chamada, um `&` quebrava o rótulo.
+    const on = _gosKanbanTipoFilter.has(t);
+    return `<span class="gos-chip ${on?'on':''}" onclick="gosToggleTipoFilter('${escJs(String(t))}')"><span class="gos-sw" style="background:${tipoColor[t]}"></span>${escHtml(String(t))}</span>`;
   }).join('');
 
   const bar = `<div class="gos-kanban-bar">
@@ -17085,16 +17600,42 @@ function gosRenderKanban(){
       <div class="gos-chips" style="margin-left:8px">${chips}</div>
     </div>`;
 
-  const data = _gosKanbanTipoFilter.size
-    ? _osList.filter(o=>_gosKanbanTipoFilter.has(_gosTipoNome(o)))
-    : _osList.slice();
+  const recorte = `<div class="gos-recorte">🚐 Este quadro mostra <b>só as ${externas.length} OS externas</b> (atendimento em campo).` +
+    (nInternas
+      ? ` As <b>${nInternas}</b> internas estão na aba <b>🏭 Oficina</b>, organizadas pela fase do pipeline` +
+        ` — <button class="btn btn-secondary btn-sm" style="padding:1px 8px;font-size:11px;margin-left:2px" onclick="gosSetTab('oficina')">ir para a Oficina</button>`
+      : ` Nenhuma OS interna nesta carga.`) + `</div>`;
 
+  const data = _gosKanbanTipoFilter.size
+    ? externas.filter(o=>_gosKanbanTipoFilter.has(_gosTipoNome(o)))
+    : externas.slice();
+
+  // ══════════════════════════════════════════════════════════════════════════
+  // V151 (B8) — O QUADRO NÃO PODE ENGOLIR OS
+  //
+  // As colunas eram exatamente as quatro chaves de `_GOS_STATUS`. Só que o
+  // `normalizeOsStatus_` do GAS termina em `map[v] || v`: qualquer texto que
+  // alguém digite na coluna STATUS da planilha ("AGUARDANDO PEÇA", ou vazio)
+  // ATRAVESSA e chega aqui. Essa OS não casava com nenhuma das quatro e não
+  // aparecia em coluna alguma — enquanto na aba Lista ela aparecia normalmente
+  // (lá há fallback). Duas abas da mesma tela discordando sobre o que existe.
+  // Agora: coluna "Outro status" que só aparece quando há alguém nela, e uma
+  // auditoria de contagem em vermelho se a soma das colunas não fechar com o
+  // total — o padrão da matriz do V140.
+  // ══════════════════════════════════════════════════════════════════════════
   let cols;
   if (_gosKanbanGroupBy==='status'){
     cols = Object.keys(_GOS_STATUS).map(k=>({ label:_GOS_STATUS[k].label, color:_GOS_STATUS[k].color, items:data.filter(o=>_gosStatusKey(o)===k) }));
+    const _orfas = data.filter(o=>!_GOS_STATUS[_gosStatusKey(o)]);
+    if (_orfas.length) cols.push({ label:'Outro status', color:'#6b7280', items:_orfas });
   } else {
     cols = tiposPresentes.map(t=>({ label:t, color:tipoColor[t], items:data.filter(o=>_gosTipoNome(o)===t) }));
   }
+  const _somaCols = cols.reduce((n,c)=>n+c.items.length, 0);
+  const _auditoria = _somaCols === data.length ? '' :
+    `<div style="font-size:11.5px;color:#991b1b;background:#fee2e2;border:1px solid #fca5a5;border-radius:8px;padding:7px 9px;margin-bottom:8px">
+       🔴 <b>${data.length - _somaCols} OS não couberam em nenhuma coluna</b> (${_somaCols} de ${data.length} exibidas).
+       Isto é um defeito desta tela, não da sua base — avise, e use a aba Lista enquanto isso.</div>`;
 
   const board = `<div class="gos-kanban">` + cols.map(c=>`
       <div class="gos-kcol" ondragover="event.preventDefault()" ondrop="gosKanbanDrop(event)">
@@ -17102,14 +17643,14 @@ function gosRenderKanban(){
         <div class="gos-klist">${ c.items.map(_gosKcard).join('') || '<div class="gos-kempty">—</div>' }</div>
       </div>`).join('') + `</div>`;
 
-  cont.innerHTML = bar + board;
+  cont.innerHTML = bar + recorte + _auditoria + board;
 }
 function _gosKcard(o){
   const tipoColor = _gosTipoColorMap();
   const tnome = _gosTipoNome(o); const d = _gosData(o); const sk = _gosStatusKey(o);
   const right = _gosKanbanGroupBy==='status'
-    ? `<span class="gos-tp"><span class="gos-sw" style="background:${tipoColor[tnome]}"></span>${tnome}</span>`
-    : `<span class="gos-badge" style="color:${(_GOS_STATUS[sk]||{}).color||'var(--text-muted)'}">${(_GOS_STATUS[sk]||{}).label||o.status||'—'}</span>`;
+    ? `<span class="gos-tp"><span class="gos-sw" style="background:${tipoColor[tnome]}"></span>${escHtml(String(tnome))}</span>`
+    : `<span class="gos-badge" style="color:${(_GOS_STATUS[sk]||{}).color||'var(--text-muted)'}">${escHtml(String((_GOS_STATUS[sk]||{}).label||o.status||'—'))}</span>`;
   // V127.2 — ERA LINHA MORTA: `maquina`/`maquina_label` NÃO são campos do
   // envelope do getOS (conferido no GAS v107) — `maq` era '' em 100% dos cards
   // desde que este render foi escrito, e o 🏭 nunca apareceu. Mesma classe do
@@ -17117,11 +17658,18 @@ function _gosKcard(o){
   // `maquinas_vinculadas` normalizada (GAS ~L9910), então é o mesmo helper.
   // ⚠ De quebra fecha um buraco de escape: o render antigo interpolava `maq`
   //   CRU no HTML, sem escHtml.
+  // V151 (B7) — `${o.cliente}` e `${o.numero_os}` iam CRUS para o HTML. Um `&`
+  // ou um `<` no nome do cliente (o cadastro já teve os dois) truncava o card e
+  // vazava tag. É o mesmo buraco que o V117 fechou no calendário e que ficou
+  // aberto aqui — e o comentário logo acima já registrava o caso do `maq`.
+  // V151 — e o rodapé passa a mostrar a JANELA, não só o dia.
+  const janK = _v151JanelaTxt(o);
+  const dTxt = d ? (_gosFmt(d) + (janK ? ' · ' + janK : '')) : 'Sem data';
   return `<div class="gos-kcard" draggable="true" ondragstart="gosKanbanDragStart(event)" onclick="openOSDetail('${_gosOid(o)}')">
-    <div class="gos-kcard-top"><span class="gos-osnum">${o.numero_os||'—'}</span>${_gosPrioTag(o)}<span style="margin-left:auto">${right}</span></div>
-    <div class="gos-kcard-cli">${o.cliente||'—'}</div>
+    <div class="gos-kcard-top"><span class="gos-osnum">${escHtml(String(o.numero_os||'—'))}</span>${_gosPrioTag(o)}<span style="margin-left:auto">${right}</span></div>
+    <div class="gos-kcard-cli">${escHtml(String(o.cliente||'—'))}</div>
     ${_gosLinhaMaquinas(o.maquinas_vinculadas)}
-    <div class="gos-kcard-foot"><span class="gos-kcard-date ${d?'':'nodate'}">📅 ${d?_gosFmt(d):'Sem data'}</span></div>
+    <div class="gos-kcard-foot"><span class="gos-kcard-date ${d?'':'nodate'}">${janK?'🕒':'📅'} ${escHtml(dTxt)}</span></div>
   </div>`;
 }
 function gosSetKanbanGroup(g){ _gosKanbanGroupBy = g; gosRenderKanban(); }
@@ -17146,7 +17694,24 @@ function gosRenderCalendario(){
   while(cells.length%7) cells.push({d:'',out:true});
 
   const byDay={};
-  _osList.forEach(o=>{ const dd=_gosData(o); if(!dd) return; const p=dd.split('-').map(Number); if(p[0]===y && p[1]-1===m) (byDay[p[2]]=byDay[p[2]]||[]).push(o); });
+  // V151 — `_gosData` fazia `String(x).slice(0,10)`, que devolve "45900" para a
+  // data que vier NUMBER do Sheets: a OS não entrava em dia nenhum E também não
+  // caía em "Sem data prevista" (a string é truthy). Ela simplesmente sumia do
+  // calendário. `_v151DataISO` resolve as três formas (ISO, Date, serial).
+  const _gosDia = o => _v151DataISO(o.data_prevista);
+  _osList.forEach(o=>{ const dd=_gosDia(o); if(!dd) return; const p=dd.split('-').map(Number); if(p[0]===y && p[1]-1===m) (byDay[p[2]]=byDay[p[2]]||[]).push(o); });
+  // V151 — dentro do dia, quem tem hora vem primeiro e em ordem de relógio.
+  // Sem isto o "agendamento" seria só um rótulo: a coluna do dia continuaria
+  // na ordem em que o servidor devolveu, que não é a ordem em que a equipe sai.
+  Object.keys(byDay).forEach(k=>{
+    byDay[k].sort((a,b)=>{
+      const ja=_v151JanelaOS(a), jb=_v151JanelaOS(b);
+      if (ja && !jb) return -1;
+      if (!ja && jb) return 1;
+      if (ja && jb) { const d=_v151HHMMParaMin(ja.ini)-_v151HHMMParaMin(jb.ini); if (d) return d; }
+      return String(a.numero_os||'').localeCompare(String(b.numero_os||''));
+    });
+  });
 
   const weeks = cells.map(c=>{
     if(c.out) return `<div class="gos-cal-cell out"><span class="gos-cal-daynum">${c.d}</span></div>`;
@@ -17166,15 +17731,20 @@ function gosRenderCalendario(){
       const cliCal = String(o.cliente || '—');
       const numCal = String(o.numero_os || '');
       const stCal  = (_GOS_STATUS[_gosStatusKey(o)] || {}).label || '';
+      // V151 — a hora vem na FRENTE do nome: é por ela que se lê uma coluna de
+      // dia. Sem hora, nada é escrito — inventar "00:00" seria exibir ausência
+      // de dado como fato (a doença que o V140 catalogou).
+      const janCal = _v151JanelaTxt(o);
+      const horaCal = janCal ? `<span class="gos-cal-ev-num" style="font-weight:700;margin-right:3px">${escHtml(janCal.split('–')[0])}</span>` : '';
       // ⚠ escHtml nos DOIS: o nome do cliente entra em atributo (title) e em
       //   texto. Vem do cadastro, onde já apareceram aspas e '&' (as grafias do
       //   backlog), e um único `"` cru fecharia o title e quebraria a célula.
-      return `<div class="gos-cal-ev" style="background:${col}18;color:${col}" title="${escHtml(numCal + ' · ' + cliCal + (stCal ? ' · ' + stCal : ''))}" onclick="openOSDetail('${_gosOid(o)}')"><span class="gos-edot" style="background:${col}"></span><span class="gos-cal-ev-cli">${escHtml(cliCal)}</span><span class="gos-cal-ev-num">· ${escHtml(numCal.slice(-3))}</span></div>`;
+      return `<div class="gos-cal-ev" style="background:${col}18;color:${col}" title="${escHtml(numCal + ' · ' + cliCal + (janCal ? ' · ' + janCal : '') + (stCal ? ' · ' + stCal : ''))}" onclick="openOSDetail('${_gosOid(o)}')"><span class="gos-edot" style="background:${col}"></span>${horaCal}<span class="gos-cal-ev-cli">${escHtml(cliCal)}</span><span class="gos-cal-ev-num">· ${escHtml(numCal.slice(-3))}</span></div>`;
     }).join('');
     return `<div class="gos-cal-cell ${dstr===todayStr?'today':''}"><span class="gos-cal-daynum">${c.d}</span>${evs}</div>`;
   }).join('');
 
-  const semData=_osList.filter(o=>!_gosData(o));
+  const semData=_osList.filter(o=>!_gosDia(o));
   const nodate = semData.length ? `<div class="gos-cal-nodate"><h4>Sem data prevista · ${semData.length}</h4><div class="gos-cal-nodate-list">`+
     // V117 — a pílula já mostrava o nome inteiro (o bug era só no calendário),
     // mas interpolava cliente e número CRUS. Mesmo escHtml, mesma razão.
@@ -17199,16 +17769,46 @@ function gosRenderCalendario(){
 function gosCalMove(d){ _gosCalRef = new Date(_gosCalRef.getFullYear(), _gosCalRef.getMonth()+d, 1); gosRenderCalendario(); }
 function gosCalToday(){ _gosCalRef = new Date(); gosRenderCalendario(); }
 
+// ══════════════════════════════════════════════════════════════════════════════
+// V151 (B6) — O RESPONSÁVEL QUE SUMIA DO SELECT, E O SALVAR QUE O APAGAVA
+//
+// `if (t.id === selectedId)` falhava em quatro entradas reais:
+//   (a) OS criada pelo celular grava `usuario_atual` com o NOME, não com o id;
+//   (b) `t.id` pode chegar NUMBER do Sheets — `1 === '1'` é falso (lição V84);
+//   (c) usuário desligado (ativo='NÃO') era filtrado FORA da lista, e a OS
+//       antiga dele ficava sem responsável na tela;
+//   (d) `getUsuarios` falhando no catch vazio deixa `_usuList` sem ninguém.
+// Em todas, o select mostrava "Selecione um usuário…" — indistinguível de
+// "ainda não preenchido" — e o Salvar mandava `usuario_atual: ''`, apagando o
+// dono que a Fila e o Painel mostravam.
+// Agora: casa por id OU por nome com String() nas duas pontas; o inativo ainda
+// aparece, marcado; e o valor que não existir em lista nenhuma vira opção
+// própria, para a tela dizer o que está gravado em vez de dizer nada.
+// ══════════════════════════════════════════════════════════════════════════════
 function _populateOSUsuarioSelect(selectedId) {
   const sel = document.getElementById('osUsuario');
   sel.innerHTML = '<option value="">Selecione um usuário…</option>';
-  _usuList.filter(t => String(t.ativo||'').toUpperCase() !== 'NÃO').forEach(t => {
+  const alvo = String(selectedId === null || selectedId === undefined ? '' : selectedId).trim();
+  const alvoN = alvo.toUpperCase();
+  let achou = false;
+  (Array.isArray(_usuList) ? _usuList : []).forEach(t => {
+    const inativo = String(t.ativo||'').toUpperCase() === 'NÃO';
+    const casa = alvo && (String(t.id||'').trim() === alvo ||
+                          String(t.nome||'').trim().toUpperCase() === alvoN);
+    if (inativo && !casa) return;          // inativo só entra se for o dono desta OS
     const opt = document.createElement('option');
     opt.value = t.id;
-    opt.textContent = t.nome;
-    if (t.id === selectedId) opt.selected = true;
+    opt.textContent = String(t.nome||'') + (inativo ? ' (inativo)' : '');
+    if (casa) { opt.selected = true; achou = true; }
     sel.appendChild(opt);
   });
+  if (alvo && !achou) {
+    const opt = document.createElement('option');
+    opt.value = alvo;
+    opt.textContent = alvo + ' (gravado na OS, fora do cadastro)';
+    opt.selected = true;
+    sel.appendChild(opt);
+  }
 }
 
 
@@ -17325,6 +17925,33 @@ async function deleteOSFromList(idOs) {
   }
 }
 
+// ══════════════════════════════════════════════════════════════════════════════
+// V151 (B3) — 🔴 O onchange QUE DESTRUÍA A SELEÇÃO
+//
+// Era, inteiro, dentro do atributo:
+//   _osMachineSelection = this.checked
+//     ? _osMachineSelection.add(v) || _osMachineSelection
+//     : _osMachineSelection.delete(v) || _osMachineSelection
+// `Set.prototype.add` devolve o próprio Set (truthy) — o ramo do `checked`
+// funcionava por acidente. Mas `Set.prototype.delete` devolve **true** quando o
+// item existia: `true || _osMachineSelection` é `true`, e a variável deixava de
+// ser um Set. A partir daí:
+//   · `_osClienteInputHandler` → `_renderOSMachineSelector()` SEM argumento →
+//     `_osMachineSelection.has` lança TypeError ANTES do `wrap.innerHTML` → a
+//     lista continua mostrando as máquinas do cliente ANTERIOR, marcadas, e o
+//     Salvar as grava no cliente novo;
+//   · "+ Subsistema avulso" grava a peça no servidor e só então estoura no
+//     `.add` — cadastro que deu certo aparecendo como erro.
+// 🔑 A lição não é "faltou um teste": é que lógica com valor de retorno
+//    implícito não cabe num atributo HTML, onde ninguém a lê duas vezes.
+// ══════════════════════════════════════════════════════════════════════════════
+function _v151ToggleMaquina(el) {
+  if (!el) return;
+  if (!(_osMachineSelection instanceof Set)) _osMachineSelection = new Set();
+  const v = String(el.value || '');
+  if (el.checked) _osMachineSelection.add(v); else _osMachineSelection.delete(v);
+}
+
 function _renderOSMachineSelector(selectedIds) {
   const wrap = document.getElementById('osMaquinasSelector');
   if (!wrap) return;
@@ -17345,7 +17972,7 @@ function _renderOSMachineSelector(selectedIds) {
     const id = _osMachineId(m);
     const checked = _osMachineSelection.has(id) ? 'checked' : '';
     return `<label style="display:flex;align-items:flex-start;gap:8px;padding:7px 8px;border:1px solid var(--border);border-radius:8px;margin-bottom:6px;background:var(--surface)">
-      <input type="checkbox" class="os-machine-check" value="${escHtml(id)}" ${checked} onchange="_osMachineSelection=this.checked?_osMachineSelection.add(this.value)||_osMachineSelection:_osMachineSelection.delete(this.value)||_osMachineSelection">
+      <input type="checkbox" class="os-machine-check" value="${escHtml(id)}" ${checked} onchange="_v151ToggleMaquina(this)">
       <span style="font-size:12px;color:var(--text)">${_osMachineLabelHtml(m)}</span>
     </label>`;
   };
@@ -17655,7 +18282,48 @@ function _v127ToggleFechamento() {
   }
 }
 
-async function openModalOS(id) {
+// ══════════════════════════════════════════════════════════════════════════════
+// V150 — ABRIR OS A PARTIR DA MÁQUINA
+//
+// Pedido do Fernando (27/08): "acrescentar um botão de abrir OS direto na tela
+// da máquina". O caminho até hoje era: sair de Máquinas → Gestão de OSs →
+// + Abrir OS → digitar o cliente de novo → procurar a máquina na lista de
+// checkboxes. Quatro telas para uma informação que já estava na mão.
+//
+// 🔑 O QUE ELE ECONOMIZA NÃO É CLIQUE, É ERRO DE VÍNCULO. Redigitar o cliente
+//    é onde nasce a OS presa ao cliente errado (ou a nenhum, quando o nome não
+//    casa com o cadastro e o `osClienteId` fica vazio) — e OS sem `id_cliente`
+//    é exatamente a órfã de FK que derrubou lotes inteiros do espelho em 16/08.
+//    Aqui cliente, `id_cliente` e o id da máquina saem do MESMO registro.
+//
+// ⚠ ADITIVO: `openModalOS(id)` continua com a assinatura e o comportamento de
+//   sempre; o 2º parâmetro é opcional e só é lido no ramo de CRIAÇÃO. Nenhum
+//   dos ~20 chamadores existentes passa dois argumentos.
+// ⚠ O preset é aplicado DEPOIS dos awaits de tipos/usuários, junto com o resto
+//   do ramo "nova OS" — aplicá-lo antes seria sobrescrito pelo reset síncrono.
+// ⚠ Máquina sem cliente cadastrado NÃO abre o modal em branco fingindo que deu
+//   certo: avisa e para. Silêncio aqui produziria a OS órfã que o botão existe
+//   para evitar.
+// ══════════════════════════════════════════════════════════════════════════════
+function _v150AbrirOSDaMaquina(machineId, fecharDetalhe) {
+  const eq = (db.machines || []).find(m => String(m.id) === String(machineId));
+  if (!eq) { toast('Máquina não encontrada no cadastro local.', 'error'); return; }
+
+  const nome = String(eq.client || '').trim();
+  if (!nome) {
+    toast('Esta máquina não tem cliente no cadastro — abra a OS pela Gestão de OSs.', 'warning');
+    return;
+  }
+  // O id do cliente vem do CADASTRO, resolvido pelo mesmo `clientKey` que a
+  // tela de Máquinas usa para agrupar (grafia divergente não pode virar OS sem
+  // id_cliente).
+  const cli = (db.clients || []).find(c => clientKey(c.nome || '') === clientKey(nome)) || null;
+
+  if (fecharDetalhe) { try { closeModal('modalMachineParts'); } catch (e) {} }
+  openModalOS(null, { cliente: nome, cliente_id: cli ? String(cli.id) : '', machine_id: String(eq.id) });
+}
+
+async function openModalOS(id, _v150Preset) {
   // v56 — Reset síncrono roda antes de qualquer await, e o modal já abre em
   // seguida (com indicador de carregamento no título) em vez de só aparecer
   // depois que tipos/usuários/máquinas terminam de carregar — antes disso
@@ -17677,6 +18345,13 @@ async function openModalOS(id) {
   document.getElementById('osPrioridade').value = 'normal';
   document.getElementById('osDataPrevista').value = '';
   document.getElementById('osLocalAtendimento').value = 'externo';
+  // V151 — os campos novos entram no reset SÍNCRONO, com todo o resto (lição
+  // do V103 A2: campo que só é limpo depois do await volta preenchido da OS
+  // anterior quando algo falha no meio).
+  document.getElementById('osHoraPrevista').value = '';
+  document.getElementById('osDuracaoPrevista').value = '';
+  _v151ResetLeitura();
+  _v151AtualizarJanela();
   _populateOSUsuarioSelect('');
   _osMachineSelection = new Set();
   _renderOSMachineSelector([]);
@@ -17686,8 +18361,34 @@ async function openModalOS(id) {
   dl.innerHTML = (db?.clients||[]).filter(c=>c.nome)
     .map(c=>`<option data-id="${c.id}" value="${(c.nome||'').replace(/"/g,'&quot;')}">`).join('');
 
-  const os = id ? _osList.find(o => o.id_os === id) : null;
-  if (id && !os) { openModal('modalOS'); return; }
+  // ══════════════════════════════════════════════════════════════════════════
+  // V151 (B2) — 🔴 A OS QUE NÃO ESTAVA NO CACHE ABRIA UM FORMULÁRIO EM BRANCO
+  //
+  // `_osList` só é preenchida por quem passa pela tela de OSs ou pelos
+  // Chamados do portal. Quem entra direto em "Tarefas do Adm" e clica
+  // "🏁 Encerrar OS" chamava openModalOS(id) com a lista VAZIA: o `find`
+  // devolvia undefined, o modal abria em branco — com `osId` vazio, porque o
+  // reset acabara de limpá-lo — e o Salvar seguinte CRIAVA UMA OS NOVA em vez
+  // de encerrar a existente. Silencioso nos dois sentidos: nenhum aviso na
+  // abertura, e o toast do fim dizia "OS salva com sucesso".
+  // ⚠ String() nas duas pontas: `id_os` pode chegar NUMBER do Sheets (lição
+  //   do V84), e `===` estrito não casaria.
+  // ⚠ Se nem o servidor souber da OS, o modal NÃO abre. Formulário em branco
+  //   com título "Editar OS" é pior que erro nenhum.
+  // ══════════════════════════════════════════════════════════════════════════
+  let os = id ? _osList.find(o => String(o.id_os || '') === String(id)) : null;
+  if (id && !os) {
+    try {
+      const _rOs = await syncToGS('getMaquinasByOS', { id_os: id });
+      if (_rOs && _rOs.os && _rOs.os.id_os) os = _rOs.os;
+    } catch (e) {
+      if (e.message && e.message.includes('AUTH_GOOGLE')) { hubLogout(); return; }
+    }
+    if (!os) {
+      toast('OS ' + id + ' não foi encontrada — abra a tela Gestão de OSs e tente de novo.', 'error');
+      return;
+    }
+  }
   document.getElementById('modalOSTitle').textContent = id ? 'Editar OS' : 'Nova OS';
 
   const loadingEl = document.getElementById('modalOSLoading');
@@ -17738,11 +18439,48 @@ async function openModalOS(id) {
       // e revela o campo se a OS já está encerrada.
       document.getElementById('osObservacaoFechamento').value = String(os.observacao_fechamento || '');
       _v127ToggleFechamento();
-      if (os.data_abertura) document.getElementById('osDataAbertura').value = String(os.data_abertura).slice(0,10);
-      document.getElementById('osPrioridade').value = os.prioridade || 'normal';
-      if (os.data_prevista) document.getElementById('osDataPrevista').value = String(os.data_prevista).slice(0,10);
-      document.getElementById('osLocalAtendimento').value = (os.local_atendimento === 'interno') ? 'interno' : 'externo';
+      // ══════════════════════════════════════════════════════════════════════
+      // V151 (B5) — DATA QUE A TELA NÃO ENTENDE NÃO PODE VIRAR DATA DE HOJE
+      //
+      // Antes: `if (os.data_abertura) … .slice(0,10)`. Duas fugas no mesmo if:
+      //  · OS sem data_abertura → o if é falso, o campo fica com a data de
+      //    HOJE (que o reset acabou de escrever) e o Salvar a carimba como
+      //    abertura da OS. É o "0 virando hoje" do V140, de novo.
+      //  · data em formato não-ISO ("27/08/2026", Date, serial do Sheets) →
+      //    `.slice(0,10)` não devolve AAAA-MM-DD, o <input type=date>
+      //    SANITIZA para vazio, e o Salvar APAGA a data que existia.
+      // Agora: normaliza; o que não for legível fica registrado em
+      // _v151Ilegivel, aparece na tarja amarela e NÃO é reenviado no Salvar.
+      // ══════════════════════════════════════════════════════════════════════
+      const _abISO = _v151DataISO(os.data_abertura);
+      document.getElementById('osDataAbertura').value = _abISO;
+      if (!_abISO && os.data_abertura) {
+        _v151Ilegivel.abertura = String(os.data_abertura);
+        _v151Avisar('A <b>data de abertura</b> gravada (<code>' + escHtml(String(os.data_abertura)) +
+                    '</code>) não está num formato que o campo entende. Ela foi deixada em branco na tela e <b>não será regravada</b> ao salvar.');
+      }
+      const _przISO = _v151DataISO(os.data_prevista);
+      document.getElementById('osDataPrevista').value = _przISO;
+      if (!_przISO && os.data_prevista) {
+        _v151Ilegivel.prevista = String(os.data_prevista);
+        _v151Avisar('O <b>prazo</b> gravado (<code>' + escHtml(String(os.data_prevista)) +
+                    '</code>) não está num formato que o campo entende. Ele foi deixado em branco na tela e <b>não será regravado</b> ao salvar.');
+      }
+      // V151 (B4) — 'Alta' não casa a opção 'alta': o select ficava VAZIO e o
+      // Salvar gravava ''. Vale para os três selects que vêm da planilha.
+      _v151SetSelect(document.getElementById('osPrioridade'), os.prioridade, 'normal');
+      _v151SetSelect(document.getElementById('osLocalAtendimento'),
+                     String(os.local_atendimento || '').trim().toLowerCase() === 'interno' ? 'interno' : (os.local_atendimento || 'externo'), 'externo');
+      // V151 — a janela prevista da OS
+      document.getElementById('osHoraPrevista').value = _v151Hora(os.hora_prevista);
+      const _durOS = _v151Dur(os.duracao_prevista_min);
+      document.getElementById('osDuracaoPrevista').value = _durOS === null ? '' : String(_durOS);
+      if (os.hora_prevista && !_v151Hora(os.hora_prevista)) {
+        _v151Avisar('O <b>horário previsto</b> gravado (<code>' + escHtml(String(os.hora_prevista)) +
+                    '</code>) não pôde ser lido — confira a formatação da célula na planilha.');
+      }
       _populateOSUsuarioSelect(os.usuario_atual || '');
+      _v151AtualizarJanela();
       try {
         const linkedMachineIds = await _loadOSLinkedMachines(id);
         _renderOSMachineSelector(linkedMachineIds);
@@ -17761,8 +18499,28 @@ async function openModalOS(id) {
         _v127ToggleFechamento();
       } catch(e) {
         if (e.message && e.message.includes('AUTH_GOOGLE')) { hubLogout(); return; }
-        toast('Não foi possível carregar máquinas vinculadas: ' + e.message, 'warning');
+        // ════════════════════════════════════════════════════════════════════
+        // V151 (B1) — 🔴 AQUI SE PERDIAM OS VÍNCULOS DA OS
+        //
+        // O catch desenhava o seletor VAZIO e seguia. O adm via as máquinas do
+        // cliente, todas desmarcadas, corrigia a descrição e salvava: o payload
+        // levava `maquinas_vinculadas: []` (está na ALLOWED do saveOS) e o GAS
+        // DESATIVAVA todos os vínculos da OS. Uma falha de rede virava perda de
+        // dado, com um toast amarelo como único aviso.
+        // Agora a marca `_v151MaqLidas=false` faz o Salvar OMITIR a chave —
+        // `hasOwnProperty` no GAS não a encontra e não toca em nada.
+        // ════════════════════════════════════════════════════════════════════
+        _v151MaqLidas = false;
+        toast('Não consegui ler as máquinas desta OS: ' + e.message + ' — os vínculos ficam como estão.', 'warning');
         _renderOSMachineSelector([]);
+        const _wrapMaq = document.getElementById('osMaquinasSelector');
+        if (_wrapMaq) {
+          _wrapMaq.insertAdjacentHTML('afterbegin',
+            '<div style="font-size:11.5px;color:#991b1b;background:#fee2e2;border:1px solid #fca5a5;border-radius:8px;padding:7px 9px;margin-bottom:8px;line-height:1.4">' +
+            '🔴 <b>As máquinas vinculadas não puderam ser lidas.</b> O que está marcado aqui NÃO reflete a OS. ' +
+            'Ao salvar, os vínculos <b>ficam como estão</b> — feche e abra a OS de novo para editá-los.</div>');
+        }
+        _v151Avisar('As <b>máquinas vinculadas</b> não puderam ser lidas — elas não serão alteradas ao salvar.');
       }
     } else {
       // v62 FIX — Em "Nova OS", o select de usuários era populado no reset
@@ -17772,6 +18530,20 @@ async function openModalOS(id) {
       // para que a lista de usuários apareça já na criação da OS.
       _populateOSUsuarioSelect('');
       _tipoAntesDoSave = '';   // V119 (4) — criação não tem "tipo anterior"
+      // V150 — preset vindo da tela de Máquinas (ver _v150AbrirOSDaMaquina).
+      // Aplicado aqui, no fim do ramo de criação: é o único ponto em que os
+      // awaits já terminaram e nada mais vai sobrescrever os campos.
+      if (_v150Preset && _v150Preset.cliente) {
+        document.getElementById('osCliente').value = _v150Preset.cliente;
+        document.getElementById('osClienteId').value = _v150Preset.cliente_id || '';
+        _osMachineSelection = new Set(_v150Preset.machine_id ? [String(_v150Preset.machine_id)] : []);
+        _renderOSMachineSelector(Array.from(_osMachineSelection));
+        // ⚠ Cliente sem id não é erro fatal (a OS pode ser salva assim desde
+        //   sempre), mas é o começo da órfã de FK — então é DITO, não engolido.
+        if (!_v150Preset.cliente_id) {
+          toast('Atenção: "' + _v150Preset.cliente + '" não casou com nenhum cliente cadastrado. Confira o campo Cliente antes de salvar.', 'warning');
+        }
+      }
     }
   } finally {
     if (loadingEl) loadingEl.style.display = 'none';
@@ -17801,12 +18573,32 @@ async function saveOSModal(btnEl) {
   const prioridade    = document.getElementById('osPrioridade').value.trim();
   const dataPrevista  = document.getElementById('osDataPrevista').value.trim();
   const localAtendimento = document.getElementById('osLocalAtendimento').value.trim();
+  // V151 — a janela prevista
+  const horaPrevista  = _v151Hora(document.getElementById('osHoraPrevista').value);
+  const duracaoPrev   = _v151Dur(document.getElementById('osDuracaoPrevista').value);
 
   // v75 — número da OS não é mais digitado: em Nova OS vai vazio e o backend gera
   // PGP-{ano}-{sequencial} (generateOsNumber_); em edição, o número já existe e é
   // preservado (o backend não altera numero_os no update).
   if (!cliente) { toast('Preencha o cliente.', 'error'); return; }
   if (!tipo) { toast('Selecione o tipo de OS.', 'error'); return; }
+  // ══════════════════════════════════════════════════════════════════════════
+  // V151 — HORÁRIO SÓ EXISTE PENDURADO NUMA DATA.
+  // Guardar 08:30 sem dia produz um dado que NENHUMA tela consegue posicionar:
+  // não entra no calendário, não entra na agenda, não colide com nada — e
+  // quem digitou fica achando que agendou. Recusar com a razão escrita é mais
+  // barato que descobrir isso três semanas depois, no campo.
+  // ══════════════════════════════════════════════════════════════════════════
+  if (horaPrevista && !dataPrevista) {
+    toast('Horário previsto sem PRAZO não agenda nada. Informe a data prevista.', 'error');
+    try { document.getElementById('osDataPrevista').focus(); } catch(e) {}
+    return;
+  }
+  if (duracaoPrev && !horaPrevista) {
+    toast('Duração sem horário de início não posiciona a OS. Informe o horário previsto.', 'error');
+    try { document.getElementById('osHoraPrevista').focus(); } catch(e) {}
+    return;
+  }
 
   // Resolver id_cliente: preferir hidden field; fallback por nome no db local
   let clienteId = document.getElementById('osClienteId').value.trim();
@@ -17824,14 +18616,22 @@ async function saveOSModal(btnEl) {
     tipo_os: tipo,
     descricao,
     status,
-    data_abertura: data,
     usuario_atual: usuario,
     usuarios_vinculados: usuario ? [usuario] : [],
     prioridade,
-    data_prevista: dataPrevista,
     local_atendimento: localAtendimento,
-    maquinas_vinculadas: _getSelectedOSMachineIds(),
+    // V151 — janela prevista. Vão SEMPRE (inclusive vazias): apagar o horário
+    // de uma OS reagendada tem de ser possível pela mesma tela que o pôs.
+    hora_prevista: horaPrevista,
+    duracao_prevista_min: duracaoPrev === null ? '' : duracaoPrev,
   };
+  // ── V151 (B1/B5) — o que a tela NÃO conseguiu ler não é regravado ─────────
+  // O `saveOS` do GAS decide o que tocar por `hasOwnProperty`: chave AUSENTE é
+  // campo intocado, chave presente com '' é campo APAGADO. Toda a diferença
+  // entre preservar e destruir está em não pôr a chave no objeto.
+  if (_v151MaqLidas) payload.maquinas_vinculadas = _getSelectedOSMachineIds();
+  if (!id || data) payload.data_abertura = data;         // na criação vai sempre; na edição, só se legível
+  if (!_v151Ilegivel.prevista) payload.data_prevista = dataPrevista;
   // ── V127 — a chave que faltava. `saveOS` já a aceita (ALLOWED, GAS ~L8310);
   //    o modal é que nunca a enviava. Só vai quando o status ENCERRA, para não
   //    sobrescrever com vazio a observação de uma OS já fechada que está sendo
@@ -19990,8 +20790,43 @@ if(!gsUrl){
       </div>
       <div class="form-row">
         <label class="form-label">Prazo (data prevista) <span style="font-weight:400;color:var(--text-muted)">opcional</span></label>
-        <input class="form-input" type="date" id="osDataPrevista">
+        <input class="form-input" type="date" id="osDataPrevista" onchange="_v151AtualizarJanela()">
       </div>
+      <!-- ══ V151 · O AGENDAMENTO ════════════════════════════════════════════
+           A data responde "para quando"; ela nunca respondeu "a que horas" —
+           e é a hora que decide se duas OSs cabem no mesmo dia da mesma
+           pessoa. Duração em MINUTOS, a mesma unidade da tarefa
+           (tempo_estimado_min), para a carga da Agenda somar sem conversão.
+           🔴 Depende do GAS v126: sem ele o servidor descarta as duas chaves
+              em silêncio. -->
+      <div class="form-row">
+        <label class="form-label">Agendamento <span style="font-weight:400;color:var(--text-muted)">opcional</span></label>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <div style="flex:1 1 140px;min-width:130px">
+            <div style="font-size:10px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:3px">Horário previsto</div>
+            <input class="form-input" type="time" id="osHoraPrevista" step="300"
+              autocomplete="off" name="pcm_os_hora_nofill" data-lpignore="true" data-1p-ignore
+              oninput="_v151AtualizarJanela()" onchange="_v151AtualizarJanela()">
+          </div>
+          <div style="flex:1 1 140px;min-width:130px">
+            <div style="font-size:10px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:3px">Duração (minutos)</div>
+            <input class="form-input" type="number" id="osDuracaoPrevista" min="0" step="15" placeholder="ex.: 120"
+              autocomplete="off" name="pcm_os_dur_nofill" data-lpignore="true" data-1p-ignore
+              oninput="_v151AtualizarJanela()" onchange="_v151AtualizarJanela()">
+          </div>
+        </div>
+        <div style="margin-top:6px;display:flex;gap:5px;flex-wrap:wrap">
+          <span class="gos-chip" style="cursor:pointer" onclick="_v151SetDur(30)">30 min</span>
+          <span class="gos-chip" style="cursor:pointer" onclick="_v151SetDur(60)">1 h</span>
+          <span class="gos-chip" style="cursor:pointer" onclick="_v151SetDur(120)">2 h</span>
+          <span class="gos-chip" style="cursor:pointer" onclick="_v151SetDur(240)">4 h</span>
+          <span class="gos-chip" style="cursor:pointer" onclick="_v151SetDur(480)">dia todo (8 h)</span>
+        </div>
+        <div id="osAgendaHint" style="font-size:11.5px;color:var(--text-muted);margin-top:6px;line-height:1.45"></div>
+      </div>
+      <!-- V151 (B1/B5) — a tarja do que a tela NÃO conseguiu ler. Enquanto ela
+           estiver visível, o campo correspondente não é regravado no Salvar. -->
+      <div class="form-row" id="osAvisoLeitura" style="display:none;font-size:11.5px;color:#92400e;background:#fef3c7;border:1px solid #fcd34d;border-radius:8px;padding:8px 10px;line-height:1.45"></div>
       <div class="form-row">
         <label class="form-label">Usuário responsável</label>
         <select class="form-select" id="osUsuario">
@@ -23898,7 +24733,13 @@ async function deleteTipoOSAction(tipoId, nome) {
 // entra sozinho na agenda (origem 'execucao') — o Gantt acompanha a realidade.
 // Contra GAS ≤v110 (sem `agenda` no envelope) cai no render antigo, intacto.
 
-async function renderSaturacao() {
+// V150 — 2º parâmetro OPCIONAL: um envelope já buscado pelo vigia. Sem ele a
+// função se comporta exatamente como sempre (busca ela mesma). Existe para o
+// clique em "Atualizar" da tira NÃO gastar uma segunda ida ao GAS por um dado
+// que já está na memória — e, mais importante, para a tela mostrar EXATAMENTE
+// o estado que a tira anunciou, não um terceiro estado buscado meio segundo
+// depois. Tira que promete uma coisa e entrega outra é tira que se ignora.
+async function renderSaturacao(_v150Pronto) {
   const el = document.getElementById('viewSaturacao');
   // ── V118 (B10) — cache-first + revalidação (mesma abordagem do termômetro) ──
   const _temCacheSat = (_saturacaoCacheHtml !== null);
@@ -23908,7 +24749,7 @@ async function renderSaturacao() {
 
   let result;
   try {
-    result = await gsGet('getSaturacaoUsuarios');
+    result = _v150Pronto || await gsGet('getSaturacaoUsuarios');
   } catch(e) {
     if (_temCacheSat) { console.warn('[renderSaturacao] atualização em segundo plano falhou, mantendo cache:', e.message); return; }
     el.innerHTML = `<div class="empty"><div class="empty-icon">⚠️</div>
@@ -23920,13 +24761,62 @@ async function renderSaturacao() {
   // V129 — payload guardado para o modal de designação checar conflito local
   window._satPayload = result;
 
+  // ══════════════════════════════════════════════════════════════════════════
+  // V151 — A GRADE PRECISA DE DUAS COISAS QUE O ENVELOPE DA SATURAÇÃO NÃO TRAZ
+  //
+  // 1) as OSs agendadas (hora + duração), para entrarem na mesma grade das
+  //    tarefas e das demandas;
+  // 2) o cadastro de usuários, porque a OS guarda o **id** do responsável
+  //    (`usuario_atual` = `t.id` do select) enquanto as linhas da grade são
+  //    **nomes**. Sem o de-para, a grade imprimiria a CHAVE no lugar da pessoa
+  //    — exatamente o defeito que o V142 catalogou.
+  // ⚠ A lista de OS vai para `_v151OsAgenda`, NÃO para `_osList`: o V146 deixou
+  //   escrito que os lugares que escrevem `_osList` têm de pedir os MESMOS
+  //   campos (`com_fila`), e um terceiro escritor com outro envelope reabriria
+  //   aquele buraco pela porta de trás.
+  // ══════════════════════════════════════════════════════════════════════════
+  if (!_usuList || !_usuList.length) {
+    try {
+      const _ru = await gsGet('getUsuarios');
+      _usuList = _ru?.tecnicos || _ru?.usuarios || _ru?.data || [];
+    } catch (e) { _usuList = _usuList || []; }
+  }
+  // ⚠ Custo: o V150 mediu que cada tela vigiada custa 1 requisição/min por aba,
+  //   e esta função é repintada pelo clique da tira do vigia. Uma leitura nova
+  //   a cada repaint dobraria essa conta por um dado que muda devagar — daí a
+  //   janela de frescor de 90 s, e a preferência absoluta por `_osList` quando
+  //   ela já está carregada (aí o custo é zero).
+  if (Array.isArray(_osList) && _osList.length) {
+    _v151OsAgenda = _osList;
+  } else if (!_v151OsAgenda.length || (Date.now() - _v151OsAgendaEm) > 90000) {
+    try {
+      const _ro = await gsGet('getOS', { includeClosed: 'false', escopo: 'todas' });
+      _v151OsAgenda = (_ro && (_ro.os || _ro.data)) || [];
+      _v151OsAgendaEm = Date.now();
+    } catch (e) { /* sem lista: a grade some com as OSs, nunca inventa */ }
+  }
+
   if (!Array.isArray(result?.agenda)) {           // GAS ≤v109: render legado
     _satRenderLegado(el, result);
     return;
   }
 
   const usuarios = result.usuarios || [];
-  const temAlgo = usuarios.length || (result.nao_designadas || []).length;
+  // ══════════════════════════════════════════════════════════════════════════
+  // V151 — 🔴 AUSÊNCIA DE TAREFA VIRAVA AUSÊNCIA DE AGENDA
+  //
+  // `temAlgo` olhava só TAREFAS. Numa semana em que a equipe tem demandas e OSs
+  // agendadas mas nenhuma tarefa de pipeline designada, a tela dizia "Nenhuma
+  // tarefa aberta" e RETORNAVA — a grade inteira, com os compromissos que
+  // existem, nunca era desenhada. É a mesma doença que o V135 (A3) corrigiu na
+  // faixa de demandas ("ausência de demanda NÃO pode virar ausência de seção"),
+  // uma camada acima: aqui ela apagava a agenda toda.
+  // ⚠ Foi a bancada desta rodada que achou — a tela "funcionava" em todo
+  //   ambiente que tinha pelo menos uma tarefa, que é todo ambiente real de
+  //   quem testou até hoje.
+  // ══════════════════════════════════════════════════════════════════════════
+  const temAlgo = usuarios.length || (result.nao_designadas || []).length
+                  || (result.demandas || []).length || _v151ItensOS(_satDiaKeyLocal(new Date())).length;
   let html = `<div style="display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:4px">
       <div style="font-size:18px;font-weight:700">Agenda da equipe &amp; saturação</div>
       <button class="btn btn-secondary btn-sm" style="padding:2px 10px;font-size:11px" onclick="_saturacaoCacheHtml=null;renderSaturacao()">↻ Atualizar</button>
@@ -23956,7 +24846,9 @@ async function renderSaturacao() {
       <div class="empty-title">Nenhuma tarefa aberta</div>
       <div class="empty-sub">Quando houver tarefas no pipeline das OS, a agenda aparece aqui.</div>
     </div>`;
-    el.innerHTML = html; _saturacaoCacheHtml = html; return;
+    el.innerHTML = html; _saturacaoCacheHtml = html;
+    try { _v150SatMarcarPintado(result); } catch(e){}   // V150
+    return;
   }
 
   html += _satRenderCards(result);
@@ -23973,7 +24865,181 @@ async function renderSaturacao() {
 
   el.innerHTML = html;
   _saturacaoCacheHtml = html;   // V118 (B10)
+  try { _v150SatMarcarPintado(result); } catch(e){}   // V150 — o que está na tela, agora
 }
+
+/* ════════════════════════════════════════════════════════════════════════════
+   V150 · O VIGIA DA AGENDA — "avisa, não age"
+   ────────────────────────────────────────────────────────────────────────────
+   Pedido do Fernando (27/08): "quando eu apago ou concluo uma demanda, ela não
+   aparece para outro usuário antes que alguém atualize a tela; isso pode gerar
+   decisões duplicadas ou ambíguas".
+
+   O risco é real e é o pior tipo: a tela do outro não fica em branco — ela fica
+   CONVINCENTE, mostrando uma demanda que já não existe. Ninguém desconfia de
+   um dado que continua ali.
+
+   🔑 MAS A RESPOSTA NÃO É REPINTAR SOZINHO, e a razão está escrita neste mesmo
+      arquivo, no V138: *"tela que muda embaixo da mão de quem está olhando é a
+      definição de ferramenta hostil — e, pior, ensina o gerente a desconfiar do
+      que vê"*. Foi por isso que o lembrete de vista ACENDE e não age. Repintar
+      a agenda enquanto alguém arrasta o olho por uma linha, ou logo depois de
+      ele decidir designar alguém, quebraria a mesma regra por dentro.
+
+   ⇒ Andon: acende, não age. O vigia bate no GAS a cada 60 s (só com a aba
+     VISÍVEL e só quando a Agenda está aberta — a mesma disciplina do poll de
+     notificações, V118 A15), compara uma impressão digital do que está NA TELA
+     com a do servidor e, se diferirem, mostra uma tira dizendo O QUE mudou,
+     com um botão. A decisão de atualizar continua sendo do humano.
+
+   🔑 E É POR ISSO QUE NADA SE PERDE. A pergunta do Fernando ao escolher esta
+      opção foi "a operação que ele estiver fazendo no momento, se perde?".
+      Aqui não existe essa possibilidade: o vigia NUNCA escreve no DOM da
+      agenda, nunca fecha modal, nunca mexe em campo. Ele insere uma tira no
+      topo e para. O único caminho que repinta é o clique.
+
+   ⚠ A tira NÃO tem cara de erro. Alerta falso gasta o alerta (lição de 16/08):
+     "mudou" é informação de rotina numa equipe de cinco pessoas, não incidente.
+   ⚠ A tira diz a CONTAGEM medida do que mudou, nunca "algo mudou". Aviso que
+     não diz o que mudou é aviso que se aprende a fechar sem ler.
+   ⚠ Ida ao GAS extra: UMA a cada 60 s, e só com a Agenda na frente. É a mesma
+     ordem de grandeza do poll de notificações, que já roda desde o V118.
+   ════════════════════════════════════════════════════════════════════════════ */
+let _v150SatFP = null;        // impressão digital do que está PINTADO
+let _v150SatBase = null;      // envelope pintado (para o diff legível)
+let _v150SatTimer = null;
+let _v150SatPendente = null;  // envelope novo, já buscado, esperando o clique
+
+// A impressão digital cobre só o que MUDA A DECISÃO de quem olha: quem, quando
+// e em que estado. Campos de apresentação ficam de fora de propósito — tira que
+// acende porque um rótulo mudou é tira que ninguém lê na terceira vez.
+function _v150SatFingerprint(p) {
+  if (!p) return null;
+  const dem = (p.demandas || []).map(d => [
+    d.demanda_id, d.dia || '', d.inicio_previsto || '', d.responsavel || '',
+    d.status || '', d.confirmacao || '', d.tempo_estimado_min || ''
+  ].join('\u0001')).sort();
+  const tar = (p.agenda || []).map(t => [
+    t.os_id || '', t.tarefa_id || '', t.usuario || '', t.dia || '',
+    t.inicio_previsto || '', t.em_execucao ? '1' : '0'
+  ].join('\u0001')).sort();
+  return 'D' + dem.length + ':' + dem.join('\u0002') +
+       '||T' + tar.length + ':' + tar.join('\u0002') +
+       '||P' + ((p.nao_designadas || []).length);
+}
+
+function _v150SatMarcarPintado(result) {
+  _v150SatBase = result || null;
+  _v150SatFP = _v150SatFingerprint(result);
+  _v150SatPendente = null;
+  const t = document.getElementById('v150SatTira');
+  if (t) t.remove();          // o que a tira anunciava acabou de ser pintado
+}
+
+// Diff LEGÍVEL, em português de oficina. Só conta o que dá para conferir na
+// tela — sumiu, apareceu, mudou de dia/hora/dono.
+function _v150SatDiff(velho, novo) {
+  const idx = arr => { const m = new Map(); (arr || []).forEach(d => m.set(String(d.demanda_id), d)); return m; };
+  const a = idx(velho && velho.demandas), b = idx(novo && novo.demandas);
+  let sumiu = 0, nova = 0, mudou = 0;
+  a.forEach((d, k) => { if (!b.has(k)) sumiu++; });
+  b.forEach((d, k) => {
+    if (!a.has(k)) { nova++; return; }
+    const o = a.get(k);
+    if (String(o.dia || '') !== String(d.dia || '') ||
+        String(o.inicio_previsto || '') !== String(d.inicio_previsto || '') ||
+        String(o.responsavel || '') !== String(d.responsavel || '')) mudou++;
+  });
+  const kt = t => [t.os_id, t.tarefa_id].join('\u0001');
+  const ta = new Set(((velho && velho.agenda) || []).map(kt));
+  const tb = new Set(((novo && novo.agenda) || []).map(kt));
+  let tSumiu = 0, tNova = 0;
+  ta.forEach(k => { if (!tb.has(k)) tSumiu++; });
+  tb.forEach(k => { if (!ta.has(k)) tNova++; });
+
+  const p = [];
+  const pl = (n, um, muitos) => n + ' ' + (n === 1 ? um : muitos);
+  if (sumiu) p.push(pl(sumiu, 'demanda concluída ou excluída', 'demandas concluídas ou excluídas'));
+  if (nova)  p.push(pl(nova,  'demanda nova', 'demandas novas'));
+  if (mudou) p.push(pl(mudou, 'demanda remarcada', 'demandas remarcadas'));
+  if (tSumiu) p.push(pl(tSumiu, 'tarefa saiu da fila', 'tarefas saíram da fila'));
+  if (tNova)  p.push(pl(tNova,  'tarefa entrou na fila', 'tarefas entraram na fila'));
+  return p.length ? p.join(' · ') : 'a fila da equipe mudou';
+}
+
+function _v150SatMostrarTira(novo) {
+  const el = document.getElementById('viewSaturacao');
+  if (!el || el.style.display === 'none') return;
+  _v150SatPendente = novo;
+  const txt = _v150SatDiff(_v150SatBase, novo);
+  const antiga = document.getElementById('v150SatTira');
+  const html =
+    '<div class="sat-mudou" id="v150SatTira">' +
+      '<span>🔄 <b>A agenda mudou</b> desde que esta tela foi carregada — ' + escHtml(txt) + '.</span>' +
+      '<span class="sat-mudou-b">' +
+        '<button class="btn btn-primary btn-sm" style="padding:2px 12px;font-size:11.5px" onclick="_v150SatAplicar()">Atualizar a tela</button>' +
+        '<button class="btn btn-secondary btn-sm" style="padding:2px 10px;font-size:11.5px" onclick="_v150SatAdiar()" title="A tira volta se algo mudar de novo">Agora não</button>' +
+      '</span>' +
+    '</div>';
+  if (antiga) antiga.outerHTML = html;          // atualiza o texto, não empilha
+  else el.insertAdjacentHTML('afterbegin', html);
+}
+
+// Repinta com o MESMO envelope que a tira anunciou (sem segunda ida ao GAS).
+function _v150SatAplicar() {
+  const p = _v150SatPendente;
+  _saturacaoCacheHtml = null;
+  renderSaturacao(p || undefined);
+}
+
+// "Agora não" some com a tira e ADOTA o estado atual como base: ela só volta se
+// algo mudar DE NOVO. Sem isso a mesma tira reapareceria em 60 s, e aviso que
+// não obedece ao "depois" vira aviso que se fecha no automático.
+function _v150SatAdiar() {
+  const t = document.getElementById('v150SatTira');
+  if (t) t.remove();
+  if (_v150SatPendente) { _v150SatBase = _v150SatPendente; _v150SatFP = _v150SatFingerprint(_v150SatPendente); }
+  _v150SatPendente = null;
+}
+
+async function _v150SatVigiar() {
+  try {
+    if (document.visibilityState === 'hidden') return;
+    if (typeof currentView !== 'undefined' && currentView !== 'saturacao') return;
+    const el = document.getElementById('viewSaturacao');
+    if (!el || el.style.display === 'none') return;
+    if (!_v150SatFP) return;                    // nada pintado ainda: nada a comparar
+    if (typeof gsConnected !== 'undefined' && !gsConnected) return;
+    // ⚠ Modal aberto = alguém está no meio de uma decisão. A tira pode esperar
+    //   60 s; interromper a leitura de um modal, não.
+    if (document.querySelector('.overlay.open')) return;
+
+    const novo = await gsGet('getSaturacaoUsuarios');
+    if (!Array.isArray(novo && novo.agenda) && !Array.isArray(novo && novo.demandas)) return;
+    if (_v150SatFingerprint(novo) === _v150SatFP) return;
+    _v150SatMostrarTira(novo);
+  } catch (e) {
+    // Silencioso por contrato — igual ao poll de notificações. Vigia que
+    // reclama de rede vira ruído numa tela que o gerente deixa aberta o dia.
+    console.warn('[V150] vigia da agenda:', e && e.message);
+  }
+}
+
+function _v150SatIniciarVigia() {
+  if (_v150SatTimer) return;
+  if (document.visibilityState === 'hidden') return;
+  _v150SatTimer = setInterval(_v150SatVigiar, 60000);
+}
+function _v150SatPararVigia() {
+  if (!_v150SatTimer) return;
+  clearInterval(_v150SatTimer); _v150SatTimer = null;
+}
+document.addEventListener('visibilitychange', function(){
+  if (document.visibilityState === 'hidden') _v150SatPararVigia();
+  else _v150SatIniciarVigia();
+});
+window.addEventListener('pagehide', _v150SatPararVigia);
+window.addEventListener('DOMContentLoaded', _v150SatIniciarVigia);
 
 // V129 — cards de saturação (evolução dos cards V103: + em execução + conflitos)
 function _satRenderCards(result) {
@@ -24113,6 +25179,70 @@ function _satDiaKeyLocal(d) { const p = n => String(n).padStart(2, '0'); return 
 
 // V129 — A AGENDA: usuários × próximos 10 dias, blocos posicionados pela HORA
 // dentro do turno. Sem hora = chip na faixa do dia. Coluna 0 = atrasadas/sem dia.
+// ══════════════════════════════════════════════════════════════════════════════
+// V151 · A OS AGENDADA ENTRA NA GRADE DA AGENDA
+//
+// A grade já reunia dois tipos de compromisso — tarefa de pipeline e demanda do
+// celular. Faltava o terceiro, que é justamente o que o admin marca com o
+// cliente ao telefone: a própria OS, com hora e duração. Enquanto ela ficasse
+// de fora, a grade dizia que a pessoa tinha o dia livre com a saída já marcada.
+//
+// 🔑 Mesma unidade das outras duas (minutos) e mesma forma de item, para entrar
+//    no cálculo de sobreposição, na alocação de faixas e na CARGA do dia sem
+//    nenhum caminho paralelo.
+// ══════════════════════════════════════════════════════════════════════════════
+var _v151OsAgenda = [];
+var _v151OsAgendaEm = 0;      // quando a lista acima foi lida (janela de frescor)
+
+// De-para id→nome do responsável da OS. Devolve '' quando não dá para resolver:
+// imprimir o id cru como se fosse gente é o defeito do V142, e um item pendurado
+// numa linha inventada é pior que um item na linha "sem responsável".
+function _v151NomeDoResponsavel(v){
+  var alvo = String(v === null || v === undefined ? '' : v).trim();
+  if (!alvo) return '';
+  var lista = Array.isArray(_usuList) ? _usuList : [];
+  for (var i = 0; i < lista.length; i++) {
+    if (String(lista[i].id || '').trim() === alvo) return String(lista[i].nome || '').trim();
+  }
+  var alvoU = alvo.toUpperCase();
+  for (var k = 0; k < lista.length; k++) {
+    if (String(lista[k].nome || '').trim().toUpperCase() === alvoU) return String(lista[k].nome || '').trim();
+  }
+  return '';
+}
+
+// Converte as OSs agendadas em itens da grade, um por OS, já no formato que
+// `_v135Janela`/`_v135Faixas`/`bloco` entendem.
+function _v151ItensOS(hojeKey){
+  var out = [];
+  (Array.isArray(_v151OsAgenda) ? _v151OsAgenda : []).forEach(function(o){
+    var st = String(o.status || '').toUpperCase();
+    if (st === 'CONCLUIDA' || st === 'CANCELADA') return;
+    var dia = _v151DataISO(o.data_prevista);
+    if (!dia) return;                       // sem prazo não há dia onde pousar
+    var j = _v151JanelaOS(o);
+    if (!j) return;                         // sem hora a OS já aparece no calendário do mês
+    var nome = _v151NomeDoResponsavel(o.usuario_atual);
+    var iniIso = dia + 'T' + j.ini + ':00';
+    var fimIso = j.fim && !j.viraDia ? (dia + 'T' + j.fim + ':00') : '';
+    out.push({
+      _os: true,
+      os_id: String(o.id_os || ''),
+      numero_os: String(o.numero_os || ''),
+      cliente: String(o.cliente || ''),
+      responsavel_nome: nome,
+      responsavel_cru: String(o.usuario_atual || ''),
+      dia: dia,
+      inicio_previsto: iniIso,
+      fim_previsto: fimIso,
+      tempo_estimado_min: j.dur || 60,
+      sem_duracao: !j.dur,
+      atrasada: dia < hojeKey
+    });
+  });
+  return out;
+}
+
 function _satRenderAgenda(result) {
   const agenda = result.agenda || [];
   const pt = result.parametros_turno || {};
@@ -24133,9 +25263,32 @@ function _satRenderAgenda(result) {
   // ── V135 (A4) — demandas entram na MESMA grade das tarefas ────────────────
   const _demTodas = (result.demandas || []);
   const _V135_SEM_RESP = '— sem responsável —';
+  // ══════════════════════════════════════════════════════════════════════════
+  // V151 (B10) — UMA DEMANDA, VÁRIOS RESPONSÁVEIS: A LINHA FANTASMA
+  //
+  // `String(dm.responsavel).trim()` lia "Marcelo; Jonathan" como UMA pessoa. A
+  // grade criava uma terceira linha com esse nome colado, e nas linhas do
+  // Marcelo e do Jonathan o dia continuava mostrando só as tarefas de OS: a
+  // carga saía menor que a real e o ⚠ de choque não acendia contra a demanda.
+  // O V149 corrigiu exatamente isto no celular (_mobItensDoDia) e no painel do
+  // dia (_v139Compromissos) — a grade da Agenda ficou de fora da rodada.
+  // ══════════════════════════════════════════════════════════════════════════
+  const _v151Resps = dm => {
+    const rs = (dm && dm.responsaveis && dm.responsaveis.length)
+      ? dm.responsaveis.map(x => String(x).trim()).filter(Boolean)
+      : (window.PROPER_DEM_RESPS ? window.PROPER_DEM_RESPS(dm && dm.responsavel) : []);
+    return rs.length ? rs : [_V135_SEM_RESP];
+  };
   _demTodas.forEach(dm => {
-    const quem = String(dm.responsavel || '').trim() || _V135_SEM_RESP;
-    if (usuarios.indexOf(quem) < 0) usuarios.push(quem);   // quem só tem demanda ganha linha
+    _v151Resps(dm).forEach(quem => {
+      if (usuarios.indexOf(quem) < 0) usuarios.push(quem);   // quem só tem demanda ganha linha
+    });
+  });
+  // V151 — e quem só tem OS agendada também ganha linha.
+  const _v151OsItens = _v151ItensOS(hojeKey);
+  _v151OsItens.forEach(it => {
+    const quem = it.responsavel_nome || _V135_SEM_RESP;
+    if (usuarios.indexOf(quem) < 0) usuarios.push(quem);
   });
   const porUsuario = {};
   const conflitantes = {}; // usuario -> Set(tarefa_id) p/ marcar ⚠ no bloco
@@ -24157,12 +25310,22 @@ function _satRenderAgenda(result) {
   // V135 (A4) — mesma regra de balde das tarefas: sem dia ou dia vencido cai na
   // coluna "Atrasadas / a definir"; o resto vai para o dia dele.
   _demTodas.forEach(dm => {
-    const quem = String(dm.responsavel || '').trim() || _V135_SEM_RESP;
+    // V151 (B10) — a demanda entra no balde de CADA responsável.
+    _v151Resps(dm).forEach(quem => {
+      if (!porUsuario[quem]) porUsuario[quem] = { dias: {}, atras: [] };
+      const slot = porUsuario[quem];
+      const item = Object.assign({}, dm, { _dem: true });
+      if (!dm.dia || dm.dia < hojeKey) { slot.atras.push(item); return; }
+      (slot.dias[dm.dia] = slot.dias[dm.dia] || []).push(item);
+    });
+  });
+  // V151 — as OSs agendadas, mesma regra de balde.
+  _v151OsItens.forEach(it => {
+    const quem = it.responsavel_nome || _V135_SEM_RESP;
     if (!porUsuario[quem]) porUsuario[quem] = { dias: {}, atras: [] };
     const slot = porUsuario[quem];
-    const item = Object.assign({}, dm, { _dem: true });
-    if (!dm.dia || dm.dia < hojeKey) { slot.atras.push(item); return; }
-    (slot.dias[dm.dia] = slot.dias[dm.dia] || []).push(item);
+    if (!it.dia || it.dia < hojeKey) { slot.atras.push(it); return; }
+    (slot.dias[it.dia] = slot.dias[it.dia] || []).push(it);
   });
 
   const pct = min => Math.max(0, Math.min(100, (min - tIni) / (tFim - tIni) * 100));
@@ -24170,17 +25333,19 @@ function _satRenderAgenda(result) {
   // ── V135 (A4) — janela de cada item em minutos do dia, para sobreposição ──
   // Uma função só para tarefa e demanda: é a mesma pergunta ("das X às Y").
   function _v135Janela(it) {
-    const ini = it._dem ? it.inicio_previsto : (it.em_execucao && it.inicio_real ? it.inicio_real : it.inicio_previsto);
+    // V151 — a OS agendada tem a mesma forma da demanda: início e fim já
+    // resolvidos, sem `em_execucao`/`inicio_real` (a OS não é assumida no PCF).
+    const ini = (it._dem || it._os) ? it.inicio_previsto : (it.em_execucao && it.inicio_real ? it.inicio_real : it.inicio_previsto);
     if (!ini || it.sem_hora) return null;
     const a = _satMinDoDia(ini);
     if (!isFinite(a)) return null;
     const dur = Number(it.tempo_estimado_min) || 60;
     let b = a + dur;
-    const fimIso = it._dem ? it.fim_previsto : (it.em_execucao && it.inicio_real ? null : it.fim_previsto);
+    const fimIso = (it._dem || it._os) ? it.fim_previsto : (it.em_execucao && it.inicio_real ? null : it.fim_previsto);
     if (fimIso) { const f = _satMinDoDia(fimIso); if (isFinite(f) && f > a) b = f; }
     return { a: a, b: Math.max(b, a + 20) };
   }
-  function _v135Uid(it) { return it._dem ? ('D:' + it.demanda_id) : ('T:' + it.tarefa_id); }
+  function _v135Uid(it) { return it._dem ? ('D:' + it.demanda_id) : (it._os ? ('O:' + it.os_id) : ('T:' + it.tarefa_id)); }
   // Sobreposição LOCAL entre QUALQUER par do mesmo usuário no mesmo dia. O GAS
   // só compara tarefa×tarefa (u.conflitos); sem isto a demanda entraria na
   // grade sem participar da única coisa que a grade existe para responder.
@@ -24238,6 +25403,27 @@ function _satRenderAgenda(result) {
       style="display:inline-block;background:var(--bg);border:1px dashed ${cor};border-radius:4px;padding:1px 5px;margin:1px 2px 0 0;font-size:9px;color:${cor};cursor:pointer;white-space:nowrap;max-width:100%;overflow:hidden;text-overflow:ellipsis">🗓${escHtml(String(dm.titulo || 'Demanda').slice(0, 16))}</div>`;
   }
 
+  // ── V151 · o bloco da OS agendada ────────────────────────────────────────
+  // Azul-escuro com borda cheia: tarefa é sólida, demanda é tracejada, OS é
+  // sólida com contorno claro. Três compromissos, três aparências — a grade só
+  // serve para planejar se dá para saber, de relance, o que é cada coisa.
+  function _v151BlocoOS(it, marcados, fx) {
+    const j = _v135Janela(it);
+    if (!j) return '';
+    const conflito = marcados && marcados.has(_v135Uid(it));
+    const left = pct(j.a), width = Math.max(pct(j.b) - left, 4);
+    const cor = it.atrasada ? 'var(--red)' : '#0f766e';
+    const rot = it.numero_os || it.cliente || 'OS';
+    const tip = 'OS ' + (it.numero_os || it.os_id) + (it.cliente ? ' · ' + it.cliente : '') +
+      ' · ' + _satHHMM(it.inicio_previsto) + (it.fim_previsto ? '–' + _satHHMM(it.fim_previsto) : '') +
+      (it.sem_duracao ? ' (sem duração informada: 60min)' : '') +
+      (it.responsavel_nome ? '' : ' · SEM RESPONSÁVEL RECONHECIDO' + (it.responsavel_cru ? ' (gravado: ' + it.responsavel_cru + ')' : '')) +
+      (conflito ? ' · ⚠ CHOQUE DE HORÁRIO' : '');
+    return `<div onclick="openOSDetail('${escJs(it.os_id)}')" title="${escHtml(tip)}"
+      style="position:absolute;left:${left}%;width:${width}%;${_v135Vert(_v135Uid(it), fx)}background:${cor};opacity:.95;border-radius:3px;cursor:pointer;overflow:hidden;white-space:nowrap;color:#fff;font-size:9px;line-height:1.1;padding:1px 3px;border:1px solid rgba(255,255,255,.7);${conflito ? 'outline:2px solid var(--red);outline-offset:-1px;' : ''}">
+      ${conflito ? '⚠' : '🔧'}${escHtml(String(rot).slice(0, 15))}</div>`;
+  }
+
   function bloco(t, usuario, marcados, fx) {
     // V135 (A4) — o ⚠ da tarefa agora também acende quando ela choca com uma
     // DEMANDA. União: o que o GAS achou (tarefa×tarefa) + o que a grade vê.
@@ -24285,14 +25471,17 @@ function _satRenderAgenda(result) {
       <td style="padding:4px 6px;border-bottom:1px solid var(--border);vertical-align:top;min-width:90px;max-width:130px">
         ${slot.atras.filter(t => t._dem).map(dm => `<div onclick="_v135AbrirDemanda('${escJs(dm.demanda_id)}')" title="${escHtml('DEMANDA · ' + (dm.titulo || '') + (dm.dia ? ' · previsto ' + dm.dia.split('-').reverse().join('/') : ' · sem data'))}"
             style="background:rgba(124,58,237,.12);border:1px dashed var(--purple,#7c3aed);border-radius:4px;padding:1px 5px;margin-bottom:2px;font-size:9px;cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--purple,#7c3aed)">🗓${escHtml(String(dm.titulo || 'Demanda').slice(0, 15))}</div>`).join('')}
-        ${slot.atras.filter(t => !t._dem).map(t => `<div onclick="_satAbrirDesignar('${escJs(t.os_id)}','${escJs(t.tarefa_id)}',{usuario:'${escJs(usuario)}',origem:'agenda'})" title="${escHtml(t.nome + ' · OS ' + (t.os_numero || t.os_id) + (t.dia ? ' · previsto ' + t.dia.split('-').reverse().join('/') : ' · sem data'))}"
+        ${slot.atras.filter(t => t._os).map(it => `<div onclick="openOSDetail('${escJs(it.os_id)}')" title="${escHtml('OS ' + (it.numero_os || it.os_id) + (it.cliente ? ' · ' + it.cliente : '') + (it.dia ? ' · agendada para ' + it.dia.split('-').reverse().join('/') + ' ' + _satHHMM(it.inicio_previsto) : ''))}"
+            style="background:rgba(15,118,110,.12);border:1px solid #0f766e;border-radius:4px;padding:1px 5px;margin-bottom:2px;font-size:9px;cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#0f766e">🔧${escHtml(String(it.numero_os || 'OS').slice(0, 15))}</div>`).join('')}
+        ${slot.atras.filter(t => !t._dem && !t._os).map(t => `<div onclick="_satAbrirDesignar('${escJs(t.os_id)}','${escJs(t.tarefa_id)}',{usuario:'${escJs(usuario)}',origem:'agenda'})" title="${escHtml(t.nome + ' · OS ' + (t.os_numero || t.os_id) + (t.dia ? ' · previsto ' + t.dia.split('-').reverse().join('/') : ' · sem data'))}"
             style="background:${t.dia ? 'rgba(220,38,38,.12)' : 'var(--bg)'};border:1px solid ${t.dia ? 'var(--red)' : 'var(--border)'};border-radius:4px;padding:1px 5px;margin-bottom:2px;font-size:9px;cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;${t.dia ? 'color:var(--red);' : 'color:var(--text2);'}">${t.dia ? '🔴 ' : ''}${escHtml(String(t.nome || '').slice(0, 16))}</div>`).join('') || '<span style="color:var(--text-muted)">—</span>'}
       </td>
       ${colunas.map(d => {
         const key = _satDiaKeyLocal(d);
         const doDiaTudo = slot.dias[key] || [];
-        const doDia = doDiaTudo.filter(x => !x._dem);
+        const doDia = doDiaTudo.filter(x => !x._dem && !x._os);
         const demDia = doDiaTudo.filter(x => x._dem);           // V135 (A4)
+        const osDia  = doDiaTudo.filter(x => x._os);            // V151
         const marcados = _v135Sobrepostos(doDiaTudo);           // V135 (A4)
         const faixas   = _v135Faixas(doDiaTudo);                // V135 (A4)
         const util = diasUteis.indexOf(d.getDay() === 0 ? 7 : d.getDay()) >= 0;
@@ -24307,7 +25496,7 @@ function _satRenderAgenda(result) {
         const demComHora = demDia.filter(x => !!_v135Janela(x));   // V135 (A4)
         const demSemHora = demDia.filter(x => !_v135Janela(x));
         return `<td style="padding:2px 3px;border-bottom:1px solid var(--border);border-left:1px solid var(--border);vertical-align:top;min-width:92px;${fundo}">
-          <div style="position:relative;height:26px;background:var(--bg);border-radius:3px">${comHora.map(t => bloco(t, usuario, marcados, faixas)).join('')}${demComHora.map(x => _v135BlocoDem(x, marcados, faixas)).join('')}</div>
+          <div style="position:relative;height:26px;background:var(--bg);border-radius:3px">${comHora.map(t => bloco(t, usuario, marcados, faixas)).join('')}${demComHora.map(x => _v135BlocoDem(x, marcados, faixas)).join('')}${osDia.map(x => _v151BlocoOS(x, marcados, faixas)).join('')}</div>
           <div style="margin-top:2px">${semHora.map(t => chipSemHora(t, usuario)).join('')}${demSemHora.map(x => _v135ChipDem(x)).join('')}</div>
           ${minDia ? `<div style="font-size:8px;color:${carga > 1 ? 'var(--red)' : 'var(--text-muted)'};margin-top:1px">${Math.round(minDia / 60 * 10) / 10}h / ${Math.round(capMin / 60 * 10) / 10}h${carga > 1 ? ' ⚠' : ''}</div>` : ''}
         </td>`;
@@ -27976,6 +29165,12 @@ async function _cpAbrirOSCom(id) {
 
     const desc = document.getElementById('osDescricao');
     if (desc) desc.value = 'Chamado do portal: ' + String(c.descricao || '');
+    // V151 — `_osClienteInputHandler` roda ANTES de o id_cliente do chamado ser
+    // escrito no campo escondido; com cliente renomeado ele não acha o nome no
+    // cadastro local e desenha "Selecione um cliente cadastrado…". O id certo
+    // chegava depois e ninguém redesenhava: a OS nascia sem máquina, e a única
+    // forma de forçar o refresh (mexer no campo cliente) zerava o id correto.
+    try { if (document.getElementById('osClienteId').value) _renderOSMachineSelector([]); } catch (e) {}
     if (c.data_prevista) {
       const dp = document.getElementById('osDataPrevista');
       if (dp) dp.value = c.data_prevista;
@@ -28303,6 +29498,31 @@ function _v139Compromissos(pessoa, diaKey, ignorarDemandaId) {
       min: (parseInt(dm.tempo_estimado_min, 10) || 60), atrasada: !!dm.atrasada,
       confirmacao: dm.confirmacao || '' });
   });
+  // ══════════════════════════════════════════════════════════════════════════
+  // V151 — A OS AGENDADA É COMPROMISSO, E O MÊS TEM DE CONTÁ-LA
+  //
+  // 🔴 Achado ao OLHAR a captura, não ao ler o código: com a OS já entrando na
+  //    grade de 10 dias, o calendário do mês dizia "1 item · 2h" no MESMO dia
+  //    em que a grade logo abaixo dizia "5h / 9h". Duas telas da mesma página
+  //    discordando sobre o mesmo dia — a doença que este projeto já catalogou
+  //    três vezes.
+  // 🔑 Só entra a OS que tem HORA e DURAÇÃO. Prazo de OS (marco de zero minuto)
+  //    continua FORA da barra de carga, de propósito: um dia com três prazos
+  //    vencendo e nenhuma hora marcada apareceria cheio, e dia pintado de
+  //    vermelho errado é o alerta falso que ninguém lê da terceira vez.
+  // ⚠ `_v151ItensOS` já resolve o responsável de id para nome; comparar com
+  //   `pessoa` (que é NOME) sem esse de-para filtraria tudo para fora.
+  // ══════════════════════════════════════════════════════════════════════════
+  try {
+    _v151ItensOS(_satDiaKeyLocal(new Date())).forEach(it => {
+      if (String(it.dia || '') !== diaKey) return;
+      if (pessoa && String(it.responsavel_nome || '') !== pessoa) return;
+      out.push({ kind: 'os', id: it.os_id, titulo: 'OS ' + (it.numero_os || it.os_id) +
+                   (it.cliente ? ' · ' + it.cliente : ''),
+        usuario: it.responsavel_nome || '', ini: _v151HHMMParaMin(_v151Hora(it.inicio_previsto.slice(11,16))),
+        min: (parseInt(it.tempo_estimado_min, 10) || 60), atrasada: !!it.atrasada });
+    });
+  } catch (e) { /* sem lista de OS a conta segue sem elas — nunca inventa carga */ }
   return out;
 }
 
@@ -28465,7 +29685,7 @@ function _v139AbrirDia(diaKey, itens) {
                      : ' somadas · <span style="color:var(--text-muted)">toda a equipe</span>');
   document.getElementById('v139DiaLista').innerHTML = ordem.map(x => {
     const janela = x.ini == null ? 'dia inteiro' : hhmm(x.ini) + '–' + hhmm(x.ini + x.min);
-    const cor = x.atrasada ? 'var(--red)' : (x.kind === 'demanda' ? 'var(--purple)' : 'var(--blue)');
+    const cor = x.atrasada ? 'var(--red)' : (x.kind === 'demanda' ? 'var(--purple)' : (x.kind === 'os' ? '#0f766e' : 'var(--blue)'));
     const conf = x.kind === 'demanda' && x.confirmacao === 'recusada'
       ? '<span style="color:var(--red);font-weight:600"> · ⚠ não consegue</span>'
       : (x.kind === 'demanda' && x.confirmacao === 'pendente'
@@ -28475,7 +29695,11 @@ function _v139AbrirDia(diaKey, itens) {
     //    que não faz nada.
     const clique = x.kind === 'demanda'
       ? ' onclick="closeModal(\'modalDiaAgenda\');_v135AbrirDemanda(\'' + escJs(String(x.id)) + '\')" style="cursor:pointer"'
-      : ' title="Tarefa de OS — abra pela Gestão de OSs"';
+      // V151 — a OS agendada TEM id_os, então ela abre daqui (a tarefa continua
+      // sem abrir: a lista não tem como chegar à OS dela sem inventar).
+      : (x.kind === 'os'
+        ? ' onclick="closeModal(\'modalDiaAgenda\');openOSDetail(\'' + escJs(String(x.id)) + '\')" style="cursor:pointer"'
+        : ' title="Tarefa de OS — abra pela Gestão de OSs"');
     return '<div' + clique + ' style="display:flex;gap:10px;align-items:baseline;padding:8px 10px;' +
       'border-left:3px solid ' + cor + ';background:var(--bg-alt);border-radius:0 6px 6px 0;margin-bottom:6px">' +
       // ⚠ `gap` do flex não separou hora e título na captura — a hora saía
