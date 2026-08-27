@@ -1,3 +1,57 @@
+<!-- PCM V147 — 27/08/2026 — A IDENTIDADE VISUAL DO CLIENTE, REPOSTA.
+     Feito EM CIMA do V146 — 🔴 CONTÉM o V146 e o V145 inteiros.
+
+     🔑 ESTE ARQUIVO CONSERTA UMA COLISÃO DE NÚMERO, NÃO UM DEFEITO.
+        Em 25/08, duas linhagens do PCM se chamaram V138. Uma seguiu
+        (V139…V146, publicada até o V144); a outra parou, e levava consigo o
+        modo de IDENTIDADE VISUAL. O V137 — fila de chamados do portal, escopo
+        de grupo e sugestão de e-mail — está dentro do V146 e NÃO se perdeu.
+        O que se perdeu foi só o modo de marcas, e é ele que volta aqui.
+        O delta reposto é EXATAMENTE o diff V138−V137: 4 encaixes + 1 bloco.
+
+     Um SEGUNDO MODO dentro de "Acessos do Portal" — não um item de menu novo:
+     é a mesma pergunta ("o que este cliente vê?"), o mesmo PIN, a mesma sessão.
+     Publica a logomarca por EMPRESA, por UNIDADE ou por GRUPO.
+     🔑 A imagem é reduzida NO NAVEGADOR (canvas, 400×150, WebP com
+        transparência) antes de subir. SVG é recusado em TRÊS camadas — aqui,
+        no GAS e no CHECK do Postgres — porque um SVG pode carregar script.
+     🔴 Depende do GAS v124 e do 00_EM_ABERTO/NEWFILE_PORTAL_MARCA.sql.
+        Sem eles a tela abre e diz o erro; o resto do PCM não muda.
+
+     Bancada: _testes/NEWFILE_T_PCM_V147_marcas.mjs (com --negativo).
+-->
+<!-- PCM V146 — 26/08/2026 — O `com_fila` QUE O PCM NUNCA PEDIU.
+     (Changelog reposto no V147: o build do V146 não o gravou no topo.)
+     `renderOS` e `_cpAbrirVinculo` passaram a mandar `com_fila:'true'` no
+     `getOS` — os dois lugares que escrevem `_osList`. Sem isso a Fila, o
+     Painel, as Raias e a Matriz nasciam sem `posicao_fila`, `dias_na_fila` e
+     `bloqueada`, e a tela imprimia uma nota ACUSANDO o servidor de ser
+     anterior ao v119 — acusação falsa: o gate no GAS é literal e ninguém
+     perguntava. Detalhe em NEWFILE_RODADA_COMFILA_V146_2026-08-26.md.
+-->
+<!-- PCM V145 — 26/08/2026 — A TELA DE USUÁRIOS/PERFIS: O ACESSO EXTRA QUE
+     NÃO GRAVAVA + OS DOIS BECOS SEM SAÍDA + O CONFIRM QUE NÃO DIZIA O NOME.
+     Feito EM CIMA do V144 que está NO AR (md5 conferido por clone do
+     GrupoTap/ProperAdmin em 26/08). Exige o **GAS v123** — publicar o GAS ANTES.
+
+     B1 (o relatado) · o "Acesso extra" nunca persistia. A tela sempre esteve
+        certa: o `saveUsuarioModal` já mandava `acesso_extra` no POST. Quem
+        descartava era o `saveUsuario` do GAS, que não escrevia a coluna.
+        Corrigido no v123. Aqui a tela ganha a PROVA: relê do servidor depois
+        de salvar e avisa se o que voltou não é o que foi marcado.
+     B2 · usuário inativado sumia da lista (o GAS só devolvia ativos) ⇒ o botão
+        "Ativar" da própria linha era inalcançável. Agora pede
+        `incluir_inativos=1` e ganha o filtro Ativos / Todos.
+     B3 · idem para perfis.
+     B5 · `togglePerfilAtivo` lia `.nome` num objeto cujo campo é `nome_perfil`
+        ⇒ o confirm dizia "Desativar o perfil PERF-12345?". Era exatamente o
+        defeito que o V103 (P3) existiu para corrigir, corrigido pela metade.
+     B6 · `savePerfilModal` mandava `ativo:'SIM'` fixo ⇒ editar um perfil
+        inativo o REATIVAVA em silêncio.
+     B7 · o select de Perfil do usuário só listava perfis ativos ⇒ abrir para
+        editar um usuário cujo perfil foi desativado zerava o campo, e salvar
+        trocava o perfil dele sem avisar.
+-->
 <!-- PCM V144 — 26/08/2026 — 21 MOTIVOS, O CICLO DO TERCEIRO E O CAMPO ABERTO.
      Feito EM CIMA do V143 QUE ESTÁ NO AR (rebase). Front puro: zero GAS, zero SQL.
 
@@ -2532,7 +2586,7 @@ v50 — Resiliência de rede: retry/backoff em gsGet e syncToGS
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>ProperCare Manager · Gestão PGP v3.68 (PCM V144)</title>
+<title>ProperCare Manager · Gestão PGP v3.71 (PCM V147)</title>
 <link rel="icon" type="image/jpeg" href="data:image/jpeg;base64,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">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -3706,7 +3760,7 @@ tr.tadm-feito td{background:#dcfce7 !important;color:#15803d;font-weight:700}
 <aside class="nav-sidebar" aria-label="Navegação principal">
   <div class="nav-brand">
     <span class="nav-brand-mark">PCM</span>
-    <span class="nav-brand-sub">v3.68 · V144</span>
+    <span class="nav-brand-sub">v3.71 · V147</span>
   </div>
 
   <nav class="nav-groups">
@@ -14917,9 +14971,12 @@ async function renderUsuarios() {
 
   let tecResult = null, perfResult = null;
   try {
+    // V145 (B2/B3) — a tela de administração é a ÚNICA que precisa enxergar
+    // inativo: é dela o botão "Ativar". Os outros call sites de getUsuarios
+    // (pickers de OS, agenda, portal) continuam sem a flag e sem mudança.
     [tecResult, perfResult] = await Promise.all([
-      gsGet('getUsuarios'),
-      gsGet('getPerfis')
+      gsGet('getUsuarios', { incluir_inativos: 1 }),
+      gsGet('getPerfis',   { incluir_inativos: 1 })
     ]);
   } catch(e) {
     if (!temCache) {
@@ -14940,18 +14997,29 @@ async function renderUsuarios() {
   }
 }
 
+// V145 (B2) — com inativo voltando do servidor, a lista precisa de um freio:
+// o padrão continua sendo "só ativos" (é a leitura do dia a dia), e o inativo
+// aparece quando alguém pede. Estado só de tela, sem ida ao servidor.
+var _usuVerInativos = false;
+function _usuSetVerInativos(v) { _usuVerInativos = !!v; _renderUsuariosTable(_usuSearch); }
+
+function _usuEstaAtivo(t) { return String((t || {}).ativo || '').toUpperCase() !== 'NÃO'; }
+
 function _renderUsuariosTable(filter = '') {
   const el = document.getElementById('viewUsuarios');
+  const _inativos = _usuList.filter(t => !_usuEstaAtivo(t)).length;
   const items = _usuList.filter(t =>
-    String(t.nome || '').toLowerCase().includes(filter.toLowerCase()) ||
-    String(t.id   || '').toLowerCase().includes(filter.toLowerCase())
+    (_usuVerInativos || _usuEstaAtivo(t)) && (
+      String(t.nome || '').toLowerCase().includes(filter.toLowerCase()) ||
+      String(t.id   || '').toLowerCase().includes(filter.toLowerCase())
+    )
   );
 
   el.innerHTML = `
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
       <div>
         <h2 style="font-size:18px;font-weight:700;color:var(--text)">Usuários</h2>
-        <p style="font-size:12px;color:var(--text-muted);margin-top:2px">${_usuList.length} usuário(s) cadastrado(s)</p>
+        <p style="font-size:12px;color:var(--text-muted);margin-top:2px">${_usuList.filter(_usuEstaAtivo).length} usuário(s) ativo(s)${_inativos ? ' · ' + _inativos + ' inativo(s)' : ''}</p>
       </div>
       <button class="btn btn-primary" onclick="openModalUsuario()">+ Novo usuário</button>
     </div>
@@ -14962,6 +15030,12 @@ function _renderUsuariosTable(filter = '') {
         readonly onfocus="this.removeAttribute('readonly')"
         value="${filter}"
         oninput="_usuSearch=this.value;_renderUsuariosTable(this.value)">
+      <label style="display:inline-flex;align-items:center;gap:6px;margin-left:12px;font-size:12px;color:var(--text-muted);cursor:pointer"
+             title="Usuário inativado não some mais da lista — é aqui que se reativa.">
+        <input type="checkbox" id="usuVerInativos" ${_usuVerInativos ? 'checked' : ''}
+               onchange="_usuSetVerInativos(this.checked)">
+        Mostrar inativos${_inativos ? ' (' + _inativos + ')' : ''}
+      </label>
     </div>
     ${items.length === 0 ? `<div class="empty"><div class="empty-icon">👷</div>
       <div class="empty-title">Nenhum usuário encontrado</div>
@@ -15005,11 +15079,20 @@ function _renderUsuariosTable(filter = '') {
 function _populateUsuarioPerfilSelect(selectedId) {
   const sel = document.getElementById('usuarioPerfil');
   sel.innerHTML = '<option value="">Selecione um perfil…</option>';
-  _perfilList.filter(p => String(p.ativo||'').toUpperCase() !== 'NÃO').forEach(p => {
+  // V145 (B7) — o filtro de ativos era incondicional. Abrir para editar um
+  // usuário cujo perfil foi desativado deixava o select em "Selecione…" e o
+  // Salvar TROCAVA o perfil dele sem ninguém pedir. O perfil que o usuário já
+  // tem entra na lista mesmo inativo, marcado — só não é oferecido a outros.
+  const _casa = (p, alvo) => String(p.id_perfil) === String(alvo) || String(p.nome_perfil) === String(alvo);
+  const _lista = _perfilList.filter(p =>
+    String(p.ativo||'').toUpperCase() !== 'NÃO' || (selectedId && _casa(p, selectedId))
+  );
+  _lista.forEach(p => {
+    const inativo = String(p.ativo||'').toUpperCase() === 'NÃO';
     const opt = document.createElement('option');
     opt.value = p.id_perfil;
-    opt.textContent = p.nome_perfil;
-    if (p.id_perfil === selectedId || p.nome_perfil === selectedId) opt.selected = true;
+    opt.textContent = p.nome_perfil + (inativo ? ' (perfil inativo)' : '');
+    if (_casa(p, selectedId)) opt.selected = true;
     sel.appendChild(opt);
   });
 }
@@ -15079,12 +15162,37 @@ async function saveUsuarioModal() {
 
   try {
     await gsPost(payload);
-    toast('Usuário salvo com sucesso.', 'success');
     closeModal('modalUsuario');
-    renderUsuarios();
+    // V145 (B1) — A PROVA. Este é exatamente o defeito que o Fernando viu:
+    // o POST voltava `{status:'ok'}` e o acesso extra não tinha sido gravado.
+    // `{status:'ok'} NÃO quer dizer que entrou` (lição de 16/08) — então a tela
+    // relê do servidor e COMPARA com o que foi marcado, em vez de confiar.
+    await renderUsuarios();
+    const _conferido = _conferirAcessoExtraGravado_(id, extra);
+    if (_conferido === false) {
+      toast('Usuário salvo, mas o ACESSO EXTRA não foi gravado. '
+          + 'O servidor precisa estar no GAS v123 ou mais novo.', 'error');
+    } else {
+      toast('Usuário salvo com sucesso.', 'success');
+    }
   } catch(e) {
     toast('Erro ao salvar: ' + e.message, 'error');
   }
+}
+
+// V145 (B1) — devolve true (bateu), false (o servidor não gravou) ou null
+// (não dá para afirmar: usuário novo, ou a lista ainda não voltou). Compara
+// CONJUNTOS, não a string: ordem e espaços não são diferença de conteúdo.
+function _conferirAcessoExtraGravado_(id, marcados) {
+  if (!id) return null;                       // criação: o id só existe no servidor
+  const usu = (_usuList || []).find(u => String(u.id) === String(id));
+  if (!usu) return null;
+  let gravado = [];
+  try { gravado = JSON.parse(usu.acesso_extra || '[]'); } catch(e) { return false; }
+  if (!Array.isArray(gravado)) return false;
+  const a = [...new Set((marcados || []).map(String))].sort();
+  const b = [...new Set(gravado.map(String))].sort();
+  return a.length === b.length && a.every((v, i) => v === b[i]);
 }
 
 function openModalResetPin(id) {
@@ -15139,7 +15247,7 @@ async function renderPerfis() {
 
   let result = null;
   try {
-    result = await gsGet('getPerfis');
+    result = await gsGet('getPerfis', { incluir_inativos: 1 });   // V145 (B3)
   } catch(e) {
     if (!temCache) {
       el.innerHTML = `<div class="empty"><div class="empty-icon">⚠️</div>
@@ -15156,9 +15264,16 @@ async function renderPerfis() {
   }
 }
 
+// V145 (B3) — mesmo freio da tela de usuários.
+var _perfVerInativos = false;
+function _perfSetVerInativos(v) { _perfVerInativos = !!v; _renderPerfisTable(_perfSearch); }
+function _perfEstaAtivo(p) { return String((p || {}).ativo || '').toUpperCase() !== 'NÃO'; }
+
 function _renderPerfisTable(filter = '') {
   const el = document.getElementById('viewPerfis');
+  const _perfInativos = _perfilList.filter(p => !_perfEstaAtivo(p)).length;
   const items = _perfilList.filter(p =>
+    (_perfVerInativos || _perfEstaAtivo(p)) &&
     String(p.nome_perfil||'').toLowerCase().includes(filter.toLowerCase())
   );
 
@@ -15166,9 +15281,17 @@ function _renderPerfisTable(filter = '') {
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
       <div>
         <h2 style="font-size:18px;font-weight:700;color:var(--text)">Perfis de acesso</h2>
-        <p style="font-size:12px;color:var(--text-muted);margin-top:2px">${_perfilList.length} perfil(is) cadastrado(s)</p>
+        <p style="font-size:12px;color:var(--text-muted);margin-top:2px">${_perfilList.filter(_perfEstaAtivo).length} perfil(is) ativo(s)${_perfInativos ? ' · ' + _perfInativos + ' inativo(s)' : ''}</p>
       </div>
-      <button class="btn btn-primary" onclick="openModalPerfil()">+ Novo perfil</button>
+      <div style="display:flex;align-items:center;gap:12px">
+        <label style="display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--text-muted);cursor:pointer"
+               title="Perfil desativado não some mais do grid — é aqui que se reativa.">
+          <input type="checkbox" id="perfVerInativos" ${_perfVerInativos ? 'checked' : ''}
+                 onchange="_perfSetVerInativos(this.checked)">
+          Mostrar inativos${_perfInativos ? ' (' + _perfInativos + ')' : ''}
+        </label>
+        <button class="btn btn-primary" onclick="openModalPerfil()">+ Novo perfil</button>
+      </div>
     </div>
     ${items.length === 0 ? `<div class="empty"><div class="empty-icon">🔑</div>
       <div class="empty-title">Nenhum perfil cadastrado</div>
@@ -15275,12 +15398,20 @@ async function savePerfilModal() {
     }
   }
 
+  // V145 (B6) — `ativo:'SIM'` era literal: editar o nome de um perfil DESATIVADO
+  // o ressuscitava em silêncio. Ao editar, preserva o que o perfil já é; só a
+  // criação nasce ativa.
+  const _perfAtual = id ? ((_perfilList || []).find(p => String(p.id_perfil || p.id) === String(id)) || null) : null;
+  const _ativoPreservado = _perfAtual
+    ? (String(_perfAtual.ativo || '').toUpperCase() === 'NÃO' ? 'NÃO' : 'SIM')
+    : 'SIM';
+
   const payload = {
     action: 'savePerfil',
     nome_perfil: nome,
     modulos_acesso: JSON.stringify(mods),
     is_admin: isAdmin ? 'SIM' : 'NÃO',
-    ativo: 'SIM',
+    ativo: _ativoPreservado,
     executa_em: executaEm,   // V104
   };
   if (id) payload.id_perfil = id;
@@ -15297,7 +15428,10 @@ async function savePerfilModal() {
 
 async function togglePerfilAtivo(id, isAtivo) {
   // V103 (P3) — idem: o confirm agora diz QUAL perfil.
-  const _nomePerf = ((_perfilList || []).find(p => String(p.id || p.id_perfil) === String(id)) || {}).nome || id;
+  // V145 (B5) — o V103 leu `.nome` num objeto de perfil, cujo campo é
+  // `nome_perfil`. O confirm caía sempre no `|| id` e dizia "PERF-12345".
+  const _p145 = (_perfilList || []).find(p => String(p.id_perfil || p.id) === String(id)) || {};
+  const _nomePerf = _p145.nome_perfil || _p145.nome || id;
   if (!confirm(`${isAtivo ? 'Desativar' : 'Ativar'} o perfil "${_nomePerf}"?`)) return;
   try {
     await gsPost({ action: isAtivo ? 'deletePerfil' : 'savePerfil',
@@ -15373,7 +15507,20 @@ async function renderOS() {
     //    SÓ quando a lista ainda está vazia, e tolerante: falha em carregar
     //    nomes não pode derrubar a tela de OS.
     const [resOS, resTipos, resUsu] = await Promise.all([
-      gsGet('getOS', { includeClosed: 'true' }),
+      // 🔴 V146 — `com_fila` ENTRA AQUI. O gate no GAS é literal
+      //    (`String(params.com_fila||'').toLowerCase() === 'true'`), e o PCM
+      //    NUNCA mandou esse parâmetro — nem aqui nem em lugar nenhum. Sem ele
+      //    o servidor devolve a OS crua e `_osList` nasce sem `dias_na_fila`,
+      //    `custodia_desde`, `dias_na_oficina` e `bloqueada`. Consequência
+      //    medida no ar em 26/08 com o GAS v123 respondendo: a Fila imprimia
+      //    "o servidor no ar é anterior ao GAS v119" — ACUSAÇÃO FALSA — e toda
+      //    OS aparecia como "hoje", inclusive uma de 07/08.
+      //    ⚠ O PCF já mandava `com_fila='true'` desde o V94. Era só o PCM que
+      //    não perguntava. Mesma família do `google_credential` (A5) e do
+      //    `acesso_extra` (v123): o cano existe, o servidor manda, ninguém pede.
+      //    ⚠ CUSTO DECLARADO: `com_fila` faz o GAS ler PIPELINE_TAREFAS, a maior
+      //    aba. É exatamente o mesmo custo que o PCF já paga a cada carga.
+      gsGet('getOS', { includeClosed: 'true', com_fila: 'true' }),
       _tiposOS.length ? Promise.resolve({ tipos: _tiposOS }) : gsGet('getTiposOS').catch(() => ({ tipos: [] })),
       _usuList.length ? Promise.resolve(null) : gsGet('getUsuarios').catch(() => null)
     ]);
@@ -24305,7 +24452,14 @@ async function _satAbrirDesignar(osId, tarefaId, opts) {
     if (String(dpBase).length > 10 && !(linha && linha.sem_hora)) horaAtual = String(dpBase).slice(11, 16);
   }
 
-  const nomes = (_usuList || []).map(u => u.nome).filter(Boolean);
+  // V145 (B2, corolário) — `_usuList` agora pode conter INATIVOS, porque a tela
+  // de Usuários passou a pedi-los para poder reativar. Todo lugar que OFERECE
+  // uma pessoa para escolher tem de filtrar (o select de OS, em ~17161, já
+  // filtrava desde sempre; este era o único que não). Designar tarefa a alguém
+  // desligado é defeito com ou sem o V145.
+  const nomes = (_usuList || [])
+    .filter(u => String((u && u.ativo) || '').toUpperCase() !== 'NÃO')
+    .map(u => u.nome).filter(Boolean);
   if (usuarioAtual && nomes.indexOf(usuarioAtual) < 0) nomes.unshift(usuarioAtual);
 
   const ov = document.createElement('div');
@@ -26949,6 +27103,7 @@ async function renderPortalAcessos() {
   }
 
   el.innerHTML = _paHtml();
+  if (_mkModo) { _mkLigarEventos(); return; }   // V147
   const inp = document.getElementById('paBusca');
   if (inp) {
     inp.value = _paBusca;
@@ -27029,6 +27184,10 @@ async function _paCarregar() {
   await renderPortalAcessos();
 }
 function _paHtml() {
+  // V147 — o modo de identidade visual desenha a própria tela. O PIN, o
+  // carregamento e o `renderPortalAcessos` continuam sendo os mesmos.
+  if (_mkModo) return _mkHtml();
+
   const cab =
     '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;gap:12px;flex-wrap:wrap">' +
       '<div><h2 style="margin:0">Acessos do Portal</h2>' +
@@ -27040,6 +27199,7 @@ function _paHtml() {
         // V132 — sair do PIN sem sair do PCM. Quem se levanta da mesa fecha a
         // tela; o hash morre na hora, nao espera os 15 minutos.
         '<button class="btn btn-sm" title="Esquecer o PIN agora" onclick="_paBloquear()">🔒 Bloquear</button>' +
+        '<button class="btn btn-sm" onclick="_mkAbrir()">🎨 Identidade visual</button>' +
         '<button class="btn btn-primary" onclick="_paAbrirConvite()">+ Convidar</button>' +
       '</div>' +
     '</div>';
@@ -27744,7 +27904,12 @@ async function _cpAbrirVinculo(id) {
   // A lista de OS é a mesma da Gestão de OSs. Carrega só se ainda não tiver.
   if (!_osList || !_osList.length) {
     try {
-      const r = await gsGet('getOS', { includeClosed: 'true' });
+      // V146 — este é o SEGUNDO lugar que escreve `_osList`. Se ele carregar a
+      //   lista sem `com_fila`, quem entrar pelo Chamados do portal e daí for
+      //   para as vistas vê o mesmo buraco do A1, agora por outra porta. A
+      //   lição do `_filaItem_` (v91) vale aqui: dois caminhos que enchem a
+      //   mesma lista têm de pedir os mesmos campos.
+      const r = await gsGet('getOS', { includeClosed: 'true', com_fila: 'true' });
       _osList = (r && (r.os || r.data)) || [];
     } catch (e) { /* segue sem lista: o formulário explica */ }
   }
@@ -28371,6 +28536,409 @@ async function _v139SalvarDemanda() {
   } catch (e) {
     alert('Não consegui agendar: ' + e.message);
     bt.disabled = false; bt.textContent = 'Agendar demanda';
+  }
+}
+
+
+// ════════════════════════════════════════════════════════════════════════════
+// V138 — IDENTIDADE VISUAL DOS CLIENTES NO PORTAL                    25/08/26
+//
+// Pedido do Fernando (25/08): publicar a logomarca de cada empresa, com o caso
+// da unidade que tem identidade própria e o do responsável de grupo que enxerga
+// várias empresas com marcas diferentes.
+//
+// ── ONDE ISTO MORA, E POR QUÊ ──────────────────────────────────────────────
+// Dentro da tela "Acessos do Portal", como um SEGUNDO MODO — não como item de
+// menu novo. É a mesma pergunta ("o que este cliente vê no portal dele?"), o
+// mesmo PIN e a mesma sessão. Um item de menu para uma tarefa que se faz duas
+// vezes por ano só engordaria a barra lateral.
+//
+// ── 🔑 A IMAGEM É REDIMENSIONADA AQUI, NO NAVEGADOR ────────────────────────
+// O administrador arrasta o PNG de 4 MB que veio do cliente; o canvas reduz
+// para no máximo 400×150 e exporta em WebP com transparência. Só então sobe.
+// Mandar o arquivo original para o GAS encolher gastaria cota de Apps Script
+// para produzir exatamente o mesmo resultado que este navegador produz de graça
+// — e ainda arriscaria estourar o tempo de execução num anexo grande.
+// ⚠ `toDataURL('image/webp')` em navegador sem suporte devolve PNG em silêncio,
+//   com o mime trocado no próprio texto. Por isso o código NUNCA assume o
+//   formato: lê o mime do resultado e valida o que saiu, não o que pediu.
+//
+// ── O QUE ESTA TELA NÃO FAZ ────────────────────────────────────────────────
+// Não guarda COR. A decisão de 25/08 é co-branding: o logo do cliente aparece,
+// mas a moldura (cores, tipografia, botões) continua Proper. Tingir o portal
+// com a cor de cada cliente multiplicaria por 37 a chance de uma tela ilegível
+// e apagaria a autoria da Proper justamente na ferramenta que mostra o trabalho
+// dela.
+//
+// Bancada: `_testes/NEWFILE_T_PCM_V138_marcas.mjs` (com `--negativo`).
+// ════════════════════════════════════════════════════════════════════════════
+
+let _mkModo = false;        // false = tela de acessos · true = identidade visual
+let _mkDados = null;        // resposta do portalMarcaListar
+let _mkEscopo = 'cliente';
+let _mkAlvo = '';
+let _mkPreview = '';        // data URI já reduzido, ainda não salvo
+let _mkErro = '';
+let _mkOcupado = false;
+
+// Teto do que sobe. O MESMO número do CHECK do banco e do GAS.
+const _MK_MAX_CHARS = 120000;
+const _MK_LARG = 400, _MK_ALT = 150;
+
+/* ── Reduz a imagem escolhida a um data URI pequeno ─────────────────────────
+   Devolve {ok, logo, mime, kb} ou {ok:false, erro}.
+   ⚠ Trabalha em `contain`: nunca corta o logo. Um logo cortado é pior que um
+     logo pequeno — e a proporção de logomarca varia demais para supor. */
+async function _mkReduzir(arquivo) {
+  if (!arquivo) return { ok: false, erro: 'Nenhum arquivo escolhido.' };
+  if (!/^image\/(png|webp|jpeg|jpg)$/i.test(arquivo.type || '')) {
+    // 🔴 SVG barrado JÁ AQUI, com a explicação — e barrado de novo no GAS e no
+    //    banco. Três camadas, de propósito: esta é a que explica.
+    if (/svg/i.test(arquivo.type || '') || /\.svg$/i.test(arquivo.name || '')) {
+      return { ok: false, erro: 'SVG não é aceito: um arquivo SVG pode carregar script dentro. ' +
+                                'Peça o logo em PNG (fundo transparente) — ou exporte para PNG.' };
+    }
+    return { ok: false, erro: 'Formato não aceito. Use PNG, WebP ou JPEG.' };
+  }
+  if (arquivo.size > 12 * 1024 * 1024) {
+    return { ok: false, erro: 'Arquivo grande demais (mais de 12 MB). Reduza antes de subir.' };
+  }
+
+  const url = URL.createObjectURL(arquivo);
+  try {
+    const img = await new Promise((ok, erro) => {
+      const i = new Image();
+      i.onload = () => ok(i);
+      i.onerror = () => erro(new Error('não consegui abrir a imagem'));
+      i.src = url;
+    });
+    if (!img.width || !img.height) return { ok: false, erro: 'A imagem veio vazia.' };
+
+    // dimensões finais, mantendo a proporção e sem AUMENTAR imagem pequena
+    const esc = Math.min(_MK_LARG / img.width, _MK_ALT / img.height, 1);
+    const w = Math.max(1, Math.round(img.width * esc));
+    const h = Math.max(1, Math.round(img.height * esc));
+
+    const cv = document.createElement('canvas');
+    cv.width = w; cv.height = h;
+    const ctx = cv.getContext('2d');
+    ctx.imageSmoothingQuality = 'high';
+    ctx.drawImage(img, 0, 0, w, h);
+
+    // 🔑 WebP primeiro (guarda transparência e é o menor); se o navegador não
+    //    souber exportar WebP, ele devolve PNG e o mime no texto muda sozinho.
+    //    Por isso o teste é sobre o RESULTADO, não sobre o pedido.
+    let saida = '';
+    for (const q of [0.92, 0.85, 0.75, 0.6]) {
+      saida = cv.toDataURL('image/webp', q);
+      if (!/^data:image\/webp/.test(saida)) { saida = cv.toDataURL('image/png'); break; }
+      if (saida.length <= _MK_MAX_CHARS) break;
+    }
+    if (saida.length > _MK_MAX_CHARS) {
+      // último recurso: metade das dimensões
+      const cv2 = document.createElement('canvas');
+      cv2.width = Math.max(1, Math.round(w / 2)); cv2.height = Math.max(1, Math.round(h / 2));
+      cv2.getContext('2d').drawImage(img, 0, 0, cv2.width, cv2.height);
+      saida = cv2.toDataURL('image/webp', 0.8);
+      if (!/^data:image\/webp/.test(saida)) saida = cv2.toDataURL('image/png');
+    }
+    if (saida.length > _MK_MAX_CHARS) {
+      return { ok: false, erro: 'Não consegui deixar esta imagem abaixo de ' +
+               Math.round(_MK_MAX_CHARS / 1024) + ' KB. Mande uma versão mais simples do logo.' };
+    }
+
+    const mime = (/^data:(image\/[a-z]+)/.exec(saida) || [])[1] || '?';
+    return { ok: true, logo: saida, mime: mime, kb: Math.round(saida.length / 1024), w: w, h: h };
+  } catch (e) {
+    return { ok: false, erro: 'Não consegui ler esta imagem: ' + ((e && e.message) || '') };
+  } finally {
+    try { URL.revokeObjectURL(url); } catch (e) {}
+  }
+}
+
+// ── Entrar e sair do modo ───────────────────────────────────────────────────
+async function _mkAbrir() {
+  _mkModo = true; _mkErro = ''; _mkPreview = '';
+  await _mkCarregar();
+}
+async function _mkFechar() {
+  _mkModo = false; _mkPreview = ''; _mkErro = '';
+  await renderPortalAcessos();
+}
+
+async function _mkCarregar() {
+  if (!_paPinValido()) { await renderPortalAcessos(); return; }
+  _mkErro = '';
+  try {
+    const r = await _paPost({ action: 'portalMarcaListar' });
+    _mkDados = r || null;
+  } catch (e) {
+    if (e && e.paPrecisaPin) { _paErro = e.message; _mkModo = false; await renderPortalAcessos(); return; }
+    _mkErro = (e && e.message) || 'Não consegui carregar as marcas.';
+    // ⚠ GAS antigo (≤ v118) não tem a action: a tela DIZ isso em vez de mostrar
+    //   uma lista vazia que pareceria "nenhum cliente tem logo".
+    if (/Ação desconhecida/i.test(_mkErro)) {
+      _mkErro = 'Este PCM precisa do GAS v119 — a tela de identidade visual ainda não existe no servidor publicado.';
+    }
+    _mkDados = null;
+  }
+  await renderPortalAcessos();
+}
+
+// ── A tela ──────────────────────────────────────────────────────────────────
+function _mkHtml() {
+  const cab =
+    '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;gap:12px;flex-wrap:wrap">' +
+      '<div><h2 style="margin:0">Identidade visual do portal</h2>' +
+      '<div style="font-size:12px;color:var(--text-muted);margin-top:2px">' +
+      'O logo aparece no cabeçalho do portal do cliente, nos cards e nas folhas impressas. ' +
+      'O resto da tela continua com a marca da Proper.</div></div>' +
+      '<div style="display:flex;gap:8px">' +
+        '<button class="btn btn-sm" onclick="_mkCarregar()">↻ Atualizar</button>' +
+        '<button class="btn btn-sm" onclick="_mkFechar()">← Voltar aos acessos</button>' +
+      '</div>' +
+    '</div>';
+
+  if (_mkErro) {
+    return cab + '<div style="padding:16px;border:1px solid var(--red);border-radius:6px;' +
+      'background:rgba(220,38,38,.06);color:var(--red);font-size:13px">' + _paEsc(_mkErro) + '</div>';
+  }
+  if (!_mkDados) {
+    return cab + '<div style="padding:24px;color:var(--text-muted);font-size:13px">Carregando…</div>';
+  }
+
+  const alvos = _mkAlvos();
+  const atual = _mkMarcaDe(_mkEscopo, _mkAlvo);
+
+  const abas = [['cliente', 'Empresa'], ['unidade', 'Unidade / área'], ['grupo', 'Grupo econômico']]
+    .map(([k, r]) => '<button class="btn btn-sm ' + (_mkEscopo === k ? 'btn-primary' : 'btn-secondary') +
+      '" data-mkescopo="' + k + '">' + r + '</button>').join(' ');
+
+  const opts = alvos.map(a =>
+    '<option value="' + _paEsc(a.id) + '"' + (String(a.id) === String(_mkAlvo) ? ' selected' : '') + '>' +
+    _paEsc(a.rotulo) + (_mkMarcaDe(_mkEscopo, a.id) ? '  ✓ com logo' : '') + '</option>').join('');
+
+  const mostrar = _mkPreview || (atual && atual.logo) || '';
+
+  return cab +
+    '<div class="card" style="padding:16px;margin-bottom:16px">' +
+      '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px">' + abas + '</div>' +
+
+      (alvos.length
+        ? '<div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:start">' +
+            '<div>' +
+              '<label style="font-size:12px;color:var(--text-muted)">' + _mkRotuloEscopo() + '</label>' +
+              '<select id="mkAlvo" class="input"><option value="">— escolha —</option>' + opts + '</select>' +
+
+              '<label style="font-size:12px;color:var(--text-muted);margin-top:10px;display:block">' +
+                'Nome como aparece no portal <span style="opacity:.7">(opcional)</span></label>' +
+              '<input id="mkNome" class="input" placeholder="vazio = usa o nome do cadastro" ' +
+                'autocomplete="off" name="mk_nome_nofill" data-lpignore="true" data-1p-ignore ' +
+                'value="' + _paEsc((atual && atual.nome_exibicao) || '') + '">' +
+
+              '<label style="font-size:12px;color:var(--text-muted);margin-top:10px;display:block">Logomarca</label>' +
+              '<input id="mkArquivo" type="file" class="input" accept="image/png,image/webp,image/jpeg">' +
+              '<div style="font-size:11px;color:var(--text-muted);margin-top:5px">' +
+                'PNG com fundo transparente é o ideal. A imagem é reduzida aqui mesmo para ' +
+                _MK_LARG + '×' + _MK_ALT + ' antes de subir. <b>SVG não é aceito</b> — pode carregar script dentro.' +
+              '</div>' +
+            '</div>' +
+
+            '<div>' +
+              '<div style="font-size:12px;color:var(--text-muted);margin-bottom:6px">' +
+                (_mkPreview ? 'Prévia — ainda não salva' : (atual && atual.logo ? 'Publicado hoje' : 'Sem logo ainda')) +
+              '</div>' +
+              // O xadrez atrás mostra transparência de verdade — logo branco em
+              // fundo branco é o erro clássico, e aqui ele fica visível na hora.
+              '<div style="min-height:104px;border:1px solid var(--border);border-radius:8px;padding:12px;' +
+                'display:flex;align-items:center;justify-content:center;' +
+                'background-image:linear-gradient(45deg,#e9e9e9 25%,transparent 25%),linear-gradient(-45deg,#e9e9e9 25%,transparent 25%),linear-gradient(45deg,transparent 75%,#e9e9e9 75%),linear-gradient(-45deg,transparent 75%,#e9e9e9 75%);' +
+                'background-size:14px 14px;background-position:0 0,0 7px,7px -7px,-7px 0px">' +
+                (mostrar
+                  ? '<img id="mkPrev" src="' + _paEsc(mostrar) + '" alt="prévia do logo" ' +
+                    'style="max-width:100%;max-height:110px;display:block">'
+                  : '<span style="font-size:12px;color:var(--text-muted)">nenhuma imagem</span>') +
+              '</div>' +
+              (atual
+                ? '<div style="font-size:11px;color:var(--text-muted);margin-top:6px">' +
+                  (atual.tamanho_kb ? atual.tamanho_kb + ' KB · ' : '') +
+                  'por ' + _paEsc(atual.atualizado_por || '—') + '</div>'
+                : '') +
+            '</div>' +
+          '</div>' +
+
+          '<div style="margin-top:14px;display:flex;gap:8px;flex-wrap:wrap;align-items:center">' +
+            '<button class="btn btn-primary" id="mkSalvar"' + (_mkOcupado ? ' disabled' : '') + '>Salvar</button>' +
+            (atual ? '<button class="btn btn-secondary" id="mkApagar">Remover a marca</button>' : '') +
+            (_mkPreview ? '<button class="btn btn-secondary" id="mkDescartar">Descartar a prévia</button>' : '') +
+          '</div>'
+        : '<div class="empty"><div class="empty-title">Nada para marcar aqui</div>' +
+          '<div class="empty-sub">' + _mkVazioTexto() + '</div></div>') +
+    '</div>' +
+
+    _mkListaHtml();
+}
+
+function _mkRotuloEscopo() {
+  return _mkEscopo === 'cliente' ? 'Empresa'
+       : _mkEscopo === 'unidade' ? 'Unidade / área'
+       : 'Grupo econômico';
+}
+function _mkVazioTexto() {
+  if (_mkEscopo === 'grupo') {
+    return 'Nenhum grupo econômico criado ainda. Grupos hoje se criam pelo SQL ' +
+           '(NEWFILE_PORTAL_GRUPO_ECONOMICO.sql).';
+  }
+  if (_mkEscopo === 'unidade') {
+    return 'Nenhuma unidade cadastrada. Unidades se criam na tela Unidades do PCM.';
+  }
+  return 'Nenhum cliente ativo no espelho.';
+}
+
+function _mkAlvos() {
+  const d = _mkDados || {};
+  if (_mkEscopo === 'cliente') {
+    return (d.clientes || []).map(c => ({ id: c.id, rotulo: c.nome }));
+  }
+  if (_mkEscopo === 'grupo') {
+    return (d.grupos || []).map(g => ({ id: g.id, rotulo: g.nome }));
+  }
+  const nomeCli = {};
+  (d.clientes || []).forEach(c => { nomeCli[String(c.id)] = c.nome; });
+  return (d.unidades || []).map(u => ({
+    id: u.id,
+    rotulo: u.nome + (nomeCli[String(u.cliente_id)] ? '  ·  ' + nomeCli[String(u.cliente_id)] : '')
+  }));
+}
+
+function _mkMarcaDe(escopo, alvo) {
+  if (!alvo || !_mkDados) return null;
+  return (_mkDados.marcas || []).find(m =>
+    String(m.escopo) === String(escopo) && String(m.alvo_id) === String(alvo)) || null;
+}
+
+// Lista do que já está publicado — para bater o olho e ver o conjunto.
+function _mkListaHtml() {
+  const ms = (_mkDados && _mkDados.marcas) || [];
+  if (!ms.length) {
+    return '<div class="empty"><div class="empty-title">Nenhuma marca publicada ainda</div>' +
+      '<div class="empty-sub">Enquanto não houver, o portal mostra só o nome da empresa — ' +
+      'que é o comportamento de hoje.</div></div>';
+  }
+  const nome = (m) => {
+    const d = _mkDados || {};
+    const acha = (arr, k) => (arr || []).find(x => String(x.id) === String(m.alvo_id));
+    const alvo = m.escopo === 'cliente' ? acha(d.clientes)
+               : m.escopo === 'grupo'   ? acha(d.grupos)
+               : acha(d.unidades);
+    return (m.nome_exibicao || (alvo && alvo.nome) || m.alvo_id);
+  };
+  const rot = { cliente: 'Empresa', unidade: 'Unidade', grupo: 'Grupo' };
+  return '<div class="secao" style="margin-bottom:8px"><h3 style="margin:0;font-size:14px">' +
+      'Marcas publicadas <span class="badge">' + ms.length + '</span></h3></div>' +
+    '<div style="display:flex;flex-wrap:wrap;gap:10px">' +
+      ms.map(m =>
+        '<div class="card" style="padding:10px;width:190px">' +
+          '<div style="height:56px;display:flex;align-items:center;justify-content:center;' +
+            'background:var(--bg-alt);border-radius:6px;margin-bottom:7px">' +
+            (m.logo ? '<img src="' + _paEsc(m.logo) + '" alt="" style="max-width:100%;max-height:50px">'
+                    : '<span style="font-size:11px;color:var(--text-muted)">só nome</span>') +
+          '</div>' +
+          '<div style="font-size:12px;font-weight:600;line-height:1.3">' + _paEsc(nome(m)) + '</div>' +
+          '<div style="font-size:10.5px;color:var(--text-muted);margin-top:2px">' +
+            (rot[m.escopo] || m.escopo) + (m.tamanho_kb ? ' · ' + m.tamanho_kb + ' KB' : '') + '</div>' +
+        '</div>').join('') +
+    '</div>';
+}
+
+// ── Eventos ─────────────────────────────────────────────────────────────────
+function _mkLigarEventos() {
+  const el = document.getElementById('viewPortalAcessos');
+  if (!el) return;
+
+  el.querySelectorAll('[data-mkescopo]').forEach(b => {
+    b.onclick = async () => {
+      _mkEscopo = b.dataset.mkescopo; _mkAlvo = ''; _mkPreview = '';
+      await renderPortalAcessos();
+    };
+  });
+
+  const sel = document.getElementById('mkAlvo');
+  if (sel) sel.onchange = async () => {
+    _mkAlvo = sel.value; _mkPreview = '';
+    await renderPortalAcessos();
+  };
+
+  const arq = document.getElementById('mkArquivo');
+  if (arq) arq.onchange = async () => {
+    const f = arq.files && arq.files[0];
+    if (!f) return;
+    const r = await _mkReduzir(f);
+    if (!r.ok) { toast(r.erro, 'error'); arq.value = ''; return; }
+    _mkPreview = r.logo;
+    toast('Imagem reduzida para ' + r.w + '×' + r.h + ' (' + r.kb + ' KB, ' + r.mime + ').', 'info');
+    await renderPortalAcessos();
+  };
+
+  const btS = document.getElementById('mkSalvar');
+  if (btS) btS.onclick = () => _mkSalvar();
+  const btA = document.getElementById('mkApagar');
+  if (btA) btA.onclick = () => _mkApagar();
+  const btD = document.getElementById('mkDescartar');
+  if (btD) btD.onclick = async () => { _mkPreview = ''; await renderPortalAcessos(); };
+}
+
+async function _mkSalvar() {
+  if (!_mkAlvo) { toast('Escolha ' + _mkRotuloEscopo().toLowerCase() + ' primeiro.', 'error'); return; }
+  const nome = String((document.getElementById('mkNome') || {}).value || '').trim();
+  const atual = _mkMarcaDe(_mkEscopo, _mkAlvo);
+
+  // ⚠ Sem prévia nova, o que sobe é o que já está lá: salvar só o nome não pode
+  //   apagar a imagem publicada por efeito colateral.
+  const logo = _mkPreview || (atual && atual.logo) || '';
+  if (!logo && !nome) { toast('Escolha uma imagem ou escreva um nome de exibição.', 'error'); return; }
+
+  // 🔴 A ORDEM AQUI IMPORTA, e a bancada foi quem mostrou. Na primeira versão
+  //    o `_mkCarregar()` (que redesenha a tela) rodava DENTRO do `try`, antes
+  //    do `finally` zerar o `_mkOcupado`. Resultado: a tela era redesenhada com
+  //    o botão `disabled`, o `finally` zerava a variável logo depois e ninguém
+  //    redesenhava de novo — o botão Salvar ficava morto até a pessoa trocar de
+  //    aba. É o "não salva" clássico, que na verdade é "não deixa clicar".
+  // ⇒ Solta a trava ANTES de recarregar. Recarregar é o que redesenha.
+  _mkOcupado = true;
+  let deuCerto = false;
+  try {
+    await _paPost({ action: 'portalMarcaSalvar', escopo: _mkEscopo, alvo_id: _mkAlvo,
+                    logo: logo, nome_exibicao: nome });
+    _mkPreview = '';
+    deuCerto = true;
+  } catch (e) {
+    _mkOcupado = false;
+    if (e && e.paPrecisaPin) { _paErro = e.message; _mkModo = false; await renderPortalAcessos(); return; }
+    toast((e && e.message) || 'Não consegui salvar.', 'error');
+    await renderPortalAcessos();
+    return;
+  }
+  _mkOcupado = false;
+  if (deuCerto) {
+    toast('Marca publicada. O cliente vê na próxima vez que abrir o portal.', 'success');
+    await _mkCarregar();
+  }
+}
+
+async function _mkApagar() {
+  const atual = _mkMarcaDe(_mkEscopo, _mkAlvo);
+  if (!atual) return;
+  if (!confirm('Remover a marca deste ' + _mkRotuloEscopo().toLowerCase() + '?\n\n' +
+               'O portal volta a mostrar só o nome da empresa. Dá para publicar de novo depois.')) return;
+  try {
+    await _paPost({ action: 'portalMarcaApagar', escopo: _mkEscopo, alvo_id: _mkAlvo });
+    _mkPreview = '';
+    toast('Marca removida.', 'success');
+    await _mkCarregar();
+  } catch (e) {
+    if (e && e.paPrecisaPin) { _paErro = e.message; _mkModo = false; await renderPortalAcessos(); return; }
+    toast((e && e.message) || 'Não consegui remover.', 'error');
   }
 }
 
