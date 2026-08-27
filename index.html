@@ -1,3 +1,67 @@
+<!-- PCM V153 (27/08/2026) — O CELULAR ACHA AS MÁQUINAS, TEM COMO VOLTAR,
+     E A AGENDA MOSTRA A SEMANA.
+     Feito EM CIMA do V152 (o `index.html` da pasta, carimbo conferido de dentro
+     do arquivo). 100% aditivo. Roda com o GAS v127 no ar; o v128 desta mesma
+     rodada é OPCIONAL para o PCM (é o PCF que precisa dele).
+     Bancada: _testes/NEWFILE_T_PCM_V153_maquinas_semana.mjs (com --negativo).
+
+     A   🔴 "SEM MÁQUINAS CADASTRADAS" NUM CLIENTE COM DUAS MÁQUINAS.
+         Achado pelo Fernando no celular, na Fundição São Cristóvão (COMP01 e
+         COMP02, ambas na tela de Máquinas do desktop, ambas com status de peça).
+         Não era a tela: `_mobCarregaMaquinas` chamava
+         `gsGet('getMachinesByClient', {cliente_id, cliente})` e o GAS lê
+         `params.client` — UMA chave, sem alias nenhum (`case 'getMachinesByClient'`
+         do doGet). O servidor respondia `{status:'error', error:'client
+         obrigatório'}`, o `gsGet` lançava (V108), o `catch` gravava `_maqs=[]`
+         e a etapa 2 desenhava o vazio educado. Nenhum erro visível, nenhuma
+         linha vermelha: a tela AFIRMAVA que o cadastro estava vazio.
+         Três defesas: manda `client` (+ os aliases), lê `serial` (o
+         `rowToMachine` nunca devolveu `serie` — a série sumia do subtítulo
+         mesmo quando a lista enchia) e, se o servidor não trouxer nada, cai no
+         catálogo local `db.machines`. Vazio POR FALHA deixa de ter a mesma cara
+         de vazio de verdade: ganha "📶 Não consegui buscar" + "↻ Tentar de novo".
+         🔑 A bancada da V130 mockava `getMachinesByClient` NA REDE e devolvia
+            duas máquinas SEM OLHAR OS PARÂMETROS — testava o servidor contra um
+            cliente imaginário, a mesma falha do V131 (`google_credential`) num
+            disfarce novo. A bancada nova ABRE o que saiu pela rede.
+
+     B   O ✕ FECHA TUDO; O ‹ DESFAZ UM PASSO — e só existia o primeiro.
+         Na etapa "Quais máquinas?" não havia volta: errar o cliente custava
+         recomeçar o stepper inteiro. Agora a folha tem `voltar` (uma FUNÇÃO,
+         não um número de etapa: o stepper vindo de uma demanda volta PARA A
+         DEMANDA, senão o vínculo `demanda_id` se perderia). Ganharam ‹ as 4
+         etapas da OS, o formulário de demanda e a tela "Não consigo fazer".
+         E o BOTÃO FÍSICO do Android passa a fechar a folha em vez de SAIR DO
+         APP com o formulário na cara (um estado por folha aberta, devolvido no
+         ✕ para não sobrar estado órfão).
+
+     C   A AGENDA GANHA A SEMANA. Segmentado Dia | Semana. A semana começa na
+         segunda, mostra os 7 dias com os compromissos de cada um, barra de
+         carga por dia (vermelha quando estoura), contagem de atrasadas e o
+         total da semana; tocar no cabeçalho do dia abre aquele dia na visão de
+         dia. As duas visões leem o MESMO `_mobItens()` — a semana não é uma
+         segunda verdade. A preferência fica no localStorage.
+         ⚠ A capacidade do dia agora multiplica pelo nº de pessoas quando o
+           filtro é "Todos": a barra da faixa de 14 dias comparava a carga da
+           EQUIPE com a capacidade de UMA pessoa e vivia estourada.
+
+     D   🔴 FILTRAR POR PESSOA ESCONDIA A DEMANDA DE VÁRIOS DONOS. O V149 tornou
+         `responsavel` uma lista ("Marcelo; Jonathan") e corrigiu o desktop e o
+         cálculo de saturação do celular — e DEIXOU PASSAR a agenda do celular,
+         que continuou com `x.usuario === filtro`. Filtrar por Marcelo escondia
+         a demanda dele. Agora `_mobEhDe` usa `PROPER_DEM_RESPS`.
+
+     E   DESIGNAR TAREFA OFERECIA A FILA, NÃO A EQUIPE. `(d.usuarios||[])` é
+         quem JÁ TEM tarefa na fila; com a oficina cheia e a fila vazia a tela
+         dizia "Sem usuários na fila" e não havia como designar. É o mesmo
+         defeito que o V139 corrigiu no formulário de demanda e que ficou de pé
+         aqui. Passa a usar `_mobEquipeNomes` (cadastro do GAS v120).
+
+     F   GUARD ANTI-AUTOFILL COMPLETO nos 3 campos do modo app (busca de
+         cliente, busca de OS, título da demanda). Invariante da casa desde a
+         lição das 3 ocorrências do "REcebimento de máquina": `autocomplete=off`
+         sozinho não segura o Chrome.
+-->
 <!-- PCM V152 (27/08/2026) — OS CARDS QUE ENCOLHIAM, A FAIXA QUE NÃO CLICAVA,
      E A EDIÇÃO DE DEMANDA QUE DUPLICAVA NO CELULAR.
      Feito EM CIMA do V151 (o `index.html` publicado às 15h, conferido pelo
@@ -2709,7 +2773,7 @@ v50 — Resiliência de rede: retry/backoff em gsGet e syncToGS
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>ProperCare Manager · Gestão PGP v3.76 (PCM V152)</title>
+<title>ProperCare Manager · Gestão PGP v3.77 (PCM V153)</title>
 <link rel="icon" type="image/jpeg" href="data:image/jpeg;base64,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">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -3997,7 +4061,7 @@ tr.tadm-feito td{background:#dcfce7 !important;color:#15803d;font-weight:700}
 <aside class="nav-sidebar" aria-label="Navegação principal">
   <div class="nav-brand">
     <span class="nav-brand-mark">PCM</span>
-    <span class="nav-brand-sub">v3.76 · V152</span>
+    <span class="nav-brand-sub">v3.77 · V153</span>
   </div>
 
   <nav class="nav-groups">
@@ -26890,6 +26954,59 @@ body.mob-on #toast{z-index:9800}
 .mob-day .d-bar i{display:block;height:100%;background:var(--mob-accent);border-radius:2px}
 .mob-day.is-sel .d-bar{background:rgba(255,255,255,.25)}
 
+/* ── V153 · SEGMENTADO DIA/SEMANA ────────────────────────────────────────
+   Duas visões da MESMA agenda: nenhuma inventa dado, as duas leem _mobItens().
+   O botão fica no topo da faixa porque é onde o polegar já está quando a
+   pessoa procura "e o resto da semana?". */
+.mob-seg{display:flex;gap:0;margin:0 16px 12px;background:var(--mob-card);
+  border:1px solid var(--mob-line);border-radius:12px;padding:3px}
+.mob-seg button{flex:1;border:0;background:none;padding:8px 0;border-radius:9px;
+  font-size:13px;font-weight:700;color:var(--mob-muted)}
+.mob-seg button.is-on{background:var(--mob-ink);color:#fff}
+.mob-sem-nav{display:flex;align-items:center;justify-content:space-between;
+  gap:8px;padding:0 16px 10px}
+.mob-sem-nav b{font-size:13.5px;font-weight:700;color:#3f3f46;flex:1;text-align:center}
+.mob-sem-nav button{background:var(--mob-card);border:1px solid var(--mob-line);
+  border-radius:10px;width:38px;height:34px;font-size:17px;color:#3f3f46;line-height:1}
+.mob-sem-d{background:var(--mob-card);border:1px solid var(--mob-line);
+  border-radius:16px;margin-bottom:10px;overflow:hidden}
+.mob-sem-d.is-hoje{border-color:var(--mob-accent);box-shadow:0 0 0 1px var(--mob-accent)}
+.mob-sem-d.is-off .sd-h{background:#fafafa}
+.mob-sem-h{width:100%;display:flex;align-items:center;gap:10px;background:none;
+  border:0;padding:11px 14px;text-align:left;border-bottom:1px solid var(--mob-line)}
+.mob-sem-h .sd-w{font-size:11px;font-weight:800;text-transform:uppercase;
+  letter-spacing:.5px;color:var(--mob-muted);width:64px;flex:0 0 auto}
+.mob-sem-h .sd-w i{display:block;font-style:normal;font-size:17px;font-weight:750;
+  color:var(--mob-ink);letter-spacing:0;line-height:1.15}
+.mob-sem-d.is-hoje .sd-w i{color:var(--mob-accent)}
+.mob-sem-h .sd-m{flex:1;min-width:0}
+.mob-sem-h .sd-c{display:block;font-size:12.5px;color:var(--mob-muted)}
+.mob-sem-h .sd-bar{display:block;height:5px;border-radius:3px;background:#e4e4e7;
+  margin-top:6px;overflow:hidden}
+.mob-sem-h .sd-bar i{display:block;height:100%;background:var(--mob-accent);border-radius:3px}
+.mob-sem-h .sd-bar.is-cheio i{background:#dc2626}
+.mob-sem-h .sd-go{font-size:18px;color:#c4c4c8;flex:0 0 auto}
+.mob-sem-l{padding:6px 8px 8px}
+.mob-sem-i{width:100%;display:flex;align-items:flex-start;gap:9px;background:none;
+  border:0;padding:7px 8px;border-radius:10px;text-align:left}
+.mob-sem-i:active{background:#f4f4f5}
+.mob-sem-i .si-h{font-size:12px;font-weight:750;color:#52525b;width:42px;flex:0 0 auto;
+  font-variant-numeric:tabular-nums;padding-top:1px}
+.mob-sem-i .si-b{flex:1;min-width:0;display:block}
+.mob-sem-i .si-t{display:block;font-size:13.5px;font-weight:620;line-height:1.3;word-break:break-word}
+.mob-sem-i .si-s{display:block;font-size:11.5px;color:var(--mob-muted);margin-top:2px}
+.mob-sem-i .si-d{width:7px;height:7px;border-radius:50%;flex:0 0 auto;margin-top:5px;background:#2563eb}
+.mob-sem-i .si-d.d-exec{background:#16a34a}
+.mob-sem-i .si-d.d-late{background:#dc2626}
+.mob-sem-i .si-d.d-dem{background:#7c3aed}
+.mob-sem-vazio{padding:10px 14px 12px;font-size:12.5px;color:#a1a1aa}
+
+/* ── V153 · O ‹ DA FOLHA ─────────────────────────────────────────────────
+   🔑 O ✕ fecha TUDO; o ‹ desfaz UM passo. Num stepper de 4 etapas eram coisas
+   diferentes e só existia a primeira: errar o cliente custava recomeçar. */
+.mob-sheet-back{background:none;border:0;font-size:26px;color:var(--mob-ink);
+  padding:0 4px 3px;line-height:1;font-weight:400;flex:0 0 auto}
+
 /* ── filtro de pessoas ───────────────────────────────────────────────────── */
 .mob-chips{display:flex;gap:7px;overflow-x:auto;padding:0 16px 12px;scrollbar-width:none}
 .mob-chips::-webkit-scrollbar{display:none}
@@ -27044,7 +27161,7 @@ body.mob-forced #mobApp{max-width:430px;margin:0 auto;box-shadow:0 0 60px rgba(0
 <div class="mob-sheet-bg mob-keep" id="mobSheetBg" onclick="_mobFechaSheet()"></div>
 <div class="mob-sheet mob-keep" id="mobSheet" role="dialog" aria-modal="true">
   <div class="mob-grab"></div>
-  <div class="mob-sheet-h"><b id="mobSheetT">—</b><button class="mob-sheet-x" onclick="_mobFechaSheet()">✕</button></div>
+  <div class="mob-sheet-h"><button class="mob-sheet-back" id="mobSheetBack" style="display:none" onclick="_mobVoltar()" aria-label="Voltar">‹</button><b id="mobSheetT">—</b><button class="mob-sheet-x" onclick="_mobFechaSheet()">✕</button></div>
   <div class="mob-steps" id="mobSteps" style="display:none"></div>
   <div class="mob-sheet-b" id="mobSheetB"></div>
 </div>
@@ -27087,7 +27204,14 @@ body.mob-forced #mobApp{max-width:430px;margin:0 auto;box-shadow:0 0 60px rgba(0
     //    "Buscando sua agenda…".
     tab: 'hoje', dados: null, carregando: false, boot: false, erro: null,
     diaSel: null, pessoaSel: '', os: null, osCarregando: false,
-    step: 0, novaOS: null, ts: 0
+    step: 0, novaOS: null, ts: 0,
+    vistaAgenda: 'dia',  // V153 — 'dia' | 'semana'
+    // ⚠ ÂNCORA PRÓPRIA DA SEMANA. Achado da auditoria: com a semana movendo o
+    //   `diaSel` compartilhado, ir 3 semanas à frente e voltar para "Dia"
+    //   deixava a lista num dia FORA da faixa de 14 dias — sem `.is-sel` na
+    //   faixa e sem como reselecionar por lá. As duas visões olham o mesmo
+    //   dado, mas cada uma tem o seu cursor.
+    semAncora: null
   };
   window._mobEstado = _mobEstado;
 
@@ -27156,6 +27280,18 @@ body.mob-forced #mobApp{max-width:430px;margin:0 auto;box-shadow:0 0 60px rgba(0
       return ka < kb ? -1 : (ka > kb ? 1 : 0);
     });
     return out;
+  }
+
+  // V153 — a pessoa está NESTE item? Lista, nunca igualdade: `responsavel`
+  // pode ser "Marcelo; Jonathan" desde o V149. Um `===` aqui esconde a demanda
+  // das DUAS pessoas — e a barra de carga do dia some junto.
+  function _mobEhDe(it, pessoa) {
+    if (!pessoa) return true;
+    if (it && it.kind === 'demanda') {
+      var l = (window.PROPER_DEM_RESPS ? window.PROPER_DEM_RESPS(it.usuario) : [it.usuario]);
+      return l.indexOf(pessoa) >= 0;
+    }
+    return String((it && it.usuario) || '') === pessoa;
   }
 
   // ── cartão ───────────────────────────────────────────────────────────────
@@ -27248,6 +27384,62 @@ body.mob-forced #mobApp{max-width:430px;margin:0 auto;box-shadow:0 0 60px rgba(0
   }
 
   // ── TELA · AGENDA ────────────────────────────────────────────────────────
+  // ═══ V153 · A SEMANA INTEIRA ═══════════════════════════════════════════
+  // A faixa de 14 dias respondia "que dia estou olhando?"; não respondia
+  // "como está a semana?". Para decidir onde encaixar um serviço é preciso ver
+  // os sete dias com o que já está neles — e era isso que obrigava a tocar dia
+  // a dia e guardar de cabeça.
+  // 🔑 As duas visões leem `_mobItens()`, o MESMO envelope: a semana não é uma
+  //    segunda verdade, é o mesmo dado com outro recorte. E a semana começa na
+  //    SEGUNDA (pt-BR), não no domingo do getDay().
+  function _mobSegunda(chave) {
+    var p = String(chave || '').split('-');
+    var d = new Date(+p[0], (+p[1]) - 1, +p[2]);
+    if (isNaN(d.getTime())) d = _mobHoje();
+    var dow = d.getDay();                 // 0=dom … 6=sáb
+    d.setDate(d.getDate() + (dow === 0 ? -6 : 1 - dow));
+    d.setHours(0, 0, 0, 0);
+    return d;
+  }
+  window._mobVistaAgenda = function (v) {
+    _mobEstado.vistaAgenda = (v === 'semana') ? 'semana' : 'dia';
+    // ao ENTRAR na semana, ela começa na semana do dia que está à vista
+    if (_mobEstado.vistaAgenda === 'semana') _mobEstado.semAncora = _mobEstado.diaSel;
+    try { localStorage.setItem('pcm_mob_vista_agenda', _mobEstado.vistaAgenda); } catch (e) {}
+    var sc = document.getElementById('mobScroll'); if (sc) sc.scrollTop = 0;
+    _mobPintar();
+  };
+  window._mobSemana = function (passo) {
+    var seg = _mobSegunda(_mobEstado.semAncora || _mobEstado.diaSel);
+    seg.setDate(seg.getDate() + passo * 7);
+    _mobEstado.semAncora = _mobDiaKey(seg);   // NÃO mexe no diaSel
+    _mobPintar();
+  };
+  // toca no dia dentro da semana → abre AQUELE dia na visão de dia
+  window._mobAbrirDia = function (k) {
+    _mobEstado.diaSel = k; _mobEstado.semAncora = k; _mobEstado.vistaAgenda = 'dia';
+    try { localStorage.setItem('pcm_mob_vista_agenda', 'dia'); } catch (e) {}
+    var sc = document.getElementById('mobScroll'); if (sc) sc.scrollTop = 0;
+    _mobPintar();
+  };
+
+  function _mobLinhaSemana(it) {
+    var cls = it.exec ? 'd-exec' : (it.atrasada ? 'd-late' : (it.kind === 'demanda' ? 'd-dem' : ''));
+    var acao = it.kind === 'demanda'
+      ? "_mobAbrirDemanda('" + esc(it.id) + "')"
+      : "_mobAbrirTarefa('" + esc(it.os_id) + "','" + esc(it.id) + "')";
+    var hora = (!it.sem_hora && it.inicio) ? _mobHHMM(it.inicio) : (it.min ? it.min + 'm' : '—');
+    var quem = it.kind === 'demanda'
+      ? (window.PROPER_DEM_RESPS ? window.PROPER_DEM_RESPS(it.usuario).join(', ') : it.usuario)
+      : it.usuario;
+    return '<button class="mob-sem-i" onclick="' + acao + '">' +
+      '<span class="si-h">' + esc(hora) + '</span>' +
+      '<span class="si-d ' + cls + '"></span>' +
+      '<span class="si-b"><span class="si-t">' + esc(it.titulo) + '</span>' +
+      '<span class="si-s">' + esc(quem || 'sem responsável') +
+      (it.exec ? ' · ▶ em execução' : (it.atrasada ? ' · atrasada' : '')) + '</span></span></button>';
+  }
+
   function _mobTelaAgenda() {
     var itens = _mobItens();
     var hoje = _mobHoje();
@@ -27259,28 +27451,63 @@ body.mob-forced #mobApp{max-width:430px;margin:0 auto;box-shadow:0 0 60px rgba(0
 
     var pessoas = ((_mobEstado.dados || {}).usuarios || []).map(function (u) { return u.usuario; });
     var filtro = _mobEstado.pessoaSel;
+    var semana = _mobEstado.vistaAgenda === 'semana';
+    var chaveHoje = _mobDiaKey(hoje);
+
+    // quantas pessoas o filtro está olhando — a capacidade do dia é POR PESSOA
+    var nPess = filtro ? 1 : Math.max(1, pessoas.length);
+    var capDia = cap * nPess;
+
+    var segSem = _mobSegunda(_mobEstado.semAncora || _mobEstado.diaSel);
+    var fimSem = new Date(segSem); fimSem.setDate(fimSem.getDate() + 6);
+    var rotuloSem = p2(segSem.getDate()) + '/' + p2(segSem.getMonth() + 1) + ' – ' +
+                    p2(fimSem.getDate()) + '/' + p2(fimSem.getMonth() + 1);
 
     var html = '<div class="mob-hero" style="padding-bottom:44px">' +
       '<div class="mob-hero-top"><div>' +
       '<div class="mob-hello">Agenda da equipe</div>' +
-      '<div class="mob-title">' + _mobDiaCurto(_mobEstado.diaSel) + '</div>' +
+      '<div class="mob-title">' + (semana ? esc(rotuloSem) : _mobDiaCurto(_mobEstado.diaSel)) + '</div>' +
       '</div><button class="mob-avatar" onclick="_mobRecarregar()" aria-label="Atualizar">↻</button></div></div>';
 
-    html += '<div style="padding-top:14px"><div class="mob-days">';
-    for (var i = 0; i < 14; i++) {
-      var d = new Date(hoje); d.setDate(d.getDate() + i);
-      var k = _mobDiaKey(d);
-      var doDia = itens.filter(function (x) { return x.dia === k && (!filtro || x.usuario === filtro); });
-      var carga = doDia.reduce(function (s, x) { return s + (x.min || 0); }, 0);
-      var pct = cap > 0 ? Math.min(100, Math.round(carga / cap * 100)) : 0;
-      var util = diasUteis.indexOf(d.getDay()) >= 0;
-      html += '<button class="mob-day' + (k === _mobEstado.diaSel ? ' is-sel' : '') + (util ? '' : ' is-off') +
-        '" onclick="_mobDia(\'' + k + '\')">' +
-        '<div class="d-w">' + d.toLocaleDateString('pt-BR', { weekday: 'short' }).replace('.', '') + '</div>' +
-        '<div class="d-n">' + p2(d.getDate()) + '</div>' +
-        '<div class="d-bar"><i style="width:' + pct + '%"></i></div></button>';
+    html += '<div style="padding-top:14px">' +
+      '<div class="mob-seg">' +
+      '<button class="' + (semana ? '' : 'is-on') + '" onclick="_mobVistaAgenda(\'dia\')">Dia</button>' +
+      '<button class="' + (semana ? 'is-on' : '') + '" onclick="_mobVistaAgenda(\'semana\')">Semana</button>' +
+      '</div>';
+
+    if (semana) {
+      html += '<div class="mob-sem-nav">' +
+        '<button onclick="_mobSemana(-1)" aria-label="Semana anterior">‹</button>' +
+        '<b>' + esc(rotuloSem) + '</b>' +
+        '<button onclick="_mobSemana(1)" aria-label="Próxima semana">›</button></div>';
+    } else {
+      // ⚠ a faixa começa HOJE, exceto quando o dia escolhido caiu fora dela
+      //   (é o que acontece ao tocar num dia de outra semana): aí ela se
+      //   desloca para conter esse dia — um dia selecionado invisível é pior
+      //   que uma faixa que não começa em hoje.
+      var iniFaixa = new Date(hoje);
+      var _dSel = String(_mobEstado.diaSel || '').split('-');
+      if (_dSel.length === 3) {
+        var _dtSel = new Date(+_dSel[0], (+_dSel[1]) - 1, +_dSel[2]);
+        var _delta = Math.round((_dtSel - hoje) / 86400000);
+        if (_delta < 0 || _delta > 13) iniFaixa.setDate(iniFaixa.getDate() + _delta - 2);
+      }
+      html += '<div class="mob-days">';
+      for (var i = 0; i < 14; i++) {
+        var d = new Date(iniFaixa); d.setDate(d.getDate() + i);
+        var k = _mobDiaKey(d);
+        var doDia = itens.filter(function (x) { return x.dia === k && _mobEhDe(x, filtro); });
+        var carga = doDia.reduce(function (s, x) { return s + (x.min || 0); }, 0);
+        var pct = capDia > 0 ? Math.min(100, Math.round(carga / capDia * 100)) : 0;
+        var util = diasUteis.indexOf(d.getDay()) >= 0;
+        html += '<button class="mob-day' + (k === _mobEstado.diaSel ? ' is-sel' : '') + (util ? '' : ' is-off') +
+          '" onclick="_mobDia(\'' + k + '\')">' +
+          '<div class="d-w">' + d.toLocaleDateString('pt-BR', { weekday: 'short' }).replace('.', '') + '</div>' +
+          '<div class="d-n">' + p2(d.getDate()) + '</div>' +
+          '<div class="d-bar"><i style="width:' + pct + '%"></i></div></button>';
+      }
+      html += '</div>';
     }
-    html += '</div>';
 
     if (pessoas.length > 1) {
       html += '<div class="mob-chips"><button class="mob-chip' + (filtro ? '' : ' is-on') +
@@ -27292,8 +27519,51 @@ body.mob-forced #mobApp{max-width:430px;margin:0 auto;box-shadow:0 0 60px rgba(0
     }
     html += '</div>';
 
+    // ── a semana inteira, um bloco por dia ────────────────────────────────
+    if (semana) {
+      html += '<div class="mob-pad">';
+      var totalSem = 0;
+      for (var w = 0; w < 7; w++) {
+        var dw = new Date(segSem); dw.setDate(dw.getDate() + w);
+        var kw = _mobDiaKey(dw);
+        var doDiaW = itens.filter(function (x) { return x.dia === kw && _mobEhDe(x, filtro); });
+        doDiaW.sort(function (a, b) {
+          var ka = (a.sem_hora || !a.inicio) ? 'ZZ' : _mobHHMM(a.inicio);
+          var kb = (b.sem_hora || !b.inicio) ? 'ZZ' : _mobHHMM(b.inicio);
+          return ka < kb ? -1 : (ka > kb ? 1 : 0);
+        });
+        var cargaW = doDiaW.reduce(function (s2, x) { return s2 + (x.min || 0); }, 0);
+        totalSem += cargaW;
+        var pctW = capDia > 0 ? Math.min(100, Math.round(cargaW / capDia * 100)) : 0;
+        var cheio = capDia > 0 && cargaW > capDia;
+        var utilW = diasUteis.indexOf(dw.getDay()) >= 0;
+        var atrasW = doDiaW.filter(function (x) { return x.atrasada && !x.exec; }).length;
+        html += '<div class="mob-sem-d' + (kw === chaveHoje ? ' is-hoje' : '') + (utilW ? '' : ' is-off') + '">' +
+          '<button class="mob-sem-h" onclick="_mobAbrirDia(\'' + kw + '\')">' +
+            '<span class="sd-w">' + dw.toLocaleDateString('pt-BR', { weekday: 'short' }).replace('.', '') +
+              '<i>' + p2(dw.getDate()) + '/' + p2(dw.getMonth() + 1) + '</i></span>' +
+            '<span class="sd-m"><span class="sd-c">' +
+              (doDiaW.length ? _mobPlural(doDiaW.length, 'compromisso', 'compromissos') +
+                 ' · ' + (Math.round(cargaW / 60 * 10) / 10) + 'h' +
+                 (atrasW ? ' · ' + atrasW + ' atrasada' + (atrasW > 1 ? 's' : '') : '')
+               : (utilW ? 'livre' : 'fora do turno')) +
+            '</span><span class="sd-bar' + (cheio ? ' is-cheio' : '') + '"><i style="width:' + pctW + '%"></i></span></span>' +
+            '<span class="sd-go">›</span>' +
+          '</button>' +
+          (doDiaW.length
+            ? '<div class="mob-sem-l">' + doDiaW.map(_mobLinhaSemana).join('') + '</div>'
+            : '<div class="mob-sem-vazio">Nada agendado.</div>') +
+          '</div>';
+      }
+      html += '<div class="mob-card-s" style="text-align:center;margin:6px 0 4px">Semana: ' +
+        (Math.round(totalSem / 60 * 10) / 10) + 'h' +
+        (filtro ? ' de ' + esc(filtro) : ' da equipe') + '</div>';
+      html += '</div>';
+      return html;
+    }
+
     var lista = itens.filter(function (x) {
-      return x.dia === _mobEstado.diaSel && (!filtro || x.usuario === filtro);
+      return x.dia === _mobEstado.diaSel && _mobEhDe(x, filtro);
     });
     var comHora = lista.filter(function (x) { return !x.sem_hora && x.inicio; });
     var semHora = lista.filter(function (x) { return x.sem_hora || !x.inicio; });
@@ -27343,7 +27613,8 @@ body.mob-forced #mobApp{max-width:430px;margin:0 auto;box-shadow:0 0 60px rgba(0
       html += _mobVazio('✅', 'Nenhuma OS aberta', 'Tudo fechado por aqui.');
     } else {
       html += '<div class="mob-f"><input class="mob-in" id="mobOsBusca" placeholder="Buscar cliente ou número…" ' +
-        'oninput="_mobFiltraOS(this.value)" autocomplete="off"></div><div id="mobOsLista">' +
+        'oninput="_mobFiltraOS(this.value)" onfocus="this.removeAttribute(\'readonly\')" readonly ' +
+        'name="mob_os_busca_nofill" data-lpignore="true" data-1p-ignore autocomplete="off"></div><div id="mobOsLista">' +
         _mobListaOSHtml(_mobEstado.os) + '</div>';
     }
     html += '</div>';
@@ -27440,10 +27711,18 @@ body.mob-forced #mobApp{max-width:430px;margin:0 auto;box-shadow:0 0 60px rgba(0
     if (tab === 'os' && !_mobEstado.os && !_mobEstado.osCarregando) _mobCarregarOS(false);
   };
   window._mobDia = function (k) { _mobEstado.diaSel = k; _mobPintar(); };
+  try {
+    var _vg = localStorage.getItem('pcm_mob_vista_agenda');
+    if (_vg === 'semana' || _vg === 'dia') _mobEstado.vistaAgenda = _vg;
+  } catch (e) {}
   window._mobPessoa = function (p) { _mobEstado.pessoaSel = p; _mobPintar(); };
   window._mobRecarregar = function () { _mobCarregar(true); };
   window._mobDesktop = function () {
     if (window._PCM_SO_AGENDA === true) { _mobToast('Seu acesso é o modo agenda.', 'error'); return; }
+    // AUDITORIA (27/08): sair para o desktop com a folha aberta deixava o estado
+    // empurrado sem dono — o primeiro "voltar" do aparelho depois disso era
+    // engolido em silêncio (o handler sai no guard `mob-on`).
+    try { _mobFechaSheet(); } catch (e) {}
     try { localStorage.setItem('pcm_mob_off', '1'); } catch (e) {}
     document.body.classList.remove('mob-on', 'mob-forced');
     _mobToast('Versão completa. Recarregue para voltar ao modo app.', 'success');
@@ -27476,7 +27755,16 @@ body.mob-forced #mobApp{max-width:430px;margin:0 auto;box-shadow:0 0 60px rgba(0
   };
 
   // ── folhas ───────────────────────────────────────────────────────────────
-  function _mobSheet(titulo, corpo, passos) {
+  // ═══ V153 · O CAMINHO DE VOLTA ═════════════════════════════════════════
+  // 🔑 Achado no celular do Fernando (27/08): na etapa "Quais máquinas?" não
+  //    havia NENHUMA volta — só o ✕, que joga fora o cliente já escolhido e o
+  //    stepper inteiro. O ✕ fecha TUDO; o ‹ desfaz UM passo. São ações
+  //    diferentes e só existia a primeira.
+  // ⚠ `voltar` é uma FUNÇÃO, não um número de passo: quem abre a folha é quem
+  //   sabe de onde veio (o stepper vindo de uma demanda volta para a demanda,
+  //   não para o menu "Criar").
+  var _mobVoltarFn = null;
+  function _mobSheet(titulo, corpo, passos, voltar) {
     document.getElementById('mobSheetT').textContent = titulo;
     document.getElementById('mobSheetB').innerHTML = corpo;
     var st = document.getElementById('mobSteps');
@@ -27486,13 +27774,62 @@ body.mob-forced #mobApp{max-width:430px;margin:0 auto;box-shadow:0 0 60px rgba(0
         return '<i class="' + (i <= passos.atual ? 'is-on' : '') + '"></i>';
       }).join('');
     } else { st.style.display = 'none'; }
+    _mobVoltarFn = (typeof voltar === 'function') ? voltar : null;
+    var bv = document.getElementById('mobSheetBack');
+    if (bv) bv.style.display = _mobVoltarFn ? 'block' : 'none';
+    var jaAberta = document.getElementById('mobSheet').classList.contains('is-open');
     document.getElementById('mobSheetBg').classList.add('is-open');
     document.getElementById('mobSheet').classList.add('is-open');
+    // o botão FÍSICO do Android: um estado no histórico por folha ABERTA (não
+    // por repintura), senão sair da folha exigiria tantos toques quantas etapas.
+    if (!jaAberta) _mobEmpilhaHistorico();
   }
+  window._mobVoltar = function () {
+    var f = _mobVoltarFn;
+    if (typeof f === 'function') { try { f(); return; } catch (e) {} }
+    _mobFechaSheet();
+  };
   window._mobFechaSheet = function () {
+    _mobVoltarFn = null;
+    var bv = document.getElementById('mobSheetBack');
+    if (bv) bv.style.display = 'none';
     document.getElementById('mobSheetBg').classList.remove('is-open');
     document.getElementById('mobSheet').classList.remove('is-open');
+    // devolve o estado que a folha empurrou. Sem isto, fechar no ✕ deixava um
+    // estado órfão e o PRIMEIRO "voltar" do Android depois disso não fazia nada
+    // — a pessoa apertava duas vezes e a segunda saía do app.
+    if (_mobHistArmado && !_mobEmPopstate) {
+      _mobHistArmado = false;
+      try { history.back(); } catch (e) {}
+    }
   };
+  function _mobSheetAberta() {
+    var el = document.getElementById('mobSheet');
+    return !!(el && el.classList.contains('is-open'));
+  }
+  // ⚠ Um estado só, reempurrado a cada volta consumida. Sem isto o "voltar" do
+  //   Android SAÍA DO APP com a folha aberta na cara — a pessoa perdia o
+  //   formulário inteiro e nem entendia o que aconteceu.
+  var _mobHistArmado = false, _mobEmPopstate = false;
+  function _mobEmpilhaHistorico() {
+    try {
+      if (_mobHistArmado) return;
+      history.pushState({ mobSheet: true }, '');
+      _mobHistArmado = true;
+    } catch (e) {}
+  }
+  window.addEventListener('popstate', function () {
+    if (!document.body.classList.contains('mob-on')) return;
+    _mobHistArmado = false;
+    if (!_mobSheetAberta()) return;
+    _mobEmPopstate = true;
+    try {
+      // volta um passo se houver; senão fecha a folha. Nos dois casos o app FICA.
+      if (typeof _mobVoltarFn === 'function') { try { _mobVoltarFn(); } catch (e) { _mobFechaSheet(); } }
+      else _mobFechaSheet();
+    } finally { _mobEmPopstate = false; }
+    if (_mobSheetAberta()) _mobEmpilhaHistorico();
+  });
 
   window._mobSheetNovo = function () {
     // V136 (G1) — só-agenda não abre OS: o ＋ é a demanda, sem escolha no meio.
@@ -27719,7 +28056,8 @@ body.mob-forced #mobApp{max-width:430px;margin:0 auto;box-shadow:0 0 60px rgba(0
       'oninput="document.getElementById(\'mobRecOk\').disabled=!this.value.trim()"></textarea></div>' +
       '<button class="mob-go g-accent" id="mobRecOk" disabled ' +
       'onclick="_mobResponderDemanda(\'' + esc(id) + '\',\'recusada\',document.getElementById(\'mobRecMot\').value)">' +
-      'Enviar para quem agendou</button>');
+      'Enviar para quem agendou</button>',
+      null, function () { _mobAbrirDemanda(id); });
   };
 
   function _mobPintaFormDemanda() {
@@ -27739,7 +28077,8 @@ body.mob-forced #mobApp{max-width:430px;margin:0 auto;box-shadow:0 0 60px rgba(0
     var corpo =
       '<div class="mob-f"><label>O que precisa ser feito?</label>' +
       '<input class="mob-in" id="mobDemTit" value="' + esc(d.titulo) + '" placeholder="Ex.: ligar para a FERTEC sobre o rotor" ' +
-      'oninput="_mobDemSet(\'titulo\',this.value,1)" autocomplete="off"></div>' +
+      'oninput="_mobDemSet(\'titulo\',this.value,1)" onfocus="this.removeAttribute(\'readonly\')" readonly ' +
+      'name="mob_dem_tit_nofill" data-lpignore="true" data-1p-ignore autocomplete="off"></div>' +
 
       _mobDemTiposHtml(d, opt) +
 
@@ -27779,7 +28118,9 @@ body.mob-forced #mobApp{max-width:430px;margin:0 auto;box-shadow:0 0 60px rgba(0
 
       '<button class="mob-go g-accent" id="mobDemSalvar" onclick="_mobSalvarDemanda()"' +
       (d.titulo.trim() ? '' : ' disabled') + '>Agendar demanda</button>';
-    _mobSheet('Nova demanda', corpo);
+    _mobSheet(d.demanda_id ? 'Editar demanda' : 'Nova demanda', corpo, null,
+      d.demanda_id ? function () { _mobAbrirDemanda(d.demanda_id); }
+      : (window._PCM_SO_AGENDA === true ? null : function () { _mobSheetNovo(); }));
     _mobDemPintaSat();
   }
 
@@ -27986,7 +28327,9 @@ body.mob-forced #mobApp{max-width:430px;margin:0 auto;box-shadow:0 0 60px rgba(0
   // ── detalhe de demanda ───────────────────────────────────────────────────
   window._mobAbrirDemanda = function (id) {
     var dm = ((_mobEstado.dados || {}).demandas || []).find(function (x) { return x.demanda_id === id; });
-    if (!dm) { _mobToast('Demanda não encontrada.', 'error'); return; }
+    // AUDITORIA (27/08): como esta função virou destino de `voltar`, um `return`
+    // mudo deixaria o ‹ (e o botão do aparelho) inertes. Fechar é a volta.
+    if (!dm) { _mobToast('Demanda não encontrada.', 'error'); _mobFechaSheet(); return; }
     var quando = dm.sem_hora ? (dm.dia ? _mobDiaCurto(dm.dia) : 'sem data')
       : _mobDiaCurto(dm.dia) + ' · ' + _mobHHMM(dm.inicio_previsto);
     _mobSheet(dm.titulo || 'Demanda',
@@ -28054,7 +28397,7 @@ body.mob-forced #mobApp{max-width:430px;margin:0 auto;box-shadow:0 0 60px rgba(0
       if (it) it = { titulo: it.nome, sub: it.os_numero, usuario: '', dia: '', min: it.tempo_estimado_min };
     }
     if (!it) { _mobToast('Tarefa não encontrada.', 'error'); return; }
-    var pessoas = (d.usuarios || []).map(function (u) { return u.usuario; });
+    var pessoas = _mobEquipeNomes(it.usuario || '');
     _mobSheet(it.titulo || 'Tarefa',
       '<div class="mob-card" style="display:block">' +
       '<div class="mob-card-s"><b>OS:</b> ' + esc(it.sub || '—') + '</div>' +
@@ -28067,7 +28410,8 @@ body.mob-forced #mobApp{max-width:430px;margin:0 auto;box-shadow:0 0 60px rgba(0
       (pessoas.length ? pessoas.map(function (p) {
         return '<button class="mob-opt' + (it.usuario === p ? ' is-on' : '') + '" onclick="_mobDesignar(\'' +
           esc(osId) + '\',\'' + esc(tarefaId) + '\',\'' + esc(p).replace(/'/g, "\\'") + '\')">' + esc(p) + '</button>';
-      }).join('') : '<span class="mob-card-s">Sem usuários na fila.</span>') + '</div></div>' +
+      }).join('') : '<span class="mob-card-s">Nenhum usuário ativo cadastrado. ' +
+        'Cadastre em Configurações → Usuários (no computador).</span>') + '</div></div>' +
       '<div class="mob-f"><label>Agendar para</label>' +
       '<input class="mob-in" type="date" id="mobTarDia" value="' + esc(it.dia || _mobDiaKey(_mobHoje())) + '">' +
       '<input class="mob-in" type="time" style="margin-top:8px" id="mobTarHora" value="' +
@@ -28109,8 +28453,11 @@ body.mob-forced #mobApp{max-width:430px;margin:0 auto;box-shadow:0 0 60px rgba(0
   window._mobFormOS = function (pre) {
     _mobEstado.novaOS = Object.assign({
       cliente: '', cliente_id: '', maquinas: [], tipo: '', prioridade: 'normal',
-      descricao: '', dataPrevista: '', demanda_id: '', _maqs: null, _tipos: null
+      descricao: '', dataPrevista: '', demanda_id: '',
+      _maqs: null, _tipos: null, _maqsErro: '', _maqsLocal: false
     }, pre || {});
+    _mobEstado.novaOS.cliente = _mobNomeDoCliente(_mobEstado.novaOS.cliente_id,
+                                                  _mobEstado.novaOS.cliente);
     _mobEstado.step = pre && pre.cliente_id ? 1 : 0;
     if (_mobEstado.step === 1) _mobCarregaMaquinas();
     _mobPintaOS();
@@ -28125,18 +28472,31 @@ body.mob-forced #mobApp{max-width:430px;margin:0 auto;box-shadow:0 0 60px rgba(0
       //    não filtra nada. A lista já chega só com ativos do getClients, e é
       //    exatamente a mesma fonte que o modal de OS do desktop usa.
       var clientes = ((typeof db === 'object' && db && db.clients) || []);
+      // guard anti-autofill COMPLETO (invariante da casa desde a lição das 3
+      // ocorrências do "REcebimento de máquina": autocomplete=off não segura).
       corpo = '<div class="mob-f"><input class="mob-in" id="mobOsCli" placeholder="Buscar cliente…" ' +
-        'oninput="_mobBuscaCli(this.value)" autocomplete="off"></div><div id="mobCliLista">' +
+        'oninput="_mobBuscaCli(this.value)" onfocus="this.removeAttribute(\'readonly\')" readonly ' +
+        'name="mob_cli_busca_nofill" data-lpignore="true" data-1p-ignore autocomplete="off"></div><div id="mobCliLista">' +
         _mobCliHtml(clientes.slice(0, 25)) + '</div>';
     } else if (s === 1) {
       titulo = 'Quais máquinas?';
       if (!o._maqs) {
         corpo = '<div class="mob-load"><div class="mob-spin"></div>Buscando máquinas de ' + esc(o.cliente) + '…</div>';
       } else if (!o._maqs.length) {
-        corpo = _mobVazio('🔧', 'Sem máquinas cadastradas', 'Dá para abrir a OS sem vincular máquina e ajustar depois.') +
+        // V153 — não afirmar "sem máquinas" quando na verdade foi FALHA. Era
+        // exatamente isso que fazia o cadastro parecer vazio com 84 no ar.
+        corpo = (o._maqsErro
+          ? _mobVazio('📶', 'Não consegui buscar as máquinas',
+              'O servidor respondeu: ' + o._maqsErro + '. Dá para abrir a OS sem vincular e ajustar depois.') +
+            '<button class="mob-go g-accent" onclick="_mobRecarregaMaquinas()">↻ Tentar de novo</button>'
+          : _mobVazio('🔧', 'Sem máquinas cadastradas',
+              'Este cliente não tem equipamento no cadastro. Dá para abrir a OS sem vincular e ajustar depois.')) +
           '<button class="mob-go" onclick="_mobStep(2)">Continuar sem máquina</button>';
       } else {
-        corpo = o._maqs.map(function (m) {
+        corpo = (o._maqsLocal
+            ? '<div class="mob-card-s" style="margin:-4px 0 10px">📴 Lista do cadastro deste aparelho — o servidor não respondeu.</div>'
+            : '') +
+          o._maqs.map(function (m) {
           var on = o.maquinas.indexOf(m.id) >= 0;
           return '<button class="mob-pick' + (on ? ' is-on' : '') + '" onclick="_mobToggleMaq(\'' + esc(m.id) + '\')">' +
             '<span class="p-c">' + (on ? '✓' : '') + '</span><span>' +
@@ -28192,7 +28552,17 @@ body.mob-forced #mobApp{max-width:430px;margin:0 auto;box-shadow:0 0 60px rgba(0
         '<button class="mob-go g-accent" id="mobOsGo" onclick="_mobCriarOS()">Criar ordem de serviço</button>' +
         '<button class="mob-ghost" onclick="_mobStep(2)">← Voltar</button>';
     }
-    _mobSheet(titulo, corpo, { total: 4, atual: s });
+    // V153 — CADA etapa sabe de onde veio. A etapa 1 vinda de uma demanda
+    // volta PARA A DEMANDA, não para o menu "Criar": voltar ao menu perderia o
+    // vínculo `demanda_id` e a OS nasceria solta.
+    var _volta = null;
+    if (s === 0) { if (window._PCM_SO_AGENDA !== true) _volta = function () { _mobSheetNovo(); }; }
+    else if (s === 1) {
+      _volta = o.demanda_id
+        ? function () { _mobAbrirDemanda(o.demanda_id); }
+        : function () { _mobStep(0); };
+    } else { _volta = function () { _mobStep(s - 1); }; }
+    _mobSheet(titulo, corpo, { total: 4, atual: s }, _volta);
   }
   function _mobCliHtml(lista) {
     if (!lista.length) return _mobVazio('🔍', 'Nenhum cliente', 'Tente outro nome.');
@@ -28209,6 +28579,15 @@ body.mob-forced #mobApp{max-width:430px;margin:0 auto;box-shadow:0 0 60px rgba(0
     var el = document.getElementById('mobCliLista');
     if (el) el.innerHTML = _mobCliHtml(lista.slice(0, 25));
   };
+  // AUDITORIA (27/08) — a demanda pode ter `cliente_id` e o nome em branco. Sem
+  // o nome a query sairia com `client=''` e o GAS v127 responderia "client
+  // obrigatório" de novo. O nome está no catálogo local: resolve antes de pedir.
+  function _mobNomeDoCliente(id, nomeAtual) {
+    if (String(nomeAtual || '').trim()) return nomeAtual;
+    var c = ((typeof db === 'object' && db && db.clients) || [])
+      .find(function (x) { return String(x.id || '') === String(id || ''); });
+    return (c && c.nome) || '';
+  }
   window._mobEscolheCli = function (id) {
     var c = ((typeof db === 'object' && db && db.clients) || []).find(function (x) { return x.id === id; });
     if (!c) return;
@@ -28223,6 +28602,14 @@ body.mob-forced #mobApp{max-width:430px;margin:0 auto;box-shadow:0 0 60px rgba(0
     if (s === 2 && !_mobEstado.novaOS._tipos) _mobCarregaTipos();
     _mobPintaOS();
   };
+  // V153 — "tentar de novo" precisa APAGAR o resultado anterior; sem isto o
+  // `if (!_maqs)` do _mobStep achava que já havia lista e não buscava nada.
+  window._mobRecarregaMaquinas = function () {
+    var o = _mobEstado.novaOS;
+    o._maqs = null; o._maqsErro = ''; o._maqsLocal = false;
+    _mobPintaOS();
+    _mobCarregaMaquinas();
+  };
   window._mobToggleMaq = function (id) {
     var arr = _mobEstado.novaOS.maquinas;
     var i = arr.indexOf(id);
@@ -28233,20 +28620,107 @@ body.mob-forced #mobApp{max-width:430px;margin:0 auto;box-shadow:0 0 60px rgba(0
     _mobEstado.novaOS[campo] = valor;
     if (!silencioso) _mobPintaOS();
   };
+  // ═══ V153 · "SEM MÁQUINAS CADASTRADAS" NUMA FROTA DE 84 ═════════════════
+  // 🔴 O defeito que o Fernando achou em 27/08: a Fundição São Cristóvão tem
+  //    DUAS máquinas no PCM e o celular dizia que não tinha nenhuma.
+  //
+  //    A causa não estava na tela: o `getMachinesByClient` do GAS lê
+  //    `params.client` (uma linha só, sem alias — ver o `case` do doGet) e o
+  //    celular mandava `cliente_id` + `cliente`. O servidor respondia
+  //    `{status:'error', error:'client obrigatório'}`, o gsGet lançava, o catch
+  //    engolia em `_maqs = []` e a tela desenhava, com toda a confiança, o
+  //    vazio educado "Dá para abrir a OS sem vincular máquina".
+  //
+  // 🔑 A LIÇÃO: a bancada da V130 mockava `getMachinesByClient` na REDE e
+  //    devolvia duas máquinas SEM OLHAR OS PARÂMETROS. Ela testava o servidor
+  //    contra um cliente imaginário — a mesma falha do V131 (`google_credential`)
+  //    num disfarce novo. A bancada nova confere o que SAIU pela rede.
+  //
+  // ⚠ Três defesas, não uma:
+  //    1. manda `client` (o nome canônico, que é o que o GAS lê) e mantém
+  //       `cliente`/`cliente_id` — o v128 passa a aceitar os três;
+  //    2. lê `serial` (o `rowToMachine` devolve `serial`, nunca `serie` — a
+  //       linha do subtítulo vinha sem a série mesmo quando a lista enchia);
+  //    3. se o servidor não trouxer nada, cai no CATÁLOGO LOCAL (`db.machines`),
+  //       que é o mesmo que a tela de Máquinas do desktop já mostra. Vazio de
+  //       verdade e vazio por falha deixam de ter a mesma cara.
+  // 🔴 ACHADO DA AUDITORIA (27/08): `db.machines[]` guarda o id do cliente em
+  //    **`clientId`** (camelCase) — está escrito em todo o arquivo
+  //    (`if (m.clientId === _oldId) m.clientId = resp.id`). `id_cliente` e
+  //    `cliente_id` NÃO existem nesses objetos: o ramo por ID nascia morto.
+  // ⚠ E o nome compara por `clientKey()`, não por `toLowerCase()`: a casa
+  //   inteira usa `clientKey` justamente porque a grafia do cliente varia
+  //   ("FUNDICAO SAO CRISTOVAO LTDA" × "Fundição São Cristóvão"). Comparação
+  //   crua deixava a terceira defesa sem efeito na maioria dos casos reais.
+  function _mobMaqsLocais(cliId, cliNome) {
+    var todas = ((typeof db === 'object' && db && db.machines) || []);
+    var kNome = (typeof clientKey === 'function')
+      ? clientKey(cliNome || '')
+      : String(cliNome || '').trim().toLowerCase();
+    var id = String(cliId || '').trim();
+    return todas.filter(function (m) {
+      if (String(m.ativo || m.Ativo || 'SIM').toUpperCase() === 'NÃO') return false;
+      var mcRaw = String(m.client || m.cliente || '');
+      var mc = (typeof clientKey === 'function') ? clientKey(mcRaw) : mcRaw.trim().toLowerCase();
+      var mi = String(m.clientId || m.id_cliente || m.cliente_id || '').trim();
+      return (kNome && mc === kNome) || (id && mi && mi === id);
+    });
+  }
+  function _mobNormMaq(m) {
+    return {
+      id:     m.id || m.ID || m.machine_id || '',
+      marca:  m.marca || m.brand || '',
+      modelo: m.modelo || m.model || '',
+      tag:    m.tag || m.TAG || '',
+      // `serial` primeiro: é a chave real do rowToMachine. `serie`/`Série` ficam
+      // para o dia em que a origem for o catálogo local ou o espelho.
+      serie:  String(m.serial || m.serie || m['Série'] || '')
+    };
+  }
+  var _mobMaqGer = 0;   // token de geração — ver o comentário abaixo
   async function _mobCarregaMaquinas() {
+    var o = _mobEstado.novaOS;
+    // 🔴 ACHADO DA AUDITORIA (27/08): sem estas duas linhas o estado do cliente
+    //    ANTERIOR atravessava o ‹. Trocar de cliente depois de uma falha fazia a
+    //    tela dizer "não consegui buscar — o servidor respondeu: quota exceeded"
+    //    para um cliente que respondeu 200 com lista vazia; e depois de um
+    //    fallback local, a lista do servidor novo vinha rotulada "📴 do
+    //    aparelho". Era a mesma mentira de tela que esta rodada existe para
+    //    matar, reintroduzida ao contrário — e alcançável em dois toques pelo
+    //    botão de voltar que a própria V153 acrescentou.
+    o._maqsErro = ''; o._maqsLocal = false;
+    // ⚠ e o token: com o ‹ dá para sair da etapa 1 e reescolher cliente com a
+    //   primeira busca ainda no ar. A resposta atrasada escreveria por cima.
+    var ger = ++_mobMaqGer;
+    var falhou = '';
     try {
-      var r = await gsGet('getMachinesByClient', { cliente_id: _mobEstado.novaOS.cliente_id,
-        cliente: _mobEstado.novaOS.cliente });
+      var r = await gsGet('getMachinesByClient', {
+        client: o.cliente,            // ← o nome que o GAS realmente lê
+        cliente: o.cliente,           // aliases, para o v128 e para o futuro
+        cliente_id: o.cliente_id, client_id: o.cliente_id
+      });
+      if (ger !== _mobMaqGer) return;          // outra busca já assumiu
       var lista = (r && (r.machines || r.maquinas || r.data)) || [];
-      _mobEstado.novaOS._maqs = lista.map(function (m) {
-        return { id: m.id || m.ID || '', marca: m.marca || m.brand || '', modelo: m.modelo || m.model || '',
-                 tag: m.tag || m.TAG || '', serie: m.serie || m['Série'] || '' };
-      }).filter(function (m) { return m.id; });
+      o._maqs = lista.map(_mobNormMaq).filter(function (m) { return m.id; });
     } catch (e) {
-      _mobEstado.novaOS._maqs = [];
-      _mobToast('Não consegui listar as máquinas: ' + e.message, 'error');
+      if (ger !== _mobMaqGer) return;
+      falhou = e.message || 'falha';
+      o._maqs = [];
     }
-    if (_mobEstado.step === 1) _mobPintaOS();
+    if (!o._maqs.length) {
+      var locais = _mobMaqsLocais(o.cliente_id, o.cliente).map(_mobNormMaq)
+        .filter(function (m) { return m.id; });
+      if (locais.length) {
+        o._maqs = locais;
+        o._maqsLocal = true;
+        if (falhou) _mobToast('Servidor não respondeu — listando o cadastro deste aparelho.', 'error');
+      } else if (falhou) {
+        // vazio POR FALHA nunca mais se disfarça de vazio de verdade
+        o._maqsErro = falhou;
+        _mobToast('Não consegui listar as máquinas: ' + falhou, 'error');
+      }
+    }
+    if (ger === _mobMaqGer && _mobEstado.step === 1) _mobPintaOS();
   }
   async function _mobCarregaTipos() {
     try {
