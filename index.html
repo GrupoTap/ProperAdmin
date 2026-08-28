@@ -1,4 +1,95 @@
-<!-- PCM V154 (28/08/2026) — O CALENDÁRIO PARA DE MOSTRAR TRABALHO QUE JÁ ACABOU,
+<!-- PCM V155 (28/08/2026) — A OS ENCERRADA PARA DE MANDAR TRABALHO PARA A AGENDA,
+     O POOL GANHA FILTRO, A DEMANDA VIRA OS NO COMPUTADOR E NASCE A ABA RELATÓRIOS.
+     Feito EM CIMA do V154 — este arquivo CONTÉM o V154 inteiro.
+     Par do GAS v130 (necessário para A e B; o resto roda sem ele).
+     100% ADITIVO: nenhuma função, id, data-view ou action renomeada.
+
+     O CHAMADO (Fernando, 28/08, com dois prints):
+     «essa parte de demandas sem designação está puxando informações de onde? pq
+      somente as OS dos 2 prints estão em andamento de fato, as outras eu já havia
+      forçado o fechamento delas anteriormente. Preciso que os títulos dessa seção
+      de designação também contenham os filtros igual na lista de OS. Preciso que a
+      demanda possa ser convertida em OS até mesmo pelo PCM no computador.
+      Aproveite (…) e já vamos começar a criar alguns relatórios gerenciais em pdf
+      e xlsx, foque primeiro na parte de OS.»
+
+     ─────────────────────────────────────────────────────────────────────────
+     A  🔴 O POOL "SEM DESIGNAÇÃO" MOSTRAVA TRABALHO DE OS JÁ ENCERRADA.
+        A resposta a "puxando de onde": `getSaturacaoUsuarios` → `nao_designadas`,
+        derivado de PIPELINE_TAREFAS. O filtro de lá (v79 F-11) tira a OS
+        EXCLUÍDA (`Ativo='NÃO'`) e PARA AÍ. OS concluída ou cancelada continua
+        `Ativo='SIM'` — então toda tarefa que sobrou `pendente`/`bloqueado`/
+        `condicional`/`em_andamento` dentro dela seguia contada como trabalho a
+        fazer. Os 72 do print eram, na maioria, isso.
+        🔑 E NÃO ERA SÓ O POOL. A mesma varredura alimenta os cards de saturação,
+           a grade de 10 dias e `dias_de_fila`. Tarefa DESIGNADA numa OS
+           encerrada carregava a agenda de uma PESSOA com trabalho inexistente —
+           e o número parecia plausível, que é o pior tipo de erro.
+        O conserto é do servidor (GAS v130). Aqui entra a segunda metade da
+        decisão do Fernando (28/08): **esconder + faixa de limpeza**.
+        ⚠ SEM O GAS v130 a tela não finge que está limpa: o campo
+          `presas_os_encerrada` não vem, e o PCM ESCREVE isso, em vez de deixar
+          o admin achar que o problema sumiu. (Lição do V146: nota de tela que
+          culpa o backend tem de ser verificável — esta é.)
+
+     B  A FAIXA "🔒 PRESAS EM OS ENCERRADA", com o botão de dispensar em lote.
+        O fato não some, muda de lugar. Filtro que apaga a linha em silêncio
+        deixa a TELA certa e a PLANILHA errada — e o espelho do Supabase, o
+        Portal e todo relatório futuro continuariam contando a tarefa fantasma.
+
+     C  O POOL PASSA A USAR O MOTOR XF — os mesmos filtros estilo Excel da
+        Lista de OSs, em OS, Cliente, Tarefa, Executor, Estimado e Status, com
+        busca livre, chips, ordenação, paginação e contador.
+        ⚠ ZERO campo novo: tudo já vinha em `nao_designadas` desde o v117.
+        ⚠ O `<input>` de busca nasce com o guard anti-autofill COMPLETO — é
+          invariante da casa desde as três ocorrências do "REcebimento de
+          máquina", e um campo novo sem ele reabre o buraco.
+
+     D  TRANSFORMAR DEMANDA EM OS PELO COMPUTADOR.
+        O modal da demanda no desktop dizia, em cinza: "Transformar em OS segue
+        no app do celular." — e era verdade: o `vincularDemandaAOS` só era
+        chamado no `_mobCriarOS`. Agora o desktop abre o MODAL DE OS que já
+        existe, pré-preenchido, e vincula ao salvar.
+        🔑 Por que pré-preencher e não criar direto (decisão do Fernando):
+           criar direto obriga a escolher um tipo de OS por conta própria — e é
+           o `Template_ID_Padrao` do tipo que instancia o pipeline. Chutar o
+           tipo produz uma OS sem fluxo, que é pior que não criar.
+        ⚠ `_v155DemandaPendente` é zerada no reset SÍNCRONO do `openModalOS`,
+          com o resto dos campos. Estado que sobrevive à troca de modal é como
+          se vincula a demanda errada à OS errada (lição do V103 A2).
+        ⚠ A vinculação é NÃO-BLOQUEANTE e roda DEPOIS do sucesso do saveOS: a
+          OS existir importa mais que a demanda ficar marcada, e a falha é dita.
+
+     E  ABA "RELATÓRIOS" em Gestão de OSs (9ª leitura da mesma fila).
+        Dois relatórios, escolhidos pelo Fernando:
+          · Produção de OS no período — abertas × concluídas × canceladas, por
+            tipo, local e prioridade, tempo médio de atendimento e % no prazo.
+          · Cumprimento de prazo — as atrasadas de hoje por faixa (1-7 / 8-30 /
+            +30 dias) e as que foram concluídas com atraso no período.
+        🔑 ZERO REQUISIÇÃO NOVA: `renderOS` já pede `getOS` com
+           `includeClosed:'true'`, então `_osList` tem a OS fechada — que é
+           justamente a que um relatório de produção precisa.
+        ⚠ TODA MÉDIA DIZ SOBRE QUANTAS FOI FEITA. "Tempo médio 4,2 dias" sobre
+          9 de 27 OS é outra frase. Ausência de `fim_atendimento` e de
+          `data_prevista` é CONTADA e exibida, nunca embutida no denominador —
+          é a mesma regra do V140 ("ausência de dado exibida como fato").
+        ⚠ % no prazo só considera OS concluída COM prazo gravado. Sem isso o
+          indicador subiria sozinho a cada OS aberta sem prazo.
+
+     F  EXPORTAÇÃO PDF **e** XLSX, sem CDN novo.
+        O PDF usa o `pcmEnsureJsPDF` que já existe (V118 A1).
+        🔑 O XLSX é gerado AQUI DENTRO — `_v155XlsxBytes` escreve um .xlsx
+           OOXML de verdade (ZIP store-only + CRC32 próprios, ~120 linhas).
+           Por quê: o PCM já depende do cdnjs para o jsPDF e esse ponto único de
+           falha está documentado desde a V118 ("⚠ O PCM NÃO tem cópia local").
+           Pendurar uma SEGUNDA biblioteca de CDN no mesmo lugar dobraria a
+           chance de o admin clicar em "exportar" e receber um erro de rede numa
+           oficina com internet ruim. Sem rede, este exporta igual.
+           Provado fora do navegador: o arquivo abre no LibreOffice e no
+           openpyxl (bancada `NEWFILE_T_PCM_V155_relatorios.mjs`).
+     ─────────────────────────────────────────────────────────────────────────
+
+     PCM V154 (28/08/2026) — O CALENDÁRIO PARA DE MOSTRAR TRABALHO QUE JÁ ACABOU,
      E A OS GANHA LOG DE VERDADE.
      Feito EM CIMA do V153 (o `index.html` da pasta, carimbo conferido de dentro
      do arquivo, e a pasta do repo listada antes de escolher o número — a regra
@@ -2890,7 +2981,7 @@ v50 — Resiliência de rede: retry/backoff em gsGet e syncToGS
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>ProperCare Manager · Gestão PGP v3.78 (PCM V154)</title>
+<title>ProperCare Manager · Gestão PGP v3.79 (PCM V155)</title>
 <link rel="icon" type="image/jpeg" href="data:image/jpeg;base64,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">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -4188,7 +4279,7 @@ tr.tadm-feito td{background:#dcfce7 !important;color:#15803d;font-weight:700}
 <aside class="nav-sidebar" aria-label="Navegação principal">
   <div class="nav-brand">
     <span class="nav-brand-mark">PCM</span>
-    <span class="nav-brand-sub">v3.78 · V154</span>
+    <span class="nav-brand-sub">v3.79 · V155</span>
   </div>
 
   <nav class="nav-groups">
@@ -4494,6 +4585,10 @@ tr.tadm-feito td{background:#dcfce7 !important;color:#15803d;font-weight:700}
       <button class="btn btn-secondary" onclick="closeModal('modalDemandaDesk')">Fechar</button>
       <button class="btn btn-danger btn-sm" id="mdemExcluir">Excluir</button>
       <button class="btn btn-secondary" id="mdemEditar" title="Abre o mesmo formulário de Nova demanda, já preenchido">✎ Editar</button>
+      <!-- V155 (D) — a demanda vira OS no COMPUTADOR. Abre o modal de OS que já
+           existe, pré-preenchido; o tipo de OS (e portanto o pipeline) continua
+           sendo escolha de quem abre. -->
+      <button class="btn btn-secondary" id="mdemVirarOS" title="Abre uma nova OS já preenchida com os dados desta demanda">🔧 Transformar em OS</button>
       <button class="btn btn-primary" id="mdemConcluir">✓ Concluir demanda</button>
     </div>
   </div>
@@ -6839,6 +6934,178 @@ async function pcmEnsureJsPDF(){
   })();
 
   return _pcmJsPDFPromise;
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+// V155 (F) · O .xlsx NASCE AQUI DENTRO — sem biblioteca, sem CDN, sem rede
+// ──────────────────────────────────────────────────────────────────────────────
+// 🔑 POR QUE NÃO UM SEGUNDO CDN. O PCM já depende do cdnjs para o jsPDF, e a
+//    própria V118 deixou escrito que isso é um ponto único de falha ("⚠ O PCM
+//    NÃO tem cópia local de jsPDF hoje"). Pendurar a planilha no MESMO fio
+//    dobraria a chance de o admin clicar em "Exportar" numa oficina com
+//    internet ruim e receber um erro de rede. Um .xlsx é um ZIP com cinco
+//    arquivos XML dentro: escrever isso custa ~120 linhas e nunca sai da rede.
+//
+// ⚠ ZIP **store-only** (método 0, sem compressão). É ZIP válido — o formato
+//   sempre aceitou armazenamento cru — e evita ter de embutir um deflate.
+//   Um relatório de 500 linhas dá ~120 KB, que é irrelevante para um download.
+// ⚠ O CRC-32 é OBRIGATÓRIO e é a parte que silenciosamente estraga o arquivo:
+//   Excel e LibreOffice recusam a pasta inteira se um CRC não bater, sem dizer
+//   qual. Tabela pré-computada uma vez, no primeiro uso.
+// ⚠ Strings vão como `inlineStr` (não shared strings): uma tabela a menos para
+//   manter em sincronia, e nenhum risco de índice trocado.
+// ⚠ Número vai como NÚMERO (`<v>`), texto como texto. É o que faz a soma e o
+//   filtro do Excel funcionarem — planilha em que tudo é texto é PDF com
+//   grade.
+// ⚠ `xml:space="preserve"` no `<t>`: sem ele o Excel come espaço no começo/fim.
+// ⚠ Nome de aba: máx. 31 caracteres e sem `[ ] * / \ ? :` — o Excel recusa o
+//   arquivo inteiro, não a aba.
+// Provado FORA do navegador (bancada NEWFILE_T_PCM_V155_relatorios.mjs): o
+// arquivo gerado abre no LibreOffice e no openpyxl, com acento, aspas e `<`.
+// ══════════════════════════════════════════════════════════════════════════════
+let _V155_CRCT = null;
+function _v155CrcTabela(){
+  if (_V155_CRCT) return _V155_CRCT;
+  const t = new Uint32Array(256);
+  for (let n = 0; n < 256; n++){
+    let c = n;
+    for (let k = 0; k < 8; k++) c = (c & 1) ? (0xEDB88320 ^ (c >>> 1)) : (c >>> 1);
+    t[n] = c >>> 0;
+  }
+  _V155_CRCT = t;
+  return t;
+}
+function _v155Crc32(bytes){
+  const t = _v155CrcTabela();
+  let c = 0xFFFFFFFF;
+  for (let i = 0; i < bytes.length; i++) c = (t[(c ^ bytes[i]) & 0xFF] ^ (c >>> 8)) >>> 0;
+  return (c ^ 0xFFFFFFFF) >>> 0;
+}
+function _v155Utf8(str){ return new TextEncoder().encode(String(str == null ? '' : str)); }
+function _v155XmlEsc(v){
+  return String(v == null ? '' : v)
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
+    // caracteres de controle são ILEGAIS em XML 1.0 e derrubam o arquivo inteiro
+    .replace(/[\x00-\x08\x0B\x0C\x0E-\x1F]/g, '');
+}
+function _v155ColLetra(n){
+  let s = ''; n = n + 1;
+  while (n > 0){ const r = (n - 1) % 26; s = String.fromCharCode(65 + r) + s; n = Math.floor((n - 1) / 26); }
+  return s;
+}
+function _v155ZipStore(arquivos){
+  const partes = [], central = [];
+  let offset = 0;
+  const dosHora = 0, dosData = ((2026 - 1980) << 9) | (1 << 5) | 1;
+  arquivos.forEach(function(f){
+    const nome = _v155Utf8(f.nome), dados = f.dados, crc = _v155Crc32(dados);
+    const lfh = new Uint8Array(30 + nome.length), dv = new DataView(lfh.buffer);
+    dv.setUint32(0, 0x04034b50, true); dv.setUint16(4, 20, true);
+    dv.setUint16(6, 0x0800, true);                 // bit 11 = nome em UTF-8
+    dv.setUint16(8, 0, true);                      // método 0 = store
+    dv.setUint16(10, dosHora, true); dv.setUint16(12, dosData, true);
+    dv.setUint32(14, crc, true); dv.setUint32(18, dados.length, true); dv.setUint32(22, dados.length, true);
+    dv.setUint16(26, nome.length, true); dv.setUint16(28, 0, true);
+    lfh.set(nome, 30);
+    partes.push(lfh, dados);
+    const cdh = new Uint8Array(46 + nome.length), cv = new DataView(cdh.buffer);
+    cv.setUint32(0, 0x02014b50, true); cv.setUint16(4, 20, true); cv.setUint16(6, 20, true);
+    cv.setUint16(8, 0x0800, true); cv.setUint16(10, 0, true);
+    cv.setUint16(12, dosHora, true); cv.setUint16(14, dosData, true);
+    cv.setUint32(16, crc, true); cv.setUint32(20, dados.length, true); cv.setUint32(24, dados.length, true);
+    cv.setUint16(28, nome.length, true); cv.setUint16(30, 0, true); cv.setUint16(32, 0, true);
+    cv.setUint16(34, 0, true); cv.setUint16(36, 0, true); cv.setUint32(38, 0, true);
+    cv.setUint32(42, offset, true); cdh.set(nome, 46);
+    central.push(cdh);
+    offset += lfh.length + dados.length;
+  });
+  let cdSize = 0; central.forEach(function(c){ cdSize += c.length; });
+  const eocd = new Uint8Array(22), ev = new DataView(eocd.buffer);
+  ev.setUint32(0, 0x06054b50, true);
+  ev.setUint16(8, central.length, true); ev.setUint16(10, central.length, true);
+  ev.setUint32(12, cdSize, true); ev.setUint32(16, offset, true); ev.setUint16(20, 0, true);
+  const todas = partes.concat(central, [eocd]);
+  let total = 0; todas.forEach(function(x){ total += x.length; });
+  const out = new Uint8Array(total);
+  let p = 0; todas.forEach(function(x){ out.set(x, p); p += x.length; });
+  return out;
+}
+// abas = [{ nome, linhas: [[celula, …], …] }] — a 1ª linha vira cabeçalho azul
+function _v155XlsxBytes(abas){
+  const arq = [];
+  const n = abas.length;
+  const nomeAba = function(a, i){
+    return _v155XmlEsc(String((a && a.nome) || ('Plan' + (i + 1))).slice(0, 31).replace(/[\[\]\*\/\\\?:]/g, '-'));
+  };
+  arq.push({ nome:'[Content_Types].xml', dados:_v155Utf8(
+    '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
+    '<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">' +
+    '<Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>' +
+    '<Default Extension="xml" ContentType="application/xml"/>' +
+    '<Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/>' +
+    '<Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/>' +
+    abas.map(function(a, i){ return '<Override PartName="/xl/worksheets/sheet' + (i + 1) + '.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/>'; }).join('') +
+    '</Types>') });
+  arq.push({ nome:'_rels/.rels', dados:_v155Utf8(
+    '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
+    '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">' +
+    '<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/>' +
+    '</Relationships>') });
+  arq.push({ nome:'xl/workbook.xml', dados:_v155Utf8(
+    '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
+    '<workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">' +
+    '<sheets>' + abas.map(function(a, i){ return '<sheet name="' + nomeAba(a, i) + '" sheetId="' + (i + 1) + '" r:id="rId' + (i + 1) + '"/>'; }).join('') + '</sheets>' +
+    '</workbook>') });
+  arq.push({ nome:'xl/_rels/workbook.xml.rels', dados:_v155Utf8(
+    '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
+    '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">' +
+    abas.map(function(a, i){ return '<Relationship Id="rId' + (i + 1) + '" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet' + (i + 1) + '.xml"/>'; }).join('') +
+    '<Relationship Id="rId' + (n + 1) + '" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/>' +
+    '</Relationships>') });
+  arq.push({ nome:'xl/styles.xml', dados:_v155Utf8(
+    '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
+    '<styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">' +
+    '<fonts count="2"><font><sz val="11"/><name val="Calibri"/></font>' +
+    '<font><b/><sz val="11"/><color rgb="FFFFFFFF"/><name val="Calibri"/></font></fonts>' +
+    '<fills count="3"><fill><patternFill patternType="none"/></fill><fill><patternFill patternType="gray125"/></fill>' +
+    '<fill><patternFill patternType="solid"><fgColor rgb="FF1A3A6B"/><bgColor indexed="64"/></patternFill></fill></fills>' +
+    '<borders count="1"><border><left/><right/><top/><bottom/><diagonal/></border></borders>' +
+    '<cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs>' +
+    '<cellXfs count="2"><xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0"/>' +
+    '<xf numFmtId="0" fontId="1" fillId="2" borderId="0" xfId="0" applyFont="1" applyFill="1"/></cellXfs>' +
+    '<cellStyles count="1"><cellStyle name="Normal" xfId="0" builtinId="0"/></cellStyles>' +
+    '<dxfs count="0"/><tableStyles count="0" defaultTableStyle="TableStyleMedium9" defaultPivotStyle="PivotStyleLight16"/>' +
+    '</styleSheet>') });
+  abas.forEach(function(a, i){
+    const linhas = (a && a.linhas) || [];
+    let xml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
+      '<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><sheetData>';
+    linhas.forEach(function(linha, ri){
+      xml += '<row r="' + (ri + 1) + '">';
+      (linha || []).forEach(function(v, ci){
+        const ref = _v155ColLetra(ci) + (ri + 1);
+        const st = ri === 0 ? ' s="1"' : '';
+        if (typeof v === 'number' && isFinite(v)) xml += '<c r="' + ref + '"' + st + '><v>' + v + '</v></c>';
+        else if (v === null || v === undefined || v === '') xml += '<c r="' + ref + '"' + st + '/>';
+        else xml += '<c r="' + ref + '"' + st + ' t="inlineStr"><is><t xml:space="preserve">' + _v155XmlEsc(v) + '</t></is></c>';
+      });
+      xml += '</row>';
+    });
+    xml += '</sheetData></worksheet>';
+    arq.push({ nome:'xl/worksheets/sheet' + (i + 1) + '.xml', dados:_v155Utf8(xml) });
+  });
+  return _v155ZipStore(arq);
+}
+// Entrega o arquivo ao navegador. Blob + <a download>, revogado depois — é o
+// mesmo caminho que o `doc.save()` do jsPDF usa por dentro.
+function _v155BaixarXlsx(abas, nomeArquivo){
+  const bytes = _v155XlsxBytes(abas);
+  const blob = new Blob([bytes], { type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = nomeArquivo || 'relatorio.xlsx';
+  document.body.appendChild(a); a.click();
+  setTimeout(function(){ try{ document.body.removeChild(a); URL.revokeObjectURL(url); }catch(e){} }, 1500);
 }
 
 // ══════════════════════════════════════════════════════════════════════════
@@ -16648,7 +16915,7 @@ function _renderOSRibbonShell(){
     <div class="gos-root">
       <div class="gos-topbar">
         <div class="gos-page-title">Gestão de OSs</div>
-        <div class="gos-page-sub">Oito leituras da mesma fila · <b>Serviços Externos</b> = campo &nbsp;·&nbsp; <b>Oficina</b> = interno</div>
+        <div class="gos-page-sub">Nove leituras da mesma fila · <b>Serviços Externos</b> = campo &nbsp;·&nbsp; <b>Oficina</b> = interno &nbsp;·&nbsp; <b>Relatórios</b> = o que dizer para a diretoria</div>
       </div>
       <div class="gos-ribbon">
         <div class="gos-ribbon-tab ${_osRibbonTab==='lista'?'active':''}" onclick="gosSetTab('lista')">
@@ -16677,6 +16944,16 @@ function _renderOSRibbonShell(){
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="5" rx="1"/><rect x="3" y="12" width="18" height="5" rx="1"/><path d="M3 20h18"/></svg>Raias</div>
         <div class="gos-ribbon-tab ${_osRibbonTab==='matriz'?'active':''}" onclick="gosSetTab('matriz')">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M3 15h18M9 3v18M15 3v18"/></svg>Matriz</div>
+        <!-- V155 (E) — 9a aba. gosSetTab ja despacha por string; nada renomeado.
+             Le o MESMO _osList das outras oito (renderOS pede includeClosed:'true',
+             entao a OS fechada — a que um relatorio de producao precisa — ja esta
+             carregada): zero requisicao nova, zero mudanca de GAS.
+             ⚠ SEM CRASE NESTE COMENTARIO: ele vive DENTRO de um template literal
+               e uma crase fecharia a string, quebrando o bloco inteiro. O aviso
+               ja estava escrito tres linhas acima, no comentario do V138 — e
+               ainda assim a V155 caiu nele na primeira escrita. A bancada pegou. -->
+        <div class="gos-ribbon-tab ${_osRibbonTab==='relatorios'?'active':''}" onclick="gosSetTab('relatorios')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>Relatórios</div>
         <div class="gos-ribbon-actions">
           <button class="btn btn-primary" onclick="openModalOS()">+ Abrir OS</button>
         </div>
@@ -17203,8 +17480,602 @@ function _gosRenderActiveTab(){
   if (_osRibbonTab === 'painel')     return gosRenderPainel();      // V138
   if (_osRibbonTab === 'raias')      return gosRenderRaias();       // V138
   if (_osRibbonTab === 'matriz')     return gosRenderMatriz();      // V138
+  if (_osRibbonTab === 'relatorios') return gosRenderRelatorios();  // V155 (E)
   _renderOSTable(_osSearch, _osFilterStatus, _osFilterPrioridade);   // Lista (existente)
 }
+// ══════════════════════════════════════════════════════════════════════════════
+// V155 (E) · ABA RELATÓRIOS — a 9ª leitura da mesma fila
+// ──────────────────────────────────────────────────────────────────────────────
+// Pedido do Fernando (28/08): "já vamos começar a criar alguns relatórios
+// gerenciais em pdf e xlsx, foque primeiro na parte de OS."
+//
+// 🔑 UM MODELO SÓ, TRÊS SAÍDAS. `_v155RelModelo()` devolve
+//    { titulo, subtitulo, kpis, blocos, notas } e a TELA, o PDF e o XLSX leem
+//    esse mesmo objeto. Foi assim de propósito: relatório em que a tela e o PDF
+//    são montados por dois códigos diferentes DIVERGE — e ninguém descobre pelo
+//    PDF, descobre na reunião. (Mesma razão do `_g8MaqCurto` único da V150.)
+//
+// 🔑 ZERO REQUISIÇÃO NOVA. `renderOS` já chama `getOS` com
+//    `includeClosed:'true'` e `com_fila:'true'`, então `_osList` contém a OS
+//    concluída e a cancelada — que é exatamente o acervo de um relatório de
+//    produção. Nenhuma action nova, nenhuma mudança de GAS.
+//
+// ⚠ TODA MÉDIA DIZ SOBRE QUANTAS FOI FEITA. "Tempo médio 4,2 dias" sobre 9 de
+//   27 OS é outra frase — e sem o denominador o número vira decisão errada. É
+//   a mesma regra do V140: ausência de dado é EXIBIDA, nunca embutida.
+// ⚠ % no prazo só olha OS concluída COM prazo gravado. Contar as sem prazo como
+//   "no prazo" faria o indicador subir sozinho a cada OS aberta sem prazo.
+// ⚠ Datas comparadas como STRING 'AAAA-MM-DD' (parsing por componentes em
+//   `_v151DataISO`): `new Date('2026-08-27')` é meia-noite UTC e em -03 volta um
+//   dia — o defeito que a V151 (B9) catalogou nesta mesma tela.
+// ══════════════════════════════════════════════════════════════════════════════
+let _v155RelQual = 'producao';        // 'producao' | 'prazo'
+let _v155RelDe = '', _v155RelAte = '';
+// ⚠ Bandeira, e não `if (_v155RelDe || _v155RelAte)`: apagar as DUAS datas é um
+//   gesto legítimo ("me mostre o acervo inteiro"), e com o teste pelo valor o
+//   mês corrente voltaria sozinho no render seguinte — a tela desfazendo o que
+//   a pessoa acabou de fazer.
+let _v155RelSemeado = false;
+
+function _v155RelIniciaPeriodo(){
+  if (_v155RelSemeado) return;
+  _v155RelSemeado = true;
+  if (_v155RelDe || _v155RelAte) return;
+  const h = new Date();
+  const p2 = n => String(n).padStart(2, '0');
+  _v155RelDe  = h.getFullYear() + '-' + p2(h.getMonth() + 1) + '-01';
+  _v155RelAte = h.getFullYear() + '-' + p2(h.getMonth() + 1) + '-' + p2(h.getDate());
+}
+// Diferença em dias entre duas datas 'AAAA-MM-DD', sem passar por UTC.
+function _v155Dias(aIso, bIso){
+  if (!aIso || !bIso) return null;
+  const a = aIso.split('-').map(Number), b = bIso.split('-').map(Number);
+  const da = new Date(a[0], a[1] - 1, a[2]), db = new Date(b[0], b[1] - 1, b[2]);
+  return Math.round((db.getTime() - da.getTime()) / 864e5);
+}
+function _v155Fmt(iso){ return iso ? _gosFmt(iso) : '—'; }
+function _v155Med(v){ return (Math.round(v * 10) / 10).toString().replace('.', ','); }
+
+// Linha derivada por OS — texto puro, pronto para tela, PDF e planilha.
+function _v155RelLinhas(){
+  return (_osList || []).map(o => {
+    const st = String(o.status || '').toUpperCase();
+    let maq = '';
+    try {
+      const t = _g8MaqTitulo(o);
+      maq = (t && t.indexOf('Sem máquina') !== 0) ? String(t).split('\n')[0] : '';
+    } catch (e) { maq = ''; }
+    let resp = '';
+    try { resp = (_g8Quem(o) || [])[0] || ''; } catch (e) { resp = ''; }
+    return {
+      o, st,
+      num: String(o.numero_os || o.id_os || '—'),
+      cliente: String(o.cliente || '').trim() || '— não informado —',
+      tipo: _gosTipoNome(o),
+      local: (o.local_atendimento === 'interno') ? 'Interno' : 'Externo',
+      prio: _GOS_PRIO_LABELS_V94[String(o.prioridade == null ? 'normal' : o.prioridade).toLowerCase()] || 'Normal',
+      resp: resp || '— sem responsável —',
+      maq: maq || '— não informada —',
+      abertura: _v151DataISO(o.data_abertura),
+      prazo: _gosData(o) || '',
+      // ══════════════════════════════════════════════════════════════════
+      // 🔴 ACHADO DA AUDITORIA INDEPENDENTE (28/08) — DUAS VEZES O MESMO ERRO
+      //
+      // A 1ª escrita desta linha era `_v151DataISO(o.fim_atendimento)`, e isso
+      // contrariava DUAS regras que o V154 tinha acabado de escrever, três mil
+      // linhas abaixo, no `_v154DiaOS`:
+      //
+      //  (a) `fim_atendimento` SÓ é carimbado pelo fluxo de CAMPO
+      //      (`_finalizarAtendimentoOS_`) e pelo auto-fechamento de inspeção.
+      //      O `saveOS` do MODAL não o carimba — OS encerrada pelo computador
+      //      tem a célula VAZIA. Como o Fernando fecha OS pela tela ("as outras
+      //      eu já havia forçado o fechamento delas anteriormente"), a MAIORIA
+      //      do acervo dele ficaria fora de "concluídas no período", do tempo
+      //      médio e do "% no prazo" — os três números principais do relatório
+      //      sairiam perto de zero, com cara de verdade.
+      //  (b) `_v151DataISO` recorta `AAAA-MM-DD` por REGEX, e `fim_atendimento`
+      //      é `toISOString()` (UTC). Concluir às 22:30 da oficina grava
+      //      `T01:30Z` do dia SEGUINTE: uma OS entregue em 31/08 no prazo
+      //      31/08 seria contada como ATRASADA e mudaria de mês no relatório.
+      //
+      // ⇒ Fonte ÚNICA com o Calendário: `_v154DiaOS` (cadeia fim_atendimento →
+      //   Updated_At → abertura, cada etapa passando por `_v154DiaLocal`). E
+      //   `fimAprox` guarda se o dia veio do fallback, porque o relatório TEM
+      //   de poder dizer isso — média construída sobre data aproximada sem
+      //   avisar é exatamente o tipo de número que decide errado.
+      // ══════════════════════════════════════════════════════════════════
+      fim: _v155FimOS(o).dia,
+      fimAprox: _v155FimOS(o).aprox,
+      statusLabel: _GOS_STATUS_LABELS_V94[st] || String(o.status || '—')
+    };
+  });
+}
+// ── O DIA EM QUE A OS ACABOU, para o relatório ──────────────────────────────
+// Mesma cadeia do Calendário (V154), com UMA diferença deliberada, e ela é o
+// ponto todo desta função existir em vez de chamar `_v154DiaOS` direto:
+//
+//   `_v154DiaOS` termina em `data_abertura`. Faz sentido lá — o Calendário
+//   PRECISA pôr todo cartão em algum dia, e "no dia em que abriu" é o palpite
+//   menos ruim. Aqui seria FABRICAR DADO: uma OS aberta e encerrada sem data
+//   nenhuma entraria com duração de ZERO dia e puxaria o tempo médio para
+//   baixo — um número inventado contaminando o indicador que a diretoria lê.
+//
+// ⇒ Aqui a cadeia para no `Updated_At`. Sem fim e sem última edição, a OS não
+//   tem dia de encerramento: ela FICA DE FORA e é CONTADA na nota. Ausência de
+//   dado exibida como fato é a regra do V140; inventá-la seria o oposto.
+// ⚠ `_v154DiaLocal` (não `_v151DataISO`): `fim_atendimento` é `toISOString()`,
+//   ou seja UTC. Concluir às 22:30 da oficina grava `T01:30Z` do dia SEGUINTE.
+function _v155FimOS(o){
+  try {
+    if (!_v154OsEncerrada(o)) return { dia:'', aprox:false };
+    const fim = _v154DiaLocal(o && o.fim_atendimento);
+    if (fim) return { dia: fim, aprox:false };
+    // `saveOS` do MODAL não carimba `fim_atendimento` — OS encerrada pelo
+    // computador só tem o `Updated_At`. É boa o bastante para posicionar no
+    // mês, frouxa para medir dias: por isso volta marcada `aprox`.
+    const upd = _v154DiaLocal(o && o.Updated_At);
+    if (upd) return { dia: upd, aprox:true };
+    return { dia:'', aprox:false };
+  } catch (e) { return { dia:'', aprox:false }; }
+}
+
+// Contagem por chave, devolvida como bloco de tabela ordenado pelo total.
+function _v155PorChave(titulo, rotulo, linhas, chave){
+  const mapa = {};
+  linhas.forEach(r => {
+    const k = r[chave] || '—';
+    if (!mapa[k]) mapa[k] = { k, abertas:0, concluidas:0, canceladas:0, dias:0, nDias:0 };
+    const m = mapa[k];
+    if (r._abertaNoPeriodo) m.abertas++;
+    if (r._concluidaNoPeriodo) {
+      m.concluidas++;
+      if (r._duracao != null) { m.dias += r._duracao; m.nDias++; }
+    }
+    if (r._canceladaNoPeriodo) m.canceladas++;
+  });
+  const rows = Object.keys(mapa).map(k => mapa[k])
+    .filter(m => m.abertas || m.concluidas || m.canceladas)
+    .sort((a, b) => (b.abertas + b.concluidas + b.canceladas) - (a.abertas + a.concluidas + a.canceladas));
+  return {
+    titulo: titulo,
+    colunas: [rotulo, 'Abertas', 'Concluídas', 'Canceladas', 'Tempo médio (dias)'],
+    alinhaNum: [false, true, true, true, true],
+    linhas: rows.map(m => [m.k, m.abertas, m.concluidas, m.canceladas,
+      m.nDias ? (_v155Med(m.dias / m.nDias) + ' (' + m.nDias + ' de ' + m.concluidas + ')') : '—']),
+    vazio: 'Nenhuma OS neste recorte no período.'
+  };
+}
+
+function _v155RelModelo(){
+  _v155RelIniciaPeriodo();
+  const de = _v155RelDe, ate = _v155RelAte, hoje = xfHoje();
+  const dentro = iso => !!iso && (!de || iso >= de) && (!ate || iso <= ate);
+  const per = _v155Fmt(de) + ' a ' + _v155Fmt(ate);
+  const linhas = _v155RelLinhas();
+
+  // marcações do período, uma vez por linha (o mesmo objeto alimenta os blocos)
+  linhas.forEach(r => {
+    r._abertaNoPeriodo    = dentro(r.abertura);
+    r._concluidaNoPeriodo = (r.st === 'CONCLUIDA') && dentro(r.fim);
+    // ⚠ Cancelada raramente tem `fim_atendimento` — o cancelamento não passa
+    //   pelo caminho que carimba o fim. Cai para a data de ABERTURA, e a nota
+    //   de rodapé diz isso: número cuja regra não está escrita é número que
+    //   cada pessoa interpreta de um jeito.
+    r._canceladaNoPeriodo = (r.st === 'CANCELADA') && dentro(r.fim || r.abertura);
+    r._duracao = (r.abertura && r.fim) ? Math.max(0, _v155Dias(r.abertura, r.fim)) : null;
+    r._viva    = (r.st !== 'CONCLUIDA' && r.st !== 'CANCELADA');
+    r._atrasoHoje = (r._viva && r.prazo && r.prazo < hoje) ? _v155Dias(r.prazo, hoje) : null;
+  });
+
+  if (_v155RelQual === 'prazo') return _v155ModeloPrazo(linhas, per, hoje);
+  return _v155ModeloProducao(linhas, per);
+}
+
+function _v155ModeloProducao(linhas, per){
+  const abertas    = linhas.filter(r => r._abertaNoPeriodo);
+  const concluidas = linhas.filter(r => r._concluidaNoPeriodo);
+  const canceladas = linhas.filter(r => r._canceladaNoPeriodo);
+  const semFim     = linhas.filter(r => r.st === 'CONCLUIDA' && !r.fim);
+  const aprox      = concluidas.filter(r => r.fimAprox);
+  const canSemFim  = canceladas.filter(r => !r.fim);
+
+  const comDur = concluidas.filter(r => r._duracao != null);
+  const somaDur = comDur.reduce((a, r) => a + r._duracao, 0);
+  const comPrazo = concluidas.filter(r => !!r.prazo);
+  const noPrazo  = comPrazo.filter(r => r.fim <= r.prazo);
+
+  const vivasHoje = linhas.filter(r => r._viva);
+
+  const kpis = [
+    { rot:'OS abertas no período',    val:String(abertas.length),    nota:'pela data de abertura' },
+    { rot:'OS concluídas no período', val:String(concluidas.length), nota:'pela data de fim do atendimento' },
+    { rot:'OS canceladas no período', val:String(canceladas.length), nota: canSemFim.length ? (canSemFim.length + ' sem data de fim, contadas pela abertura') : 'pela data de fim' },
+    { rot:'Em aberto hoje',           val:String(vivasHoje.length),  nota:'aberta ou em andamento, independentemente do período' },
+    { rot:'Tempo médio de atendimento',
+      val: comDur.length ? (_v155Med(somaDur / comDur.length) + ' dias') : '—',
+      nota: comDur.length ? ('média sobre ' + comDur.length + ' de ' + concluidas.length + ' concluídas')
+                          : 'nenhuma concluída no período tem abertura e fim gravados' },
+    { rot:'Concluídas no prazo',
+      val: comPrazo.length ? (Math.round(noPrazo.length / comPrazo.length * 100) + '%') : '—',
+      nota: comPrazo.length ? (noPrazo.length + ' de ' + comPrazo.length + ' concluídas COM prazo gravado')
+                            : 'nenhuma concluída no período tem prazo gravado' }
+  ];
+
+  const notas = [];
+  if (semFim.length) notas.push('🔎 ' + semFim.length + ' OS concluídas não têm data de encerramento nem de última edição — não há como situá-las num período, então ficam de fora. Entrar com a data de abertura daria a elas duração ZERO e puxaria o tempo médio para baixo.');
+  // ⚠ A data aproximada é DECLARADA. `fim_atendimento` só é carimbado pelo
+  //   fluxo de campo; OS encerrada pelo modal do PCM cai no `Updated_At`, que é
+  //   a última EDIÇÃO — bom o bastante para posicionar no mês, frouxo para
+  //   medir dias de atendimento. Quem lê tem de saber qual dos dois olhou.
+  if (aprox.length) notas.push('🔎 ' + aprox.length + ' das ' + concluidas.length + ' concluídas no período foram encerradas pela tela do PCM, que não carimba a data de fim — usamos a data da última edição da OS (aproximada). O tempo médio dessas é uma estimativa.');
+  if (concluidas.length && comPrazo.length < concluidas.length) notas.push('🔎 ' + (concluidas.length - comPrazo.length) + ' das concluídas no período não tinham prazo gravado e ficaram fora do "% no prazo" — contá-las como cumpridas inflaria o indicador.');
+  if (canSemFim.length) notas.push('🔎 ' + canSemFim.length + ' cancelada(s) sem data de fim entraram pela data de abertura.');
+  if (!notas.length) notas.push('✓ Todas as OS do período têm as datas de que este relatório depende.');
+
+  return {
+    id:'producao',
+    titulo:'Produção de OS',
+    subtitulo:'Período ' + per + ' · ' + (_osList || []).length + ' OS no acervo carregado',
+    kpis: kpis,
+    blocos: [
+      _v155PorChave('Por tipo de OS', 'Tipo', linhas, 'tipo'),
+      _v155PorChave('Por local de atendimento', 'Local', linhas, 'local'),
+      _v155PorChave('Por prioridade', 'Prioridade', linhas, 'prio'),
+      _v155PorChave('Por cliente', 'Cliente', linhas, 'cliente'),
+      {
+        titulo:'OS concluídas no período (detalhe)',
+        colunas:['Nº OS','Cliente','Máquina','Tipo','Local','Responsável','Abertura','Prazo','Fim','Dias','No prazo'],
+        alinhaNum:[false,false,false,false,false,false,false,false,false,true,false],
+        linhas: concluidas.slice().sort((a,b)=> a.fim < b.fim ? 1 : -1).map(r => [
+          r.num, r.cliente, r.maq, r.tipo, r.local, r.resp,
+          _v155Fmt(r.abertura), _v155Fmt(r.prazo), _v155Fmt(r.fim) + (r.fimAprox ? ' (aprox.)' : ''),
+          r._duracao == null ? '—' : r._duracao,
+          r.prazo ? (r.fim <= r.prazo ? 'Sim' : 'Não') : '— sem prazo —'
+        ]),
+        vazio:'Nenhuma OS concluída neste período (ou nenhuma com data de fim gravada).'
+      }
+    ],
+    notas: notas
+  };
+}
+
+function _v155ModeloPrazo(linhas, per, hoje){
+  const atrasadas = linhas.filter(r => r._atrasoHoje != null)
+                          .sort((a, b) => b._atrasoHoje - a._atrasoHoje);
+  const faixa = (min, max) => atrasadas.filter(r => r._atrasoHoje >= min && (max == null || r._atrasoHoje <= max));
+  const f1 = faixa(1, 7), f2 = faixa(8, 30), f3 = faixa(31, null);
+  const vivas = linhas.filter(r => r._viva);
+  const semPrazo = vivas.filter(r => !r.prazo);
+  const concPeriodo = linhas.filter(r => r._concluidaNoPeriodo);
+  const concComPrazo = concPeriodo.filter(r => !!r.prazo);
+  const concAtrasada = concComPrazo.filter(r => r.fim > r.prazo)
+                                   .sort((a, b) => _v155Dias(b.prazo, b.fim) - _v155Dias(a.prazo, a.fim));
+  const somaAtraso = atrasadas.reduce((a, r) => a + r._atrasoHoje, 0);
+
+  const kpis = [
+    { rot:'Atrasadas hoje', val:String(atrasadas.length), nota:'OS viva com prazo anterior a ' + _v155Fmt(hoje) },
+    { rot:'1 a 7 dias',   val:String(f1.length), nota:'atraso recente — ainda dá para recuperar' },
+    { rot:'8 a 30 dias',  val:String(f2.length), nota:'atraso instalado' },
+    { rot:'Mais de 30 dias', val:String(f3.length), nota:'a OS provavelmente não reflete a realidade' },
+    { rot:'Atraso médio', val: atrasadas.length ? (_v155Med(somaAtraso / atrasadas.length) + ' dias') : '—',
+      nota: atrasadas.length ? ('sobre as ' + atrasadas.length + ' atrasadas') : 'nenhuma OS atrasada hoje' },
+    { rot:'Vivas sem prazo', val:String(semPrazo.length),
+      nota: semPrazo.length ? 'não podem atrasar porque não têm data — e por isso somem deste relatório' : 'toda OS viva tem prazo' }
+  ];
+
+  const notas = [];
+  if (semPrazo.length) notas.push('🔴 ' + semPrazo.length + ' OS abertas ou em andamento estão SEM prazo. Elas não aparecem como atrasadas — não porque estejam em dia, mas porque não há contra o que medir. É o número que mais engana num relatório de prazo.');
+  notas.push('🔎 O atraso é medido contra a `data_prevista` (o PRAZO), não contra a data agendada do serviço — são coisas diferentes desde a V154.');
+  if (!atrasadas.length) notas.push('✓ Nenhuma OS viva com prazo vencido hoje.');
+
+  return {
+    id:'prazo',
+    titulo:'Cumprimento de prazo',
+    subtitulo:'Atrasos de hoje (' + _v155Fmt(hoje) + ') · concluídas com atraso no período ' + per,
+    kpis: kpis,
+    blocos: [
+      {
+        titulo:'OS atrasadas hoje',
+        colunas:['Nº OS','Cliente','Máquina','Tipo','Local','Prioridade','Responsável','Prazo','Dias de atraso','Status'],
+        alinhaNum:[false,false,false,false,false,false,false,false,true,false],
+        linhas: atrasadas.map(r => [r.num, r.cliente, r.maq, r.tipo, r.local, r.prio, r.resp,
+                                    _v155Fmt(r.prazo), r._atrasoHoje, r.statusLabel]),
+        vazio:'Nenhuma OS viva com prazo vencido hoje.'
+      },
+      {
+        titulo:'Concluídas COM atraso no período',
+        colunas:['Nº OS','Cliente','Tipo','Responsável','Prazo','Fim','Dias além do prazo'],
+        alinhaNum:[false,false,false,false,false,false,true],
+        linhas: concAtrasada.map(r => [r.num, r.cliente, r.tipo, r.resp,
+                                       _v155Fmt(r.prazo), _v155Fmt(r.fim) + (r.fimAprox ? ' (aprox.)' : ''),
+                                       _v155Dias(r.prazo, r.fim)]),
+        vazio:'Nenhuma OS foi concluída com atraso neste período.'
+      },
+      {
+        titulo:'OS vivas SEM prazo (não medíveis)',
+        colunas:['Nº OS','Cliente','Máquina','Tipo','Responsável','Abertura','Status'],
+        alinhaNum:[false,false,false,false,false,false,false],
+        linhas: semPrazo.slice().sort((a,b)=> (a.abertura||'9999') < (b.abertura||'9999') ? -1 : 1)
+                 .map(r => [r.num, r.cliente, r.maq, r.tipo, r.resp, _v155Fmt(r.abertura), r.statusLabel]),
+        vazio:'Toda OS viva tem prazo gravado.'
+      }
+    ],
+    notas: notas
+  };
+}
+
+// ── a tela ───────────────────────────────────────────────────────────────────
+function gosRenderRelatorios(){
+  const cont = document.getElementById('osRibbonContent');
+  if (!cont) return;
+  _v155RelIniciaPeriodo();
+
+  if (!(_osList || []).length) {
+    cont.innerHTML = '<div class="empty"><div class="empty-icon">📊</div>' +
+      '<div class="empty-title">Sem OS carregadas</div>' +
+      '<div class="empty-sub">Os relatórios leem a mesma lista das outras abas. Aguarde a carga ou volte para a Lista.</div></div>';
+    return;
+  }
+
+  let m;
+  try { m = _v155RelModelo(); }
+  catch (e) {
+    console.warn('[V155] relatório falhou:', e);
+    cont.innerHTML = '<div class="empty"><div class="empty-icon">⚠️</div><div class="empty-title">Não consegui montar o relatório</div>' +
+      '<div class="empty-sub">' + escHtml(e && e.message || 'erro') + '</div></div>';
+    return;
+  }
+
+  const botao = (id, rot) => '<button class="gos-ribbon-tab" style="border-radius:8px;padding:5px 12px;font-size:12.5px;' +
+    (_v155RelQual === id ? 'background:var(--accent);color:#fff;border-color:var(--accent)' : '') +
+    '" onclick="_v155RelTrocar(\'' + id + '\')">' + rot + '</button>';
+
+  const kpisHtml = m.kpis.map(k => `
+    <div class="card" style="padding:10px 12px">
+      <div style="font-size:11px;color:var(--text2);text-transform:uppercase;letter-spacing:.04em">${escHtml(k.rot)}</div>
+      <div style="font-size:24px;font-weight:800;line-height:1.15;margin:2px 0">${escHtml(k.val)}</div>
+      <div style="font-size:10.5px;color:var(--text-muted);line-height:1.35">${escHtml(k.nota)}</div>
+    </div>`).join('');
+
+  const blocosHtml = m.blocos.map(b => {
+    if (!b.linhas.length) {
+      return `<div style="margin-top:18px">
+        <div style="font-size:14px;font-weight:700;margin-bottom:4px">${escHtml(b.titulo)}</div>
+        <div style="font-size:12px;color:var(--text-muted)">${escHtml(b.vazio || '—')}</div></div>`;
+    }
+    const corte = b.linhas.length > 60;
+    const vis = corte ? b.linhas.slice(0, 60) : b.linhas;
+    return `<div style="margin-top:18px">
+      <div style="font-size:14px;font-weight:700;margin-bottom:6px">${escHtml(b.titulo)} <span style="font-weight:400;font-size:11.5px;color:var(--text-muted)">${b.linhas.length} linha(s)</span></div>
+      <div class="table-wrap" style="max-height:420px"><table class="xf-table"><thead><tr>${
+        b.colunas.map((c, i) => `<th class="${b.alinhaNum && b.alinhaNum[i] ? 'xf-num' : ''}"><div class="xf-th-btn" style="cursor:default">${escHtml(c)}</div></th>`).join('')
+      }</tr></thead><tbody>${
+        vis.map(l => '<tr>' + l.map((v, i) => `<td class="${b.alinhaNum && b.alinhaNum[i] ? 'xf-num' : ''}">${escHtml(v == null ? '—' : String(v))}</td>`).join('') + '</tr>').join('')
+      }</tbody></table></div>
+      ${corte ? `<div style="font-size:11px;color:var(--text-muted);margin-top:4px">Mostrando as 60 primeiras de ${b.linhas.length} na tela — <b>o PDF e o XLSX levam todas</b>.</div>` : ''}
+    </div>`;
+  }).join('');
+
+  cont.innerHTML = `
+    <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:10px">
+      ${botao('producao', '📈 Produção de OS')}
+      ${botao('prazo', '⏱ Cumprimento de prazo')}
+      <span style="width:1px;height:22px;background:var(--border);margin:0 4px"></span>
+      <span style="font-size:11.5px;color:var(--text2)">Período</span>
+      <input type="date" id="relDeV155" value="${escHtml(_v155RelDe)}" onchange="_v155RelPeriodo(this.value, null)"
+        style="height:30px;padding:0 6px;font-size:12px;border:1px solid var(--border2);border-radius:var(--radius-sm);background:white">
+      <span style="font-size:11.5px;color:var(--text2)">até</span>
+      <input type="date" id="relAteV155" value="${escHtml(_v155RelAte)}" onchange="_v155RelPeriodo(null, this.value)"
+        style="height:30px;padding:0 6px;font-size:12px;border:1px solid var(--border2);border-radius:var(--radius-sm);background:white">
+      <button class="btn btn-secondary btn-sm" onclick="_v155RelAtalho('mes')">Este mês</button>
+      <button class="btn btn-secondary btn-sm" onclick="_v155RelAtalho('mespassado')">Mês passado</button>
+      <button class="btn btn-secondary btn-sm" onclick="_v155RelAtalho('90')">Últimos 90 dias</button>
+      <button class="btn btn-secondary btn-sm" onclick="_v155RelAtalho('ano')">Este ano</button>
+      <span style="flex:1;min-width:8px"></span>
+      <!-- ⚠ Os dois botões num invólucro que não quebra: em 1500px a barra
+           dobrava e o XLSX descia sozinho para a linha de baixo, longe do PDF.
+           Botão de exportar separado do par lê como se fosse outra coisa. -->
+      <span style="display:inline-flex;gap:8px;flex:0 0 auto">
+        <button class="btn btn-secondary" onclick="_semDuploEnvio_(this, () => _v155RelPDF(this))">⬇ PDF</button>
+        <button class="btn btn-secondary" onclick="_semDuploEnvio_(this, () => _v155RelXLSX(this))">⬇ XLSX</button>
+      </span>
+    </div>
+    <div style="font-size:18px;font-weight:700">${escHtml(m.titulo)}</div>
+    <div style="font-size:12px;color:var(--text2);margin-bottom:12px">${escHtml(m.subtitulo)}</div>
+    <div class="stats-grid" style="grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:10px">${kpisHtml}</div>
+    <div style="margin-top:12px;font-size:11.5px;line-height:1.55;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:9px 11px">
+      ${m.notas.map(n => '<div>' + escHtml(n) + '</div>').join('')}
+    </div>
+    ${blocosHtml}`;
+}
+window._v155RelTrocar = function(q){ _v155RelQual = q; gosRenderRelatorios(); };
+window._v155RelPeriodo = function(de, ate){
+  if (de !== null && de !== undefined) _v155RelDe = de || '';
+  if (ate !== null && ate !== undefined) _v155RelAte = ate || '';
+  // ⚠ Período invertido não é erro de digitação a ser "corrigido" em silêncio:
+  //   o relatório sairia vazio e o admin acharia que não houve trabalho.
+  if (_v155RelDe && _v155RelAte && _v155RelDe > _v155RelAte) {
+    toast('O início do período é depois do fim — nenhuma OS cabe nesse intervalo. Ajuste as datas.', 'warn');
+  }
+  gosRenderRelatorios();
+};
+window._v155RelAtalho = function(qual){
+  const h = new Date(), p2 = n => String(n).padStart(2, '0');
+  const iso = d => d.getFullYear() + '-' + p2(d.getMonth() + 1) + '-' + p2(d.getDate());
+  if (qual === 'mes') { _v155RelDe = iso(new Date(h.getFullYear(), h.getMonth(), 1)); _v155RelAte = iso(h); }
+  else if (qual === 'mespassado') {
+    _v155RelDe  = iso(new Date(h.getFullYear(), h.getMonth() - 1, 1));
+    _v155RelAte = iso(new Date(h.getFullYear(), h.getMonth(), 0));
+  }
+  else if (qual === '90') { _v155RelDe = iso(new Date(h.getFullYear(), h.getMonth(), h.getDate() - 90)); _v155RelAte = iso(h); }
+  else if (qual === 'ano') { _v155RelDe = h.getFullYear() + '-01-01'; _v155RelAte = iso(h); }
+  gosRenderRelatorios();
+};
+
+// ── nome do arquivo: legível, ordenável e sem caractere que o Windows recuse ──
+function _v155RelNomeArq(m, ext){
+  const lim = s => String(s).normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^A-Za-z0-9]+/g, '_').replace(/^_+|_+$/g, '');
+  return 'Proper_' + lim(m.titulo) + '_' + (_v155RelDe || 'inicio') + '_a_' + (_v155RelAte || 'hoje') + '.' + ext;
+}
+
+// ── XLSX ─────────────────────────────────────────────────────────────────────
+// ⚠ Números vão como NÚMERO. Uma planilha em que tudo é texto é um PDF com
+//   grade: não soma, não ordena, não faz tabela dinâmica — e o pedido do
+//   Fernando era xlsx justamente para poder mexer.
+function _v155RelXLSX(btn){
+  try {
+    const m = _v155RelModelo();
+    const abas = [];
+    // ⚠ O KPI tem DOIS lados: o rótulo que se lê ("14,7 dias", "50%") e o valor
+    //   que se soma. Mandar só o texto faria a coluna "Valor" da aba Resumo não
+    //   somar nem ordenar — contradizendo o motivo de o Fernando pedir xlsx.
+    //   Então vão as duas colunas, e a numérica só existe quando há número.
+    const numKpi = v => {
+      const t = String(v == null ? '' : v).replace('%', '').replace(' dias', '').replace(',', '.').trim();
+      const n = Number(t);
+      return (t !== '' && isFinite(n)) ? n : '';
+    };
+    abas.push({ nome:'Resumo', linhas: [['Indicador', 'Valor', 'Número', 'Sobre o número']]
+      .concat([[m.titulo, '', '', m.subtitulo], ['', '', '', '']])
+      .concat(m.kpis.map(k => [k.rot, k.val, numKpi(k.val), k.nota]))
+      .concat([['', '', '', '']], m.notas.map(n => ['Nota', '', '', n])) });
+    m.blocos.forEach(b => {
+      abas.push({ nome: b.titulo, linhas: [b.colunas].concat(
+        b.linhas.length ? b.linhas.map(l => l.map(v => (typeof v === 'number' && isFinite(v)) ? v : String(v == null ? '' : v)))
+                        : [[b.vazio || 'sem linhas']]) });
+    });
+    _v155BaixarXlsx(abas, _v155RelNomeArq(m, 'xlsx'));
+    toast('Planilha gerada.', 'success');
+  } catch (e) {
+    console.warn('[V155] XLSX:', e);
+    toast('Não consegui gerar a planilha: ' + (e && e.message ? e.message : e), 'error');
+  }
+}
+
+// ── PDF ──────────────────────────────────────────────────────────────────────
+// Paisagem: as tabelas de detalhe têm 10 e 11 colunas; em retrato o nome do
+// cliente truncaria e o PDF viraria enfeite.
+async function _v155RelPDF(btn){
+  let m;
+  try { m = _v155RelModelo(); }
+  catch (e) { toast('Não consegui montar o relatório: ' + (e && e.message ? e.message : e), 'error'); return; }
+  try { await pcmEnsureJsPDF(); }
+  catch (e) { toast(e.message, 'error'); return; }
+
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ unit:'mm', format:'a4', orientation:'landscape' });
+  // As fontes padrão do jsPDF são WinAnsi: emoji e travessão viram caixinha.
+  // Mesmo saneador do relatório de estoque (v27), aqui numa função só.
+  const L = txt => String(txt == null ? '' : txt)
+    .replace(/[‘’]/g, "'").replace(/[“”]/g, '"').replace(/[–—]/g, '-')
+    .replace(/[\u{1F300}-\u{1FFFF}]/gu, '').replace(/[✓✕⚠🔎🔴]/g, '')
+    .replace(/[^\x09\x0A\x0D\x20-\xFF]/g, ' ').replace(/\s+/g, ' ').trim();
+
+  const AZUL = [26, 58, 107], BRANCO = [255, 255, 255], ESCURO = [30, 40, 55], CINZA = [110, 130, 155], ZEBRA = [242, 246, 251];
+  const pW = 297, mL = 10, mR = 10, cW = pW - mL - mR;
+  let y = 0, pag = 1;
+  const agora = new Date();
+  const p2 = n => String(n).padStart(2, '0');
+  const carimbo = p2(agora.getDate()) + '/' + p2(agora.getMonth() + 1) + '/' + agora.getFullYear() + ' ' + p2(agora.getHours()) + ':' + p2(agora.getMinutes());
+
+  function cabecalho(){
+    doc.setFillColor.apply(doc, AZUL); doc.rect(0, 0, pW, 16, 'F');
+    doc.setFillColor(0, 180, 200); doc.rect(0, 16, pW, 1.2, 'F');
+    doc.setFont('helvetica', 'bold'); doc.setFontSize(11); doc.setTextColor.apply(doc, BRANCO);
+    doc.text(L('Proper Compressores - ' + m.titulo), mL, 8);
+    doc.setFont('helvetica', 'normal'); doc.setFontSize(7);
+    doc.text(L(m.subtitulo), mL, 13);
+    doc.text(L('Gerado em ' + carimbo + ' - Pag ' + pag), pW - mR, 8, { align:'right' });
+    y = 22;
+  }
+  function espaco(h){ if (y + h > 200) { doc.addPage(); pag++; cabecalho(); } }
+
+  cabecalho();
+
+  // KPIs em cartões
+  // ⚠ Quebra de linha REAL a cada 6 cartões. A 1ª versão escrevia todos na
+  //   mesma faixa vertical e o 7º cartão em diante nasceria por cima do 1º —
+  //   defeito que só apareceria no dia em que um relatório tivesse 7 KPIs.
+  const PORLIN = 6, kw = cW / PORLIN, kh = 17;
+  espaco(kh + 4);
+  m.kpis.forEach((k, i) => {
+    const col = i % PORLIN, lin = Math.floor(i / PORLIN);
+    if (col === 0 && lin > 0) { y += kh + 3; espaco(kh + 4); }
+    const x = mL + col * kw;
+    doc.setFillColor.apply(doc, ZEBRA); doc.rect(x + 0.6, y, kw - 1.2, kh, 'F');
+    doc.setFont('helvetica', 'normal'); doc.setFontSize(6); doc.setTextColor.apply(doc, CINZA);
+    doc.text(L(k.rot), x + 2.4, y + 4, { maxWidth: kw - 5 });
+    doc.setFont('helvetica', 'bold'); doc.setFontSize(12); doc.setTextColor.apply(doc, ESCURO);
+    doc.text(L(k.val), x + 2.4, y + 10.5);
+    doc.setFont('helvetica', 'normal'); doc.setFontSize(5.4); doc.setTextColor.apply(doc, CINZA);
+    doc.text(L(k.nota), x + 2.4, y + 14.5, { maxWidth: kw - 5 });
+  });
+  y += kh + 5;
+
+  // Notas — a parte que explica os números. Nunca sai do PDF.
+  // ⚠ Cor e corpo DENTRO do laço, depois do `espaco()`. Fora dele, uma quebra de
+  //   página no meio das notas deixaria as seguintes brancas sobre branco — o
+  //   `cabecalho()` termina com setTextColor(BRANCO). Achado da auditoria
+  //   independente: é o MESMO defeito que o bloco de KPIs logo acima declara ter
+  //   corrigido para o 7º cartão, repetido dez linhas abaixo.
+  m.notas.forEach(n => {
+    const linhasN = doc.splitTextToSize(L(n), cW);
+    espaco(linhasN.length * 3 + 2);
+    doc.setFont('helvetica', 'normal'); doc.setFontSize(6.6); doc.setTextColor.apply(doc, ESCURO);
+    doc.text(linhasN, mL, y); y += linhasN.length * 3 + 1.5;
+  });
+  y += 3;
+
+  m.blocos.forEach(b => {
+    espaco(14);
+    doc.setFont('helvetica', 'bold'); doc.setFontSize(9); doc.setTextColor.apply(doc, ESCURO);
+    doc.text(L(b.titulo + ' (' + b.linhas.length + ')'), mL, y); y += 4;
+
+    if (!b.linhas.length) {
+      doc.setFont('helvetica', 'normal'); doc.setFontSize(7); doc.setTextColor.apply(doc, CINZA);
+      doc.text(L(b.vazio || '-'), mL, y); y += 7;
+      return;
+    }
+    // Larguras proporcionais ao maior conteúdo da coluna, com piso e teto —
+    // coluna de data com a largura do nome do cliente desperdiça meia página.
+    const pesos = b.colunas.map((c, i) => {
+      let mx = String(c).length;
+      b.linhas.forEach(l => { const t = String(l[i] == null ? '' : l[i]); if (t.length > mx) mx = t.length; });
+      return Math.max(5, Math.min(34, mx));
+    });
+    const somaP = pesos.reduce((a, x) => a + x, 0);
+    const larg = pesos.map(x => Math.max(11, cW * x / somaP));
+    const somaL = larg.reduce((a, x) => a + x, 0);
+    const esc = cW / somaL;
+    const W = larg.map(x => x * esc);
+    const X = []; let ac = mL; W.forEach(w => { X.push(ac); ac += w; });
+
+    function headTab(){
+      espaco(7);
+      doc.setFillColor.apply(doc, AZUL); doc.rect(mL, y, cW, 5.6, 'F');
+      doc.setFont('helvetica', 'bold'); doc.setFontSize(6.2); doc.setTextColor.apply(doc, BRANCO);
+      b.colunas.forEach((c, i) => doc.text(L(c), X[i] + 1, y + 3.9, { maxWidth: W[i] - 2 }));
+      y += 5.6;
+    }
+    headTab();
+    b.linhas.forEach((l, li) => {
+      if (y + 5 > 200) { doc.addPage(); pag++; cabecalho(); headTab(); }
+      if (li % 2 === 0) { doc.setFillColor.apply(doc, ZEBRA); doc.rect(mL, y, cW, 4.6, 'F'); }
+      doc.setFont('helvetica', 'normal'); doc.setFontSize(6); doc.setTextColor.apply(doc, ESCURO);
+      l.forEach((v, i) => {
+        const t = doc.splitTextToSize(L(v == null ? '-' : String(v)), W[i] - 2)[0] || '';
+        doc.text(t, X[i] + 1, y + 3.2);
+      });
+      y += 4.6;
+    });
+    y += 5;
+  });
+
+  doc.save(_v155RelNomeArq(m, 'pdf'));
+  toast('PDF gerado.', 'success');
+}
+
 function gosSetTab(tab){
   _osRibbonTab = tab;
   _g8TabDesde = Date.now();          // V138 — o relógio da vista atual
@@ -18775,6 +19646,96 @@ function _v150AbrirOSDaMaquina(machineId, fecharDetalhe) {
   openModalOS(null, { cliente: nome, cliente_id: cli ? String(cli.id) : '', machine_id: String(eq.id) });
 }
 
+// ══════════════════════════════════════════════════════════════════════════════
+// V155 (D) · TRANSFORMAR DEMANDA EM OS — NO COMPUTADOR
+// ──────────────────────────────────────────────────────────────────────────────
+// Pedido do Fernando (28/08): "preciso que a demanda possa ser convertida em OS
+// até mesmo pelo PCM no computador; por que ficou somente pelo celular?"
+//
+// A resposta honesta: porque a conversão nasceu no `_mobCriarOS` (V152) e a
+// action `vincularDemandaAOS` do GAS nunca teve outro chamador. O cano existe
+// desde o v112 — é a mesma família do `google_credential` (A5), do
+// `acesso_extra` (v123) e do `com_fila` (V146): servidor pronto, front mudo.
+//
+// 🔑 POR QUE NÃO CRIAR DIRETO, como o celular faz. No celular o técnico escolhe
+//    o tipo de OS num passo do stepper. No desktop, "criar direto" significaria
+//    o PCM CHUTAR o tipo — e é o `Template_ID_Padrao` do tipo que instancia o
+//    pipeline (ver o fim do saveOSModal). OS sem pipeline é pior que OS não
+//    criada: ela existe, não anda, e ninguém sabe por quê. Então abrimos o
+//    formulário que já existe, preenchido com tudo o que a demanda sabe.
+//
+// ⚠ O que a demanda NÃO sabe fica em branco de propósito: tipo de OS e
+//   máquinas vinculadas. Preencher por adivinhação seria fabricar dado.
+// ⚠ Cliente sem `cliente_id` é AVISADO (o mesmo aviso do V150): cliente sem id
+//   é o começo da órfã de FK no espelho.
+// ══════════════════════════════════════════════════════════════════════════════
+let _v155DemandaPendente = null;
+
+function _v155DemandaParaOS(dm){
+  if (!dm) return;
+  const min = parseInt(dm.tempo_estimado_min, 10) || 0;
+  // A descrição da OS carrega o que a demanda dizia — inclusive o motivo, que
+  // é `chave:detalhe` (V144) e precisa do tradutor para virar texto humano.
+  const motivo = (window.PROPER_DEMANDA_TIPO_ROTULO || String)(dm.tipo) || '';
+  const partes = [];
+  if (dm.titulo) partes.push(String(dm.titulo));
+  if (dm.descricao) partes.push(String(dm.descricao));
+  const rodape = 'Origem: demanda agendada' +
+    (dm.dia ? ' para ' + String(dm.dia).split('-').reverse().join('/') : '') +
+    (motivo ? ' · ' + motivo : '') +
+    (dm.responsavel ? ' · responsável: ' + dm.responsavel : '');
+  partes.push('[' + rodape + ']');
+
+  closeModal('modalDemandaDesk');
+  openModalOS(null, {
+    cliente: dm.cliente || '',
+    cliente_id: dm.cliente_id || '',
+    // V155 — campos NOVOS no preset. O bloco do V150 só olha `cliente` e
+    // `machine_id`, então presets antigos seguem idênticos.
+    demanda_id: dm.demanda_id,
+    demanda_titulo: dm.titulo || '',
+    descricao: partes.join('\n\n'),
+    prioridade: dm.prioridade || 'normal',
+    data_prevista: dm.dia || '',
+    hora_prevista: (dm.sem_hora || !dm.inicio_previsto) ? '' : _satHHMM(dm.inicio_previsto),
+    duracao_prevista_min: min || ''
+  });
+}
+
+function _v155AplicarPresetDemanda(p){
+  if (!p || !p.demanda_id) return;
+  _v155DemandaPendente = { demanda_id: p.demanda_id, titulo: p.demanda_titulo || '' };
+
+  const _set = (id, v) => {
+    const el = document.getElementById(id);
+    if (el && v !== null && v !== undefined && v !== '') el.value = v;
+  };
+  _set('osDescricao', p.descricao);
+  // ⚠ `_v151SetSelect` e não `.value =`: a demanda grava 'alta'/'normal' e o
+  //   select tem essas chaves — mas o setter da casa é tolerante a caixa e
+  //   acento, e CRIA a opção quando o valor gravado não existe, em vez de
+  //   escolher outra coisa em silêncio.
+  try { _v151SetSelect(document.getElementById('osPrioridade'), p.prioridade, 'normal'); } catch(e) {}
+  _set('osDataPrevista', p.data_prevista);
+  // ⚠ hora só entra COM prazo — é a regra que o próprio saveOSModal impõe na
+  //   saída (V151). Preencher a hora sem a data faria o Salvar recusar com uma
+  //   mensagem que o admin não digitou.
+  if (p.data_prevista) {
+    _set('osHoraPrevista', p.hora_prevista);
+    if (p.hora_prevista) _set('osDuracaoPrevista', p.duracao_prevista_min);
+  }
+  try { _v151AtualizarJanela(); } catch(e) {}
+
+  const box = document.getElementById('osOrigemDemandaBox');
+  if (box) {
+    box.innerHTML = '<div id="osAvisoDemandaV155" style="font-size:11.5px;background:#ede9fe;border:1px solid #c4b5fd;' +
+      'color:#5b21b6;border-radius:8px;padding:8px 10px;margin-bottom:10px;line-height:1.45">' +
+      '🗓 <b>Nascendo da demanda</b> “' + escHtml(String(p.demanda_titulo || 'demanda')) + '”. ' +
+      'Ao salvar, ela é marcada como <b>convertida</b> e sai da agenda com o número desta OS. ' +
+      '<br><b>Escolha o tipo de OS</b> — é ele que instancia o pipeline.</div>';
+  }
+}
+
 async function openModalOS(id, _v150Preset) {
   // v56 — Reset síncrono roda antes de qualquer await, e o modal já abre em
   // seguida (com indicador de carregamento no título) em vez de só aparecer
@@ -18805,6 +19766,11 @@ async function openModalOS(id, _v150Preset) {
   // V151 — os campos novos entram no reset SÍNCRONO, com todo o resto (lição
   // do V103 A2: campo que só é limpo depois do await volta preenchido da OS
   // anterior quando algo falha no meio).
+  // V155 (D) — a demanda pendente entra na MESMA regra, e é a mais perigosa de
+  // todas: sobrevivendo à troca de modal, o Salvar seguinte marcaria como
+  // "convertida" uma demanda que nada tem a ver com a OS recém-criada.
+  _v155DemandaPendente = null;
+  try { const _wD = document.getElementById('osOrigemDemandaBox'); if (_wD) _wD.innerHTML = ''; } catch (e) {}
   document.getElementById('osHoraPrevista').value = '';
   document.getElementById('osDuracaoPrevista').value = '';
   _v151ResetLeitura();
@@ -19001,6 +19967,11 @@ async function openModalOS(id, _v150Preset) {
           toast('Atenção: "' + _v150Preset.cliente + '" não casou com nenhum cliente cadastrado. Confira o campo Cliente antes de salvar.', 'warning');
         }
       }
+      // V155 (D) — o resto do preset (demanda → OS). Fica AQUI, no fim do ramo
+      // de criação, pelo mesmo motivo que o bloco do V150: é o único ponto em
+      // que todos os `await` já terminaram e nada mais sobrescreve os campos.
+      try { _v155AplicarPresetDemanda(_v150Preset); }
+      catch (e) { console.warn('[V155] preset de demanda falhou:', e); }
     }
   } finally {
     if (loadingEl) loadingEl.style.display = 'none';
@@ -19135,6 +20106,38 @@ async function saveOSModal(btnEl) {
         acao: String(status).toUpperCase() === 'CANCELADA' ? 'OS cancelada' : 'OS encerrada',
         os: String(document.getElementById('osNumero')?.value || id),
         cliente: String(document.getElementById('osCliente')?.value || '') });
+    }
+
+    // ══════════════════════════════════════════════════════════════════════
+    // V155 (D) — A DEMANDA NÃO SOME: FICA MARCADA, COM O id_os DO LADO.
+    // Mesma action que o celular usa desde o V152 (`vincularDemandaAOS`).
+    // ⚠ NÃO-BLOQUEANTE e DEPOIS do sucesso: a OS existir importa mais que a
+    //   demanda ficar marcada. Se falhar, é DITO — nunca engolido —, porque a
+    //   demanda continuaria ocupando a agenda de alguém.
+    // ⚠ Roda também em `duplicate:true`: nesse caminho a OS já existe (retry
+    //   idempotente do V98 F-08) e a demanda continua precisando ser marcada.
+    // ⚠ `_v155DemandaPendente` é zerada AQUI, no finally lógico do fluxo: se
+    //   ficasse de pé, o próximo Salvar de outra OS marcaria a mesma demanda.
+    // ══════════════════════════════════════════════════════════════════════
+    if (!id && _v155DemandaPendente) {
+      const _demPend = _v155DemandaPendente;
+      _v155DemandaPendente = null;
+      const _idOsDem = result?.id_os || result?.data?.id_os;
+      if (_idOsDem) {
+        try {
+          const _rv = await gsPost({ action:'vincularDemandaAOS', demanda_id:_demPend.demanda_id,
+                                     os_id:_idOsDem, usuario: usuario || 'admin' });
+          if (_rv && _rv.status === 'error') throw new Error(_rv.error || 'falha ao vincular');
+          _saturacaoCacheHtml = null;   // a agenda tem de ser redesenhada sem ela
+        } catch (eDem) {
+          toast('OS criada, mas não consegui marcar a demanda “' + (_demPend.titulo || _demPend.demanda_id) +
+                '” como convertida: ' + (eDem && eDem.message ? eDem.message : eDem) +
+                ' — conclua ou exclua a demanda na Agenda.', 'warn');
+        }
+      } else {
+        toast('OS criada, mas o servidor não devolveu o id — a demanda “' + (_demPend.titulo || _demPend.demanda_id) +
+              '” continua na agenda.', 'warn');
+      }
     }
 
     // Após criar nova OS, instanciar pipeline automaticamente
@@ -19614,7 +20617,13 @@ const _V154_EVENTOS = {
   CANCELAMENTO_OS:  { rot: 'OS cancelada',         ico: '✖' },
   REABERTURA_OS:    { rot: 'OS reaberta',          ico: '↩' },
   ABERTURA_OS_CAMPO:{ rot: 'Iniciada em campo',    ico: '🚐' },
-  EXCLUSAO_OS:      { rot: 'OS excluída',          ico: '🗑' }
+  EXCLUSAO_OS:      { rot: 'OS excluída',          ico: '🗑' },
+  // V155 (B) — o evento que o GAS v130 grava na limpeza das tarefas presas.
+  // ⚠ A chave é a MESMA string que o `registrarEventoOperacional_` grava, em
+  //   caixa alta: o `_v154Rotulo` normaliza para maiúscula antes de procurar.
+  //   Sem esta linha o Log ainda mostraria o evento (o fallback imprime a chave
+  //   crua) — o que muda é ele deixar de parecer coisa de programador.
+  TAREFAS_DISPENSADAS_OS_ENCERRADA: { rot: 'Tarefas dispensadas (OS encerrada)', ico: '🧹' }
 };
 // ⚠ O timestamp é ISO gravado pelo GAS (`new Date().toISOString()` = UTC), mas
 //   a célula pode voltar Date ou serial do Sheets — a mesma trinca do V151
@@ -21302,6 +22311,11 @@ if(!gsUrl){
     <div class="modal-body">
       <input type="hidden" id="osId">
       <input type="hidden" id="osClienteId">
+      <!-- V155 (D) — a caixa que diz DE QUAL demanda esta OS está nascendo.
+           Vazia por padrão; preenchida por _v155AplicarPresetDemanda e limpa no
+           reset síncrono. Sem ela, quem abre o modal não tem como saber que o
+           Salvar vai marcar uma demanda como convertida. -->
+      <div id="osOrigemDemandaBox"></div>
       <div class="form-row">
         <label class="form-label">Número da OS</label>
         <input class="form-input" type="text" id="osNumero" placeholder="Gerado automaticamente ao salvar" readonly title="O número é gerado automaticamente (PGP-ano-sequencial) para evitar confusão/colisão." style="background:var(--bg,#f1f3f5);color:var(--text-muted,#6b7280);cursor:not-allowed">
@@ -25472,12 +26486,24 @@ async function renderSaturacao(_v150Pronto) {
     console.warn('[V129] agenda de saturação falhou:', e);
     html += `<div class="empty" style="padding:20px"><div class="empty-sub">⚠ Não foi possível montar a agenda (${escHtml(e && e.message || 'erro')}). Os totais por usuário acima continuam válidos.</div></div>`;
   }
+  // V155 (B) — a faixa das presas vem ANTES do pool, de propósito: é ela que
+  // explica por que a lista de baixo encolheu de 72 para 18. Ordem invertida
+  // faria o admin achar que o sistema perdeu tarefa.
+  try { html += _v155FaixaPresas(result); }
+  catch (e) { console.warn('[V155] faixa de presas falhou:', e); }
+
   try {
     html += _satRenderPool(result);
   } catch (e) { console.warn('[V129] pool de não designadas falhou:', e); }
 
   el.innerHTML = html;
-  _saturacaoCacheHtml = html;   // V118 (B10)
+  // V155 (C) — o motor XF só preenche ids que JÁ existem no DOM, e o esqueleto
+  // acabou de entrar na linha acima. ⚠ E o cache é gravado DEPOIS do xfRender:
+  // gravando antes, a próxima abertura da tela mostraria a tabela do pool
+  // VAZIA por um instante — cache que pisca é pior que cache nenhum.
+  try { if (document.getElementById('xf_pool_body')) xfRender('pool'); }
+  catch (e) { console.warn('[V155] pool XF falhou:', e); }
+  _saturacaoCacheHtml = el.innerHTML;   // V118 (B10) · V155: depois do xfRender
   try { _v150SatMarcarPintado(result); } catch(e){}   // V150 — o que está na tela, agora
 }
 
@@ -25720,8 +26746,13 @@ function _v135AbrirDemanda(id){
     linha('Duração', (Number(dm.tempo_estimado_min)||0) ? (dm.tempo_estimado_min + ' min') : '') +
     (dm.atrasada ? '<div style="margin-top:6px;color:var(--red);font-weight:600">🔴 Atrasada</div>' : '') +
     (dm.descricao ? '<div style="margin-top:10px;padding-top:8px;border-top:1px solid var(--border);white-space:pre-wrap">'+escHtml(dm.descricao)+'</div>' : '') +
-    '<div style="margin-top:12px;font-size:11px;color:var(--text-muted)">Transformar em OS segue no app do celular.</div>';
+    // V155 (D) — a frase mudou porque o fato mudou: o botão está logo abaixo.
+    '<div style="margin-top:12px;font-size:11px;color:var(--text-muted)">Transformar em OS abre o formulário de OS já preenchido — o tipo de OS (que define o pipeline) continua sendo escolha sua.</div>';
   document.getElementById('mdemConcluir').onclick = () => _v135DemandaAcao('concluirDemanda', dm.demanda_id, null);
+  // ⚠ `onclick =` (não addEventListener): este modal é reaberto para outras
+  //   demandas e um listener acumulado ligaria a OS na demanda anterior.
+  const _bOS = document.getElementById('mdemVirarOS');
+  if (_bOS) _bOS.onclick = () => _v155DemandaParaOS(dm);
   // V152 — Editar no desktop: o formulário de Nova demanda JÁ é criar-ou-editar
   // (título "Editar demanda", botão "Salvar", demanda_id no envelope). O `pre`
   // é o MESMO objeto que o celular monta em _mobAbrirDemanda; `responsavel`
@@ -26139,30 +27170,214 @@ function _satRenderAgenda(result) {
 
 // V129 — o POOL: tarefas abertas sem designação e sem execução. É daqui que o
 // admin distribui — cada linha abre o modal de designar já no contexto.
+// ══════════════════════════════════════════════════════════════════════════════
+// V155 (C) — O POOL PASSA A USAR O MOTOR XF (os filtros da Lista de OSs)
+//
+// Pedido do Fernando (28/08): "preciso que os títulos dessa seção de designação
+// também contenham os filtros igual na lista de OS."
+//
+// 🔑 ZERO CAMPO NOVO E ZERO REQUISIÇÃO NOVA: `os_numero`, `cliente`, `nome`,
+//    `executor`, `tempo_estimado_min` e `status` já vinham em `nao_designadas`
+//    desde o v117. O que faltava era a tabela saber filtrar.
+// 🔑 E É O MESMO MOTOR, não uma cópia: `xfReg`/`xfRender` são os da V94. Uma
+//    segunda implementação de "filtro estilo Excel" divergiria da primeira em
+//    duas rodadas — e o admin aprenderia dois comportamentos para o mesmo ícone.
+//
+// ⚠ O `getValue` de cada coluna devolve TEXTO PURO, nunca marcação: o menu de
+//   filtro monta a lista de valores a partir dele (armadilha catalogada na
+//   coluna Máquina da V150).
+// ⚠ Cliente vazio vira "— não informado —", não "—": o "—" já é o traço que a
+//   célula desenha, e ter os dois no menu de filtro é ler duas opções iguais.
+// ⚠ `estimado` devolve '' quando não há tempo gravado (em vez de 0). Com 0, um
+//   filtro "de 0 a 30 min" traria toda tarefa SEM estimativa junto — mistura
+//   "rápida" com "não sei", que é o erro que o V140 catalogou.
+// ⚠ As linhas derivadas são MEMOIZADAS pela identidade do array `pool`: o XF
+//   chama `getData` a cada tecla da busca, e objeto novo a cada chamada mata o
+//   memo de `_xfSearch` da V118 (A2).
+// ══════════════════════════════════════════════════════════════════════════════
+let _v155PoolSrc = null, _v155PoolRows = null, _v155PoolBusca = '';
+function _v155PoolLinhas(pool){
+  if (_v155PoolSrc === pool && _v155PoolRows) return _v155PoolRows;
+  _v155PoolSrc = pool;
+  _v155PoolRows = (pool || []).map(t => {
+    const ex = String(t.executor || 'campo');
+    const est = Number(t.tempo_estimado_min) || 0;
+    return {
+      t: t,
+      os:       String(t.os_numero || t.os_id || '—'),
+      cliente:  String(t.cliente || '').trim() || '— não informado —',
+      tarefa:   String(t.nome || '—'),
+      execTxt:  ex === 'adm' ? '🏢 Adm' : (ex === 'ambos' ? '🔀 Ambos' : '🔧 Campo'),
+      estimado: est ? est : '',
+      statusTxt: String(t.status || '—'),
+      lockExp:  !!t.lock_expirado
+    };
+  });
+  return _v155PoolRows;
+}
+
 function _satRenderPool(result) {
   const pool = result.nao_designadas || [];
-  if (!pool.length) return `<div style="font-size:12px;color:#16a34a;margin-top:16px">✓ Todas as tarefas abertas têm responsável designado ou em execução.</div>`;
-  const badgeExec = ex => ex === 'adm' ? '🏢 Adm' : (ex === 'ambos' ? '🔀 Ambos' : '🔧 Campo');
-  let html = `<div style="font-size:15px;font-weight:700;margin:20px 0 4px">📥 Sem designação (${pool.length})</div>
-    <div style="font-size:12px;color:var(--text2);margin-bottom:8px">Tarefas abertas sem responsável e sem execução em andamento — designe para entrarem na agenda.</div>
-    <div style="overflow-x:auto"><table style="border-collapse:collapse;width:100%;font-size:12px">
-    <thead><tr>
-      ${['OS','Cliente','Tarefa','Executor','Estimado','Status',''].map(h => `<th style="text-align:left;padding:6px;border-bottom:1px solid var(--border);white-space:nowrap">${h}</th>`).join('')}
-    </tr></thead><tbody>`;
-  pool.forEach(t => {
-    html += `<tr>
-      <td style="padding:6px;border-bottom:1px solid var(--border);white-space:nowrap">${escHtml(t.os_numero || t.os_id)}</td>
-      <td style="padding:6px;border-bottom:1px solid var(--border);max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${escHtml(t.cliente || '—')}</td>
-      <td style="padding:6px;border-bottom:1px solid var(--border)">${escHtml(t.nome)}</td>
-      <td style="padding:6px;border-bottom:1px solid var(--border);white-space:nowrap;font-size:11px">${badgeExec(t.executor)}</td>
-      <td style="padding:6px;border-bottom:1px solid var(--border);white-space:nowrap">${t.tempo_estimado_min ? t.tempo_estimado_min + ' min' : '<span style="color:var(--text-muted)">—</span>'}</td>
-      <td style="padding:6px;border-bottom:1px solid var(--border);white-space:nowrap;font-size:11px">${escHtml(t.status)}</td>
-      <td style="padding:6px;border-bottom:1px solid var(--border);white-space:nowrap">
-        <button class="btn btn-secondary btn-sm" style="padding:2px 8px;font-size:11px" onclick="_satAbrirDesignar('${escJs(t.os_id)}','${escJs(t.tarefa_id)}',{tempo:${t.tempo_estimado_min || 60},origem:'agenda'})">👤 Designar</button>
-      </td></tr>`;
+  // ⚠ V155 — a nota do servidor antigo vem ANTES do atalho de pool vazio: um
+  //   GAS ≤v129 pode devolver pool vazio E ainda assim estar contando tarefa de
+  //   OS encerrada na grade acima. Sumir com o aviso junto com a tabela seria
+  //   deixar a tela parecer limpa sem estar.
+  const notaGas = (result && result.presas_os_encerrada === undefined)
+    ? `<div style="margin-top:16px;font-size:11.5px;color:#92400e;background:#fef3c7;border:1px solid #fcd34d;border-radius:8px;padding:8px 10px;line-height:1.45">
+         ⚠ <b>Este servidor ainda não separa tarefa de OS encerrada.</b> O GAS no ar é anterior ao <b>v130</b>:
+         a lista abaixo, os cards de saturação e a grade podem estar contando tarefas de OS já concluída ou
+         cancelada — trabalho que não existe mais. Publique o GAS v130 para o recorte valer.
+       </div>` : '';
+  if (!pool.length) return notaGas + `<div style="font-size:12px;color:#16a34a;margin-top:16px">✓ Todas as tarefas abertas têm responsável designado ou em execução.</div>`;
+
+  const I = xfReg('pool', {
+    unit:'tarefas',
+    columns:[
+      {key:'os',label:'OS',sortable:true,filter:'values',
+        getValue:r=>r.os,
+        render:r=>`<span style="font-family:var(--font-mono);font-size:11.5px;font-weight:600">${escHtml(r.os)}</span>`},
+      {key:'cliente',label:'Cliente',filter:'values',
+        getValue:r=>r.cliente,
+        render:r=>`<span class="td-name">${escHtml(r.cliente)}</span>`},
+      {key:'tarefa',label:'Tarefa',filter:'values',sortable:true,
+        getValue:r=>r.tarefa,
+        render:r=>escHtml(r.tarefa) + (r.lockExp
+          ? '<div class="xf-sub" style="color:#9a3412">⏳ alguém pegou e largou (lock expirado)</div>' : '')},
+      {key:'executor',label:'Executor',filter:'values',valueOrder:['🔧 Campo','🏢 Adm','🔀 Ambos'],
+        getValue:r=>r.execTxt,
+        render:r=>`<span style="font-size:11px">${escHtml(r.execTxt)}</span>`},
+      {key:'estimado',label:'Estimado',type:'num',filter:'range',
+        getValue:r=>r.estimado,
+        presets:[
+          {label:'Até 30 min',get:()=>({min:'',max:30})},
+          {label:'30 a 120 min',get:()=>({min:30,max:120})},
+          {label:'Mais de 120 min',get:()=>({min:120,max:''})}],
+        render:r=>r.estimado ? `${r.estimado} min` : '<span style="color:var(--text-muted)">—</span>'},
+      {key:'status',label:'Status',filter:'values',
+        getValue:r=>r.statusTxt,
+        render:r=>`<span style="font-size:11px">${escHtml(r.statusTxt)}</span>`},
+      {key:'acoes',label:'',thStyle:'text-align:right',
+        render:r=>`<div class="row-actions"><button class="btn btn-secondary btn-sm" style="padding:2px 8px;font-size:11px"
+          onclick="_satAbrirDesignar('${escJs(r.t.os_id)}','${escJs(r.t.tarefa_id)}',{tempo:${Number(r.t.tempo_estimado_min) || 60},origem:'agenda'})">👤 Designar</button></div>`}
+    ],
+    getData:()=>_v155PoolLinhas(pool),
+    searchText:r=>[r.os,r.cliente,r.tarefa,r.execTxt,r.statusTxt].map(v=>String(v==null?'':v)).join(' '),
+    getQuery:()=>_v155PoolBusca||'',
+    clearQuery:()=>{_v155PoolBusca='';const i=document.getElementById('poolSearchInputV155');if(i)i.value='';},
+    // Ordem padrão: OS, e dentro dela a ordem em que o pipeline as devolveu —
+    // é a sequência das etapas, e trocá-la por ordem alfabética embaralharia o
+    // fluxo de trabalho de uma OS na tela de quem vai distribuir.
+    defaultSort:rs=>rs
   });
-  return html + `</tbody></table></div>`;
+
+  return notaGas + `
+    <div style="font-size:15px;font-weight:700;margin:20px 0 4px">📥 Sem designação (${pool.length})</div>
+    <div style="font-size:12px;color:var(--text2);margin-bottom:8px">Tarefas abertas sem responsável e sem execução em andamento — designe para entrarem na agenda. Clique no título da coluna para filtrar.</div>
+    <div style="display:flex;gap:8px;margin-bottom:8px;flex-wrap:wrap;align-items:center">
+      <input type="text" id="poolSearchInputV155" placeholder="Buscar OS, cliente, tarefa…"
+        style="width:250px;height:32px;padding:0 10px;font-size:13px;background:white;
+          border:1px solid var(--border2);border-radius:var(--radius-sm);outline:none;font-family:var(--font-sans)"
+        autocomplete="off" name="pcm_pool_busca_nofill" data-lpignore="true" data-1p-ignore
+        readonly onfocus="this.removeAttribute('readonly')"
+        value="${escHtml(_v155PoolBusca)}"
+        oninput="_v155PoolBusca=this.value;xfQ('pool')">
+      ${xfBarHtml('pool')}
+    </div>
+    ${xfSkeletonHtml('pool')}`;
 }
+
+// ══════════════════════════════════════════════════════════════════════════════
+// V155 (B) · A FAIXA "PRESAS EM OS ENCERRADA"
+//
+// O GAS v130 tira essas tarefas do pool, da grade e dos cards — e as devolve
+// aqui, num campo próprio. 🔑 O fato NÃO SOME, MUDA DE LUGAR: um filtro que
+// apagasse a linha em silêncio deixaria a tela certa e a planilha errada, e o
+// espelho do Supabase, o Portal e todo relatório futuro seguiriam contando
+// trabalho que ninguém vai fazer.
+//
+// ⚠ Não aparece com GAS ≤v129 (o campo não existe) — e é por isso que o pool
+//   imprime a nota do servidor antigo: faixa ausente não pode ser lida como
+//   "não há nada preso".
+// ⚠ O botão limpa UMA OS por clique quando se abre o detalhe, ou TODAS pelo
+//   botão do topo. Confirmação obrigatória com a contagem no texto: operação em
+//   massa sem número na pergunta é operação que se confirma sem ler.
+// ══════════════════════════════════════════════════════════════════════════════
+function _v155FaixaPresas(result){
+  const presas = (result && result.presas_os_encerrada) || [];
+  // ⚠ `presas_total` é a contagem EXATA; `presas_os_encerrada` vem recortada
+  //   em 200 pelo GAS v130 (é um GET que o vigia repete a cada minuto). Contar
+  //   pelo array daria "200" numa planilha com 900 presas — número redondo e
+  //   falso, do tipo em que ninguém repara.
+  const total = Number(result && result.presas_total);
+  const n = isFinite(total) && total > 0 ? total : presas.length;
+  if (!n) return '';
+  const resumo = (result && result.presas_resumo) || [];
+  const linhas = resumo.slice(0, 12).map(r => `
+    <div style="display:flex;align-items:center;gap:8px;padding:4px 0;border-bottom:1px dashed var(--border)">
+      <span style="font-family:var(--font-mono);font-size:11.5px;font-weight:700">${escHtml(r.os_numero || r.os_id)}</span>
+      <span style="font-size:11.5px;color:var(--text2);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${escHtml(r.cliente || '—')}</span>
+      <span style="font-size:10.5px;padding:1px 7px;border-radius:9px;background:${r.os_status === 'cancelada' ? '#fee2e2' : '#e2e8f0'};color:${r.os_status === 'cancelada' ? '#991b1b' : '#334155'}">${escHtml(r.os_status === 'cancelada' ? 'cancelada' : 'concluída')}</span>
+      <span style="font-size:11.5px;font-weight:600;white-space:nowrap">${r.tarefas} tarefa${r.tarefas > 1 ? 's' : ''}</span>
+      <button class="btn btn-secondary btn-sm" style="padding:1px 8px;font-size:10.5px"
+        onclick="_v155LimparPresas('${escJs(String(r.os_id))}',${r.tarefas},this)">Dispensar</button>
+    </div>`).join('');
+  const resto = resumo.length > 12
+    ? `<div style="font-size:11px;color:var(--text-muted);margin-top:4px">…e mais ${resumo.length - 12} OS. Use "Dispensar todas".</div>` : '';
+  return `
+    <div style="margin:16px 0 4px;border:1px solid #fcd34d;background:#fffbeb;border-radius:10px;padding:10px 12px">
+      <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:6px">
+        <span style="font-size:14px;font-weight:700">🔒 Presas em OS encerrada (${n})</span>
+        <span style="font-size:11.5px;color:#92400e;flex:1;min-width:220px">
+          Tarefas ainda abertas dentro de OS já concluída ou cancelada. <b>Saíram</b> da agenda, dos cards e da lista abaixo — mas continuam abertas na planilha.
+        </span>
+        <button class="btn btn-secondary btn-sm" style="padding:2px 10px;font-size:11px"
+          onclick="_v155LimparPresas('',${n},this)">🧹 Dispensar todas</button>
+      </div>
+      ${linhas}${resto}
+      <div style="font-size:10.5px;color:var(--text-muted);margin-top:6px">
+        Dispensar marca a tarefa como <b>dispensado</b> (não como concluída — ela não foi feita) e carimba o motivo na observação. Nada é apagado.
+      </div>
+    </div>`;
+}
+
+// ⚠ NÃO-BLOQUEANTE em relação à tela: recarrega a agenda pelo mesmo caminho do
+//   ↻ Atualizar. E o `confirm` traz a CONTAGEM — pergunta sem número é pergunta
+//   que se confirma sem ler.
+window._v155LimparPresas = async function(osId, quantas, btn){
+  const alvo = osId ? ('da OS selecionada') : ('de TODAS as OS encerradas');
+  if (!confirm('Dispensar ' + quantas + ' tarefa(s) aberta(s) ' + alvo + '?\n\n' +
+               'Elas ficam com status "dispensado" (não "concluída" — não foram feitas) e recebem um carimbo na observação. ' +
+               'Nada é apagado e a OS não muda de estado.')) return;
+  const usuario = (window._usuarioAtual && (_usuarioAtual.nome || _usuarioAtual.id)) || 'admin';
+  try {
+    await _comLoadingBtn_(btn, async () => {
+      const r = await gsPost({ action:'dispensarTarefasOsEncerrada', os_id: osId || '', usuario: usuario });
+      if (r && r.status === 'error') throw new Error(r.error || 'falha ao dispensar');
+      // ⚠ O teto por chamada do GAS v130: o que sobrou é DITO, com o que fazer.
+      if (Number(r && r.restantes) > 0) {
+        toast('Sobraram ' + r.restantes + ' tarefa(s) — o servidor limita a limpeza por chamada. Clique de novo para continuar.', 'warn');
+      }
+      // ⚠ 0 dispensadas NÃO é sucesso silencioso: ou o servidor é antigo (não
+      //   conhece a action e devolveria erro), ou o estado da planilha mudou
+      //   embaixo — e o admin precisa saber que o botão não fez nada.
+      const n = Number(r && r.dispensadas) || 0;
+      if (!n) toast('Nenhuma tarefa foi dispensada — a lista já estava resolvida na planilha. Atualize a agenda.', 'warn');
+      else toast(n + ' tarefa(s) dispensada(s) em ' + (r.os_afetadas || 1) + ' OS.', 'success');
+    });
+    _saturacaoCacheHtml = null;
+    renderSaturacao();
+  } catch(e) {
+    // ⚠ Timeout NÃO é sinônimo de "não fez". O `gsPost` aborta em 45 s e a
+    //   limpeza pode ter terminado do outro lado — dizer só "não consegui"
+    //   levaria o admin a achar que nada aconteceu. A operação é idempotente,
+    //   então a instrução honesta é "atualize e confira".
+    const msg = String((e && e.message) || e);
+    toast(/timeout|abort|tempo/i.test(msg)
+      ? 'A limpeza demorou mais que o limite da requisição. Ela pode ter terminado no servidor — clique em ↻ Atualizar e confira a faixa antes de tentar de novo.'
+      : 'Não consegui dispensar: ' + msg, 'error');
+    _saturacaoCacheHtml = null;
+  }
+};
 
 // V129 — fallback para GAS ≤v110 (sem `agenda` no envelope): render antigo.
 function _satRenderLegado(el, result) {
