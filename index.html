@@ -1,3 +1,147 @@
+<!-- PCM V159 (29/08/2026) — O CELULAR: OS TIPOS DE OS E O BOOT DE 16 CHAMADAS.
+     Feito EM CIMA do V158 — este arquivo CONTÉM o V158 (Bloco C3, o PIN de admin)
+     e o V157 (rodada zero de velocidade, já no ar).
+     🔴 **PUBLIQUE SÓ ESTE**, e junto do GAS v131 (o par do C3 continua valendo).
+     Zero mudança de servidor nesta parte: nenhuma action nova, nenhum campo novo.
+
+     ═══ DEFEITO 1 · "[object Object]" nos tipos de OS (celular) ═══
+     O `getTiposOS` devolve `{Tipo_ID, Nome, Template_ID_Padrao, Ativo}` — com
+     INICIAL MAIÚSCULA. O stepper do celular lia `t.nome || t.tipo || t`.
+     Nenhum dos dois campos existe ⇒ caía no `|| t`, o OBJETO, e o `esc()`
+     imprimia `[object Object]` em todos os botões.
+
+     🔴 E O ESTRAGO NÃO ERA VISUAL. O `onclick` mandava esse mesmo valor para
+        `_mobOsSet('tipo', …)`, então `o.tipo` virava a STRING "[object Object]"
+        — e ela ia inteira para o servidor em `tipo_os`. Toda OS aberta pelo
+        celular nasceu com um `tipo_os` que não casa com nenhum `Tipo_ID`.
+     ⚠ CONFERIR NA PLANILHA: `ORDENS_SERVICO`, coluna `tipo_os`, procurar
+       "[object Object]" e corrigir para o `Tipo_ID` certo. O front consertado
+       não reescreve o passado.
+
+     🔑 E ISSO EXPLICA A PENDÊNCIA **OS-MOB** ("OS criada no celular não
+        instancia pipeline"), que estava aberta como se fosse outro defeito.
+        São o MESMO: o desktop, depois de criar, procura
+        `_tiposOS.find(t => t.Tipo_ID === tipo).Template_ID_Padrao` e chama
+        `instanciarPipeline`. O celular (a) mandava um tipo que não casava com
+        Tipo_ID nenhum e (b) nunca chamava `instanciarPipeline`. Agora faz as
+        duas coisas, pelo MESMO caminho do desktop.
+
+     ⚠ A causa de fundo é a de sempre: **o rótulo e a chave são coisas
+       diferentes**. Agora há UM par de funções (`_mobTipoId` / `_mobTipoNome`)
+       e nenhum lugar do celular volta a adivinhar o nome do campo.
+
+     ═══ DEFEITO 2 · a agenda demorava porque o celular carrega o DESKTOP ═══
+     MEDIDO (Chromium, viewport de celular, atrasos reais do Apps Script):
+     **16 chamadas ao /exec no boot** — e a agenda é UMA delas. As outras 15
+     alimentam telas que no celular estão `display:none`:
+
+       ping · getSaturacaoUsuarios ← as 2 que o app usa
+       getMachinesWithParts · getClients · getCatalogFull · getVisits ·
+       getRotorModels · getUnidades · getSupabaseToken (x2) ← catálogo do desktop
+       getHorimetroPendencias · portalChamadosPendentes · getAgendaDemandas ·
+       getNotificacoes ← CONTADORES de menu que o celular NEM DESENHA
+
+     Com o Apps Script custando ~3 s fixos por chamada e disputando a mesma
+     implantação, isso é exatamente o "Buscando sua agenda…" que não acaba.
+
+     ── O que muda ───────────────────────────────────────────────────────────
+     M1 · Os quatro CONTADORES de cromo do desktop não disparam no modo app.
+          Eles escrevem em `#navCalibCount`, no badge de chamados, no do ciente
+          e no sino — todos filhos da nav, que o `body.mob-on` esconde. Buscar
+          número para pintar em elemento invisível é gasto pelo gasto.
+     M2 · O `syncFromGS` do boot **espera a agenda** no modo app, em vez de
+          disputar com ela. Ele não é dispensável (é dele que vem `db.clients`,
+          usado no passo 1 da nova OS) — é só que ele não tem pressa e a agenda
+          tem. Dispara no `finally` do `_mobCarregar` (sucesso OU erro) e tem
+          uma rede de segurança de 20 s, para nunca ficar preso se a agenda não
+          voltar nunca.
+     ⚠ NADA É REMOVIDO DO DESKTOP. Os quatro contadores e o sync continuam
+       exatamente como estavam fora do modo app.
+
+     🔑 UM LUGAR SÓ DECIDE "isto é o modo app": `window._pcmModoApp()`. O
+        `_mobDeveLigar()` passou a delegar para ela em vez de repetir o
+        predicado — lista à mão em dois lugares nasce com bancada que reprova
+        (CLAUDE.md), e aqui a divergência silenciosa faria o celular esconder a
+        tela do desktop E continuar buscando os dados dele.
+
+     Bancada: `_testes/NEWFILE_T_PCM_V159_celular.mjs`
+              (par obrigatório: passa no V159 e REPROVA no V158).
+-->
+<!-- PCM V158 (29/08/2026) — BLOCO C3: O PIN DE ADMIN NAS TELAS DE USUÁRIOS E
+     PERFIS. Feito EM CIMA do V157 — este arquivo CONTÉM o V157 inteiro (rodada
+     zero de velocidade, publicada e medida: Tarefas do Adm 3.495 ms, Gestão de
+     OSs 4.659 ms). Par obrigatório do GAS v131.
+     🔴 ESTE ARQUIVO E O GAS v131 SOBEM JUNTOS. Publicar só um dos dois quebra:
+        - só o GAS  ⇒ salvar usuário/perfil passa a devolver "exige o seu PIN";
+        - só o PCM  ⇒ a tela pede um PIN que o servidor ainda não confere (a
+                      trava fica sendo teatro, e teatro de segurança é pior que
+                      nada, porque parece resolvido).
+
+     O BURACO (SEC-02): `savePerfil`, `deletePerfil` e `saveUsuario` não checavam
+     QUEM estava chamando. A única barreira era o `checkKey`, uma chave
+     compartilhada que está em claro em 15 arquivos de repositório público. Quem
+     a tem cria um perfil `is_admin:SIM`, aponta o próprio usuário para ele e
+     vira administrador — sem login. Trocar a chave (C1/C2) NÃO fecha isto:
+     fecha o vazamento pelo GitHub, não a ausência de autorização.
+
+     ── O QUE MUDA NA TELA ───────────────────────────────────────────────────
+     As duas telas continuam ABRINDO e LISTANDO sem PIN. Só ESCREVER exige.
+     🔑 E isso é decisão, não economia: `_usuList` e `_perfilList` alimentam a
+        tradução de id→nome da tela de OS, da agenda e dos templates. Trancar a
+        LEITURA por trás de um PIN reeditaria, de graça, a classe de defeito do
+        V142 ("`_usuList` vazio ⇒ todo id sai cru").
+     Sem PIN válido, as duas telas mostram uma FAIXA de destrave no topo, e
+     qualquer gravação é recusada — pelo SERVIDOR, não pela tela.
+     ⚠ A faixa NÃO é a trava. Os botões seguem clicáveis de propósito: quem
+       tenta gravar recebe a recusa do servidor, que é a única que vale. Esconder
+       botão é contenção de tela, e o CLAUDE.md proíbe chamar isso de trava.
+
+     ── ZERO MECANISMO NOVO ──────────────────────────────────────────────────
+     Reusa, sem alterar, o que o V132 (Acessos do Portal) construiu e o V137
+     (Chamados) já reusou uma vez:
+       `_paPinHash`/`_paPinAte` — hash SÓ em memória, 15 min, nunca em storage;
+       `_paPost(params)`        — UM lugar que injeta o `admin_pin_hash` e UM
+                                  lugar que decide que o PIN caducou;
+       `_PA_MOTIVOS_PIN`        — comparação por `motivo`, nunca por texto;
+       `pinToHash`              — o mesmo sha256 do Hub. Nenhuma função de hash
+                                  nova, nenhum PIN novo: um PIN destrava as três
+                                  telas, porque é a MESMA pergunta ao MESMO
+                                  servidor.
+     ⚠ `_paPost` e `_paPinHash` moram no bloco <script> do fim do arquivo, e as
+       telas de Usuários/Perfis moram no do meio. Funciona (declaração de função
+       no topo vira global; `let` de topo vive no escopo léxico global, que é
+       compartilhado entre blocos clássicos) — mas o acesso ANTES de o último
+       bloco rodar seria TDZ. Por isso `_admPinValido()` embrulha a leitura em
+       try/catch e devolve FALSE no erro: se ainda não carregou, está TRANCADO.
+       Falhar fechado é o padrão da casa.
+
+     ── AS CINCO CHAMADAS ────────────────────────────────────────────────────
+     🔑 O estudo do Bloco C dizia QUATRO. São CINCO — o `saveResetPin` tinha
+        escapado do inventário, e é justamente o que redefine PIN de terceiro.
+        Contadas de novo, uma a uma, no arquivo:
+          1. `saveUsuarioModal`   → saveUsuario  (criar/editar usuário)
+          2. `saveResetPin`       → saveUsuario  (redefinir PIN de terceiro) ⬅ a esquecida
+          3. `toggleUsuarioAtivo` → saveUsuario  (ativar/inativar)
+          4. `savePerfilModal`    → savePerfil   (criar/editar perfil, is_admin)
+          5. `togglePerfilAtivo`  → savePerfil/deletePerfil
+        É EXATAMENTE por isso que a bancada tem teste de TRANSPORTE: uma chamada
+        esquecida só aparece no corpo que sai pela rede. O V131 foi publicado com
+        40+28 testes verdes e nasceu morto por causa disso.
+
+     ── O QUE NÃO MUDA ───────────────────────────────────────────────────────
+     `getUsuarios`/`getPerfis` seguem abertos (leitura); a tela de Acessos do
+     Portal e a de Chamados não foram tocadas; nenhuma outra chamada do PCM
+     passou a mandar PIN.
+
+     🔴 ANTES DE PUBLICAR: confirme que existe pelo menos um usuário ATIVO, com
+        PIN conhecido, cujo perfil tem `is_admin = SIM`. Sem isso, ninguém mexe
+        em usuário pela tela (o conserto seria pela planilha). É a mesma
+        condição que a tela de Acessos já exige desde o V132 — se aquela abre
+        hoje, esta abre.
+
+     Bancada: `_testes/NEWFILE_T_C3_travas_admin.mjs`
+              (par obrigatório: passa no V158+v131 e REPROVA no V157+v130).
+-->
 <!-- PCM V157 (28/08/2026) — RODADA ZERO DE VELOCIDADE. Feito EM CIMA do V156 —
      este arquivo CONTÉM o V156 inteiro (aceite de demanda) e o V155 (OS encerrada
      fora da agenda, filtros no pool, demanda→OS no desktop, aba Relatórios).
@@ -3143,7 +3287,7 @@ v50 — Resiliência de rede: retry/backoff em gsGet e syncToGS
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>ProperCare Manager · Gestão PGP v3.81 (PCM V157)</title>
+<title>ProperCare Manager · Gestão PGP v3.81 (PCM V159)</title>
 <link rel="icon" type="image/jpeg" href="data:image/jpeg;base64,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">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -4441,7 +4585,7 @@ tr.tadm-feito td{background:#dcfce7 !important;color:#15803d;font-weight:700}
 <aside class="nav-sidebar" aria-label="Navegação principal">
   <div class="nav-brand">
     <span class="nav-brand-mark">PCM</span>
-    <span class="nav-brand-sub">v3.81 · V157</span>
+    <span class="nav-brand-sub">v3.81 · V159</span>
   </div>
 
   <nav class="nav-groups">
@@ -7456,6 +7600,30 @@ let _pcmVersaoGas = '';
 // ════════════════════════════════════════════════════════════════════════════
 let _pcmPingEmVooP = null;
 
+// ═══════════════════════════════════════════════════════════════════════════
+// V159 — UM LUGAR SÓ DECIDE "ISTO É O MODO APP".
+// O predicado vivia dentro do `_mobDeveLigar`, no último bloco <script>. Só que
+// quem precisa da resposta ANTES dele existir são o boot do catálogo (logo
+// abaixo) e os contadores de menu — e repetir o predicado em dois lugares é a
+// regra que o CLAUDE.md manda nascer com bancada. Aqui a divergência silenciosa
+// teria a pior cara possível: o celular esconderia o desktop E continuaria
+// buscando os dados dele.
+// ⚠ Devolve 'forcado' | 'auto' | false — o MESMO contrato que o `_mobDeveLigar`
+//   sempre teve, porque ele agora É esta função.
+// ═══════════════════════════════════════════════════════════════════════════
+window._pcmModoApp = function () {
+  if (window._PCM_SO_AGENDA === true) return 'forcado';
+  try {
+    var q = new URLSearchParams(location.search);
+    if (q.get('mobile') === '1') return 'forcado';
+    if (q.get('mobile') === '0') return false;
+    if (localStorage.getItem('pcm_mob_off') === '1') return false;
+  } catch (e) {}
+  var estreita = window.matchMedia('(max-width: 820px)').matches;
+  var dedo = window.matchMedia('(pointer: coarse)').matches && window.matchMedia('(max-width: 1180px)').matches;
+  return (estreita || dedo) ? 'auto' : false;
+};
+
 async function testGS(){
   if(_pcmPingEmVooP) return _pcmPingEmVooP;
   _pcmPingEmVooP = _testGSInterno_();
@@ -7483,7 +7651,35 @@ async function _testGSInterno_(){
       if(_bootSilentSyncPending && !_bootSilentSyncDone){
         _bootSilentSyncPending=false;
         _bootSilentSyncDone=true;
-        Promise.resolve().then(()=>syncFromGS({ silent:true }));
+        // ── V159 (M2) — no MODO APP o catálogo espera a agenda ──────────────
+        // Medido: o boot do celular fazia 16 chamadas ao /exec e a agenda era
+        // UMA delas. Este `syncFromGS` sozinho dispara 8 (máquinas, clientes,
+        // catálogo, visitas, rotores, unidades e dois token-ponte) e disputava
+        // a mesma implantação do Apps Script com a única chamada que o app
+        // realmente mostra.
+        // ⚠ NÃO é dispensável no celular: é dele que vem `db.clients`, que o
+        //   passo 1 da nova OS usa. Só não tem pressa — a agenda tem.
+        // Quem o solta é o `finally` do `_mobCarregar` (sucesso OU erro), com
+        // rede de segurança de 20 s logo abaixo.
+        if (window._pcmModoApp && window._pcmModoApp()) {
+          window._PCM_SYNC_ADIADO = function(){
+            window._PCM_SYNC_ADIADO = null;
+            Promise.resolve().then(()=>syncFromGS({ silent:true }));
+          };
+          // 🔴 A REDE DE SEGURANÇA. Sem ela, um `_mobCarregar` que nunca
+          //    termina (app desligado por `?mobile=0` depois do ping, erro
+          //    fatal na pintura) deixaria o catálogo SEM CARREGAR NUNCA — e o
+          //    seletor de cliente vazio para sempre. Adiar não pode virar
+          //    cancelar.
+          setTimeout(function(){
+            if (window._PCM_SYNC_ADIADO) {
+              console.warn('[V159 M2] a agenda não voltou em 20 s — soltando o catálogo assim mesmo.');
+              window._PCM_SYNC_ADIADO();
+            }
+          }, 20000);
+        } else {
+          Promise.resolve().then(()=>syncFromGS({ silent:true }));
+        }
       }
       return true;
     }
@@ -12145,6 +12341,7 @@ let _calibDados = null;
 // anterior) simplesmente não acende o número — nunca vira erro na cara de
 // ninguém, porque isto roda no boot.
 async function _calibAtualizarContador(){
+  if (window._pcmModoApp && window._pcmModoApp()) return 0;   // V159 (M1)
   const el = document.getElementById('navCalibCount');
   if(!el) return 0;
   try{
@@ -15887,6 +16084,121 @@ async function pinToHash(pin) {
   return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
 }
 
+// ═══════════════════════════════════════════════════════════════════════════
+// 🔒 V158 (BLOCO C3) — O PIN DE ADMIN PARA GRAVAR USUÁRIO E PERFIL
+//
+// Par obrigatório do GAS v131. A trava REAL é a do servidor (`_comAdmin_` →
+// `_exigirAdmin_`): o que existe aqui é (a) mandar o PIN junto e (b) explicar
+// ao usuário por que a gravação foi recusada. Se este bloco inteiro sumisse, o
+// sistema continuaria seguro — só ficaria grosseiro. O contrário NÃO vale.
+//
+// ⚠ NENHUM MECANISMO NOVO. Reusa `_paPinHash`/`_paPinAte`/`_paPost`/`pinToHash`
+//   do V132, exatamente como a tela de Chamados (V137) já fez. Um PIN destrava
+//   as três telas: é a mesma pergunta ("você é admin?") ao mesmo servidor.
+//
+// ⚠ POR QUE A LEITURA NÃO É TRANCADA. `_usuList`/`_perfilList` alimentam a
+//   tradução id→nome da tela de OS, da agenda e dos templates. Trancar a
+//   LISTAGEM por trás do PIN reeditaria a classe de defeito do V142 ("`_usuList`
+//   vazio ⇒ todo id sai cru") de graça, e sem fechar nada: quem quer ler já lê
+//   pelo `getUsuarios`, que segue aberto. O que precisava fechar era ESCREVER.
+// ═══════════════════════════════════════════════════════════════════════════
+
+let _admErro = '';
+
+// ⚠ TDZ, e ela é real: `_paPinHash` é um `let` de topo do ÚLTIMO bloco <script>
+//   deste arquivo, e este código mora no bloco do meio. Em tempo de execução o
+//   escopo léxico global é compartilhado e a leitura funciona — mas ANTES de o
+//   último bloco rodar, ler a variável lança. Falha FECHADA de propósito: se
+//   ainda não carregou, está trancado.
+function _admPinValido() {
+  try { return _paPinValido(); } catch (e) { return false; }
+}
+
+// Todo POST que grava usuário ou perfil passa por aqui — os cinco, sem exceção.
+async function _admPost(params) {
+  if (!_admPinValido()) {
+    const e = new Error('Confirme seu PIN de administrador para gravar.');
+    e.paPrecisaPin = true;
+    throw e;
+  }
+  return _paPost(params);   // é ele que injeta o `admin_pin_hash` e esquece o PIN na recusa
+}
+
+// Um lugar só para o erro de PIN nas 5 chamadas. Devolve true se ERA de PIN.
+// 🔑 A frase começa por "Nada foi gravado": recusa silenciosa que parece sucesso
+//   é o defeito que o V145 (B1) custou caro para consertar.
+function _admTratarErroPin(e, tela, modalId) {
+  if (!(e && e.paPrecisaPin)) return false;
+  _admErro = e.message || 'Confirme seu PIN de administrador.';
+  if (modalId) { try { closeModal(modalId); } catch (x) {} }
+  toast('Nada foi gravado. ' + _admErro, 'error');
+  try {
+    if (tela === 'perfis') _renderPerfisTable(_perfSearch);
+    else _renderUsuariosTable(_usuSearch);
+  } catch (x) {}
+  try { const i = document.getElementById('admPin'); if (i) i.focus(); } catch (x) {}
+  return true;
+}
+
+// A faixa de destrave. Vazia quando o PIN está válido — a tela volta a ser a de
+// sempre. ⚠ Ela NÃO esconde nem desabilita botão nenhum, de propósito: esconder
+// botão é contenção de tela, e contenção de tela não é trava. Quem clicar sem
+// PIN recebe a recusa do SERVIDOR, que é a única que vale.
+function _admFaixaPin(tela) {
+  if (_admPinValido()) return '';
+  const _oQue = tela === 'perfis'
+    ? 'Criar, editar ou desativar perfil de acesso'
+    : 'Criar, editar, reativar usuário ou redefinir PIN';
+  return '' +
+    '<div style="border:1px solid var(--border);border-left:3px solid var(--orange);' +
+    'border-radius:6px;padding:12px 14px;margin-bottom:14px;background:var(--bg-alt)">' +
+      '<div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:2px">' +
+        'Modo leitura' +
+      '</div>' +
+      '<div style="font-size:12px;color:var(--text-muted);margin-bottom:10px">' +
+        _oQue + ' exige o seu PIN de administrador — o mesmo do ProperHub. ' +
+        'Vale por 15 minutos, não fica gravado, e o servidor confere na primeira gravação.' +
+      '</div>' +
+      (_admErro
+        ? '<div style="padding:8px 10px;border:1px solid var(--red);border-radius:6px;' +
+          'background:rgba(220,38,38,.06);color:var(--red);font-size:12px;margin-bottom:10px">' +
+          String(_admErro).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;') +
+          '</div>'
+        : '') +
+      '<div style="display:flex;gap:8px;align-items:center">' +
+        '<input id="admPin" class="input pin-mask" type="text" inputmode="numeric" ' +
+          'placeholder="PIN" autocomplete="off" name="adm_pin_nofill" readonly ' +
+          'onfocus="this.removeAttribute(\'readonly\')" ' +
+          'data-lpignore="true" data-1p-ignore style="max-width:140px" ' +
+          'onkeydown="if(event.key===\'Enter\'){event.preventDefault();_admConfirmarPin(\'' + tela + '\');}">' +
+        '<button class="btn btn-primary" onclick="_admConfirmarPin(\'' + tela + '\')">Destravar</button>' +
+      '</div>' +
+    '</div>';
+}
+
+async function _admConfirmarPin(tela) {
+  const campo = document.getElementById('admPin');
+  const pin = String((campo || {}).value || '').trim();
+  if (!pin) {
+    _admErro = 'Digite o PIN.';
+  } else {
+    try {
+      // ⚠ O PIN em claro morre aqui: só o hash sobe, e só o hash fica — em
+      //   memória, nunca em localStorage nem sessionStorage.
+      _paPinHash = await pinToHash(pin);
+      _paPinAte  = Date.now() + _PA_PIN_MIN * 60 * 1000;
+      _admErro = '';
+    } catch (e) {
+      _admErro = 'Não consegui preparar o PIN: ' + e.message;
+    }
+  }
+  if (campo) campo.value = '';
+  try {
+    if (tela === 'perfis') _renderPerfisTable(_perfSearch);
+    else _renderUsuariosTable(_usuSearch);
+  } catch (x) {}
+}
+
 async function renderUsuarios() {
   const el = document.getElementById('viewUsuarios');
   const temCache = _usuList.length > 0;
@@ -15945,6 +16257,7 @@ function _renderUsuariosTable(filter = '') {
   );
 
   el.innerHTML = `
+    ${_admFaixaPin('usuarios')}
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
       <div>
         <h2 style="font-size:18px;font-weight:700;color:var(--text)">Usuários</h2>
@@ -16090,7 +16403,7 @@ async function saveUsuarioModal() {
   }
 
   try {
-    await gsPost(payload);
+    await _admPost(payload);          // V158 (C3) — leva o admin_pin_hash
     closeModal('modalUsuario');
     // V145 (B1) — A PROVA. Este é exatamente o defeito que o Fernando viu:
     // o POST voltava `{status:'ok'}` e o acesso extra não tinha sido gravado.
@@ -16105,7 +16418,11 @@ async function saveUsuarioModal() {
       toast('Usuário salvo com sucesso.', 'success');
     }
   } catch(e) {
-    toast('Erro ao salvar: ' + e.message, 'error');
+    // V158 (C3) — recusa de PIN tem tratamento próprio: fecha o modal e traz a
+    // faixa de destrave, dizendo na primeira palavra que NADA foi gravado.
+    if (!_admTratarErroPin(e, 'usuarios', 'modalUsuario')) {
+      toast('Erro ao salvar: ' + e.message, 'error');
+    }
   }
 }
 
@@ -16139,11 +16456,16 @@ async function saveResetPin() {
   if (!id || !/^\d{6}$/.test(pin)) { toast('PIN deve ter 6 dígitos numéricos.', 'error'); return; }
   try {
     const hash = await pinToHash(pin);
-    await gsPost({ action: 'saveUsuario', id, pin_hash: hash });
+    // 🔑 V158 (C3) — ESTA é a chamada que o estudo do Bloco C tinha esquecido
+    //   (o inventário dizia 4; são 5). E é a mais grave das cinco: redefine o
+    //   PIN de OUTRA pessoa, ou seja, entrega a conta dela.
+    await _admPost({ action: 'saveUsuario', id, pin_hash: hash });
     toast('PIN redefinido com sucesso.', 'success');
     closeModal('modalResetPin');
   } catch(e) {
-    toast('Erro ao redefinir PIN: ' + e.message, 'error');
+    if (!_admTratarErroPin(e, 'usuarios', 'modalResetPin')) {
+      toast('Erro ao redefinir PIN: ' + e.message, 'error');
+    }
   }
 }
 
@@ -16153,11 +16475,11 @@ async function toggleUsuarioAtivo(id, isAtivo) {
   const _nomeUsu = ((_usuList || []).find(u => String(u.id || u.id_usuario) === String(id)) || {}).nome || id;
   if (!confirm(`${isAtivo ? 'Inativar' : 'Ativar'} o usuário "${_nomeUsu}"?`)) return;
   try {
-    await gsPost({ action: 'saveUsuario', id, ativo: isAtivo ? 'NÃO' : 'SIM' });
+    await _admPost({ action: 'saveUsuario', id, ativo: isAtivo ? 'NÃO' : 'SIM' });   // V158 (C3)
     toast(`Usuário ${isAtivo ? 'inativado' : 'ativado'}.`, 'success');
     renderUsuarios();
   } catch(e) {
-    toast('Erro: ' + e.message, 'error');
+    if (!_admTratarErroPin(e, 'usuarios')) toast('Erro: ' + e.message, 'error');
   }
 }
 
@@ -16207,6 +16529,7 @@ function _renderPerfisTable(filter = '') {
   );
 
   el.innerHTML = `
+    ${_admFaixaPin('perfis')}
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
       <div>
         <h2 style="font-size:18px;font-weight:700;color:var(--text)">Perfis de acesso</h2>
@@ -16346,12 +16669,16 @@ async function savePerfilModal() {
   if (id) payload.id_perfil = id;
 
   try {
-    await gsPost(payload);
+    // 🔑 V158 (C3) — é POR AQUI que se cria um perfil com `is_admin:'SIM'`.
+    //   Metade da escalada de privilégio do SEC-02 sai desta linha.
+    await _admPost(payload);
     toast('Perfil salvo com sucesso.', 'success');
     closeModal('modalPerfil');
     renderPerfis();
   } catch(e) {
-    toast('Erro ao salvar: ' + e.message, 'error');
+    if (!_admTratarErroPin(e, 'perfis', 'modalPerfil')) {
+      toast('Erro ao salvar: ' + e.message, 'error');
+    }
   }
 }
 
@@ -16363,12 +16690,12 @@ async function togglePerfilAtivo(id, isAtivo) {
   const _nomePerf = _p145.nome_perfil || _p145.nome || id;
   if (!confirm(`${isAtivo ? 'Desativar' : 'Ativar'} o perfil "${_nomePerf}"?`)) return;
   try {
-    await gsPost({ action: isAtivo ? 'deletePerfil' : 'savePerfil',
+    await _admPost({ action: isAtivo ? 'deletePerfil' : 'savePerfil',   // V158 (C3)
       id_perfil: id, ativo: isAtivo ? 'NÃO' : 'SIM' });
     toast(`Perfil ${isAtivo ? 'desativado' : 'ativado'}.`, 'success');
     renderPerfis();
   } catch(e) {
-    toast('Erro: ' + e.message, 'error');
+    if (!_admTratarErroPin(e, 'perfis')) toast('Erro: ' + e.message, 'error');
   }
 }
 
@@ -21940,6 +22267,12 @@ window.addEventListener('DOMContentLoaded', function() {
 // ════════════════════════════════════════════════════════════════════════════
 function _pcmIniciarPollNotificacoes(){
   if (_notifInterval) return;                       // já rodando
+  // V159 (M1) — o sino é da nav do desktop, que o `body.mob-on` esconde. No
+  // modo app este poll batia no Apps Script a cada 60 s para pintar um badge
+  // invisível — e o primeiro tiro dele disputava com a agenda no boot.
+  // ⚠ O guard fica AQUI, e não só no DOMContentLoaded, porque o
+  //   `visibilitychange` religa o poll toda vez que a aba volta.
+  if (window._pcmModoApp && window._pcmModoApp()) return;
   if (document.visibilityState === 'hidden') return; // não inicia escondido
   _notifInterval = setInterval(pollNotificacoes, 60000);
   pollNotificacoes();
@@ -27094,6 +27427,7 @@ function _v156AtualizarBadge(n){
   if (el) el.textContent = n ? String(n) : '';
 }
 async function _v156AtualizarContador(){
+  if (window._pcmModoApp && window._pcmModoApp()) return 0;   // V159 (M1)
   try {
     if (!_v156MeuNome()) { _v156AtualizarBadge(0); return 0; }
     const r = await gsGet('getAgendaDemandas');
@@ -29411,21 +29745,14 @@ body.mob-forced #mobApp{max-width:430px;margin:0 auto;box-shadow:0 0 60px rgba(0
   // ── quando o modo app acorda ─────────────────────────────────────────────
   // Largura OU ponteiro grosso. O usuário pode desligar (fica no localStorage)
   // e pode forçar no desktop (?mobile=1) para testar sem celular na mão.
+  // V159 — O PREDICADO MUDOU DE CASA, NÃO DE REGRA. O corpo (só-agenda força,
+  // ?mobile=1/0, pcm_mob_off, largura, ponteiro grosso) está agora em
+  // `window._pcmModoApp`, definido junto do `testGS`, porque o boot do catálogo
+  // e os contadores de menu precisam da resposta antes deste bloco existir.
+  // ⚠ Esta função NÃO reimplementa nada: delega. Duas cópias do predicado
+  //   fariam o celular esconder o desktop e continuar buscando os dados dele.
   function _mobDeveLigar() {
-    // V136 (G1) — só-agenda: o modo celular é a ÚNICA cara do PCM para este
-    // perfil, em qualquer tela. Os escapes (?mobile=0 / pcm_mob_off) ficam
-    // ANTES desta linha no fluxo antigo de propósito invertido: aqui eles não
-    // valem, porque cada um seria uma porta para o desktop inteiro.
-    if (window._PCM_SO_AGENDA === true) return 'forcado';
-    try {
-      var q = new URLSearchParams(location.search);
-      if (q.get('mobile') === '1') return 'forcado';
-      if (q.get('mobile') === '0') return false;
-      if (localStorage.getItem('pcm_mob_off') === '1') return false;
-    } catch (e) {}
-    var estreita = window.matchMedia('(max-width: 820px)').matches;
-    var dedo = window.matchMedia('(pointer: coarse)').matches && window.matchMedia('(max-width: 1180px)').matches;
-    return (estreita || dedo) ? 'auto' : false;
+    return (window._pcmModoApp ? window._pcmModoApp() : false);
   }
 
   var _mobEstado = {
@@ -29465,17 +29792,84 @@ body.mob-forced #mobApp{max-width:430px;margin:0 auto;box-shadow:0 0 60px rgba(0
 
   // ── carga: uma chamada serve as três telas ───────────────────────────────
   // getSaturacaoUsuarios do GAS v112 já devolve agenda + pool + DEMANDAS.
+  // ═════════════════════════════════════════════════════════════════════════
+  // V159 (M3) — A AGENDA DA ÚLTIMA VEZ APARECE NA HORA.
+  //
+  // MEDIDO: `getSaturacaoUsuarios` custa 6.770 ms — é a chamada mais cara do
+  // sistema (lê PIPELINE_TAREFAS, a maior aba) e o app não desenha NADA até ela
+  // voltar. Não dá para deixá-la barata pelo front; dá para parar de mostrar
+  // sete segundos de fundo vazio.
+  //
+  // 🔑 É o MESMO padrão que o desktop já usa em `renderUsuarios`, `renderPerfis`
+  //    e `renderOS`: cache-first + revalidação. Nenhuma invenção.
+  //
+  // 🔴 E A REGRA QUE FAZ ISSO NÃO VIRAR MENTIRA: a tela SEMPRE diz que aquilo é
+  //    de antes, e de quando. Dado velho exibido como se fosse de agora é o
+  //    "✓ mentiroso" que este projeto já pagou caro — aqui ele viria com o nome
+  //    de quem está com a tarefa.
+  // ⚠ Só vale para a PRIMEIRA pintura. Toda escrita do app (designar, concluir,
+  //   criar OS) chama `_mobCarregar(true)`, que ignora o cache e vai ao
+  //   servidor — a mesma regra dura da onda de leitura.
+  // ⚠ Guardado por 12 h. Mais velho que isso não é atalho, é confusão.
+  // ═════════════════════════════════════════════════════════════════════════
+  var _MOB_CACHE_K = 'pcm_mob_agenda_v1';
+  var _MOB_CACHE_MAX_H = 12;
+  var _MOB_CACHE_MAX_B = 900000;   // ~900 KB: acima disso não vale o risco de estourar a cota
+
+  function _mobCacheLer() {
+    try {
+      var raw = localStorage.getItem(_MOB_CACHE_K);
+      if (!raw) return null;
+      var c = JSON.parse(raw);
+      if (!c || !c.ts || !c.dados) return null;
+      if ((Date.now() - c.ts) > _MOB_CACHE_MAX_H * 3600000) return null;
+      return c;
+    } catch (e) { return null; }
+  }
+  function _mobCacheGravar(dados) {
+    try {
+      var txt = JSON.stringify({ ts: Date.now(), dados: dados });
+      if (txt.length > _MOB_CACHE_MAX_B) { localStorage.removeItem(_MOB_CACHE_K); return; }
+      localStorage.setItem(_MOB_CACHE_K, txt);
+    } catch (e) { /* cota cheia ⇒ segue sem cache, nunca quebra a tela */ }
+  }
+  function _mobIdadeCurta(ms) {
+    var min = Math.round(ms / 60000);
+    if (min < 1) return 'agora há pouco';
+    if (min < 60) return 'há ' + min + ' min';
+    var h = Math.round(min / 60);
+    return h === 1 ? 'há 1 hora' : ('há ' + h + ' horas');
+  }
+
   async function _mobCarregar(forcar) {
     if (_mobEstado.carregando) return;
     if (!forcar && _mobEstado.dados && (Date.now() - _mobEstado.ts) < 60000) return;
+    // V159 (M3) — antes de esperar 7 s, pinta o que já se sabe.
+    if (!_mobEstado.dados) {
+      var _c = _mobCacheLer();
+      if (_c) {
+        _mobEstado.dados = _c.dados;
+        _mobEstado.ts = _c.ts;
+        _mobEstado.doCache = true;      // a tira honesta lê isto
+        _mobEstado.boot = false;
+        _mobPintar();
+      }
+    }
     _mobEstado.carregando = true; _mobEstado.erro = null; _mobPintar();
     try {
       _mobEstado.dados = await gsGet('getSaturacaoUsuarios');
       _mobEstado.ts = Date.now();
+      _mobEstado.doCache = false;
+      _mobCacheGravar(_mobEstado.dados);
     } catch (e) {
       _mobEstado.erro = e.message || 'Falha ao carregar';
     } finally {
       _mobEstado.carregando = false; _mobEstado.boot = false; _mobPintar();
+      // V159 (M2) — a agenda já está na tela: agora o catálogo pode ir buscar
+      // as 8 chamadas dele sem disputar com ela. Fica no `finally` de
+      // propósito: mesmo com a agenda FALHANDO o catálogo tem de carregar,
+      // senão o seletor de cliente da nova OS nasce vazio.
+      try { if (window._PCM_SYNC_ADIADO) window._PCM_SYNC_ADIADO(); } catch (e2) {}
     }
   }
 
@@ -29556,6 +29950,19 @@ body.mob-forced #mobApp{max-width:430px;margin:0 auto;box-shadow:0 0 60px rgba(0
   }
 
   // ── TELA · HOJE ──────────────────────────────────────────────────────────
+  // V159 (M3) — 🔴 A TIRA QUE IMPEDE A MENTIRA. Enquanto o que está na tela
+  // veio do cache, ela diz isso e diz de quando. Sem ela, o M3 seria um app que
+  // mostra a agenda de ontem com cara de agenda de agora — e num app cuja
+  // função é dizer "quem faz o quê hoje", isso não é lentidão a menos, é erro
+  // a mais. Some sozinha quando o servidor responde.
+  function _mobTiraCache() {
+    if (!_mobEstado.doCache || !_mobEstado.dados) return '';
+    return '<div class="mob-card-s" style="margin:-4px 0 10px;padding:8px 10px;' +
+      'border:1px solid var(--border);border-left:3px solid var(--orange);border-radius:6px;background:#fff">' +
+      '📴 Agenda guardada ' + esc(_mobIdadeCurta(Date.now() - (_mobEstado.ts || Date.now()))) +
+      ' — buscando a de agora…</div>';
+  }
+
   function _mobTelaHoje() {
     var itens = _mobItens();
     var hoje = _mobDiaKey(_mobHoje());
@@ -29580,6 +29987,7 @@ body.mob-forced #mobApp{max-width:430px;margin:0 auto;box-shadow:0 0 60px rgba(0
       '</div></div>';
 
     html += '<div class="mob-pad">';
+    html += _mobTiraCache();          // V159 (M3)
     // ── V156 · o ciente pendente também no celular ──────────────────────────
     // Os botões de aceite já existiam aqui (`_mobDemConfHtml`, V139) — o que
     // faltava era DESCOBRIR que alguém espera por você sem abrir demanda por
@@ -29783,6 +30191,7 @@ body.mob-forced #mobApp{max-width:430px;margin:0 auto;box-shadow:0 0 60px rgba(0
     // ── a semana inteira, um bloco por dia ────────────────────────────────
     if (semana) {
       html += '<div class="mob-pad">';
+      html += _mobTiraCache();        // V159 (M3) — vale nas DUAS vistas
       var totalSem = 0;
       for (var w = 0; w < 7; w++) {
         var dw = new Date(segSem); dw.setDate(dw.getDate() + w);
@@ -29830,6 +30239,7 @@ body.mob-forced #mobApp{max-width:430px;margin:0 auto;box-shadow:0 0 60px rgba(0
     var semHora = lista.filter(function (x) { return x.sem_hora || !x.inicio; });
 
     html += '<div class="mob-pad">';
+    html += _mobTiraCache();          // V159 (M3)
     if (!lista.length) {
       html += _mobVazio('🗓️', 'Dia livre', 'Nada agendado aqui. Toque no + para marcar.');
     } else {
@@ -29943,6 +30353,8 @@ body.mob-forced #mobApp{max-width:430px;margin:0 auto;box-shadow:0 0 60px rgba(0
   function _mobPintar() {
     var el = document.getElementById('mobView');
     if (!el) return;
+    // ⚠ `&& !_mobEstado.dados` já existia e é o que faz o M3 funcionar: com
+    //   dado (mesmo do cache) na mão, a tela de carga não aparece.
     if ((_mobEstado.carregando || _mobEstado.boot) && !_mobEstado.dados) {
       el.innerHTML = '<div class="mob-hero"><div class="mob-hero-top"><div>' +
         '<div class="mob-hello">ProperCare</div><div class="mob-title">Carregando…</div>' +
@@ -30773,20 +31185,22 @@ body.mob-forced #mobApp{max-width:430px;margin:0 auto;box-shadow:0 0 60px rgba(0
       var tipos = o._tipos || [];
       // V141 — o motivo da demanda pré-seleciona o tipo da OS, mas SÓ se ele
       // existir na lista cadastrada. Comparação sem acento e sem caixa.
+      // V159 — o motivo da demanda casa pelo NOME (é texto humano) e o que se
+      // guarda é o Tipo_ID. Antes guardava o nome — e o nome não é chave.
       if (!o.tipo && o.tipo_sugerido && tipos.length) {
         var _norm = function (x) {
           return String(x || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim().toLowerCase();
         };
         var _alvo = _norm(o.tipo_sugerido);
-        var _achou = tipos.map(function (t) { return t.nome || t.tipo || t; })
-          .find(function (nm) { return _norm(nm) === _alvo; });
-        if (_achou) o.tipo = _achou;
+        var _achou = tipos.find(function (t) { return _norm(_mobTipoNome(t)) === _alvo; });
+        if (_achou) o.tipo = _mobTipoId(_achou);
       }
       corpo = '<div class="mob-f"><label>Tipo</label><div class="mob-opts">' +
         (tipos.length ? tipos.map(function (t) {
-          var nome = t.nome || t.tipo || t;
-          return '<button class="mob-opt' + (o.tipo === nome ? ' is-on' : '') + '" onclick="_mobOsSet(\'tipo\',\'' +
-            esc(nome).replace(/'/g, "\\'") + '\')">' + esc(nome) + '</button>';
+          // 🔑 rótulo = Nome (para gente) · valor = Tipo_ID (para o servidor).
+          var _id = _mobTipoId(t), _nm = _mobTipoNome(t);
+          return '<button class="mob-opt' + (o.tipo === _id ? ' is-on' : '') + '" onclick="_mobOsSet(\'tipo\',\'' +
+            esc(_id).replace(/'/g, "\\'") + '\')">' + esc(_nm) + '</button>';
         }).join('') : '<span class="mob-card-s">Carregando tipos…</span>') + '</div></div>' +
         '<div class="mob-f"><label>Prioridade</label><div class="mob-opts">' +
         '<button class="mob-opt' + (o.prioridade === 'normal' ? ' is-on' : '') + '" onclick="_mobOsSet(\'prioridade\',\'normal\')">Normal</button>' +
@@ -30804,7 +31218,10 @@ body.mob-forced #mobApp{max-width:430px;margin:0 auto;box-shadow:0 0 60px rgba(0
         .map(function (m) { return [m.marca, m.modelo, m.tag].filter(Boolean).join(' '); });
       corpo = '<div class="mob-card" style="display:block">' +
         '<div class="mob-card-t">' + esc(o.cliente) + '</div>' +
-        '<div class="mob-card-s" style="margin-top:6px"><b>Tipo:</b> ' + esc(o.tipo) + '</div>' +
+        // V159 — a tela de conferência mostra o NOME. Imprimir a chave aqui
+        // seria a mesma família de defeito do V142 (rótulo × chave).
+        '<div class="mob-card-s" style="margin-top:6px"><b>Tipo:</b> ' +
+          esc(_mobTipoNome(_mobTipoPorId(o.tipo)) || o.tipo) + '</div>' +
         '<div class="mob-card-s"><b>Prioridade:</b> ' + esc(o.prioridade) + '</div>' +
         (o.dataPrevista ? '<div class="mob-card-s"><b>Prazo:</b> ' + esc(_mobDiaCurto(o.dataPrevista)) + '</div>' : '') +
         '<div class="mob-card-s"><b>Máquinas:</b> ' + esc(maqNomes.length ? maqNomes.join(' · ') : 'nenhuma') + '</div>' +
@@ -30984,12 +31401,40 @@ body.mob-forced #mobApp{max-width:430px;margin:0 auto;box-shadow:0 0 60px rgba(0
     }
     if (ger === _mobMaqGer && _mobEstado.step === 1) _mobPintaOS();
   }
+  // ═════════════════════════════════════════════════════════════════════════
+  // V159 — O RÓTULO E A CHAVE SÃO COISAS DIFERENTES.
+  // `getTiposOS` devolve as colunas da aba CAT_TIPOS_OS COM INICIAL MAIÚSCULA:
+  // {Tipo_ID, Nome, Template_ID_Padrao, Ativo}. O celular lia `t.nome`/`t.tipo`
+  // — que não existem — e caía no `|| t`, o objeto: daí o "[object Object]" nos
+  // botões E, pior, no `tipo_os` que ia para o servidor.
+  // 🔑 Daqui para a frente, NINGUÉM no bloco do celular adivinha nome de campo:
+  //    pergunta a estas duas. As variantes minúsculas ficam como tolerância a
+  //    payload antigo, nunca como fonte.
+  // ═════════════════════════════════════════════════════════════════════════
+  function _mobTipoId(t) {
+    if (t == null) return '';
+    if (typeof t === 'string') return t;
+    return String(t.Tipo_ID || t.tipo_id || t.id || '');
+  }
+  function _mobTipoNome(t) {
+    if (t == null) return '';
+    if (typeof t === 'string') return t;
+    return String(t.Nome || t.nome || t.tipo || '') || _mobTipoId(t);
+  }
+  function _mobTipoPorId(id) {
+    var l = (_mobEstado.novaOS && _mobEstado.novaOS._tipos) || [];
+    for (var i = 0; i < l.length; i++) if (_mobTipoId(l[i]) === String(id || '')) return l[i];
+    return null;
+  }
+
   async function _mobCarregaTipos() {
     try {
       var r = await gsGet('getTiposOS');
       var lista = (r && (r.tipos || r.tiposOS || r.data)) || [];
       _mobEstado.novaOS._tipos = lista.filter(function (t) {
-        return String(t.ativo || t.Ativo || 'SIM').toUpperCase() !== 'NÃO';
+        // ⚠ e um tipo SEM Tipo_ID não entra na lista: um botão que não sabe o
+        //   que mandar é pior que um botão a menos — era exatamente o defeito.
+        return _mobTipoId(t) && String(t.Ativo || t.ativo || 'SIM').toUpperCase() !== 'NÃO';
       });
     } catch (e) { _mobEstado.novaOS._tipos = []; }
     if (_mobEstado.step === 2) _mobPintaOS();
@@ -31015,6 +31460,32 @@ body.mob-forced #mobApp{max-width:430px;margin:0 auto;box-shadow:0 0 60px rgba(0
       });
       if (r && r.status === 'error') throw new Error(r.error || 'Erro ao criar OS');
       var num = (r && (r.numero_os || r.id_os)) || '';
+
+      // ══════════════════════════════════════════════════════════════════════
+      // V159 — A PENDÊNCIA **OS-MOB**, E ELA ERA O MESMO DEFEITO DOS TIPOS.
+      // "OS criada pelo celular não instancia pipeline" estava anotada como um
+      // defeito à parte. Não era: o desktop, depois de criar, procura o
+      // `Template_ID_Padrao` do tipo e chama `instanciarPipeline` — e o celular
+      // (a) mandava um `tipo_os` que não casava com Tipo_ID nenhum e
+      // (b) simplesmente não tinha esta etapa. Agora tem, com o MESMO nome de
+      // action e o MESMO formato do `saveOSModal`.
+      // ⚠ Tipo SEM template padrão continua nascendo SEM pipeline, de propósito:
+      //   é o estado honesto que a tela sabe tratar (a lição do v98/D-1, quando
+      //   quatro Template_ID_Padrao de semente eram referências mortas e a OS
+      //   nascia com o pipeline errado sem ninguém ter escolhido isso).
+      // ⚠ E falhar aqui NÃO desfaz a OS: ela existe. O aviso diz o que ficou
+      //   faltando, em vez de um "não consegui criar" que seria mentira.
+      // ══════════════════════════════════════════════════════════════════════
+      var _novoId = (r && (r.id_os || (r.data && r.data.id_os))) || '';
+      var _tpl = String((_mobTipoPorId(o.tipo) || {}).Template_ID_Padrao || '').trim();
+      if (_novoId && _tpl && !(r && r.duplicate)) {
+        try {
+          await gsPost({ action: 'instanciarPipeline', os_id: _novoId, template_id: _tpl });
+        } catch (ePipe) {
+          _mobToast('OS criada, mas o fluxo de oficina não foi montado: ' + ePipe.message +
+                    ' — dá para escolher o pipeline pelo PCM.', 'error');
+        }
+      }
       // a demanda não some: fica marcada como convertida, com o id_os do lado
       if (o.demanda_id && r && r.id_os) {
         try {
@@ -32040,6 +32511,7 @@ function _cpAtualizarBadge(n) {
 }
 
 async function _cpAtualizarContador() {
+  if (window._pcmModoApp && window._pcmModoApp()) return 0;   // V159 (M1)
   try {
     const r = await gsPost({ action: 'portalChamadosPendentes' });
     if (!r || r.status !== 'ok') { _cpAtualizarBadge(0); return 0; }
