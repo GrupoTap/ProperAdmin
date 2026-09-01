@@ -1,3 +1,37 @@
+<!-- PCM V164 (01/09/2026) — O AVISO QUE ACUSAVA UM TECNICO ATIVO, A TAREFA
+     QUE FECHOU SEM PDF, E O uid QUE VIRAVA "MAQUINA". Par do GAS v134.
+
+     M1/M2 · O ALERTA DA DEMANDA MENTIA NA EDICAO.
+       Chamado do Fernando (01/09): agendou uma demanda para o Paulo Mayer e o
+       sistema disse "nao achei esse nome entre os usuarios ATIVOS". MEDIDO no
+       ar: Paulo Mayer = TEC-72699, ATIVO, e ja avisado em 28/08 13:10.
+       A causa e do envelope: `saveAgendaDemanda`, no ramo de EDICAO, devolve
+       `notificado:false` quando NINGUEM novo entrou na lista de responsaveis
+       (`entraram.length === 0`) — o mesmo valor que usa para "nao achei o
+       nome". Editar a duracao de uma demanda ja existente caia exatamente ai.
+       ⇒ o alerta passa a exigir `esperados > 0`, e nomeia quem faltou quando o
+         GAS v134 manda `nao_achados`. Sem o v134 no ar, `esperados` sozinho ja
+         resolve: ele existe desde o v120 e nunca era olhado.
+
+     M3 · "CONCLUIDA SEM PDF NO DRIVE" — estado DERIVADO, no pipeline.
+       A entrega em emprestimo da PGP-2026-0064 fechou a tarefa L01 as 20:55 de
+       31/08 e o PDF so chegou 21 horas depois (01/09 16:57), pela retomada do
+       `_pdfPendente` no aparelho. Entre um e outro o pipeline dizia
+       "Concluido por: Geovani · Auto" e NADA dizia que faltava o laudo.
+       ⇒ chip na propria tarefa `auto:*` concluida quando a OS nao tem NENHUM
+         PDF ativo no indice; quando o formulario gravou o motivo
+         (campos_json.pdf.gerado === false, forms de 01/09), o motivo aparece.
+       ⚠ Pendencia e ESTADO, nunca coluna (regra do V156): nada e gravado.
+
+     M4 · A FOTO DO FORMULARIO NAO E UMA MAQUINA.
+       As 6 fotos daquela entrega entraram na arvore como 6 "maquinas" chamadas
+       `uid_mthqy6xu_lwxoj6kk` — o uid do BLOCO do formulario, que o GAS usava
+       como rotulo por falta de coisa melhor. O GAS v134 passa a receber a
+       maquina de verdade; aqui o ROTULO das linhas antigas vira "Fotos do
+       formulario". ⚠ Rotulo derivado: o dado da planilha continua intacto.
+
+     100% ADITIVO: nenhuma funcao, id, data-key, data-view ou action renomeada.
+-->
 <!-- PCM V163 (31/08/2026) — EXCLUIR OS NAO LIMPAVA A GESTAO DE DOCUMENTOS.
      Feito EM CIMA do V162 — este arquivo CONTEM o V162 (fotos pelo sistema) e o
      V161 (os oito pedidos). 🔴 PUBLIQUE SO ESTE. ZERO servidor: a action
@@ -3649,7 +3683,7 @@ v50 — Resiliência de rede: retry/backoff em gsGet e syncToGS
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>ProperCare Manager · Gestão PGP v3.81 (PCM V163)</title>
+<title>ProperCare Manager · Gestão PGP v3.81 (PCM V164)</title>
 <link rel="icon" type="image/jpeg" href="data:image/jpeg;base64,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">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -4955,7 +4989,7 @@ tr.tadm-feito td{background:#dcfce7 !important;color:#15803d;font-weight:700}
 <aside class="nav-sidebar" aria-label="Navegação principal">
   <div class="nav-brand">
     <span class="nav-brand-mark">PCM</span>
-    <span class="nav-brand-sub">v3.81 · V163</span>
+    <span class="nav-brand-sub">v3.81 · V164</span>
   </div>
 
   <nav class="nav-groups">
@@ -9153,6 +9187,21 @@ const DOCS_CAT_LABELS = {
 };
 // Um anexo é "foto" se o MIME é imagem ou a categoria começa com foto_.
 function _docIsFoto(it){ return String(it?.Mime||'').startsWith('image/') || String(it?.Categoria||'').startsWith('foto_'); }
+// ══════════════════════════════════════════════════════════════════════════
+// V164 (M4) — `uid_mthqy6xu_lwxoj6kk` NÃO É UMA MÁQUINA.
+// Até o GAS v134, `salvarFotoForm08` usava a SEÇÃO do formulário como
+// `Maquina_Label` — e a seção de um form de blocos é o uid do bloco. Resultado
+// medido na PGP-2026-0064: 6 fotos, 6 "máquinas" distintas na árvore.
+// ⚠ ROTULO DERIVADO, dado INTACTO: a planilha continua com o que está lá; quem
+//   muda é só o que a tela mostra. Linhas novas (v134 + forms de 01/09) já vêm
+//   com a máquina de verdade e não passam por aqui.
+// ══════════════════════════════════════════════════════════════════════════
+const _DOC_RX_UID = /^uid_[a-z0-9]+_[a-z0-9]+$/i;
+function _docMaqRotulo(it){
+  const bruto = String(it?.Maquina_Label || it?.Maquina_ID || '').trim();
+  if (!bruto) return '';
+  return _DOC_RX_UID.test(bruto) ? 'Fotos do formulário' : bruto;
+}
 function _docsToggleExpandAll(){
   _docsExpanded = !_docsExpanded;
   try{ localStorage.setItem('proper_docs_expanded', _docsExpanded ? '1':'0'); }catch(e){}
@@ -9277,7 +9326,7 @@ function _docsGalleryHtml(fotos){
   const SEM = '__SEM_MAQUINA__';
   const buckets = new Map();
   fotos.forEach(function(f){
-    const k = String(f?.Maquina_Label || f?.Maquina_ID || '').trim() || SEM;
+    const k = _docMaqRotulo(f) || SEM;   // V164 (M4)
     if(!buckets.has(k)) buckets.set(k, []);
     buckets.get(k).push(f);
   });
@@ -9687,8 +9736,8 @@ function _renderDocsXfV95(list){
         getValue:it=>_docVal(it?.Cliente),
         render:it=>`<div class="docs-cell-cli" title="${escHtml(_docVal(it?.Cliente))}">${escHtml(_docVal(it?.Cliente))}</div>`},
       {key:'maquina',label:'Máquina',filter:'values',
-        getValue:it=>_docVal(it?.Maquina_Label||it?.Maquina_ID),
-        render:it=>`<span class="docs-cell-maq" title="${escHtml(_docVal(it?.Maquina_Label||it?.Maquina_ID))}">${escHtml(_docVal(it?.Maquina_Label||it?.Maquina_ID))}</span>`},
+        getValue:it=>_docVal(_docMaqRotulo(it)),
+        render:it=>`<span class="docs-cell-maq" title="${escHtml(_docVal(it?.Maquina_Label||it?.Maquina_ID))}">${escHtml(_docVal(_docMaqRotulo(it)))}</span>`},   // V164 (M4): rótulo derivado, title com o dado cru
       {key:'arquivo',label:'Arquivo',sortable:true,
         getValue:it=>_docVal(it?.File_Name),
         render:it=>{
@@ -9853,7 +9902,7 @@ function _docsTreeBuildV96(rows){
     const oKey=cKey+'|O::'+(osNum||'__semos__');
     if(!C.os.has(oKey)) C.os.set(oKey,{key:oKey,num:osNum,label:osNum?('OS '+osNum):'Atendimentos sem OS',semOS:!osNum,maq:new Map(),nF:0,nP:0,maxDate:0,folder:null});
     const O=C.os.get(oKey);
-    const mRaw=_docVal(it?.Maquina_Label||it?.Maquina_ID);
+    const mRaw=_docVal(_docMaqRotulo(it));   // V164 (M4)
     const mName=(mRaw==='—')?'Sem máquina':mRaw;
     const mKey=oKey+'|M::'+String(mName).toLowerCase();
     if(!O.maq.has(mKey)) O.maq.set(mKey,{key:mKey,label:mName,items:[]});
@@ -16642,7 +16691,7 @@ window.addEventListener('storage', function(e){
 });
 
 // ── AUTH ──────────────────────────────────────────────────
-const _AUTH_HASH = 'fb9e6bd8b112a4a50eb30fbcedc7681fc29c331af4600584656ade9dace002da'; // sha256 de 123456
+const _AUTH_HASH = '8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92'; // sha256 de 123456
 
 function hubLogout() {
   sessionStorage.removeItem('proper_session');
@@ -22197,6 +22246,72 @@ function _osDetailField(label, value) {
 }
 
 // ── Pipeline Tab ──────────────────────────────────────────────────────────────
+// ══════════════════════════════════════════════════════════════════════════
+// V164 (M3) — A TAREFA QUE FECHOU SEM O PDF CHEGAR.
+//
+// O formulário do campo faz duas coisas separadas: grava os dados (o que FECHA
+// a tarefa, via autoCompletarTarefa) e sobe o PDF (fila do aparelho). Quando a
+// segunda falha — biblioteca que não carregou, memória, wifi do galpão — a
+// tarefa fecha e o laudo fica preso no celular. Foi o que aconteceu na
+// PGP-2026-0064: tarefa fechada 31/08 20:55, PDF só em 01/09 16:57.
+//
+// 🔑 Pendência é ESTADO DERIVADO (regra do V156): nada é gravado aqui. A conta
+//    é feita na hora, do índice de anexos que a Gestão de Documentos já lê.
+// ⚠ Não-bloqueante e silencioso na falha: um pipeline que não abre porque o
+//   vigia do PDF tropeçou seria bem pior que a ausência do chip.
+// ⚠ Reaproveita `_docsCache` quando ele já está cheio (a tabela inteira vem
+//   numa chamada só) e o SUBSTITUI, nunca muta — a identidade do array é a
+//   chave do memo do XF (lição do V163).
+// ══════════════════════════════════════════════════════════════════════════
+async function _pipeConferirPdfs(osId) {
+  try {
+    const slots = document.querySelectorAll('[id^="pipepdf-"]');
+    if (!slots.length) return;
+    const os = (_osList || []).find(o => o.id_os === osId);
+    const num = os ? String(os.numero_os || '').trim() : '';
+
+    let anexos = Array.isArray(_docsCache) ? _docsCache : [];
+    if (!anexos.length) {
+      const r = await gsGet('getAttachments', {}, { tolerante: true });
+      anexos = Array.isArray(r && r.attachments) ? r.attachments : [];
+      _docsCache = anexos;
+    }
+    const daOS = anexos.filter(function (a) {
+      if (String(a.Ativo || 'SIM').trim().toUpperCase() === 'NÃO') return false;
+      const ent = String(a.Entity_ID || '').trim();
+      const nm  = String(a.OS_Numero || '').trim();
+      return (ent && ent === osId) || (num && nm === num);
+    });
+    const temPdf = daOS.some(function (a) {
+      return String(a.Attachment_Type || '').trim().toLowerCase() === 'pdf' ||
+             String(a.Categoria || '').trim().toLowerCase().indexOf('pdf') === 0;
+    });
+    if (temPdf) return;
+
+    // o formulário de 01/09 grava o MOTIVO no campos_json — se estiver lá, diz.
+    let motivo = '';
+    try {
+      const rf = await gsGet('getFormulariosByOS', { os_id: osId }, { tolerante: true });
+      (rf && rf.formularios || []).forEach(function (f) {
+        let cj = f.campos_json || f.Campos_JSON;
+        try { cj = (typeof cj === 'string') ? JSON.parse(cj) : cj; } catch (e) { cj = null; }
+        if (cj && cj.pdf && cj.pdf.gerado === false && cj.pdf.motivo) motivo = String(cj.pdf.motivo);
+      });
+    } catch (e) {}
+
+    const titulo = 'O formulário foi salvo e fechou a tarefa, mas nenhum PDF desta OS chegou ao Drive. ' +
+      'O laudo costuma estar preso na fila do aparelho do técnico: abrir o formulário de novo no celular dele, ' +
+      'com internet, faz o envio retomar sozinho.' + (motivo ? ' Motivo registrado: ' + motivo : '');
+    slots.forEach(function (el) {
+      el.innerHTML = '<span title="' + escHtml(titulo) + '" style="display:inline-block;font-size:10px;' +
+        'color:#92400e;background:#fef3c7;border:1px solid #fcd34d;border-radius:10px;padding:1px 6px">' +
+        '⚠ concluída sem PDF no Drive' + (motivo ? ' · ' + escHtml(String(motivo).slice(0, 40)) : '') + '</span>';
+    });
+  } catch (e) {
+    console.warn('[V164] _pipeConferirPdfs:', e && e.message);
+  }
+}
+
 async function _loadPipelineTab(osId) {
   const content = document.getElementById('osDetailContent');
   if (!content) return;
@@ -22415,6 +22530,7 @@ async function _loadPipelineTab(osId) {
   // Carregado DEPOIS do render e não-bloqueante: o pipeline nunca deixa de
   // aparecer porque o motor de prazo demorou ou falhou.
   setTimeout(function(){ _pipeCarregarPrazo(osId); }, 0);
+  setTimeout(function(){ _pipeConferirPdfs(osId); }, 0);   // V164 (M3)
 
   fasesOrdenadas.forEach(fase => {
     // V110 (L-7): só desambigua quando existe camada empilhada
@@ -22439,6 +22555,11 @@ async function _loadPipelineTab(osId) {
       const concByLine = t.Status === 'completo' && t.Concluido_por
         ? `<div style="font-size:11px;color:var(--text-muted);margin-top:4px">Concluído por: ${t.Concluido_por}${t.Data_conclusao ? ' · ' + new Date(t.Data_conclusao).toLocaleDateString('pt-BR') : ''}</div>`
         : '';
+      // V164 (M3) — lugar reservado para o chip "concluída sem PDF no Drive".
+      // Vazio no render: quem preenche é `_pipeConferirPdfs`, DEPOIS, sem
+      // segurar o pipeline (mesmo padrão do `_pipeCarregarPrazo` do V106).
+      const pdfChipSlot = (isAuto && t.Status === 'completo')
+        ? `<div id="pipepdf-${escHtml(String(t.Tarefa_ID||''))}" style="margin-top:4px"></div>` : '';
       const perfilLine = t.Perfil_Responsavel
         ? `<div style="font-size:11px;color:var(--text-muted);margin-top:4px">👤 Responsável sugerido: ${escHtml(t.Perfil_Responsavel)}</div>`
         : '';
@@ -22533,6 +22654,7 @@ async function _loadPipelineTab(osId) {
           ${tipoBadge}${execBadge}${camEncBadge}
         </div>
         ${concByLine}
+        ${pdfChipSlot}
         ${lockLine}
         ${decisaoValorLine}
         ${dispensadoLine}
@@ -31922,12 +32044,19 @@ body.mob-forced #mobApp{max-width:430px;margin:0 auto;box-shadow:0 0 60px rgba(0
       // V139 — o GAS v120 devolve `notificado` e só diz TRUE quando ACHOU o id
       // do responsável em CAT_USUARIOS. Dizer "avisado" sempre seria repetir,
       // na cara do usuário, o erro do v113 (cano existe, água não chega).
+      // V164 — mesma regra do desktop (ver o comentário em _v139SalvarDemanda):
+      //   `notificado:false` com `esperados:0` significa "não havia quem avisar",
+      //   e não "não achei o nome". Editar uma demanda sem trocar o responsável
+      //   caía aqui e acusava um técnico ativo.
+      var _espMob = (r && r.esperados !== undefined) ? Number(r.esperados) : null;
+      var _falhouAviso = !!(r && r.notificado === false && (_espMob === null || _espMob > 0));
+      var _quemMob = (r && r.nao_achados && r.nao_achados.length) ? r.nao_achados.join(', ') : d.responsavel;
       _mobToast(
         (!d.responsavel) ? 'Demanda agendada.' :
-        (r && r.notificado === false)
-          ? 'Agendada — mas NÃO avisei ' + d.responsavel + ' (nome não achado nos usuários ativos).'
-          : 'Demanda agendada. ' + d.responsavel + ' foi avisado.',
-        (r && d.responsavel && r.notificado === false) ? 'error' : 'success');
+        _falhouAviso
+          ? 'Agendada — mas NÃO avisei ' + _quemMob + ' (nome não achado nos usuários ativos).'
+          : (d.demanda_id ? 'Demanda atualizada.' : 'Demanda agendada. ' + d.responsavel + ' foi avisado.'),
+        (d.responsavel && _falhouAviso) ? 'error' : 'success');
       _mobEstado.diaSel = d.dia || _mobEstado.diaSel;
       await _mobCarregar(true);
       _mobIr('agenda');
@@ -34305,8 +34434,21 @@ async function _v139SalvarDemanda() {
     // 🔑 Honestidade sobre o aviso: o GAS devolve `notificado` e só diz TRUE
     //    quando achou o id do responsável em CAT_USUARIOS. Dizer "avisado"
     //    sempre seria repetir o erro do v113 na cara do usuário.
-    if (d.responsavel && r && r.notificado === false) {
-      alert('Demanda agendada.\n\n⚠ Não consegui avisar ' + d.responsavel +
+    // ══════════════════════════════════════════════════════════════════════
+    // V164 — O ALERTA SÓ VALE QUANDO HAVIA ALGUÉM A AVISAR.
+    //
+    // `notificado:false` diz DUAS coisas no v133: "não achei o nome" e
+    // "ninguém novo entrou na lista" (edição sem troca de responsável). O
+    // segundo caso é o normal do dia a dia — e era ele que acusava um técnico
+    // ATIVO de não existir. `esperados` desfaz a ambiguidade e existe desde o
+    // v120; `nao_achados` (v134) diz QUEM, quando há mais de um responsável.
+    // ⚠ `esperados === undefined` = servidor antigo ⇒ mantém o texto de antes,
+    //   que era certo para a CRIAÇÃO (lá `esperados` nunca é 0 com responsável).
+    // ══════════════════════════════════════════════════════════════════════
+    var _espera = (r && r.esperados !== undefined) ? Number(r.esperados) : null;
+    if (d.responsavel && r && r.notificado === false && (_espera === null || _espera > 0)) {
+      var _quem = (r.nao_achados && r.nao_achados.length) ? r.nao_achados.join(', ') : d.responsavel;
+      alert('Demanda agendada.\n\n⚠ Não consegui avisar ' + _quem +
             ': não achei esse nome entre os usuários ATIVOS do sistema. ' +
             'A demanda está na agenda dele, mas ele não recebeu o sino.');
     }
