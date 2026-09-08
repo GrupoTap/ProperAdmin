@@ -1,3 +1,85 @@
+<!-- PCM V171 (08/09/2026) — A AGENDA PASSA A RESPONDER "PARA QUEM EU JOGO ISTO".
+     100% ADITIVO. ZERO GAS, ZERO SQL. Par: GAS v120+ (o campo `equipe` ja existe).
+
+     Tres pedidos do Fernando sobre a tela de Saturacao/Agenda da equipe:
+
+     Z1  QUEM ESTA LIVRE SOME DA GRADE — e e ele a resposta da pergunta.
+         "quando algum usuario nao tem demanda agendada no nome dele, o nome
+         dele desaparece dessa lista, acho que tinha que ficar visivel,
+         justamente pra gente julgar se ele esta com tempo livre pra ser
+         deslocado pra alguma demanda."
+         🔑 Defeito de OMISSAO: a lista de linhas nasce de `result.usuarios`,
+            que o GAS deriva das TAREFAS. Sem tarefa, sem demanda e sem OS, a
+            pessoa nao tem linha. A grade sabia dizer quem esta cheio e calava
+            sobre quem esta vazio — que e o unico dado util para deslocar.
+         🔑 ZERO GAS: `result.equipe` (todos os ATIVOS de CAT_USUARIOS) viaja
+            neste mesmo envelope desde o v120, criado para o formulario de
+            demanda, e a grade nunca o leu. Uniao NORMALIZADA (trim+maiusculas)
+            para que "Paulo Mayer " do cadastro nao vire uma segunda linha.
+         ⚠ Contra GAS ≤v119 o campo nao existe, o laco nao roda e a grade e
+           exatamente a de antes — degradacao, nao quebra. Tem teste.
+
+     Z2  A COLUNA "ATRASADAS / A DEFINIR" ERA UM ESTACIONAMENTO SEM RAMPA.
+         "algumas demandas que ficam sem definicao estao se acumulando a
+         esquerda, o jeito certo e esse mesmo?"
+         🔑 A coluna esta CERTA e continua: item vencido ou sem data nao tem dia
+            onde pousar, e some-lo seria a tela mentir. O que faltava era SAIDA.
+         · idade em dias no chip, ordenacao do mais velho para o mais novo, e
+           "sem data" no fim (nao e atraso — e decisao que ninguem tomou);
+         · contador no topo da celula ("3 atrasadas · 2 sem data") e teto de 4
+           itens com "ver todos (n)", para a coluna parar de crescer sem limite;
+         · botao "🎯 Distribuir": liga a selecao (um ou varios) e faz aparecer a
+           faixa "＋ soltar" nas celulas dos dias. Dois cliques, sem modal.
+           Solto em OUTRA linha, o item troca de responsavel.
+         🔑 Os itens entram EM SEQUENCIA no primeiro vao livre do turno. Jogar 3
+            coisas num dia nao pode empilhar as tres as 08:00 — seria a tela de
+            saturacao criando o choque que ela existe para evitar.
+         ⚠ ADITIVO: com o modo DESLIGADO (o padrao) todo clique da coluna abre
+           o mesmo modal de sempre. E a faixa "＋ soltar" so existe enquanto ha
+           selecao: alvo permanente vira alvo clicado sem querer.
+         ⚠ A OS 🔧 fica FORA da selecao de proposito. Mudar a data de uma OS e
+           decisao da OS (prazo com o cliente), nao um arrasto na agenda.
+         ⚠ Demanda com VARIOS responsaveis nao troca de dono por arrasto: a
+           lista carrega o ciente de cada pessoa, e sobrescreve-la num clique
+           apagaria confirmacoes ja dadas. So a data muda; o dono, no modal.
+         🔴 A ARMADILHA DESTA RODADA: o `saveAgendaDemanda` do GAS RECONSTROI a
+            linha inteira a partir do que chega. Mandar {demanda_id, data} teria
+            apagado descricao, machine_id, os_id, cliente_id e origem EM
+            SILENCIO. O reagendamento manda o objeto INTEIRO do envelope com um
+            campo trocado, e ha um teste de transporte para cada um desses
+            campos, mais o negativo que reintroduz o payload parcial.
+
+     Z3  A FAIXA "DEMANDAS AGENDADAS" DEIXA DE SER CARROSSEL.
+         "temos que ficar rolando ela pela barra horizontal e esta ficando
+         confuso."
+         🔑 O defeito nao era a rolagem — era a REPETICAO. Tudo que tem dia ja
+            aparece na grade, por pessoa e por hora; a faixa mostrava as mesmas
+            demandas de novo, em ordem de planilha (`slice(0,24)` sem sort
+            nenhum), e o que ficava visivel eram as cinco mais antigas, todas
+            atrasadas. Uma tira que precisa de rolagem para mostrar o de hoje e
+            que mostra por padrao o de duas semanas atras esta pior que ausente.
+         ⇒ Contadores (Pendentes / Hoje / Amanha / Prox. 7 dias) + a lista de UM
+           balde so, em grade que quebra linha. Zero rolagem horizontal. O balde
+           que abre sozinho e "Pendentes" (atrasadas + sem data), que e
+           exatamente o que a grade nao consegue posicionar.
+         ⚠ A regra do V135 (A3) continua: sem demanda nenhuma a secao NAO some,
+           vira a linha que explica que este espelho existe.
+
+     🕳 ACHADO DA BANCADA (nao do codigo): o indice da selecao era preenchido
+        pelo DESENHO do chip, entao so conhecia os 4 itens visiveis. Selecionar
+        dois e recolher a celula fazia o 5o sumir da gravacao em silencio — a
+        tela dizia "2 selecionados" e a rede levava 1. O indice passou a cobrir
+        a lista inteira, e uid selecionado que o indice nao conhece agora vira
+        aviso, nunca queda calada.
+     🕳 VISTO NA CAPTURA, nao no codigo: com 10 colunas x N pessoas, a faixa de
+        soltar em opacidade cheia virava uma parede laranja e escondia a agenda.
+        Ela recua para .28 e so acende na celula sob o mouse.
+
+     Bancada: _testes/NEWFILE_T_PCM_V171_agenda.mjs — 66/66, com --negativo
+     reintroduzindo 6 defeitos e reprovando 18. Transporte na REDE (page.route
+     sobre o /exec), nunca mockando gsPost. Regressao: a bancada do V170 passa
+     31/31 contra este arquivo. -->
+
 <!-- PCM V166 (03/09/2026) — QUEM VAI ASSUMIR A OS, DITO NO CELULAR. ADITIVO.
 
      Chamado do Fernando (03/09): "nao consigo designar o usuario que vai
@@ -3757,7 +3839,7 @@ v50 — Resiliência de rede: retry/backoff em gsGet e syncToGS
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>ProperCare Manager · Gestão PGP v3.83 (PCM V170)</title>
+<title>ProperCare Manager · Gestão PGP v3.84 (PCM V171)</title>
 <link rel="icon" type="image/jpeg" href="data:image/jpeg;base64,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">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -4725,6 +4807,25 @@ th.xf-filtered .xf-fun{opacity:1;stroke:var(--accent)}
 .v169it .m{font-size:11.5px;color:var(--text-muted);white-space:nowrap;flex-shrink:0}
 .v169chip{appearance:none;border:1px solid var(--border-strong);background:var(--surface-2);color:var(--text2);font:600 12px var(--font-sans);padding:4px 10px;border-radius:999px;cursor:pointer}
 .v169chip.on{background:var(--accent);border-color:var(--accent);color:#fff}
+/* V171 (Z1/Z2/Z3) — a barra de distribuir, os contadores da faixa e o selo "livre" */
+.v171bar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:0 0 8px;padding:5px 10px;border:1px solid var(--border);border-radius:8px;background:var(--bg-alt)}
+.v171bar.on{border-color:var(--accent);background:rgba(37,99,235,.07)}
+.v171dica{font-size:11px;color:var(--text-muted)}
+.v171cnt{appearance:none;border:1px solid var(--border-strong);background:var(--surface-2);color:var(--text2);font:600 12px var(--font-sans);padding:4px 11px;border-radius:999px;cursor:pointer}
+.v171cnt.on{background:var(--accent);border-color:var(--accent);color:#fff}
+.v171cnt b{font-weight:800}
+.v171lista{display:grid;grid-template-columns:repeat(auto-fill,minmax(228px,1fr));gap:8px}
+.v171it{cursor:pointer;border-radius:8px;padding:7px 10px;border:1px solid var(--border);border-left:3px solid var(--border);background:var(--bg-alt)}
+.v171it b{display:block;font-size:12.5px;font-weight:650;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.v171it span{display:block;font-size:11px;color:var(--text2);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.v171livre{font-weight:600;font-size:9px;color:#16a34a;border:1px solid rgba(22,163,74,.45);background:rgba(22,163,74,.10);border-radius:999px;padding:0 6px;margin-left:6px}
+.v171sel{outline:2px solid var(--accent);outline-offset:-1px}
+/* ⚠ VISTO NA CAPTURA, NÃO NO CÓDIGO: com 10 colunas × N pessoas, a faixa de
+   soltar em opacidade cheia vira uma parede laranja e a agenda de verdade
+   some atrás dela. Ela recua para .28 e só acende na célula sob o mouse — o
+   alvo continua a um clique, mas quem manda na tela volta a ser a agenda. */
+.v171solta{opacity:.28;transition:opacity .1s}
+td:hover > .v171solta{opacity:1}
 
 /* V95 · XF — linhas de grupo (Documentos agrupado) */
 /* V96 · árvore Cliente → OS → Máquina */
@@ -5096,7 +5197,7 @@ tr.tadm-feito td{background:#dcfce7 !important;color:#15803d;font-weight:700}
 <aside class="nav-sidebar" aria-label="Navegação principal">
   <div class="nav-brand">
     <span class="nav-brand-mark">PCM</span>
-    <span class="nav-brand-sub">v3.83 · V170</span>
+    <span class="nav-brand-sub">v3.84 · V171</span>
   </div>
 
   <nav class="nav-groups">
@@ -28446,7 +28547,7 @@ async function renderSaturacao(_v150Pronto) {
   // A demanda agendada no celular é um compromisso da equipe como qualquer
   // outro: se ela não aparecesse aqui, o admin planejaria o dia sem ver metade
   // dos compromissos. Fonte única: `demandas`, do MESMO envelope da saturação.
-  html += _v130FaixaDemandas(result);
+  html += '<div id="v171Faixa">' + _v130FaixaDemandas(result) + '</div>';
 
   if (!temAlgo) {
     html += `<div class="empty">
@@ -29333,48 +29434,124 @@ async function _v135DemandaAcao(action, id, pergunta){
   }catch(e){ alert('Erro: ' + e.message); }
 }
 
-// ── V130 (M6) · faixa de demandas do desktop ────────────────────────────────
+// ══════════════════════════════════════════════════════════════════════════════
+// V171 (Z3) · A FAIXA DE DEMANDAS DEIXA DE SER CARROSSEL
+// ─────────────────────────────────────────────────────────────────────────────
+// Pedido do Fernando (08/09): "essa faixa de demandas agendadas não está muito
+// funcional, temos que ficar rolando ela pela barra horizontal e está ficando
+// confuso".
+//
+// 🔑 O defeito não é a rolagem — é que a faixa REPETIA a grade. Tudo que tem
+//    dia já aparece embaixo, posicionado por pessoa e por hora; a faixa mostrava
+//    as mesmas demandas de novo, em ordem de planilha (`slice(0,24)` sem sort
+//    nenhum), e o que sobrava visível eram as cinco mais antigas — todas
+//    atrasadas. Uma tira que precisa de rolagem para mostrar o de hoje, e que
+//    mostra por padrão o de duas semanas atrás, está pior que ausente.
+//
+// ⇒ Contadores (que dizem o TAMANHO de cada balde sem gastar espaço) + uma lista
+//   só do balde aberto, em grade que QUEBRA LINHA — zero rolagem horizontal. O
+//   balde que abre sozinho é "Pendentes" (atrasadas + sem data), que é
+//   exatamente o que a grade não consegue posicionar. Hoje/Amanhã/7 dias
+//   continuam a um clique, para conferência.
+//
+// ⚠ A regra do V135 (A3) continua valendo e por isso a seção NUNCA some: sem
+//   demanda nenhuma ela vira uma linha explicando que este espelho existe. Foi
+//   a ausência dela que fez o Fernando não achar a agenda do celular no desktop.
+// ══════════════════════════════════════════════════════════════════════════════
 function _v130FaixaDemandas(result) {
   const dems = (result && result.demandas) || [];
-  const hoje = new Date(); hoje.setHours(0,0,0,0);
-  const hojeKey = _satDiaKeyLocal(hoje);
-  const proximas = dems.filter(d => !d.dia || d.dia >= hojeKey || d.atrasada).slice(0, 24);
-  // ── V135 (A3) — ausência de demanda NÃO pode virar ausência de seção ──────
-  // Antes: `if (!dems.length) return ''`. Num dia sem demanda a faixa sumia
-  // inteira, e nem abrindo a tela dava para saber que este espelho existe — foi
-  // metade do motivo de o Fernando não achar a agenda do celular no desktop.
-  if (!proximas.length) return `<div style="margin:-6px 0 18px">
-      <div style="font-size:12px;font-weight:700;color:var(--text2);margin-bottom:7px">
-        🗓️ DEMANDAS AGENDADAS <span style="font-weight:500">· agendadas no celular, no mesmo quadro</span>
-      </div>
+  const hojeKey = _v171Key(_v171Hoje());
+  const amanhaKey = _v171MaisDias(1);
+  const seteKey = _v171MaisDias(7);
+
+  const _balde = d => {
+    const dia = String(d.dia || '').slice(0, 10);
+    if (!dia) return 'pend';
+    if (d.atrasada || dia < hojeKey) return 'pend';
+    if (dia === hojeKey) return 'hoje';
+    if (dia === amanhaKey) return 'amanha';
+    if (dia <= seteKey) return 'sete';
+    return 'depois';
+  };
+  const grupos = { pend: [], hoje: [], amanha: [], sete: [], depois: [] };
+  dems.forEach(d => { grupos[_balde(d)].push(d); });
+  // ⚠ Duas ordens, e de propósito. Em PENDENTES vale a MESMA regra da coluna 0
+  //   da grade — mais velho primeiro, sem data no fim —, senão a mesma lista
+  //   apareceria em duas ordens diferentes na mesma tela. Nos baldes de futuro,
+  //   ordem cronológica, que é o que "o que vem primeiro" quer dizer lá.
+  const ordena = (lista, pend) => lista.slice().sort((a, b) => {
+    if (pend) {
+      const ia = _v171Idade(a), ib = _v171Idade(b);
+      if (ia == null && ib == null) return 0;
+      if (ia == null) return 1;
+      if (ib == null) return -1;
+      return ib - ia;
+    }
+    const ka = (a.dia || '9999-99-99') + String(a.inicio_previsto || '');
+    const kb = (b.dia || '9999-99-99') + String(b.inicio_previsto || '');
+    return ka < kb ? -1 : (ka > kb ? 1 : 0);
+  });
+
+  const cabec = `<div style="font-size:12px;font-weight:700;color:var(--text2);margin-bottom:7px">
+        🗓️ DEMANDAS AGENDADAS <span style="font-weight:500">· o quadro é o mesmo do celular</span>
+      </div>`;
+
+  if (!dems.length) return `<div style="margin:-6px 0 18px">${cabec}
       <div style="font-size:12px;color:var(--text-muted);background:var(--bg-alt);border:1px dashed var(--border);
         border-radius:8px;padding:10px 12px">
-        Nenhuma demanda agendada para hoje em diante. O que você agendar pelo celular
+        Nenhuma demanda agendada. O que você agendar pelo celular
         (aba <strong>Agenda</strong> → botão <strong>+</strong>) aparece aqui, no mesmo quadro das tarefas de OS.
       </div></div>`;
-  const chip = d => {
-    const quando = d.sem_hora
-      ? (d.dia ? _v130DiaCurto(d.dia) : 'sem data')
-      : _v130DiaCurto(d.dia) + ' ' + String(d.inicio_previsto || '').slice(11, 16);
-    const cor = d.atrasada ? 'var(--red)' : (d.prioridade === 'alta' ? 'var(--orange)' : 'var(--purple)');
-    const bg  = d.atrasada ? 'var(--red-light)' : (d.prioridade === 'alta' ? 'var(--orange-light)' : 'var(--purple-light)');
-    return `<div title="${escHtml(d.descricao || d.titulo || '')}" class="v152-dem-chip" data-demanda-id="${escHtml(String(d.demanda_id || ''))}"
-        onclick="_v135AbrirDemanda('${escJs(String(d.demanda_id || ''))}')" style="flex:0 0 auto;max-width:260px;cursor:pointer;
-        background:${bg};border:1px solid ${cor}33;border-left:3px solid ${cor};
-        border-radius:8px;padding:7px 10px">
-      <div style="font-size:12.5px;font-weight:650;color:var(--text);white-space:nowrap;
-        overflow:hidden;text-overflow:ellipsis">${escHtml(d.titulo || 'Demanda')}</div>
-      <div style="font-size:11px;color:var(--text2);margin-top:2px">
-        ${escHtml(quando)}${d.responsavel ? ' · ' + escHtml(d.responsavel) : ''}${d.cliente ? ' · ' + escHtml(d.cliente) : ''}
-      </div></div>`;
+
+  // O balde que abre sozinho é o que a grade NÃO responde. Sem pendência, o
+  // padrão passa a ser "Hoje" — e a tela diz, em verde, que não há atraso.
+  const BALDES = [
+    { k: 'pend',   rot: '⚠ Pendentes',   cor: 'var(--red)',    sub: 'atrasadas ou sem data — a grade não tem onde pousar estas' },
+    { k: 'hoje',   rot: 'Hoje',          cor: 'var(--accent)', sub: 'já estão na coluna de hoje, abaixo' },
+    { k: 'amanha', rot: 'Amanhã',        cor: 'var(--accent)', sub: 'já estão na grade, abaixo' },
+    { k: 'sete',   rot: 'Próx. 7 dias',  cor: 'var(--accent)', sub: 'já estão na grade, abaixo' }
+  ];
+  let aberto = _v171Balde;
+  if (!aberto || !grupos[aberto]) aberto = grupos.pend.length ? 'pend' : 'hoje';
+  const lista = ordena(grupos[aberto] || [], aberto === 'pend');
+  const TETO = 8;
+  const visiveis = _v171FxTodas ? lista : lista.slice(0, TETO);
+
+  const cnt = BALDES.map(b => `<button type="button" class="v171cnt${aberto === b.k ? ' on' : ''}"
+      onclick="_v171Balde_('${b.k}')" title="${escHtml(b.sub)}">${escHtml(b.rot)} <b>${grupos[b.k].length}</b></button>`).join('');
+
+  const item = d => {
+    const dia = String(d.dia || '').slice(0, 10);
+    const quando = !dia ? 'sem data'
+      : (d.sem_hora ? _v130DiaCurto(dia) : _v130DiaCurto(dia) + ' ' + String(d.inicio_previsto || '').slice(11, 16));
+    const idade = _v171Idade(d);
+    const cor = (aberto === 'pend') ? (dia ? 'var(--red)' : 'var(--text-muted)')
+              : (d.prioridade === 'alta' ? 'var(--orange)' : 'var(--purple,#7c3aed)');
+    return `<div class="v171it" style="border-left-color:${cor}"
+        onclick="_v135AbrirDemanda('${escJs(String(d.demanda_id || ''))}')"
+        title="${escHtml(d.descricao || d.titulo || '')}">
+      <b>${escHtml(d.titulo || 'Demanda')}</b>
+      <span>${escHtml(quando)}${idade != null ? ' · há ' + idade + (idade > 1 ? ' dias' : ' dia') : ''}${d.responsavel ? ' · ' + escHtml(d.responsavel) : ''}${d.cliente ? ' · ' + escHtml(d.cliente) : ''}</span>
+    </div>`;
   };
-  return `<div style="margin:-6px 0 18px">
-      <div style="font-size:12px;font-weight:700;color:var(--text2);margin-bottom:7px">
-        🗓️ DEMANDAS AGENDADAS <span style="font-weight:500">· agendadas no celular, no mesmo quadro</span>
+
+  const vazio = `<div style="font-size:12px;color:${aberto === 'pend' ? '#16a34a' : 'var(--text-muted)'};background:var(--bg-alt);border:1px dashed var(--border);border-radius:8px;padding:9px 12px">
+      ${aberto === 'pend' ? '✓ Nenhuma demanda atrasada nem sem data.' : 'Nada neste período.'}
+    </div>`;
+
+  const mais = (lista.length > TETO)
+    ? `<div style="margin-top:6px"><button type="button" class="v169chip" onclick="_v171FaixaTodas()">${_v171FxTodas ? '▲ mostrar menos' : '▼ ver todas (' + lista.length + ')'}</button></div>`
+    : '';
+
+  return `<div style="margin:-6px 0 18px">${cabec}
+      <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-bottom:8px">${cnt}
+        <span style="font-size:11px;color:var(--text-muted)">${escHtml((BALDES.find(b => b.k === aberto) || {}).sub || '')}</span>
       </div>
-      <div style="display:flex;gap:8px;overflow-x:auto;padding-bottom:4px">${proximas.map(chip).join('')}</div>
+      ${visiveis.length ? `<div class="v171lista">${visiveis.map(item).join('')}</div>` : vazio}
+      ${mais}
     </div>`;
 }
+
 function _v130DiaCurto(chave) {
   const p = String(chave || '').split('-');
   if (p.length < 3) return String(chave || '');
@@ -29452,6 +29629,276 @@ function _v151ItensOS(hojeKey){
   return out;
 }
 
+// ══════════════════════════════════════════════════════════════════════════════
+// V171 · Z1/Z2 — A COLUNA DA ESQUERDA GANHA SAÍDA, E QUEM ESTÁ LIVRE APARECE
+// ─────────────────────────────────────────────────────────────────────────────
+// Pedido do Fernando (08/09), sobre a grade da Agenda:
+//   1) "algumas demandas que ficam sem definição estão se acumulando à esquerda";
+//   2) "quando algum usuário não tem demanda agendada no nome dele, o nome dele
+//      desaparece dessa lista — acho que tinha que ficar visível, justamente pra
+//      gente julgar se ele está com tempo livre pra ser deslocado".
+//
+// 🔑 Z1 é o defeito mais caro dos dois, e é de OMISSÃO: a lista de linhas nasce
+//    de `result.usuarios`, que o GAS deriva das TAREFAS. Quem não tem nada não
+//    tem linha — ou seja, **a pessoa livre é exatamente a que some**, e ela é a
+//    única resposta possível para "para quem eu jogo isto?". A grade respondia
+//    "quem está cheio" e calava sobre "quem está vazio".
+//    ⚠ ZERO GAS: o envelope já traz `equipe` (todos os ativos de CAT_USUARIOS)
+//      desde o v120 — foi criado para o formulário de demanda e a grade nunca o
+//      leu. Contra GAS ≤v119 o campo não existe e a grade volta a ser a de antes.
+//
+// 🔑 Z2 não é "a coluna está errada". A coluna está certa: item vencido ou sem
+//    data não tem dia onde pousar, e some-lo seria mentir. O que faltava é
+//    SAÍDA — ela era um estacionamento sem rampa. Três peças:
+//      · idade em dias e ordenação do mais velho para o mais novo, com contador
+//        no topo da célula (3 atrasadas · 3 sem data) e teto de 4 itens;
+//      · seleção (uma ou várias) e um destino em UM clique: a faixa "＋ soltar"
+//        que aparece nas células dos dias enquanto há seleção;
+//      · alocação em SEQUÊNCIA no primeiro vão livre do turno — jogar 3 itens
+//        num dia não pode empilhar os três às 08:00, que é o oposto do que uma
+//        tela de saturação existe para fazer.
+//
+// ⚠ ADITIVO por construção. Com `_v171Modo` desligado (o padrão), todo clique da
+//   coluna continua abrindo o mesmo modal de sempre — nenhum caminho antigo foi
+//   trocado por um novo. E a faixa "＋ soltar" só existe enquanto há seleção:
+//   alvo de arrastar sempre visível vira alvo clicado sem querer.
+//
+// ⚠ A OS agendada NÃO entra na seleção. Mudar a data de uma OS é decisão da OS
+//   (prazo com o cliente), não um arrasto na agenda — o chip 🔧 segue abrindo o
+//   detalhe. Deixá-la de fora é escolha, não esquecimento.
+//
+// ⚠ E o `saveAgendaDemanda` do GAS RECONSTRÓI a linha inteira a partir do que
+//   chega: mandar só `{demanda_id, data_prevista}` apagaria descrição, máquina,
+//   os_id e origem em silêncio. Por isso o reagendamento manda o objeto INTEIRO
+//   que veio do envelope, com um campo trocado. É a armadilha que este bloco
+//   mais precisa não esquecer.
+// ══════════════════════════════════════════════════════════════════════════════
+let _v171Modo    = false;                 // seleção ligada?
+const _v171Sel   = new Set();             // uids selecionados
+let _v171Idx     = new Map();             // uid → {it, usuario} — refeito a cada pintura
+let _v171Ctx     = null;                  // turno + ocupação, preenchidos pela grade
+const _V171_ABERTOS = new Set();          // linhas com a coluna 0 expandida
+let _v171Balde   = null;                  // balde aberto na faixa de demandas
+let _v171FxTodas = false;                 // "ver todas" da faixa
+
+function _v171Uid(it) { return it._dem ? ('D:' + it.demanda_id) : (it._os ? ('O:' + it.os_id) : ('T:' + it.tarefa_id)); }
+function _v171Norm(s) { return String(s == null ? '' : s).trim().toUpperCase(); }
+function _v171DiaBR(k) { const p = String(k || '').split('-'); return p.length < 3 ? String(k || '') : (p[2] + '/' + p[1]); }
+function _v171Hoje() { const d = new Date(); d.setHours(0, 0, 0, 0); return d; }
+function _v171Key(d) { const p = n => String(n).padStart(2, '0'); return d.getFullYear() + '-' + p(d.getMonth() + 1) + '-' + p(d.getDate()); }
+function _v171MaisDias(n) { const d = _v171Hoje(); d.setDate(d.getDate() + n); return _v171Key(d); }
+
+// Idade em dias de um item da coluna 0. Só existe para quem TEM data vencida —
+// o envelope não traz data de criação, e inventar idade para item sem data seria
+// número bonito medindo nada. Sem data devolve null, e a tela diz "sem data".
+function _v171Idade(it) {
+  const dia = String(it && it.dia || '').slice(0, 10);
+  if (!dia) return null;
+  const p = dia.split('-'); if (p.length < 3) return null;
+  const d = new Date(+p[0], (+p[1]) - 1, +p[2]); d.setHours(0, 0, 0, 0);
+  const dif = Math.round((_v171Hoje().getTime() - d.getTime()) / 86400000);
+  return dif > 0 ? dif : null;
+}
+
+// Ordem da coluna 0: o mais velho primeiro; o que não tem data vai para o fim,
+// porque "sem data" não é atraso — é decisão que ninguém tomou ainda, e ela tem
+// um rótulo próprio na célula.
+function _v171OrdenarAtras(lista) {
+  return lista.slice().sort((a, b) => {
+    const ia = _v171Idade(a), ib = _v171Idade(b);
+    if (ia == null && ib == null) return 0;
+    if (ia == null) return 1;
+    if (ib == null) return -1;
+    return ib - ia;
+  });
+}
+
+function _v171Selecionavel(it) { return !!(it && !it._os); }
+
+function _v171Toggle(ev, uid) {
+  if (ev) { ev.preventDefault(); ev.stopPropagation(); }
+  if (_v171Sel.has(uid)) _v171Sel.delete(uid); else _v171Sel.add(uid);
+  _v171Repintar();
+}
+function _v171LimparSel() { _v171Sel.clear(); _v171Repintar(); }
+function _v171SetModo(on) {
+  _v171Modo = !!on;
+  if (!_v171Modo) _v171Sel.clear();
+  _v171Repintar();
+}
+function _v171VerTodos(usuario) {
+  const k = _v171Norm(usuario);
+  if (_V171_ABERTOS.has(k)) _V171_ABERTOS.delete(k); else _V171_ABERTOS.add(k);
+  _v171Repintar();
+}
+
+// Repinta SÓ a grade, a partir do payload que já está na memória. Mesmo caminho
+// do `_v169GradeNav`: nenhuma ida nova ao GAS por um clique que só muda o
+// desenho. ⚠ E zera o cache do V118 — sem isso a próxima abertura da tela
+// mostraria o estado anterior e o clique pareceria não ter funcionado.
+function _v171Repintar() {
+  const box = document.getElementById('v169Grade');
+  if (box) {
+    try { box.innerHTML = _satRenderAgenda(window._satPayload || {}); }
+    catch (e) { console.warn('[V171] repintura da grade falhou:', e); }
+  }
+  const fx = document.getElementById('v171Faixa');
+  if (fx) {
+    try { fx.innerHTML = _v130FaixaDemandas(window._satPayload || {}); }
+    catch (e) { console.warn('[V171] repintura da faixa falhou:', e); }
+  }
+  try { _saturacaoCacheHtml = null; } catch (e) {}
+}
+
+function _v171Balde_(k) { _v171Balde = k; _v171FxTodas = false; _v171Repintar(); }
+function _v171FaixaTodas() { _v171FxTodas = !_v171FxTodas; _v171Repintar(); }
+
+// ── O PRIMEIRO VÃO LIVRE ─────────────────────────────────────────────────────
+// Recebe a lista de janelas já ocupadas [[iniMin,fimMin], …] e devolve o começo
+// do primeiro buraco que comporta `dur`. Estourando o turno, devolve o fim do
+// último compromisso: o item entra assim mesmo, o ⚠ de choque acende sozinho e
+// a célula fica vermelha. 🔑 Recusar o agendamento aqui seria a tela decidindo
+// no lugar do Fernando — a regra de 22/08 é que saturação AVISA e não trava.
+function _v171PrimeiroVao(ocupadas, dur, tIni, tFim) {
+  const D = Math.max(15, Number(dur) || 60);
+  const jan = (ocupadas || []).filter(x => x && isFinite(x[0]) && isFinite(x[1]))
+                              .slice().sort((a, b) => a[0] - b[0]);
+  let cur = tIni;
+  for (let i = 0; i < jan.length; i++) {
+    if (jan[i][1] <= cur) continue;
+    if (jan[i][0] - cur >= D) return cur;
+    cur = Math.max(cur, jan[i][1]);
+  }
+  if (cur + D <= tFim) return cur;
+  return Math.min(cur, Math.max(tIni, tFim - D));
+}
+function _v171HHMM(min) {
+  const m = Math.max(0, Math.round(min / 5) * 5);
+  const p = n => String(n).padStart(2, '0');
+  return p(Math.floor(m / 60) % 24) + ':' + p(m % 60);
+}
+
+// ── A RAMPA: onde o que estava parado à esquerda vai parar ────────────────────
+async function _v171Soltar(ev, usuario, diaKey) {
+  if (ev) { ev.preventDefault(); ev.stopPropagation(); }
+  const escolhidos = Array.from(_v171Sel);
+  const alvos = escolhidos.map(u => _v171Idx.get(u)).filter(Boolean);
+  if (!alvos.length) { try { toast('Selecione antes o que quer mover.', 'warn'); } catch (e) {} return; }
+  // ⚠ Uid selecionado que o índice não conhece = item que saiu do envelope entre
+  //   a escolha e o clique. Cair fora calado seria gravar menos do que a tela
+  //   prometeu — a doença do `{status:'ok'}` de 16/08, na direção contrária.
+  if (alvos.length !== escolhidos.length) {
+    try { toast((escolhidos.length - alvos.length) + ' item(ns) saíram da tela desde a seleção e ficaram de fora.', 'warn'); } catch (e) {}
+  }
+
+  const ctx  = _v171Ctx || { tIni: 480, tFim: 1080, diasUteis: [1, 2, 3, 4, 5], ocup: {} };
+  const p    = String(diaKey).split('-');
+  const dObj = new Date(+p[0], (+p[1]) - 1, +p[2]);
+  const dow  = dObj.getDay() === 0 ? 7 : dObj.getDay();
+  const util = (ctx.diasUteis || [1, 2, 3, 4, 5]).indexOf(dow) >= 0;
+
+  // ⚠ Demanda com vários responsáveis NÃO troca de dono por arrasto: a lista é
+  //   um acordo entre pessoas (o ciente de cada uma), e sobrescrevê-la num
+  //   clique apagaria confirmações que já existem. Só a data muda; o dono, no
+  //   modal, onde a lista inteira está à vista.
+  const recusados = [];
+  const podem = alvos.filter(a => {
+    const trocaDono = _v171Norm(a.usuario) !== _v171Norm(usuario);
+    const multi = a.it._dem && Array.isArray(a.it.responsaveis) && a.it.responsaveis.length > 1;
+    if (trocaDono && multi) { recusados.push(a.it.titulo || 'Demanda'); return false; }
+    return true;
+  });
+  if (!podem.length) {
+    try { toast('Demanda com vários responsáveis só troca de dono pelo modal.', 'warn'); } catch (e) {}
+    return;
+  }
+
+  // Sequência: cada item entra no vão livre DEPOIS do anterior. Empilhar todos
+  // no mesmo horário seria criar o choque que esta tela existe para evitar.
+  const ocupadas = ((ctx.ocup && ctx.ocup[_v171Norm(usuario)] && ctx.ocup[_v171Norm(usuario)][diaKey]) || []).slice();
+  const plano = podem.map(a => {
+    const dur = Math.max(15, Number(a.it.tempo_estimado_min) || 60);
+    const ini = _v171PrimeiroVao(ocupadas, dur, ctx.tIni, ctx.tFim);
+    ocupadas.push([ini, ini + dur]);
+    return { a: a, hora: _v171HHMM(ini), dur: dur };
+  });
+
+  const resumo = plano.slice(0, 4).map(x => '· ' + (x.a.it.titulo || x.a.it.nome || 'item') + ' às ' + x.hora).join('\n');
+  const pergunta = 'Agendar ' + plano.length + (plano.length > 1 ? ' itens' : ' item') +
+    ' para ' + dObj.toLocaleDateString('pt-BR', { weekday: 'long', day: '2-digit', month: '2-digit' }) +
+    ', na agenda de ' + usuario + '?' +
+    (util ? '' : '\n\n⚠ Este dia NÃO é dia útil no regime de turno configurado.') +
+    '\n\n' + resumo + (plano.length > 4 ? '\n· … e mais ' + (plano.length - 4) : '') +
+    (recusados.length ? '\n\n⚠ Fora desta operação (vários responsáveis, troque o dono pelo modal): ' + recusados.join(', ') : '');
+  if (!confirm(pergunta)) return;
+
+  const usuarioSessao = (window.PROPER_SESSION && (PROPER_SESSION.tecnico?.nome || PROPER_SESSION.nome_tecnico)) ||
+                        (window._usuarioAtual && (_usuarioAtual.nome || _usuarioAtual.id)) || 'admin';
+  let ok = 0; const falhas = [];
+  // Em SÉRIE, de propósito: o Apps Script serializa execuções do mesmo usuário,
+  // e um Promise.all aqui só trocaria a espera de lugar — com o agravante de
+  // duas escritas concorrentes na mesma aba.
+  for (let i = 0; i < plano.length; i++) {
+    const { a, hora } = plano[i];
+    const dataPrev = diaKey + 'T' + hora;
+    try {
+      if (a.it._dem) {
+        const d = a.it;
+        const trocaDono = _v171Norm(a.usuario) !== _v171Norm(usuario);
+        const r = await gsPost({
+          action: 'saveAgendaDemanda',
+          // 🔑 O OBJETO INTEIRO. Ver o cabeçalho deste bloco: o GAS reconstrói
+          //    a linha do zero, e todo campo que não vier aqui é apagado.
+          demanda: {
+            demanda_id: String(d.demanda_id || ''),
+            titulo: String(d.titulo || '').trim(),
+            descricao: String(d.descricao || ''),
+            tipo: String(d.tipo || ''),
+            prioridade: String(d.prioridade || 'normal'),
+            cliente: String(d.cliente || ''),
+            cliente_id: String(d.cliente_id || ''),
+            machine_id: String(d.machine_id || ''),
+            maquina_rotulo: String(d.maquina_rotulo || ''),
+            responsavel: trocaDono ? usuario : String(d.responsavel || ''),
+            data_prevista: dataPrev,
+            tempo_estimado_min: Number(d.tempo_estimado_min) || 0,
+            status: String(d.status || 'aberta'),
+            os_id: String(d.os_id || ''),
+            convertida_em: d.convertida_em || '',
+            // ⚠ origem PRESERVADA: carimbar 'pcm_desktop' aqui faria toda demanda
+            //   nascida no celular mentir sobre onde nasceu depois do 1º arrasto.
+            origem: String(d.origem || 'pcm')
+          },
+          usuario: usuarioSessao
+        });
+        if (r && r.status === 'error') throw new Error(r.error || 'Erro ao salvar');
+      } else {
+        await syncToGS('designarUsuarioTarefa', {
+          os_id: a.it.os_id, tarefa_id: a.it.tarefa_id,
+          usuario_designado: usuario,
+          usuario: usuarioSessao,
+          data_prevista: dataPrev,
+          // null = NÃO TOCA no tempo estimado (contrato do GAS v112 S3).
+          tempo_estimado_min: null
+        });
+      }
+      ok++; _v171Sel.delete(_v171Uid(a.it));
+    } catch (e) {
+      falhas.push((a.it.titulo || a.it.nome || 'item') + ': ' + (e && e.message || 'erro'));
+    }
+  }
+
+  // 🔑 O número dos DOIS lados. "Pronto!" depois de gravar 2 de 5 é a tela
+  //    mentindo com cara de sucesso — a lição do `{status:'ok'}` de 16/08.
+  try {
+    if (falhas.length) toast(ok + ' agendado(s), ' + falhas.length + ' falhou(ram): ' + falhas[0], 'error');
+    else toast(ok + (ok > 1 ? ' itens agendados.' : ' item agendado.'), 'success');
+  } catch (e) {}
+  if (falhas.length) console.warn('[V171] falhas ao agendar:', falhas);
+  _saturacaoCacheHtml = null;
+  try { await renderSaturacao(); } catch (e) {}
+}
+
 function _satRenderAgenda(result) {
   const agenda = result.agenda || [];
   const pt = result.parametros_turno || {};
@@ -29523,6 +29970,32 @@ function _satRenderAgenda(result) {
   _v151OsItens.forEach(it => {
     const quem = it.responsavel_nome || _V135_SEM_RESP;
     if (usuarios.indexOf(quem) < 0) usuarios.push(quem);
+  });
+  // ══════════════════════════════════════════════════════════════════════════
+  // V171 (Z1) — E QUEM NÃO TEM NADA? ELE É A RESPOSTA DA PERGUNTA.
+  //
+  // Até aqui a lista de linhas é a união de quem tem TAREFA, DEMANDA ou OS. Quem
+  // está livre não entra em nenhuma das três e some da grade — justo a pessoa
+  // que o Fernando procura quando olha esta tela para deslocar alguém.
+  // 🔑 `result.equipe` (GAS v120+) é o cadastro de ATIVOS de CAT_USUARIOS, e já
+  //    viajava neste mesmo envelope desde 26/08 servindo só ao formulário de
+  //    demanda. Nenhuma requisição nova; nenhuma linha de GAS.
+  // ⚠ Comparação NORMALIZADA (trim + maiúsculas): "Paulo Mayer " no cadastro e
+  //   "Paulo Mayer" na tarefa criariam DUAS linhas para a mesma pessoa, e a
+  //   carga dele apareceria pela metade nas duas.
+  // ⚠ Vão para o FIM da lista de propósito: `result.usuarios` chega ordenado por
+  //   carga (o GAS ordena decrescente), e intercalar quem não tem carga
+  //   destruiria essa ordem, que é a leitura principal da tela.
+  // ⚠ GAS ≤v119 não manda `equipe` ⇒ o laço não roda e a grade é a de antes.
+  // ══════════════════════════════════════════════════════════════════════════
+  const _v171Vistos = new Set(usuarios.map(_v171Norm));
+  ((result && result.equipe) || []).forEach(e => {
+    const nome = String((e && e.nome) || '').trim();
+    if (!nome) return;
+    const k = _v171Norm(nome);
+    if (_v171Vistos.has(k)) return;
+    _v171Vistos.add(k);
+    usuarios.push(nome);
   });
   const porUsuario = {};
   const conflitantes = {}; // usuario -> Set(tarefa_id) p/ marcar ⚠ no bloco
@@ -29697,6 +30170,16 @@ function _satRenderAgenda(result) {
       <button class="btn btn-secondary btn-sm" type="button" onclick="_v169GradeNav(1)">7 dias depois ›</button>
       ${_v169Off ? '<span class="v169per">adiantada em ' + _v169Off + ' dias — o que cai antes de ' + _v169Rot(BASE) + ' está na 1ª coluna</span>' : ''}
     </div>
+    <div class="v171bar${_v171Modo ? ' on' : ''}">
+      <button type="button" class="v169chip${_v171Modo ? ' on' : ''}" onclick="_v171SetModo(${_v171Modo ? 'false' : 'true'})">${_v171Modo ? '✓ ' : ''}🎯 Distribuir</button>
+      ${_v171Modo && _v171Sel.size
+        ? '<span style="font-size:12px;font-weight:700;color:var(--accent)">' + _v171Sel.size + ' selecionado' + (_v171Sel.size > 1 ? 's' : '') + '</span>' +
+          '<button type="button" class="v169chip" onclick="_v171LimparSel()">limpar</button>' +
+          '<span class="v171dica">Agora clique no <b>＋ soltar</b> na célula do dia — e da pessoa — onde isto tem de acontecer. Solto em outra linha, o item TROCA de responsável.</span>'
+        : (_v171Modo
+            ? '<span class="v171dica">Clique nos itens da 1ª coluna para escolher (um ou vários). A OS 🔧 fica de fora: a data dela se muda na própria OS.</span>'
+            : '<span class="v171dica">Liga a seleção da 1ª coluna e agenda o que está parado em 2 cliques, sem abrir modal.</span>')}
+    </div>
     <div style="overflow-x:auto"><table style="border-collapse:collapse;width:100%;font-size:11px;min-width:${140 + 90 + DIAS * 95}px">
     <thead><tr>
       <th style="text-align:left;padding:6px;border-bottom:1px solid var(--border);white-space:nowrap;position:sticky;left:0;background:var(--surface,var(--bg))">Usuário</th>
@@ -29708,17 +30191,94 @@ function _satRenderAgenda(result) {
       }).join('')}
     </tr></thead><tbody>`;
 
+  // ── V171 (Z1/Z2) — o índice da seleção e a ocupação, refeitos a cada pintura.
+  // 🔑 São derivados: nascem e morrem com o desenho. O que sobrevive ao repaint
+  //    é só o conjunto de UIDs escolhidos — item que sumiu do envelope cai fora
+  //    da seleção sozinho, sem virar gravação num id que já não existe.
+  _v171Idx = new Map();
+  _v171Ctx = { tIni: tIni, tFim: tFim, capMin: capMin, diasUteis: diasUteis, ocup: {} };
+  const _v171Nsel = _v171Sel.size;
+
   usuarios.forEach(usuario => {
     const slot = porUsuario[usuario] || { dias: {}, atras: [] };
-    html += `<tr>
-      <td style="padding:6px;border-bottom:1px solid var(--border);font-weight:600;white-space:nowrap;position:sticky;left:0;background:var(--surface,var(--bg))">${escHtml(usuario)}</td>
-      <td style="padding:4px 6px;border-bottom:1px solid var(--border);vertical-align:top;min-width:90px;max-width:130px">
-        ${slot.atras.filter(t => t._dem).map(dm => `<div onclick="_v135AbrirDemanda('${escJs(dm.demanda_id)}')" title="${escHtml('DEMANDA · ' + (dm.titulo || '') + (dm.dia ? ' · previsto ' + dm.dia.split('-').reverse().join('/') : ' · sem data'))}"
-            style="background:rgba(124,58,237,.12);border:1px dashed var(--purple,#7c3aed);border-radius:4px;padding:1px 5px;margin-bottom:2px;font-size:9px;cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--purple,#7c3aed)">🗓${escHtml(String(dm.titulo || 'Demanda').slice(0, 15))}</div>`).join('')}
-        ${slot.atras.filter(t => t._os).map(it => `<div onclick="openOSDetail('${escJs(it.os_id)}')" title="${escHtml('OS ' + (it.numero_os || it.os_id) + (it.cliente ? ' · ' + it.cliente : '') + (it.dia ? ' · agendada para ' + it.dia.split('-').reverse().join('/') + ' ' + _satHHMM(it.inicio_previsto) : ''))}"
-            style="background:rgba(15,118,110,.12);border:1px solid #0f766e;border-radius:4px;padding:1px 5px;margin-bottom:2px;font-size:9px;cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#0f766e">🔧${escHtml(String(it.numero_os || 'OS').slice(0, 15))}</div>`).join('')}
-        ${slot.atras.filter(t => !t._dem && !t._os).map(t => `<div onclick="_satAbrirDesignar('${escJs(t.os_id)}','${escJs(t.tarefa_id)}',{usuario:'${escJs(usuario)}',origem:'agenda'})" title="${escHtml(t.nome + ' · OS ' + (t.os_numero || t.os_id) + (t.dia ? ' · previsto ' + t.dia.split('-').reverse().join('/') : ' · sem data'))}"
-            style="background:${t.dia ? 'rgba(220,38,38,.12)' : 'var(--bg)'};border:1px solid ${t.dia ? 'var(--red)' : 'var(--border)'};border-radius:4px;padding:1px 5px;margin-bottom:2px;font-size:9px;cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;${t.dia ? 'color:var(--red);' : 'color:var(--text2);'}">${t.dia ? '🔴 ' : ''}${escHtml(String(t.nome || '').slice(0, 16))}</div>`).join('') || '<span style="color:var(--text-muted)">—</span>'}
+    const _v171SemResp = (usuario === _V135_SEM_RESP);
+    // "livre" = nenhum compromisso, nem parado à esquerda nem marcado em dia
+    // nenhum. É a informação que o Fernando pediu: a grade tem de dizer quem
+    // pode receber trabalho, e não só quem já está cheio.
+    const _v171Vazio = !slot.atras.length && !Object.keys(slot.dias).length;
+    const _v171Uk = _v171Norm(usuario);
+    _v171Ctx.ocup[_v171Uk] = _v171Ctx.ocup[_v171Uk] || {};
+
+    // ── coluna 0, ordenada e contada ─────────────────────────────────────────
+    const _v171Atras = _v171OrdenarAtras(slot.atras);
+    const _v171NAtr  = _v171Atras.filter(x => !!x.dia).length;
+    const _v171NSem  = _v171Atras.length - _v171NAtr;
+    const _v171Aberto = _V171_ABERTOS.has(_v171Uk);
+    const _V171_TETO = 4;
+    const _v171Mostra = (_v171Aberto || _v171Atras.length <= _V171_TETO)
+      ? _v171Atras : _v171Atras.slice(0, _V171_TETO);
+    // 🕳 ACHADO NA BANCADA (08/09): o índice da seleção era preenchido pelo
+    //    desenho do chip — ou seja, só conhecia os 4 itens VISÍVEIS. Selecionar
+    //    dois e recolher a célula fazia o 5º sumir da gravação EM SILÊNCIO: a
+    //    tela dizia "2 selecionados" e a rede levava 1. Índice tem de conhecer
+    //    a lista INTEIRA; o teto é do desenho, não do que existe.
+    _v171Atras.forEach(it => { _v171Idx.set(_v171Uid(it), { it: it, usuario: usuario }); });
+
+    const _v171Chip = it => {
+      const uid = _v171Uid(it);
+      _v171Idx.set(uid, { it: it, usuario: usuario });
+      const sel = _v171Sel.has(uid);
+      const idade = _v171Idade(it);
+      const quando = idade != null ? ('há ' + idade + (idade > 1 ? ' dias' : ' dia')) : 'sem data';
+      const podeSel = _v171Modo && _v171Selecionavel(it);
+      let cor, bg, ico, rot, tip, clique;
+      if (it._dem) {
+        cor = 'var(--purple,#7c3aed)'; bg = 'rgba(124,58,237,.12)'; ico = '🗓';
+        rot = String(it.titulo || 'Demanda').slice(0, 15);
+        tip = 'DEMANDA · ' + (it.titulo || '') + (it.dia ? ' · previsto ' + _v171DiaBR(it.dia) + ' (' + quando + ')' : ' · sem data');
+        clique = "_v135AbrirDemanda('" + escJs(String(it.demanda_id || '')) + "')";
+      } else if (it._os) {
+        cor = '#0f766e'; bg = 'rgba(15,118,110,.12)'; ico = '🔧';
+        rot = String(it.numero_os || 'OS').slice(0, 15);
+        tip = 'OS ' + (it.numero_os || it.os_id) + (it.cliente ? ' · ' + it.cliente : '') +
+              (it.dia ? ' · agendada para ' + _v171DiaBR(it.dia) + ' ' + _satHHMM(it.inicio_previsto) : '') +
+              ' · a data da OS se muda na própria OS, não por arrasto';
+        clique = "openOSDetail('" + escJs(String(it.os_id || '')) + "')";
+      } else {
+        cor = it.dia ? 'var(--red)' : 'var(--border)'; bg = it.dia ? 'rgba(220,38,38,.12)' : 'var(--bg)';
+        ico = it.dia ? '🔴 ' : '';
+        rot = String(it.nome || '').slice(0, 16);
+        tip = (it.nome || '') + ' · OS ' + (it.os_numero || it.os_id) + (it.dia ? ' · previsto ' + _v171DiaBR(it.dia) + ' (' + quando + ')' : ' · sem data');
+        clique = "_satAbrirDesignar('" + escJs(String(it.os_id || '')) + "','" + escJs(String(it.tarefa_id || '')) +
+                 "',{usuario:'" + escJs(usuario) + "',origem:'agenda'})";
+      }
+      const acao = podeSel ? ('_v171Toggle(event,\'' + escJs(uid) + '\')') : clique;
+      return '<div onclick="' + acao + '" title="' + escHtml(tip + (podeSel ? ' · clique para selecionar' : '')) + '"' +
+        ' class="' + (sel ? 'v171sel' : '') + '"' +
+        ' style="display:flex;align-items:center;gap:3px;background:' + bg + ';border:1px solid ' + cor +
+        ';border-radius:4px;padding:1px 4px;margin-bottom:2px;font-size:9px;cursor:pointer;color:' +
+        (it._dem ? 'var(--purple,#7c3aed)' : (it._os ? '#0f766e' : (it.dia ? 'var(--red)' : 'var(--text2)'))) + '">' +
+        (podeSel ? '<span style="font-size:9px">' + (sel ? '☑' : '☐') + '</span>' : '') +
+        '<span style="flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + ico + escHtml(rot) + '</span>' +
+        (idade != null ? '<span style="font-size:8px;opacity:.75;white-space:nowrap">' + idade + 'd</span>' : '') +
+        '</div>';
+    };
+
+    const _v171Cab = _v171Atras.length
+      ? ('<div style="font-size:8px;color:var(--text-muted);margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' +
+         (_v171NAtr ? '<b style="color:var(--red)">' + _v171NAtr + ' atrasada' + (_v171NAtr > 1 ? 's' : '') + '</b>' : '') +
+         (_v171NAtr && _v171NSem ? ' · ' : '') +
+         (_v171NSem ? _v171NSem + ' sem data' : '') + '</div>')
+      : '';
+    const _v171Mais = (_v171Atras.length > _V171_TETO)
+      ? ('<div onclick="_v171VerTodos(\'' + escJs(usuario) + '\')" style="font-size:8.5px;color:var(--accent);cursor:pointer;margin-top:1px">' +
+         (_v171Aberto ? '▲ mostrar menos' : '▼ ver todos (' + _v171Atras.length + ')') + '</div>')
+      : '';
+
+    html += `<tr${_v171Vazio ? ' style="opacity:.72"' : ''}>
+      <td style="padding:6px;border-bottom:1px solid var(--border);font-weight:600;white-space:nowrap;position:sticky;left:0;background:var(--surface,var(--bg))">${escHtml(usuario)}${_v171Vazio && !_v171SemResp ? '<span class="v171livre">livre</span>' : ''}</td>
+      <td style="padding:4px 6px;border-bottom:1px solid var(--border);vertical-align:top;min-width:90px;max-width:150px">
+        ${_v171Cab}${_v171Mostra.map(_v171Chip).join('') || '<span style="color:var(--text-muted)">—</span>'}${_v171Mais}
       </td>
       ${colunas.map(d => {
         const key = _satDiaKeyLocal(d);
@@ -29729,6 +30289,12 @@ function _satRenderAgenda(result) {
         const marcados = _v135Sobrepostos(doDiaTudo);           // V135 (A4)
         const faixas   = _v135Faixas(doDiaTudo);                // V135 (A4)
         const util = diasUteis.indexOf(d.getDay() === 0 ? 7 : d.getDay()) >= 0;
+        // V171 — a ocupação do dia, na MESMA unidade e pela MESMA função que
+        // desenha os blocos (`_v135Janela`). É daqui que sai o "primeiro vão
+        // livre" do arrasto: um segundo cálculo divergiria do desenho em duas
+        // rodadas, e o horário sugerido cairia em cima de coisa que está à vista.
+        _v171Ctx.ocup[_v171Uk][key] = doDiaTudo.map(x => _v135Janela(x))
+                                               .filter(Boolean).map(j => [j.a, j.b]);
         // V135 (A4) — a demanda OCUPA a pessoa, então entra na carga do dia.
         // Deixá-la fora faria a grade dizer que cabe mais coisa do que cabe.
         const minDia = doDiaTudo.reduce((s, t) => s + (Number(t.tempo_estimado_min) || 60), 0);
@@ -29739,8 +30305,16 @@ function _satRenderAgenda(result) {
         const semHora = doDia.filter(t => !comHora.includes(t));
         const demComHora = demDia.filter(x => !!_v135Janela(x));   // V135 (A4)
         const demSemHora = demDia.filter(x => !_v135Janela(x));
+        // ⚠ A faixa de soltar SÓ existe enquanto há seleção, e nunca na linha
+        //   "— sem responsável —" (designar para esse literal gravaria um nome
+        //   que não é de ninguém). Alvo permanente vira alvo clicado sem querer.
+        const solta = (_v171Modo && _v171Nsel && !_v171SemResp)
+          ? `<div onclick="_v171Soltar(event,'${escJs(usuario)}','${key}')" title="${escHtml('Agendar aqui os ' + _v171Nsel + ' item(ns) selecionados, em sequência, no primeiro vão livre do turno')}"
+               class="v171solta"
+               style="margin-bottom:2px;text-align:center;font-size:8.5px;font-weight:700;color:var(--accent);border:1px dashed var(--accent);border-radius:3px;padding:1px 0;cursor:copy;background:rgba(37,99,235,.07)">＋ soltar ${_v171Nsel}</div>`
+          : '';
         return `<td style="padding:2px 3px;border-bottom:1px solid var(--border);border-left:1px solid var(--border);vertical-align:top;min-width:92px;${fundo}">
-          <div style="position:relative;height:26px;background:var(--bg);border-radius:3px">${comHora.map(t => bloco(t, usuario, marcados, faixas)).join('')}${demComHora.map(x => _v135BlocoDem(x, marcados, faixas)).join('')}${osDia.map(x => _v151BlocoOS(x, marcados, faixas)).join('')}</div>
+          ${solta}<div style="position:relative;height:26px;background:var(--bg);border-radius:3px">${comHora.map(t => bloco(t, usuario, marcados, faixas)).join('')}${demComHora.map(x => _v135BlocoDem(x, marcados, faixas)).join('')}${osDia.map(x => _v151BlocoOS(x, marcados, faixas)).join('')}</div>
           <div style="margin-top:2px">${semHora.map(t => chipSemHora(t, usuario)).join('')}${demSemHora.map(x => _v135ChipDem(x)).join('')}</div>
           ${minDia ? `<div style="font-size:8px;color:${carga > 1 ? 'var(--red)' : 'var(--text-muted)'};margin-top:1px">${Math.round(minDia / 60 * 10) / 10}h / ${Math.round(capMin / 60 * 10) / 10}h${carga > 1 ? ' ⚠' : ''}</div>` : ''}
         </td>`;
