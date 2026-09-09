@@ -3923,7 +3923,51 @@ v50 — Resiliência de rede: retry/backoff em gsGet e syncToGS
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>ProperCare Manager · Gestão PGP v3.85 (PCM V172)</title>
+<!-- PCM V173 (09/09/2026) — A RODADA DE VELOCIDADE (Ondas 0, 1, 2 e 4.1 do
+     plano `00_EM_ABERTO/NEWFILE_PLANO_VELOCIDADE_PCM_2026-09-09.md`).
+     Feito EM CIMA do V172, que este arquivo CONTEM INTEIRO. PUBLIQUE SO ESTE.
+
+     🔴 ORDEM DE PUBLICACAO: SQL (F4) -> GAS v138 -> ESTE ARQUIVO.
+        O GAS v138 nao e requisito para o front funcionar (nenhuma action nova,
+        nenhum campo novo), mas a ordem do projeto e essa e nao se inverte.
+
+     ═══ O QUE ESTA RODADA CONSERTA, e o numero de cada um ═══
+     1.1 `sem_pecas:'true'` nos 5 call sites do `getMaquinasByOS`. O parametro
+         existe no GAS desde o v97-2 e os OITO formularios ja o mandavam; o PCM
+         nunca mandou. Ele tira a aba MACHINE_PARTS inteira do caminho de uma
+         consulta medida em 6.881 ms (31/08, cabecalho deste arquivo, L~461).
+     1.2 A guarda de `_tiposOS` no `openModalOS` — o UNICO `getTiposOS` do
+         arquivo em que a falta era defeito. Valia ~3,4 s em TODA abertura.
+     1.3 O envelope do `getMaquinasByOS` passa a ser compartilhado entre a aba
+         "Dados" e o "Editar OS", que o pediam duas vezes seguidas para a mesma
+         OS. Guarda a RESPOSTA CRUA, nao os ids — ver o comentario longo la.
+     1.4 `_abrirTrocarPipeline`: as duas idas independentes saem juntas.
+     2   UMA camada de cache (memoria -> localStorage -> rede) para os cinco
+         catalogos, com single-flight e invalidacao NO TRANSPORTE.
+     4.1 O medidor de tarefa longa, desligado por padrao (`localStorage.pcm_perf`).
+
+     ═══ O QUE ESTA RODADA NAO CONSERTA, dito para nao virar surpresa ═══
+     🔴 A ABA PIPELINE. Ela ja estava certa: faz UMA consulta e a guarda dela
+        existe desde a V119. Que ela seja lenta mesmo assim e o achado — o
+        problema dela e o PISO do Apps Script (~3,4 s por chamada, medido com o
+        `ping` vazio), e quem resolve isso e a Onda 3 (leitura no espelho
+        Supabase, ~42 ms). Nao ha o que consertar aqui.
+
+     ═══ TRES CORRECOES DE DIAGNOSTICO, registradas para nao voltarem ═══
+     🕳 `_etqImprimir` NAO faz chamada de rede nenhuma (10 linhas, sincrona). A
+        1a versao do laudo mandava paralelizar 4 idas nela: era contaminacao do
+        meu analisador estatico, que fatiava por declaracao na coluna 0 e
+        despejava o modulo do celular inteiro dentro dela.
+     🕳 `_pcmAnexosDaVisita` NAO se paraleliza: os `getAttachments` dela sao uma
+        ESCADA COM CURTO-CIRCUITO (o laco para na 1a chave que responde; a
+        varredura completa de `foto_pcf` so roda se tudo falhar). Junta-las
+        faria o PDF pagar SEMPRE a consulta mais cara. Ficou como esta.
+     🕳 `saveResetPin` NAO e uma action: e o nome da funcao de tela (L~17708),
+        que posta `saveUsuario`. Zero ocorrencias no GAS.
+
+     Bancada: _testes/NEWFILE_T_PCM_V173.mjs
+-->
+<title>ProperCare Manager · Gestão PGP v3.86 (PCM V173)</title>
 <link rel="icon" type="image/jpeg" href="data:image/jpeg;base64,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">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -5281,7 +5325,7 @@ tr.tadm-feito td{background:#dcfce7 !important;color:#15803d;font-weight:700}
 <aside class="nav-sidebar" aria-label="Navegação principal">
   <div class="nav-brand">
     <span class="nav-brand-mark">PCM</span>
-    <span class="nav-brand-sub">v3.85 · V172</span>
+    <span class="nav-brand-sub">v3.86 · V173</span>
   </div>
 
   <nav class="nav-groups">
@@ -8586,7 +8630,7 @@ async function _gsRequestComRetry_(url, options, maxRetries, forcarTetoEscrita) 
 //   limitada pelo teto do ping. Falhou, a exceção sobe idêntica — mesmo `code`,
 //   mesma mensagem, mesmos catch dos ~90 call sites.
 // ════════════════════════════════════════════════════════════════════════════
-async function syncToGS(action,payload){
+async function syncToGS(action,payload,opts){
   // V108 [item 9b] — antes: `return null` mudo. Caller sem null-check seguia o
   // fluxo COMO SE tivesse gravado. Agora falha alto e o motivo aparece.
   if(gsUrl && !gsConnected){
@@ -8599,10 +8643,47 @@ async function syncToGS(action,payload){
     e.code = 'OFFLINE_PCM'; e.gsAction = action;
     throw e;
   }
-  const json = await _gsRequestComRetry_(gsUrl, {
-    method:'POST',
-    body: gcBody({action,key:_AUTH_HASH,...payload})
-  });
+  // V173 (BLOCO 2) — `getTemplates` e LEITURA, mas so existe no doPost (o
+  // `case 'getTemplates'` do GAS esta dentro do doPost; por GET vem "Acao
+  // desconhecida"). Entao o cache de leitura precisa valer aqui tambem.
+  const _v173Cacheavel = _v173PodeCachear(action, payload, opts);
+  const _v173Chave = _v173Cacheavel ? _v173CacheChave(action, payload) : '';
+  if (_v173Cacheavel) {
+    const _c = _v173CacheLer(_v173Chave);
+    if (_c && (Date.now() - _c.at) < _V173_CACHEAVEIS[action].ttl) return _v173Clonar(_c.dados);
+    const _voo = _v173CacheVoo.get(_v173Chave);
+    if (_voo) return _voo;
+  }
+  const _v173Ida = (async function(){
+    const json = await _gsRequestComRetry_(gsUrl, {
+      method:'POST',
+      body: gcBody({action,key:_AUTH_HASH,...payload})
+    });
+    return json;
+  })();
+  if (_v173Cacheavel) {
+    const _p = _v173Ida.then(function(j){
+      if (j && j.status === 'ok') _v173CacheGravar(_v173Chave, j);
+      return _v173Clonar(j);
+    }).catch(function(e){
+      const _velho = _v173CacheLer(_v173Chave);
+      if (_velho) {
+        console.warn('[V173] ' + action + ' falhou (' + (e && e.message) +
+                     ') — servindo copia de ' + new Date(_velho.at).toLocaleString('pt-BR'));
+        return _v173Clonar(_velho.dados);
+      }
+      throw e;
+    });
+    _v173CacheVoo.set(_v173Chave, _p);
+    const _r = await _p.finally(function(){ _v173CacheVoo.delete(_v173Chave); });
+    if(!_r || _r.status !== 'ok'){
+      const erroGS = new Error(_r?.error || 'Erro GS');
+      erroGS.gsAction = action; erroGS.gsEnvelope = _r;
+      throw erroGS;
+    }
+    return _r;
+  }
+  const json = await _v173Ida;
   if(!json || json.status !== 'ok'){
     // V132 — mesmo padrão do `gsGet` logo abaixo (V108, item 9a): o envelope
     // vai junto do Error. Quem só lê `e.message` (todos os call sites antigos)
@@ -8613,21 +8694,205 @@ async function syncToGS(action,payload){
     erroGS.gsAction = action; erroGS.gsEnvelope = json;
     throw erroGS;
   }
+  // ── V173 (BLOCO 2) · a invalidacao mora AQUI, no transporte ──────────────
+  // Todo caminho de escrita do PCM desemboca neste ponto: o `gsPost` delega
+  // para ca, e o `_admPost` -> `_paPost` tambem. Enganchar aqui cobre os 14
+  // pontos de escrita de hoje E os que forem escritos depois — que e a unica
+  // forma de invalidacao que nao depende de alguem lembrar.
+  // ⚠ So depois do `status:'ok'`: escrita recusada nao invalida nada.
+  try { _v173InvalidarPorEscrita(action); } catch(e) { console.warn('[V173] invalidacao:', e && e.message); }
   return json;
 }
 
+// ══════════════════════════════════════════════════════════════════════════════
+// V173 (BLOCO 2) — UMA CAMADA DE CACHE, no lugar de onze mecanismos avulsos.
+// ──────────────────────────────────────────────────────────────────────────────
+// 🕳 O QUE O LEVANTAMENTO DE 09/09 ACHOU, e a 1a versao do laudo errou.
+//    Eu escrevi "o PCM nao tem cache de leitura NENHUM". Falso: ele tem ONZE
+//    mecanismos vivos — 4 caches (`_v151OsAgenda` com TTL de 90 s,
+//    `_v161OSMaqCache`, `_docsOsMeta*`, `_mobCacheLer/Gravar` com localStorage
+//    de 12 h) e 7 single-flights (`_docsAnexosEmVoo`, `_gosFilaEmVoo`,
+//    `_supaTokenGet`, `testGS`, `_pcmReconEmVoo`, `_V162_VOO`, `_mobEmVoo`).
+//
+// 🔑 O PROBLEMA NAO E A FALTA DO PADRAO — E A FALTA DA CAMADA. Cada um nasceu
+//    para UMA tela, com nome proprio e regra propria. Consequencias medidas:
+//      · NADA sobrevive a um F5 (so o do celular usa localStorage);
+//      · tela nova NAO HERDA nada — o `getTiposOS` sem guarda do `openModalOS`
+//        e a prova viva disso;
+//      · NAO EXISTE invalidacao por escrita em lugar nenhum — e hoje isso e
+//        seguro *porque* tudo morre no F5. Ao persistir, vira obrigatorio.
+//
+// O QUE ESTA CAMADA FAZ, e so isso:
+//   memoria -> localStorage -> rede, com single-flight e invalidacao por
+//   escrita. TTL de 12 h, decidido pelo Fernando em 09/09 com a pergunta na
+//   mesa: "voce edita tipo de OS / usuario / template DIRETO NA PLANILHA?" —
+//   resposta: "so edito pelo PCM". E por isso que 12 h e seguro aqui e nao
+//   seria em outra casa: toda escrita passa pelo PCM, e toda escrita invalida.
+//
+// ⚠ SO CATALOGO. `getOS`, `getPipelineByOS` e `getMaquinasByOS` NAO entram:
+//   sao dado operacional, mudam o tempo todo, e quem os resolve e a Onda 3
+//   (leitura no espelho Supabase). Cachear dado operacional por 12 h seria
+//   trocar lentidao por mentira, que e pior.
+//
+// ⚠ AS TELAS DE ADMINISTRACAO NAO LEEM DO CACHE, de proposito. Duas portas:
+//   · `opts.semCache: true` (a tela de Tipos de OS e a de Templates);
+//   · qualquer chamada com `incluir_inativos` — que e exatamente como as telas
+//     de Usuarios e Perfis se distinguem dos pickers desde a V145 (B2/B3).
+//   Quem CADASTRA sempre ve o servidor.
+// ══════════════════════════════════════════════════════════════════════════════
+const _V173_CACHE_PREFIXO = 'pcm_cache_v1:';
+const _V173_CACHE_TTL     = 12 * 3600 * 1000;   // 12 h
+// A lista das acoes cacheaveis e a lista das que a escrita derruba nascem juntas,
+// logo abaixo, DE PROPOSITO: o CLAUDE.md diz que lista escrita a mao em dois
+// lugares e bug esperando data. Aqui e um lugar so, e a bancada confere que toda
+// acao cacheada tem quem a derrube.
+const _V173_CACHEAVEIS = {
+  getTiposOS:  { ttl: _V173_CACHE_TTL },
+  getUsuarios: { ttl: _V173_CACHE_TTL },
+  getPerfis:   { ttl: _V173_CACHE_TTL },
+  getTemplates:{ ttl: _V173_CACHE_TTL },
+  getUnidades: { ttl: _V173_CACHE_TTL }
+};
+// 🔴 A INVALIDACAO MORA NO TRANSPORTE, NAO NOS CALL SITES.
+//    O laudo mandava "invalidar em saveTipoOS, saveUsuario, savePerfil…" e
+//    avisava "conte os call sites um a um — o inventario do Bloco C dizia 4 e
+//    eram 5". A licao certa nao e contar melhor: e nao ter de contar. Sao 14
+//    pontos de escrita hoje (3 de `saveUsuario` sozinhos: cadastro L~17653,
+//    reset de PIN L~17717, ativar/inativar L~17733) e o `_admPost` e o `gsPost`
+//    desembocam TODOS no `syncToGS`. Enganchando aqui, um ponto de escrita novo
+//    escrito daqui a seis meses ja nasce invalidando.
+// ⚠ E `saveResetPin` NAO e uma action: e o nome da FUNCAO DE TELA (L~17708),
+//   que posta `saveUsuario`. No GAS v137 sao zero ocorrencias. Por isso ela nao
+//   aparece neste mapa — e por isso enganchar no transporte e mais seguro que
+//   listar nomes que eu posso ler errado.
+const _V173_ESCRITA_DERRUBA = {
+  saveTipoOS:    ['getTiposOS'],
+  deleteTipoOS:  ['getTiposOS'],
+  saveUsuario:   ['getUsuarios'],
+  savePerfil:    ['getPerfis'],
+  deletePerfil:  ['getPerfis'],
+  saveTemplate:  ['getTemplates'],
+  saveUnidade:   ['getUnidades'],
+  deleteUnidade: ['getUnidades']
+};
+
+var _v173CacheMem = new Map();   // chave -> { at, dados }
+var _v173CacheVoo = new Map();   // chave -> promise (single-flight)
+
+function _v173CacheChave(action, params){
+  let p = '';
+  try {
+    const o = params || {};
+    p = Object.keys(o).sort().map(k => k + '=' + String(o[k])).join('&');
+  } catch(e) { p = ''; }
+  return _V173_CACHE_PREFIXO + action + '|' + p;
+}
+// Copia funda na SAIDA do cache. Sem isto, dois chamadores compartilham o mesmo
+// array: um `push` num deles envenena o outro e o cache passa a servir dado que
+// ninguem gravou. Catalogo e pequeno; o custo e ruido.
+function _v173Clonar(v){
+  try { return JSON.parse(JSON.stringify(v)); } catch(e) { return v; }
+}
+function _v173CacheLer(chave){
+  const m = _v173CacheMem.get(chave);
+  if (m) return m;
+  try {
+    const cru = localStorage.getItem(chave);
+    if (!cru) return null;
+    const o = JSON.parse(cru);
+    if (!o || typeof o.at !== 'number') return null;
+    _v173CacheMem.set(chave, o);
+    return o;
+  } catch(e) { return null; }
+}
+function _v173CacheGravar(chave, dados){
+  const o = { at: Date.now(), dados: dados };
+  _v173CacheMem.set(chave, o);
+  try { localStorage.setItem(chave, JSON.stringify(o)); } catch(e) { /* cota / modo anonimo */ }
+}
+// Derruba TUDO de uma action (todas as variacoes de parametro dela).
+function _v173CacheDerrubar(action){
+  const pref = _V173_CACHE_PREFIXO + action + '|';
+  try {
+    Array.from(_v173CacheMem.keys()).forEach(function(k){
+      if (k.indexOf(pref) === 0) _v173CacheMem.delete(k);
+    });
+  } catch(e) {}
+  try {
+    const fora = [];
+    for (let i = 0; i < localStorage.length; i++) {
+      const k = localStorage.key(i);
+      if (k && k.indexOf(pref) === 0) fora.push(k);
+    }
+    fora.forEach(function(k){ try { localStorage.removeItem(k); } catch(e) {} });
+  } catch(e) {}
+}
+// Chamada pelo `syncToGS` depois de toda escrita bem-sucedida.
+function _v173InvalidarPorEscrita(action){
+  const alvos = _V173_ESCRITA_DERRUBA[action];
+  if (alvos) alvos.forEach(_v173CacheDerrubar);
+  // O envelope do getMaquinasByOS e cacheado a parte (V173 bloco 1.3) e quem o
+  // muda e o `saveOS` — inclusive o "desvincular", que e saveOS sem a maquina.
+  if (action === 'saveOS' && typeof _v173MaqOSInvalidar === 'function') _v173MaqOSInvalidar();
+}
+function _v173PodeCachear(action, params, opts){
+  if (!_V173_CACHEAVEIS[action]) return false;
+  if (opts && opts.semCache) return false;
+  // A tela de administracao SEMPRE ve o servidor. Desde a V145 (B2/B3) ela e a
+  // unica que manda `incluir_inativos` — o comentario daquela rodada diz isso
+  // com todas as letras. Reusar essa marca evita inventar um sinal novo.
+  try { if (params && params.incluir_inativos !== undefined) return false; } catch(e) {}
+  return true;
+}
+
 async function gsGet(action, params = {}, opts = {}){
-  const qs = new URLSearchParams({ action, key:_AUTH_HASH, ...params });
-  const json = await _gsRequestComRetry_(gsUrl + '?' + qs.toString() + gcParam(), { method:'GET' });
-  // V108 [item 9a] — antes devolvia o envelope cru: quem nao checasse `r.status`
-  // lia {status:'error'} como DADO VALIDO. Agora lanca, igual o syncToGS ja fazia.
-  // `opts.tolerante` para os poucos call sites que querem o envelope cru.
-  if (!opts.tolerante && json && json.status === 'error') {
-    const e = new Error(json.error || ('Erro do servidor em ' + action));
-    e.gsAction = action; e.gsEnvelope = json;
-    throw e;
+  // ── V173 (BLOCO 2) · cache antes da rede ────────────────────────────────
+  const _cacheavel = _v173PodeCachear(action, params, opts);
+  const _chave = _cacheavel ? _v173CacheChave(action, params) : '';
+  if (_cacheavel) {
+    const _c = _v173CacheLer(_chave);
+    if (_c && (Date.now() - _c.at) < _V173_CACHEAVEIS[action].ttl) return _v173Clonar(_c.dados);
+    const _voo = _v173CacheVoo.get(_chave);
+    if (_voo) return _voo;
   }
-  return json;
+
+  const _buscar = (async function(){
+    const qs = new URLSearchParams({ action, key:_AUTH_HASH, ...params });
+    const json = await _gsRequestComRetry_(gsUrl + '?' + qs.toString() + gcParam(), { method:'GET' });
+    // V108 [item 9a] — antes devolvia o envelope cru: quem nao checasse `r.status`
+    // lia {status:'error'} como DADO VALIDO. Agora lanca, igual o syncToGS ja fazia.
+    // `opts.tolerante` para os poucos call sites que querem o envelope cru.
+    if (!opts.tolerante && json && json.status === 'error') {
+      const e = new Error(json.error || ('Erro do servidor em ' + action));
+      e.gsAction = action; e.gsEnvelope = json;
+      throw e;
+    }
+    return json;
+  })();
+
+  if (!_cacheavel) return _buscar;
+
+  // ⚠ o `finally` limpa a trava nos DOIS caminhos. Sem ele, uma leitura que
+  //   falha uma vez trava a renovacao pela sessao inteira — que e exatamente o
+  //   defeito A2 do PCF V104 (`_pgpAllClientsCacheOk`).
+  const _p = _buscar.then(function(json){
+    _v173CacheGravar(_chave, json);
+    return _v173Clonar(json);
+  }).catch(function(e){
+    // 🔴 FALHA DE REDE NUNCA APAGA CACHE BOM. Havendo copia — mesmo vencida —
+    //    ela vale mais que uma tela de erro: e a regra do V140/V153, "ausencia
+    //    de dado nao pode ser exibida como fato". O que NAO se faz e devolver
+    //    lista vazia, que a tela leria como "nao existe nenhum".
+    const _velho = _v173CacheLer(_chave);
+    if (_velho) {
+      console.warn('[V173] ' + action + ' falhou (' + (e && e.message) +
+                   ') — servindo copia de ' + new Date(_velho.at).toLocaleString('pt-BR'));
+      return _v173Clonar(_velho.dados);
+    }
+    throw e;
+  });
+  _v173CacheVoo.set(_chave, _p);
+  return _p.finally(function(){ _v173CacheVoo.delete(_chave); });
 }
 
 // ═══════════════════════════════════════════════════════════
@@ -21328,7 +21593,7 @@ function _getSelectedOSMachineIds() {
 
 async function _loadOSLinkedMachines(osId) {
   if (!osId) return [];
-  const r = await syncToGS('getMaquinasByOS', { id_os: osId });
+  const r = await _v173MaqOS(osId);   // V173 — envelope compartilhado + sem_pecas
   const fromOS = Array.isArray(r?.os?.maquinas_vinculadas) ? r.os.maquinas_vinculadas : [];
   const fromMachines = Array.isArray(r?.machines) ? r.machines.map(_osMachineId).filter(Boolean) : [];
   return Array.from(new Set([...fromOS.map(String), ...fromMachines.map(String)]));
@@ -21361,6 +21626,74 @@ async function _loadOSLinkedMachines(osId) {
 //   duas vezes (ler para saber quem fica, e ler de novo para repintar).
 // ══════════════════════════════════════════════════════════════════════════════
 var _v161OSMaqCache = { osId: '', ids: [] };
+
+// ══════════════════════════════════════════════════════════════════════════════
+// V173 (1.1 + 1.3) — O ENVELOPE DO `getMaquinasByOS`, PEDIDO UMA VEZ SO.
+// ──────────────────────────────────────────────────────────────────────────────
+// 🔑 MEDIDO em 31/08 e escrito no cabecalho DESTE arquivo (linha ~461):
+//    `getMaquinasByOS` = 6.881 ms. E a consulta mais cara do detalhe da OS.
+//
+// 🔴 E ELA SAIA DUAS VEZES no caminho mais usado do dia: a aba "Dados" chama
+//    `_renderOSLinkedMachinesDetail`, o adm clica "✏ Editar OS" e o
+//    `openModalOS` chama `_loadOSLinkedMachines` — mesma OS, mesma resposta,
+//    ~6,9 s pagos de novo, segundos depois.
+//
+// 🕳 A ARMADILHA QUE A AUDITORIA PEGOU, e por isso este cache guarda o ENVELOPE
+//    e nao os ids. O `_v161OSMaqCache` acima guarda
+//    `machines.map(_osMachineId) + missing_machine_ids`; o
+//    `_loadOSLinkedMachines` devolve a UNIAO de `os.maquinas_vinculadas` com
+//    `machines.map(_osMachineId)`. Sao conjuntos QUASE iguais — nao iguais. Uma
+//    OS com `missing_machine_ids`, ou com um vinculo que nao resolveu para
+//    maquina, faz os dois divergirem. Servir um pelo outro seria um cache que
+//    devolve dado que ninguem calculou.
+//    ⇒ Guardamos a RESPOSTA CRUA e deixamos cada funcao derivar o que sempre
+//      derivou. Assim os dois resultados sao identicos POR CONSTRUCAO, e nao
+//      por uma comparacao minha que pode estar errada.
+//
+// TTL curto de proposito (2 min): isto e dado OPERACIONAL. O suficiente para
+// cobrir "abri o detalhe -> cliquei em editar", e nao mais que isso. Alem
+// disso, todo `saveOS` derruba a entrada — inclusive o "Desvincular", que e um
+// `saveOS` sem aquela maquina (ver `_v161DesvincularMaquina`).
+//
+// 🔴 E o `sem_pecas:'true'` que vai daqui e o outro achado da rodada. O
+//    parametro existe no GAS desde o v97-2 e os OITO formularios ja o mandam; o
+//    PCM nunca mandou. Conferido corpo a corpo nos 5 call sites: NENHUM le
+//    `.parts` deste envelope (os usos de `.parts` no PCM vem do `db.machines`
+//    do catalogo). Com ele, o GAS deixa de ler a aba MACHINE_PARTS inteira —
+//    e ainda a varria uma vez POR MAQUINA VINCULADA.
+//    ⚠ Com o parametro, `eq.parts` sai `{}`: a chave NUNCA some.
+// ══════════════════════════════════════════════════════════════════════════════
+const _V173_MAQOS_TTL = 120000;   // 2 min — dado operacional, nao catalogo
+var _v173MaqOSCache = { osId: '', env: null, at: 0 };
+var _v173MaqOSVoo   = { osId: '', p: null };
+
+function _v173MaqOSInvalidar(osId){
+  // Sem argumento derruba tudo: e o que o `saveOS` faz, porque nem todo caminho
+  // de save sabe dizer qual OS mexeu.
+  if (!osId || String(_v173MaqOSCache.osId) === String(osId)) {
+    _v173MaqOSCache = { osId: '', env: null, at: 0 };
+  }
+}
+
+async function _v173MaqOS(osId, forcar){
+  const id = String(osId == null ? '' : osId);
+  if (!id) throw new Error('id_os é obrigatório');
+  if (!forcar && String(_v173MaqOSCache.osId) === id && _v173MaqOSCache.env &&
+      (Date.now() - _v173MaqOSCache.at) < _V173_MAQOS_TTL) {
+    return _v173MaqOSCache.env;
+  }
+  if (!forcar && _v173MaqOSVoo.p && _v173MaqOSVoo.osId === id) return _v173MaqOSVoo.p;
+  const _p = (async function(){
+    const r = await syncToGS('getMaquinasByOS', { id_os: id, sem_pecas: 'true' });
+    _v173MaqOSCache = { osId: id, env: r, at: Date.now() };
+    return r;
+  })();
+  // mesmo `finally` do `_supaTokenGet`: falha nao pode trancar a proxima leitura
+  _v173MaqOSVoo = { osId: id, p: _p.finally(function(){
+    if (_v173MaqOSVoo.osId === id) _v173MaqOSVoo = { osId: '', p: null };
+  }) };
+  return _v173MaqOSVoo.p;
+}
 
 function _v161MaquinaIntocada(m) {
   const st = String((m && m.status_atendimento) || '').trim().toLowerCase();
@@ -21410,7 +21743,7 @@ async function _renderOSLinkedMachinesDetail(osId) {
   const el = document.getElementById('osLinkedMachinesDetail');
   if (!el) return;
   try {
-    const r = await syncToGS('getMaquinasByOS', { id_os: osId });
+    const r = await _v173MaqOS(osId);   // V173 — envelope compartilhado + sem_pecas
     const machines = Array.isArray(r?.machines) ? r.machines : [];
     const missing = Array.isArray(r?.missing_machine_ids) ? r.missing_machine_ids : [];
     _v161OSMaqCache = { osId: osId, ids: machines.map(_osMachineId).filter(Boolean).concat(missing.map(String)) };
@@ -21763,7 +22096,7 @@ async function openModalOS(id, _v150Preset) {
   let os = id ? _osList.find(o => String(o.id_os || '') === String(id)) : null;
   if (id && !os) {
     try {
-      const _rOs = await syncToGS('getMaquinasByOS', { id_os: id });
+      const _rOs = await _v173MaqOS(id);   // V173 — envelope compartilhado + sem_pecas
       if (_rOs && _rOs.os && _rOs.os.id_os) os = _rOs.os;
     } catch (e) {
       if (e.message && e.message.includes('AUTH_GOOGLE')) { hubLogout(); return; }
@@ -21792,8 +22125,20 @@ async function openModalOS(id, _v150Preset) {
     }
 
     // Carregar tipos de OS dinamicamente
+    // ── V173 (1.2) — A GUARDA QUE NAO TINHA VIAJADO ATE AQUI ───────────────
+    // Este era o UNICO `getTiposOS` do arquivo em que a falta de guarda e
+    // defeito: ele saia SEMPRE, ~3,4 s (o piso do Apps Script), em toda
+    // abertura do "Editar OS". O `renderOS` ja fazia certo desde antes
+    // (`_tiposOS.length ? Promise.resolve(...) : gsGet(...)`) e o
+    // `_loadPipelineTab` desde a V119 — o conserto entrou nos dois e nao
+    // viajou ate aqui. E a mesma doenca do comparador de irmaos de 06/09,
+    // dentro de um arquivo so.
+    // ⚠ O outro `getTiposOS` sem guarda (a tela de Tipos de OS) fica como
+    //   esta, DE PROPOSITO: la o adm CADASTRA tipos e tem de ver o servidor.
     try {
-      const rt = await gsGet('getTiposOS');
+      const rt = _tiposOS.length
+        ? { tipos: _tiposOS }
+        : await gsGet('getTiposOS');
       _tiposOS = (rt?.tipos || []).filter(t => String(t.Ativo||'').toUpperCase() !== 'NÃO');
     } catch(e) {
       if (e.message && e.message.includes('AUTH_GOOGLE')) { hubLogout(); return; }
@@ -23513,8 +23858,22 @@ async function _abrirTrocarPipeline(btnEl, osId) {
   const box = document.getElementById('trocarPipelineAviso');
   if (box) box.innerHTML = '<div style="font-size:12px;color:var(--text-muted);margin-bottom:12px">Conferindo o que existe nesta OS…</div>';
   openModal('modalTrocarPipeline');
+  // ── V173 (1.4) — AS DUAS IDAS SAEM JUNTAS ─────────────────────────────────
+  // `getTemplates` enche o <select> e `getPipelineByOS` enche o aviso do que ja
+  // existe nesta OS. Sao independentes por construcao — o comentario do v89
+  // (L-1) logo abaixo ja dizia que uma nao pode impedir a outra — e cada ida
+  // custa o piso de ~3,4 s do Apps Script. Em serie, ~7 s so para abrir o modal.
+  // 🔴 O `.catch` vai NA CRIACAO da promessa, nunca no consumo. E a regra do
+  //    V157 (Z1), e foi por trocar so o CONSUMO que a bancada do V170 ficou
+  //    CEGA para o proprio conserto que ela devia provar.
+  // ⚠ Os dois `try/catch` abaixo ficam INTACTOS: cada um tem tratamento de
+  //   falha proprio e diferente (um poe "Erro ao carregar" no select, o outro
+  //   pinta a tarja amarela e LIBERA o botao). Aqui so se antecipa a partida.
+  const _pTpl  = syncToGS('getTemplates', {}).catch(function(e){ return { _v173Erro: e }; });
+  const _pPipe = syncToGS('getPipelineByOS', { os_id: osId }).catch(function(e){ return { _v173Erro: e }; });
   try {
-    const r = await syncToGS('getTemplates', {});
+    const r = await _pTpl;
+    if (r && r._v173Erro) throw r._v173Erro;
     const templates = (r?.templates || []).filter(t => String(t.Ativo||'').toUpperCase() !== 'NÃO');
     if (sel) {
       sel.innerHTML = '<option value="">Selecione um template *</option>' +
@@ -23526,7 +23885,8 @@ async function _abrirTrocarPipeline(btnEl, osId) {
   // v89 (L-1) — em bloco próprio: falhar em contar NÃO pode impedir a troca,
   // mas também não pode fingir que não há nada a perder.
   try {
-    const rp = await syncToGS('getPipelineByOS', { os_id: osId });
+    const rp = await _pPipe;                       // V173 (1.4) — ja estava em voo
+    if (rp && rp._v173Erro) throw rp._v173Erro;
     _trocarPipelineRenderAviso((rp && rp.tarefas) || []);
   } catch(e) {
     if (box) box.innerHTML = `<div style="background:#fffbeb;border:1px solid #fde68a;border-radius:var(--radius-sm);padding:10px 12px;margin-bottom:14px;font-size:12px;color:#92400e">
@@ -25005,7 +25365,8 @@ async function renderTemplateList() {
     el.innerHTML = '<div style="padding:32px;text-align:center;color:var(--text-muted)">Carregando…</div>';
   }
   try {
-    const r = await syncToGS('getTemplates', {});
+    // V173 (BLOCO 2) — esta tela EDITA templates: ela ve o servidor, sempre.
+    const r = await syncToGS('getTemplates', {}, { semCache: true });
     console.log('[getTemplates] raw response:', JSON.stringify(r));
     _templatesList = (r && r.templates) || [];
     _renderTemplateListUI();
@@ -26550,7 +26911,7 @@ async function pcmGerarPdfPreventivaOS(os_id) {
   toast('Montando o relatório de preventiva da OS…');
   try {
     await pcmEnsureJsPDF();   // V118 (A1) — jsPDF sob demanda, antes de qualquer rede
-    var rm = await gsGet('getMaquinasByOS', { id_os: os_id });
+    var rm = await gsGet('getMaquinasByOS', { id_os: os_id, sem_pecas: 'true' });   // V173 (1.1)
     var maquinas = (rm && rm.machines) || [];
     if (!maquinas.length) { toast('Esta OS não tem máquinas vinculadas.', 'error'); return; }
 
@@ -28457,7 +28818,8 @@ async function renderTiposOSList() {
   }
   try {
     const [rt, rtpl] = await Promise.all([
-      gsGet('getTiposOS'),
+      // V173 (BLOCO 2) — esta tela CADASTRA tipos: ela ve o servidor, sempre.
+      gsGet('getTiposOS', {}, { semCache: true }),
       _templatesList.length ? Promise.resolve({ templates: _templatesList }) : syncToGS('getTemplates', {}),
     ]);
     _tiposOS = rt.tipos || [];
@@ -31779,7 +32141,7 @@ async function _etqAbrir(osId, btnEl) {
     try {
       _etqInjetarEstilo();
       // ⚠ await DENTRO do try — o "✓ mentiroso" já apareceu 3× neste projeto.
-      var r = await syncToGS('getMaquinasByOS', { id_os: osId });
+      var r = await syncToGS('getMaquinasByOS', { id_os: osId, sem_pecas: 'true' });   // V173 (1.1)
       var os = (r && r.os) || null;
       if (!os) { toast('OS não encontrada.', 'error'); return; }
       _etqEstado.osId = osId;
@@ -36811,5 +37173,103 @@ async function _mkApagar() {
 }
 
 </script>
+<script>
+// ══════════════════════════════════════════════════════════════════════════════
+// V173 (BLOCO 4.1) — O MEDIDOR QUE FALTAVA. Desligado por padrao.
+// ──────────────────────────────────────────────────────────────────────────────
+// POR QUE ELE EXISTE, e por que ele vem ANTES do conserto.
+//   Em 09/09, ao percorrer o PCM no ar para escrever o tutorial, QUATRO de
+//   quatro telas (Gestao de OSs, Agenda, Tarefas do Adm, Documentos) travaram o
+//   navegador por mais de 30 s — a captura falhou com "renderer may be frozen or
+//   unresponsive". Isso NAO e espera de rede: e a thread principal nao
+//   devolvendo. Espera de rede nao congela o renderer.
+//
+// 🔴 E A CAUSA NAO ESTA PROVADA. O arquivo tem 2,24 MB (≈2,03 MB de JavaScript,
+//    583 `onclick` inline, 331 `innerHTML`, e as 20 telas coexistindo no DOM com
+//    `display:none`). E a hipotese obvia — e e POR SER OBVIA que ela precisa de
+//    medicao antes de conserto. A regra que este projeto ja quebrou tres vezes
+//    num dia so (06/09): nao inferir do formato do codigo; perguntar ao sistema.
+//
+// COMO USAR (nada muda enquanto nao for ligado):
+//   1. F12 -> Console -> cole:  localStorage.pcm_perf = '1'
+//   2. F5 e use a tela lenta normalmente.
+//   3. No console:  _v173PerfRelatorio()   -> tabela colavel
+//      Para desligar:  localStorage.removeItem('pcm_perf')
+//
+// O QUE ELE MEDE
+//   · toda "tarefa longa" (>50 ms) que bloqueou a thread principal, com o
+//     instante e a duracao;
+//   · quanto tempo cada troca de tela levou entre o clique e o fim da pintura;
+//   · o bloqueio TOTAL por tela — que e o numero que responde "trava?".
+//
+// ⚠ `longtask` nao existe em todo navegador (Safari nao tem). O try/catch
+//   engole isso de proposito: aqui o resultado de falhar e NAO MUDAR A TELA,
+//   que e o caso em que engolir falha e legitimo (regra de 06/09).
+// ══════════════════════════════════════════════════════════════════════════════
+(function () {
+  var LIGADO = false;
+  try { LIGADO = localStorage.getItem('pcm_perf') === '1'; } catch (e) {}
+  if (!LIGADO) return;
+
+  var _longas = [];
+  var _telas  = [];
+  var _atual  = null;
+
+  try {
+    var obs = new PerformanceObserver(function (lista) {
+      lista.getEntries().forEach(function (e) {
+        _longas.push({ em: Math.round(e.startTime), ms: Math.round(e.duration) });
+        if (_atual) { _atual.bloqueio += e.duration; _atual.tarefas += 1; }
+      });
+    });
+    obs.observe({ type: 'longtask', buffered: true });
+    console.info('%c[V173 perf] medidor LIGADO', 'color:#c2410c;font-weight:700');
+  } catch (e) {
+    console.warn('[V173 perf] longtask indisponivel neste navegador:', e && e.message);
+  }
+
+  // Envolve o showView SEM trocar o nome nem a assinatura (mudanca aditiva).
+  try {
+    var _orig = window.showView;
+    if (typeof _orig === 'function') {
+      window.showView = function (view) {
+        var t0 = performance.now();
+        _atual = { tela: view, inicio: t0, bloqueio: 0, tarefas: 0 };
+        var r;
+        try { r = _orig.apply(this, arguments); }
+        finally {
+          var reg = _atual;
+          // duas voltas: a 1a pega o layout, a 2a pega o que a pintura empurrou
+          requestAnimationFrame(function () { requestAnimationFrame(function () {
+            reg.ms = Math.round(performance.now() - t0);
+            reg.bloqueio = Math.round(reg.bloqueio);
+            _telas.push(reg);
+            if (_atual === reg) _atual = null;
+            if (reg.bloqueio > 1000) {
+              console.warn('[V173 perf] ' + reg.tela + ': ' + reg.ms + ' ms ate pintar, ' +
+                           reg.bloqueio + ' ms de thread BLOQUEADA em ' + reg.tarefas + ' tarefa(s)');
+            }
+          }); });
+        }
+        return r;
+      };
+    }
+  } catch (e) { console.warn('[V173 perf] nao consegui envolver o showView:', e && e.message); }
+
+  window._v173PerfRelatorio = function () {
+    var maiores = _longas.slice().sort(function (a, b) { return b.ms - a.ms; }).slice(0, 15);
+    console.info('%c[V173 perf] TROCAS DE TELA', 'color:#c2410c;font-weight:700');
+    console.table(_telas.map(function (t) {
+      return { tela: t.tela, 'ms ate pintar': t.ms, 'ms bloqueado': t.bloqueio, 'tarefas longas': t.tarefas };
+    }));
+    console.info('%c[V173 perf] AS 15 MAIORES TAREFAS LONGAS (ms)', 'color:#c2410c;font-weight:700');
+    console.table(maiores);
+    var total = _longas.reduce(function (a, b) { return a + b.ms; }, 0);
+    console.info('[V173 perf] ' + _longas.length + ' tarefas longas, ' + total + ' ms de thread bloqueada no total.');
+    return { telas: _telas, longas: _longas, totalBloqueadoMs: total };
+  };
+})();
+</script>
+
 </body>
 </html>
