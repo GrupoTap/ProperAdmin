@@ -1,3 +1,87 @@
+<!-- PCM V172 (09/09/2026) — OS CINCO CONSERTOS QUE A VARREDURA DO TUTORIAL ACHOU.
+     100% ADITIVO NO COMPORTAMENTO ANTIGO, exceto onde o antigo estava errado.
+     ZERO GAS, ZERO SQL. Roda contra qualquer GAS v120+.
+
+     De onde vieram: em 09/09 o Fernando pediu um tutorial do PCM para treinar a
+     equipe, dizendo que achou "a estrategia de criar um tutorial muito boa pra
+     achar bugs". Percorri as 6 telas do dia a dia no PCM NO AR, com dados reais,
+     e o laudo saiu com 10 achados (00_EM_ABERTO/NEWFILE_LAUDO_ACHADOS_TUTORIAL_
+     2026-09-09.md). Estes sao os cinco que sao de codigo.
+
+     Z3  ZERO NAO E UMA TROCA FEITA NA HORA ZERO. E TROCA NUNCA REGISTRADA.
+         🔴 O MAIOR DE TODOS, e o diagnostico inicial estava ERRADO. Eu achei que
+            faltava tratar ausencia de dado. Nao faltava: a guarda existe e esta
+            certa desde sempre. O que ha e um `0` GRAVADO onde deveria haver
+            vazio — e `0 !== '' && 0 !== null` passa direto por ela.
+         🔑 MEDIDO no PCM dele, dados reais, 87 maquinas:
+            · 709 pecas com intervalo — 388 com ultima troca VAZIA, **202 com ZERO**, 119 com valor
+            · **109 pecas marcadas como vencidas; 95 delas (87 %) vem do zero** ⇒ sobram 14
+            · 32 maquinas com peca vencida — em **28** TODAS as vencidas eram zero
+            ⇒ o painel de preventivas estava 87 % ruido, e a decisao de compra saia dele.
+         ⚠ NADA SOME, MUDA DE LUGAR: a peca vai para o balde `sem-dados`, que ja
+           existia, com rotulo PROPRIO ("Sem registro de troca" ≠ "Nao informado",
+           para a causa ficar dizivel), e a maquina cai no cartao "Sem dados", que
+           tambem ja existia. Nenhum estado novo, nenhuma tela nova.
+         ⚠ Decisao do Fernando entre tres opcoes: zero = sem registro SEMPRE,
+           inclusive em maquina de horimetro baixo. Peca de maquina nova trocada
+           genuinamente em 0 h e indistinguivel disto pelo dado, e 202 contra 119
+           diz de que lado esta a realidade. Voltar = `_V172_ZERO_SEM_REGISTRO=false`.
+
+     Z1  O PIPELINE IMPRIMIA O CODIGO DO TECNICO NO LUGAR DO NOME.
+         "Em execucao por: TEC-72699" — que e o Paulo Mayer. E o de-para esta
+         carregado na MESMA pagina (`_usuList`), e a funcao que resolve existe
+         neste MESMO arquivo desde o V151 (`_v151NomeDoResponsavel`), criada para
+         a grade da Agenda.
+         🔑 E a doenca do comparador de irmaos: o conserto entrou num lugar e nao
+            viajou. O V142 catalogou exatamente isto ("as vistas imprimiam a CHAVE
+            no lugar do nome") e o ponto mais visivel de todos ficou de fora.
+         ⚠ O codigo NAO some quando resolve — fica entre parenteses, senao ninguem
+           consegue conferir na planilha. E quando nao resolve, imprime o codigo
+           como antes: degradacao, nunca linha vazia (regra do V140).
+
+     Z2  A TRILHA DO TOPO MOSTRAVA A TELA ANTERIOR.
+         Reproduzido no ar: estando em Tarefas do Adm, o menu marcava "Tarefas do
+         Adm", a tela visivel era `viewTarefasAdm`, e a trilha dizia "PCM / Pecas
+         a Vencer" — de onde eu tinha vindo.
+         🔑 Causa: `if (bc && labels[view]) bc.textContent = labels[view];`. Sem
+            entrada no mapa ele nao escreve, e o texto anterior FICA. Nao e
+            ausencia de informacao: e informacao errada. `allViews` tem 20 telas,
+            o mapa tinha 17 (faltavam tarefasAdm, calibracao, termometro).
+         🕳 SEGUNDA vez: a linha do `docs` carrega o comentario "V95 — breadcrumb
+            nunca atualizava ao entrar em Documentos (faltava no mapa)". Naquela
+            vez acrescentaram UMA entrada.
+         ⇒ Conserto ESTRUTURAL, nao pontual: o mapa continua mandando, mas sem
+           entrada a trilha cai para o TEXTO DO PROPRIO BOTAO do menu, que sempre
+           existe. Nenhuma tela futura pode nascer mentindo. (O contador colado no
+           botao — "Agenda da equipe 2" — e removido do fim.)
+         E `saturacao` deixa de se chamar "Saturacao" na trilha: o menu diz
+         "Agenda da equipe" desde o V135 e a trilha ficou com o nome velho.
+
+     Z4  "EM EXECUCAO POR TEC-72699" E "SEM USUARIO DESIGNADO", LADO A LADO.
+         Sao dois campos diferentes (o lock que o tecnico pega no celular x a
+         designacao feita no PCM) e nao se contradizem de fato — mas na tela,
+         juntos, contradizem, e e a primeira coisa que alguem sendo treinado
+         pergunta. Uma palavra resolve: "assumida no celular por Fulano · ainda
+         sem designacao formal".
+
+     Z5  "PECAS QUE VENCEM NOS PROXIMOS N DIAS" ENTREGAVA AS JA VENCIDAS.
+         Com horizonte 30, o resultado vinha inteiro marcado "Vencida". Incluir as
+         vencidas e o certo — quem compra quer o que ja passou —, mas o rotulo tem
+         de dizer, senao a pessoa acha que tem 30 dias.
+
+     🕳 ACHADO DA BANCADA, e a 3a vez o mesmo padrao: a 1a versao do teste do Z1
+        conferia por LEITURA DO FONTE, e o controle negativo PASSAVA — o simbolo
+        que ele procurava sobrevive ao defeito. A resolucao virou funcao nomeada
+        (`_v172NomeDoLock`) e o teste passou a CHAMAR e comparar o resultado.
+     🕳 E a bancada reprovou 3 testes de regressao que eram culpa DELA: com o
+        envelope da saturacao totalmente vazio a tela mostra "Nenhuma tarefa
+        aberta" e nao desenha a grade — comportamento correto do V151, nao
+        regressao. A fixture ganhou um compromisso.
+
+     Bancada: _testes/NEWFILE_T_PCM_V172_laudo.mjs — 35/35, com --negativo
+     reintroduzindo os 5 defeitos e reprovando 12. Regressao: V171 66/66 e
+     V170 31/31 contra este arquivo. `node --check` limpo nos 7 blocos. -->
+
 <!-- PCM V171 (08/09/2026) — A AGENDA PASSA A RESPONDER "PARA QUEM EU JOGO ISTO".
      100% ADITIVO. ZERO GAS, ZERO SQL. Par: GAS v120+ (o campo `equipe` ja existe).
 
@@ -3839,7 +3923,7 @@ v50 — Resiliência de rede: retry/backoff em gsGet e syncToGS
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>ProperCare Manager · Gestão PGP v3.84 (PCM V171)</title>
+<title>ProperCare Manager · Gestão PGP v3.85 (PCM V172)</title>
 <link rel="icon" type="image/jpeg" href="data:image/jpeg;base64,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">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -5197,7 +5281,7 @@ tr.tadm-feito td{background:#dcfce7 !important;color:#15803d;font-weight:700}
 <aside class="nav-sidebar" aria-label="Navegação principal">
   <div class="nav-brand">
     <span class="nav-brand-mark">PCM</span>
-    <span class="nav-brand-sub">v3.84 · V171</span>
+    <span class="nav-brand-sub">v3.85 · V172</span>
   </div>
 
   <nav class="nav-groups">
@@ -8557,8 +8641,53 @@ function statusBadge(st){
   return '<span class="badge-sem">—</span>';
 }
 
+// ══════════════════════════════════════════════════════════════════════════
+// V172 (Z3) — ZERO NÃO É UMA TROCA FEITA NA HORA ZERO. É TROCA NUNCA REGISTRADA.
+//
+// A guarda de ausência SEMPRE existiu e SEMPRE esteve certa — ela só nunca foi
+// alcançada, porque o que está gravado na planilha não é vazio: é o número `0`.
+// `0 !== '' && 0 !== null` ⇒ passava direto, virava `next = 0 + intervalo`, e com
+// o horímetro em 23.360 h a conta dava "Vencida 21.360h atrás".
+//
+// 🔑 MEDIDO no PCM do Fernando em 09/09, contra os dados reais (87 máquinas):
+//    · 709 peças com intervalo: 388 com última troca VAZIA, **202 com ZERO**, 119 com valor
+//    · **109 peças marcadas como vencidas — 95 delas (87 %) vêm do zero**; sobram 14
+//    · 32 máquinas com alguma peça vencida — em **28** delas TODAS as vencidas são zero
+//    ⇒ o painel de preventivas estava 87 % ruído, e a decisão de compra saía dele.
+//
+// ⚠ NADA SOME, MUDA DE LUGAR — a disciplina de sempre. A peça vai para o balde
+//   `sem-dados`, que já existia, com rótulo próprio ("Sem registro de troca", e não
+//   o genérico "Não informado") para a causa ficar dizível: é cadastro a preencher,
+//   não peça em dia. A máquina cai no cartão "Sem dados", que também já existia.
+// ⚠ Decisão do Fernando (09/09), entre três opções: **zero = sem registro SEMPRE**,
+//   inclusive em máquina de horímetro baixo. Uma peça de máquina nova trocada
+//   genuinamente em 0 h é indistinguível disto pelo dado — e 202 contra 119 diz de
+//   que lado está a realidade. Voltar atrás é apagar `_V172_ZERO_SEM_REGISTRO`.
+// ══════════════════════════════════════════════════════════════════════════
+const _V172_ZERO_SEM_REGISTRO = true;
+function _v172SemRegistro(lastChange){
+  if (lastChange === null || lastChange === undefined || lastChange === '') return true;
+  if (!_V172_ZERO_SEM_REGISTRO) return false;
+  const n = parseInt(lastChange, 10);
+  return !isNaN(n) && n === 0;
+}
+
+// V172 (Z1) — de-para do lock: devolve { mostra, codigo }.
+//  · resolveu  → mostra = nome, codigo = o id (para ficar visível entre parênteses)
+//  · não resolveu → mostra = o id cru, codigo = '' (degradação, nunca linha vazia)
+function _v172NomeDoLock(cru){
+  const id = String(cru == null ? '' : cru).trim();
+  if (!id) return { mostra: '', codigo: '' };
+  let nome = '';
+  try {
+    nome = (typeof _v151NomeDoResponsavel === 'function')
+      ? (_v151NomeDoResponsavel(id) || '') : '';
+  } catch (e) { nome = ''; }
+  return (nome && nome !== id) ? { mostra: nome, codigo: id } : { mostra: id, codigo: '' };
+}
+
 function calcPartStatus(lastChange, interval, hourTotal){
-  const hasLast = !(lastChange===null || lastChange===undefined || lastChange==='');
+  const hasLast = !_v172SemRegistro(lastChange);
   const iv = parseInt(interval)||0;
   if(!hasLast||!iv) return {status:'sem_dados',remaining:null,next:null};
   const lc = parseInt(lastChange)||0;
@@ -8573,10 +8702,15 @@ function calcPartStatus(lastChange, interval, hourTotal){
 
 function getPartStatus(part, currentHour) {
   if (!part || part.na) return { level: 'na', label: 'N/A', next: null };
-  const last = (part.lastChange !== undefined && part.lastChange !== null && part.lastChange !== '')
-               ? parseInt(part.lastChange)
-               : null;
-  if (last === null) return { level: 'sem-dados', label: 'Não informado', next: null };
+  // V172 (Z3) — o zero entra aqui com rótulo PRÓPRIO. "Não informado" e "Sem
+  // registro de troca" são a mesma família, mas quem lê a ficha precisa saber
+  // qual dos dois é: o primeiro é campo em branco, o segundo é um 0 gravado.
+  if (_v172SemRegistro(part.lastChange)) {
+    const _vazio = (part.lastChange === undefined || part.lastChange === null || part.lastChange === '');
+    return { level: 'sem-dados', label: _vazio ? 'Não informado' : 'Sem registro de troca', next: null };
+  }
+  const last = parseInt(part.lastChange);
+  if (isNaN(last)) return { level: 'sem-dados', label: 'Não informado', next: null };
   const interval = parseInt(part.interval) || 0;
   if (!interval) return { level: 'sem-dados', label: 'Sem intervalo', next: null };
   const next = (last || 0) + interval;
@@ -10425,10 +10559,15 @@ function _usuarioEstaDigitandoEm_(el) {
     os:       'Gestão de OSs',
     templates: 'Templates de Pipeline',
     tiposOS:   'Tipos de OS',
-    saturacao: 'Saturação',
+    saturacao: 'Agenda da equipe',   // V172 — era 'Saturação'; o menu diz "Agenda da equipe" desde o V135
     unidades:  'Unidades',
     portalAcessos: 'Acessos do Portal',
     chamadosPortal: 'Chamados do portal',
+    // V172 (Z2) — as três que faltavam. Sem elas a trilha não era atualizada, e
+    // aí ela não ficava vazia: ficava mostrando o nome da tela ANTERIOR.
+    tarefasAdm: 'Tarefas do Adm',
+    calibracao: 'Calibração',
+    termometro: 'Termômetro',
   };
   window.showView = function(view) {
     // v79 — trava de não-salvo: sair do editor de template (sidebar) com edições
@@ -10442,8 +10581,41 @@ function _usuarioEstaDigitandoEm_(el) {
     document.querySelectorAll('.nav-item').forEach(b => {
       b.classList.toggle('is-active', b.dataset.view === view);
     });
+    // ══════════════════════════════════════════════════════════════════════
+    // V172 (Z2) — A TRILHA QUE MOSTRAVA A TELA ANTERIOR
+    //
+    // Reproduzido em 09/09 no PCM no ar: estando em Tarefas do Adm, o menu
+    // marcava "Tarefas do Adm", a tela visível era `viewTarefasAdm` — e a trilha
+    // dizia "PCM / Peças a Vencer", que era de onde eu tinha vindo.
+    //
+    // 🔑 A causa é este `if`: sem entrada no mapa, ele simplesmente NÃO escreve —
+    //    e o texto anterior FICA. Não é ausência de informação, é informação
+    //    errada, que é pior. `allViews` tem 20 telas; o mapa tinha 17.
+    //
+    // 🕳 E é a SEGUNDA vez: a linha do `docs`, logo acima, carrega o comentário
+    //    "V95 — breadcrumb nunca atualizava ao entrar em Documentos (faltava no
+    //    mapa)". Consertaram acrescentando UMA entrada. Acrescentar as três que
+    //    faltam agora repetiria o mesmo conserto pontual e deixaria a próxima
+    //    tela nova nascer mentindo de novo.
+    //
+    // ⇒ Conserto ESTRUTURAL: o mapa continua mandando (é ele que permite um
+    //   rótulo diferente do botão), mas quando ele não tiver a tela, a trilha
+    //   cai para o TEXTO DO PRÓPRIO BOTÃO do menu, que sempre existe. Assim
+    //   nenhuma tela futura pode nascer com trilha errada — no pior caso ela
+    //   nasce com o mesmo nome que o menu, que é justamente o que se quer.
+    // ⚠ O botão pode trazer o contador colado ("Agenda da equipe 2"): o número
+    //   do fim é removido, senão a trilha viraria "Agenda da equipe 2".
+    // ══════════════════════════════════════════════════════════════════════
     const bc = document.getElementById('breadcrumb-current');
-    if (bc && labels[view]) bc.textContent = labels[view];
+    if (bc) {
+      let _v172Rot = labels[view];
+      if (!_v172Rot) {
+        const _v172Btn = document.querySelector('.nav-item[data-view="' + view + '"]');
+        _v172Rot = _v172Btn ? String(_v172Btn.textContent || '').replace(/\s+/g, ' ').trim() : '';
+        _v172Rot = _v172Rot.replace(/\s+\d+$/, '');
+      }
+      if (_v172Rot) bc.textContent = _v172Rot;
+    }
     return r;
   };
 })();
@@ -14466,7 +14638,7 @@ function renderEstoque(){
     <div class="content-header">
       <div>
         <div class="content-title">Sugestão de Estoque</div>
-        <div class="content-sub">Peças que vencem nos próximos N dias, agrupadas por referência</div>
+        <div class="content-sub">Peças <b>já vencidas</b> mais as que vencem nos próximos N dias, agrupadas por referência<!-- V172 (Z5): o texto dizia só "que vencem nos próximos N dias" e o resultado vinha inteiro marcado "Vencida" — promessa de futuro, entrega de passado --></div>
       </div>
     </div>
     <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;flex-wrap:wrap">
@@ -22955,8 +23127,39 @@ async function _loadPipelineTab(osId) {
         : (usuarioDesignadoStr ? `<div style="font-size:11px;color:var(--text-muted);margin-top:2px">👤 Designado: ${escHtml(usuarioDesignadoStr)}</div>` : '');
 
       // v71: lock exclusivo por técnico
+      // ══════════════════════════════════════════════════════════════════════
+      // V172 (Z1/Z4) — O CÓDIGO NO LUGAR DA PESSOA, NO PONTO MAIS VISÍVEL DE TODOS
+      //
+      // Esta linha imprimia `Lock_Por` cru: "Em execução por: TEC-72699". Quem lê
+      // a OS não tem como saber que TEC-72699 é o Paulo Mayer — e o de-para está
+      // carregado na mesma página, a um `find` de distância. É o defeito que o
+      // V142 catalogou nas vistas ("imprimiam a CHAVE no lugar do nome") e que
+      // nunca viajou até aqui: a função que resolve já existe neste arquivo desde
+      // o V151 (`_v151NomeDoResponsavel`), criada para a grade da Agenda.
+      // ⚠ O código NÃO some quando resolve — fica entre parênteses. Esconder o
+      //   dado bruto é o que impede alguém de conferir na planilha depois.
+      // ⚠ E quando não resolve, imprime o código como antes: degradação, nunca
+      //   linha vazia (a regra do V140).
+      //
+      // Z4 — e a contradição que a tela mostrava lado a lado: "Em execução por
+      // TEC-72699" logo acima de "Sem usuário designado". São dois campos
+      // diferentes (o lock que o técnico pega no celular × a designação feita
+      // aqui) e não se contradizem de fato — mas na tela, juntos, contradizem.
+      // Uma palavra resolve: "assumida no celular", e o par deixa de brigar.
+      // ══════════════════════════════════════════════════════════════════════
+      // 🕳 ACHADO DA BANCADA (09/09): a 1ª versão disto era um bloco solto aqui
+      //   dentro, e o teste só conseguia conferir por LEITURA DO FONTE — aí o
+      //   controle negativo passava, porque o símbolo que ele procurava sobrevive
+      //   ao defeito. Bancada cega, 3ª vez o mesmo padrão. Extraído para função
+      //   nomeada: agora o teste CHAMA e compara o resultado.
+      const _v172Lock = _v172NomeDoLock(t.Lock_Por);
+      const _v172LockMostra = _v172Lock.mostra;
+      const _v172LockCodigo = _v172Lock.codigo;
       const lockLine = t.Lock_Por
-        ? `<div style="font-size:11px;color:#b45309;margin-top:4px">🔒 Em execução por: <b>${escHtml(t.Lock_Por)}</b></div>`
+        ? `<div style="font-size:11px;color:#b45309;margin-top:4px">🔒 Assumida no celular por <b>${escHtml(_v172LockMostra)}</b>` +
+          (_v172LockCodigo ? ` <span style="opacity:.6">(${escHtml(_v172LockCodigo)})</span>` : '') +
+          (!usuarioDesignadoStr ? ` <span style="opacity:.85">· ainda sem designação formal</span>` : '') +
+          `</div>`
         : '';
       // v71: badge de camada (template empilhado)
       const camadaBadge = (t.Camada_Ordem && parseInt(t.Camada_Ordem) > 1)
