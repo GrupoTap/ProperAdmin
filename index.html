@@ -3923,6 +3923,35 @@ v50 — Resiliência de rede: retry/backoff em gsGet e syncToGS
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<!-- PCM V174 (09/09/2026) — A TELA DE CALIBRAÇÃO PASSA A SER HONESTA.
+     Sobre o V173 PUBLICADO. Aditivo. Par: GAS v139 · PCF V106.
+     Bancada: _testes/NEWFILE_BENCH_HORIMETRO_2026-09-09.mjs (53/53; --negativo
+     reprova 14). Laudo: 00_EM_ABERTO/NEWFILE_LAUDO_HORIMETRO_3062_2026-09-09.md
+
+     C4  A TARJA DIZ DE ONDE VEM O NÚMERO. Na Techto SD30 3062 ela ofereceu
+         "Sugestão de fator: 0,587" com botão de aplicar ao lado. 0,587 é
+         1,174 × 0,5, e 0,5 é o PISO do clamp — não é conta, é limite. O servidor
+         SABIA (grava `sugestao_motivo='limite'` desde o v116) e a fila em lote já
+         mostrava; só o modal não recebia. 🔑 Dado que existe no servidor e não
+         chega à tela que decide é dado que não existe.
+         Três formas agora: cálculo limpo · no limite (mostra a razão bruta e o
+         fator sem clamp) · leitura parada (não houve amostra nenhuma).
+     C4  BOTÃO DESCARTAR no modal. A action existe desde o v116 e esta tela não a
+         tinha: sugestão que não pode ser nem aplicada nem dispensada volta todo
+         dia e vira ruído — que é como uma fila morre.
+     C4  "Sobrescrever fator" → "Fator vigente (edite para sobrescrever)". O campo
+         nasce com o fator ATUAL e, ao lado de uma tarja com outro número, os dois
+         apareciam com o mesmo peso. Foi exatamente a dúvida do Fernando.
+     C6  ÚLTIMA TROCA NEGATIVA É DA MESMA FAMÍLIA DO ZERO DO V172. `−122 + 2.000`
+         dava "Vencida 3.744h atrás" numa peça trocada no dia anterior. Vai para o
+         mesmo balde `sem-dados`, com rótulo próprio que mostra o número.
+     C11 A FICHA DA MÁQUINA ACUSA O CONTADOR NÃO ZERADO. Par do tripwire do PCF
+         V106: quando o técnico responde que não zerou o contador das peças que
+         trocou, a visita fica marcada e o cartão do histórico mostra a pendência
+         em vermelho. ⚠ Visita SEM a marca (front antigo, envio em lote, máquina
+         só com horímetro total) NÃO ganha aviso nenhum — aviso que aparece onde
+         não há nada a fazer é ruído, e ruído gasta o alerta.
+-->
 <!-- PCM V173 (09/09/2026) — A RODADA DE VELOCIDADE (Ondas 0, 1, 2 e 4.1 do
      plano `00_EM_ABERTO/NEWFILE_PLANO_VELOCIDADE_PCM_2026-09-09.md`).
      Feito EM CIMA do V172, que este arquivo CONTEM INTEIRO. PUBLIQUE SO ESTE.
@@ -3967,7 +3996,7 @@ v50 — Resiliência de rede: retry/backoff em gsGet e syncToGS
 
      Bancada: _testes/NEWFILE_T_PCM_V173.mjs
 -->
-<title>ProperCare Manager · Gestão PGP v3.86 (PCM V173)</title>
+<title>ProperCare Manager · Gestão PGP v3.87 (PCM V174)</title>
 <link rel="icon" type="image/jpeg" href="data:image/jpeg;base64,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">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -5325,7 +5354,7 @@ tr.tadm-feito td{background:#dcfce7 !important;color:#15803d;font-weight:700}
 <aside class="nav-sidebar" aria-label="Navegação principal">
   <div class="nav-brand">
     <span class="nav-brand-mark">PCM</span>
-    <span class="nav-brand-sub">v3.86 · V173</span>
+    <span class="nav-brand-sub">v3.87 · V174</span>
   </div>
 
   <nav class="nav-groups">
@@ -8951,7 +8980,32 @@ function _v172NomeDoLock(cru){
   return (nome && nome !== id) ? { mostra: nome, codigo: id } : { mostra: id, codigo: '' };
 }
 
+// ══════════════════════════════════════════════════════════════════════════
+// V174 (C6) — ÚLTIMA TROCA NEGATIVA É A MESMA FAMÍLIA DO ZERO DO V172.
+//
+// O V172 mostrou que `0` não é "trocada na hora zero", é troca nunca registrada,
+// e mandou 95 falsos "vencidos" para o balde certo. Número NEGATIVO é a mesma
+// doença num estágio pior: ele não só é impossível como ainda MOVE a próxima
+// troca para trás.
+// 🔴 Techto SD30 3062: `−122 + 2.000 = 1.878` ⇒ "Vencida 3.744h atrás" numa peça
+//    trocada no dia anterior. Nada na tela dizia que o número de origem era
+//    impossível — a conta simplesmente seguiu em frente com ele.
+// 🔑 Ausência de dado exibida como fato é a doença mais antiga deste projeto
+//    (V140), e ela volta disfarçada: primeiro de `0`, agora de negativo.
+// ⚠ Aditivo e conservador: a peça vai para o MESMO balde `sem-dados` que o V172
+//   já criou, com rótulo próprio para a causa ficar dizível. Nenhum número novo
+//   é inventado — o conserto do DADO é no cadastro/na visita, não aqui.
+// ⚠ Sem kill-switch, ao contrário do V172: aquele era uma DECISÃO (zero pode, em
+//   tese, ser uma troca real numa máquina nova); negativo não tem leitura em que
+//   seja verdade.
+function _v174Impossivel(lastChange){
+  if (lastChange === null || lastChange === undefined || lastChange === '') return false;
+  const n = parseFloat(lastChange);
+  return isFinite(n) && n < 0;
+}
+
 function calcPartStatus(lastChange, interval, hourTotal){
+  if (_v174Impossivel(lastChange)) return {status:'sem_dados',remaining:null,next:null};   // V174 (C6)
   const hasLast = !_v172SemRegistro(lastChange);
   const iv = parseInt(interval)||0;
   if(!hasLast||!iv) return {status:'sem_dados',remaining:null,next:null};
@@ -8970,6 +9024,11 @@ function getPartStatus(part, currentHour) {
   // V172 (Z3) — o zero entra aqui com rótulo PRÓPRIO. "Não informado" e "Sem
   // registro de troca" são a mesma família, mas quem lê a ficha precisa saber
   // qual dos dois é: o primeiro é campo em branco, o segundo é um 0 gravado.
+  // V174 (C6) — negativo antes de tudo: é o único caso em que o próprio número
+  // denuncia a origem, e escondê-lo atrás de "Não informado" perderia a pista.
+  if (_v174Impossivel(part.lastChange)) {
+    return { level: 'sem-dados', label: 'Registro inconsistente (' + Math.round(parseFloat(part.lastChange)) + 'h)', next: null };
+  }
   if (_v172SemRegistro(part.lastChange)) {
     const _vazio = (part.lastChange === undefined || part.lastChange === null || part.lastChange === '');
     return { level: 'sem-dados', label: _vazio ? 'Não informado' : 'Sem registro de troca', next: null };
@@ -13683,6 +13742,46 @@ async function renderCalibHorim(machineId){
   const sug = (r.fator_sugerido!=null && r.fator_sugerido!=='' && !isNaN(Number(r.fator_sugerido))) ? Number(r.fator_sugerido) : null;
   const sugAt = r.fator_sugerido_at ? _pcmDataBr134(r.fator_sugerido_at) : '';
   const sugPendente = sug!=null && Math.abs(sug-fator) >= 0.005;
+  // ══════════════════════════════════════════════════════════════════════════
+  // V174 (C4) — A TARJA PRECISA DIZER DE ONDE VEM O NÚMERO.
+  //
+  // 🔴 Em 09/09/2026, na Techto SD30 3062, esta tarja ofereceu "Sugestão de
+  //    fator: 0,587" com um botão "Aplicar sugestão" ao lado. 0,587 não é uma
+  //    conta: é 1,174 × 0,5, e 0,5 é o PISO do clamp da amostra. Aplicá-la teria
+  //    feito o sistema subestimar o horímetro em 41 %.
+  // 🔴 O servidor SABIA disso — grava `sugestao_motivo='limite'` desde o v116, e
+  //    a fila em lote já mostrava a razão bruta. Só o modal não recebia (GAS
+  //    v139 passa a mandar). 🔑 Dado que existe no servidor e não chega à tela
+  //    que decide é dado que não existe.
+  //
+  // Daqui em diante a tarja tem TRÊS formas, e a diferença entre elas é o que o
+  // adm precisa saber antes de clicar:
+  //   • cálculo limpo → é uma proposta de verdade, aplicar é razoável;
+  //   • no limite     → o número é o piso/teto, não o cálculo (mostra a razão
+  //                     bruta e o fator que ela daria sem o clamp);
+  //   • leitura parada→ não há amostra nenhuma; o que precisa de conserto é a
+  //                     LEITURA, não o fator.
+  // ══════════════════════════════════════════════════════════════════════════
+  const _motivo = String(r.sugestao_motivo||'');
+  const _bruta  = (r.razao_bruta!=null && r.razao_bruta!=='' && !isNaN(Number(r.razao_bruta))) ? Number(r.razao_bruta) : null;
+  const _fBruto = (r.fator_bruto!=null && r.fator_bruto!=='' && !isNaN(Number(r.fator_bruto))) ? Number(r.fator_bruto) : null;
+  const _noLimite = _motivo==='limite' || (_bruta!=null && (_bruta < 0.5 - 1e-9 || _bruta > 2 + 1e-9));
+  const _parado = _motivo==='parado';
+  const _dR = (r.amostra_delta_real!=null && r.amostra_delta_real!=='') ? Number(r.amostra_delta_real) : null;
+  const _dE = (r.amostra_delta_est!=null && r.amostra_delta_est!=='') ? Number(r.amostra_delta_est) : null;
+  const _amostraTxt = (_dR!=null && _dE!=null)
+    ? `a máquina andou <b>${Math.round(_dR).toLocaleString('pt-BR')} h</b> onde o regime previa <b>${Math.round(_dE).toLocaleString('pt-BR')} h</b>`
+    : '';
+  const _limiteNota = _noLimite
+    ? `<div style="flex-basis:100%;font-size:11px;color:#92400e;margin-top:2px;line-height:1.5">
+         🔒 <b>Este número é o LIMITE, não a conta.</b> A razão medida foi
+         <b>${_bruta!=null?_bruta.toFixed(3):'—'}</b>, fora da faixa de segurança [0,500 – 2,000] em que uma
+         única amostra pode mexer no fator — então ela foi cortada no ${_bruta!=null&&_bruta<0.5?'piso':'teto'}.
+         ${_fBruto!=null?`Sem esse corte a sugestão seria <b>${_fBruto.toFixed(3)}</b>. `:''}
+         ${_amostraTxt?`Na amostra, ${_amostraTxt}. `:''}
+         <b>Antes de aplicar, confira a LEITURA</b> que gerou a amostra: desvio desse tamanho quase sempre é horímetro digitado errado, não regime errado.
+       </div>`
+    : (_amostraTxt ? `<div style="flex-basis:100%;font-size:11px;color:var(--text3);margin-top:2px">Na última amostra, ${_amostraTxt}.</div>` : '');
   const baseNota = (r.baseline_origem==='visita')
     ? `<div style="font-size:11px;color:#b45309;margin:-2px 0 8px">⚠ Base tirada da última visita${r.baseline_visit_id?' ('+r.baseline_visit_id+')':''} — a calibração ainda não consolidou essa leitura. Use "↻ Recalcular pelas visitas".</div>`
     : '';
@@ -13695,7 +13794,10 @@ async function renderCalibHorim(machineId){
     // V134 (H4)
     const hs = (h.fator_sugerido!=null && h.fator_sugerido!=='' && !isNaN(Number(h.fator_sugerido))) ? Number(h.fator_sugerido).toFixed(3) : '—';
     const ap = String(h.aplicado||'').toUpperCase();
-    const apTxt = (h.fator_amostra==='override') ? '✎' : (ap==='SIM' ? 'SIM' : ap==='REPLAY' ? '<span title="leitura mais antiga que a base — ignorada" style="color:#b45309">replay</span>' : ap==='REGRESSAO' ? '<span title="horímetro menor que a base — ignorado" style="color:#b45309">regressão</span>' : (ap==='NÃO'||ap==='NAO') ? 'não' : '—');
+    // V174 (C4) — 'PARADO' é o estado novo do GAS v139: leitura igual à base,
+    // que deixou de virar amostra. Sem rótulo próprio ele cairia em "—" e a
+    // linha mais importante do histórico seria a mais muda.
+    const apTxt = (h.fator_amostra==='override') ? '✎' : (ap==='SIM' ? 'SIM' : ap==='REPLAY' ? '<span title="leitura mais antiga que a base — ignorada" style="color:#b45309">replay</span>' : ap==='REGRESSAO' ? '<span title="horímetro menor que a base — ignorado" style="color:#b45309">regressão</span>' : ap==='PARADO' ? '<span title="a leitura veio igual à base: a máquina não andou nada no período, ou o horímetro foi lançado errado — não virou amostra" style="color:#b91c1c">parado</span>' : ap==='AUTO' ? '<span title="dentro da banda segura: aplicada automaticamente" style="color:#15803d">auto</span>' : (ap==='NÃO'||ap==='NAO') ? 'não' : '—');
     return `<tr>
       <td style="padding:3px 6px;white-space:nowrap">${data}${tipo}</td>
       <td style="padding:3px 6px;text-align:right;font-family:var(--font-mono),monospace">${fmt(h.estimado)}</td>
@@ -13716,10 +13818,16 @@ async function renderCalibHorim(machineId){
       <div><span style="color:var(--text3)">Em:</span> <strong>${ultAt}</strong></div>
     </div>
     ${baseNota}
-    ${sugPendente ? `<div id="calibSugestao" style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;background:#fffbeb;border:1px solid #fcd34d;border-radius:8px;padding:8px 10px;margin-bottom:8px;font-size:12px">
-      <span>💡 <strong>Sugestão de fator: ${sug.toFixed(3)}</strong> <span style="color:var(--text3)">(${_fatorPct(sug)} vs. regime${sugAt?' · amostra de '+sugAt:''})</span></span>
+    ${_parado ? `<div id="calibSugestaoParado" style="background:#fef2f2;border:1px solid #fca5a5;border-radius:8px;padding:8px 10px;margin-bottom:8px;font-size:12px;color:#7f1d1d;line-height:1.5">
+      🛑 <b>A última leitura não avançou.</b> Ela veio igual à base anterior, então não houve amostra e <b>nenhum fator foi proposto</b>.
+      <span style="font-weight:400;color:#991b1b">Ou a máquina ficou parada no período — e aí não há o que calibrar — ou o horímetro foi lançado errado. Confira a leitura antes de mexer no fator.</span>
+    </div>` : ''}
+    ${sugPendente ? `<div id="calibSugestao" style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;background:${_noLimite?'#fff7ed':'#fffbeb'};border:1px solid ${_noLimite?'#fdba74':'#fcd34d'};border-radius:8px;padding:8px 10px;margin-bottom:8px;font-size:12px">
+      <span>${_noLimite?'🔒':'💡'} <strong>Sugestão de fator: ${sug.toFixed(3)}</strong> <span style="color:var(--text3)">(${_fatorPct(sug)} vs. regime${sugAt?' · amostra de '+sugAt:''})</span></span>
       <button class="btn btn-primary btn-sm" id="calibAplicarSug" onclick="aplicarFatorSugerido('${machineId}', ${sug}, this)">Aplicar sugestão</button>
+      <button class="btn btn-secondary btn-sm" id="calibDescartarSug" title="Tira a sugestão da tela e da fila do administrador, sem tocar no fator vigente" onclick="descartarSugestaoHorim('${machineId}', this)">Descartar</button>
       <span style="font-size:11px;color:var(--text3)">O fator só muda quando você aplicar. O estimado já usa a leitura nova.</span>
+      ${_limiteNota}
     </div>` : (sug!=null ? `<div id="calibSugestao" style="font-size:11px;color:var(--text3);margin-bottom:8px">💡 Última sugestão (${sug.toFixed(3)}${sugAt?', '+sugAt:''}) já é o fator vigente.</div>` : '')}
     ${rows ? `<div style="overflow:auto;border:1px solid var(--border);border-radius:8px">
       <table style="width:100%;border-collapse:collapse;font-size:11px">
@@ -13736,8 +13844,15 @@ async function renderCalibHorim(machineId){
       </table></div>`
     : `<div style="font-size:12px;color:var(--text3);margin-bottom:6px">Ainda sem histórico de leituras. A próxima visita com horímetro gera a primeira sugestão de fator.</div>`}
     <div style="display:flex;gap:6px;align-items:center;margin-top:8px;flex-wrap:wrap">
-      <span style="font-size:12px;color:var(--text3)">Sobrescrever fator:</span>
+      <!-- V174 (C4) — este campo nasce com o fator ATUAL, não com uma proposta.
+           Com a tarja logo acima exibindo outro número, os dois apareciam com o
+           mesmo peso e o rótulo "Sobrescrever fator" não dizia qual era qual —
+           foi exatamente a dúvida do Fernando em 09/09/2026 ("o valor sugerido
+           embaixo está 1,17 e a tarja fornece 0,587"). O rótulo agora diz o que
+           o campo é. -->
+      <span style="font-size:12px;color:var(--text3)">Fator vigente (edite para sobrescrever):</span>
       <input id="calibFatorInput" type="number" step="0.001" min="0.3" max="3" value="${fator.toFixed(3)}"
+        title="Começa com o fator que está valendo hoje. Altere e clique em Salvar fator para sobrescrever."
         style="width:90px;padding:4px 8px;border:1px solid var(--border);border-radius:6px;font-size:12px">
       <button class="btn btn-secondary btn-sm" onclick="salvarFatorHorim('${machineId}', this)">Salvar fator</button>
       <span style="font-size:11px;color:var(--text3)">1,00 = sem correção · 1,10 = +10%</span>
@@ -13752,6 +13867,36 @@ async function aplicarFatorSugerido(machineId, fator, btnEl){
   if(inp) inp.value = Number(fator).toFixed(3);
   await salvarFatorHorim(machineId, btnEl);
 }
+// ── V174 (C4) · descartarSugestaoHorim — a sugestão que não se aplica, se fecha ──
+// 🔴 O modal tinha "Aplicar sugestão" e "Salvar fator" e mais nada. Salvar o
+//    fator NÃO limpava a sugestão (o GAS v139 conserta isso), e não havia como
+//    dizer "olhei e não quero esta". Uma sugestão que não pode ser nem aplicada
+//    nem dispensada volta todo dia e transforma a tela em ruído — que é como uma
+//    fila morre. A action existe desde o v116; faltava o botão nesta tela.
+// ⚠ Não toca no fator vigente. Descartar é uma DECISÃO registrada (vai para o
+//   HORIMETRO_HIST como 'descarte'), não um "ignorar".
+async function descartarSugestaoHorim(machineId, btnEl){
+  const msg = document.getElementById('calibFatorMsg');
+  // ⚠ `confirm` nativo de propósito: o PCM NÃO tem `AppDialog` (esse helper é do
+  //   PCF). Escrever `AppDialog.confirm` aqui teria lançado TypeError e o botão
+  //   nasceria morto — a mesma classe de defeito que este projeto já apanhou
+  //   chamando função de uma tela dentro de outra.
+  if(!confirm('Descartar esta sugestão de fator?\n\nO fator que está valendo hoje NÃO muda. A sugestão sai desta tela e da fila de calibração, e fica registrada no histórico como descartada.')) return;
+  if(msg){ msg.style.color='var(--text3)'; msg.textContent='Descartando…'; }
+  await _comLoadingBtn_(btnEl, async () => {
+  try{
+    const usuario = (window._usuarioAtual && (_usuarioAtual.nome||_usuarioAtual.id)) || (typeof usuarioLogado!=='undefined' ? (usuarioLogado?.nome||'') : '') || 'admin';
+    const r = await gsPost({ action:'descartarHorimetroSugestao', machine_id: machineId, usuario });
+    if(r && r.status==='ok'){
+      if(msg){ msg.style.color='var(--success,#15803d)'; msg.textContent='✅ Sugestão descartada. O fator vigente não mudou.'; }
+      renderCalibHorim(machineId);
+    } else {
+      if(msg){ msg.style.color='#b91c1c'; msg.textContent='⚠ '+((r&&r.error)||'Falha ao descartar'); }
+    }
+  }catch(e){ if(msg){ msg.style.color='#b91c1c'; msg.textContent='⚠ '+e.message; } }
+  });
+}
+
 // V134 (H3) — consolida as visitas na calibração (action reprocessarHorimetroCalib, GAS v115)
 async function reprocessarCalibHorim(machineId, btnEl){
   const msg = document.getElementById('calibFatorMsg');
@@ -14384,6 +14529,25 @@ function renderHistoricoPreventivas(visits, pecasLog) {
         </div>`
       : '<div style="margin-top:8px;font-size:12px;color:var(--text3)">Nenhuma peça trocada nesta visita.</div>';
 
+    // ── V174 (C11) · A PENDÊNCIA DO CONTADOR NÃO ZERADO ──────────────────────
+    // O PCF V106 pergunta ao técnico, em máquina COM contador por peça, se ele
+    // zerou o contador das peças que trocou. Quando a resposta é NÃO, o cadastro
+    // passa a guardar o contador como ele realmente está (e não o zero que o
+    // sistema supunha) — e a máquina precisa aparecer aqui, senão a pendência
+    // existe só na planilha e ninguém a resolve.
+    // 🔑 O oposto também importa: visita SEM a marca (front antigo, envio em
+    //    lote, máquina só com horímetro total) NÃO ganha aviso nenhum. Aviso que
+    //    aparece onde não há nada a fazer é ruído, e ruído gasta o alerta.
+    const _czRaw = String(v.contadoresZerados || v.contadores_zerados || '').toUpperCase();
+    const avisoContadorHtml = (_czRaw === 'NAO')
+      ? `<div style="margin-top:8px;background:#fef2f2;border:1px solid #fca5a5;border-radius:8px;padding:6px 10px;font-size:12px;color:#7f1d1d;line-height:1.5">
+           ⚠ <b>Contador das peças NÃO foi zerado no painel</b> nesta visita.
+           <span style="font-weight:400">O cadastro guardou o contador como estava — a última troca está certa, mas o contador da máquina segue contando de onde parou. Zerar no painel na próxima ida resolve.</span>
+         </div>`
+      : (_czRaw === 'SIM'
+          ? `<div style="margin-top:8px;font-size:11px;color:#15803d">✅ Contadores das peças trocadas zerados no painel.</div>`
+          : '');
+
     const outrasHtml = outras.length
       ? `<div style="margin-top:6px">
           <a href="#" style="font-size:12px" onclick="toggleVisitParts('${extraId}',this);return false;">Ver todas as peças desta visita ▸</a>
@@ -14400,7 +14564,7 @@ function renderHistoricoPreventivas(visits, pecasLog) {
         </div>`
       : '';
 
-    return `<div style="border:1px solid var(--border);border-radius:10px;padding:10px 12px;margin-bottom:10px;background:#fff">
+    return `<div style="border:1px solid ${_czRaw === 'NAO' ? '#fca5a5' : 'var(--border)'};border-radius:10px;padding:10px 12px;margin-bottom:10px;background:#fff">
       <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
         <span style="${tipoStyle};font-size:10px;font-weight:700;padding:2px 8px;border-radius:999px">${tipoLabel}</span>
         <span style="font-size:12px;color:var(--text2)">${dataFmt}</span>
@@ -14411,6 +14575,7 @@ function renderHistoricoPreventivas(visits, pecasLog) {
           title="Relatório desta preventiva — mesmo motor de PDF do PCF">📄 PDF</button>` : ''}
       </div>
       ${trocadasHtml}
+      ${avisoContadorHtml}
       ${outrasHtml}
       ${v.generalObs?`<div style="margin-top:8px;padding-top:8px;border-top:1px dashed var(--border);font-size:12px"><strong>Obs:</strong> ${v.generalObs}</div>`:''}
     </div>`;
