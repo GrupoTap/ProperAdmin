@@ -4066,7 +4066,67 @@ v50 — Resiliência de rede: retry/backoff em gsGet e syncToGS
 
   Bancada: _testes/NEWFILE_T_PCM_V176.mjs   (--negativo)
 -->
-<title>ProperCare Manager · Gestão PGP v3.89 (PCM V176)</title>
+<!--
+  ══════════════════════════════════════════════════════════════════════════
+  PCM V177 — abrir OS pelo celular: os tipos que "carregavam" para sempre,
+             e o local e o responsavel que ninguem escolhia       11/09/2026
+  ══════════════════════════════════════════════════════════════════════════
+  Relato do Fernando (11/09, print do celular): na etapa "Que tipo de OS?" a
+  tela ficou mais de um minuto em "Carregando tipos…" e ele NAO CONSEGUIU
+  abrir a OS para o tecnico.
+
+  🔴 T1  "Carregando tipos…" era a MESMA frase para tres estados diferentes.
+         O `_mobCarregaTipos` engolia a falha em `_tipos = []`, e o render
+         desenhava "Carregando tipos…" para QUALQUER lista vazia: buscando,
+         falhou, ou cadastro vazio. Uma falha de rede virava espera eterna, sem
+         aviso e sem botao — e o "Revisar" ficava cinza sem dizer por que.
+         E pior: com `_tipos = []` o `if (!_tipos)` do `_mobStep` achava que ja
+         havia lista e nunca mais buscava. So fechando e abrindo de novo.
+         🔑 A etapa das MAQUINAS tem os tres estados desde a V153 (carregando /
+         "nao consegui" + tentar de novo / vazio de verdade). A dos tipos, a
+         duas telas de distancia no MESMO stepper, nunca recebeu. Doenca dos
+         IRMAOS, de novo, dentro de um arquivo so.
+         ⇒ agora: buscando (com spinner) · falhou (motivo + "↻ Tentar de
+           novo") · cadastro vazio (dito com essas palavras). Se o servidor
+           falhar e o computador ja tiver a lista nesta sessao (`_tiposOS`),
+           usa essa. O cache de 12 h do V173 continua valendo por cima.
+  T2  O aviso de demora. Uma leitura pode levar ate 3 x 30 s antes de
+      desistir (`_gsRequestComRetry_`). Aos 15 s a tela passa a dizer "o
+      servidor esta demorando — continuo tentando", em vez de parecer travada.
+  T3  A busca dos tipos comeca quando o stepper ABRE, e nao so na etapa 2.
+      Enquanto a pessoa escolhe cliente e maquinas, a lista chega; na maioria
+      das vezes a etapa 2 ja abre com os botoes.
+  ⚠ Eu NAO consigo medir daqui por que o servidor demorou naquele momento (a
+    nuvem nao alcanca o /exec). O que e certo, e esta consertado, e que uma
+    demora ou falha virava tela travada sem saida.
+
+  L1  "Onde sera o atendimento?" — 🚗 No cliente / 🏭 Na oficina — e
+      OBRIGATORIO e nasce SEM marcacao (decisao do Fernando, 11/09).
+      🔴 Ate o V176 o celular nem perguntava: mandava `local_atendimento: ''`
+         e o GAS (`saveOS`, L11271) grava 'externo' para tudo que nao seja
+         'interno'. ⇒ TODA OS aberta pelo celular nascia EXTERNA, inclusive as
+         de oficina — que por isso nunca apareciam no quadro da Oficina.
+  L2  O modal do COMPUTADOR segue a mesma regra: o select ganha "— escolha —",
+      nasce vazio numa OS nova e o Salvar recusa sem a escolha. OS antiga com
+      local em branco abre em branco (antes abria "Externo" e o Salvar gravava).
+  R1  "Quem vai assumir?" nasce SEM marcacao no celular. O V166 marcava quem
+      estava logado — e foi assim que as OS que o Fernando abre (0072, 0073,
+      0075) nasceram "do FERNANDO" e sumiram do "Minhas" do tecnico que as
+      executa. "Ninguem por enquanto" continua sendo escolha valida; so nao e
+      mais a escolha que acontece sozinha. Vinda de DEMANDA, o responsavel da
+      demanda continua vindo sugerido (e sugestao, nao carimbo).
+  B1  O "Revisar" cinza passa a dizer o que falta ("Falta escolher: tipo ·
+      local · quem vai assumir").
+  C1  Etapa 0 sem nenhum cliente no aparelho (catalogo ainda chegando) dizia
+      "Nenhum cliente — tente outro nome". Agora diz "carregando", repinta
+      sozinha quando o cadastro chega, e aos 45 s oferece "tentar de novo".
+
+  ZERO GAS · ZERO SQL · so este arquivo. Chave: a mesma do arquivo no ar
+  (conferida por clone do ProperHub: 1 literal, igual).
+  Bancada: _testes/NEWFILE_T_PCM_V177.mjs  (cada grupo tem negativo proprio,
+  gerado com --sem GRUPO neste script).
+-->
+<title>ProperCare Manager · Gestão PGP v3.90 (PCM V177)</title>
 <link rel="icon" type="image/jpeg" href="data:image/jpeg;base64,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">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -5424,7 +5484,7 @@ tr.tadm-feito td{background:#dcfce7 !important;color:#15803d;font-weight:700}
 <aside class="nav-sidebar" aria-label="Navegação principal">
   <div class="nav-brand">
     <span class="nav-brand-mark">PCM</span>
-    <span class="nav-brand-sub">v3.89 · V176</span>
+    <span class="nav-brand-sub">v3.90 · V177</span>
   </div>
 
   <nav class="nav-groups">
@@ -22353,7 +22413,7 @@ async function openModalOS(id, _v150Preset) {
   // grava uma decisão na OS errada.
   try { const _cbLp = document.getElementById('osLimparPrazo'); if (_cbLp) _cbLp.checked = false;
         const _wpLp = document.getElementById('osPrazoFuturoWrap'); if (_wpLp) _wpLp.style.display = 'none'; } catch (e) {}
-  document.getElementById('osLocalAtendimento').value = 'externo';
+  document.getElementById('osLocalAtendimento').value = '';   // V177 (L2) — sem padrao: quem abre escolhe
   // V151 — os campos novos entram no reset SÍNCRONO, com todo o resto (lição
   // do V103 A2: campo que só é limpo depois do await volta preenchido da OS
   // anterior quando algo falha no meio).
@@ -22508,7 +22568,7 @@ async function openModalOS(id, _v150Preset) {
       // Salvar gravava ''. Vale para os três selects que vêm da planilha.
       _v151SetSelect(document.getElementById('osPrioridade'), os.prioridade, 'normal');
       _v151SetSelect(document.getElementById('osLocalAtendimento'),
-                     String(os.local_atendimento || '').trim().toLowerCase() === 'interno' ? 'interno' : (os.local_atendimento || 'externo'), 'externo');
+                     String(os.local_atendimento || '').trim().toLowerCase() === 'interno' ? 'interno' : (os.local_atendimento || ''), '');   // V177 (L2)
       // V151 — a janela prevista da OS
       document.getElementById('osHoraPrevista').value = _v151Hora(os.hora_prevista);
       const _durOS = _v151Dur(os.duracao_prevista_min);
@@ -22625,6 +22685,13 @@ async function saveOSModal(btnEl) {
   // preservado (o backend não altera numero_os no update).
   if (!cliente) { toast('Preencha o cliente.', 'error'); return; }
   if (!tipo) { toast('Selecione o tipo de OS.', 'error'); return; }
+  // V177 (L2) — decisao do Fernando (11/09): o local nasce em branco e a OS
+  //   nao e gravada sem ele. Antes o select ja vinha em "Externo".
+  if (localAtendimento !== 'externo' && localAtendimento !== 'interno') {
+    toast('Escolha o Local de Atendimento: Externo (no cliente) ou Interno (oficina).', 'error');
+    try { document.getElementById('osLocalAtendimento').focus(); } catch(e) {}
+    return;
+  }
   // ══════════════════════════════════════════════════════════════════════════
   // V151 — HORÁRIO SÓ EXISTE PENDURADO NUMA DATA.
   // Guardar 08:30 sem dia produz um dado que NENHUMA tela consegue posicionar:
@@ -23183,7 +23250,7 @@ function _osDetailTab(osId, tab) {
         ${_osDetailField('Nº OS', `<span style="font-family:var(--font-mono);font-weight:700">${os.numero_os||'—'}</span>`)}
         ${_osDetailField('Cliente', os.cliente||'—')}
         ${_osDetailField('Tipo', (_tiposOS.find(t=>t.Tipo_ID===os.tipo_os)?.Nome) || os.tipo_os||'—')}
-        ${_osDetailField('Local de Atendimento', (os.local_atendimento === 'interno') ? '🏭 Interno (oficina)' : '🚐 Externo (campo)')}
+        ${_osDetailField('Local de Atendimento', (os.local_atendimento === 'interno') ? '🏭 Interno (oficina)' : (os.local_atendimento === 'externo' ? '🚐 Externo (campo)' : '⚠ não definido'))}
         ${_osDetailField('Status', OS_DETAIL_STATUS_LABELS[(os.status||'').toUpperCase()] || os.status||'—')}
         ${_osDetailField('Data de abertura', data)}
         ${_osDetailField('Responsável', usu ? usu.nome : (os.usuario_atual||'—'))}
@@ -25228,6 +25295,7 @@ if(!gsUrl){
       <div class="form-row">
         <label class="form-label">Local de Atendimento</label>
         <select class="form-select" id="osLocalAtendimento">
+          <option value="">— escolha —</option>
           <option value="externo">🚐 Externo (campo)</option>
           <option value="interno">🏭 Interno (oficina)</option>
         </select>
@@ -34542,7 +34610,7 @@ body.mob-forced #mobApp{max-width:430px;margin:0 auto;box-shadow:0 0 60px rgba(0
       //   "Marcelo; Jonathan" desde o V149 — a OS tem UM responsável, então
       //   entra o PRIMEIRO, nunca a string inteira (era esse o chip absurdo
       //   que o V149 teve de matar).
-      responsavel: (window.PROPER_DEM_RESPS(dm.responsavel || '')[0]) || _mobNomeUsuario() || '',
+      responsavel: (window.PROPER_DEM_RESPS(dm.responsavel || '')[0]) || null,   // V177 (R1)
       // V141 — SUGESTÃO, não escolha. Vira o tipo só se existir no cadastro
       // (ver _mobPintaOS, passo 2): sugerir tipo que não existe seria criar OS
       // com tipo inventado, e o stepper aceitaria porque só testa se está vazio.
@@ -34700,13 +34768,19 @@ body.mob-forced #mobApp{max-width:430px;margin:0 auto;box-shadow:0 0 60px rgba(0
       // V166 — quem vai ASSUMIR. Nasce com quem está logado: é exatamente o que
       // o V165 gravava sempre, então quem não mexer no campo abre a mesma OS de
       // antes. O que muda é poder mexer.
-      responsavel: _mobNomeUsuario() || '',
+      // V177 (R1) — nasce SEM marcacao. `null` = ninguem escolheu ainda;
+      //   '' = "Ninguem por enquanto" escolhido de proposito. O V166
+      //   marcava quem estava logado, e a OS nascia de quem a abria.
+      responsavel: null,
       _maqs: null, _tipos: null, _maqsErro: '', _maqsLocal: false
     }, pre || {});
     _mobEstado.novaOS.cliente = _mobNomeDoCliente(_mobEstado.novaOS.cliente_id,
                                                   _mobEstado.novaOS.cliente);
     _mobEstado.step = pre && pre.cliente_id ? 1 : 0;
     if (_mobEstado.step === 1) _mobCarregaMaquinas();
+    // V177 (T3) — os tipos comecam a chegar enquanto a pessoa escolhe
+    //   cliente e maquinas; a etapa 2 costuma abrir ja com os botoes.
+    try { _mobCarregaTipos(); } catch (eT3) {}
     _mobPintaOS();
   };
   function _mobPintaOS() {
@@ -34724,7 +34798,7 @@ body.mob-forced #mobApp{max-width:430px;margin:0 auto;box-shadow:0 0 60px rgba(0
       corpo = '<div class="mob-f"><input class="mob-in" id="mobOsCli" placeholder="Buscar cliente…" ' +
         'oninput="_mobBuscaCli(this.value)" onfocus="this.removeAttribute(\'readonly\')" readonly ' +
         'name="mob_cli_busca_nofill" data-lpignore="true" data-1p-ignore autocomplete="off"></div><div id="mobCliLista">' +
-        _mobCliHtml(clientes.slice(0, 25)) + '</div>';
+        (clientes.length ? _mobCliHtml(clientes.slice(0, 25)) : _mobCliEsperaHtml()) + '</div>';   // V177 (C1)
     } else if (s === 1) {
       titulo = 'Quais máquinas?';
       if (!o._maqs) {
@@ -34778,13 +34852,16 @@ body.mob-forced #mobApp{max-width:430px;margin:0 auto;box-shadow:0 0 60px rgba(0
         var _achou = tipos.find(function (t) { return _norm(_mobTipoNome(t)) === _alvo; });
         if (_achou) o.tipo = _mobTipoId(_achou);
       }
-      corpo = '<div class="mob-f"><label>Tipo</label><div class="mob-opts">' +
+      corpo = (o._tiposLocal && tipos.length
+          ? '<div class="mob-card-s" style="margin:-4px 0 10px">📴 Tipos da lista já carregada neste aparelho — o servidor não respondeu.</div>'
+          : '') +
+        '<div class="mob-f"><label>Tipo</label>' + (tipos.length ? '<div class="mob-opts">' : '') +
         (tipos.length ? tipos.map(function (t) {
           // 🔑 rótulo = Nome (para gente) · valor = Tipo_ID (para o servidor).
           var _id = _mobTipoId(t), _nm = _mobTipoNome(t);
           return '<button class="mob-opt' + (o.tipo === _id ? ' is-on' : '') + '" onclick="_mobOsSet(\'tipo\',\'' +
             esc(_id).replace(/'/g, "\\'") + '\')">' + esc(_nm) + '</button>';
-        }).join('') : '<span class="mob-card-s">Carregando tipos…</span>') + '</div></div>' +
+        }).join('') + '</div>' : _mobTiposVazioHtml(o)) + '</div>' +   // V177 (T1)
         '<div class="mob-f"><label>Prioridade</label><div class="mob-opts">' +
         '<button class="mob-opt' + (o.prioridade === 'normal' ? ' is-on' : '') + '" onclick="_mobOsSet(\'prioridade\',\'normal\')">Normal</button>' +
         '<button class="mob-opt' + (o.prioridade === 'alta' ? ' is-on' : '') + '" onclick="_mobOsSet(\'prioridade\',\'alta\')">🔥 Alta</button>' +
@@ -34799,13 +34876,20 @@ body.mob-forced #mobApp{max-width:430px;margin:0 auto;box-shadow:0 0 60px rgba(0
         // ⚠ Fica NESTA etapa, não numa quinta: o stepper continua com 4
         //   passos. Uma tela a mais para um campo é pedágio, e quem está em
         //   campo com uma mão no celular paga caro.
+        // ═══ V177 (L1) · ONDE SERA O ATENDIMENTO — obrigatorio, sem padrao ═══
+        // Ate o V176 o celular nao perguntava e o GAS gravava 'externo' para
+        // tudo: OS de oficina aberta pelo celular sumia do quadro da Oficina.
+        '<div class="mob-f"><label>Onde será o atendimento?</label><div class="mob-opts">' +
+        '<button class="mob-opt' + (o.local === 'externo' ? ' is-on' : '') + '" onclick="_mobOsSet(\'local\',\'externo\')">🚗 No cliente</button>' +
+        '<button class="mob-opt' + (o.local === 'interno' ? ' is-on' : '') + '" onclick="_mobOsSet(\'local\',\'interno\')">🏭 Na oficina</button>' +
+        '</div></div>' +
         '<div class="mob-f"><label>Quem vai assumir?</label><div class="mob-opts">' +
         (_mobEquipeNomes(o.responsavel || '').map(function (p) {
           return '<button class="mob-opt' + (o.responsavel === p ? ' is-on' : '') +
             '" onclick="_mobOsSet(\'responsavel\',\'' + esc(p).replace(/'/g, "\\'") + '\')">' +
             esc(p) + '</button>';
         }).join('')) +
-        '<button class="mob-opt' + (o.responsavel ? '' : ' is-on') +
+        '<button class="mob-opt' + (o.responsavel === '' ? ' is-on' : '') +   // V177 (R1)
         '" onclick="_mobOsSet(\'responsavel\',\'\')">Ninguém por enquanto</button>' +
         '</div></div>' +
         '<div class="mob-f"><label>Prazo (opcional)</label>' +
@@ -34813,7 +34897,7 @@ body.mob-forced #mobApp{max-width:430px;margin:0 auto;box-shadow:0 0 60px rgba(0
         '<div class="mob-f"><label>Descrição</label>' +
         '<textarea class="mob-in" placeholder="O que o cliente relatou…" ' +
         'oninput="_mobOsSet(\'descricao\',this.value,1)">' + esc(o.descricao) + '</textarea></div>' +
-        '<button class="mob-go" onclick="_mobStep(3)"' + (o.tipo ? '' : ' disabled') + '>Revisar</button>';
+        _mobBotaoRevisar(o);   // V177 (B1) — o botao cinza diz o que falta
     } else {
       titulo = 'Confirmar';
       var maqNomes = (o._maqs || []).filter(function (m) { return o.maquinas.indexOf(m.id) >= 0; })
@@ -34825,6 +34909,7 @@ body.mob-forced #mobApp{max-width:430px;margin:0 auto;box-shadow:0 0 60px rgba(0
         '<div class="mob-card-s" style="margin-top:6px"><b>Tipo:</b> ' +
           esc(_mobTipoNome(_mobTipoPorId(o.tipo)) || o.tipo) + '</div>' +
         '<div class="mob-card-s"><b>Prioridade:</b> ' + esc(o.prioridade) + '</div>' +
+        '<div class="mob-card-s"><b>Local:</b> ' + (o.local === 'interno' ? '🏭 Na oficina' : (o.local === 'externo' ? '🚗 No cliente' : 'não escolhido')) + '</div>' +   // V177 (L1)
         // V166 — escolha que não aparece na revisão é escolha que ninguém
         // confere. E "a definir" é dito com todas as letras: em branco a
         // pessoa lê o que quiser.
@@ -34850,6 +34935,40 @@ body.mob-forced #mobApp{max-width:430px;margin:0 auto;box-shadow:0 0 60px rgba(0
     } else { _volta = function () { _mobStep(s - 1); }; }
     _mobSheet(titulo, corpo, { total: 4, atual: s }, _volta);
   }
+  // ═════════════════════════════════════════════════════════════════════════
+  // V177 (C1) — SEM CLIENTE NENHUM NO APARELHO NAO E "NENHUM CLIENTE".
+  // O stepper le `db.clients`, que num aparelho novo (ou com o cadastro ainda
+  // chegando) esta vazio — e a etapa 0 dizia "Nenhum cliente — tente outro
+  // nome", afirmando o que nao sabia. Agora: "carregando", repinta sozinha
+  // quando o cadastro chega, e aos 45 s oferece tentar de novo.
+  // ═════════════════════════════════════════════════════════════════════════
+  var _mobCliEsperaT = null, _mobCliEsperaIni = 0;
+  function _mobCliQtd() { return ((typeof db === 'object' && db && db.clients) || []).length; }
+  function _mobCliEsperaHtml() {
+    if (!_mobCliEsperaIni) _mobCliEsperaIni = Date.now();
+    if (Date.now() - _mobCliEsperaIni > 45000) {
+      return _mobVazio('📶', 'O cadastro de clientes não chegou a este aparelho',
+          'Verifique a conexão e toque em "Tentar de novo".') +
+        '<button class="mob-go g-accent" onclick="_mobCliTentar()">↻ Tentar de novo</button>';
+    }
+    if (!_mobCliEsperaT) {
+      _mobCliEsperaT = setInterval(function () {
+        var aberto = _mobEstado.step === 0 && !!document.getElementById('mobCliLista');
+        var n = _mobCliQtd();
+        if (!aberto || n || Date.now() - _mobCliEsperaIni > 45000) {
+          clearInterval(_mobCliEsperaT); _mobCliEsperaT = null;
+          if (n || !aberto) _mobCliEsperaIni = 0;
+          if (aberto) _mobPintaOS();
+        }
+      }, 800);
+    }
+    return '<div class="mob-load" id="mobCliLoad"><div class="mob-spin"></div>Carregando o cadastro de clientes…</div>';
+  }
+  window._mobCliTentar = function () {
+    _mobCliEsperaIni = 0;
+    try { if (typeof syncFromGS === 'function') syncFromGS({ silent: true }); } catch (e) {}
+    _mobPintaOS();
+  };
   function _mobCliHtml(lista) {
     if (!lista.length) return _mobVazio('🔍', 'Nenhum cliente', 'Tente outro nome.');
     return lista.map(function (c) {
@@ -35038,6 +35157,29 @@ body.mob-forced #mobApp{max-width:430px;margin:0 auto;box-shadow:0 0 60px rgba(0
   //    pergunta a estas duas. As variantes minúsculas ficam como tolerância a
   //    payload antigo, nunca como fonte.
   // ═════════════════════════════════════════════════════════════════════════
+  // ═════════════════════════════════════════════════════════════════════════
+  // V177 (B1) — O BOTAO CINZA DIZ O QUE FALTA.
+  // Cada requisito da etapa 2 e UMA entrada nesta lista; o botao e a mensagem
+  // perguntam a mesma lista, entao nao existe "botao liberado com campo
+  // faltando" nem "botao preso sem motivo". `_mobCriarOS` confere de novo.
+  // ═════════════════════════════════════════════════════════════════════════
+  var _MOB_REQ_ETAPA2 = [
+    { nome: 'tipo', ok: function (o) { return !!o.tipo; } },
+    { nome: 'local', ok: function (o) { return o.local === 'externo' || o.local === 'interno'; } },   // V177 (L1)
+    { nome: 'quem vai assumir', ok: function (o) { return o.responsavel !== null && o.responsavel !== undefined; } }   // V177 (R1)
+  ];
+  function _mobFaltaEtapa2(o) {
+    return _MOB_REQ_ETAPA2.filter(function (r) { return !r.ok(o); })
+      .map(function (r) { return r.nome; });
+  }
+  function _mobBotaoRevisar(o) {
+    var falta = _mobFaltaEtapa2(o);
+    return '<button class="mob-go" onclick="_mobStep(3)"' + (falta.length ? ' disabled' : '') + '>Revisar</button>' +
+      (falta.length
+        ? '<div class="mob-card-s" id="mobFaltaEtapa2" style="text-align:center;margin-top:6px">Falta escolher: ' +
+          esc(falta.join(' · ')) + '</div>'
+        : '');
+  }
   function _mobTipoId(t) {
     if (t == null) return '';
     if (typeof t === 'string') return t;
@@ -35054,17 +35196,88 @@ body.mob-forced #mobApp{max-width:430px;margin:0 auto;box-shadow:0 0 60px rgba(0
     return null;
   }
 
+  // ═════════════════════════════════════════════════════════════════════════
+  // V177 (T1) — "CARREGANDO TIPOS…" ERA A MESMA FRASE PARA TRES ESTADOS.
+  // Ate o V176: falha -> `_tipos = []` -> o render desenhava "Carregando
+  // tipos…" (o mesmo texto de quando esta buscando) e o `if (!_tipos)` do
+  // `_mobStep` nunca mais buscava. Relato do Fernando, 11/09: mais de um
+  // minuto parado e nenhuma OS aberta.
+  // 🔑 Irmaos: a etapa das maquinas tem os tres estados desde a V153.
+  //    Esta funcao passa a ter o mesmo contrato:
+  //      _tipos === null  -> buscando        (o render mostra spinner)
+  //      _tiposErro != '' -> falhou          (motivo + "Tentar de novo")
+  //      _tipos = []      -> cadastro vazio  (dito com essas palavras)
+  // ⚠ Token de geracao + "e o MESMO stepper?": fechar e abrir outro stepper
+  //   com a busca antiga no ar nao pode deixar a resposta velha escrever na
+  //   OS nova (mesma licao do `_mobMaqGer`, V153).
+  // ═════════════════════════════════════════════════════════════════════════
+  var _mobTipoGer = 0;
+  function _mobTipoAtivo(t) {
+    // ⚠ tipo SEM Tipo_ID nao entra: um botao que nao sabe o que mandar e pior
+    //   que um botao a menos (V159).
+    return _mobTipoId(t) && String(t.Ativo || t.ativo || 'SIM').toUpperCase() !== 'NÃO';
+  }
   async function _mobCarregaTipos() {
+    var o = _mobEstado.novaOS;
+    if (!o || o._tiposVoo) return;           // ja ha uma busca desta OS no ar
+    o._tiposVoo = true; o._tiposErro = ''; o._tiposLento = false; o._tiposLocal = false;
+    var ger = ++_mobTipoGer;
+    var _lento = null;
+    // V177 (T2) — uma leitura pode levar ate 3 x 30 s antes de desistir.
+    //   Aos 15 s a tela passa a dizer que esta demorando, em vez de parecer
+    //   travada. So pinta se ainda for a mesma busca e a mesma OS.
+    _lento = setTimeout(function () {
+      if (ger === _mobTipoGer && _mobEstado.novaOS === o && o._tipos == null) {
+        o._tiposLento = true;
+        if (_mobEstado.step === 2) _mobPintaOS();
+      }
+    }, 15000);
+    var lista = null, falhou = '';
     try {
       var r = await gsGet('getTiposOS');
-      var lista = (r && (r.tipos || r.tiposOS || r.data)) || [];
-      _mobEstado.novaOS._tipos = lista.filter(function (t) {
-        // ⚠ e um tipo SEM Tipo_ID não entra na lista: um botão que não sabe o
-        //   que mandar é pior que um botão a menos — era exatamente o defeito.
-        return _mobTipoId(t) && String(t.Ativo || t.ativo || 'SIM').toUpperCase() !== 'NÃO';
-      });
-    } catch (e) { _mobEstado.novaOS._tipos = []; }
+      lista = (r && (r.tipos || r.tiposOS || r.data)) || [];
+    } catch (e) { falhou = (e && e.message) || 'falha de conexão'; }
+    if (_lento) clearTimeout(_lento);
+    if (ger !== _mobTipoGer || _mobEstado.novaOS !== o) return;   // outro stepper assumiu
+    o._tiposVoo = false; o._tiposLento = false;
+    if (lista === null) {
+      // 🔑 RESERVA: o computador pode ja ter a lista nesta sessao (`_tiposOS`,
+      //    carregada pelo modal de OS). E o mesmo formato do getTiposOS.
+      var _loc = (typeof _tiposOS !== 'undefined' && Array.isArray(_tiposOS)) ? _tiposOS : [];
+      _loc = _loc.filter(_mobTipoAtivo);
+      if (_loc.length) { lista = _loc; o._tiposLocal = true; }
+    }
+    if (lista === null) {
+      o._tipos = []; o._tiposErro = falhou;
+      _mobToast('Não consegui buscar os tipos de OS: ' + falhou, 'error');
+    } else {
+      o._tipos = lista.filter(_mobTipoAtivo);
+    }
     if (_mobEstado.step === 2) _mobPintaOS();
+  }
+  // "tentar de novo" APAGA o resultado anterior (sem isto o `if (!_tipos)` do
+  // _mobStep achava que ja havia lista — o mesmo tropeço que a V153 consertou
+  // nas maquinas).
+  window._mobRecarregaTipos = function () {
+    var o = _mobEstado.novaOS;
+    o._tipos = null; o._tiposErro = ''; o._tiposVoo = false; o._tiposLento = false;
+    _mobPintaOS();
+    _mobCarregaTipos();
+  };
+  function _mobTiposVazioHtml(o) {
+    if (o._tiposErro) {
+      return _mobVazio('📶', 'Não consegui buscar os tipos de OS',
+          'O servidor respondeu: ' + o._tiposErro + '. Verifique a conexão e tente de novo.') +
+        '<button class="mob-go g-accent" onclick="_mobRecarregaTipos()">↻ Tentar de novo</button>';
+    }
+    if (Array.isArray(o._tipos) && !o._tipos.length) {
+      return _mobVazio('🗂', 'Nenhum tipo de OS ativo no cadastro',
+        'Cadastre os tipos em "Tipos de OS", na versão do computador, e volte aqui.');
+    }
+    return '<div class="mob-load" id="mobTiposLoad"><div class="mob-spin"></div>' +
+      (o._tiposLento
+        ? 'O servidor está demorando para responder — continuo tentando…'
+        : 'Buscando os tipos de OS…') + '</div>';
   }
   // V161 (item 5) — o que vem DEPOIS de a OS existir. Nada aqui e opcional;
   // o que mudou e que nada disto fica na frente da pessoa. Cada etapa avisa
@@ -35095,7 +35308,9 @@ body.mob-forced #mobApp{max-width:430px;margin:0 auto;box-shadow:0 0 60px rgba(0
   window._mobCriarOS = async function () {
     var o = _mobEstado.novaOS;
     if (!o.cliente_id) { _mobToast('Escolha o cliente.', 'error'); return; }
+    if (o.responsavel === null || o.responsavel === undefined) { _mobToast('Escolha quem vai assumir (ou "Ninguém por enquanto").', 'error'); return; }   // V177 (R1)
     if (!o.tipo) { _mobToast('Escolha o tipo de OS.', 'error'); return; }
+    if (o.local !== 'externo' && o.local !== 'interno') { _mobToast('Escolha onde será o atendimento: no cliente ou na oficina.', 'error'); return; }   // V177 (L1)
     var btn = document.getElementById('mobOsGo');
     if (btn) { btn.disabled = true; btn.textContent = 'Criando…'; }
     try {
@@ -35121,7 +35336,8 @@ body.mob-forced #mobApp{max-width:430px;margin:0 auto;box-shadow:0 0 60px rgba(0
         usuario_atual: _mobRespValor(o.responsavel),
         usuarios_vinculados: _mobRespValor(o.responsavel) ? [_mobRespValor(o.responsavel)] : [],
         responsavel: _mobNomeUsuario() || '',
-        prioridade: o.prioridade, data_prevista: o.dataPrevista, local_atendimento: '',
+        prioridade: o.prioridade, data_prevista: o.dataPrevista,
+        local_atendimento: o.local,   // V177 (L1) — era '', que o GAS gravava como 'externo'
         maquinas_vinculadas: o.maquinas, client_uid: uid,
         // V161 (item 4b) — DE ONDE a OS nasceu. O campo existe em
         // ORDENS_SERVICO desde o v22; o celular nunca o mandava, entao toda OS
