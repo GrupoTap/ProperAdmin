@@ -4128,6 +4128,26 @@ v50 — Resiliência de rede: retry/backoff em gsGet e syncToGS
 -->
 <!--
   ══════════════════════════════════════════════════════════════════════════
+  PCM V180 — BUSCA DE EMPRESA em Acessos do Portal                11/09/2026
+  ══════════════════════════════════════════════════════════════════════════
+  100% FRONT-END. ZERO GAS, ZERO SQL. Par do GAS continua o v140.
+  • Convidar / Conceder: campo "Buscar empresa pelo nome ou CNPJ" em cima da
+    lista. Digitou ⇒ a lista vira uma caixa aberta só com o que bate, com
+    contador "N de M". Sem acento e sem maiúscula ("goncalves" acha
+    "GONÇALVES"; "fund gonc" acha "FUNDICAO GONCALVES"). CNPJ só com dígitos.
+  • Uma empresa só bateu ⇒ ela já fica escolhida (e o e-mail do cadastro é
+    sugerido, como antes). Enter escolhe a 1ª; ↓ desce para a lista; Esc limpa.
+  • 🕳 O e-mail sugerido acompanha a escolha: troca junto quando a empresa
+    muda e sai quando ela sai do filtro — mas só se ninguém o editou. E o
+    cursor fica na busca (o listener do V137 roubava o foco para o e-mail).
+  • 🔑 Empresa escolhida que SAI do filtro deixa de estar escolhida — o botão
+    nunca manda uma escolha que a tela não mostra.
+  • A busca da tabela ("Buscar por e-mail ou empresa") passa a ignorar acento.
+  • Busca vazia ⇒ lista IDÊNTICA à do V179 (mesma função monta as duas).
+  Gerado por _testes/NEWFILE_BUILD_PCM_V180.py a partir do V179.
+  -->
+<!--
+  ══════════════════════════════════════════════════════════════════════════
   PCM V179 — rodada SIDEBAR (contraste, aspecto, trilho e reagrupamento) 11/09/2026
   ══════════════════════════════════════════════════════════════════════════
   100% FRONT-END. ZERO GAS, ZERO SQL. Par do GAS continua o v140 (o do V178).
@@ -4172,7 +4192,26 @@ v50 — Resiliência de rede: retry/backoff em gsGet e syncToGS
      primeiro Salvar de qualquer campo a DESVINCULAVA, calado. Agora aparece
      marcada, numa secao propria.
   -->
-<title>ProperCare Manager · Gestão PGP v3.92 (PCM V179)</title>
+<!--
+  ══════════════════════════════════════════════════════════════════════════
+  PCM V181 — 📎 ANEXAR NA OS + 🔒 DOCUMENTOS INTERNOS DA PROPER   11/09/2026
+  ══════════════════════════════════════════════════════════════════════════
+  Par: GAS v141 (RODA ANTES). Zero SQL. Contém o V180 INTEIRO (busca de empresa
+  em Acessos do Portal, outra sessão). Tudo o que é novo mora no ÚLTIMO
+  <script> (prefixo _v180) + duas chamadas na árvore da Gestão de Documentos.
+  • 📎 Anexar na linha da OS e 📎 Anexar aqui na linha da máquina: vários
+    arquivos de uma vez, para a pasta Cliente › OS › Máquina.
+  • A pessoa ESCOLHE, sem padrão marcado: 👤 Documento do cliente (PDF aparece
+    no portal; foto/Word/Excel só na Gestão) ou 🔒 Interno da Proper.
+  • 🔒 Internos Proper (chip da barra, só admin): aba e pasta de Drive
+    SEPARADAS no servidor, fora do espelho do Supabase — o portal, o e-mail e
+    o WhatsApp não têm caminho até eles. PIN de administrador no SERVIDOR.
+  • Nome repetido na OS vira "nome (2).pdf": com o mesmo nome o servidor
+    SUBSTITUIRIA o PDF anterior (podia ser um assinado).
+  Gerado por _testes/NEWFILE_BUILD_PCM_V181.py a partir do V180.
+  Bancada: _testes/NEWFILE_T_PCM_V181.mjs (--negativos: cada grupo sozinho).
+  -->
+<title>ProperCare Manager · Gestão PGP v3.94 (PCM V181)</title>
 <link rel="icon" type="image/jpeg" href="data:image/jpeg;base64,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">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -5617,7 +5656,7 @@ tr.tadm-feito td{background:#dcfce7 !important;color:#15803d;font-weight:700}
        operacao/planejamento/campo/documentos/cadastros/admin). -->
   <div class="nav-brand">
     <span class="nav-brand-mark">PCM</span>
-    <span class="nav-brand-sub">v3.92 · V179</span>
+    <span class="nav-brand-sub">v3.94 · V181</span>
     <button type="button" class="nav-rail-btn" id="navRailBtn" onclick="_v179NavRailToggle()"
             title="Recolher o menu" aria-label="Recolher o menu" aria-expanded="true">
       <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path class="nav-rail-ico-in" d="M10 3.5L5.5 8 10 12.5"/><path class="nav-rail-ico-out" d="M6 3.5L10.5 8 6 12.5"/></svg>
@@ -11105,6 +11144,7 @@ function _docsRenderTreeV96(body,rows,inst){
         +(_oMaqTxt?'<span class="docs-os-maq" title="'+escHtml(_oMaqs.join(' · '))+'">🔧 '+escHtml(_oMaqTxt)+'</span>':'')
         +'<span class="xf-gmeta">'+_docsCounts(O.nF,O.nP)+' · últ. '+_docsFmtMs(O.maxDate)+'</span>'
         +'<span style="margin-left:auto;display:flex;gap:6px">'
+          +((!O.semOS&&typeof _v180BtnOS==='function')?_v180BtnOS(ok,C,O):'')   /* V180 — 📎 Anexar */
           +(O.folder?'<button class="btn btn-secondary btn-xs" onclick="event.stopPropagation();_docOpen(\''+escJs(O.folder)+'\')">Abrir pasta</button>':'')
           +(_v163N?'<button class="btn btn-secondary btn-xs" title="Remove da Gestão de Documentos os '+_v163N+' documento(s) deste grupo, como ele está filtrado agora. Os arquivos continuam no Drive.'+(_v163F?' As '+_v163F+' foto(s) de campo de máquina ficam — pergunto sobre elas depois.':'')+'" onclick="event.stopPropagation();_v163LimparOS(\''+escJs(ok)+'\',this)">🗑 Limpar</button>':'')
           +((!_v163N&&_v163F)?'<button class="btn btn-secondary btn-xs" title="Este grupo só tem foto de campo de máquina — remover tira também da ficha da máquina." onclick="event.stopPropagation();_v163LimparOS(\''+escJs(ok)+'\',this)">🗑 Limpar</button>':'')
@@ -11119,7 +11159,7 @@ function _docsRenderTreeV96(body,rows,inst){
       });
       mKeys.forEach(function(mk){
         const M=O.maq.get(mk);
-        html+='<tr class="xf-lvl3"><td colspan="'+nCols+'"><div style="padding-left:52px;display:flex;align-items:center;gap:7px">🔧 <b>'+escHtml(M.label)+'</b><span class="xf-gmeta">'+M.items.length+' arquivo'+(M.items.length===1?'':'s')+'</span></div></td></tr>';
+        html+='<tr class="xf-lvl3"><td colspan="'+nCols+'"><div style="padding-left:52px;display:flex;align-items:center;gap:7px">🔧 <b>'+escHtml(M.label)+'</b><span class="xf-gmeta">'+M.items.length+' arquivo'+(M.items.length===1?'':'s')+'</span>'+((!O.semOS&&typeof _v180BtnMaq==='function')?_v180BtnMaq(ok,mk,M):'')+'</div></td></tr>';   // V180 — 📎 Anexar aqui
         if(_srtNivel<4) M.items.sort(function(a,b){ return _docDateValue(b)-_docDateValue(a); });   // V133 (L3)
         M.items.forEach(function(it){
           html+='<tr class="xf-filerow">'+I.cfg.columns.map(function(c){ return '<td class="'+(c.type==='num'?'xf-num':'')+'"'+(c.tdStyle?(' style="'+c.tdStyle+'"'):'')+'>'+(c.render?c.render(it):escHtml(xfGV(c,it)==null?'—':xfGV(c,it)))+'</td>'; }).join('')+'</tr>';
@@ -35980,11 +36020,11 @@ function _paPintarTabela() {
 }
 
 function _paCorpo() {
-  const b = _paBusca.toLowerCase().trim();
+  const b = _paNorm(_paBusca).trim();   // V180 — sem acento, como a busca do convite
   const linhas = _paLista.filter(u => {
     if (!b) return true;
-    if (String(u.email || '').toLowerCase().indexOf(b) >= 0) return true;
-    return (u.alvos || []).some(a => String(a.alvo_nome || '').toLowerCase().indexOf(b) >= 0);
+    if (_paNorm(u.email).indexOf(b) >= 0) return true;
+    return (u.alvos || []).some(a => _paNorm(a.alvo_nome).indexOf(b) >= 0);
   });
 
   if (!linhas.length) {
@@ -36034,6 +36074,161 @@ function _paCorpo() {
   }).join('');
 }
 
+// ════════════════════════════════════════════════════════════════════════════
+// V180 · BUSCA DE EMPRESA NO CONVITE / CONCEDER                      11/09/2026
+// ════════════════════════════════════════════════════════════════════════════
+// O Fernando: "Criar campo de busca do cliente pelo nome". A lista de empresas
+// do convite é um <select> com TODOS os clientes do espelho — achar um nome
+// era rolar até ele. Agora digita-se parte do nome (ou do CNPJ) e a lista
+// encolhe na hora.
+// 🔑 Sem acento e sem maiúscula: o cadastro grava "FUNDICAO GONCALVES" e a
+//    gente digita "fundição gonçalves" — os dois viram a mesma coisa.
+// 🔑 Várias palavras = TODAS têm de bater, em qualquer ordem ("gonc fund").
+// 🔑 A escolha que SAI do filtro deixa de ser escolha: o "Convidar e conceder"
+//    lê o `value` do <select>, e ele não pode carregar uma empresa que a tela
+//    não está mostrando.
+// ⚠ Nada disso fala com o servidor: filtra o que o `portalClientesConcediveis`
+//   já trouxe. O `_paEnviar` não mudou uma linha.
+function _paNorm(s) {
+  return String(s == null ? '' : s).normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+}
+
+function _paBateBusca(termo, nome, cnpj) {
+  const t = _paNorm(termo).trim();
+  if (!t) return true;
+  const n = _paNorm(nome);
+  const dig = String(cnpj == null ? '' : cnpj).replace(/\D/g, '');
+  return t.split(/\s+/).every(p => {
+    if (n.indexOf(p) >= 0) return true;
+    const pd = p.replace(/\D/g, '');
+    return pd.length >= 3 && pd === p.replace(/[.\-\/]/g, '') && dig.indexOf(pd) >= 0;
+  });
+}
+
+// Monta as <option> do "Empresa que ele vai enxergar". Termo vazio devolve
+// EXATAMENTE o que o V179 montava (a bancada compara byte a byte).
+function _paOpcoesEmpresa(termo) {
+  const t = String(termo || '').trim();
+  const cli = _paClientes.slice()
+    .sort((a, b) => String(a.nome || '').localeCompare(String(b.nome || '')))
+    .filter(c => _paBateBusca(t, c.nome, c.cnpj));
+  const grp = (_paGrupos || []).slice()
+    .sort((a, b) => String(a.nome || '').localeCompare(String(b.nome || '')))
+    .filter(g => _paBateBusca(t, g.nome, ''));
+
+  const opts = cli.map(c => {
+    const vazio = (c.maquinas === 0);
+    return '<option value="' + _paEsc(c.id) + '" data-maq="' + c.maquinas + '">' +
+      _paEsc(c.nome) + ' — ' + c.maquinas + ' máq · ' + c.os + ' OS' +
+      (vazio ? '  ⚠ sem máquina' : '') + '</option>';
+  }).join('');
+
+  const optsGrupo = !grp.length ? '' :
+    '<optgroup label="Grupos econômicos — o acesso alcança todas as empresas do grupo">' +
+    grp.map(g => '<option value="grupo:' + _paEsc(g.id) + '">' + _paEsc(g.nome) +
+      ' — ' + g.empresas + ' empresa(s) · ' + g.maquinas + ' máq · ' + g.os + ' OS</option>')
+      .join('') + '</optgroup>';
+
+  const total = _paClientes.length + ((_paGrupos && _paGrupos.length) || 0);
+  const achados = cli.length + grp.length;
+
+  if (t && !achados) {
+    return { html: '<option value="" disabled>Nenhuma empresa com “' + _paEsc(t) + '”</option>',
+             achados: 0, total: total };
+  }
+  const html = (t ? '' : '<option value="">— escolha —</option>') + optsGrupo +
+    (optsGrupo && (opts || !t) ? '<optgroup label="Empresas">' + opts + '</optgroup>' : opts);
+  return { html: html, achados: achados, total: total };
+}
+
+// Redesenha a lista a partir do que está digitado.
+function _paFiltrarEmpresas() {
+  const inp = document.getElementById('paClienteBusca');
+  const sel = document.getElementById('paCliente');
+  if (!inp || !sel) return;
+  const t = String(inp.value || '').trim();
+  const antes = String(sel.value || '');
+  const r = _paOpcoesEmpresa(t);
+
+  // ⚠ ORDEM IMPORTA: o `size` muda ANTES do innerHTML. Num <select> fechado
+  //   (size 1) o navegador escolhe sozinho a 1ª opção ao trocar o conteúdo —
+  //   seria uma empresa escolhida sem ninguém ter escolhido.
+  sel.size = t ? Math.min(8, Math.max(2, r.achados + sel.querySelectorAll('optgroup').length)) : 1;
+  sel.innerHTML = r.html;
+  if (t) sel.size = Math.min(8, Math.max(2, sel.options.length + sel.querySelectorAll('optgroup').length));
+
+  const reais = [].slice.call(sel.options).filter(o => o.value && !o.disabled);
+  const vistos = reais.map(o => o.value);
+  let agora = '';
+  if (antes && vistos.indexOf(antes) >= 0) agora = antes;          // continua visível ⇒ continua escolhida
+  else if (reais.length === 1) agora = reais[0].value;      // uma só bateu ⇒ já escolhida
+  if (agora && sel.querySelector('option[value="' + agora.replace(/"/g, '\\"') + '"]')) sel.value = agora;
+  else { sel.value = ''; if (t) sel.selectedIndex = -1; }
+
+  const conta = document.getElementById('paClienteConta');
+  if (conta) conta.textContent = t ? ('· ' + r.achados + ' de ' + r.total) : ('· ' + r.total + ' na lista');
+
+  // o listener do V137 (sugere o e-mail do cadastro) só roda em `change`.
+  // ⚠ Dispara também quando a escolha SOME: é o que tira o e-mail sugerido
+  //   pela empresa que acabou de sair (ver `_paEmailAuto`).
+  if (String(sel.value || '') !== antes) {
+    sel.dispatchEvent(new Event('change'));
+    // 🕳 achado da bancada: o listener do V137 faz `paEmail.focus()` depois de
+    //   sugerir. Com a escolha automática no MEIO da digitação, o resto das
+    //   letras ia parar no e-mail ("…@rgx.ind.brncalves"). Quem está digitando
+    //   na busca continua na busca.
+    if (true && document.activeElement !== inp) {
+      const n = inp.value.length;
+      inp.focus();
+      try { inp.setSelectionRange(n, n); } catch (e) {}
+    }
+  }
+}
+
+// O e-mail que a TELA pôs no campo (sugestão do cadastro), para distinguir do
+// que a pessoa digitou. Com a busca, a escolha muda a cada letra — e a
+// sugestão da empresa que saiu não pode ficar grudada na próxima.
+let _paEmailAuto = '';
+
+function _paLigarBuscaEmpresa() {
+  const inp = document.getElementById('paClienteBusca');
+  const sel = document.getElementById('paCliente');
+  if (!inp || !sel) return;
+  _paEmailAuto = '';
+  const em = document.getElementById('paEmail');
+  // ⚠ Este listener é registrado ANTES do do V137 ⇒ roda primeiro: limpa a
+  //   sugestão anterior (só se ninguém a editou) e anota qual será a próxima.
+  //   Quem escreve no campo continua sendo o listener do V137 — que segue
+  //   só preenchendo campo VAZIO.
+  if (true && em && !em.readOnly) sel.addEventListener('change', () => {
+    if (_paEmailAuto && em.value === _paEmailAuto) em.value = '';
+    const v = String(sel.value || '');
+    const cli = v.indexOf('grupo:') === 0 ? null : _paClientes.find(x => String(x.id) === v);
+    _paEmailAuto = (!String(em.value || '').trim() && cli && cli.email) ? cli.email : '';
+  });
+  inp.addEventListener('input', _paFiltrarEmpresas);
+  inp.addEventListener('keydown', ev => {
+    if (ev.key === 'Enter') {
+      // Enter aqui NUNCA envia o convite: só escolhe a 1ª empresa que bateu.
+      ev.preventDefault();
+      if (!sel.value) {
+        const o = [].slice.call(sel.options).find(x => x.value && !x.disabled);
+        if (o) { sel.value = o.value; sel.dispatchEvent(new Event('change')); }
+      }
+    } else if (ev.key === 'ArrowDown') {
+      ev.preventDefault();
+      if (!sel.value) {
+        const o = [].slice.call(sel.options).find(x => x.value && !x.disabled);
+        if (o) { sel.value = o.value; sel.dispatchEvent(new Event('change')); }
+      }
+      sel.focus();
+    } else if (ev.key === 'Escape') {
+      if (inp.value) { ev.preventDefault(); inp.value = ''; _paFiltrarEmpresas(); }
+    }
+  });
+}
+// ████ FIM V180 ████
+
 // ── Convidar / conceder ─────────────────────────────────────────────────────
 // Uma folha inline, não um modal novo: menos HTML acrescentado ao arquivo e
 // nenhum id global novo além dos daqui.
@@ -36041,6 +36236,11 @@ function _paAbrirConvite(emailExistente) {
   const alvo = document.getElementById('paConvite');
   if (!alvo) return;
 
+  // V180 — as <option> da tela são montadas por `_paOpcoesEmpresa` (a MESMA
+  //   função que a busca usa). ⚠ O `opts`/`optsGrupo` abaixo NÃO vão mais para o
+  //   HTML: editar aqui não muda a tela — edite `_paOpcoesEmpresa`. Ficaram
+  //   (código aditivo) só porque o negativo `--sem BUSCA` da bancada os usa.
+  const _v180 = _paOpcoesEmpresa('');
   const opts = _paClientes.slice()
     .sort((a, b) => String(a.nome || '').localeCompare(String(b.nome || '')))
     .map(c => {
@@ -36080,10 +36280,15 @@ function _paAbrirConvite(emailExistente) {
           '<input id="paEmail" class="input" type="email" placeholder="pessoa@empresa.com.br" ' +
           (emailExistente ? 'value="' + _paEsc(emailExistente) + '" readonly ' : '') +
           'autocomplete="off" name="pa_email_nofill" data-lpignore="true" data-1p-ignore></div>' +
-        '<div><label style="font-size:12px;color:var(--text-muted)">Empresa que ele vai enxergar</label>' +
-          '<select id="paCliente" class="input"><option value="">— escolha —</option>' + optsGrupo +
-          (optsGrupo ? '<optgroup label="Empresas">' + opts + '</optgroup>' : opts) +
-          '</select></div>' +
+        '<div><label style="font-size:12px;color:var(--text-muted)">Empresa que ele vai enxergar' +
+          ' <span id="paClienteConta" style="opacity:.8">· ' + _v180.total + ' na lista</span></label>' +
+          // V180 — busca pelo nome (ou CNPJ). Guard anti-autofill completo (CLAUDE.md).
+          '<input id="paClienteBusca" class="input" placeholder="🔎 Buscar empresa pelo nome ou CNPJ…" ' +
+          'readonly onfocus="this.removeAttribute(\'readonly\')" autocomplete="off" ' +
+          'name="pa_cli_busca_nofill" data-lpignore="true" data-1p-ignore ' +
+          'style="display:block;width:100%;box-sizing:border-box;margin:4px 0 6px">' +
+          '<select id="paCliente" class="input" style="display:block;width:100%;box-sizing:border-box">' +
+          _v180.html + '</select></div>' +
       '</div>' +
       '<div style="margin-top:12px;display:flex;gap:8px;align-items:center">' +
         '<button class="btn btn-primary" onclick="_paEnviar(' + (emailExistente ? 'true' : 'false') + ')">' +
@@ -36096,6 +36301,7 @@ function _paAbrirConvite(emailExistente) {
     '</div>';
   const e = document.getElementById('paEmail');
   if (e && !emailExistente) e.focus();
+  _paLigarBuscaEmpresa();   // V180
 
   // ── V137 · O E-MAIL QUE JÁ ESTÁ NO CADASTRO ───────────────────────────
   // Escolher a empresa preenche o campo com o e-mail da aba CLIENTES, quando
@@ -39696,6 +39902,424 @@ _v178Embrulhar('openTipoOSModal', function (orig) {
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', ligar); else ligar();
 })();
 // ████ FIM V179 ████
+</script>
+<script>
+// ████ V181 (módulo _v180) · ANEXAR NA OS + DOCUMENTOS INTERNOS DA PROPER ████
+// ⚠ Nasceu como "V180"; a outra sessão gravou o V180 (busca de empresa) antes.
+//   O prefixo `_v180` ficou: é o nome do módulo, não a versão do arquivo.
+// Pedido do Fernando (11/09/2026), depois do PDF da OS PGP-2026-0076 que não
+// subiu do celular: anexar documentos DIRETO em cada OS pela Gestão de
+// Documentos, indo para as pastas certas — e documento sensível numa SEÇÃO
+// SEPARADA, "para evitar totalmente o risco do cliente receber qualquer
+// documento que seja de uso interno da Proper".
+//
+// 📎 Anexar (linha da OS e linha da máquina, na árvore Cliente → OS → Máquina):
+//   · a pessoa ESCOLHE para quem é, sem padrão: "Documento do cliente" ou
+//     "🔒 Interno da Proper". Não existe caminho com um clique só para o errado.
+//   · do cliente: PDF → salvarPdfDrive (categoria escolhida; aparece no portal);
+//     foto/Word/Excel → salvarFotosDrivePGP com attachmentType 'anexo_pcm'
+//     (GAS v141: foto_pcm / arquivo_pcm — não aparecem no portal, que só lista PDF).
+//   · interno → docInternoSalvar (GAS v141): aba e árvore de Drive PRÓPRIAS,
+//     fora do espelho do Supabase, PIN de administrador no SERVIDOR.
+// 🔒 Internos Proper (chip da barra, só para admin): a lista mora em
+//   `_v180Internos`, NUNCA em `_docsCache` — a árvore, a tabela e os menus de
+//   e-mail/WhatsApp/assinatura do V178 nunca veem um documento interno.
+// ⚠ Módulo ADITIVO: funções novas com prefixo _v180; renderDocs e
+//   renderDocsList ganham EMBRULHO; a árvore ganha duas chamadas (📎).
+// ═══════════════════════════════════════════════════════════════════════════
+(function () {
+  if (typeof DOCS_CAT_LABELS === 'object' && DOCS_CAT_LABELS) {
+    DOCS_CAT_LABELS.foto_pcm = 'Foto (anexada no PCM)';
+    DOCS_CAT_LABELS.arquivo_pcm = 'Arquivo (anexado no PCM)';
+    DOCS_CAT_LABELS.pdf_documento = 'PDF Documento';
+  }
+})();
+
+var V180_MAX_MB = 20, V180_MAX_ARQ = 10;
+var V180_CATS_CLIENTE = [
+  ['pdf_preventiva', 'Relatório de preventiva'], ['pdf_relatorio', 'Relatório técnico / laudo'],
+  ['pdf_corretiva', 'Laudo de corretiva'], ['pdf_orcamento', 'Orçamento (no portal só quem aprova vê)'],
+  ['pdf_documento', 'Outro documento']];
+var V180_CATS_INTERNO = [
+  ['cotacao_fornecedor', 'Cotação de fornecedor'], ['nf_compra', 'NF de compra'], ['custo', 'Custo / planilha interna'],
+  ['contrato', 'Contrato / jurídico'], ['laudo_interno', 'Laudo / análise interna'], ['outro_interno', 'Outro interno']];
+var V180_ROT_INTERNO = {}; V180_CATS_INTERNO.forEach(function (c) { V180_ROT_INTERNO[c[0]] = c[1]; });
+
+var _V180_OS = {};          // registro por nó da árvore (ok) → { num, cliente, maqs:[{mk,id,label}] }
+var _v180Ctx = null;        // o modal aberto
+var _v180Internos = null;   // null = não carregado · [] = carregado
+var _v180InternosErro = '';
+var _v180InternosVoo = null;
+
+function _v180EhAdmin() { try { return window.PROPER_SESSION && window.PROPER_SESSION.is_admin === true; } catch (e) { return false; } }
+function _v180Bytes(n) { n = Number(n) || 0; return n >= 1048576 ? (n / 1048576).toFixed(1).replace('.', ',') + ' MB' : Math.max(1, Math.round(n / 1024)) + ' KB'; }
+
+// ── os dois botões da árvore ─────────────────────────────────────────────────
+function _v180BtnOS(ok, C, O) {
+  try {
+    var maqs = [];
+    O.maq.forEach(function (M, mk) {
+      if (!M || !M.label || M.label === 'Sem máquina') return;
+      var itens = M.items || [];
+      var soSecao = itens.length > 0 && itens.every(function (x) { return _docIsFoto(x) && !_v176MaqIdReal(x); });
+      if (soSecao) return;
+      var id = ''; itens.some(function (x) { id = _v176MaqIdReal(x); return !!id; });
+      maqs.push({ mk: mk, id: id, label: M.label });
+    });
+    _V180_OS[ok] = { num: String(O.num || ''), cliente: String(C.label || ''), maqs: maqs };
+    return '<button class="btn btn-secondary btn-xs" data-v180-anexar="os" title="Anexar arquivos nesta OS — você escolhe se é documento do CLIENTE ou 🔒 INTERNO da Proper" ' +
+           'onclick="event.stopPropagation();_v180Anexar(\'' + escJs(ok) + '\')">📎 Anexar</button>';
+  } catch (e) { console.warn('[V180] botão da OS:', e); return ''; }
+}
+function _v180BtnMaq(ok, mk, M) {
+  var R = _V180_OS[ok];
+  if (!R || !R.maqs.some(function (m) { return m.mk === mk; })) return '';
+  return '<button class="btn btn-secondary btn-xs" data-v180-anexar="maq" style="margin-left:auto" title="Anexar arquivos nesta máquina desta OS" ' +
+         'onclick="event.stopPropagation();_v180Anexar(\'' + escJs(ok) + '\',\'' + escJs(mk) + '\')">📎 Anexar aqui</button>';
+}
+
+// ── de qual OS estamos falando (id, cliente e máquinas vinculadas) ───────────
+function _v180AcharOSLocal(num) {
+  var fontes = [];
+  try { if (Array.isArray(_osList)) fontes = fontes.concat(_osList); } catch (e) {}
+  try { if (Array.isArray(_docsOsAux)) fontes = fontes.concat(_docsOsAux); } catch (e) {}
+  return fontes.filter(function (o) { return o && String(o.numero_os == null ? '' : o.numero_os).trim() === String(num); })[0] || null;
+}
+function _v180ResolverOS(ctx) {
+  if (ctx.resolvendo) return ctx.resolvendo;
+  ctx.resolvendo = (async function () {
+    var loc = _v180AcharOSLocal(ctx.num);
+    if (loc) { ctx.os_id = String(loc.id_os || ''); ctx.clienteOS = String(loc.cliente || ''); ctx.tipoOS = String(loc.tipo_os || ''); }
+    try {
+      var r = await gsGet('getMaquinasByOS', { numero_os: ctx.num, sem_pecas: 'true' });
+      if (r && r.os) {
+        ctx.os_id = String(r.os.id_os || ctx.os_id || '');
+        ctx.clienteOS = String(r.os.cliente || r.os.cliente_nome || ctx.clienteOS || '');
+        ctx.tipoOS = String(r.os.tipo_os || ctx.tipoOS || '');
+      }
+      (r && Array.isArray(r.machines) ? r.machines : []).forEach(function (m) {
+        var id = String((m && m.id) || '').trim(); if (!id) return;
+        if (ctx.maqs.some(function (x) { return x.id && x.id.toLowerCase() === id.toLowerCase(); })) return;
+        var rot = (String(m.model || '').trim() + (m.serial ? ' (Série ' + m.serial + ')' : '')).trim() || id;
+        ctx.maqs.push({ mk: 'id:' + id, id: id, label: rot });
+      });
+    } catch (e) { console.warn('[V180] getMaquinasByOS:', e && e.message); }
+    if (!ctx.os_id) throw new Error('Não consegui confirmar a OS ' + ctx.num + ' no servidor. Nada foi enviado.');
+    return ctx;
+  })();
+  ctx.resolvendo.then(function () { if (_v180Ctx === ctx) _v180Pintar(); }, function () { if (_v180Ctx === ctx) _v180Pintar(); });
+  return ctx.resolvendo;
+}
+
+// ── o modal ─────────────────────────────────────────────────────────────────
+window._v180Anexar = function (ok, mk, destinoFixo) {
+  var R = _V180_OS[ok];
+  if (!R || !R.num) { toast('Não achei esta OS na tela. Clique em ↻ Atualizar e tente de novo.', 'error'); return; }
+  _v180Ctx = { ok: ok, num: R.num, clienteArvore: R.cliente, clienteOS: '', os_id: '', tipoOS: '',
+               maqs: R.maqs.map(function (m) { return { mk: m.mk, id: m.id, label: m.label }; }),
+               // OS de UMA máquina: ela já vem escolhida (senão o arquivo iria para "_GERAL", fora da pasta da máquina)
+               maqSel: mk || (R.maqs.length === 1 ? R.maqs[0].mk : ''), destino: destinoFixo || '', destinoFixo: !!destinoFixo, arquivos: [], cat: '', desc: '',
+               enviando: false, resultado: [] };
+  _v180ResolverOS(_v180Ctx).catch(function () {});
+  _v178Modal('📎 Anexar na OS ' + R.num, '');
+  _v180Pintar();
+};
+function _v180CatsDoDestino(ctx) { return ctx.destino === 'interno' ? V180_CATS_INTERNO : V180_CATS_CLIENTE; }
+function _v180CatPadrao(ctx) {
+  if (ctx.destino === 'interno') return 'outro_interno';
+  var tipo = String(ctx.tipoOS || '');
+  try { var m = _docsOsMetaGet().get(ctx.num); if (m && m.tipo) tipo += ' ' + m.tipo; } catch (e) {}
+  if (/preventiv/i.test(tipo)) return 'pdf_preventiva';
+  if (/corretiv/i.test(tipo)) return 'pdf_corretiva';
+  return 'pdf_relatorio';
+}
+function _v180Pintar() {
+  var ctx = _v180Ctx; var body = _v178ModalBody(); if (!ctx || !body) return;
+  var cartao = function (val, ico, tit, sub, cor) {
+    var sel = ctx.destino === val;
+    return '<label data-v180-destino="' + val + '" style="flex:1;min-width:220px;display:block;cursor:' + (ctx.destinoFixo ? 'default' : 'pointer') + ';border:2px solid ' +
+      (sel ? cor : 'var(--border,#e2e8f0)') + ';background:' + (sel ? (val === 'interno' ? '#fef2f2' : '#eff6ff') : 'var(--card,#fff)') + ';border-radius:10px;padding:10px 12px">' +
+      '<div style="display:flex;gap:8px;align-items:center"><input type="radio" name="v180Destino" value="' + val + '"' + (sel ? ' checked' : '') + (ctx.destinoFixo ? ' disabled' : '') +
+      ' onchange="_v180Destino(this.value)"><span style="font-size:18px">' + ico + '</span><b>' + tit + '</b></div>' +
+      '<div style="font-size:11.5px;color:var(--text-muted);margin-top:4px;line-height:1.4">' + sub + '</div></label>';
+  };
+  var h = '';
+  h += '<div style="font-size:12px;color:var(--text-muted);margin-bottom:8px">' + escHtml(ctx.clienteOS || ctx.clienteArvore) + ' · OS <b>' + escHtml(ctx.num) + '</b>' +
+       (ctx.os_id ? '' : ' <span style="color:#92400e">· conferindo a OS no servidor…</span>') + '</div>';
+  h += '<div style="font-weight:700;margin-bottom:6px">1. Para quem é este arquivo?</div>';
+  h += '<div style="display:flex;gap:8px;flex-wrap:wrap">' +
+       cartao('cliente', '👤', 'Documento do cliente', 'Fica na Gestão de Documentos desta OS. <b>PDF aparece no portal do cliente</b> (uns 15 min depois). Foto, Word e Excel ficam só aqui.', '#2563eb') +
+       cartao('interno', '🔒', 'Interno da Proper', 'Cotação, NF de compra, custo, contrato… <b>Nunca vai para o cliente</b>: fica numa área separada (🔒 Internos Proper), só com PIN de administrador.', '#b91c1c') +
+       '</div>';
+  if (!ctx.destino) {
+    h += _v178Tarja('info', 'Escolha primeiro <b>para quem</b> é o arquivo. Não há opção marcada de propósito — é essa escolha que decide se o cliente vê ou não.');
+    h += '<div class="modal-footer"><button class="btn btn-secondary" onclick="_v178FecharModal()">Cancelar</button></div>';
+    body.innerHTML = h; return;
+  }
+  var cats = _v180CatsDoDestino(ctx);
+  if (!ctx.cat || !cats.some(function (c) { return c[0] === ctx.cat; })) ctx.cat = _v180CatPadrao(ctx);
+  h += '<div style="font-weight:700;margin:12px 0 6px">2. Arquivos <span style="font-weight:400;color:var(--text-muted);font-size:11.5px">(até ' + V180_MAX_ARQ + ', ' + V180_MAX_MB + ' MB cada)</span></div>';
+  h += '<input type="file" id="v180Arq" multiple class="form-input" onchange="_v180Arquivos(this)"' + (ctx.enviando ? ' disabled' : '') + '>';
+  if (ctx.arquivos.length && !ctx.resultado.length) h += '<div style="font-size:11px;color:var(--text-muted);margin-top:2px">Os escolhidos estão listados abaixo. Escolher de novo troca a lista.</div>';
+  if (ctx.arquivos.length) {
+    h += '<div style="margin-top:6px;font-size:12px">' + ctx.arquivos.map(function (a, i) {
+      var st = ctx.resultado[i] || null;
+      var ico = !st ? (a.erro ? '❌' : (a.pdf ? '📄' : (a.foto ? '📷' : '📎'))) : st.ico;
+      var extra = a.erro ? ' <span style="color:#991b1b">' + escHtml(a.erro) + '</span>'
+        : (st ? ' <span style="color:' + st.cor + '">' + escHtml(st.txt) + '</span>' : '') +
+          (!st && a.renomeado ? ' <span style="color:#92400e">· já existe um arquivo com esse nome nesta OS — vai como <b>' + escHtml(a.nomeFinal) + '</b></span>' : '');
+      return '<div data-v180-arquivo="' + i + '" style="padding:3px 0;border-bottom:1px dashed var(--border,#e2e8f0)">' + ico + ' ' + escHtml(a.nome) +
+        ' <span style="color:var(--text-muted)">· ' + _v180Bytes(a.bytes) + '</span>' + extra + '</div>';
+    }).join('') + '</div>';
+  }
+  h += '<div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:10px">';
+  h += '<div style="flex:1;min-width:200px"><label class="form-label">Máquina</label><select id="v180Maq" class="form-select" onchange="_v180Ctx.maqSel=this.value;_v180Pintar()"' + (ctx.enviando ? ' disabled' : '') + '>' +
+       '<option value=""' + (!ctx.maqSel ? ' selected' : '') + '>Geral da OS (sem máquina)</option>' +
+       ctx.maqs.map(function (m) { return '<option value="' + escHtml(m.mk) + '"' + (ctx.maqSel === m.mk ? ' selected' : '') + '>' + escHtml(m.label) + '</option>'; }).join('') + '</select></div>';
+  h += '<div style="flex:1;min-width:200px"><label class="form-label">' + (ctx.destino === 'interno' ? 'Tipo do documento interno' : 'Categoria do PDF') + '</label><select id="v180Cat" class="form-select" onchange="_v180Ctx.cat=this.value"' + (ctx.enviando ? ' disabled' : '') + '>' +
+       cats.map(function (c) { return '<option value="' + c[0] + '"' + (ctx.cat === c[0] ? ' selected' : '') + '>' + escHtml(c[1]) + '</option>'; }).join('') + '</select></div>';
+  h += '</div>';
+  h += '<label class="form-label" style="margin-top:8px">Descrição (opcional)</label><input id="v180Desc" class="form-input" maxlength="200" value="' + escHtml(ctx.desc) + '" oninput="_v180Ctx.desc=this.value" ' +
+       'autocomplete="off" name="v180_desc_nofill" data-lpignore="true" data-1p-ignore' + (ctx.enviando ? ' disabled' : '') + '>';
+  var maq = ctx.maqs.filter(function (m) { return m.mk === ctx.maqSel; })[0];
+  var destinoTxt = escHtml(ctx.clienteOS || ctx.clienteArvore) + ' › ' + escHtml(ctx.num) + ' › ' + (maq ? escHtml(maq.label) : 'geral da OS');
+  if (ctx.destino === 'interno') {
+    h += _v178Tarja('erro', '🔒 <b>Interno da Proper</b> — vai para <b>' + destinoTxt + '</b> na área <b>Internos Proper</b>, numa pasta do Drive separada das pastas do cliente. ' +
+         '<b>Não aparece</b> na Gestão de Documentos do cliente, no portal, no e-mail nem no WhatsApp. Pede o PIN de administrador.');
+  } else {
+    var nPdf = ctx.arquivos.filter(function (a) { return !a.erro && a.pdf; }).length;
+    h += _v178Tarja('info', '👤 <b>Documento do cliente</b> — vai para <b>' + destinoTxt + '</b>.' +
+         (nPdf ? ' <b>' + (nPdf > 1 ? nPdf + ' PDFs vão' : '1 PDF vai') + ' aparecer no portal do cliente.</b>' : '') +
+         ' Foto, Word e Excel ficam só na Gestão de Documentos.');
+  }
+  var validos = ctx.arquivos.filter(function (a) { return !a.erro; }).length;
+  var pendentes = ctx.arquivos.filter(function (a, i) { return !a.erro && !(ctx.resultado[i] && ctx.resultado[i].ok); }).length;
+  var feito = ctx.resultado.length && !pendentes;
+  h += '<div class="modal-footer"><button class="btn btn-secondary" onclick="_v178FecharModal()"' + (ctx.enviando ? ' disabled' : '') + '>' + (feito ? 'Fechar' : 'Cancelar') + '</button>' +
+       (feito ? '' : '<button class="btn btn-primary" id="v180Enviar" onclick="_v180Enviar()"' + ((ctx.enviando || !validos || !pendentes) ? ' disabled' : '') + '>' +
+       (ctx.enviando ? 'Enviando…' : (ctx.resultado.length ? 'Tentar de novo os que faltaram' : 'Enviar ' + validos + ' arquivo' + (validos === 1 ? '' : 's'))) + '</button>') + '</div>';
+  body.innerHTML = h;
+}
+window._v180Destino = function (v) {
+  var ctx = _v180Ctx; if (!ctx || ctx.destinoFixo || ctx.enviando) return;
+  if (ctx.resultado.length) return;   // depois de enviar, não troca o destino dos que já foram
+  ctx.destino = (v === 'interno') ? 'interno' : 'cliente';
+  ctx.cat = '';
+  _v180Nomes(ctx);
+  _v180Pintar();
+};
+function _v180NomesDaOS(num) {
+  var s = {};
+  try { (_docsCache || []).forEach(function (it) { if (String(it && it.OS_Numero || '') === String(num)) s[String(it.File_Name || '').toLowerCase()] = 1; }); } catch (e) {}
+  return s;
+}
+// Nome ÚNICO dentro da OS para o que vai para o cliente: com o mesmo nome, o
+// servidor SUBSTITUI o PDF anterior (supersede do v106 — podia ser um assinado)
+// ou devolve a foto que já existia. Trocar documento tem caminho próprio
+// (⤴ versão editada, com motivo e PIN quando assinado).
+function _v180Nomes(ctx) {
+  var usados = ctx.destino === 'cliente' ? _v180NomesDaOS(ctx.num) : {};
+  ctx.arquivos.forEach(function (a) {
+    if (a.erro) return;
+    var nome = a.nome, i = 2;
+    var ponto = nome.lastIndexOf('.'); var base = ponto > 0 ? nome.slice(0, ponto) : nome, ext = ponto > 0 ? nome.slice(ponto) : '';
+    while (usados[nome.toLowerCase()]) { nome = base + ' (' + i + ')' + ext; i++; }
+    usados[nome.toLowerCase()] = 1;
+    a.nomeFinal = nome; a.renomeado = nome !== a.nome;
+  });
+}
+window._v180Arquivos = function (input) {
+  var ctx = _v180Ctx; if (!ctx) return;
+  var fs = Array.prototype.slice.call((input && input.files) || []);
+  ctx.resultado = [];
+  ctx.arquivos = fs.slice(0, V180_MAX_ARQ).map(function (f) {
+    var pdf = /\.pdf$/i.test(f.name) || f.type === 'application/pdf';
+    return { file: f, nome: f.name, bytes: f.size, mime: f.type || (pdf ? 'application/pdf' : 'application/octet-stream'),
+             pdf: pdf, foto: /^image\//i.test(f.type || ''), uid: _v178Uid(),
+             erro: f.size > V180_MAX_MB * 1048576 ? 'maior que ' + V180_MAX_MB + ' MB — não vai' : (!f.size ? 'arquivo vazio — não vai' : '') };
+  });
+  if (fs.length > V180_MAX_ARQ) toast('No máximo ' + V180_MAX_ARQ + ' arquivos por vez — os demais ficaram de fora.', 'warn');
+  _v180Nomes(ctx);
+  _v180Pintar();
+};
+function _v180LerBase64(file) {
+  return new Promise(function (res, rej) {
+    var fr = new FileReader();
+    fr.onerror = function () { rej(new Error('não consegui ler o arquivo')); };
+    fr.onload = function () { var s = String(fr.result || ''); res(s.slice(s.indexOf(',') + 1)); };
+    fr.readAsDataURL(file);
+  });
+}
+// Todo POST de documento interno passa por aqui: pede o PIN ANTES (não gasta
+// uma ida ao servidor para ouvir "falta o PIN") e uma vez de novo se o PIN
+// digitado for recusado. O hash vive 15 min em memória (o mesmo do Acessos do Portal).
+async function _v180PostInterno(params) {
+  if (!_paPinValido()) {
+    var ok = await _v178PedirPin('Documentos internos da Proper: digite o seu PIN de administrador.');
+    if (!ok) { var e0 = new Error('Nada foi feito — o PIN de administrador não foi confirmado.'); e0.v180Cancelado = true; throw e0; }
+  }
+  var corpo = Object.assign({ usuario: _v178Quem() }, params);
+  try { return await _paPost(corpo); }
+  catch (e) {
+    if (!e.paPrecisaPin) throw e;
+    var ok2 = await _v178PedirPin((e.gsEnvelope && e.gsEnvelope.error) || e.message);
+    if (!ok2) { var e2 = new Error('Nada foi feito — o PIN de administrador não foi confirmado.'); e2.v180Cancelado = true; throw e2; }
+    return await _paPost(corpo);
+  }
+}
+window._v180Enviar = async function () {
+  var ctx = _v180Ctx; if (!ctx || ctx.enviando || !ctx.destino) return;
+  var cat = (document.getElementById('v180Cat') || {}).value || ctx.cat; ctx.cat = cat;
+  var desc = String((document.getElementById('v180Desc') || {}).value || ctx.desc || '').trim(); ctx.desc = desc;
+  ctx.enviando = true; _v180Pintar();
+  var algumCliente = false, algumInterno = false;
+  try {
+    try { await _v180ResolverOS(ctx); }
+    catch (e) { toast(e.message, 'error'); return; }
+    var maq = ctx.maqs.filter(function (m) { return m.mk === ctx.maqSel; })[0] || null;
+    var cliente = ctx.clienteOS || ctx.clienteArvore;
+    for (var i = 0; i < ctx.arquivos.length; i++) {
+      var a = ctx.arquivos[i];
+      if (a.erro || (ctx.resultado[i] && ctx.resultado[i].ok)) continue;
+      ctx.resultado[i] = { ico: '⏳', txt: 'enviando…', cor: 'var(--text-muted)' }; _v180Pintar();
+      try {
+        var b64 = await _v180LerBase64(a.file);
+        var r;
+        if (ctx.destino === 'interno') {
+          r = await _v180PostInterno({ action: 'docInternoSalvar', os_id: ctx.os_id, os_numero: ctx.num,
+            maquina_id: maq ? maq.id : '', maquina_label: maq ? maq.label : '', base64: b64, fileName: a.nome, mime: a.mime,
+            categoria: cat, descricao: desc, client_uid: 'pcmi_' + a.uid });
+          algumInterno = true;
+        } else if (a.pdf) {
+          r = await _v178Post('salvarPdfDrive', { os_id: ctx.os_id, os_numero: ctx.num, cliente: cliente,
+            maquina_id: maq ? maq.id : '', maquina_label: maq ? maq.label : '', base64: b64, fileName: a.nomeFinal || a.nome,
+            categoria: cat, caption: desc, createdBy: _v178Quem(), pdf_uid: 'pcm_' + a.uid });
+          algumCliente = true;
+        } else {
+          r = await _v178Post('salvarFotosDrivePGP', { clientName: cliente, os_id: ctx.os_id, osNumero: ctx.num,
+            maquina_id: maq ? maq.id : '', maquina_label: maq ? maq.label : '', dataBase64: b64, mime: a.mime,
+            fileName: a.nomeFinal || a.nome, attachmentType: 'anexo_pcm', caption: desc, entityType: 'os', entityId: ctx.os_id,
+            createdBy: _v178Quem(), client_uid: 'pcm_' + a.uid });
+          algumCliente = true;
+        }
+        ctx.resultado[i] = (r && r.duplicate)
+          ? { ok: true, ico: '✅', txt: 'já estava gravado — nada duplicado', cor: '#166534' }
+          : { ok: true, ico: '✅', txt: ctx.destino === 'interno' ? 'gravado nos Internos Proper' : 'gravado', cor: '#166534' };
+      } catch (e) {
+        ctx.resultado[i] = { ok: false, ico: '❌', txt: 'NÃO foi gravado: ' + _v178Erro(e), cor: '#991b1b' };
+        if (e && e.v180Cancelado) { for (var j = i + 1; j < ctx.arquivos.length; j++) if (!ctx.arquivos[j].erro && !ctx.resultado[j]) ctx.resultado[j] = { ok: false, ico: '⏸', txt: 'não enviado (PIN cancelado)', cor: '#92400e' }; break; }
+      }
+      _v180Pintar();
+    }
+  } finally {
+    ctx.enviando = false;
+    _v180Pintar();
+    if (algumCliente) { try { _docsCache = []; } catch (e) {} try { if (currentView === 'docs' && _docsGroupBy !== 'internos') renderDocs(true); } catch (e) {} }
+    if (algumInterno) { _v180Internos = null; try { if (_docsGroupBy === 'internos') renderDocsList(); } catch (e) {} }
+  }
+};
+
+// ── 🔒 a seção separada: Internos Proper ─────────────────────────────────────
+window._v180AbrirInternos = function () { _docsGroupBy = 'internos'; renderDocsList(); };
+function _v180CarregarInternos() {
+  if (_v180InternosVoo) return _v180InternosVoo;
+  _v180InternosVoo = (async function () {
+    try {
+      var r = await _v180PostInterno({ action: 'docInternoListar' });
+      _v180Internos = Array.isArray(r.docs) ? r.docs : []; _v180InternosErro = '';
+    } catch (e) { _v180Internos = null; _v180InternosErro = (e && e.v180Cancelado) ? 'pin' : _v178Erro(e); }
+    finally { _v180InternosVoo = null; }
+    if (_docsGroupBy === 'internos') renderDocsList();
+  })();
+  return _v180InternosVoo;
+}
+function _v180InternosRender(list) {
+  var cab = '<div data-v180-internos style="border:2px solid #fecaca;background:#fef2f2;border-radius:10px;padding:10px 12px;margin-bottom:10px;font-size:12.5px;line-height:1.5;color:#7f1d1d">' +
+    '🔒 <b>Documentos internos da Proper.</b> Ficam numa planilha e numa pasta do Drive <b>separadas</b> das do cliente: não aparecem na Gestão de Documentos, no portal, no e-mail nem no WhatsApp. ' +
+    'Para anexar um novo, use <b>📎 Anexar</b> na OS (na árvore) e escolha <b>🔒 Interno da Proper</b>.</div>';
+  var counter = document.getElementById('docsCounter');
+  if (_v180Internos === null) {
+    if (_v180InternosErro === 'pin') {
+      list.innerHTML = cab + '<div class="empty"><div class="empty-icon">🔒</div><div class="empty-title">Precisa do PIN de administrador para ver.</div>' +
+        '<button class="btn btn-primary" style="margin-top:12px" onclick="_v180InternosErro=\'\';_v180CarregarInternos()">Digitar o PIN</button></div>';
+    } else if (_v180InternosErro) {
+      list.innerHTML = cab + '<div class="empty"><div class="empty-icon">⚠️</div><div class="empty-title">Não consegui carregar os documentos internos.</div><div class="empty-sub">' + escHtml(_v180InternosErro) + '</div>' +
+        '<button class="btn btn-secondary" style="margin-top:12px" onclick="_v180InternosErro=\'\';_v180CarregarInternos()">Tentar de novo</button></div>';
+    } else {
+      list.innerHTML = cab + '<div class="empty"><div class="empty-icon">⏳</div><div class="empty-title">Carregando documentos internos…</div></div>';
+      _v180CarregarInternos();
+    }
+    if (counter) counter.textContent = '🔒 Internos Proper';
+    return;
+  }
+  var q = String(_docsQuery || '').trim().toLowerCase();
+  var docs = _v180Internos.filter(function (d) {
+    if (!q) return true;
+    return [d.cliente, d.os_numero, d.maquina_label, d.file_name, d.descricao, V180_ROT_INTERNO[d.categoria] || d.categoria, d.criado_por].join(' ').toLowerCase().indexOf(q) >= 0;
+  });
+  if (counter) counter.textContent = docs.length + ' documento' + (docs.length === 1 ? '' : 's') + ' interno' + (docs.length === 1 ? '' : 's') + ' · 🔒 só administrador';
+  if (!docs.length) { list.innerHTML = cab + '<div class="empty"><div class="empty-icon">🗂</div><div class="empty-title">' + (q ? 'Nada com esse filtro.' : 'Nenhum documento interno ainda.') + '</div></div>'; return; }
+  var grupos = {}; var ordem = [];
+  docs.forEach(function (d) { var k = d.cliente + '|' + d.os_numero; if (!grupos[k]) { grupos[k] = []; ordem.push(k); } grupos[k].push(d); });
+  var h = cab + '<div class="table-wrap" style="overflow-x:auto"><table class="xf-table" style="width:100%"><thead><tr><th style="padding:6px 10px">Tipo</th><th style="padding:6px 10px">Arquivo</th><th style="padding:6px 10px">Máquina</th><th style="padding:6px 10px">Data</th><th style="padding:6px 10px">Por</th><th style="padding:6px 10px;text-align:right">Ações</th></tr></thead><tbody>';
+  ordem.forEach(function (k) {
+    var g = grupos[k];
+    h += '<tr class="xf-group-row xf-lvl2"><td colspan="6"><div style="display:flex;align-items:center;gap:8px"><span>🔒</span><b>' + escHtml(g[0].cliente) + '</b><span>·</span><b>OS ' + escHtml(g[0].os_numero) + '</b>' +
+         '<span class="xf-gmeta">' + g.length + ' documento' + (g.length === 1 ? '' : 's') + '</span></div></td></tr>';
+    g.forEach(function (d) {
+      h += '<tr class="xf-filerow" data-v180-doc="' + escHtml(d.doc_id) + '">' +
+        '<td><span class="docs-badge outro" style="background:#fee2e2;color:#991b1b">' + escHtml(V180_ROT_INTERNO[d.categoria] || d.categoria || 'Interno') + '</span></td>' +
+        '<td><div class="docs-file-name" title="' + escHtml(d.file_name) + '">📄 ' + escHtml(_docFileNameCurto(d.file_name, 44)) + '</div>' + (d.descricao ? '<div class="docs-caption">' + escHtml(d.descricao) + '</div>' : '') + '</td>' +
+        '<td>' + escHtml(d.maquina_label || '—') + '</td>' +
+        '<td style="font-size:11px">' + escHtml(_v178Quando(d.criado_em)) + ' · ' + _v180Bytes(d.bytes) + '</td>' +
+        '<td style="font-size:11px">' + escHtml(d.criado_por || '—') + '</td>' +
+        '<td style="text-align:right;white-space:nowrap">' + (d.file_url ? '<button class="btn btn-secondary btn-xs" onclick="_docOpen(\'' + escJs(d.file_url) + '\')">Abrir</button> ' : '') +
+        '<button class="btn btn-secondary btn-xs" title="Tirar da lista de internos (o arquivo continua no Drive)" onclick="_v180RemoverInterno(\'' + escJs(d.doc_id) + '\')">🗑</button></td></tr>';
+    });
+  });
+  list.innerHTML = h + '</tbody></table></div>';
+}
+window._v180RemoverInterno = async function (docId) {
+  var d = (_v180Internos || []).filter(function (x) { return x.doc_id === docId; })[0];
+  if (!confirm('Tirar "' + (d ? d.file_name : docId) + '" da lista de documentos internos?\n\nO arquivo continua na pasta interna do Drive.')) return;
+  try { await _v180PostInterno({ action: 'docInternoRemover', doc_id: docId }); toast('Documento interno removido da lista.', 'success'); _v180Internos = null; }
+  catch (e) { toast('Nada foi removido: ' + _v178Erro(e), 'error'); }
+  if (_docsGroupBy === 'internos') renderDocsList();
+};
+
+// ── embrulhos: a barra ganha o chip e a lista ganha o modo 'internos' ───────
+(function () {
+  var _rdOrig = renderDocs, _rdlOrig = renderDocsList;
+  renderDocs = function () {
+    var p = _rdOrig.apply(this, arguments);
+    try {
+      var ctr = document.querySelector('#viewDocs .docs-controls');
+      if (ctr && _v180EhAdmin() && !ctr.querySelector('[data-group="internos"]')) {
+        var b = document.createElement('button');
+        b.className = 'docs-chip docs-group-chip' + (_docsGroupBy === 'internos' ? ' active' : '');
+        b.setAttribute('data-group', 'internos');
+        b.title = 'Documentos internos da Proper — nunca vão para o cliente (pede PIN de administrador)';
+        b.textContent = '🔒 Internos Proper';
+        b.onclick = function () { _v180AbrirInternos(); };
+        var tabela = ctr.querySelector('[data-group="flat"]');
+        if (tabela && tabela.nextSibling) ctr.insertBefore(b, tabela.nextSibling); else ctr.appendChild(b);
+      }
+      if (_docsGroupBy === 'internos' && !_v180EhAdmin()) _docsGroupBy = 'tree';
+    } catch (e) { console.warn('[V180] chip:', e); }
+    return p;
+  };
+  renderDocsList = function () {
+    if (_docsGroupBy === 'internos') {
+      var list = document.getElementById('docsList'); if (!list) return;
+      document.querySelectorAll('.docs-group-chip').forEach(function (c) { c.classList.toggle('active', c.dataset.group === 'internos'); });
+      var catsEl = document.getElementById('docsCats'); if (catsEl) catsEl.innerHTML = '';
+      _v180InternosRender(list);
+      return;
+    }
+    return _rdlOrig.apply(this, arguments);
+  };
+})();
+// ████ FIM V181 (módulo _v180) ████
 </script>
 
 </body>
