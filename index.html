@@ -4280,7 +4280,34 @@ v50 — Resiliência de rede: retry/backoff em gsGet e syncToGS
   Bancada: _testes/NEWFILE_T_PCM_V185.mjs (--negativos).
   ════════════════════════════════════════════════════════════════════════
 -->
-<title>ProperCare Manager · Gestão PGP v3.98 (PCM V185)</title>
+<!--
+  ════════════════════════════════════════════════════════════════════════
+  PCM V186 — DETALHE DA OS: ABAS PIPELINE/LOG                     16/09/2026
+  ════════════════════════════════════════════════════════════════════════
+  Chamado do Fernando (PGP-2026-0078): título de fase "NovEntrega técnica no
+  clientea fase"; Log lento e incoerente; conteúdo de uma aba na outra.
+  • CONTEÚDO TROCADO — Pipeline e Log escrevem no mesmo painel quando a
+    resposta chega (~4,5 s). Só o Log tinha token, e só ele o incrementava.
+    Agora há UM dono do painel {OS, aba, geração} (_v186Det) e toda escrita
+    assíncrona confere antes de pintar.
+  • LENTIDÃO — pré-carga de pipeline + log ao abrir a OS, memória de 20 s
+    (até 10 min mostrando já e conferindo por trás), invalidada por QUALQUER
+    escrita no transporte (_v173InvalidarPorEscrita).
+  • "a alteração NÃO foi gravada" numa LEITURA — mensagem própria de leitura,
+    cópia anterior com a hora dela, e nova tentativa sozinha ao reconectar.
+  • LOG — nome no lugar do código, "status inicial" na criação, ordem pelo
+    RELÓGIO, e linhas etiquetadas "pipeline" reconstruídas das datas das
+    tarefas e da OS (iniciada, concluída, dispensada, fim de atendimento).
+  • FASE — "+ Adicionar fase" nasce vazia com placeholder e foco; "Nova fase"
+    se seleciona inteira ao clicar; Salvar recusa fase sem nome/com o padrão;
+    o Pipeline da OS marca a fase com defeito para o adm.
+  • "encerre a OS" numa OS já encerrada — frase certa para OS concluída.
+  ZERO GAS, ZERO SQL. Roda com o GAS v143 no ar. CONTÉM o V185.
+  Gerado por _testes/NEWFILE_BUILD_PCM_V186.py a partir do V185.
+  Bancada: _testes/NEWFILE_T_PCM_V186.mjs (--controle no V185).
+  ════════════════════════════════════════════════════════════════════════
+-->
+<title>ProperCare Manager · Gestão PGP v3.99 (PCM V186)</title>
 <link rel="icon" type="image/jpeg" href="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/4gHYSUNDX1BST0ZJTEUAAQEAAAHIAAAAAAQwAABtbnRyUkdCIFhZWiAH4AABAAEAAAAAAABhY3NwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlkZXNjAAAA8AAAACRyWFlaAAABFAAAABRnWFlaAAABKAAAABRiWFlaAAABPAAAABR3dHB0AAABUAAAABRyVFJDAAABZAAAAChnVFJDAAABZAAAAChiVFJDAAABZAAAAChjcHJ0AAABjAAAADxtbHVjAAAAAAAAAAEAAAAMZW5VUwAAAAgAAAAcAHMAUgBHAEJYWVogAAAAAAAAb6IAADj1AAADkFhZWiAAAAAAAABimQAAt4UAABjaWFlaIAAAAAAAACSgAAAPhAAAts9YWVogAAAAAAAA9tYAAQAAAADTLXBhcmEAAAAAAAQAAAACZmYAAPKnAAANWQAAE9AAAApbAAAAAAAAAABtbHVjAAAAAAAAAAEAAAAMZW5VUwAAACAAAAAcAEcAbwBvAGcAbABlACAASQBuAGMALgAgADIAMAAxADb/2wBDAAUDBAQEAwUEBAQFBQUGBwwIBwcHBw8LCwkMEQ8SEhEPERETFhwXExQaFRERGCEYGh0dHx8fExciJCIeJBweHx7/2wBDAQUFBQcGBw4ICA4eFBEUHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh7/wAARCAGGAc0DASIAAhEBAxEB/8QAHAABAAIDAQEBAAAAAAAAAAAAAAYHBAUIAwIB/8QATBAAAQMCAgMJCBAFBAMBAAAAAAECAwQFBhEHIUESFjFRVnSBk7EIFyJVYZHR0hMUIzI0NTY3QmJxc6GissEVM4KU8FJ1krNypMKE/8QAHAEBAAIDAQEBAAAAAAAAAAAAAAYHAQMEBQII/8QAOhEAAQMBAwgHCAMAAwEBAAAAAAECAwQFETEGFCFBU3GRsRMVUVJh0eESIjI0NXKSwTOB8CRC8SOh/9oADAMBAAIRAxEAPwAACqj9AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA+JpY4YXzTSNjjY1XPe5ckaicKqvEZxMKqIl6iaWOGF800jY42NVz3uXJGonCqrxFFaRtJ1fcLj7Uw5VzUdDA5fd413L514+NG8SdK8SeGlbSDJiCZ9ptMjo7Ux3hOTUtSqbV+rxJ0rsRK7JjZFjJEnTTp72pOzf48itMo8pnTuWnpHXNTFya93hz3Y7/fri3lDcevUb9cW8obj16mgB72bQ9xOCERz2p2juKm/wB+uLeUNx69Rv1xbyhuPXqaADNoe4nBBntTtHcVN/v1xbyhuPXqN+uLeUNx69TQAZtD3E4IM9qdo7ipv9+uLeUNx69Rv1xbyhuPXqaADNoe4nBBntTtHcVN/v1xbyhuPXqN+uLeUNx69TQAZtD3E4IM9qdo7ipv9+uLeUNx69Rv1xbyhuPXqaADNoe4nBBntTtHcVN/v1xbyhuPXqN+uLeUNx69TQAZtD3E4IM9qdo7ipv9+uLeUNx69TY4ZxRjW4YgoKKkvldLNLO1rWySK5q69e6RdmWar5CHlxdz5hzVUYmqY+OClzT/AJuT9P8AyOOvWClp3SKxPDQmJ6dkNq6+sZC2R3auldCJj/u0uEAFdlzgAAAAAAqTTXjivttwisVkrHU0rGeyVcseW6RV1tYi7NWtftQszEV1p7JZKu61S+5U0avyzy3S7Gp5VXJOk5UutdUXO5VNwq37ueokdI9fKq7PISGwKFJpFlel7W8/TyIblfazqWFtPE65ztK3YonqvJTbb9cW8obj16jfri3lDcevU0AJfm0PcTghW+e1O0dxU3+/XFvKG49eo364t5Q3Hr1NABm0PcTggz2p2juKm/364t5Q3Hr1G/XFvKG49epoAM2h7icEGe1O0dxU3+/XFvKG49eo364t5Q3Hr1NABm0PcTggz2p2juKm/wB+uLeUNx69Rv1xbyhuPXqaADNoe4nBBntTtHcVN/v1xbyhuPXqN+uLeUNx69TQAZtD3E4IM9qdo7ipv9+uLeUNx69T0p8dYugnZM2/1zlYue5kk3TV+1F1KRwBaaFf+icEMpXVKLekjuKnTGjnGlFiy3fRguMLU9sU+f5m8bV/DgXYqys5HtFxrbTcYbhb53QVMLt0x7exeNF4jo3RzjSixZbvowXGFqe2KfP8zeNq/hwLsVYda9kLTL0sXwcvQsrJzKNK5Ep6hbpEwXvev/qErAB4BLwAAAAAAAAAAAAAAAAfMj2Rxukke1jGornOcuSIicKqoCrcJHsjjdJI9rGNRXOc5ckRE4VVSg9LWP5L9UPtFplVtqjdk96alqXJt/8AFNibeHiy9NLGkJ98kks1mlcy2NXKWVNS1Cp/8eTaVsTKxrH6K6eZPe1J2evLeVnlLlJnF9LSr7mte3wTw57sQAJKQgAAAAAAAAAAAAAAAAAAAAAzLHbai73eltlI3OapkSNvkz4VXyIma9B1XZLdT2i00tspG7mGmjSNvGuXCq+VV19JVXc+Yc1VGJqmPjgpc0/5uT9P/IuEhOUFZ0syQtwbz9PMtHI6zM3plqXp7z8Pt9V08AACPEyAAAABrsS3ansViq7rUr7nTxq7c55bp3A1qeVVyTpPpjHPcjW4qfEkjYmK963ImlSqO6CxH7LU0+GqaTNsWU9Vkv0lTwGr9ia+lOIqQyLnW1FxuFRX1b93PUSOkkdxqq5+YxyyqKlbSwNiTVjv1lH2pXur6p87teHgmoAA6zzwAAAAAAAAAAAAAAAAAAZdouNbabjDcLfO6CphdumPb2LxovEYgMOajkuXAy1yscjmrcqHTGjnGlFiy3fRguMLU9sU+f5m8bV/DgXYqys5HtFxrbTcYbhb53QVMLt0x7exeNF4jo3RzjSixZbvowXGFqe2KfP8zeNq/hwLsVYRa9kLTL0sXwcvQtPJzKNK5Ep6hbpEwXvev/qErAB4BLwAAAAAAAAAAfMj2Rxukke1jGornOcuSIicKqoCrcJHsjjdJI9rGNRXOc5ckRE4VVSh9LGkJ98kks1mlcy2NXKWVNS1Cp/8eTaNLGkJ98kks1mlcy2NXKWVNS1Cp/8AHk2lbEysex+iunnT3tSdnry3lZ5S5S5xfS0q+5rXt8E8Oe7EACSkIAAAAAAAAAAAAAAAAAAAAABmWO21F3u9LbKRuc1TIkbfJnwqvkRM16DDLj7n3Daok+JqqP3yLBSZ/ncn6f8AkcdfVJSwOkXHVvPSsmz3WhVsgTBcfBEx/wB2lqWS3U9otNLbKRu5hpo0jbxrlwqvlVdfSZgBWznK5VcuKl3sY2NqNalyJoAAPk+gAAAUr3QWI/Zq2nw3TSeBBlNVZLwvVPBb0Iuf9ScRbOJbtT2KxVd1qV9zp41duc8t07ga1PKq5J0nKtzrai43Cor6t+7nqJHSSO41Vc/MSPJ6j6SVZ3YNw3+hCss7T6GBKVi6X6V3J5ryUxwATQrEAAAAAAAAAAAAAAAAAAAAAAAAGXaLjW2m4w3C3zugqYXbpj29i8aLxGIDDmo5LlwMtcrHI5q3Kh0xo5xpRYst30YLjC1PbFPn+ZvG1fw4F2KsrOR7Rca203GG4W+d0FTC7dMe3sXjReI6N0c40osWW76MFxhantinz/M3jav4cC7FWEWvZC0y9LF8HL0LTycyjSuRKeoW6RMF73r/AOoSsAHgEvAAAAB+Pc1jVe9yNa1M1VVyREAD3NY1XvcjWtTNVVckRCitLekNbw6Sx2SVUtzVynnbw1CpsT6nb9nC0taRHXd0tjscyttzV3M87VyWoXiT6nb9nDWRMbHsfo7p5006k7PFfHlvK1ylyl6e+lpV93Wvb4J4dvbuxAAkxBgAAAAAAAAAAAAAAAAAAAAAAADOsFsqLzeaS10iZzVMiMRctTU2uXyIma9B1XaKCntVrprdSN3MFPGkbE25InCvlXhKr7nzDm4iqMTVMet+cFLmmxPfuTp8HocW8QjKCs6WboW4N5+nmWlkdZmb0y1L095+H2+uPAAAj5MQAAAAa7Et2p7FYqu61K+508au3OeW6dwNanlVck6T6Yxz3I1uKnxJI2JivetyJpUqbugsR+zVtPhumk8CDKaqyXheqeC3oRc/6k4ipjIudbUXG4VFfVv3c9RI6SR3Gqrn5jHLKoqVtLA2JNXPWUdale6vqnzu14eCakAAOs4AAAAAAAAAAAAAAAAAAAAAAAAAAAAZdouNbabjDcLfO6CphdumPb2LxovEYgMOajkuXAy1yscjmrcqHTGjnGlFiy3fRguMLU9sU+f5m8bV/DgXYqys5HtFxrbTcYbhb53QVMLt0x7exeNF4jo3RzjSixZbvowXGFqe2KfP8zeNq/hwLsVYRa9kLTL0sXwcvQtPJzKNK5Ep6hbpEwXvev8A6hKwAeAS8EC071M9PgJ6QTPj9mqWRyblct01UcqtXyakJ6V7p/8AkI3nkfY477LS+sjv7TyLeVUs2ZU7qnPwALIKTAAAAAAAAAABIcC4TuGK7qlLSosdPHktRUKngxt/dy7E/Y1yysiYr3rciG2CCSokSONL3LggwLhO4YruqUtKix08eS1FQqeDG393LsT9i5qfRNg6JqJJT1c6omSq+oVM14/ByJXh2y2+wWqK222FI4Y+FV98921zl2qpsSD19tzzyf8AyVWtTD1LVsnJalpYf+Q1HvXG/SieCf7SQjvV4L8XTf3MnpHerwX4um/uZPSTcHD1jV7ReKnq9SWdsG8EIR3q8F+Lpv7mT0jvV4L8XTf3MnpJuB1jV7ReKjqSztg3ghCO9XgvxdN/cyekd6vBfi6b+5k9JNwOsavaLxUdSWdsG8EIR3q8F+Lpv7mT0n6mivBSL8WzL/8Apk9JNgOsavaLxUz1LZ2wbwQ8KGkpqGjio6OBkFPE3cxxsTJGoe4Bxqqqt6npNajURES5EAAMGQAAAUn3QGJFqK+HDdNJ7lT5S1OS8Mip4LehFz6fIWzim8QWGwVl2qMlbTxqrW5+/dwNb0rkhytcKuevrp62qesk88jpJHLtcq5qSTJ6j6SRZ3Jobhv9CE5Z2n0MCUjF0v0ru9V5HgACZlZAAAAAAAAl2ifDm+LFsDJo91RUvu9RmmpURdTelcujM1TTNhjWR2CG+lpn1MzYY8XLcWJgDRfY34bpqvEFFJU1tSxJVY6Z7EiautG5NVNeWWee0kHexwP4k/8Aam9cmIK8ltOqkerukVL9SKtxc1PYdBDE2PomrcmKtRVXxUh3exwP4k/9qb1z6j0aYIjdum2Nqr9aolcnmVxLwa8/qto7ipu6poNgz8U8iK97vBfiGDrH+sO93gvxDB1j/WJUDGfVO0dxUz1VQ7Fn4p5FZ440U2mrtr5sOU6UVdGmbY/ZFVkyf6darkvEvBx8aUZVQTUtRJT1ET4po3K17HpkrVThRUOvyBaU8Aw4lp3XG3NZFd426l4EqET6LvLxL0Lq4Pbsm2nRu6KoW9F1rq3+HIi2UOS7JWdPRtucmLUwXcnbz3488g9KqCalqJKeoifFNG5WvY9MlaqcKKh5kxRbytFRUW5QADIAAAAAABsMN19Xbb7R1tFM6KaOZuTmrwpnrReNFTUqGvPe3/D6f71vah8vRHNVFPuNytejmrcqHXgAKqP0ACvdP/yEbzyPscWEV7p/+QjeeR9jjvsv5yPeeRb/ANNm+1Tn4AFkFJgAAAAAAA3OC7BPibEVPaYZWwpJm6SRUz3DETNVy2rxeVT4ke2NqvctyIbIonzSJGxL1Vbk3qZGBcJ3DFd1SlpUWOnjyWoqFTwY2/u5difsdI4dstvsFqittthSOGPhVffPdtc5dqqMO2W32C1RW22wpHDHwqvvnu2ucu1VNiQG1LUfWvuTQxME/alu2BYMdmR+07TIuK9ngn+0gAHkkiAAAAAAAAAAAAAAAAAAABrMU3iCw2Csu1RkraeNVa3P37uBrelckPpjHPcjW4qa5ZWxMWR63IiXqVL3QOI/bNxgw5TSZxU2UtTkvDIqeC3oRc/6vIVSe9wq56+unrap6yTzyOkkcu1yrmp4Fl0VM2lgbEmrnrKPtOudX1T53a10eCakAAOo4AAAAAAAdH6HsOfwDCUT549zW12U8+aa2oqeA3oT8VUp7RPhzfFi2Bk0e6oqX3eozTUqIupvSuXRmdKkVyjrLkSnbvX9J++BYGRVmXq6teng39r+uIABEiwwAAAAAAAACBaU8Aw4lp3XG3NZFd426l4EqET6LvLxL0Lq4OfaqCalqJKeoifFNG5WvY9MlaqcKKh1+V9pdwPTX23TXmia2K500SvcqJqna1M9yv1sk1L0L5JJY1rrEqQTL7upez05EIymycSoRaumS56aVTt8d/Pfjz6ACZlZgAAAAAA97f8AD6f71vah4Hvb/h9P963tQwuBluKHXgAKpP0ECvdP/wAhG88j7HFhFe6f/kI3nkfY477L+cj3nkW/9Nm+1Tn4AFkFJgAAAAAAnugb5wIubS9iECJ7oG+cCLm0vYhxWj8pJuXkenYv1CD7m8zoYAFal4AAAAAAAAAAAAAAAAAAAAAApLugcR+2bjBhymkzipspanJeGRU8FvQi5/1eQtrFN4gsNgrLtUZK2njVWtz9+7ga3pXJDla4Vc9fXT1tU9ZJ55HSSOXa5VzUkmTtH0kizuwbhv8AQhOWdp9DAlIxdL9K7vVeR4AAmZWQAAAAAAAJjoiw5vgxbCs0e6o6LKefNNS5L4LelfwRTTPM2CN0jsEOilpn1UzYY8XLcW/ogw2uHsJxuqI9xW1uU8+aa2pl4LehPxVSZgFaVE7p5XSOxUvKjpWUkDYI8Gpd/t+IABpOkAAAAAAAAAGHe/iWu5vJ+lTMMO9/EtdzeT9KmyL427zVUfxO3KckAAtMoEAAAAAAHvb/AIfT/et7UPA97f8AD6f71vahhcDLcUOvAAVSfoIFe6f/AJCN55H2OLCK90//ACEbzyPscd9l/OR7zyLf+mzfapz8ACyCkwAAAAAAT3QN84EXNpexCBE90DfOBFzaXsQ4rR+Uk3LyPTsX6hB9zeZ0MACtS8AAAAAAAAAAAAAAAAAAAAazFV3jsOHa27yt3SU0Sua3/U5dTU6XKiH0xivcjW4qfEsjYmLI9bkRL13IVFp/xItVdIsOU0nuFJlJUZL76VU1J0Ivnd5CrD2rametrJqypkWSeeR0kj14XOVc1U8Sy6OmbSwtibq56yjbSrn19U+d2tdHgmpAADqOEAAAAAAHSeiPDm97CUKTR7msrMp6jNNaZp4LehPxVSndEWHN8GLYVmj3VHRZTz5pqXJfBb0r+CKdJEUyjrMKdu9f0n74Fg5FWZpdWvTwb+1/XEAAiZYQAAAAAAAAAAAAMO9/EtdzeT9KmYYd7+Ja7m8n6VNkXxt3mqo/iduU5IABaZQIAAAAAAPe3/D6f71vah4Hvb/h9P8Aet7UMLgZbih14ACqT9BArLuiZHtwnQxtcqNfWpuk48mOyLNK07olrVwbRPy8JLgxEXyLHJ6EPRshf+bHvPFyiRVsya7s/aFDgAsYpYAAAAAAE90DfOBFzaXsQgRPdA3zgRc2l7EOK0flJNy8j07F+oQfc3mdDAArUvAAAAAAAAAAAAAAAAAAAHjW0tNW0ktJVwsnglbuZI3pmjkPYGUVUW9DDmo5FRU0EV73eC/EMHWP9Yd7vBfiGDrH+sSoHTn1TtHcVOHqqh2LPxTyIr3u8F+IYOsf6w73eC/EMHWP9YlQGfVO0dxUdVUOxZ+KeRFe93gvxDB1j/WHe7wX4hg6x/rEqAz6p2juKjqqh2LPxTyIr3u8F+IYOsf6w73eC/EMHWP9YlQGfVO0dxUdVUOxZ+KeRr7JZbVZKZ1NaqGGkjcubkYmty8arwr0mwAOd73PX2nLep2RxsjajGJciak0IAAfJ9gAAAAAAAAAAAAw738S13N5P0qZhh3v4lrubyfpU2RfG3eaqj+J25TkgAFplAgAAAAAA97f8Pp/vW9qHge9v+H0/wB63tQwuBluKHXgAKpP0ECtu6I+RVH/ALiz/rlLJK27oj5FUf8AuLP+uU9CyvnI9542UH02bcUKACxylQAAAAAAT3QN84EXNpexCBE90DfOBFzaXsQ4rR+Uk3LyPTsX6hB9zeZ0MACtS8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAYd7+Ja7m8n6VMww738S13N5P0qbIvjbvNVR/E7cpyQAC0ygQAAAAAAe9v+H0/3re1DwPe3/D6f71vahhcDLcUOvAAVSfoIFbd0R8iqP/cWf9cpZJW3dEfIqj/3Fn/XKehZXzke88bKD6bNuKFABY5SoAAAAAAJ7oG+cCLm0vYhAie6BvnAi5tL2IcVo/KSbl5Hp2L9Qg+5vM6GABWpeAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMO9/EtdzeT9KmYYd7+Ja7m8n6VNkXxt3mqo/iduU5IABaZQIAAAAAAPe3/D6f71vah4Hvb/AIfT/et7UMLgZbih14ACqT9BArzugGtXAsaqiKra2NU8i7l6fuWGV7p/+QjeeR9jjvsv5yPeeRb/ANNm+1Tn4AFkFJgAAAAAAnugb5wIubS9iECJ7oG+cCLm0vYhxWj8pJuXkenYv1CD7m8zoYAFal4AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAw738S13N5P0qZhh3v4lrubyfpU2RfG3eaqj+J25TkgAFplAgAAAAAA97f8Pp/vW9qHge9v+H0/wB63tQwuBluKHXgAKpP0ECvdP8A8hG88j7HFhFe6f8A5CN55H2OO+y/nI955Fv/AE2b7VOfgAWQUmAAAAAACe6BvnAi5tL2IQInugb5wIubS9iHFaPykm5eR6di/UIPubzOhgAVqXgAAAAAAAAAAAAAAAfMj2RxukkcjWNRVc5VyRETac8Ys0lYirr5UyWu5zUdA16tp440RM2Iupy6s814fIWNp0xH/CcMpaqeTKquWbFyXW2JPfr06m9K8Rz+S2wLPasazyNvvwv5ldZYWxI2ZtLA5U9nS65btK4J/Saf7JLv9xhygrPOnoG/3GHKCs86egjQJFmsHcTghDM/qtq7ivmSXf7jDlBWedPQN/uMOUFZ509BGgM1g7icEGf1W1dxXzJLv9xhygrPOnoG/wBxhygrPOnoI0BmsHcTggz+q2ruK+ZJd/uMOUFZ509BtMJYvxtccTW6ihvFTO6WoaixvyVqtzzdnq4Ms1Ugxcvc+Yc3EVRiapj1vzgpc02J79ydPg9DjitDN6WndIrE8NCYnp2MtbXVjIWyuuvvXSuhEx/3aW8ACvS5QAAAAAAAAAAAAAAAAAAYd7+Ja7m8n6VMww738S13N5P0qbIvjbvNVR/E7cpyQAC0ygQAAAAAAe9v+H0/3re1DwPe3/D6f71vahhcDLcUOvAAVSfoIFe6f/kI3nkfY4sIr3T/APIRvPI+xx32X85HvPIt/wCmzfapz8ACyCkwAAAAAAT3QN84EXNpexCBE90DfOBFzaXsQ4rR+Uk3LyPTsX6hB9zeZ0MACtS8AAAAAAAAAAAAAfMj2RxukkcjWNRVc5VyRETafRXmnPEaWnDX8Jp5Mqu45sXJdbYk98vT73pXiOilp3VMzYm6zjtCtZRUz534NTiupP7Up/SFiB+JcVVVxRV9rovsVM1dkbeDz61+1VI+AWXFG2JiMbghRs8z55HSvW9VW9QADYagAAAAADPw7aqi93uktVKnutTIjEXLNGpwq5fIiZr0HVVooKe1Wumt1I3cwU8aRsTbkicK+VeEq7ufMOexU1RiWpj8KXOClzT6KL4bulUy6F4y2yEZQVvTTdC3BvP08y08j7MzemWpenvPw+3Vxx4AAEfJgAAAAAAAAAAAAAAAAAADDvfxLXc3k/SpmGHe/iWu5vJ+lTZF8bd5qqP4nblOSAAWmUCAAAAAAD3t/wAPp/vW9qHge9v+H0/3re1DC4GW4odeAAqk/QQK90//ACEbzyPscWEV7p/+QjeeR9jjvsv5yPeeRb/02b7VOfgAWQUmAAAAAACb6EKqnpdIFL7YlbGk0UkTFcuSK5U1J05echAaqtVHNVUVNaKmw01EKTROjVbr0VDpo6haWoZMiX+yqLwOwwVbok0iJckisV9mRK1Mm09Q9f5/E1y/6/Lt+3htIrirpJKWRY5E9S7LOtGG0IUmhXRrTWi9igAHKdwAAAAAAAAB8yyMiifLI9GMY1XOcq5IiJwqcuY+v78SYpq7mqr7CrvY6dq/Rib73z61Xyqpb+nbEf8AC8NttFPJlVXHNrsl1thT33n1N+zMoImOTtH7DFqHYroTd/uRWuWlp9JK2jYuhuld+pP6TmAASYgwAAAAAAM/DtqqL3e6S1Uqe61MiMzyz3KcKuXyIma9BgF0dz5hz2KmqMS1MfhS5wUuafRRfDd0qmXQvGcVoVaUlO6TXq3np2PZ62hVshTDFdyY+W8tK1UNPbLbT2+kZuIKeNsbE8iJlr8pkgFbOcrlvXEu5jUY1GtS5EAAMH0AAAAAAAAAAAAAAAAAADV4sraa34auNVVytiiZTvRVcvCqtVERONVXUiGTd7jRWm3TXC4TsgpoW7p73dicarsTac56Rsa1uLLjkm7gtsLl9r0+f53cbl/DgTaq+rZdnSVciLg1MV/RH7ftqKzoFaul7k0J+18OZEwAWEU4AAAAAAD3t/w+n+9b2oeB72/4fT/et7UMLgZbih14ACqT9BAr3T/8hG88j7HFhFe6f/kI3nkfY477L+cj3nkW/wDTZvtU5+ABZBSYAAAAAAAAAaqtVHNVUVNaKmwvHRJpES5JFYr7MiVqZNp6h6/z+Jrl/wBfl2/bw0cGqrVRzVVFTWipsOKuoY6yP2H/ANL2HpWVas1mz9LFhrTUqf7BTsMFW6JNIiXJIrFfZkStTJtPUPX+fxNcv+vy7ft4bSK/q6SSlkWORPUuOzrRhtCFJoV0a01ovYoAByncAAAD5lkZFE+WR6MYxquc5VyREThU+iudO2I/4Xhttop5Mqq45tdkutsKe+8+pv2ZnTSU7qmZsTdZxWjWsoaZ87/+qcV1J/alQY+v78SYpq7mqr7CrvY6dq/Rib73z61XyqpoQCy442xsRjcEKNmmfPI6R63qq3qAAfZrAAAAAAM/DtqqL3e6S1Uqe61MiMzyz3KcKuXyIma9B1XaqGntltp7fSM3EFPG2NieREy1+Uq3ufMOexU1RiWpj8KXOClzT6KL4bulUy6F4y2yEZQVnTTdC3BvP08y08j7MzelWoenvPw+3Vxx4AAEfJgAAAAAAAAAAAAAAAAAADEu9xorTbprhcJ2QU0Ld097uxONV2JtF3uNFabdNcLhOyCmhbunvd2JxquxNpznpGxrW4suOSbuC2wuX2vT5/ndxuX8OBNqr6lmWY+tf2NTFf0nieDbluRWXF2vXBP2vhzGkbGtbiy45Ju4LbC5fa9Pn+d3G5fw4E2qsTAJ9DCyFiMYlyIVDU1MtVKssq3uUAA2mgAAAAAAHvb/AIfT/et7UPA97f8AD6f71vahhcDLcUOvAAVSfoIGlxrh6nxPh6e1VEixK9UfFKiZ7h6cC5bU2KnEqm6B9xyOjej2rcqGqaFk8bo5EvaqXKcm4jstwsF2lttyhWOaPWipra9uxzV2ov8Ams1x1FjrClvxXalpapEjqI81p6hEzdE792rtT98lObsR2W4WC7S225QrHNHrRU1te3Y5q7UX/NZPrLtRlay5dD0xT9oVDb1gyWZJ7TdMa4L+l8eZrgAesR8AAAAAAAAANVWqjmqqKmtFTYSOLHWL442xtxBXblqZJun7pfOutSOA1viZJ8aIu82xTyw39G5Uv7FuJLv9xhygrPOnoG/3GHKCs86egjQNeawdxOCG7P6rau4r5kl3+4w5QVnnT0Df7jDlBWedPQRoDNYO4nBBn9VtXcV8yS7/AHGHKCs86eg0l0uNddKx1ZcauWqqHalkkdmuXF9nkMUH2yGNi3taif0a5aqaVPZkeqp4qqgAG00AAAAAAA2OGbRUX2/Ulppv5lRIjVdlnuG8LndCIq9Bri6+59w57BQ1GJKmP3Sozhpc04GIvhO6VTL+leM4bQq0pKd0mvVvPUsazltCsZDqxXcmPkWhbKKnt1vp6CkjSOCnjSONqbERO0yACt1VXLepdrWoxEa1LkQAAwfQAAAKG0j6Rr1JiWopLHcX0tDSuWJqxImcrk1Ocq5cGeaJsyTMszSviPe7hKeSGTc1lV7hTZLrRVTW7oTNftyOaSU5P0DXos8iXpgl/wD+r/vEgOWNsPic2khcqLi65btyfvgSXf7jDlBWedPQN/uMOUFZ509BGgSbNYO4nBCC5/VbV3FfMku/3GHKCs86egb/AHGHKCs86egjQGawdxOCDP6rau4r5kl3+4w5QVnnT0Df7jDlBWedPQRoDNYO4nBBn9VtXcV8yS7/AHGHKCs86egb/cYcoKzzp6CNAZrB3E4IM/qtq7ivmbS9Yivl6jZHdLpU1cbF3TWPf4KLx5cGflNWAbmsaxLmpchzySPkd7T1VV8QAD6PgAAAAAAAAAFi6JMAzXyqivVzY6K2QvR0bVTJahyLwJ9XPhXbwJty/NFOj6TEEzLtdo3R2pjvBaupalU2J9XjXoTaqX5DFHDCyGGNscbGo1jGpkjUTgRE4iN2xbHQ3wQr72tez15E2yaybWpVKqpT3NSdvivhz3Y/YAIYWaAAACPY6wpb8V2paWqRI6iPNaeoRM3RO/dq7U/fJSQg2RSviej2LcqGmop46iNYpUvauKHJuI7LcLBdpbbcoVjmj1oqa2vbsc1dqL/ms1x1FjrClvxXalpapEjqI81p6hEzdE792rtT98lObsR2W4WC7S225QrHNHrRU1te3Y5q7UX/ADWT2y7UZWsuXQ9MU/aFRW9YMlmSe03TGuC/pfHma4AHrEfAAAAAAAAAAAAAAAAAAAAAAAAAAANjhm0VF9v1Jaab+ZUSI1XZZ7hvC53QiKvQdVW2jp7db6ehpWbiCnjbHG3iREyQq/ufcOewUNRiSpj90qM4aXNOBiL4TulUy/pXjLYIPb9Z00/RNwbz9MC1Mj7Mzalzh6e8/lq448AADwCXgAAAAiOljEaYdwlO+GTc1tVnBTZLrRVTW7oTX9uXGboIXTyNjbipz1dSylgdNJg1LyntMWI/4/i2WOCTdUdBnBDkupyovhu6V1fYiELALLghbBG2NuCFGVdS+qndNJi5bwADcc4AAAAAAAAAAAAAAAAAAAAALE0U6PpMQTMu12jdHamO8Fq6lqVTYn1eNehNqo0U6PpMQTMu12jdHamO8Fq6lqVTYn1eNehNqpfkMUcMLIYY2xxsajWMamSNROBETiI3bFsdDfDCvva17PXkTbJrJpalUqqpPc1J2+K+HPdihijhhZDDG2ONjUaxjUyRqJwIicR9gENXSWYiIiXIAAYMgAAAAAAj2OsKW/FdqWlqkSOojzWnqETN0Tv3au1P3yUkINkUr4no9i3KhpqKeOojWKVL2rihybiOy3CwXaW23KFY5o9aKmtr27HNXai/5rNcdRY6wpb8V2paWqRI6iPNaeoRM3RO/dq7U/fJTm7EdluFgu0ttuUKxzR60VNbXt2Oau1F/wA1k9su1GVrLl0PTFP2hUVvWDJZkntN0xrgv6Xx5muAB6xHwAAAAAAAAAAAAAAAAAAAAAbHDNoqL7fqS0038yokRquyz3DeFzuhEVeg1xdnc/4bWnoZ8SVUeUlSixUuacEaL4TulUy6F4zhtGrSkp3Sa9W89SxrOW0KxkOrFdyY+X9ln22jp7db6ehpWbiCnjbHG3iREyQyACt1VXLepdrWo1Ea1NCAAGD6AAABzbpdxHvgxbMkMm6o6LOCDJdS5L4TulfwRC4tLmI972Eplhk3NZWZwU+S60zTwndCfiqHNhLMnKPGoduT9r+uJXuWtp6W0TF8XfpP3wAAJWV8AAAAAAAAAAAAAAAAAAAAACxNFOj6TEEzLtdo3R2pjvBaupalU2J9XjXoTaqNFOj6TEEzLtdo3R2pjvBaupalU2J9XjXoTaqX5DFHDCyGGNscbGo1jGpkjUTgRE4iN2xbHQ3wwr72tez15E2yayaWpVKqqT3NSdvivhz3YoYo4YWQwxtjjY1GsY1MkaicCInEfYBDV0lmIiIlyAAGDIAAAAAAAAAAAAI9jrClvxXalpapEjqI81p6hEzdE792rtT98lJCDZFK+J6PYtyoaainjqI1ilS9q4ocm4jstwsF2lttyhWOaPWipra9uxzV2ov+azXHUWOsKW/FdqWlqkSOojzWnqETN0Tv3au1P3yU5uxHZbhYLtLbblCsc0etFTW17djmrtRf81k9su1GVrLl0PTFP2hUVvWDJZkntN0xrgv6Xx5muAB6xHwAAAAAAAAAAAAAAAAADZ4Vs89/xBR2mnzR08iI5yJ7xia3O6EzOqaCkgoaGCipY0jggjbHG1NjUTJCse5/w57Wts+IqmPKWqzip804I0Xwl6VTL+nylqkGt+s6afom4N56/ItXJCzM2pM4envP5auOPAAA8ElwAAAAIfpcxCuH8ITugeraurX2vAqcLVVPCd0Jn05G6CF08jY24qc1XVMpIHTSYNS//byndLuI98GLZkhk3VHRZwQZLqXJfCd0r+CIQ4AsuCFsEbY24IUbVVL6qZ00mLlvAANxzgAAAAAAAAAAAAAAAAAAsTRTo+kxBMy7XaN0dqY7wWrqWpVNifV416E2qjRTo+kxBMy7XaN0dqY7wWrqWpVNifV416E2ql+QxRwwshhjbHGxqNYxqZI1E4EROIjdsWx0N8MK+9rXs9eRNsmsmlqVSqqk9zUnb4r4c92KGKOGFkMMbY42NRrGNTJGonAiJxH2AQ1dJZiIiJcgABgyAAAAAAAAAAAAAAAAAADWX6wWa+xxsu1vhq0jVdwr01tz4clTWhswfTHuY72mrcp8SRMlarJERUXUulCK97vBfiGDrH+sO93gvxDB1j/WJUDoz6p2juKnH1VQ7Fn4p5EV73eC/EMHWP8AWHe7wX4hg6x/rEqAz6p2juKjqqh2LPxTyIr3u8F+IYOsf6w73eC/EMHWP9YlQGfVO0dxUdVUOxZ+KeRFe93gvxDB1j/WHe7wX4hg6x/rEqAz6p2juKjqqh2LPxTyIr3u8F+IYOsf6w73eC/EMHWP9YlQGfVO0dxUdVUOxZ+KeRFe93gvxDB1j/WHe7wX4hg6x/rEqAz6p2juKjqqh2LPxTyIr3u8F+IYOsf6x+po8wYi5/wGD/m/1iUgZ9U7R3FR1VQ7Fn4p5HnTww08DIKeJkUUbUaxjGo1rUTgRETgQ9ADmVb9KnciIiXIAAYMgAAAwL5Z7Ze6NKS60cdVCj0ejX56nJtRU1pwqZ4Ppr3MX2mrcp8SRskarHpei6lIr3u8F+IYOsf6w73eC/EMHWP9YlQOjPqnaO4qcfVVDsWfinkRXvd4L8QwdY/1h3u8F+IYOsf6xKgM+qdo7io6qodiz8U8iK97vBfiGDrH+sO93gvxDB1j/WJUBn1TtHcVHVVDsWfinkRXvd4L8QwdY/1h3u8F+IYOsf6xKgM+qdo7io6qodiz8U8iK97vBfiGDrH+sO93gvxDB1j/AFiVAZ9U7R3FR1VQ7Fn4p5EV73eC/EMHWP8AWHe7wX4hg6x/rEqAz6p2juKjqqh2LPxTyIr3u8F+IYOsf6w73eC/EMHWP9YlQGfVO0dxUdVUOxZ+KeRFe93gvxDB1j/WP1ujzBiORUsNPmi563vX9yUgZ9U7R3FR1VQ7Fn4p5HxDFHDCyGGNscbGo1jGpkjUTgRE4j7AOZdJ3IiIlyAAGDIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB//2Q==">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -5725,7 +5752,7 @@ tr.tadm-feito td{background:#dcfce7 !important;color:#15803d;font-weight:700}
        operacao/planejamento/campo/documentos/cadastros/admin). -->
   <div class="nav-brand">
     <span class="nav-brand-mark">PCM</span>
-    <span class="nav-brand-sub">v3.98 · V185</span>
+    <span class="nav-brand-sub">v3.99 · V186</span>
     <button type="button" class="nav-rail-btn" id="navRailBtn" onclick="_v179NavRailToggle()"
             title="Recolher o menu" aria-label="Recolher o menu" aria-expanded="true">
       <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path class="nav-rail-ico-in" d="M10 3.5L5.5 8 10 12.5"/><path class="nav-rail-ico-out" d="M6 3.5L10.5 8 6 12.5"/></svg>
@@ -9322,6 +9349,7 @@ function _v173CacheDerrubar(action){
 }
 // Chamada pelo `syncToGS` depois de toda escrita bem-sucedida.
 function _v173InvalidarPorEscrita(action){
+  try { if (typeof _v186MemoPorEscrita === 'function') _v186MemoPorEscrita(action); } catch(e) {}   // V186
   const alvos = _V173_ESCRITA_DERRUBA[action];
   if (alvos) alvos.forEach(_v173CacheDerrubar);
   // O envelope do getMaquinasByOS e cacheado a parte (V173 bloco 1.3) e quem o
@@ -24133,6 +24161,7 @@ async function confirmarReabrirOS(btnEl) {
 async function openOSDetail(osId) {
   const el = document.getElementById('viewOs');
   if (!el) return;
+  _v186DetMarca(osId, 'abrindo');   // V186 — respostas da OS anterior perdem o painel
 
   let os = _osList.find(o => o.id_os === osId);
   // ══════════════════════════════════════════════════════════════════════════
@@ -24190,9 +24219,11 @@ async function openOSDetail(osId) {
     <div id="osDetailContent"></div>`;
 
   _osDetailTab(osId, 'dados');
+  _v186PreCarregar(osId);   // V186
 }
 
 function _osDetailTab(osId, tab) {
+  const _v186G = _v186DetMarca(osId, tab);   // V186 — este clique passa a ser o dono do painel
   const tabs = ['dados', 'pipeline', 'log'];
   tabs.forEach(t => {
     const btn = document.getElementById('osTab-' + t);
@@ -24236,11 +24267,11 @@ function _osDetailTab(osId, tab) {
     _renderOSLinkedMachinesDetail(osId);
   } else if (tab === 'pipeline') {
     content.innerHTML = '<div style="padding:20px;text-align:center;color:var(--text-muted)">Carregando pipeline…</div>';
-    _loadPipelineTab(osId);
+    _loadPipelineTab(osId, _v186G);
   } else if (tab === 'log') {
     // V154 (C) — deixou de ser letreiro. Ver `_v154CarregarLog`.
     content.innerHTML = `<div style="padding:20px;text-align:center;color:var(--text-muted);font-size:13px">Carregando o log desta OS…</div>`;
-    _v154CarregarLog(osId);
+    _v154CarregarLog(osId, _v186G);
   }
 }
 
@@ -24307,9 +24338,12 @@ function _v154Quando(v){
 // a escrita. É o `_mobMaqGer` do V153, na forma mínima — sem ele o log escreve
 // por cima do Pipeline de quem já mudou de aba.
 var _v154LogGer = 0;
-async function _v154CarregarLog(osId){
+async function _v154CarregarLog(osId, _v186Ger){
   const content = document.getElementById('osDetailContent');
   if (!content) return;
+  // V186 — o Log é montado por _v186CarregarLog (módulo V186): dono do painel,
+  // nomes, ordem pelo relógio e linhas do pipeline. O corpo abaixo ficou sem uso.
+  { const _g = _v186DetEntrada(osId, 'log', _v186Ger); if (_g === null) return; return _v186CarregarLog(osId, _g); }
   const ger = ++_v154LogGer;
   let eventos = [];
   try {
@@ -24505,9 +24539,11 @@ async function _pipeConferirPdfs(osId) {
   }
 }
 
-async function _loadPipelineTab(osId) {
+async function _loadPipelineTab(osId, _v186Ger) {
   const content = document.getElementById('osDetailContent');
   if (!content) return;
+  const _v186g = _v186DetEntrada(osId, 'pipeline', _v186Ger);   // V186
+  if (_v186g === null) return;   // refresh de outra aba/OS: não pinta
 
   // V119 (3b) — o aviso de pipeline desalinhado compara com o Template_ID_Padrao
   // do TIPO, e `_tiposOS` só era carregado por openModalOS / tela de Tipos de OS.
@@ -24522,20 +24558,26 @@ async function _loadPipelineTab(osId) {
   }
 
   let tarefas = [];
+  var _v186CopiaDe = 0;
   try {
-    const r = await syncToGS('getPipelineByOS', { os_id: osId });
+    // V186 — memória curta + pré-carga + cópia na falha (era syncToGS direto)
+    const r = await _v186LerPipeline(osId, function(){ _v186RepintarAtual(osId); });
     tarefas = r?.tarefas || [];
+    _v186CopiaDe = (r && r._v186CopiaDe) || 0;
   } catch(e) {
     if (e.message && e.message.includes('AUTH_GOOGLE')) { hubLogout(); return; }
+    if (!_v186DetVale(_v186g)) return;   // V186 — o painel já é de outra aba/OS
+    if (e.code === 'OFFLINE_LEITURA') _v186ReTentarQuandoVoltar(osId, 'pipeline', _v186g);
     content.innerHTML = `<div class="empty">
       <div class="empty-icon">⚠️</div>
       <div class="empty-title">Erro ao carregar pipeline</div>
-      <div class="empty-sub">${e.message}</div>
+      <div class="empty-sub">${escHtml(String((e && e.message) || ''))}</div>
       <button class="btn btn-secondary" style="margin-top:12px" onclick="_loadPipelineTab('${osId.replace(/'/g,"\\'")}')">Tentar novamente</button>
     </div>`;
     return;
   }
 
+  if (!_v186DetVale(_v186g)) return;   // V186 — trocou de aba/OS enquanto lia
   const os = _osList.find(o => o.id_os === osId);
 
   if (tarefas.length === 0) {
@@ -24553,9 +24595,11 @@ async function _loadPipelineTab(osId) {
     // ══════════════════════════════════════════════════════════════════════
     const semTipo = os ? !String(os.tipo_os || '').trim() : false;
     if (semTipo) {
+      const _v186Inst = await _renderInstanciarInline(osId);
+      if (!_v186DetVale(_v186g)) return;   // V186
       content.innerHTML = `<div style="padding:20px">
         <p style="color:var(--text-muted);margin-bottom:12px">Tipo de OS não definido — selecione um tipo para ativar o pipeline.</p>
-        ${await _renderInstanciarInline(osId)}
+        ${_v186Inst}
       </div>`;
       return;
     }
@@ -24694,14 +24738,14 @@ async function _loadPipelineTab(osId) {
   const _encData = _encerradaEm ? new Date(_encerradaEm) : null;
   const _encLbl = (_encData && !isNaN(_encData.getTime()))
     ? (String(_encData.getDate()).padStart(2,'0') + '/' + String(_encData.getMonth()+1).padStart(2,'0')) : '';
-  const _msgEmpilhar = _encerradaEm
+  const _msgEmpilhar = _v186MsgEmpilharEncerrada(os) || (_encerradaEm   // V186 — OS já encerrada tem frase própria
     ? ('🏁 Etapa anterior encerrada' + (_encLbl ? ' em ' + _encLbl : '') + ' — pronto para empilhar a execução.')
     : ('🏁 Todas as tarefas desta etapa estão resolvidas' +
        (_dispensadas ? ' (' + _dispensadas + ' dispensada' + (_dispensadas > 1 ? 's' : '') + ' por ramo não seguido)' : '') +
-       ' — empilhe a próxima etapa (ex.: Fluxo Execução) ou encerre a OS.');
+       ' — empilhe a próxima etapa (ex.: Fluxo Execução) ou encerre a OS.'));
 
   let html = `
-    ${_avisoTplHtml}
+    ${_v186AvisoCopia(_v186CopiaDe)}${_avisoTplHtml}
     ${_prontoParaEmpilhar ? `<div style="background:#ede9fe;border:1px solid #c4b5fd;color:#5b21b6;border-radius:8px;padding:8px 12px;font-size:12.5px;margin-bottom:10px">
       ${escHtml(_msgEmpilhar)}</div>` : ''}
     <div id="pipePrazoBox"></div>
@@ -24732,7 +24776,7 @@ async function _loadPipelineTab(osId) {
       ? ` <span style="font-size:11px;font-weight:600;color:#7c3aed">· ${escHtml(_meta.camadaNome || ('Camada ' + _meta.camada))}</span>`
       : '';
     html += `<div class="pipeline-phase">
-      <div class="pipeline-phase-title">${escHtml(_meta.rotulo)}${_sufFase}</div>`;
+      <div class="pipeline-phase-title">${escHtml(_meta.rotulo)}${_sufFase}${_v186FaseAvisoPipe(_meta.rotulo)}</div>`;
 
     fasesMap[fase].forEach(t => {
       const st = (t.Status || 'pendente').toLowerCase().replace(/\s/g,'_');
@@ -24922,6 +24966,7 @@ async function _loadPipelineTab(osId) {
     html += '</div>';
   });
 
+  if (!_v186DetVale(_v186g)) return;   // V186
   content.innerHTML = html;
 }
 
@@ -26826,7 +26871,8 @@ function _renderFases() {
     <div class="tpl-fase-block">
       <div class="tpl-fase-header">
         <input class="tpl-fase-title-input" type="text" value="${(fase.nome||'').replace(/"/g,'&quot;')}"
-          oninput="_renameFase(${fi}, this.value)" placeholder="Nome da fase">
+          oninput="_renameFase(${fi}, this.value);this.style.borderColor='';this.style.background=''" onfocus="_v186FaseFoco(this)"
+          style="${_v186FaseEstilo(fase.nome)}" placeholder="Nome da fase (ex.: Recepção, Execução)">
         <button class="btn btn-secondary btn-sm" onclick="_moverFase(${fi},-1)" ${fi===0?'disabled':''}>↑</button>
         <button class="btn btn-secondary btn-sm" onclick="_moverFase(${fi},1)" ${fi===_editorTemplate.fases.length-1?'disabled':''}>↓</button>
         <button class="btn btn-secondary btn-sm" style="color:#f87171" onclick="_removerFase(${fi})">Remover fase</button>
@@ -26851,9 +26897,11 @@ function _renderFases() {
 
 function adicionarFase() {
   if (!_editorTemplate) return;
-  _editorTemplate.fases.push({ nome: 'Nova fase', fase_ordem: _editorTemplate.fases.length + 1, tarefas: [] });
+  // V186 — nascia com o TEXTO 'Nova fase'; clicar no meio e digitar gerou 'NovEntrega…a fase'
+  _editorTemplate.fases.push({ nome: '', fase_ordem: _editorTemplate.fases.length + 1, tarefas: [] });
   _marcarTemplateDirty();
   _renderFases();
+  _v186FocarUltimaFase();
 }
 
 function _renameFase(fi, nome) {
@@ -28735,6 +28783,16 @@ async function saveTemplateEditor() {
   const totalTarefas = _editorTemplate.fases.reduce((s, f) => s + f.tarefas.length, 0);
   if (!_editorTemplate.fases.length) { toast('Adicione pelo menos uma fase.', 'error'); return; }
   if (!totalTarefas) { toast('Adicione pelo menos uma tarefa.', 'error'); return; }
+  // V186 — fase sem nome de verdade não sai: ela é COPIADA para toda OS nova.
+  const _v186Ruins = _v186FasesRuins(_editorTemplate.fases);
+  if (_v186Ruins.length) {
+    toast('Template NÃO salvo: há fase sem nome definido.', 'error');
+    alert('⚠ Corrija o nome da(s) fase(s) antes de salvar — este nome é copiado para toda OS nova:\n\n' +
+      _v186Ruins.map(function (f) { return '• Fase ' + f.i + ': "' + f.nome + '" — ' + f.motivo; }).join('\n'));
+    try { _renderFases(); } catch (e) {}
+    return;
+  }
+  if (!_v186ConfirmarFasesSuspeitas(_editorTemplate.fases)) { try { _renderFases(); } catch (e) {} return; }
 
   const tarefasFlat = [];
   _editorTemplate.fases.forEach((fase, fi) => {
@@ -41961,6 +42019,412 @@ _v178Embrulhar('_v178CarregarLocais', function (orig) {
   };
 });
 // ████ FIM V185 ████
+
+</script>
+
+<script>
+// ═══════════════════════════════════════════════════════════════════════════
+// V186 · DETALHE DA OS — abas Pipeline/Log sem troca de conteúdo, Log coerente,
+//        nome de fase que não se corrompe                           16/09/2026
+// 100% ADITIVO: nada foi renomeado. Contém o V185 inteiro.
+// ═══════════════════════════════════════════════════════════════════════════
+
+// ── 1. DE QUEM É O PAINEL #osDetailContent ─────────────────────────────────
+// 🕳 O defeito do print do Fernando: aba "Pipeline" sublinhada e o conteúdo do
+//    LOG embaixo. As duas abas buscam no servidor (~4,5 s cada, medido em 16/09
+//    na PGP-2026-0078) e escrevem no MESMO painel quando a resposta chega.
+//    O Log tinha um token (_v154LogGer), mas só o Log o incrementava: ir do Log
+//    para o Pipeline não invalidava a resposta do Log, e o Pipeline não tinha
+//    token nenhum. Quem chegava por último pintava — em qualquer aba, em
+//    qualquer OS aberta depois.
+// 🔑 Agora existe UM dono do painel: {osId, aba, geração}. Toda escrita
+//    assíncrona confere se ainda é a dona antes de tocar no painel.
+var _v186Det = { osId: '', tab: '', ger: 0 };
+function _v186DetMarca(osId, tab) {
+  _v186Det = { osId: String(osId || ''), tab: String(tab || ''), ger: _v186Det.ger + 1 };
+  return _v186Det.ger;
+}
+function _v186DetVale(ger) { return ger === _v186Det.ger; }
+// Entrada dos carregadores. `ger` vem de _osDetailTab; sem ele é um REFRESH
+// (depois de concluir tarefa, "Tentar novamente", etc.). Refresh só pinta se o
+// painel ainda estiver mostrando ESTA aba DESTA OS — senão, fica quieto.
+function _v186DetEntrada(osId, tab, ger) {
+  if (typeof ger === 'number') return ger;
+  if (_v186Det.osId && (_v186Det.osId !== String(osId) || _v186Det.tab !== tab)) return null;
+  return _v186DetMarca(osId, tab);
+}
+
+// ── 2. LEITURA COM MEMÓRIA CURTA, PRÉ-CARGA E CÓPIA NA FALHA ───────────────
+// ⚠ getPipelineByOS só existe no doPost, por isso vai pelo syncToGS — mas o
+//   syncToGS é o caminho de ESCRITA: offline, ele recusava a LEITURA com
+//   "a alteração NÃO foi gravada" (2º print), frase falsa para quem só abriu
+//   a aba. A mensagem de leitura agora diz o que aconteceu.
+// 🔴 Falha de rede nunca apaga cópia boa (regra V140/V153/V173): havendo
+//   cópia, ela aparece com a hora dela, e a tela diz que é cópia.
+var _v186Memo = new Map();              // 'pipe:OS' / 'log:OS' → {at, dados, voo}
+var _V186_FRESCO = 20000;               // até 20 s: usa sem perguntar
+var _V186_VALIDO = 10 * 60 * 1000;      // até 10 min: mostra já e confere em 2º plano
+// ⚠ O gancho do transporte roda também para LEITURAS que vão por POST e não
+//   começam com "get" (ex.: portalChamadosPendentes, disparada ao abrir a OS —
+//   a 1ª versão desta regra apagava a pré-carga no mesmo instante; a bancada
+//   pegou). Por isso a regra olha o VERBO de escrita. Se um verbo novo escapar,
+//   o custo é pequeno: a cópia vale 20 s e depois é conferida no servidor.
+var _V186_ESCRITA_INI = /^(save|delete|hardDelete|update|create|criar|add|remove|remover|set|resolver|reabrir|assumir|instanciar|empilhar|trocar|arquivar|designar|ajustar|confirmar|registrar|marcar|enviar|aplicar|merge|mesclar|limpar|cancelar|encerrar|liberar|vincular|desvincular|link|unlink|reconcil|replace|iniciar|finalizar|concluir|completar|autoCompletar|upload|salvar|baixar|devolver|entregar|dispensar|atribuir|mover|reordenar|renovar|prorrogar|excluir|desativar|ativar|inativar|abrir|descartar|backfill|reprocessar|reconfigurar|reparar|responder|reenviar)/i;
+var _V186_ESCRITA_FIM = /(Criar|Salvar|Remover|Cancelar|Lembrar|Prorrogar|Dispensar|Renovar|Excluir|Aplicar|Enviar|Conceder|Revogar|Convidar|Registrar|Pedir|Decidir|Vincular|Limpar|Apagar|Resolver|NovaVersao|Email|Lote)$/;
+function _v186EhEscrita(action) {
+  const a = String(action || '');
+  return _V186_ESCRITA_INI.test(a) || _V186_ESCRITA_FIM.test(a);
+}
+// 🔴 ÉPOCA DA MEMÓRIA (achado da auditoria independente, 16/09): uma leitura
+//    que PARTIU antes de uma escrita e CHEGA depois dela traria o dado velho e
+//    o gravaria com hora nova — a tarefa recém-concluída voltaria a aparecer
+//    aberta por 20 s. Toda escrita avança a época; resposta de época antiga
+//    serve a quem a pediu, mas não é guardada nem dispara repintura.
+var _v186MemoEpoca = 0;
+function _v186MemoPorEscrita(action) {
+  if (!_v186EhEscrita(action)) return;
+  _v186MemoEpoca++;
+  _v186Memo.clear();                    // escrita: a próxima leitura vai ao servidor
+  // o Log aberto durante a escrita também precisa ver o resultado dela
+  try {
+    if (_v186Det.tab === 'log' && _v186Det.osId) {
+      const os = _v186Det.osId;
+      setTimeout(function () { _v186RepintarSe(os, 'log'); }, 0);
+    }
+  } catch (e) {}
+}
+function _v186ErroLeitura(e, oque) {
+  if (e && e.code === 'OFFLINE_PCM') {
+    const n = new Error('Sem conexão com o servidor — não consegui ler ' + oque +
+      ' agora. Nada foi alterado. Vou tentar de novo sozinho quando a conexão voltar.');
+    n.code = 'OFFLINE_LEITURA'; n.gsAction = e.gsAction;
+    return n;
+  }
+  return e;
+}
+function _v186Copia(m) { return Object.assign({}, m.dados, { _v186CopiaDe: m.at }); }
+function _v186Buscar(chave, fn) {
+  const m0 = _v186Memo.get(chave) || {};
+  if (m0.voo) return m0.voo;
+  const epoca = _v186MemoEpoca;
+  const p = Promise.resolve().then(fn).then(function (d) {
+    if (epoca === _v186MemoEpoca) _v186Memo.set(chave, { at: Date.now(), dados: d });
+    return d;
+  }, function (e) {
+    const mm = _v186Memo.get(chave);
+    if (epoca !== _v186MemoEpoca || !mm) throw e;          // memória já é de outra época
+    if (mm.voo === p) delete mm.voo;
+    if (mm.dados) {
+      mm.falhou = Date.now();
+      console.warn('[V186] ' + chave + ' falhou (' + (e && e.message) + ') — servindo cópia de ' +
+                   new Date(mm.at).toLocaleTimeString('pt-BR'));
+      return _v186Copia(mm);
+    }
+    _v186Memo.delete(chave);
+    throw e;
+  });
+  const m = _v186Memo.get(chave) || {};
+  m.voo = p; _v186Memo.set(chave, m);
+  return p;
+}
+// Devolve o dado; se a cópia tem entre 20 s e 10 min, devolve JÁ e confere no
+// servidor por trás — repinta se o servidor trouxe algo DIFERENTE, ou se a
+// conferência FALHOU (para a tela passar a dizer que é cópia).
+function _v186Ler(chave, fn, aoMudar) {
+  const m = _v186Memo.get(chave);
+  if (!m || !m.dados) return _v186Buscar(chave, fn);
+  // conferência falhou há pouco: é cópia, e a tela precisa dizer
+  if (m.falhou && Date.now() - m.falhou < _V186_FRESCO) return Promise.resolve(_v186Copia(m));
+  const idade = Date.now() - m.at;
+  if (idade < _V186_FRESCO) return Promise.resolve(m.dados);
+  if (idade < _V186_VALIDO) {
+    if (!m.voo) {
+      const velho = JSON.stringify(m.dados), epoca = _v186MemoEpoca;
+      _v186Buscar(chave, fn).then(function (d) {
+        if (epoca !== _v186MemoEpoca || typeof aoMudar !== 'function') return;
+        if (d && (d._v186CopiaDe || JSON.stringify(d) !== velho)) aoMudar();
+      }).catch(function () {});
+    }
+    return Promise.resolve(m.dados);
+  }
+  return _v186Buscar(chave, fn);
+}
+function _v186Clone(d) { try { return JSON.parse(JSON.stringify(d)); } catch (e) { return d; } }
+function _v186LerPipeline(osId, aoMudar) {
+  return _v186Ler('pipe:' + osId, function () {
+    return syncToGS('getPipelineByOS', { os_id: osId }).catch(function (e) { throw _v186ErroLeitura(e, 'o pipeline'); });
+  }, aoMudar).then(_v186Clone);
+}
+function _v186LerLog(osId, aoMudar) {
+  return _v186Ler('log:' + osId, function () {
+    return gsGet('getLogOperacional', { id_os: osId, limit: 300 }).catch(function (e) { throw _v186ErroLeitura(e, 'o log'); });
+  }, aoMudar).then(_v186Clone);
+}
+// Pré-carga ao abrir a OS: quando o adm clica em Pipeline ou Log, a resposta
+// já está a caminho (ou já chegou). Silenciosa: erro aqui não aparece.
+function _v186PreCarregar(osId) {
+  try {
+    _v186LerPipeline(osId).catch(function () {});
+    _v186LerLog(osId).catch(function () {});
+  } catch (e) {}
+}
+function _v186RepintarSe(osId, tab) {
+  if (_v186Det.osId !== String(osId) || _v186Det.tab !== tab) return;
+  if (tab === 'pipeline') _loadPipelineTab(osId);
+  else if (tab === 'log') _v154CarregarLog(osId);
+}
+// A conferência em 2º plano é UMA por dado, mas quem a disparou pode já ter
+// saído (disparou no Log, o adm foi para o Pipeline): repinta a aba ATUAL.
+function _v186RepintarAtual(osId) { _v186RepintarSe(osId, _v186Det.tab); }
+function _v186AvisoCopia(at) {
+  if (!at) return '';
+  return '<div style="background:#fffbeb;border:1px solid #fde68a;color:#92400e;border-radius:8px;padding:8px 12px;font-size:12.5px;margin-bottom:10px">' +
+    '⚠ Sem conexão com o servidor — mostrando a cópia carregada às <b>' +
+    escHtml(new Date(at).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })) +
+    '</b>. Pode não ter o que mudou depois disso.</div>';
+}
+// Offline: tenta de novo sozinho (a cada 8 s, por até 3 min) enquanto a
+// mesma aba da mesma OS estiver na tela.
+function _v186ReTentarQuandoVoltar(osId, tab, ger) {
+  let n = 0;
+  const volta = function () {
+    if (!_v186DetVale(ger)) return;
+    if (++n > 22) return;
+    if (typeof gsConnected !== 'undefined' && gsConnected) {
+      _v186Memo.forEach(function (m, k) { if (k.slice(k.indexOf(':') + 1) === String(osId)) delete m.falhou; });
+      _v186RepintarSe(osId, tab); return;
+    }
+    setTimeout(volta, 8000);
+  };
+  setTimeout(volta, 8000);
+}
+
+// ── 3. O LOG ────────────────────────────────────────────────────────────────
+// O que estava incoerente na PGP-2026-0078 (lido no servidor em 16/09):
+//  • 1 evento só ("OS criada") numa OS que foi iniciada, concluída e ENCERRADA
+//    — o LOG_OPERACIONAL não registra tarefa, e o fechamento automático
+//    (Acao_Terminal fechar_os) não grava evento. O Log dava a entender que a
+//    OS parou em "aberta".
+//  • "OS criada · TEC-001": o código no lugar da pessoa (a família do V172/V175).
+//  • "— → aberta": criação mostrada como troca de status vinda do nada.
+//  • ordem por TEXTO do timestamp (GAS `localeCompare`): célula que volta Date
+//    vira "Mon Sep 14…" e ordena pelo dia da semana.
+// 🔑 Agora: eventos do log + linhas RECONSTRUÍDAS das datas que a planilha já
+//    guarda nas tarefas e na OS, com etiqueta própria, em ordem de relógio.
+//    Nada é gravado; nada é inventado — sem data, não há linha.
+function _v186Ms(v) {
+  if (v === null || v === undefined || v === '') return NaN;
+  if (Object.prototype.toString.call(v) === '[object Date]') return v.getTime();
+  const s = String(v);
+  if (/^\d{4}-\d{2}-\d{2}[T ]\d{2}:\d{2}/.test(s)) return new Date(s).getTime();
+  const d = (typeof _v151DataISO === 'function') ? _v151DataISO(v) : '';
+  return d ? new Date(d + 'T12:00:00').getTime() : NaN;
+}
+function _v186Quem(v) {
+  const q = _v172NomeDoLock(v);
+  return q.mostra ? (q.mostra + (q.codigo ? ' (' + q.codigo + ')' : '')) : '';
+}
+const _V186_ST_TAREFA = { incompleto: 'marcada como incompleta', com_pendencia: 'marcada com pendência' };
+function _v186LinhasDerivadas(os, tarefas, eventos) {
+  const out = [];
+  (tarefas || []).forEach(function (t) {
+    const nome = String(t.Nome || t.Tarefa_ID || 'tarefa');
+    const st = String(t.Status || '').trim();
+    if (t.Iniciado_por && !isNaN(_v186Ms(t.Data_abertura))) {
+      out.push({ ms: _v186Ms(t.Data_abertura), quando: t.Data_abertura, ico: '▶', rot: 'Tarefa iniciada',
+        det: nome, quem: _v186Quem(t.Iniciado_por) });
+    }
+    if (st === 'completo' && !isNaN(_v186Ms(t.Data_conclusao))) {
+      const ef = parseInt(t.Tempo_Efetivo_Min, 10);
+      out.push({ ms: _v186Ms(t.Data_conclusao), quando: t.Data_conclusao, ico: '✔', rot: 'Tarefa concluída',
+        det: nome + (ef > 0 ? ' · efetivo ' + ef + ' min' : ''), quem: _v186Quem(t.Concluido_por) });
+    } else if (st === 'dispensado' && !isNaN(_v186Ms(t.Data_conclusao || t.Updated_At))) {
+      out.push({ ms: _v186Ms(t.Data_conclusao || t.Updated_At), quando: t.Data_conclusao || t.Updated_At, ico: '⏭',
+        rot: 'Tarefa dispensada', det: nome + ' · ramo do fluxo não seguido', quem: '' });
+    } else if (_V186_ST_TAREFA[st] && !isNaN(_v186Ms(t.Updated_At))) {
+      out.push({ ms: _v186Ms(t.Updated_At), quando: t.Updated_At, ico: '⚠', rot: 'Tarefa ' + _V186_ST_TAREFA[st],
+        det: nome, quem: _v186Quem(t.Concluido_por) });
+    }
+  });
+  if (os) {
+    const tipos = (eventos || []).map(function (e) { return String(e.tipo_evento || '').toUpperCase(); });
+    const temFecho = tipos.indexOf('CONCLUSAO_OS') >= 0 || tipos.indexOf('CANCELAMENTO_OS') >= 0;
+    const st = String(os.status || '').trim().toUpperCase().replace('Í', 'I');
+    if (!temFecho && !isNaN(_v186Ms(os.fim_atendimento))) {
+      const term = (tarefas || []).find(function (t) { return String(t.Acao_Terminal || '').trim() === 'fechar_os' && String(t.Status || '') === 'completo'; });
+      out.push({ ms: _v186Ms(os.fim_atendimento) + 1, quando: os.fim_atendimento, ico: '🏁', rot: 'Atendimento finalizado',
+        det: term ? 'OS encerrada automaticamente ao concluir “' + String(term.Nome || term.Tarefa_ID) + '”' : 'fim do atendimento registrado na OS',
+        quem: '' });
+    } else if (!temFecho && (st === 'CONCLUIDA' || st === 'CANCELADA') && !isNaN(_v186Ms(os.Updated_At))) {
+      out.push({ ms: _v186Ms(os.Updated_At), quando: os.Updated_At, ico: st === 'CONCLUIDA' ? '✅' : '✖',
+        rot: st === 'CONCLUIDA' ? 'OS concluída' : 'OS cancelada',
+        det: 'última alteração da OS — o log não guardou este fechamento', quem: _v186Quem(os.Updated_By) });
+    }
+  }
+  return out.map(function (x) { x.derivada = true; return x; });
+}
+function _v186LinhaEvento(ev) {
+  const tipo = String(ev.tipo_evento || '').toUpperCase();
+  const meta = _V154_EVENTOS[tipo] || { rot: tipo || '—', ico: '•' };
+  const quem = _v186Quem(String(ev.responsavel_nome || '').trim() || String(ev.nome_usuario || '').trim() || ev.id_usuario);
+  const sa = String(ev.status_anterior || '').trim(), sn = String(ev.status_novo || '').trim();
+  let mudou = '';
+  if (tipo === 'CRIACAO_OS' && !sa && sn) mudou = 'status inicial: <b>' + escHtml(sn) + '</b>';
+  else if ((sa || sn) && sa.toUpperCase() !== sn.toUpperCase()) mudou = escHtml(sa || '—') + ' → <b>' + escHtml(sn || '—') + '</b>';
+  const acao = String(ev.acao_realizada || '').trim();
+  const obs = String(ev.observacao || '').trim();
+  return { ms: _v186Ms(ev.timestamp), quando: ev.timestamp, ico: meta.ico, rot: meta.rot, quem: quem,
+    origem: String(ev.origem || '').trim(), mudouHtml: mudou,
+    det: (acao && acao !== 'OS atualizada' && acao !== meta.rot && acao !== 'OS criada') ? acao : '',
+    obsRotulo: tipo === 'CRIACAO_OS' ? 'Descrição' : '', obs: obs };
+}
+function _v186HtmlLinha(x) {
+  const etq = x.derivada
+    ? ' <span title="Reconstruída das datas gravadas na tarefa/OS — o LOG_OPERACIONAL não registra este passo." style="font-size:10px;color:#5b21b6;background:#ede9fe;border:1px solid #c4b5fd;border-radius:10px;padding:0 6px;margin-left:4px">pipeline</span>'
+    : '';
+  return '<div class="v186-log-linha" style="display:grid;grid-template-columns:150px 1fr;gap:12px;padding:9px 0;border-bottom:1px solid var(--border)">' +
+    '<div style="font-family:var(--font-mono);font-size:11.5px;color:var(--text-muted)">' + escHtml(_v154Quando(x.quando)) + '</div><div>' +
+    '<div style="font-size:12.5px;color:var(--text)"><span style="margin-right:5px">' + x.ico + '</span><b>' + escHtml(x.rot) + '</b>' + etq +
+    (x.quem ? '<span style="color:var(--text-muted)"> · ' + escHtml(x.quem) + '</span>' : '') +
+    (x.origem ? '<span style="color:var(--text-muted)"> · ' + escHtml(x.origem) + '</span>' : '') + '</div>' +
+    (x.mudouHtml ? '<div style="font-size:11px;color:var(--text-muted);margin-top:2px">' + x.mudouHtml + '</div>' : '') +
+    (x.det ? '<div style="font-size:11.5px;color:var(--text-muted);margin-top:2px">' + escHtml(x.det) + '</div>' : '') +
+    (x.obs ? '<div style="font-size:11.5px;color:var(--text);margin-top:3px;white-space:pre-wrap">' +
+      (x.obsRotulo ? '<span style="color:var(--text-muted)">' + x.obsRotulo + ': </span>' : '') + escHtml(x.obs) + '</div>' : '') +
+    '</div></div>';
+}
+async function _v186CarregarLog(osId, ger) {
+  const content = document.getElementById('osDetailContent');
+  if (!content) return;
+  const repinta = function () { _v186RepintarAtual(osId); };
+  // O log NÃO espera o pipeline: pinta assim que o log chega e, se o pipeline
+  // ainda estiver a caminho, acrescenta as linhas dele quando ele chegar.
+  let rp = null;
+  const pPipe = _v186LerPipeline(osId, repinta).then(function (r) { return (rp = { r: r }); }, function (e) { return (rp = { e: e }); });
+  const rl = await _v186LerLog(osId, repinta).then(function (r) { return { r: r }; }, function (e) { return { e: e }; });
+  if (!rp) await new Promise(function (r) { setTimeout(r, 0); });   // pipeline já em memória resolve aqui
+  if (!_v186DetVale(ger)) return;                       // outra aba/OS já assumiu o painel
+  _v186PintarLog(osId, ger, content, rl, rp);
+  if (!rp && !rl.e) {
+    await pPipe;
+    if (!_v186DetVale(ger)) return;
+    _v186PintarLog(osId, ger, content, rl, rp);
+  }
+}
+function _v186PintarLog(osId, ger, content, rl, rp) {
+  if (rl.e) {
+    if (rl.e.message && rl.e.message.includes('AUTH_GOOGLE')) { hubLogout(); return; }
+    // ⚠ Falha de leitura NÃO vira "esta OS não tem histórico" (V154).
+    content.innerHTML = '<div class="empty"><div class="empty-icon">⚠️</div>' +
+      '<div class="empty-title">Não consegui ler o log desta OS</div>' +
+      '<div class="empty-sub">' + escHtml(String(rl.e.message || 'erro de conexão')) + '</div>' +
+      '<button class="btn btn-secondary" style="margin-top:12px" onclick="_v154CarregarLog(\'' + escAttrJs(osId) + '\')">Tentar novamente</button></div>';
+    if (rl.e.code === 'OFFLINE_LEITURA' || (typeof gsConnected !== 'undefined' && !gsConnected)) _v186ReTentarQuandoVoltar(osId, 'log', ger);
+    return;
+  }
+  const eventos = (rl.r && (rl.r.eventos || rl.r.data)) || [];
+  const tarefas = (rp && rp.r) ? (rp.r.tarefas || []) : null;   // null = sem pipeline (ainda ou por falha)
+  const os = (_osList || []).find(function (o) { return o.id_os === osId; }) || null;
+  const linhas = eventos.map(_v186LinhaEvento).concat(_v186LinhasDerivadas(os, tarefas, eventos));
+  // mais recente primeiro, pelo RELÓGIO; sem data válida vai para o fim
+  linhas.sort(function (a, b) {
+    const A = isNaN(a.ms) ? -Infinity : a.ms, B = isNaN(b.ms) ? -Infinity : b.ms;
+    return B - A;
+  });
+  const copia = (rl.r && rl.r._v186CopiaDe) || (rp && rp.r && rp.r._v186CopiaDe) || 0;
+  if (copia) _v186ReTentarQuandoVoltar(osId, 'log', ger);
+  const nReg = eventos.length, nDer = linhas.length - nReg;
+  const rodape = '<div style="margin-top:12px;font-size:11px;color:var(--text-muted);line-height:1.5;border-top:1px solid var(--border);padding-top:8px">' +
+    '🔎 <b>O que este log guarda:</b> os eventos da OS (quem, quando, de onde, status antes→depois). ' +
+    'Linhas com a etiqueta <b>pipeline</b> são montadas a partir das datas gravadas nas tarefas e na própria OS — o registro de eventos não anota o andamento das tarefas nem o fechamento automático. ' +
+    '<b>Não guarda quais campos mudaram</b> numa edição: para saber quem alterou o prazo, por exemplo, o servidor precisaria gravar a diferença (mudança de GAS, rodada própria).' +
+    (tarefas === null ? (rp ? '<br>⚠ O pipeline não pôde ser lido agora — as linhas de tarefa não aparecem.'
+                            : '<br>⏳ Carregando o andamento das tarefas…') : '') + '</div>';
+  if (!linhas.length) {
+    content.innerHTML = _v186AvisoCopia(copia) + '<div class="empty"><div class="empty-icon">📜</div>' +
+      '<div class="empty-title">Nenhum evento registrado para esta OS</div>' +
+      '<div class="empty-sub">O LOG_OPERACIONAL começou a registrar depois que esta OS foi criada, ou os eventos dela foram gravados sem <code>id_os</code>.</div></div>' + rodape;
+    return;
+  }
+  content.innerHTML = '<div style="max-width:760px">' + _v186AvisoCopia(copia) +
+    '<div style="font-size:11px;color:var(--text-muted);margin-bottom:6px">' + linhas.length + ' linha(s), da mais recente para a mais antiga' +
+    ' — ' + nReg + ' do registro de eventos' + (nDer ? ', ' + nDer + ' do pipeline' : '') + '.</div>' +
+    linhas.map(_v186HtmlLinha).join('') + rodape + '</div>';
+}
+
+// ── 4. NOME DE FASE ─────────────────────────────────────────────────────────
+// 🕳 "NovEntrega técnica no clientea fase": o "+ Adicionar fase" nascia com o
+//    TEXTO "Nova fase" (não um placeholder) num campo sem borda que parece
+//    título. Clicar no meio e digitar enfiou o nome dentro do padrão. Medido em
+//    16/09: 2 templates atingidos — "Entrega técnica" (nome enxertado) e
+//    "Diagnóstico em Campo" (ficou "Nova fase") — e 6 OS com a cópia.
+// 🔑 Fase nova nasce VAZIA com placeholder e cursor nela; "Nova fase" é
+//    selecionado inteiro ao clicar; o Salvar recusa fase sem nome de verdade.
+// ⚠ Auditoria (16/09): a 1ª regra também pegava nomes LEGÍTIMOS ("Nova fase
+//   de testes", "Renovação: nova fase") e travava o Salvar sem saída. Agora:
+//   BLOQUEIA só o que não é nome (vazio, "Nova fase" exato); o ENXERTO — "Nov"
+//   + palavra com MAIÚSCULA + "a fase", a marca exata do defeito — vira
+//   PERGUNTA com sugestão.
+function _v186FaseRuim(nome) {
+  const s = String(nome == null ? '' : nome).trim();
+  if (!s) return 'sem nome';
+  if (/^nova fase$/i.test(s)) return 'ainda com o nome padrão "Nova fase"';
+  return '';
+}
+function _v186FaseSugestao(nome) {
+  const s = String(nome == null ? '' : nome).trim();
+  const m = s.match(/^Nov([A-ZÀ-Ý].*)a fase$/);
+  return m ? m[1].trim() : '';
+}
+function _v186FaseSuspeita(nome) { return !_v186FaseRuim(nome) && !!_v186FaseSugestao(nome); }
+function _v186FaseFoco(inp) {
+  try { if (/^nova fase$/i.test(String(inp.value || '').trim())) inp.select(); } catch (e) {}
+}
+function _v186FaseEstilo(nome) {
+  return (_v186FaseRuim(nome) || _v186FaseSuspeita(nome)) ? 'border-color:#dc2626;background:#fef2f2;' : '';
+}
+function _v186FasesRuins(fases) {
+  return (fases || []).map(function (f, i) {
+    const m = _v186FaseRuim(f && f.nome);
+    return m ? { i: i + 1, nome: String((f && f.nome) || ''), motivo: m } : null;
+  }).filter(Boolean);
+}
+function _v186FasesSuspeitas(fases) {
+  return (fases || []).map(function (f, i) {
+    return _v186FaseSuspeita(f && f.nome) ? { i: i + 1, nome: String(f.nome), sugestao: _v186FaseSugestao(f.nome) } : null;
+  }).filter(Boolean);
+}
+// true = pode salvar. Pergunta uma vez por fase suspeita; "Cancelar" não salva.
+function _v186ConfirmarFasesSuspeitas(fases) {
+  const l = _v186FasesSuspeitas(fases);
+  if (!l.length) return true;
+  return confirm('⚠ Nome de fase com cara de texto enxertado em "Nova fase":\n\n' +
+    l.map(function (f) { return '• Fase ' + f.i + ': "' + f.nome + '"\n     nome pretendido? "' + f.sugestao + '"'; }).join('\n') +
+    '\n\nEste nome é copiado para toda OS nova. OK = salvar assim mesmo · Cancelar = voltar e corrigir.');
+}
+function _v186FocarUltimaFase() {
+  try {
+    const l = document.querySelectorAll('#tplFasesContainer .tpl-fase-title-input');
+    const u = l[l.length - 1]; if (u) { u.focus(); u.scrollIntoView({ block: 'center' }); }
+  } catch (e) {}
+}
+// Aviso no Pipeline da OS (só para o adm): a OS carrega a CÓPIA do nome.
+function _v186FaseAvisoPipe(nome) {
+  if (window.PROPER_SESSION?.is_admin !== true || !(_v186FaseRuim(nome) || _v186FaseSuspeita(nome))) return '';
+  const sug = _v186FaseSugestao(nome);
+  return ' <span title="Nome de fase com defeito, copiado do template quando a OS foi criada. Corrija no template (Configurações › Templates) e, nesta OS, na aba PIPELINE_TAREFAS da planilha' +
+    (sug ? ' — o nome pretendido parece ser “' + escHtml(sug) + '”' : '') + '." style="font-size:10px;font-weight:600;text-transform:none;letter-spacing:0;color:#b91c1c;background:#fef2f2;border:1px solid #fecaca;border-radius:10px;padding:1px 6px;margin-left:6px">⚠ nome de fase com defeito</span>';
+}
+
+// ── 5. "ENCERRE A OS" NUMA OS JÁ ENCERRADA ─────────────────────────────────
+function _v186MsgEmpilharEncerrada(os) {
+  const st = String((os && os.status) || '').trim().toUpperCase().replace('Í', 'I');
+  if (st !== 'CONCLUIDA' && st !== 'CANCELADA') return '';
+  const q = _v154Quando(os.fim_atendimento || os.Updated_At);
+  return '🏁 Todas as tarefas estão resolvidas e esta OS já está ' + (st === 'CONCLUIDA' ? 'concluída' : 'cancelada') +
+    (q && q !== '—' ? ' (' + q + ')' : '') + '. Para continuar o trabalho nela, use ↩ Reabrir OS ou empilhe uma nova etapa.';
+}
+// ████ FIM V186 (módulo _v186) ████
 
 </script>
 
