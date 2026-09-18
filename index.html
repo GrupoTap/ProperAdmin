@@ -4358,7 +4358,42 @@ v50 — Resiliência de rede: retry/backoff em gsGet e syncToGS
   CONTÉM o V189.
   ════════════════════════════════════════════════════════════════════════
 -->
-<title>ProperCare Manager · Gestão PGP v4.03 (PCM V190)</title>
+<!--
+  ════════════════════════════════════════════════════════════════════════
+  PCM V191 — FILTRO DE COLUNA EM TODA TABELA · ESPERA VISÍVEL  17/09/2026
+  ════════════════════════════════════════════════════════════════════════
+  Pedido do Fernando (17/09): "toda tela que contém lista de máquinas,
+  clientes, peças etc, os títulos de cada coluna devem ser dotados de
+  filtros" e "sempre spinner ou mensagem deixando o usuário ciente da
+  espera". O gatilho foi o Inventário do V190, que nasceu sem filtro.
+  🕳 A CAUSA não era esquecimento: o motor XF (V94) exige configuração
+     tela por tela, então só 5 das 36 tabelas do PCM tinham filtro —
+     Preventivas, Gestão de OSs, Documentos, Clientes e Pool. As outras
+     31 foram feitas à mão e nasceriam sem filtro para sempre.
+  ⇒ Dois motores novos, os dois ADITIVOS e os dois no fim do <body>:
+     · CFX — acopla menu de coluna (valores com contagem estilo Excel,
+       De/Até para número e data, ordenar, chips de filtro ativo) a
+       QUALQUER <table> do DOM, sem saber quem a renderizou. Tabela
+       `class="xf-table"` é ignorada — o XF já filtra. Tabela nova ganha
+       filtro sozinha (MutationObserver), inclusive a que ainda não existe.
+     · PWAIT — conta as chamadas em voo (fetch, XHR e o <script> do JSONP)
+       e mostra barra no topo; aos 3,5 s avisa, aos 9 s explica.
+  🕳 Dois defeitos que só a bancada que CLICA pegou: `cloneNode` copiava a
+     setinha ▾ e não o handler (setinha morta, zero erro no console), e a
+     flag de "mutação minha" ficava ligada depois de ordenar, desligando o
+     acoplamento de toda tabela criada depois. Ambos corrigidos.
+     · A GUARDA DE BOTÃO, no mesmo PWAIT: 130 ms depois do clique ele
+       pergunta se o número de chamadas em voo SUBIU; se subiu, o botão fica
+       ⏳ e desabilitado até a contagem voltar, e o 2º clique é engolido na
+       captura. Isso cobre de uma vez os 46 botões que a varredura achou
+       gravando sem trava — consertar 46 call sites envelhece; o 47º nasceria
+       sem trava de novo.
+  ZERO GAS, ZERO SQL, ZERO contrato novo. CONTÉM o V190.
+  Bancada: _testes/NEWFILE_T_CFX_PWAIT.mjs (35 verdes; --controle reprova
+  24 contra o V190 publicado).
+  ════════════════════════════════════════════════════════════════════════
+-->
+<title>ProperCare Manager · Gestão PGP v4.03 (PCM V191)</title>
 <link rel="icon" type="image/jpeg" href="data:image/jpeg;base64,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">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -40355,7 +40390,7 @@ async function _v178LocaisTela(forcar) {
   c.innerHTML =
     '<div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-bottom:8px">' +
       filtros.map(function (f) { return '<button class="docs-chip' + (f[0] === _v178LocFiltro ? ' active' : '') + '" onclick="_v178LocFiltro=\'' + f[0] + '\';_v178LocaisTela(false)">' + f[1] + '</button>'; }).join('') +
-      '<input class="form-input" style="max-width:220px" placeholder="Buscar cliente…" value="' + escHtml(_v178LocBusca) + '" autocomplete="off" name="v178_loc_nofill" data-lpignore="true" data-1p-ignore onchange="_v178LocBusca=this.value;_v178LocaisTela(false)">' +
+      '<input class="form-input" style="max-width:220px" placeholder="Buscar cliente…" value="' + escHtml(_v178LocBusca) + '" readonly onfocus="this.removeAttribute(\'readonly\')" autocomplete="off" name="v178_loc_nofill" data-lpignore="true" data-1p-ignore onchange="_v178LocBusca=this.value;_v178LocaisTela(false)">' +
       '<button class="docs-chip" onclick="_v178LocaisTela(true)">↻ Atualizar</button></div>' +
     '<div style="font-size:12px;color:var(--text-muted);margin-bottom:6px">' + todos.length + ' clientes · ' + nInc + ' com cadastro incompleto · ' + nSem + ' sem ponto no mapa. ' +
       'Cliente antigo só é cobrado quando alguém abre OS externa para ele; o ponto não trava a OS (o técnico marca na 1ª visita).</div>' +
@@ -43163,5 +43198,833 @@ _v178Embrulhar('openOSDetail', function (orig) {
 
 </script>
 
+<!-- ████ INICIO BLOCOS PADRAO UX (PWAIT + CFX) ████ -->
+<!-- ═══════════════════════════════════════════════════════════════════════════
+     PWAIT v1 — A ESPERA FICA VISÍVEL, SEMPRE (+ GUARDA DE BOTÃO)
+     Pedido do Fernando em 17/09/2026: "sempre programar pensando em otimizar
+     tempo de abertura das telas e spinner sempre que for necessário aguardar, ou
+     mensagens avisando e deixando o usuário ciente da espera".
+     O problema que ele resolve: o `_comLoadingBtn_` (PCM v77 / PCF v55) só cobre
+     o BOTÃO que alguém se lembrou de embrulhar. Toda chamada disparada por
+     troca de tela, por refresh de 2º plano ou por um botão esquecido acontecia
+     em silêncio — e no GAS cada chamada custa ~3,5 s fixos (medição de 28/08).
+     Como funciona: PWAIT não pede wiring por tela. Ele CONTA as chamadas em voo
+     (fetch, XMLHttpRequest e o <script> do JSONP dos formulários) e mostra:
+       · barra viva no topo enquanto houver qualquer chamada;
+       · aos 3,5 s, um aviso discreto "aguardando o servidor…";
+       · aos 9 s, o aviso vira explicação ("o Google Sheets às vezes demora…").
+     NUNCA bloqueia a tela e NUNCA interfere na resposta: o wrapper devolve a
+     mesma promessa e repropaga o mesmo erro.
+     ADITIVO: nenhum id, função ou classe existente muda. Tudo em try/catch.
+     ── A GUARDA DE BOTÃO (mesma sentada, antes de qualquer publicação) ────
+     A varredura de paridade mediu **46 botões que gravam sem trava de duplo
+     clique** em 19 arquivos. Consertar 46 call sites é trabalho que envelhece:
+     o 47º nasce sem trava. Então a trava passou a ser MECANISMO, não hábito.
+     `PWAIT.guarda()` escuta clique e submit na fase de CAPTURA e, 130 ms depois
+     do clique, pergunta uma coisa só: **o número de chamadas em voo SUBIU?**
+     Se subiu, aquele clique gerou rede — o botão fica ocupado (⏳ no texto,
+     desabilitado) até a contagem voltar ao que era antes dele. Um 2º clique
+     nesse meio-tempo é ENGOLIDO na captura, antes de chegar ao app.
+     🔑 A atribuição é por DELTA, não por "tem chamada em voo": senão um
+        refresh de 2º plano (o PCM faz vários) desabilitaria botão à toa.
+     ⚠ Fora da guarda, de propósito: pílula/chip/toggle/olho/burger, botão com
+       `aria-pressed` ou `role=switch`, botão de rótulo curto (ícone, seta) e
+       qualquer um com `data-pw-off`. Marcar Ok/NOK/N.A. batendo o dedo não
+       pode esperar por nada.
+     ⚠ BLOCO ÚNICO: copiado BYTE A BYTE nos fronts; a varredura reprova divergência.
+     ═══════════════════════════════════════════════════════════════════════════ -->
+<style>
+#pwBar{position:fixed;top:0;left:0;height:3px;width:0;z-index:99500;pointer-events:none;
+  background:linear-gradient(90deg,var(--pw-a),var(--pw-b));box-shadow:0 0 8px var(--pw-a);
+  transition:width .22s ease,opacity .3s ease;opacity:0;border-radius:0 3px 3px 0}
+#pwBar.pw-on{opacity:1}
+#pwMsg{position:fixed;z-index:99501;left:50%;transform:translateX(-50%);top:10px;max-width:calc(100vw - 24px);
+  background:var(--pw-bg);color:var(--pw-fg);border:1px solid var(--pw-line);border-radius:999px;
+  padding:7px 15px;font-size:12.5px;font-family:inherit;box-shadow:0 8px 26px rgba(0,0,0,.3);
+  display:none;align-items:center;gap:9px;line-height:1.35}
+#pwMsg.pw-on{display:flex}
+#pwMsg .pw-sp{width:13px;height:13px;flex:none;border-radius:50%;border:2px solid var(--pw-line);
+  border-top-color:var(--pw-a);animation:pwSpin .8s linear infinite}
+@keyframes pwSpin{to{transform:rotate(360deg)}}
+#pwOv{position:fixed;inset:0;z-index:99400;background:rgba(0,0,0,.42);display:none;
+  align-items:center;justify-content:center;padding:20px}
+#pwOv.pw-on{display:flex}
+#pwOv .pw-cx{background:var(--pw-bg);color:var(--pw-fg);border:1px solid var(--pw-line);border-radius:14px;
+  padding:22px 26px;text-align:center;max-width:340px;font-family:inherit;box-shadow:0 18px 50px rgba(0,0,0,.4)}
+#pwOv .pw-sp2{width:30px;height:30px;margin:0 auto 12px;border-radius:50%;
+  border:3px solid var(--pw-line);border-top-color:var(--pw-a);animation:pwSpin .8s linear infinite}
+#pwOv .pw-t{font-size:14px;font-weight:600}
+#pwOv .pw-s{font-size:12px;opacity:.75;margin-top:6px}
+button.is-busy{opacity:.72;cursor:progress}
+button[data-pw-busy="1"]{opacity:.72;cursor:progress}
+.pw-esq{padding:10px 0}
+.pw-esq i{display:block;height:13px;border-radius:6px;margin:8px 0;
+  background:linear-gradient(90deg,var(--pw-line) 25%,var(--pw-hov) 50%,var(--pw-line) 75%);
+  background-size:400% 100%;animation:pwShim 1.3s linear infinite}
+@keyframes pwShim{0%{background-position:100% 0}100%{background-position:0 0}}
+@media print{#pwBar,#pwMsg,#pwOv{display:none!important}}
+</style>
+<script>
+(function(){
+'use strict';
+try{
+  if(window.PWAIT) return;
+  var VER='PWAIT_V1';
+  var T_AVISO=3500;      // a espera deixa de ser invisível
+  var T_EXPLICA=9000;    // a espera passa a ser explicada
+  var voo=0, t0=0, bar=null, msg=null, ov=null, tA=null, tE=null, raf=null, prog=0;
+
+  function tokens(){
+    try{
+      var cs=getComputedStyle(document.body);
+      var m=/rgba?\(\s*(\d+)[,\s]+(\d+)[,\s]+(\d+)/.exec(cs.backgroundColor||'');
+      var lum=m? (0.299*+m[1]+0.587*+m[2]+0.114*+m[3]) : 255;
+      var claro=lum>=140, r=document.documentElement.style;
+      r.setProperty('--pw-a', claro?'#2563eb':'#f58220');
+      r.setProperty('--pw-b', claro?'#22c55e':'#fbbf24');
+      r.setProperty('--pw-bg', claro?'#ffffff':(m?'rgb('+Math.min(255,+m[1]+16)+','+Math.min(255,+m[2]+18)+','+Math.min(255,+m[3]+24)+')':'#1e293b'));
+      r.setProperty('--pw-fg', cs.color||'inherit');
+      r.setProperty('--pw-line', claro?'#dfe3ea':'rgba(255,255,255,.2)');
+      r.setProperty('--pw-hov', claro?'#f4f6f9':'rgba(255,255,255,.08)');
+    }catch(e){}
+  }
+  function el(id,cls,html){
+    var d=document.getElementById(id);
+    if(d) return d;
+    d=document.createElement('div'); d.id=id; if(cls)d.className=cls; if(html)d.innerHTML=html;
+    (document.body||document.documentElement).appendChild(d);
+    return d;
+  }
+  function montar(){
+    tokens();
+    bar=el('pwBar');
+    msg=el('pwMsg','','<span class="pw-sp"></span><span data-pw-txt>aguardando o servidor…</span>');
+    ov=el('pwOv','','<div class="pw-cx"><div class="pw-sp2"></div><div class="pw-t" data-pw-ovt>Aguarde…</div><div class="pw-s" data-pw-ovs></div></div>');
+  }
+  function pinta(){
+    if(!bar) return;
+    if(voo>0){
+      bar.classList.add('pw-on');
+      prog=prog+ (92-prog)*0.06 + 0.4;           // nunca chega a 100 sozinha
+      if(prog>93) prog=93;
+      bar.style.width=prog.toFixed(1)+'%';
+      raf=requestAnimationFrame(pinta);
+    }else{
+      bar.style.width='100%';
+      setTimeout(function(){ if(voo===0){ bar.classList.remove('pw-on'); bar.style.width='0'; prog=0; } },240);
+    }
+  }
+  function aviso(txt){
+    if(!msg) return;
+    var s=msg.querySelector('[data-pw-txt]'); if(s) s.textContent=txt;
+    msg.classList.add('pw-on');
+  }
+  function some(){ if(msg) msg.classList.remove('pw-on'); }
+
+  function sobe(){
+    voo++;
+    if(voo===1){
+      t0=Date.now(); prog=2;
+      if(!bar) montar();
+      cancelAnimationFrame(raf); raf=requestAnimationFrame(pinta);
+      clearTimeout(tA); clearTimeout(tE);
+      tA=setTimeout(function(){ if(voo>0) aviso('aguardando o servidor…'); },T_AVISO);
+      tE=setTimeout(function(){ if(voo>0) aviso('ainda aguardando — o Google Sheets às vezes leva alguns segundos. Não feche a tela.'); },T_EXPLICA);
+    }
+  }
+  function desce(){
+    voo=Math.max(0,voo-1);
+    if(voo===0){ clearTimeout(tA); clearTimeout(tE); some(); pinta(); }
+  }
+
+  // ── 1) fetch ──
+  try{
+    if(window.fetch && !window.fetch.__pw){
+      var f0=window.fetch.bind(window);
+      var f1=function(){
+        sobe();
+        var p;
+        try{ p=f0.apply(null,arguments); }catch(e){ desce(); throw e; }
+        return p.then(function(r){ desce(); return r; }, function(e){ desce(); throw e; });
+      };
+      f1.__pw=1; window.fetch=f1;
+    }
+  }catch(e){}
+
+  // ── 2) XMLHttpRequest ──
+  try{
+    var XP=window.XMLHttpRequest && window.XMLHttpRequest.prototype;
+    if(XP && !XP.__pw){
+      var s0=XP.send;
+      XP.send=function(){
+        var fim=false, self=this;
+        function ok(){ if(!fim){ fim=true; desce(); } }
+        try{
+          sobe();
+          self.addEventListener('loadend',ok);
+        }catch(e){ ok(); }
+        try{ return s0.apply(self,arguments); }catch(e){ ok(); throw e; }
+      };
+      XP.__pw=1;
+    }
+  }catch(e){}
+
+  // ── 3) JSONP dos formulários: <script src="…/exec?…"> ──
+  // Os forms falam com o GAS por tag <script>, não por fetch. Sem isto, o
+  // "Salvar" de um formulário em campo ficaria exatamente como está hoje:
+  // 20 s de espera com um botão cinza e nenhuma palavra na tela.
+  try{
+    var mo=new MutationObserver(function(recs){
+      for(var i=0;i<recs.length;i++){
+        var ns=recs[i].addedNodes;
+        for(var j=0;j<ns.length;j++){
+          var n=ns[j];
+          if(!n||n.tagName!=='SCRIPT'||!n.src||n.__pw) continue;
+          if(!/script\.google\.com|googleusercontent|supabase/.test(n.src)) continue;
+          n.__pw=1; sobe();
+          var fim=false;
+          var pronto=function(){ if(!fim){ fim=true; desce(); } };
+          n.addEventListener('load',pronto); n.addEventListener('error',pronto);
+          setTimeout(pronto,120000);          // rede que nunca responde não deixa a barra presa
+        }
+      }
+    });
+    mo.observe(document.documentElement,{childList:true,subtree:true});
+  }catch(e){}
+
+
+  // ── 4) GUARDA DE BOTÃO: spinner + trava de duplo clique, sem tocar em call site ──
+  function podeGuardar(b){
+    try{
+      if(!b||!b.tagName) return false;
+      if(b.hasAttribute('data-pw-off')) return false;
+      if(b.closest&&b.closest('[data-pw-off]')) return false;
+      var c=' '+String(b.className||'')+' ';
+      if(/pill|chip|toggle|olho|burger|ecard|-tab|tab-/i.test(c)) return false;
+      if(b.hasAttribute('aria-pressed')) return false;
+      if(String(b.getAttribute('role')||'')==='switch') return false;
+      var t=(b.textContent||'').trim();
+      if(b.type!=='submit' && t.length<4) return false;    // ícone, pílula, seta
+      return true;
+    }catch(e){ return false; }
+  }
+  function ocupar(b,base){
+    if(b.dataset.pwBusy==='1') return;
+    var txt=b.textContent, dis=!!b.disabled, filhos=!!b.querySelector('*');
+    b.dataset.pwBusy='1';
+    b.classList.add('is-busy');
+    if(!filhos && txt && txt.trim().length>3) b.textContent='⏳ '+txt.trim();
+    try{ b.disabled=true; }catch(e){}
+    var t0=Date.now();
+    var iv=setInterval(function(){
+      if(voo<=base || Date.now()-t0>60000){
+        clearInterval(iv);
+        try{
+          b.classList.remove('is-busy');
+          if(!filhos && txt) b.textContent=txt;
+          b.disabled=dis;
+        }catch(e){}
+        delete b.dataset.pwBusy;
+      }
+    },140);
+  }
+  function vigiar(b){
+    var base=voo;
+    setTimeout(function(){ if(voo>base) ocupar(b,base); },130);   // só se ESTE clique gerou rede
+  }
+  function noClique(ev){
+    try{
+      var el=ev.target; if(!el||!el.closest) return;
+      var b=el.closest('button,input[type=submit]'); if(!b) return;
+      if(b.dataset.pwBusy==='1'){                                  // 2º clique: engolido aqui
+        ev.preventDefault(); ev.stopImmediatePropagation();
+        aviso('esse botão já está processando — aguarde a resposta do servidor.');
+        return;
+      }
+      if(podeGuardar(b)) vigiar(b);
+    }catch(e){}
+  }
+  function noSubmit(ev){
+    try{
+      var f=ev.target; if(!f||f.tagName!=='FORM') return;
+      var b=f.querySelector('button[type=submit],input[type=submit],button:not([type])');
+      if(!b) return;
+      if(b.dataset.pwBusy==='1'){ ev.preventDefault(); ev.stopImmediatePropagation(); return; }
+      vigiar(b);
+    }catch(e){}
+  }
+
+  window.PWAIT={
+    versao:VER,
+    guarda:function(){ try{ document.addEventListener('click',noClique,true); document.addEventListener('submit',noSubmit,true); }catch(e){} },
+    podeGuardar:podeGuardar,
+    emVoo:function(){ return voo; },
+    // espera com mensagem própria, para trecho que NÃO é chamada de rede
+    // (gerar PDF, desenhar canvas, montar 2.000 linhas)
+    tela:function(titulo,sub){
+      if(!ov) montar();
+      var a=ov.querySelector('[data-pw-ovt]'), b=ov.querySelector('[data-pw-ovs]');
+      if(a) a.textContent=titulo||'Aguarde…';
+      if(b) b.textContent=sub||'';
+      ov.classList.add('pw-on');
+      return function(){ ov.classList.remove('pw-on'); };
+    },
+    fim:function(){ if(ov) ov.classList.remove('pw-on'); },
+    // só mostra a tela de espera se o trecho passar de `atraso` ms (sem piscada)
+    demorado:function(fn,titulo,sub,atraso){
+      var fechar=null, tt=setTimeout(function(){ fechar=window.PWAIT.tela(titulo,sub); },atraso==null?350:atraso);
+      var pronto=function(){ clearTimeout(tt); if(fechar) fechar(); };
+      var r;
+      try{ r=fn(); }catch(e){ pronto(); throw e; }
+      if(r&&typeof r.then==='function') return r.then(function(v){ pronto(); return v; },function(e){ pronto(); throw e; });
+      pronto(); return r;
+    },
+    // par do _comLoadingBtn_ do PCM/PCF, para os fronts que não têm o helper
+    btn:function(btnEl,fn){
+      if(!btnEl) return fn();
+      var txt=btnEl.textContent, dis=btnEl.disabled;
+      btnEl.disabled=true; btnEl.classList.add('is-busy'); btnEl.textContent='⏳ Processando…';
+      var volta=function(){ btnEl.disabled=dis; btnEl.classList.remove('is-busy'); btnEl.textContent=txt; };
+      var r;
+      try{ r=fn(); }catch(e){ volta(); throw e; }
+      if(r&&typeof r.then==='function') return r.then(function(v){ volta(); return v; },function(e){ volta(); throw e; });
+      volta(); return r;
+    },
+    // esqueleto: a tela mostra a FORMA do conteúdo antes do dado chegar
+    esqueleto:function(alvo,linhas){
+      var t=typeof alvo==='string'? document.getElementById(alvo)||document.querySelector(alvo) : alvo;
+      if(!t) return;
+      var n=linhas||6, h='<div class="pw-esq">';
+      for(var i=0;i<n;i++) h+='<i style="width:'+(96-(i%4)*13)+'%"></i>';
+      t.innerHTML=h+'</div>';
+    }
+  };
+
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',montar);
+  else montar();
+  window.PWAIT.guarda();
+}catch(e){ try{ console.error('[PWAIT] nao iniciou; a espera segue invisivel',e); }catch(_){} }
+})();
+</script>
+
+<!-- ═══════════════════════════════════════════════════════════════════════════
+     CFX v1 — FILTRO DE COLUNA (estilo Excel) EM QUALQUER TABELA
+     Pedido do Fernando em 17/09/2026: "toda tela que contém lista de máquinas,
+     clientes, peças etc, os títulos de cada coluna devem ser dotados de filtros".
+     Motivo de existir: o motor XF (V94) resolve isso, mas exige configuração
+     tela por tela — e por isso só 5 das 36 tabelas do PCM tinham filtro. A tela
+     de Inventário (V190) nasceu sem, como toda tela nova nasceria.
+     O CFX não substitui o XF: ele se acopla ao DOM JÁ RENDERIDO, leia quem
+     renderizou. Tabela com `class="xf-table"` é ignorada de propósito.
+     ADITIVO por construção: nenhum id, função, classe ou render existente muda.
+     Tudo dentro de try/catch — o motor NUNCA pode ser a causa de um erro de boot.
+     ⚠ BLOCO ÚNICO: este arquivo é copiado BYTE A BYTE nos fronts. Se divergir
+     entre eles, a varredura NEWFILE_VARREDURA_PARIDADE_UX.py reprova.
+     ═══════════════════════════════════════════════════════════════════════════ -->
+<style>
+.cfx-b{all:unset;cursor:pointer;display:inline-block;margin-left:5px;padding:0 3px;font-size:10px;line-height:1;
+  opacity:.45;border-radius:4px;vertical-align:middle;font-family:inherit}
+.cfx-b:hover{opacity:1;background:var(--cfx-hov)}
+.cfx-b.cfx-act{opacity:1;color:var(--cfx-acc);font-weight:700}
+.cfx-menu{position:fixed;z-index:99000;width:262px;max-width:calc(100vw - 16px);background:var(--cfx-bg);
+  color:var(--cfx-fg);border:1px solid var(--cfx-line);border-radius:10px;box-shadow:0 14px 40px rgba(0,0,0,.28);
+  display:none;flex-direction:column;overflow:hidden;font-size:12px;font-family:inherit}
+.cfx-menu.cfx-on{display:flex}
+.cfx-h{padding:8px 11px;font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
+  color:var(--cfx-mut);background:var(--cfx-hov);border-bottom:1px solid var(--cfx-line);
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cfx-row{display:flex;gap:6px;padding:7px 9px;border-bottom:1px solid var(--cfx-line)}
+.cfx-row button{flex:1;cursor:pointer;background:var(--cfx-bg);color:var(--cfx-fg);border:1px solid var(--cfx-line);
+  border-radius:7px;padding:6px 4px;font-size:11.5px;font-family:inherit}
+.cfx-row button:hover{border-color:var(--cfx-acc);color:var(--cfx-acc)}
+.cfx-row button.cfx-cur{border-color:var(--cfx-acc);color:var(--cfx-acc);font-weight:700}
+.cfx-menu input{width:100%;box-sizing:border-box;background:var(--cfx-bg);color:var(--cfx-fg);
+  border:1px solid var(--cfx-line);border-radius:7px;padding:6px 9px;font-size:12px;outline:none;font-family:inherit}
+.cfx-menu input:focus{border-color:var(--cfx-acc)}
+.cfx-rg{display:flex;gap:6px;padding:7px 9px;border-bottom:1px solid var(--cfx-line);align-items:center}
+.cfx-rg span{font-size:10px;color:var(--cfx-mut);font-weight:700}
+.cfx-list{max-height:238px;overflow:auto;padding:3px 0}
+.cfx-it{display:flex;align-items:center;gap:8px;padding:5px 11px;cursor:pointer;user-select:none;line-height:1.3}
+.cfx-it:hover{background:var(--cfx-hov)}
+.cfx-it input{width:auto;accent-color:var(--cfx-acc);flex:none;padding:0}
+.cfx-it span.cfx-v{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cfx-it b.cfx-n{margin-left:auto;font-size:10px;color:var(--cfx-mut);font-weight:600;flex:none}
+.cfx-it.cfx-all{position:sticky;top:0;background:var(--cfx-bg);border-bottom:1px solid var(--cfx-line);font-weight:700}
+.cfx-foot{display:flex;gap:7px;padding:8px 9px;border-top:1px solid var(--cfx-line);background:var(--cfx-hov)}
+.cfx-foot button{flex:1;cursor:pointer;border-radius:7px;padding:6px 4px;font-size:11.5px;font-family:inherit;
+  border:1px solid var(--cfx-line);background:var(--cfx-bg);color:var(--cfx-fg)}
+.cfx-foot button.cfx-pri{background:var(--cfx-acc);border-color:var(--cfx-acc);color:#fff;font-weight:700}
+.cfx-bar{display:none;align-items:center;gap:8px;flex-wrap:wrap;padding:6px 2px;font-size:11.5px;color:var(--cfx-mut)}
+.cfx-bar.cfx-on{display:flex}
+.cfx-bar b{color:var(--cfx-fg)}
+.cfx-chip{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--cfx-acc);color:var(--cfx-acc);
+  border-radius:999px;padding:2px 9px;font-size:11px;font-weight:600;max-width:260px}
+.cfx-chip span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cfx-chip button{all:unset;cursor:pointer;font-size:12px;line-height:1}
+.cfx-clr{all:unset;cursor:pointer;color:var(--cfx-acc);font-weight:700;font-size:11.5px;text-decoration:underline}
+.cfx-hide{display:none!important}
+tr.cfx-vazio td{padding:14px 12px!important;text-align:center;color:var(--cfx-mut);font-style:italic}
+@media print{.cfx-b,.cfx-bar,.cfx-menu{display:none!important}}
+</style>
+<script>
+(function(){
+'use strict';
+try{
+  if(window.CFX) return;
+  var VER='CFX_V1';
+  var MIN_LINHAS=3;          // tabela de 1 ou 2 linhas não ganha filtro (ruído)
+  var MAX_VALORES=400;       // teto de valores distintos listados no menu
+  var MAX_LINHAS=4000;       // acima disso o motor se recusa (e diz por quê)
+  var CAB_IGNORAR={'':1,'#':1,'ações':1,'acoes':1,'ação':1,'acao':1,'ver':1,'abrir':1,'sel':1,' ':1};
+
+  var S={};                  // chave da tabela -> estado {f:{}, sort:null}
+  var vivos=(typeof WeakSet==='function')? new WeakSet() : null;  // botões com handler de verdade
+  var menu=null, mAlvo=null, mCol=-1, mBusca='';
+  var mo=null, timer=null, proprio=0;
+
+  function norm(v){
+    return String(v==null?'':v).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/\s+/g,' ').trim();
+  }
+  function txt(el){
+    if(!el) return '';
+    var d=el.getAttribute&&el.getAttribute('data-cfx-val');
+    if(d!=null) return String(d).trim();
+    return (el.textContent||'').replace(/\s+/g,' ').trim();
+  }
+  function esc(s){
+    return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+  function dataBR(s){
+    var m=/^(\d{2})\/(\d{2})\/(\d{4})/.exec(String(s).trim());
+    return m? (m[3]+m[2]+m[1]) : null;
+  }
+  function numDe(s){
+    var t=String(s).trim();
+    if(!t) return null;
+    if(!/\d/.test(t)) return null;
+    // aceita  1.234,56  ·  1234  ·  R$ 1.200,00  ·  5.614 h  ·  -3  ·  12%
+    if(!/^[-+]?[\sR$€]*[\d.,]+\s*(h|hs|horas|dias|d|%|km|kg|un|pç|pcs|m|mm|min)?$/i.test(t)) return null;
+    var x=t.replace(/[^\d,.\-+]/g,'');
+    if(x.indexOf(',')>=0) x=x.replace(/\./g,'').replace(',','.');
+    // 🕳 achado da bancada: '1.200' ordenava como 1,2 e ia para ANTES de '90'.
+    // Em pt-BR o ponto é milhar quando os grupos depois dele têm 3 dígitos.
+    else if(/^[-+]?\d{1,3}(\.\d{3})+$/.test(x)) x=x.replace(/\./g,'');
+    else if((x.match(/\./g)||[]).length>1) x=x.replace(/\./g,'');
+    var n=parseFloat(x);
+    return isNaN(n)? null : n;
+  }
+
+  // ── tokens de cor derivados do próprio app (um bloco, seis temas) ──
+  function tokens(){
+    try{
+      var cs=getComputedStyle(document.body);
+      var bg=cs.backgroundColor, fg=cs.color;
+      var m=/rgba?\(\s*(\d+)[,\s]+(\d+)[,\s]+(\d+)/.exec(bg||'');
+      var lum=m? (0.299*+m[1]+0.587*+m[2]+0.114*+m[3]) : 255;
+      var claro=lum>=140;
+      var r=document.documentElement.style;
+      r.setProperty('--cfx-bg', claro?'#ffffff':(m?'rgb('+Math.min(255,+m[1]+14)+','+Math.min(255,+m[2]+16)+','+Math.min(255,+m[3]+22)+')':'#1e293b'));
+      r.setProperty('--cfx-fg', fg||'inherit');
+      r.setProperty('--cfx-mut', claro?'#64748b':'#9aa8bf');
+      r.setProperty('--cfx-line', claro?'#dfe3ea':'rgba(255,255,255,.16)');
+      r.setProperty('--cfx-hov', claro?'#f4f6f9':'rgba(255,255,255,.07)');
+      if(!r.getPropertyValue('--cfx-acc')) r.setProperty('--cfx-acc', claro?'#2563eb':'#f58220');
+    }catch(e){}
+  }
+
+  // ── anatomia da tabela ──
+  function cabecalho(t){
+    if(!t.tHead||!t.tHead.rows.length) return null;
+    var tr=t.tHead.rows[t.tHead.rows.length-1];
+    for(var i=0;i<tr.cells.length;i++) if(tr.cells[i].colSpan>1) return null;  // cabeçalho agrupado: não é grade
+    return tr;
+  }
+  function linhas(t,n){
+    var out=[];
+    for(var b=0;b<t.tBodies.length;b++){
+      var rs=t.tBodies[b].rows;
+      for(var i=0;i<rs.length;i++){
+        var r=rs[i];
+        if(r.hasAttribute('data-cfx-skip')||r.classList.contains('cfx-vazio')) continue;
+        if(r.cells.length!==n) continue;                   // linha de grupo / colspan / "nenhum item"
+        var ok=true;
+        for(var c=0;c<r.cells.length;c++) if(r.cells[c].colSpan>1||r.cells[c].rowSpan>1){ok=false;break;}
+        if(ok) out.push(r);
+      }
+    }
+    return out;
+  }
+  function chave(t,cab){
+    if(t.dataset.cfxKey) return t.dataset.cfxKey;
+    var a=t.parentElement, id='';
+    while(a&&a!==document.body){ if(a.id){id=a.id;break;} a=a.parentElement; }
+    var h=[];
+    for(var i=0;i<cab.cells.length;i++) h.push(norm(txt(cab.cells[i])));
+    return (t.id||id||'raiz')+'#'+h.join('|').slice(0,180);
+  }
+  function est(k){ if(!S[k]) S[k]={f:{},sort:null}; return S[k]; }
+  function temEstado(k){ var e=S[k]; return !!(e&&(e.sort||Object.keys(e.f).length)); }
+
+  // ── colunas que não ganham menu: ação, seleção, só botões ──
+  function filtravel(cab,i,rs){
+    var h=norm(txt(cab.cells[i]));
+    if(CAB_IGNORAR[h]) return false;
+    var n=Math.min(rs.length,12), comCtrl=0, vis=0;
+    for(var k=0;k<n;k++){
+      var td=rs[k].cells[i]; if(!td) continue;
+      vis++;
+      if(td.querySelector&&td.querySelector('button,input,select,textarea,a[onclick]')) comCtrl++;
+    }
+    return !(vis&&comCtrl/vis>0.6);
+  }
+
+  function tipoCol(rs,i){
+    var d=0,nu=0,tot=0;
+    for(var k=0;k<rs.length&&k<60;k++){
+      var v=txt(rs[k].cells[i]); if(!v||v==='—'||v==='-') continue;
+      tot++;
+      if(dataBR(v)) d++; else if(numDe(v)!=null) nu++;
+    }
+    if(!tot) return 'txt';
+    if(d/tot>=0.7) return 'data';
+    if(nu/tot>=0.7) return 'num';
+    return 'txt';
+  }
+  function valOrd(v,tp){
+    if(tp==='data'){ var d=dataBR(v); return d==null?null:+d; }
+    if(tp==='num'){ return numDe(v); }
+    return null;
+  }
+
+  // ── acoplagem ──
+  function acoplar(t){
+    if(t.dataset.cfx) return;
+    if(t.classList.contains('xf-table')) { t.dataset.cfx='xf'; return; }      // motor XF já filtra
+    if(t.getAttribute('data-cfx-off')!=null||t.closest('[data-cfx-off]')){ t.dataset.cfx='off'; return; }
+    var cab=cabecalho(t);
+    if(!cab){ t.dataset.cfx='sem-cabecalho'; return; }
+    var rs=linhas(t,cab.cells.length);
+    if(rs.length<MIN_LINHAS) return;                       // sem marca: volta a ser avaliada quando crescer
+    if(rs.length>MAX_LINHAS){ t.dataset.cfx='grande'; return; }
+    var k=chave(t,cab);
+    t.dataset.cfx='on'; t.dataset.cfxK=k;
+    menusDaTabela(t,cab,rs);
+    barraDaTabela(t,k);
+    aplicar(t);
+  }
+
+  // 🕳 Achado da bancada: `cloneNode`/`outerHTML` COPIA o botão ▾ mas NÃO copia o
+  // handler — a tabela reaparecia com a setinha morta, e clicar nela não fazia nada
+  // (sem erro nenhum no console). Por isso o botão só vale se estiver no WeakSet
+  // de botões que ESTE motor criou nesta página; um clone é descartado e refeito.
+  function menusDaTabela(t,cab,rs){
+    for(var i=0;i<cab.cells.length;i++){
+      var th=cab.cells[i];
+      var velho=th.querySelector('.cfx-b');
+      if(velho){
+        if(!vivos||vivos.has(velho)) continue;
+        velho.parentNode.removeChild(velho);
+      }
+      if(!filtravel(cab,i,rs)) continue;
+      var b=document.createElement('button');
+      b.className='cfx-b'; b.type='button'; b.textContent='▾';
+      b.title='Filtrar e ordenar por esta coluna';
+      b.setAttribute('data-cfx-i',String(i));
+      b.onclick=(function(tab,idx){return function(ev){ ev.preventDefault(); ev.stopPropagation(); abrir(tab,idx,this); };})(t,i);
+      th.appendChild(b);
+      if(vivos) vivos.add(b);
+    }
+  }
+
+  // uma barra por tabela, sempre: re-render deixava a barra velha para trás e o
+  // "limpar tudo" da barra órfã mexia num nó que já não estava na tela.
+  function barraDaTabela(t,k){
+    var orf=document.querySelectorAll('[data-cfx-bar="'+String(k).replace(/"/g,'\\"')+'"]');
+    for(var i=0;i<orf.length;i++) if(orf[i].parentNode) orf[i].parentNode.removeChild(orf[i]);
+    var bar=document.createElement('div');
+    bar.className='cfx-bar';
+    bar.setAttribute('data-cfx-bar',k);
+    (t.parentNode||document.body).insertBefore(bar,t);
+    t._cfxBar=bar;
+    return bar;
+  }
+
+  // ── filtro + ordenação ──
+  function passa(e,r,cab,pular){
+    for(var k in e.f){
+      if(String(k)===String(pular)) continue;
+      var i=+k, f=e.f[k], td=r.cells[i]; if(!td) return false;
+      var v=txt(td);
+      if(f.tipo==='vals'){ if(!f.set[v]) return false; }
+      else if(f.tipo==='fx'){
+        var tp=f.cmp||'txt', x=valOrd(v,tp);
+        if(x==null) return false;
+        if(f.min!=null&&x<f.min) return false;
+        if(f.max!=null&&x>f.max) return false;
+      }
+      else if(f.tipo==='txt'){ if(norm(v).indexOf(f.q)<0) return false; }
+    }
+    return true;
+  }
+
+  function aplicar(t,silencio){
+    var cab=cabecalho(t); if(!cab) return;
+    var rs=linhas(t,cab.cells.length);
+    var e=est(t.dataset.cfxK||chave(t,cab));
+    var vis=0;
+    for(var i=0;i<rs.length;i++){
+      var ok=passa(e,rs[i],cab,null);
+      rs[i].classList.toggle('cfx-hide',!ok);
+      if(ok) vis++;
+    }
+    if(e.sort){
+      var i2=e.sort.i, dir=e.sort.dir, tp=e.sort.tp||'txt';
+      var arr=rs.slice();
+      arr.forEach(function(r,n){ r._cfxN=n; });
+      arr.sort(function(a,b){
+        var va=txt(a.cells[i2]), vb=txt(b.cells[i2]), c;
+        if(tp==='txt'){ c=va.localeCompare(vb,'pt-BR',{numeric:true,sensitivity:'base'}); }
+        else{
+          var xa=valOrd(va,tp), xb=valOrd(vb,tp);
+          if(xa==null&&xb==null) c=0; else if(xa==null) c=1; else if(xb==null) c=-1; else c=xa-xb;
+        }
+        if(c===0) return a._cfxN-b._cfxN;                  // estável
+        return dir==='desc'? -c : c;
+      });
+      var tb=arr.length? arr[0].parentNode : null;
+      if(tb){
+        proprio++;
+        try{ arr.forEach(function(r){ tb.appendChild(r); }); }
+        finally{ if(mo) mo.takeRecords(); proprio--; }
+      }
+    }
+    // linha "nada passou"
+    var antiga=t.querySelector('tr.cfx-vazio'); if(antiga) antiga.remove();
+    if(!vis&&rs.length){
+      var tr=document.createElement('tr'); tr.className='cfx-vazio';
+      var td=document.createElement('td'); td.colSpan=cab.cells.length;
+      td.textContent='Nenhuma linha passa pelos filtros desta tela.';
+      tr.appendChild(td); (rs[0].parentNode||t.tBodies[0]).appendChild(tr);
+    }
+    marcarCab(t,cab,e);
+    barra(t,e,cab,vis,rs.length);
+    t._cfxSig=assinatura(t,cab);
+  }
+
+  function assinatura(t,cab){
+    var rs=linhas(t,cab.cells.length);
+    return rs.length+'/'+(t.tBodies[0]?t.tBodies[0].childElementCount:0)+'/'+(rs[0]?txt(rs[0].cells[0]).length:0);
+  }
+  function marcarCab(t,cab,e){
+    for(var i=0;i<cab.cells.length;i++){
+      var b=cab.cells[i].querySelector('.cfx-b'); if(!b) continue;
+      var f=e.f[i], so=e.sort&&e.sort.i===i;
+      b.classList.toggle('cfx-act',!!f||!!so);
+      b.textContent = f? '▼' : (so? (e.sort.dir==='desc'?'↓':'↑') : '▾');
+    }
+  }
+  function rotulo(cab,i){ var s=txt(cab.cells[i]).replace('▾','').replace('▼','').replace('↑','').replace('↓','').trim(); return s||('coluna '+(i+1)); }
+
+  function barra(t,e,cab,vis,tot){
+    var bar=t._cfxBar; if(!bar||!bar.parentNode) return;
+    var chips=[], n=0;
+    for(var k in e.f){
+      n++;
+      var f=e.f[k], d='';
+      if(f.tipo==='vals') d=Object.keys(f.set).length===1? Object.keys(f.set)[0] : (Object.keys(f.set).length+' valores');
+      else if(f.tipo==='fx') d=(f.min!=null?f.min:'')+'…'+(f.max!=null?f.max:'');
+      else d='contém "'+f.q+'"';
+      chips.push('<span class="cfx-chip"><span>'+esc(rotulo(cab,+k))+': '+esc(d)+'</span><button type="button" title="tirar este filtro" data-cfx-x="'+k+'">✕</button></span>');
+    }
+    if(!n&&!e.sort){ bar.className='cfx-bar'; bar.innerHTML=''; return; }
+    bar.className='cfx-bar cfx-on';
+    bar.innerHTML='🔎 <b>'+vis+'</b> de <b>'+tot+'</b> '+(tot===1?'linha':'linhas')+
+      (e.sort? ' · ordenado por <b>'+esc(rotulo(cab,e.sort.i))+'</b> '+(e.sort.dir==='desc'?'↓':'↑'):'')+
+      (chips.length? ' · '+chips.join(' ') : '')+
+      ' <button type="button" class="cfx-clr" data-cfx-clr="1">limpar tudo</button>';
+    bar.onclick=function(ev){
+      var x=ev.target.closest&&ev.target.closest('[data-cfx-x]');
+      if(x){ delete e.f[x.getAttribute('data-cfx-x')]; aplicar(t); return; }
+      if(ev.target.closest&&ev.target.closest('[data-cfx-clr]')){ e.f={}; e.sort=null; aplicar(t); }
+    };
+  }
+
+  // ── menu ──
+  function fechar(){ if(menu) menu.className='cfx-menu'; mAlvo=null; mCol=-1; mBusca=''; }
+  function abrir(t,i,btn){
+    tokens();
+    if(!menu){
+      menu=document.createElement('div'); menu.className='cfx-menu';
+      document.body.appendChild(menu);
+      menu.addEventListener('click',function(ev){ ev.stopPropagation(); });
+    }
+    if(mAlvo===t&&mCol===i&&menu.classList.contains('cfx-on')){ fechar(); return; }
+    mAlvo=t; mCol=i; mBusca='';
+    pintarMenu();
+    menu.className='cfx-menu cfx-on';
+    var r=btn.getBoundingClientRect();
+    var w=menu.offsetWidth||262, h=menu.offsetHeight||300;
+    var L=Math.max(6,Math.min(r.left, (window.innerWidth||800)-w-6));
+    var T=r.bottom+4;
+    if(T+h>(window.innerHeight||600)-6) T=Math.max(6,r.top-h-4);
+    menu.style.left=L+'px'; menu.style.top=T+'px';
+    var bu=menu.querySelector('[data-cfx-q]'); if(bu) try{bu.focus();}catch(e){}
+  }
+
+  function pintarMenu(){
+    var t=mAlvo, i=mCol; if(!t||i<0) return;
+    var cab=cabecalho(t); if(!cab) return;
+    var rs=linhas(t,cab.cells.length);
+    var e=est(t.dataset.cfxK||chave(t,cab));
+    var tp=tipoCol(rs,i);
+    var f=e.f[i];
+    // contagem estilo Excel: conta o que passa pelos filtros DAS OUTRAS colunas
+    var cont={}, ordem=[];
+    for(var k=0;k<rs.length;k++){
+      if(!passa(e,rs[k],cab,i)) continue;
+      var v=txt(rs[k].cells[i]);
+      if(cont[v]==null){ cont[v]=0; ordem.push(v); }
+      cont[v]++;
+    }
+    if(tp==='data') ordem.sort(function(a,b){ var A=dataBR(a),B=dataBR(b); return (A==null?1:B==null?-1:(A<B?-1:A>B?1:0)); });
+    else if(tp==='num') ordem.sort(function(a,b){ var A=numDe(a),B=numDe(b); return (A==null?1:B==null?-1:A-B); });
+    else ordem.sort(function(a,b){ return String(a).localeCompare(String(b),'pt-BR',{numeric:true,sensitivity:'base'}); });
+
+    var q=norm(mBusca);
+    var mostra=q? ordem.filter(function(v){ return norm(v).indexOf(q)>=0; }) : ordem;
+    var corte=mostra.length>MAX_VALORES;
+    if(corte) mostra=mostra.slice(0,MAX_VALORES);
+    var sel=(f&&f.tipo==='vals')? f.set : null;
+    var todos=mostra.length&&mostra.every(function(v){ return !sel||sel[v]; });
+
+    var h='';
+    h+='<div class="cfx-h" title="'+esc(rotulo(cab,i))+'">'+esc(rotulo(cab,i))+'</div>';
+    h+='<div class="cfx-row">'+
+       '<button type="button" data-cfx-s="asc"'+(e.sort&&e.sort.i===i&&e.sort.dir==='asc'?' class="cfx-cur"':'')+'>'+(tp==='txt'?'↑ A→Z':'↑ menor')+'</button>'+
+       '<button type="button" data-cfx-s="desc"'+(e.sort&&e.sort.i===i&&e.sort.dir==='desc'?' class="cfx-cur"':'')+'>'+(tp==='txt'?'↓ Z→A':'↓ maior')+'</button>'+
+       '</div>';
+    if(tp!=='txt'){
+      var fx=(f&&f.tipo==='fx')?f:{};
+      var ph=tp==='data'?'dd/mm/aaaa':'nº';
+      h+='<div class="cfx-rg"><span>DE</span><input data-cfx-min value="'+esc(fx.minTxt||'')+'" placeholder="'+ph+'" '+
+         'readonly onfocus="this.removeAttribute(\'readonly\')" autocomplete="off" name="cfxmin_nofill" data-lpignore="true" data-1p-ignore>'+
+         '<span>ATÉ</span><input data-cfx-max value="'+esc(fx.maxTxt||'')+'" placeholder="'+ph+'" '+
+         'readonly onfocus="this.removeAttribute(\'readonly\')" autocomplete="off" name="cfxmax_nofill" data-lpignore="true" data-1p-ignore></div>';
+    }
+    h+='<div class="cfx-row" style="border-bottom:none;padding-bottom:4px"><input data-cfx-q value="'+esc(mBusca)+'" placeholder="buscar valor nesta coluna" '+
+       'readonly onfocus="this.removeAttribute(\'readonly\')" autocomplete="off" name="cfxq_nofill" data-lpignore="true" data-1p-ignore></div>';
+    h+='<div class="cfx-list">';
+    h+='<label class="cfx-it cfx-all"><input type="checkbox" data-cfx-todos'+(todos?' checked':'')+'><span class="cfx-v">(Selecionar tudo)</span><b class="cfx-n">'+mostra.length+'</b></label>';
+    for(var n=0;n<mostra.length;n++){
+      var v=mostra[n];
+      h+='<label class="cfx-it"><input type="checkbox" data-cfx-v="'+esc(v)+'"'+((!sel||sel[v])?' checked':'')+'>'+
+         '<span class="cfx-v" title="'+esc(v)+'">'+esc(v===''?'(vazio)':v)+'</span><b class="cfx-n">'+cont[v]+'</b></label>';
+    }
+    if(corte) h+='<div class="cfx-it" style="cursor:default;color:var(--cfx-mut)">…só os '+MAX_VALORES+' primeiros. Use a busca acima.</div>';
+    h+='</div>';
+    h+='<div class="cfx-foot"><button type="button" data-cfx-lim>Limpar coluna</button><button type="button" class="cfx-pri" data-cfx-ok>Fechar</button></div>';
+    menu.innerHTML=h;
+
+    menu.querySelectorAll('[data-cfx-s]').forEach(function(b){
+      b.onclick=function(){
+        var dir=b.getAttribute('data-cfx-s');
+        if(e.sort&&e.sort.i===i&&e.sort.dir===dir) e.sort=null; else e.sort={i:i,dir:dir,tp:tp};
+        aplicar(t); pintarMenu();
+      };
+    });
+    var qi=menu.querySelector('[data-cfx-q]');
+    if(qi) qi.oninput=function(){ mBusca=qi.value; var p=qi.selectionStart; pintarMenu(); var n2=menu.querySelector('[data-cfx-q]'); if(n2){ n2.focus(); try{n2.setSelectionRange(p,p);}catch(_){} } };
+    var lo=menu.querySelector('[data-cfx-min]'), hi=menu.querySelector('[data-cfx-max]');
+    function faixa(){
+      var a=lo?lo.value.trim():'', b=hi?hi.value.trim():'';
+      if(!a&&!b){ delete e.f[i]; }
+      else e.f[i]={tipo:'fx',cmp:tp,minTxt:a,maxTxt:b,min:a?valOrd(a,tp):null,max:b?valOrd(b,tp):null};
+      aplicar(t);
+    }
+    if(lo){ lo.onchange=faixa; lo.oninput=faixa; }
+    if(hi){ hi.onchange=faixa; hi.oninput=faixa; }
+    var tds=menu.querySelector('[data-cfx-todos]');
+    if(tds) tds.onchange=function(){
+      if(tds.checked){ delete e.f[i]; }
+      else { var s={}; e.f[i]={tipo:'vals',set:s}; }                 // desmarcar tudo = nada passa
+      aplicar(t); pintarMenu();
+    };
+    menu.querySelectorAll('[data-cfx-v]').forEach(function(cb){
+      cb.onchange=function(){
+        var atual=(e.f[i]&&e.f[i].tipo==='vals')? e.f[i].set : null;
+        var s={};
+        if(atual) for(var kk in atual) s[kk]=1;
+        else ordem.forEach(function(v){ s[v]=1; });                  // primeiro clique parte de "todos"
+        var v=cb.getAttribute('data-cfx-v');
+        if(cb.checked) s[v]=1; else delete s[v];
+        var faltam=ordem.some(function(v2){ return !s[v2]; });
+        if(!faltam) delete e.f[i]; else e.f[i]={tipo:'vals',set:s};
+        aplicar(t); pintarMenu();
+      };
+    });
+    var lim=menu.querySelector('[data-cfx-lim]');
+    if(lim) lim.onclick=function(){ delete e.f[i]; if(e.sort&&e.sort.i===i) e.sort=null; aplicar(t); pintarMenu(); };
+    var ok=menu.querySelector('[data-cfx-ok]');
+    if(ok) ok.onclick=fechar;
+  }
+
+  // ── varredura: acopla tabela nova, reaplica estado após re-render ──
+  function varrer(){
+    try{
+      proprio++;
+      tokens();
+      var todas=document.querySelectorAll('table');
+      for(var i=0;i<todas.length;i++){
+        var t=todas[i];
+        if(!t.dataset.cfx){ acoplar(t); continue; }
+        if(t.dataset.cfx!=='on') continue;
+        var cab=cabecalho(t); if(!cab) continue;
+        if(!t._cfxBar||!t._cfxBar.parentNode||t._cfxBar.nextSibling!==t) barraDaTabela(t,t.dataset.cfxK||chave(t,cab));
+        if(assinatura(t,cab)!==t._cfxSig){
+          menusDaTabela(t,cab,linhas(t,cab.cells.length));
+          aplicar(t);
+        }
+      }
+    }catch(e){ try{console.error('[CFX] varredura',e);}catch(_){} }
+    finally{ if(mo) mo.takeRecords(); proprio--; }
+  }
+  function agenda(){ clearTimeout(timer); timer=setTimeout(varrer,160); }
+
+  function iniciar(){
+    tokens();
+    varrer();
+    try{
+      mo=new MutationObserver(function(){ if(proprio>0) return; agenda(); });
+      mo.observe(document.documentElement,{childList:true,subtree:true});
+    }catch(e){}
+    document.addEventListener('click',function(ev){
+      if(menu&&menu.classList.contains('cfx-on')&&!menu.contains(ev.target)&&!(ev.target.closest&&ev.target.closest('.cfx-b'))) fechar();
+    },true);
+    document.addEventListener('keydown',function(ev){ if(ev.key==='Escape') fechar(); });
+    window.addEventListener('resize',fechar);
+  }
+
+  window.CFX={
+    versao:VER,
+    varrer:varrer,
+    limpar:function(sel){ var t=typeof sel==='string'?document.querySelector(sel):sel; if(!t) return; var e=est(t.dataset.cfxK||''); e.f={}; e.sort=null; aplicar(t); },
+    desligar:function(sel){ var t=typeof sel==='string'?document.querySelector(sel):sel; if(t) t.setAttribute('data-cfx-off',''); },
+    estado:function(){ return S; },
+    diag:function(){
+      var o={versao:VER,tabelas:[]};
+      document.querySelectorAll('table').forEach(function(t){
+        o.tabelas.push({cfx:t.dataset.cfx||'(nao avaliada)',chave:t.dataset.cfxK||'',menus:t.querySelectorAll('.cfx-b').length,linhas:(t.tBodies[0]?t.tBodies[0].rows.length:0)});
+      });
+      return o;
+    }
+  };
+
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',iniciar);
+  else iniciar();
+}catch(e){ try{ console.error('[CFX] nao iniciou; tabelas seguem sem filtro',e); }catch(_){} }
+})();
+</script>
+
+<!-- ████ FIM BLOCOS PADRAO UX ████ -->
 </body>
 </html>
