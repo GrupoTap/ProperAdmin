@@ -1,0 +1,4489 @@
+<!--
+placas.html — PLACAS DE PATRIMÔNIO DA FROTA (TAG + QR) · build PLACAS_V1 · 22/09/2026
+Par: GAS v146 · PCM V196 · Portal V14. Página ESTÁTICA do repositório ProperAdmin
+(ao lado do mural.html). Gerada por _testes/NEWFILE_BUILD_PLACAS_V1.py — não editar
+este arquivo à mão: o motor de DXF é o MESMO do gerador de placas de 13/08
+(PlacaDXF v1.1.0), copiado com 3 acréscimos marcados "PLACAS_V1".
+
+O que ela faz:
+  1. lê a frota da Proper Locação no GAS (`frotaPlacas`) — TAG, tipo, com quem está;
+  2. gera a TAG que falta (`frotaTagGerar`, com prévia antes de gravar);
+  3. desenha a placa 86×54 mm com a TAG e um QR Code VETORIAL e baixa o DXF
+     (uma placa, ou o lote num painel de 200×200 mm).
+
+O QR aponta para  HTTPS://PORTAL.PROPERCOMPRESSORES.COM.BR/M/<TAG>
+  · maiúsculo DE PROPÓSITO: só letra maiúscula, número e ":/.-" cabem no modo
+    ALFANUMÉRICO do QR, que ocupa ~40% menos que o modo byte. É isso que deixa
+    usar correção de erro Q (25% da placa pode estar riscada) na versão 4 (33×33).
+  · caminho /M/ em vez de ?m= pelo mesmo motivo ("?" e "=" não são alfanuméricos).
+    O Cloudflare Pages serve o index.html para qualquer caminho (o repositório
+    não tem 404.html) — conferido no ar em 22/09: /M/PL-CP-001 → 200, o portal.
+  · o domínio é da Proper: a placa sobrevive a qualquer troca de hospedagem.
+
+Camadas do DXF (EZCAD): MOLDURA/CAIXAS = linha · TEXTO/LOGO = HACHURAR ·
+  FUROS = furação · QR = HACHURAR (contornos fechados, com as ilhas).
+  🔴 Placa ESCURA (alumínio anodizado — a gravação sai CLARA): a camada QR contém
+     o FUNDO (zona de silêncio + módulos claros) e os módulos escuros são ILHAS.
+     O resultado físico é o QR normal: escuro sobre claro. Gravar o QR "direto"
+     numa placa escura dá um QR INVERTIDO, que muita câmera de celular não lê.
+     Placa CLARA (inox): marque "placa clara" — a camada vira os módulos escuros.
+-->
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Proper · Placas da Frota · PLACAS_V1</title>
+<meta name="app-build" content="PLACAS_V1">
+<style>
+:root{
+  --accent:#f07725; --accent-d:#c2410c; --accent-s:#fef3ec;
+  --bg:#fafafa; --card:#fff; --ink:#18181b; --ink2:#3f3f46; --muted:#71717a;
+  --line:#e4e4e7; --radius:12px;
+  --mono:'JetBrains Mono','SF Mono',ui-monospace,Menlo,Consolas,monospace;
+  --green:#16a34a; --green-l:#f0fdf4; --red:#dc2626; --red-l:#fef2f2; --amber:#b45309; --amber-l:#fffbeb;
+  --blue:#2563eb; --blue-l:#eff6ff;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);
+  font:14.5px/1.55 -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif}
+header{background:#09090b;color:#fff;padding:14px 22px;display:flex;align-items:center;gap:14px}
+header .mark{width:30px;height:30px;border-radius:8px;background:var(--accent);display:grid;place-items:center;font:700 14px var(--mono)}
+header h1{font-size:16px;margin:0;font-weight:650}
+header .v{font:500 11px var(--mono);color:#a1a1aa;margin-left:auto}
+.wrap{max-width:1280px;margin:0 auto;padding:18px 22px 60px}
+.grid{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:18px;align-items:start}
+@media (max-width:980px){.grid{grid-template-columns:1fr}}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px}
+.card h2{font-size:15px;margin:0 0 4px}
+.sub{font-size:12.5px;color:var(--muted);margin:0 0 12px}
+.btn{border:1px solid var(--line);background:#fff;color:var(--ink);padding:8px 13px;border-radius:9px;cursor:pointer;
+  font:600 13px inherit;display:inline-flex;align-items:center;gap:6px}
+.btn:hover{background:#f4f4f5}
+.btn.p{background:var(--accent);border-color:var(--accent);color:#fff}
+.btn.p:hover{background:var(--accent-d)}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.btn.xs{padding:4px 9px;font-size:12px;border-radius:7px}
+.acts{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+table.frota{width:100%;border-collapse:collapse;font-size:13px}
+table.frota th{position:sticky;top:0;background:#f4f4f5;text-align:left;padding:7px 8px;font-size:11.5px;border-bottom:1px solid var(--line)}
+table.frota td{padding:7px 8px;border-bottom:1px solid #f1f1f3;vertical-align:top}
+table.frota tr.sel td{background:#fff7ed}
+.tag{font:700 13px var(--mono);letter-spacing:.02em}
+.pill{display:inline-block;font:600 10.5px var(--mono);padding:2px 7px;border-radius:5px;background:#f4f4f5;color:var(--ink2)}
+.pill.ok{background:var(--green-l);color:#15803d}
+.pill.no{background:var(--red-l);color:var(--red)}
+.pill.am{background:var(--amber-l);color:var(--amber)}
+.msg{border-left:3px solid;border-radius:0 8px 8px 0;padding:9px 12px;font-size:13px;margin:10px 0}
+.msg.ok{border-color:var(--green);background:var(--green-l)}
+.msg.warn{border-color:var(--red);background:var(--red-l)}
+.msg.info{border-color:var(--blue);background:var(--blue-l)}
+.msg.tip{border-color:var(--accent);background:var(--accent-s)}
+.prev{display:flex;flex-direction:column;gap:14px}
+.frame{background:#131316;border-radius:10px;padding:8px}
+.frame.clara{background:#c9ccd1}
+.frame svg{width:100%;height:auto;display:block}
+.qrtxt{font:500 11.5px var(--mono);color:var(--muted);word-break:break-all}
+label.f{display:block;margin:0 0 9px}
+label.f span{display:block;font-size:12px;font-weight:600;color:var(--ink2);margin-bottom:3px}
+input[type=text],select{width:100%;padding:7px 9px;border:1px solid var(--line);border-radius:8px;font:14px inherit;background:#fff}
+.row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.vazio{padding:22px;text-align:center;color:var(--muted);font-size:13px}
+.tbl-wrap{max-height:520px;overflow:auto;border:1px solid var(--line);border-radius:10px}
+dialog{border:none;border-radius:14px;padding:0;max-width:560px;width:calc(100% - 32px);box-shadow:0 20px 60px rgba(0,0,0,.3)}
+dialog .dh{padding:14px 18px;border-bottom:1px solid var(--line);font-weight:650}
+dialog .db{padding:14px 18px;font-size:13.5px}
+dialog .df{padding:12px 18px;border-top:1px solid var(--line);display:flex;justify-content:flex-end;gap:8px}
+</style>
+</head>
+<body>
+<header>
+  <div class="mark">PL</div>
+  <h1>Placas da frota · Proper Locação</h1>
+  <span class="v" id="versao">PLACAS_V1</span>
+</header>
+<div class="wrap">
+  <div class="msg tip" id="avisoTopo">TAG + QR Code gravados a laser. A TAG é <b style="display:inline">definitiva</b>: depois de gravada numa placa ela não muda mais no sistema.</div>
+  <div class="grid">
+    <section class="card">
+      <div class="acts" style="justify-content:space-between;margin-bottom:6px">
+        <div><h2>Frota da Proper Locação</h2><p class="sub" id="resumo">Carregando a frota…</p></div>
+        <div class="acts">
+          <button class="btn" id="btnAtualizar" type="button">↻ Atualizar</button>
+          <button class="btn p" id="btnGerarFaltam" type="button" disabled>🏷 Gerar as TAGs que faltam</button>
+        </div>
+      </div>
+      <input type="text" id="busca" name="busca_frota_nofill" placeholder="Buscar por TAG, máquina, série ou cliente…" autocomplete="off"
+             readonly onfocus="this.removeAttribute('readonly')" data-lpignore="true" data-1p-ignore style="margin:4px 0 10px">
+      <div id="listaFrota"><div class="vazio">⏳ Lendo a frota no servidor…</div></div>
+      <details style="margin-top:14px">
+        <summary style="cursor:pointer;font-weight:600;font-size:13px">✍ Placa avulsa (digitar os dados à mão)</summary>
+        <p class="sub" style="margin-top:8px">Para quando o servidor não responder, ou para uma placa de teste. Use a TAG exatamente como está no sistema — é por ela que o QR acha a máquina.</p>
+        <div class="row3">
+          <label class="f"><span>TAG</span><input type="text" id="mTag" placeholder="PL-CP-001" autocomplete="off"></label>
+          <label class="f"><span>Equipamento</span><input type="text" id="mEquip" placeholder="Techto SD30HP" autocomplete="off"></label>
+          <label class="f"><span>Nº de série</span><input type="text" id="mSerie" placeholder="3935" autocomplete="off"></label>
+        </div>
+        <button class="btn" id="btnManual" type="button">Ver a placa</button>
+      </details>
+    </section>
+    <section class="card prev">
+      <div>
+        <h2>Placa</h2>
+        <p class="sub">86 × 54 mm · 4 furos de 3,5 mm · selecione as máquinas na lista.</p>
+        <div class="row3">
+          <label class="f"><span>Material da placa</span>
+            <select id="optPlaca"><option value="escura" selected>Escura (anodizada) — gravação sai clara</option><option value="clara">Clara (inox) — gravação sai escura</option></select></label>
+          <label class="f"><span>Endereço do QR</span><input type="text" id="optBase" autocomplete="off"></label>
+          <label class="f"><span>Painel do lote (mm)</span><input type="text" id="optPainel" value="200" autocomplete="off"></label>
+        </div>
+      </div>
+      <div id="prevArea"><div class="vazio">Nenhuma máquina selecionada.</div></div>
+      <div class="acts">
+        <button class="btn p" id="btnBaixarUma" type="button" disabled>⬇ DXF da placa</button>
+        <button class="btn" id="btnBaixarLote" type="button" disabled>⬇ Lote num DXF só</button>
+      </div>
+      <div class="msg info" style="margin:0">No EZCAD: <b style="display:inline">QR, TEXTO e LOGO</b> → hachura (0,03–0,05 mm) · <b style="display:inline">MOLDURA e CAIXAS</b> → linha · <b style="display:inline">FUROS</b> → perfil de furação. Antes do lote, grave UMA e teste a leitura com dois celulares.</div>
+    </section>
+  </div>
+</div>
+
+<dialog id="dlg"><div class="dh" id="dlgTit"></div><div class="db" id="dlgCorpo"></div><div class="df" id="dlgPe"></div></dialog>
+
+<script>/* ══════════════════════════════════════════════════════════════════════════════
+   PROPER · Gerador de Placas em DXF — motor 100% client-side (vanilla JS)
+   v1.0.0 · + QR vetorial (PLACAS_V1, 22/09/2026)
+
+   ── MUDANÇA IMPORTANTE EM RELAÇÃO À v0.9 ────────────────────────────────────
+   A v0.9 herdou do gerador Python a ideia de "preencher o texto com linhas de
+   varredura porque o EZCAD ignora HATCH". Isso está errado pela metade: o EZCAD
+   ignora a *entidade* HATCH do DXF, mas tem hachura própria, muito melhor, que
+   ele aplica a curvas FECHADAS depois de importar.
+
+   Emitir 6.000 segmentos soltos faz o galvo tratar cada risco como um vetor
+   separado — grava devagar, deposita energia irregular e exige várias passadas
+   para o preenchimento fechar. Foi exatamente o que aconteceu na primeira placa.
+
+   A v1.0 exporta o texto como CONTORNO FECHADO (polilinhas, com os furos das
+   letras). No EZCAD basta selecionar e aplicar Hatch com espaçamento de linha
+   de 0,03–0,05 mm. O resultado é sólido em uma passada.
+
+   O modo antigo continua disponível (`modo:'preenchido'`), agora com
+   espaçamento de 0,04 mm em vez de 0,10 mm e ordenação serpentina.
+
+   ── Como o contorno é obtido ────────────────────────────────────────────────
+   O Canvas não expõe o contorno dos glifos. Então: rasteriza o texto COM
+   anti-aliasing numa resolução alta e extrai a isolinha de 50 % de cobertura
+   por marching squares com interpolação linear. Como a borda anti-aliased é um
+   degradê, a interpolação devolve o contorno com precisão SUB-PIXEL — na
+   prática ~0,002 mm, uma ordem de grandeza abaixo do que o laser resolve.
+   Depois Douglas-Peucker remove os pontos redundantes.
+
+   Vantagem sobre ler a fonte com uma biblioteca de tipografia: funciona com
+   qualquer fonte instalada no Windows, sem dependência nova e sem se importar
+   com o formato do arquivo de fonte.
+
+   ── Saída ───────────────────────────────────────────────────────────────────
+   DXF R12 (AC1009), 1 unidade = 1 mm, origem no canto inferior esquerdo.
+   Camadas:
+     MOLDURA  · moldura interna            → marcar como linha
+     CAIXAS   · retângulos dos campos      → marcar como linha
+     TEXTO    · contorno de todo o texto   → HACHURAR
+     LOGO     · contorno da logomarca      → HACHURAR
+     CORTE    · silhueta da placa (opcional, não marcar)
+     TEXTO_FILL / LOGO_FILL  · só no modo 'preenchido'
+
+   API:
+     PlacaDXF.gerar(layout, dados, opts)           -> string DXF
+     PlacaDXF.gerarPainel(layout, lista, opts)     -> { paineis:[], cols, rows }
+     PlacaDXF.preverSVG(layout, dados, opts)       -> string SVG
+     PlacaDXF.baixar(nome, texto)
+     PlacaDXF.registrarLogo(id, def)
+     PlacaDXF.estatisticas(dxf)                    -> { linhas, polilinhas, kb }
+   ══════════════════════════════════════════════════════════════════════════════ */
+(function (global) {
+  'use strict';
+
+  var VERSAO = '1.1.0';
+  var BULGE_90 = 0.41421356237;      // tan(90°/4) — quarto de círculo exato
+
+  var PADRAO = {
+    modo: 'contorno',                // 'contorno' | 'preenchido' | 'ambos'
+    res_mm: 0.012,                   // resolução da rasterização para o traçado
+    tol_mm: 0.004,                   // tolerância do Douglas-Peucker
+    fill_mm: 0.04,                   // espaçamento no modo 'preenchido'
+    contorno_placa: false
+  };
+
+  // Furos de fixação nos quatro vértices. Coordenadas em mm a partir das bordas
+  // da placa (origem no canto SUPERIOR ESQUERDO, igual ao resto do layout).
+  var FUROS_PADRAO = {
+    ativo: true,
+    diametro_mm: 3.5,
+    inset_x_mm: 4.0,
+    inset_y_mm: 4.0,
+    moldura: 'interromper',          // 'interromper' | 'inteira'
+    folga_moldura_mm: 0.7
+  };
+
+  // ══════════════════════════════════════════════════════════ DXF R12 writer
+  function DxfDoc(layers) {
+    this.layers = layers || ['MOLDURA','CAIXAS','TEXTO','LOGO','CORTE','FUROS','TEXTO_FILL','LOGO_FILL','QR'];   // PLACAS_V1: + QR
+    this.ents = [];
+    this.notas = [];
+    this.n = { line: 0, poly: 0, vert: 0, circ: 0 };
+    this._min = [Infinity, Infinity]; this._max = [-Infinity, -Infinity];
+  }
+  DxfDoc.prototype.nota = function (txt) {
+    String(txt).split('\n').forEach(function (l) { this.notas.push(l.slice(0, 240)); }, this);
+  };
+  DxfDoc.prototype._t = function (x, y) {
+    if (x < this._min[0]) this._min[0] = x;
+    if (y < this._min[1]) this._min[1] = y;
+    if (x > this._max[0]) this._max[0] = x;
+    if (y > this._max[1]) this._max[1] = y;
+  };
+  DxfDoc.prototype.line = function (x1, y1, x2, y2, layer) {
+    this._t(x1, y1); this._t(x2, y2); this.n.line++;
+    this.ents.push('0\nLINE\n8\n' + layer +
+      '\n10\n' + f(x1) + '\n20\n' + f(y1) + '\n30\n0.0' +
+      '\n11\n' + f(x2) + '\n21\n' + f(y2) + '\n31\n0.0');
+  };
+  DxfDoc.prototype.circle = function (cx, cy, r, layer) {
+    this._t(cx - r, cy - r); this._t(cx + r, cy + r); this.n.circ++;
+    this.ents.push('0\nCIRCLE\n8\n' + layer +
+      '\n10\n' + f(cx) + '\n20\n' + f(cy) + '\n30\n0.0\n40\n' + f(r));
+  };
+  /** pts = [[x,y,bulge?], …] */
+  DxfDoc.prototype.polyline = function (pts, layer, fechada) {
+    if (!pts || pts.length < 2) return;
+    var self = this, s = '0\nPOLYLINE\n8\n' + layer + '\n66\n1\n70\n' + (fechada ? 1 : 0) +
+      '\n10\n0.0\n20\n0.0\n30\n0.0';
+    pts.forEach(function (p) {
+      self._t(p[0], p[1]); self.n.vert++;
+      s += '\n0\nVERTEX\n8\n' + layer + '\n10\n' + f(p[0]) + '\n20\n' + f(p[1]) + '\n30\n0.0';
+      if (p[2]) s += '\n42\n' + f(p[2]);
+    });
+    s += '\n0\nSEQEND\n8\n' + layer;
+    this.ents.push(s); this.n.poly++;
+  };
+  DxfDoc.prototype.toString = function () {
+    var s = '999\nPROPER PlacaDXF v' + VERSAO + '\n';
+    this.notas.forEach(function (l) { s += '999\n' + l + '\n'; });
+    s += '0\nSECTION\n2\nHEADER\n' +
+      '9\n$ACADVER\n1\nAC1009\n9\n$INSUNITS\n70\n4\n9\n$MEASUREMENT\n70\n1\n' +
+      '9\n$EXTMIN\n10\n' + f(fin(this._min[0])) + '\n20\n' + f(fin(this._min[1])) + '\n30\n0.0\n' +
+      '9\n$EXTMAX\n10\n' + f(fin(this._max[0])) + '\n20\n' + f(fin(this._max[1])) + '\n30\n0.0\n' +
+      '0\nENDSEC\n0\nSECTION\n2\nTABLES\n0\nTABLE\n2\nLAYER\n70\n' + this.layers.length + '\n';
+    this.layers.forEach(function (n, i) {
+      s += '0\nLAYER\n2\n' + n + '\n70\n0\n62\n' + (1 + (i % 7)) + '\n6\nCONTINUOUS\n';
+    });
+    s += '0\nENDTAB\n0\nENDSEC\n0\nSECTION\n2\nENTITIES\n' + this.ents.join('\n') +
+         '\n0\nENDSEC\n0\nEOF\n';
+    return s;
+  };
+  function fin(v) { return isFinite(v) ? v : 0; }
+  function f(v) { return (Math.round(v * 1e6) / 1e6).toFixed(6); }
+
+  // ══════════════════════════════════════════════════════════ geometria
+  function rrectPts(x, y, w, h, r) {
+    r = Math.max(0, Math.min(r, Math.min(w, h) / 2));
+    if (r <= 0.001) return [[x, y], [x + w, y], [x + w, y + h], [x, y + h]];
+    var b = BULGE_90;
+    return [
+      [x + r, y, 0], [x + w - r, y, b],
+      [x + w, y + r, 0], [x + w, y + h - r, b],
+      [x + w - r, y + h, 0], [x + r, y + h, b],
+      [x, y + h - r, 0], [x, y + r, b]
+    ];
+  }
+
+  /**
+   * Mesmo retângulo arredondado, porém achatado em segmentos retos — necessário
+   * para recortar a moldura em volta dos furos, já que um arco com bulge não
+   * pode ser cortado no meio.
+   */
+  function rrectPath(x, y, w, h, r, seg) {
+    r = Math.max(0, Math.min(r, Math.min(w, h) / 2));
+    seg = seg || 24;
+    if (r <= 0.001) return [[x,y],[x+w,y],[x+w,y+h],[x,y+h],[x,y]];
+    var pts = [];
+    function arco(cx, cy, a0, a1) {
+      for (var i = 1; i <= seg; i++) {
+        var a = a0 + (a1 - a0) * i / seg;
+        pts.push([cx + r * Math.cos(a), cy + r * Math.sin(a)]);
+      }
+    }
+    pts.push([x + r, y]);
+    pts.push([x + w - r, y]);          arco(x + w - r, y + r,     -Math.PI / 2, 0);
+    pts.push([x + w, y + h - r]);      arco(x + w - r, y + h - r, 0, Math.PI / 2);
+    pts.push([x + r, y + h]);          arco(x + r, y + h - r,     Math.PI / 2, Math.PI);
+    pts.push([x, y + r]);              arco(x + r, y + r,         Math.PI, 1.5 * Math.PI);
+    pts.push([x + r, y]);
+    return pts;
+  }
+
+  /** Trechos do segmento a→b que caem DENTRO de algum círculo, em t ∈ [0,1]. */
+  function _dentroCirculos(a, b, circ) {
+    var dx = b[0] - a[0], dy = b[1] - a[1], A = dx * dx + dy * dy, bruto = [];
+    circ.forEach(function (c) {
+      var fx = a[0] - c.x, fy = a[1] - c.y;
+      if (A < 1e-12) { if (fx * fx + fy * fy < c.r * c.r) bruto.push([0, 1]); return; }
+      var B = 2 * (fx * dx + fy * dy), C = fx * fx + fy * fy - c.r * c.r;
+      var disc = B * B - 4 * A * C;
+      if (disc <= 0) return;
+      var sq = Math.sqrt(disc);
+      var t1 = Math.max(0, Math.min(1, (-B - sq) / (2 * A)));
+      var t2 = Math.max(0, Math.min(1, (-B + sq) / (2 * A)));
+      if (t2 > t1) bruto.push([t1, t2]);
+    });
+    bruto.sort(function (p, q) { return p[0] - q[0]; });
+    var m = [];
+    bruto.forEach(function (s) {
+      if (m.length && s[0] <= m[m.length - 1][1]) m[m.length - 1][1] = Math.max(m[m.length - 1][1], s[1]);
+      else m.push([s[0], s[1]]);
+    });
+    return m;
+  }
+
+  /** A polilinha chega a passar dentro de algum círculo? (checagem por segmento) */
+  function tocaCirculos(pts, circ) {
+    if (!circ || !circ.length) return false;
+    for (var i = 0; i < pts.length - 1; i++)
+      if (_dentroCirculos(pts[i], pts[i + 1], circ).length) return true;
+    return false;
+  }
+
+  /**
+   * Recorta uma polilinha, removendo o que estiver dentro dos círculos, e
+   * devolve os pedaços que sobraram como polilinhas ABERTAS. É assim que a
+   * moldura ganha a folga em volta de cada furo.
+   */
+  function recortarPorCirculos(pts, circ, fechada) {
+    if (!circ || !circ.length) return [pts];
+    function lerp(a, b, t) { return [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t]; }
+    var runs = [], cur = null;
+    for (var i = 0; i < pts.length - 1; i++) {
+      var a = pts[i], b = pts[i + 1];
+      var dentro = _dentroCirculos(a, b, circ), comp = [], prev = 0;
+      dentro.forEach(function (s) { if (s[0] > prev) comp.push([prev, s[0]]); prev = Math.max(prev, s[1]); });
+      if (prev < 1) comp.push([prev, 1]);
+      if (!comp.length) { if (cur && cur.length > 1) runs.push(cur); cur = null; continue; }
+      for (var k = 0; k < comp.length; k++) {
+        var s0 = comp[k][0], s1 = comp[k][1];
+        var p0 = lerp(a, b, s0), p1 = lerp(a, b, s1);
+        if (s0 === 0 && cur) cur.push(p1);
+        else { if (cur && cur.length > 1) runs.push(cur); cur = [p0, p1]; }
+        if (s1 < 1) { if (cur.length > 1) runs.push(cur); cur = null; }
+      }
+    }
+    if (cur && cur.length > 1) runs.push(cur);
+    // se o caminho era fechado e a emenda ficou inteira, junta o último com o primeiro
+    if (fechada && runs.length > 1) {
+      var pri = runs[0], ult = runs[runs.length - 1];
+      var pa = pri[0], pb = ult[ult.length - 1];
+      if (Math.hypot(pa[0] - pb[0], pa[1] - pb[1]) < 1e-6) {
+        runs[runs.length - 1] = ult.concat(pri.slice(1));
+        runs.shift();
+      }
+    }
+    return runs.filter(function (r) { return r.length > 1; });
+  }
+
+  /** Douglas-Peucker sobre uma polilinha fechada. */
+  function simplificar(pts, tol) {
+    if (pts.length < 4) return pts;
+    function dp(ini, fim) {
+      var dmax = 0, idx = -1;
+      var ax = pts[ini][0], ay = pts[ini][1], bx = pts[fim][0], by = pts[fim][1];
+      var dx = bx - ax, dy = by - ay, len2 = dx * dx + dy * dy;
+      for (var i = ini + 1; i < fim; i++) {
+        var px = pts[i][0] - ax, py = pts[i][1] - ay, d;
+        if (len2 < 1e-12) { d = Math.hypot(px, py); }
+        else {
+          var t = Math.max(0, Math.min(1, (px * dx + py * dy) / len2));
+          d = Math.hypot(px - t * dx, py - t * dy);
+        }
+        if (d > dmax) { dmax = d; idx = i; }
+      }
+      if (dmax <= tol || idx < 0) return [pts[ini]];
+      return dp(ini, idx).concat(dp(idx, fim));
+    }
+    // quebra o anel em dois arcos para não colapsar o fechamento
+    var meio = Math.floor(pts.length / 2);
+    var out = dp(0, meio).concat(dp(meio, pts.length - 1), [pts[pts.length - 1]]);
+    return out.length >= 3 ? out : pts;
+  }
+
+  // ══════════════════════════════════════════════════════════ canvas
+  var _cv = null;
+  function canvas(w, h) {
+    if (!_cv) {
+      _cv = (typeof OffscreenCanvas !== 'undefined')
+        ? new OffscreenCanvas(w || 16, h || 16)
+        : document.createElement('canvas');
+    }
+    if (w) _cv.width = w;
+    if (h) _cv.height = h;
+    return _cv.getContext('2d', { willReadFrequently: true });
+  }
+  function fontStr(px, fonte) {
+    return (fonte.weight || 'normal') + ' ' + px + 'px "' + (fonte.family || 'Arial') + '", Arial, sans-serif';
+  }
+  function inkBox(c, txt, px, fonte) {
+    c.font = fontStr(px, fonte);
+    var m = c.measureText(txt);
+    var l = m.actualBoundingBoxLeft || 0, r = m.actualBoundingBoxRight || m.width;
+    var a = m.actualBoundingBoxAscent || px * 0.7, d = m.actualBoundingBoxDescent || 0;
+    return { w: l + r, h: a + d, l: l, a: a };
+  }
+  function larguraTrack(c, txt, track) {
+    if (!track) return c.measureText(txt).width;
+    var w = 0;
+    for (var i = 0; i < txt.length; i++) w += c.measureText(txt[i]).width + track;
+    return w - track;
+  }
+  function escreve(c, txt, x, y, track) {
+    if (!track) { c.fillText(txt, x, y); return; }
+    var cx = x;
+    for (var i = 0; i < txt.length; i++) {
+      c.fillText(txt[i], cx, y);
+      cx += c.measureText(txt[i]).width + track;
+    }
+  }
+
+  /**
+   * Rasteriza o texto na caixa e devolve o bitmap de cobertura (0..255) mais os
+   * dados de posicionamento. Único ponto onde texto vira pixels.
+   */
+  function rasterizarTexto(txt, caixa, fonte, res, opts) {
+    txt = String(txt == null ? '' : txt).trim();
+    if (!txt) return null;
+    opts = opts || {};
+    var padX = opts.padX || 0, padY = opts.padY || 0;
+    var availW = Math.max(0.1, caixa.w - 2 * padX);
+    var availH = Math.max(0.1, caixa.h - 2 * padY);
+    var margem = 3;                                   // pixels de folga p/ o traçado fechar
+    var wpx = Math.max(8, Math.ceil(availW / res)) + margem * 2;
+    var hpx = Math.max(8, Math.ceil(availH / res)) + margem * 2;
+    var utilW = wpx - margem * 2, utilH = hpx - margem * 2;
+
+    var c = canvas(wpx, hpx);
+    c.fillStyle = '#000'; c.fillRect(0, 0, wpx, hpx);
+    c.textBaseline = 'alphabetic';
+
+    // corpo máximo que cabe
+    var lo = 2, hi = Math.max(8, Math.ceil(utilH * 2)), px = 2;
+    while (lo <= hi) {
+      var mid = (lo + hi) >> 1, b = inkBox(c, txt, mid, fonte);
+      var wq = opts.tracking ? (c.font = fontStr(mid, fonte), larguraTrack(c, txt, opts.tracking / res)) : b.w;
+      if (wq <= utilW && b.h <= utilH) { px = mid; lo = mid + 1; } else hi = mid - 1;
+    }
+    c.font = fontStr(px, fonte);
+    var track = opts.tracking ? opts.tracking / res : 0;
+    var bb = inkBox(c, txt, px, fonte);
+    var wInk = track ? larguraTrack(c, txt, track) : bb.w;
+
+    var tx = opts.align === 'left' ? 0
+           : opts.align === 'right' ? (utilW - wInk)
+           : (utilW - wInk) / 2;
+    var ty = (utilH - bb.h) / 2 + bb.a;
+
+    c.fillStyle = '#fff';
+    escreve(c, txt, margem + tx + bb.l, margem + ty, track);
+
+    var img = c.getImageData(0, 0, wpx, hpx).data;
+    var campo = new Float32Array(wpx * hpx);
+    for (var i = 0, n = wpx * hpx; i < n; i++) campo[i] = img[i * 4];
+    return {
+      campo: campo, w: wpx, h: hpx, res: res,
+      ox: caixa.x + padX - margem * res,
+      oyTopo: caixa.y + padY - margem * res,
+      alturaCaixa: caixa.h - 2 * padY + margem * 2 * res,
+      corpoPx: px, utilH: utilH, alturaInk: bb.h
+    };
+  }
+
+  // ══════════════════════════════════════════════════════════ marching squares
+  // Tabela: bit1=canto sup-esq, bit2=sup-dir, bit4=inf-dir, bit8=inf-esq.
+  // Cada caso lista os pares de arestas ligadas ('T','R','B','L').
+  var MS = {
+    1:[['L','T']], 2:[['T','R']], 3:[['L','R']], 4:[['R','B']],
+    5:[['L','T'],['R','B']], 6:[['T','B']], 7:[['L','B']], 8:[['B','L']],
+    9:[['T','B']], 10:[['T','R'],['B','L']], 11:[['R','B']],
+    12:[['L','R']], 13:[['T','R']], 14:[['L','T']]
+  };
+
+  /**
+   * Isolinha de nível `lvl` sobre um campo escalar, com interpolação linear nas
+   * arestas — é ela que dá a precisão sub-pixel. Devolve anéis fechados.
+   */
+  function marchingSquares(campo, w, h, lvl) {
+    // Cada ponto da isolinha fica sobre UMA aresta do grid. Identificamos a
+    // aresta simbolicamente — horizontal (i,j) ou vertical (i,j) — em vez de
+    // comparar coordenadas em ponto flutuante. Assim a ligação dos segmentos é
+    // exata por construção: nada de fragmentar anel por diferença de bit.
+    var segs = [], porAresta = new Map();
+    function idH(i, j) { return (j * w + i) * 2; }        // aresta horizontal
+    function idV(i, j) { return (j * w + i) * 2 + 1; }    // aresta vertical
+    function aresta(e, i, j) {
+      switch (e) {
+        case 'T': return idH(i, j);
+        case 'B': return idH(i, j + 1);
+        case 'L': return idV(i, j);
+        case 'R': return idV(i + 1, j);
+      }
+    }
+    function ponto(e, i, j, a, b, c_, d) {
+      var t;
+      switch (e) {
+        case 'T': t = (lvl - a) / (b - a); return [i + t, j];
+        case 'R': t = (lvl - b) / (c_ - b); return [i + 1, j + t];
+        case 'B': t = (lvl - d) / (c_ - d); return [i + t, j + 1];
+        case 'L': t = (lvl - a) / (d - a); return [i, j + t];
+      }
+    }
+    for (var j = 0; j < h - 1; j++) {
+      for (var i = 0; i < w - 1; i++) {
+        var a = campo[j * w + i], b = campo[j * w + i + 1],
+            c_ = campo[(j + 1) * w + i + 1], d = campo[(j + 1) * w + i];
+        var idx = (a > lvl ? 1 : 0) | (b > lvl ? 2 : 0) | (c_ > lvl ? 4 : 0) | (d > lvl ? 8 : 0);
+        if (idx === 0 || idx === 15) continue;
+        var lista = MS[idx];
+        if (idx === 5 || idx === 10) {                      // sela: decide pelo centro
+          var centro = (a + b + c_ + d) / 4 > lvl;
+          if (idx === 5 && !centro) lista = [['L','B'], ['T','R']];
+          if (idx === 10 && centro) lista = [['L','T'], ['R','B']];
+        }
+        for (var k = 0; k < lista.length; k++) {
+          var e1 = lista[k][0], e2 = lista[k][1];
+          var s = {
+            e: [aresta(e1, i, j), aresta(e2, i, j)],
+            p: [ponto(e1, i, j, a, b, c_, d), ponto(e2, i, j, a, b, c_, d)],
+            usado: false
+          };
+          segs.push(s);
+          for (var q = 0; q < 2; q++) {
+            var lst = porAresta.get(s.e[q]);
+            if (!lst) porAresta.set(s.e[q], (lst = []));
+            lst.push(s);
+          }
+        }
+      }
+    }
+    var aneis = [];
+    for (var si = 0; si < segs.length; si++) {
+      if (segs[si].usado) continue;
+      var s0 = segs[si]; s0.usado = true;
+      var arestaIni = s0.e[0];
+      var anel = [s0.p[0], s0.p[1]], arestaAtual = s0.e[1], guarda = 0;
+      while (guarda++ < 500000) {
+        if (arestaAtual === arestaIni) break;              // fechou
+        var viz = porAresta.get(arestaAtual), prox = null;
+        if (viz) for (var v = 0; v < viz.length; v++) if (!viz[v].usado) { prox = viz[v]; break; }
+        if (!prox) break;                                  // borda do bitmap
+        prox.usado = true;
+        var lado = prox.e[0] === arestaAtual ? 1 : 0;
+        anel.push(prox.p[lado]); arestaAtual = prox.e[lado];
+      }
+      if (anel.length >= 4) aneis.push(anel);
+    }
+    return aneis;
+  }
+
+  function areaAssinada(a) {
+    var s = 0;
+    for (var i = 0, n = a.length; i < n; i++) {
+      var p = a[i], q = a[(i + 1) % n];
+      s += p[0] * q[1] - q[0] * p[1];
+    }
+    return s / 2;
+  }
+  function dentro(pt, anel) {
+    var x = pt[0], y = pt[1], d = false;
+    for (var i = 0, j = anel.length - 1; i < anel.length; j = i++) {
+      var xi = anel[i][0], yi = anel[i][1], xj = anel[j][0], yj = anel[j][1];
+      if ((yi > y) !== (yj > y) && x < (xj - xi) * (y - yi) / (yj - yi) + xi) d = !d;
+    }
+    return d;
+  }
+  /**
+   * Orienta os anéis: contorno externo anti-horário, furo horário.
+   * Sem isso, uma letra "O" chega ao EZCAD como dois anéis girando no mesmo
+   * sentido — e a hachura preenche o miolo em vez de deixar o furo.
+   */
+  function orientarAneis(aneis) {
+    var bb = aneis.map(function (a) {
+      var xs = a.map(function (p) { return p[0]; }), ys = a.map(function (p) { return p[1]; });
+      return [Math.min.apply(null, xs), Math.min.apply(null, ys),
+              Math.max.apply(null, xs), Math.max.apply(null, ys)];
+    });
+    return aneis.map(function (a, i) {
+      var prof = 0;
+      for (var k = 0; k < aneis.length; k++) {
+        if (k === i) continue;
+        if (bb[i][0] < bb[k][0] || bb[i][1] < bb[k][1] || bb[i][2] > bb[k][2] || bb[i][3] > bb[k][3]) continue;
+        if (dentro(a[0], aneis[k])) prof++;
+      }
+      var querPositiva = (prof % 2 === 0);        // externo CCW, furo CW
+      var area = areaAssinada(a);
+      return (area >= 0) === querPositiva ? a : a.slice().reverse();
+    });
+  }
+
+  /** Texto → anéis fechados em mm (y-up), prontos para virar POLYLINE. */
+  function contornosTexto(txt, caixa, fonte, res, tol, opts) {
+    var r = rasterizarTexto(txt, caixa, fonte, res, opts);
+    if (!r) return [];
+    var out = [];
+    marchingSquares(r.campo, r.w, r.h, 128).forEach(function (anel) {
+      var mm = anel.map(function (p) {
+        return [r.ox + p[0] * r.res, r.oyTopo + (r.h - p[1]) * r.res];
+      });
+      var s = simplificar(mm, tol);
+      if (s.length >= 3) out.push(s);
+    });
+    return orientarAneis(out);
+  }
+
+  /** Texto → varredura densa serpentina (modo 'preenchido'). */
+  function varreduraTexto(txt, caixa, fonte, passo, opts) {
+    var r = rasterizarTexto(txt, caixa, fonte, Math.min(passo, 0.02), opts);
+    if (!r) return [];
+    var linhas = [], passoPx = Math.max(1, Math.round(passo / r.res)), dir = 1;
+    for (var py = 0; py < r.h; py += passoPx) {
+      var seg = [], xi = 0, base = py * r.w;
+      var yMm = r.oyTopo + (r.h - (py + 0.5)) * r.res;
+      while (xi < r.w) {
+        if (r.campo[base + xi] < 128) { xi++; continue; }
+        var st = xi;
+        while (xi < r.w && r.campo[base + xi] >= 128) xi++;
+        seg.push([r.ox + st * r.res, yMm, r.ox + xi * r.res, yMm]);
+      }
+      if (dir < 0) { seg.reverse(); seg = seg.map(function (s) { return [s[2], s[1], s[0], s[3]]; }); }
+      dir = -dir;
+      // 13/08/2026 — era `linhas = linhas.concat(seg)`, que recria o array
+      // inteiro a cada varredura: O(n²) em cópia, com milhares de segmentos no
+      // modo preenchido/ambos. push.apply anexa no lugar.
+      linhas.push.apply(linhas, seg);
+    }
+    return linhas;
+  }
+
+  // ══════════════════════════════════════════════════════════ valores
+  function aplicarTransform(v, campo) {
+    var s = String(v == null ? '' : v).trim();
+    switch (campo.transform) {
+      case 'upper': s = s.toUpperCase(); break;
+      case 'int': s = s.replace(/[^\d-]/g, ''); break;
+      case 'date_br':
+        var m = /^(\d{4})-(\d{2})-(\d{2})/.exec(s);
+        if (m) s = m[3] + '/' + m[2] + '/' + m[1];
+        break;
+    }
+    if (campo.sufixo && s && s.indexOf(campo.sufixo.trim()) === -1) s += campo.sufixo;
+    if (campo.prefixo && s) s = campo.prefixo + s;
+    return s;
+  }
+
+  // ══════════════════════════════════════════════════════════ logo
+  var LOGOS = {};
+  function registrarLogo(id, def) { LOGOS[id] = def; }
+
+  function desenharLogo(doc, def, cx, o) {
+    var s = Math.min(cx.w / def.w, cx.h / def.h);
+    var lw = def.w * s, lh = def.h * s;
+    var ox = cx.x + (cx.w - lw) / 2, oy = cx.y + (cx.h - lh) / 2;
+    var aneis = orientarAneis(def.polys.map(function (poly) {
+      return poly.map(function (p) { return [ox + p[0] * s, oy + (def.h - p[1]) * s]; });
+    }));
+    if (o.modo !== 'preenchido') aneis.forEach(function (a) { doc.polyline(a, 'LOGO', true); });
+    if (o.modo === 'contorno') return;
+
+    // preenchimento serpentino a partir dos mesmos anéis
+    var res = Math.min(o.fill_mm, 0.02);
+    var wpx = Math.ceil(lw / res), hpx = Math.ceil(lh / res);
+    var c = canvas(wpx, hpx);
+    c.fillStyle = '#000'; c.fillRect(0, 0, wpx, hpx);
+    c.fillStyle = '#fff'; c.beginPath();
+    def.polys.forEach(function (poly) {
+      poly.forEach(function (p, i) {
+        var X = p[0] / def.w * wpx, Y = p[1] / def.h * hpx;
+        if (i === 0) c.moveTo(X, Y); else c.lineTo(X, Y);
+      });
+      c.closePath();
+    });
+    c.fill('evenodd');
+    var img = c.getImageData(0, 0, wpx, hpx).data;
+    var passoPx = Math.max(1, Math.round(o.fill_mm / res)), dir = 1;
+    for (var py = 0; py < hpx; py += passoPx) {
+      var seg = [], xi = 0, base = py * wpx * 4;
+      var yMm = oy + (hpx - (py + 0.5)) * res;
+      while (xi < wpx) {
+        if (img[base + xi * 4] < 128) { xi++; continue; }
+        var st = xi;
+        while (xi < wpx && img[base + xi * 4] >= 128) xi++;
+        seg.push([ox + st * res, yMm, ox + xi * res, yMm]);
+      }
+      if (dir < 0) { seg.reverse(); seg = seg.map(function (s2) { return [s2[2], s2[1], s2[0], s2[3]]; }); }
+      dir = -dir;
+      seg.forEach(function (l) { doc.line(l[0], l[1], l[2], l[3], 'LOGO_FILL'); });
+    }
+  }
+
+  // ══════════════════════════════════════════════════════════ furos
+  /** Centros dos 4 furos já no eixo do DXF (y-up), com o deslocamento do painel. */
+  function furosPlaca(layout, o, offX, offY) {
+    var cfg = Object.assign({}, FUROS_PADRAO, layout.furos || {}, o.furos || {});
+    if (!cfg.ativo) return { cfg: cfg, lista: [] };
+    var W = layout.placa.largura_mm, H = layout.placa.altura_mm, r = cfg.diametro_mm / 2;
+    var ix = Math.max(r, cfg.inset_x_mm), iy = Math.max(r, cfg.inset_y_mm);
+    var lista = [];
+    [ix, W - ix].forEach(function (x) {
+      [iy, H - iy].forEach(function (y) { lista.push({ x: x + offX, y: H - y + offY, r: r }); });
+    });
+    return { cfg: cfg, lista: lista };
+  }
+
+  /**
+   * Folga mínima de material entre o furo e a borda da placa — o número que
+   * decide se a placa rasga na hora de parafusar. Considera o canto arredondado.
+   */
+  function folgaBorda(layout, cfg) {
+    var W = layout.placa.largura_mm, H = layout.placa.altura_mm;
+    var R = layout.placa.raio_canto_mm || 0, r = cfg.diametro_mm / 2;
+    var x = cfg.inset_x_mm, y = cfg.inset_y_mm;
+    var reta = Math.min(x, y) - r;
+    if (x >= R || y >= R) return reta;                    // fora do quadrante do canto
+    var d = Math.hypot(R - x, R - y);                     // canto: distância até o arco
+    return Math.min(reta, R - d - r);
+  }
+
+  // ══════════════════════════════════════════════════════════ placa
+
+  // ══════════════════════════════════════════════════════════ PLACAS_V1 · QR
+  // O QR vira CONTORNOS FECHADOS de células inteiras (sem rasterizar nada):
+  // cada borda entre célula cheia e vazia é uma aresta orientada com o cheio à
+  // DIREITA (y para baixo); as arestas são encadeadas em anéis. Nos vértices em
+  // que duas células só se tocam na diagonal, o anel vira à DIREITA — é o que
+  // separa as duas células em anéis simples (sem laço que cruza a si mesmo,
+  // que o EZCAD hachuraria errado). Pontos colineares saem.
+  // `inverter` (placa ESCURA): o conjunto gravado é a zona de silêncio MENOS os
+  // módulos escuros — os módulos escuros viram ILHAS, e o resultado físico,
+  // claro onde gravou, é o QR normal (escuro sobre claro).
+  function aneisQR(N, cheio) {
+    var saem = {};
+    function add(x1, y1, x2, y2) { var k = x1 + ',' + y1; (saem[k] = saem[k] || []).push([x2, y2, x2 - x1, y2 - y1]); }
+    for (var r = 0; r < N; r++) for (var c = 0; c < N; c++) {
+      if (!cheio(r, c)) continue;
+      if (!cheio(r - 1, c)) add(c, r, c + 1, r);
+      if (!cheio(r, c + 1)) add(c + 1, r, c + 1, r + 1);
+      if (!cheio(r + 1, c)) add(c + 1, r + 1, c, r + 1);
+      if (!cheio(r, c - 1)) add(c, r + 1, c, r);
+    }
+    var aneis = [];
+    Object.keys(saem).forEach(function (k0) {
+      while (saem[k0] && saem[k0].length) {
+        var p0 = k0.split(',').map(Number), e = saem[k0].shift(), anel = [p0];
+        var dx = e[2], dy = e[3], guarda = 0;
+        while (guarda++ < N * N * 8) {
+          var k = e[0] + ',' + e[1];
+          if (k === k0) break;                   // voltou ao início: anel fechado
+          anel.push([e[0], e[1]]);
+          var op = saem[k] || [];
+          if (!op.length) break;
+          var dir = [-dy, dx], esc = 0;          // virar à direita (y para baixo)
+          for (var q = 0; q < op.length; q++) if (op[q][2] === dir[0] && op[q][3] === dir[1]) { esc = q; break; }
+          e = op.splice(esc, 1)[0]; dx = e[2]; dy = e[3];
+        }
+        // tira colineares
+        var s = [];
+        for (var a = 0; a < anel.length; a++) {
+          var pa = anel[(a - 1 + anel.length) % anel.length], pb = anel[a], pc = anel[(a + 1) % anel.length];
+          if ((pb[0] - pa[0]) * (pc[1] - pb[1]) - (pb[1] - pa[1]) * (pc[0] - pb[0]) !== 0) s.push(pb);
+        }
+        if (s.length >= 4) aneis.push(s);
+      }
+    });
+    return aneis;
+  }
+  function desenharQR(doc, qr, b) {
+    var z = qr.zona || 0, N = qr.n + 2 * z;
+    var dentro = function (r, c) { return r >= 0 && c >= 0 && r < N && c < N; };
+    var escuro = function (r, c) { var rr = r - z, cc = c - z; return rr >= 0 && cc >= 0 && rr < qr.n && cc < qr.n && qr.escuro(rr, cc); };
+    var cheio = qr.inverter ? function (r, c) { return dentro(r, c) && !escuro(r, c); }
+                            : function (r, c) { return dentro(r, c) && escuro(r, c); };
+    var lado = Math.min(b.w, b.h), s = lado / N;
+    var ox = b.x + (b.w - lado) / 2, oyTopo = b.y + b.h - (b.h - lado) / 2;
+    aneisQR(N, cheio).forEach(function (anel) {
+      doc.polyline(anel.map(function (p) { return [ox + p[0] * s, oyTopo - p[1] * s]; }), 'QR', true);
+    });
+    return { modulo_mm: s, versao: (qr.n - 17) / 4 };
+  }
+
+  function desenharPlaca(doc, layout, dados, offX, offY, opts) {
+    var o = Object.assign({}, PADRAO, layout.gravacao || {}, opts || {});
+    var H = layout.placa.altura_mm;
+    function box(b) { return { x: b.x + offX, y: H - b.y - b.h + offY, w: b.w, h: b.h }; }
+    function emitirTexto(txt, caixa, fonte, layer, topts) {
+      if (o.modo !== 'preenchido') {
+        contornosTexto(txt, caixa, fonte, o.res_mm, o.tol_mm, topts)
+          .forEach(function (a) { doc.polyline(a, layer, true); });
+      }
+      if (o.modo !== 'contorno') {
+        varreduraTexto(txt, caixa, fonte, o.fill_mm, topts)
+          .forEach(function (l) { doc.line(l[0], l[1], l[2], l[3], layer + '_FILL'); });
+      }
+    }
+
+    var F = furosPlaca(layout, o, offX, offY);
+    // no DXF os cantos saem como arco exato (bulge); na prévia em SVG o arco é
+    // achatado em segmentos, senão o canto arredondado aparece como chanfro
+    function rrect(x, y, w, h, r, layer) {
+      if (o.arcos_planos) doc.polyline(rrectPath(x, y, w, h, r, 10).slice(0, -1), layer, true);
+      else doc.polyline(rrectPts(x, y, w, h, r), layer, true);
+    }
+
+    if (o.contorno_placa || layout.placa.desenhar_contorno) {
+      rrect(offX, offY, layout.placa.largura_mm, H, layout.placa.raio_canto_mm || 0, 'CORTE');
+    }
+    if (layout.moldura) {
+      var m = box(layout.moldura);
+      var rm = layout.moldura.r || 0;
+      var cortou = false;
+      if (F.lista.length && F.cfg.moldura === 'interromper') {
+        var folga = F.lista.map(function (c) {
+          return { x: c.x, y: c.y, r: c.r + (F.cfg.folga_moldura_mm || 0) };
+        });
+        var caminho = rrectPath(m.x, m.y, m.w, m.h, rm, 28);
+        // só troca os arcos exatos por segmentos quando a moldura realmente
+        // encosta em algum furo — senão sai a polilinha fechada, com bulge
+        if (tocaCirculos(caminho, folga)) {
+          cortou = true;
+          recortarPorCirculos(caminho, folga, true)
+            .forEach(function (run) { doc.polyline(run, 'MOLDURA', false); });
+        }
+      }
+      if (!cortou) rrect(m.x, m.y, m.w, m.h, rm, 'MOLDURA');
+    }
+    F.lista.forEach(function (c) { doc.circle(c.x, c.y, c.r, 'FUROS'); });
+    if (layout.logo && LOGOS[layout.logo.id]) desenharLogo(doc, LOGOS[layout.logo.id], box(layout.logo), o);
+
+    (layout.textos_fixos || []).forEach(function (t) {
+      var fonte = (layout.fontes || {})[t.font] || { family: 'Arial', weight: 'bold' };
+      var larg, cx;
+      if (t.align === 'center') { larg = t.w || layout.placa.largura_mm; cx = t.x - larg / 2; }
+      else if (t.align === 'right') { larg = t.w || t.x; cx = t.x - larg; }
+      else { larg = t.w || (layout.placa.largura_mm - t.x); cx = t.x; }
+      emitirTexto(t.texto, box({ x: cx, y: t.y, w: larg, h: t.h }), fonte, 'TEXTO',
+                  { align: t.align || 'left', tracking: t.tracking || 0 });
+    });
+
+    (layout.campos || []).forEach(function (cp) {
+      var b = box(cp.box);
+      rrect(b.x, b.y, b.w, b.h, cp.box.r || 0, 'CAIXAS');
+      var val = aplicarTransform(dados[cp.id], cp);
+      if (!val) return;
+      var fonte = (layout.fontes || {})[cp.font] || { family: 'Arial', weight: 'normal' };
+      emitirTexto(val, { x: b.x + 1.0, y: b.y + (b.h - cp.h_texto) / 2, w: b.w - 2.0, h: cp.h_texto },
+                  fonte, 'TEXTO', { align: cp.align || 'center' });
+    });
+    // PLACAS_V1 — o QR, se o layout reserva a caixa e os dados trazem a matriz
+    if (layout.qr && dados && dados.__qr) desenharQR(doc, dados.__qr, box(layout.qr));
+  }
+
+  // ══════════════════════════════════════════════════════════ API
+  function gerar(layout, dados, opts) {
+    var doc = new DxfDoc();
+    if (opts && opts.notas) doc.nota(opts.notas);
+    desenharPlaca(doc, layout, dados || {}, 0, 0, opts);
+    return doc.toString();
+  }
+
+  function gerarPainel(layout, lista, opts) {
+    opts = opts || {};
+    var P = layout.painel || { largura_mm: 200, altura_mm: 200, gap_mm: 4 };
+    var gap = opts.gap_mm != null ? opts.gap_mm : P.gap_mm;
+    var W = layout.placa.largura_mm, H = layout.placa.altura_mm;
+    var cols = Math.max(1, Math.floor((P.largura_mm + gap) / (W + gap)));
+    var rows = Math.max(1, Math.floor((P.altura_mm + gap) / (H + gap)));
+    var porPainel = cols * rows, paineis = [];
+    for (var p = 0; p * porPainel < lista.length; p++) {
+      var doc = new DxfDoc();
+      if (opts.notas) doc.nota(opts.notas);
+      lista.slice(p * porPainel, (p + 1) * porPainel).forEach(function (d, i) {
+        desenharPlaca(doc, layout, d, (i % cols) * (W + gap), Math.floor(i / cols) * (H + gap), opts);
+      });
+      paineis.push(doc.toString());
+    }
+    return { paineis: paineis, cols: cols, rows: rows, por_painel: porPainel };
+  }
+
+  function baixar(nome, texto) {
+    var blob = new Blob([texto], { type: 'application/dxf' });
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(blob); a.download = nome;
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(function () { URL.revokeObjectURL(a.href); }, 3000);
+  }
+
+  function estatisticas(dxf) {
+    return {
+      linhas: (dxf.match(/\nLINE\n/g) || []).length,
+      polilinhas: (dxf.match(/\nPOLYLINE\n/g) || []).length,
+      circulos: (dxf.match(/\nCIRCLE\n/g) || []).length,
+      vertices: (dxf.match(/\nVERTEX\n/g) || []).length,
+      kb: Math.round(dxf.length / 1024)
+    };
+  }
+
+  /** Preview em SVG — mesma geometria, com o texto já preenchido para leitura. */
+  function preverSVG(layout, dados, opts) {
+    opts = opts || {};
+    var W = layout.placa.largura_mm, H = layout.placa.altura_mm;
+    var doc = new DxfDoc();
+    desenharPlaca(doc, layout, dados || {}, 0, 0,
+      Object.assign({}, opts, { modo: 'contorno', res_mm: 0.03, tol_mm: 0.012, arcos_planos: true }));
+    var fig = [], linhas = [], furos = [], qrd = [];   // PLACAS_V1: qrd
+    doc.ents.forEach(function (e) {
+      var v;
+      if (e.indexOf('0\nLINE') === 0) {
+        v = e.split('\n');
+        linhas.push('<line x1="' + v[5] + '" y1="' + (H - +v[7]) + '" x2="' + v[11] + '" y2="' + (H - +v[13]) + '"/>');
+      } else if (e.indexOf('0\nCIRCLE') === 0) {
+        v = e.split('\n');
+        furos.push('<circle cx="' + v[5] + '" cy="' + (H - +v[7]) + '" r="' + v[11] + '"/>');
+      } else {
+        var cab = e.match(/^0\nPOLYLINE\n8\n([^\n]+)\n66\n1\n70\n(\d)/) || [];
+        var layer = cab[1] || '', fechada = cab[2] === '1';
+        var vs = [], m, re = /VERTEX\n8\n[^\n]*\n10\n(-?[\d.]+)\n20\n(-?[\d.]+)/g;
+        while ((m = re.exec(e))) vs.push((+m[1]).toFixed(3) + ',' + (H - +m[2]).toFixed(3));
+        if (!vs.length) return;
+        if (layer === 'QR') { qrd.push('M' + vs.join('L') + 'Z'); return; }   // PLACAS_V1
+        if (layer === 'TEXTO' || layer === 'LOGO') fig.push('<polygon points="' + vs.join(' ') + '"/>');
+        else linhas.push('<' + (fechada ? 'polygon' : 'polyline') + ' points="' + vs.join(' ') + '" fill="none"/>');
+      }
+    });
+    // PLACAS_V1 — placa clara: fundo metálico e gravação escura
+    var fundo = opts.fundo_claro ? '#c9ccd1' : '#131316', tinta = opts.fundo_claro ? '#1b1b1f' : '#fff';
+    return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ' + W + ' ' + H + '">' +
+      '<rect width="' + W + '" height="' + H + '" rx="' + (layout.placa.raio_canto_mm || 0) + '" fill="' + fundo + '"/>' +
+      '<g fill="' + tinta + '" fill-rule="evenodd">' + fig.join('') + '</g>' +
+      (qrd.length ? '<path fill="' + tinta + '" fill-rule="evenodd" d="' + qrd.join('') + '"/>' : '') +
+      '<g stroke="' + tinta + '" stroke-width="0.22" fill="none">' + linhas.join('') + '</g>' +
+      '<g fill="#050506" stroke="#f07725" stroke-width="0.25">' + furos.join('') + '</g></svg>';
+  }
+
+  global.PlacaDXF = {
+    VERSAO: VERSAO, PADRAO: PADRAO, FUROS_PADRAO: FUROS_PADRAO,
+    gerar: gerar, gerarPainel: gerarPainel, baixar: baixar,
+    preverSVG: preverSVG, registrarLogo: registrarLogo, estatisticas: estatisticas,
+    furos: furosPlaca, folgaBorda: folgaBorda,
+    _interno: { DxfDoc: DxfDoc, rrectPts: rrectPts, rrectPath: rrectPath,
+                recortarPorCirculos: recortarPorCirculos, tocaCirculos: tocaCirculos,
+                contornosTexto: contornosTexto, orientarAneis: orientarAneis,
+                marchingSquares: marchingSquares, simplificar: simplificar,
+                aplicarTransform: aplicarTransform }
+  };
+})(typeof window !== 'undefined' ? window : this);
+</script>
+<script>
+const LOGO = {"w": 51.267, "h": 7.474, "polys": [[[44.8889, 1.6734], [44.9112, 5.9573], [44.9558, 5.9796], [45.0896, 5.868], [45.268, 5.935], [45.2457, 6.1135], [45.0227, 6.225], [45.0227, 6.292], [46.316, 6.2696], [46.3606, 6.2027], [46.3383, 4.7301], [46.4498, 4.6409], [47.6317, 4.6186], [47.8993, 4.7748], [47.9885, 4.6409], [48.1223, 4.6409], [49.5272, 5.9573], [49.7279, 6.2473], [51.2665, 6.225], [51.2219, 6.1135], [49.4603, 4.5739], [49.5495, 4.4624], [49.9063, 4.4401], [50.5975, 4.15], [50.8874, 3.86], [51.0658, 3.5699], [51.1104, 3.0791], [50.9543, 2.4989], [50.486, 2.0304], [49.661, 1.7403], [48.2561, 1.6288]], [[46.2714, 3.5253], [46.2714, 2.7221], [46.3829, 2.6328], [46.4498, 2.6328], [46.4721, 2.6551], [48.1223, 2.6551], [48.1446, 2.6774], [48.4568, 2.6774], [48.4791, 2.6998], [48.5683, 2.6998], [48.5906, 2.7221], [48.6798, 2.7221], [48.7021, 2.7444], [49.1481, 2.7444], [49.1704, 2.7667], [49.2596, 2.7667], [49.438, 2.8559], [49.4826, 2.8336], [49.4826, 2.7444], [49.5718, 2.6774], [49.5941, 2.6998], [49.7056, 2.7221], [49.7948, 2.8336], [49.7948, 2.8783], [49.7056, 2.9452], [49.6387, 2.9006], [49.5718, 2.9229], [49.5718, 2.9675], [49.6387, 3.0121], [49.6833, 2.9898], [49.7725, 3.0567], [49.7725, 3.1014], [49.6387, 3.2799], [49.5272, 3.3914], [49.438, 3.436], [49.3934, 3.436], [49.2819, 3.503], [49.0143, 3.5253], [48.992, 3.5476], [48.7244, 3.5699], [48.7021, 3.5922], [46.3606, 3.5922]], [[44.153, 1.6511], [43.4171, 1.5842], [38.868, 1.6511], [38.8457, 6.0019], [38.9572, 6.0019], [39.0687, 5.868], [39.2471, 5.935], [39.2025, 6.1135], [39.0018, 6.292], [43.2833, 6.292], [44.2645, 6.225], [44.2868, 5.3326], [44.1753, 5.221], [40.3844, 5.221], [40.2952, 5.1541], [40.2729, 4.4624], [40.3844, 4.2839], [43.7516, 4.2616], [43.707, 3.2576], [40.3844, 3.2352], [40.2729, 3.146], [40.2506, 2.6998], [40.3844, 2.5882], [44.1084, 2.5882], [44.1753, 2.5436]], [[32.7802, 6.225], [34.0067, 6.2473], [34.1405, 6.1804], [34.1182, 4.7971], [34.2074, 4.7301], [36.415, 4.7078], [36.6603, 4.6186], [37.1955, 4.6186], [38.0652, 4.2616], [38.4889, 3.793], [38.5781, 3.0567], [38.422, 2.4543], [38.0206, 1.9858], [37.1286, 1.6511], [36.6157, 1.6511], [35.9245, 1.5619], [33.2708, 1.5619], [32.691, 1.6288], [32.691, 5.9573], [32.7356, 5.9796], [32.8917, 5.868], [33.0255, 5.935], [33.0032, 6.0465], [32.7802, 6.1804]], [[34.0959, 3.6145], [34.0959, 3.503], [34.1182, 3.4807], [34.0959, 3.2799], [34.1182, 3.2576], [34.1182, 3.1906], [34.0736, 3.1237], [34.0736, 3.0344], [34.1182, 2.9229], [34.1182, 2.6998], [34.2074, 2.6328], [34.5642, 2.6328], [34.5865, 2.6551], [36.2144, 2.6551], [36.2367, 2.6774], [36.3036, 2.6774], [36.3259, 2.6551], [36.3482, 2.6774], [36.5042, 2.6774], [36.5711, 2.7221], [36.7049, 2.7444], [36.7272, 2.7667], [36.8387, 2.7667], [36.9502, 2.8336], [36.9948, 2.8113], [36.9948, 2.7444], [37.084, 2.6774], [37.1732, 2.7444], [37.1732, 2.789], [37.1286, 2.8336], [37.084, 2.8559], [37.0617, 2.8336], [37.0171, 2.8559], [37.0171, 2.9006], [37.1955, 3.0567], [37.1955, 3.146], [37.1286, 3.2352], [37.1286, 3.3468], [36.9948, 3.4807], [36.7941, 3.5922], [36.638, 3.5922], [36.6157, 3.6145], [36.259, 3.6145], [36.2367, 3.6369], [36.0137, 3.6369], [35.9914, 3.6592], [35.9022, 3.6592], [35.8799, 3.6815], [35.4785, 3.6815], [35.4562, 3.6592], [34.8318, 3.6592], [34.8095, 3.6815], [34.7872, 3.6592], [34.7426, 3.6815], [34.2743, 3.6592], [34.252, 3.6815], [34.1851, 3.6815]], [[19.0214, 1.5842], [19.0214, 5.8903], [19.0883, 5.9573], [19.2221, 5.8457], [19.3782, 5.9127], [19.3782, 6.0465], [19.1329, 6.1358], [19.1106, 6.2027], [20.404, 6.225], [20.4709, 6.1804], [20.4709, 4.6855], [20.5824, 4.5963], [21.8535, 4.5963], [22.0988, 4.7524], [22.188, 4.6186], [22.2995, 4.6186], [23.3029, 5.578], [23.2137, 5.6895], [23.0353, 5.5334], [22.9461, 5.5334], [23.2137, 5.8457], [23.4367, 6.0019], [23.5928, 5.868], [23.682, 5.935], [23.6374, 6.0242], [23.5259, 6.0465], [23.6597, 6.225], [25.3991, 6.225], [25.466, 6.1804], [25.2653, 5.935], [23.7043, 4.5516], [23.7935, 4.4178], [24.1949, 4.3731], [24.8193, 4.0608], [25.2207, 3.5922], [25.3099, 2.9898], [25.1984, 2.4543], [24.6632, 1.9188], [23.7935, 1.6288], [23.236, 1.5619], [19.1329, 1.5172]], [[20.4709, 3.3914], [20.4709, 2.6774], [20.5824, 2.5882], [22.0988, 2.5882], [22.1211, 2.6105], [22.5002, 2.6105], [22.5225, 2.6328], [22.7009, 2.6328], [22.7232, 2.6551], [23.1691, 2.6551], [23.1914, 2.6774], [23.2583, 2.6774], [23.3921, 2.7444], [23.5036, 2.7444], [23.5259, 2.7667], [23.5705, 2.7667], [23.7043, 2.8336], [23.7935, 2.9229], [23.8604, 2.9452], [23.905, 2.9898], [23.905, 3.0344], [23.8381, 3.1683], [23.6374, 3.3468], [23.5036, 3.4137], [23.2806, 3.4137], [23.2583, 3.436], [23.1691, 3.436], [23.0799, 3.4807], [22.8792, 3.4807], [22.8569, 3.503], [20.9838, 3.503], [20.9615, 3.4807], [20.5824, 3.4807]], [[12.8668, 6.1804], [13.0452, 6.225], [13.2459, 6.1804], [14.1378, 6.2027], [14.2493, 6.1358], [14.2493, 4.7078], [14.3385, 4.6409], [15.1859, 4.6855], [15.4981, 4.6409], [15.8995, 4.6855], [16.0333, 4.6409], [17.4159, 4.5516], [18.1741, 4.2393], [18.5977, 3.8153], [18.6869, 3.6369], [18.7761, 3.0344], [18.5977, 2.3428], [18.2186, 1.9188], [17.5051, 1.6065], [16.234, 1.4726], [12.8222, 1.4949], [12.7776, 1.5395], [12.7553, 2.2758], [12.7776, 5.9127], [12.8222, 5.935], [13.0006, 5.8011], [13.1121, 5.8903], [13.1121, 5.9796], [12.8891, 6.0912]], [[14.2493, 2.6551], [14.3385, 2.5882], [15.7434, 2.5882], [15.7657, 2.6105], [16.234, 2.6105], [16.2563, 2.6328], [16.3455, 2.6328], [16.3678, 2.6105], [16.4124, 2.6105], [16.4347, 2.6328], [16.5239, 2.6328], [16.5462, 2.6551], [16.7246, 2.6551], [16.8584, 2.7221], [16.903, 2.7221], [16.9253, 2.7444], [16.9699, 2.7444], [16.9922, 2.7667], [17.0368, 2.7667], [17.0591, 2.789], [17.1483, 2.8113], [17.3044, 2.9898], [17.3267, 3.0344], [17.3267, 3.1237], [17.2821, 3.1906], [17.2821, 3.2352], [17.2375, 3.3245], [17.1483, 3.4137], [17.126, 3.4137], [17.0145, 3.503], [16.8807, 3.503], [16.7469, 3.5699], [16.3678, 3.5699], [16.3455, 3.5922], [16.1894, 3.5922], [16.1671, 3.5699], [16.0556, 3.5699], [16.0333, 3.5922], [15.5204, 3.5922], [15.4981, 3.5699], [15.342, 3.5699], [15.3197, 3.5922], [15.119, 3.5922], [15.0967, 3.5699], [14.9629, 3.5699], [14.9406, 3.5922], [14.8068, 3.5922], [14.7845, 3.5699], [14.4277, 3.5699], [14.4054, 3.5922], [14.3385, 3.5922], [14.2493, 3.5253]], [[26.6925, 2.0081], [26.0458, 2.8336], [25.8674, 3.7038], [25.8674, 3.8823], [26.0681, 4.7748], [26.7148, 5.6003], [27.6736, 6.0688], [27.9189, 6.0688], [28.0973, 6.1358], [28.6102, 6.1581], [28.7217, 6.2027], [29.0339, 6.1581], [29.1454, 6.225], [29.4576, 6.1581], [29.8144, 6.1581], [30.1489, 6.0688], [30.4388, 6.0465], [31.3308, 5.6003], [31.4869, 5.4664], [31.6876, 5.1541], [31.9551, 4.864], [32.0666, 4.5739], [32.0889, 4.2839], [32.1558, 4.1277], [32.2004, 3.8153], [32.1558, 3.4584], [31.9997, 2.9452], [31.9774, 2.7221], [31.3085, 1.9412], [30.305, 1.4726], [30.0374, 1.4726], [29.6583, 1.3834], [28.7886, 1.361], [27.629, 1.5395]], [[26.3803, 4.8863], [26.4026, 4.8863], [26.4249, 4.864], [26.4472, 4.8863], [26.4695, 4.8863], [26.5141, 4.9309], [26.5141, 4.9533], [26.6033, 5.0425], [26.6033, 5.0648], [26.7594, 5.221], [26.7594, 5.2433], [26.804, 5.2879], [26.804, 5.3102], [26.8263, 5.3102], [26.8709, 5.3549], [26.8709, 5.3772], [26.9155, 5.4218], [26.9155, 5.4664], [26.8709, 5.511], [26.8486, 5.511], [26.8263, 5.5334], [26.804, 5.511], [26.7817, 5.511], [26.6256, 5.3549], [26.6256, 5.3326], [26.5364, 5.2433], [26.5364, 5.221], [26.4249, 5.1094], [26.4249, 5.0871], [26.358, 5.0202], [26.358, 4.9979], [26.3357, 4.9756], [26.3357, 4.9309]], [[27.6067, 2.8559], [27.7851, 2.6774], [28.0304, 2.5659], [28.0973, 2.5659], [28.2088, 2.4989], [28.298, 2.4766], [28.6771, 2.4766], [28.6994, 2.4543], [28.8109, 2.4543], [28.8778, 2.4097], [29.0562, 2.4097], [29.1231, 2.4543], [29.4576, 2.4766], [29.4799, 2.4989], [29.7252, 2.4989], [29.8367, 2.5659], [29.9928, 2.5882], [30.1712, 2.7221], [30.2604, 2.7444], [30.3942, 2.8336], [30.4388, 2.8113], [30.4388, 2.7667], [30.3496, 2.6774], [30.3496, 2.6328], [30.4388, 2.5659], [30.528, 2.6105], [30.6172, 2.6998], [30.6841, 2.8113], [30.6841, 2.8559], [30.5949, 2.9229], [30.5057, 2.8783], [30.4611, 2.9006], [30.4611, 2.9452], [30.6395, 3.1683], [30.6841, 3.2799], [30.7064, 3.5922], [30.7733, 3.7707], [30.7064, 4.0385], [30.7064, 4.2393], [30.6618, 4.4401], [30.528, 4.5963], [30.4388, 4.7524], [30.3496, 4.8417], [30.1043, 4.9979], [29.9928, 5.0202], [29.7475, 5.1317], [29.5245, 5.1317], [29.1454, 5.221], [28.8555, 5.1317], [28.4318, 5.1094], [28.2757, 5.0425], [28.1865, 5.0425], [27.7851, 4.8417], [27.4506, 4.4401], [27.3614, 4.217], [27.3614, 4.0831], [27.3391, 4.0608], [27.3614, 3.2352], [27.4283, 3.1014], [27.5844, 2.9229]], [[6.1546, 0.0223], [5.7309, 0.6917], [4.6382, 2.789], [4.6159, 2.9452], [4.7497, 3.0344], [6.2215, 3.0344], [6.3776, 2.9006], [7.0912, 1.6511], [8.1393, 1.6957], [8.7414, 2.3205], [8.7414, 5.3102], [8.117, 5.9127], [6.4445, 5.935], [5.7309, 7.1398], [5.6863, 7.3406], [5.7978, 7.4299], [6.1323, 7.4745], [8.6968, 7.4745], [10.0793, 6.1804], [10.3915, 5.7565], [10.3915, 1.8296], [10.3023, 1.6957], [10.3023, 1.4949], [9.0982, 0.2455], [8.786, 0.0223]], [[8.3623, 1.6065], [8.3846, 1.6065], [8.4069, 1.5842], [8.4292, 1.5842], [8.4515, 1.6065], [8.4738, 1.6065], [8.5407, 1.6734], [8.563, 1.6734], [8.6076, 1.718], [8.6076, 1.7403], [8.786, 1.9188], [8.786, 1.9412], [8.8083, 1.9635], [8.8083, 2.0304], [8.7637, 2.075], [8.7414, 2.075], [8.7191, 2.0973], [8.6968, 2.075], [8.6745, 2.075], [8.6299, 2.0304], [8.6299, 2.0081], [8.5853, 1.9635], [8.5853, 1.9412], [8.563, 1.9188], [8.5407, 1.9188], [8.4515, 1.8296], [8.4292, 1.8296], [8.3623, 1.7627], [8.3623, 1.7403], [8.3177, 1.6957], [8.3177, 1.6511]], [[4.6382, 0.0], [1.6278, 0.0], [1.2933, 0.2455], [0.0, 1.5619], [0.0, 5.578], [1.2041, 6.7828], [1.0703, 6.8274], [0.156, 5.935], [0.0668, 5.9127], [0.0223, 6.0019], [1.6055, 7.4522], [4.1477, 7.4745], [4.2815, 7.4076], [5.7755, 4.6632], [5.7755, 4.507], [5.6417, 4.4178], [4.17, 4.4178], [3.947, 4.6632], [3.501, 5.5557], [3.2557, 5.8457], [2.3414, 5.8457], [1.6278, 5.1541], [1.6724, 2.142], [2.2968, 1.5395], [3.8132, 1.5619], [3.9693, 1.4949], [4.7497, 0.1562]]]};
+PlacaDXF.registrarLogo('LOGO_PROPER', LOGO);
+</script>
+
+<script>
+//---------------------------------------------------------------------
+//
+// QR Code Generator for JavaScript
+//
+// Copyright (c) 2009 Kazuhiko Arase
+//
+// URL: http://www.d-project.com/
+//
+// Licensed under the MIT license:
+//  http://www.opensource.org/licenses/mit-license.php
+//
+// The word 'QR Code' is registered trademark of
+// DENSO WAVE INCORPORATED
+//  http://www.denso-wave.com/qrcode/faqpatent-e.html
+//
+//---------------------------------------------------------------------
+
+var qrcode = function() {
+
+  //---------------------------------------------------------------------
+  // qrcode
+  //---------------------------------------------------------------------
+
+  /**
+   * qrcode
+   * @param typeNumber 1 to 40
+   * @param errorCorrectionLevel 'L','M','Q','H'
+   */
+  var qrcode = function(typeNumber, errorCorrectionLevel) {
+
+    var PAD0 = 0xEC;
+    var PAD1 = 0x11;
+
+    var _typeNumber = typeNumber;
+    var _errorCorrectionLevel = QRErrorCorrectionLevel[errorCorrectionLevel];
+    var _modules = null;
+    var _moduleCount = 0;
+    var _dataCache = null;
+    var _dataList = [];
+
+    var _this = {};
+
+    var makeImpl = function(test, maskPattern) {
+
+      _moduleCount = _typeNumber * 4 + 17;
+      _modules = function(moduleCount) {
+        var modules = new Array(moduleCount);
+        for (var row = 0; row < moduleCount; row += 1) {
+          modules[row] = new Array(moduleCount);
+          for (var col = 0; col < moduleCount; col += 1) {
+            modules[row][col] = null;
+          }
+        }
+        return modules;
+      }(_moduleCount);
+
+      setupPositionProbePattern(0, 0);
+      setupPositionProbePattern(_moduleCount - 7, 0);
+      setupPositionProbePattern(0, _moduleCount - 7);
+      setupPositionAdjustPattern();
+      setupTimingPattern();
+      setupTypeInfo(test, maskPattern);
+
+      if (_typeNumber >= 7) {
+        setupTypeNumber(test);
+      }
+
+      if (_dataCache == null) {
+        _dataCache = createData(_typeNumber, _errorCorrectionLevel, _dataList);
+      }
+
+      mapData(_dataCache, maskPattern);
+    };
+
+    var setupPositionProbePattern = function(row, col) {
+
+      for (var r = -1; r <= 7; r += 1) {
+
+        if (row + r <= -1 || _moduleCount <= row + r) continue;
+
+        for (var c = -1; c <= 7; c += 1) {
+
+          if (col + c <= -1 || _moduleCount <= col + c) continue;
+
+          if ( (0 <= r && r <= 6 && (c == 0 || c == 6) )
+              || (0 <= c && c <= 6 && (r == 0 || r == 6) )
+              || (2 <= r && r <= 4 && 2 <= c && c <= 4) ) {
+            _modules[row + r][col + c] = true;
+          } else {
+            _modules[row + r][col + c] = false;
+          }
+        }
+      }
+    };
+
+    var getBestMaskPattern = function() {
+
+      var minLostPoint = 0;
+      var pattern = 0;
+
+      for (var i = 0; i < 8; i += 1) {
+
+        makeImpl(true, i);
+
+        var lostPoint = QRUtil.getLostPoint(_this);
+
+        if (i == 0 || minLostPoint > lostPoint) {
+          minLostPoint = lostPoint;
+          pattern = i;
+        }
+      }
+
+      return pattern;
+    };
+
+    var setupTimingPattern = function() {
+
+      for (var r = 8; r < _moduleCount - 8; r += 1) {
+        if (_modules[r][6] != null) {
+          continue;
+        }
+        _modules[r][6] = (r % 2 == 0);
+      }
+
+      for (var c = 8; c < _moduleCount - 8; c += 1) {
+        if (_modules[6][c] != null) {
+          continue;
+        }
+        _modules[6][c] = (c % 2 == 0);
+      }
+    };
+
+    var setupPositionAdjustPattern = function() {
+
+      var pos = QRUtil.getPatternPosition(_typeNumber);
+
+      for (var i = 0; i < pos.length; i += 1) {
+
+        for (var j = 0; j < pos.length; j += 1) {
+
+          var row = pos[i];
+          var col = pos[j];
+
+          if (_modules[row][col] != null) {
+            continue;
+          }
+
+          for (var r = -2; r <= 2; r += 1) {
+
+            for (var c = -2; c <= 2; c += 1) {
+
+              if (r == -2 || r == 2 || c == -2 || c == 2
+                  || (r == 0 && c == 0) ) {
+                _modules[row + r][col + c] = true;
+              } else {
+                _modules[row + r][col + c] = false;
+              }
+            }
+          }
+        }
+      }
+    };
+
+    var setupTypeNumber = function(test) {
+
+      var bits = QRUtil.getBCHTypeNumber(_typeNumber);
+
+      for (var i = 0; i < 18; i += 1) {
+        var mod = (!test && ( (bits >> i) & 1) == 1);
+        _modules[Math.floor(i / 3)][i % 3 + _moduleCount - 8 - 3] = mod;
+      }
+
+      for (var i = 0; i < 18; i += 1) {
+        var mod = (!test && ( (bits >> i) & 1) == 1);
+        _modules[i % 3 + _moduleCount - 8 - 3][Math.floor(i / 3)] = mod;
+      }
+    };
+
+    var setupTypeInfo = function(test, maskPattern) {
+
+      var data = (_errorCorrectionLevel << 3) | maskPattern;
+      var bits = QRUtil.getBCHTypeInfo(data);
+
+      // vertical
+      for (var i = 0; i < 15; i += 1) {
+
+        var mod = (!test && ( (bits >> i) & 1) == 1);
+
+        if (i < 6) {
+          _modules[i][8] = mod;
+        } else if (i < 8) {
+          _modules[i + 1][8] = mod;
+        } else {
+          _modules[_moduleCount - 15 + i][8] = mod;
+        }
+      }
+
+      // horizontal
+      for (var i = 0; i < 15; i += 1) {
+
+        var mod = (!test && ( (bits >> i) & 1) == 1);
+
+        if (i < 8) {
+          _modules[8][_moduleCount - i - 1] = mod;
+        } else if (i < 9) {
+          _modules[8][15 - i - 1 + 1] = mod;
+        } else {
+          _modules[8][15 - i - 1] = mod;
+        }
+      }
+
+      // fixed module
+      _modules[_moduleCount - 8][8] = (!test);
+    };
+
+    var mapData = function(data, maskPattern) {
+
+      var inc = -1;
+      var row = _moduleCount - 1;
+      var bitIndex = 7;
+      var byteIndex = 0;
+      var maskFunc = QRUtil.getMaskFunction(maskPattern);
+
+      for (var col = _moduleCount - 1; col > 0; col -= 2) {
+
+        if (col == 6) col -= 1;
+
+        while (true) {
+
+          for (var c = 0; c < 2; c += 1) {
+
+            if (_modules[row][col - c] == null) {
+
+              var dark = false;
+
+              if (byteIndex < data.length) {
+                dark = ( ( (data[byteIndex] >>> bitIndex) & 1) == 1);
+              }
+
+              var mask = maskFunc(row, col - c);
+
+              if (mask) {
+                dark = !dark;
+              }
+
+              _modules[row][col - c] = dark;
+              bitIndex -= 1;
+
+              if (bitIndex == -1) {
+                byteIndex += 1;
+                bitIndex = 7;
+              }
+            }
+          }
+
+          row += inc;
+
+          if (row < 0 || _moduleCount <= row) {
+            row -= inc;
+            inc = -inc;
+            break;
+          }
+        }
+      }
+    };
+
+    var createBytes = function(buffer, rsBlocks) {
+
+      var offset = 0;
+
+      var maxDcCount = 0;
+      var maxEcCount = 0;
+
+      var dcdata = new Array(rsBlocks.length);
+      var ecdata = new Array(rsBlocks.length);
+
+      for (var r = 0; r < rsBlocks.length; r += 1) {
+
+        var dcCount = rsBlocks[r].dataCount;
+        var ecCount = rsBlocks[r].totalCount - dcCount;
+
+        maxDcCount = Math.max(maxDcCount, dcCount);
+        maxEcCount = Math.max(maxEcCount, ecCount);
+
+        dcdata[r] = new Array(dcCount);
+
+        for (var i = 0; i < dcdata[r].length; i += 1) {
+          dcdata[r][i] = 0xff & buffer.getBuffer()[i + offset];
+        }
+        offset += dcCount;
+
+        var rsPoly = QRUtil.getErrorCorrectPolynomial(ecCount);
+        var rawPoly = qrPolynomial(dcdata[r], rsPoly.getLength() - 1);
+
+        var modPoly = rawPoly.mod(rsPoly);
+        ecdata[r] = new Array(rsPoly.getLength() - 1);
+        for (var i = 0; i < ecdata[r].length; i += 1) {
+          var modIndex = i + modPoly.getLength() - ecdata[r].length;
+          ecdata[r][i] = (modIndex >= 0)? modPoly.getAt(modIndex) : 0;
+        }
+      }
+
+      var totalCodeCount = 0;
+      for (var i = 0; i < rsBlocks.length; i += 1) {
+        totalCodeCount += rsBlocks[i].totalCount;
+      }
+
+      var data = new Array(totalCodeCount);
+      var index = 0;
+
+      for (var i = 0; i < maxDcCount; i += 1) {
+        for (var r = 0; r < rsBlocks.length; r += 1) {
+          if (i < dcdata[r].length) {
+            data[index] = dcdata[r][i];
+            index += 1;
+          }
+        }
+      }
+
+      for (var i = 0; i < maxEcCount; i += 1) {
+        for (var r = 0; r < rsBlocks.length; r += 1) {
+          if (i < ecdata[r].length) {
+            data[index] = ecdata[r][i];
+            index += 1;
+          }
+        }
+      }
+
+      return data;
+    };
+
+    var createData = function(typeNumber, errorCorrectionLevel, dataList) {
+
+      var rsBlocks = QRRSBlock.getRSBlocks(typeNumber, errorCorrectionLevel);
+
+      var buffer = qrBitBuffer();
+
+      for (var i = 0; i < dataList.length; i += 1) {
+        var data = dataList[i];
+        buffer.put(data.getMode(), 4);
+        buffer.put(data.getLength(), QRUtil.getLengthInBits(data.getMode(), typeNumber) );
+        data.write(buffer);
+      }
+
+      // calc num max data.
+      var totalDataCount = 0;
+      for (var i = 0; i < rsBlocks.length; i += 1) {
+        totalDataCount += rsBlocks[i].dataCount;
+      }
+
+      if (buffer.getLengthInBits() > totalDataCount * 8) {
+        throw 'code length overflow. ('
+          + buffer.getLengthInBits()
+          + '>'
+          + totalDataCount * 8
+          + ')';
+      }
+
+      // end code
+      if (buffer.getLengthInBits() + 4 <= totalDataCount * 8) {
+        buffer.put(0, 4);
+      }
+
+      // padding
+      while (buffer.getLengthInBits() % 8 != 0) {
+        buffer.putBit(false);
+      }
+
+      // padding
+      while (true) {
+
+        if (buffer.getLengthInBits() >= totalDataCount * 8) {
+          break;
+        }
+        buffer.put(PAD0, 8);
+
+        if (buffer.getLengthInBits() >= totalDataCount * 8) {
+          break;
+        }
+        buffer.put(PAD1, 8);
+      }
+
+      return createBytes(buffer, rsBlocks);
+    };
+
+    _this.addData = function(data, mode) {
+
+      mode = mode || 'Byte';
+
+      var newData = null;
+
+      switch(mode) {
+      case 'Numeric' :
+        newData = qrNumber(data);
+        break;
+      case 'Alphanumeric' :
+        newData = qrAlphaNum(data);
+        break;
+      case 'Byte' :
+        newData = qr8BitByte(data);
+        break;
+      case 'Kanji' :
+        newData = qrKanji(data);
+        break;
+      default :
+        throw 'mode:' + mode;
+      }
+
+      _dataList.push(newData);
+      _dataCache = null;
+    };
+
+    _this.isDark = function(row, col) {
+      if (row < 0 || _moduleCount <= row || col < 0 || _moduleCount <= col) {
+        throw row + ',' + col;
+      }
+      return _modules[row][col];
+    };
+
+    _this.getModuleCount = function() {
+      return _moduleCount;
+    };
+
+    _this.make = function() {
+      if (_typeNumber < 1) {
+        var typeNumber = 1;
+
+        for (; typeNumber < 40; typeNumber++) {
+          var rsBlocks = QRRSBlock.getRSBlocks(typeNumber, _errorCorrectionLevel);
+          var buffer = qrBitBuffer();
+
+          for (var i = 0; i < _dataList.length; i++) {
+            var data = _dataList[i];
+            buffer.put(data.getMode(), 4);
+            buffer.put(data.getLength(), QRUtil.getLengthInBits(data.getMode(), typeNumber) );
+            data.write(buffer);
+          }
+
+          var totalDataCount = 0;
+          for (var i = 0; i < rsBlocks.length; i++) {
+            totalDataCount += rsBlocks[i].dataCount;
+          }
+
+          if (buffer.getLengthInBits() <= totalDataCount * 8) {
+            break;
+          }
+        }
+
+        _typeNumber = typeNumber;
+      }
+
+      makeImpl(false, getBestMaskPattern() );
+    };
+
+    _this.createTableTag = function(cellSize, margin) {
+
+      cellSize = cellSize || 2;
+      margin = (typeof margin == 'undefined')? cellSize * 4 : margin;
+
+      var qrHtml = '';
+
+      qrHtml += '<table style="';
+      qrHtml += ' border-width: 0px; border-style: none;';
+      qrHtml += ' border-collapse: collapse;';
+      qrHtml += ' padding: 0px; margin: ' + margin + 'px;';
+      qrHtml += '">';
+      qrHtml += '<tbody>';
+
+      for (var r = 0; r < _this.getModuleCount(); r += 1) {
+
+        qrHtml += '<tr>';
+
+        for (var c = 0; c < _this.getModuleCount(); c += 1) {
+          qrHtml += '<td style="';
+          qrHtml += ' border-width: 0px; border-style: none;';
+          qrHtml += ' border-collapse: collapse;';
+          qrHtml += ' padding: 0px; margin: 0px;';
+          qrHtml += ' width: ' + cellSize + 'px;';
+          qrHtml += ' height: ' + cellSize + 'px;';
+          qrHtml += ' background-color: ';
+          qrHtml += _this.isDark(r, c)? '#000000' : '#ffffff';
+          qrHtml += ';';
+          qrHtml += '"/>';
+        }
+
+        qrHtml += '</tr>';
+      }
+
+      qrHtml += '</tbody>';
+      qrHtml += '</table>';
+
+      return qrHtml;
+    };
+
+    _this.createSvgTag = function(cellSize, margin, alt, title) {
+
+      var opts = {};
+      if (typeof arguments[0] == 'object') {
+        // Called by options.
+        opts = arguments[0];
+        // overwrite cellSize and margin.
+        cellSize = opts.cellSize;
+        margin = opts.margin;
+        alt = opts.alt;
+        title = opts.title;
+      }
+
+      cellSize = cellSize || 2;
+      margin = (typeof margin == 'undefined')? cellSize * 4 : margin;
+
+      // Compose alt property surrogate
+      alt = (typeof alt === 'string') ? {text: alt} : alt || {};
+      alt.text = alt.text || null;
+      alt.id = (alt.text) ? alt.id || 'qrcode-description' : null;
+
+      // Compose title property surrogate
+      title = (typeof title === 'string') ? {text: title} : title || {};
+      title.text = title.text || null;
+      title.id = (title.text) ? title.id || 'qrcode-title' : null;
+
+      var size = _this.getModuleCount() * cellSize + margin * 2;
+      var c, mc, r, mr, qrSvg='', rect;
+
+      rect = 'l' + cellSize + ',0 0,' + cellSize +
+        ' -' + cellSize + ',0 0,-' + cellSize + 'z ';
+
+      qrSvg += '<svg version="1.1" xmlns="http://www.w3.org/2000/svg"';
+      qrSvg += !opts.scalable ? ' width="' + size + 'px" height="' + size + 'px"' : '';
+      qrSvg += ' viewBox="0 0 ' + size + ' ' + size + '" ';
+      qrSvg += ' preserveAspectRatio="xMinYMin meet"';
+      qrSvg += (title.text || alt.text) ? ' role="img" aria-labelledby="' +
+          escapeXml([title.id, alt.id].join(' ').trim() ) + '"' : '';
+      qrSvg += '>';
+      qrSvg += (title.text) ? '<title id="' + escapeXml(title.id) + '">' +
+          escapeXml(title.text) + '</title>' : '';
+      qrSvg += (alt.text) ? '<description id="' + escapeXml(alt.id) + '">' +
+          escapeXml(alt.text) + '</description>' : '';
+      qrSvg += '<rect width="100%" height="100%" fill="white" cx="0" cy="0"/>';
+      qrSvg += '<path d="';
+
+      for (r = 0; r < _this.getModuleCount(); r += 1) {
+        mr = r * cellSize + margin;
+        for (c = 0; c < _this.getModuleCount(); c += 1) {
+          if (_this.isDark(r, c) ) {
+            mc = c*cellSize+margin;
+            qrSvg += 'M' + mc + ',' + mr + rect;
+          }
+        }
+      }
+
+      qrSvg += '" stroke="transparent" fill="black"/>';
+      qrSvg += '</svg>';
+
+      return qrSvg;
+    };
+
+    _this.createDataURL = function(cellSize, margin) {
+
+      cellSize = cellSize || 2;
+      margin = (typeof margin == 'undefined')? cellSize * 4 : margin;
+
+      var size = _this.getModuleCount() * cellSize + margin * 2;
+      var min = margin;
+      var max = size - margin;
+
+      return createDataURL(size, size, function(x, y) {
+        if (min <= x && x < max && min <= y && y < max) {
+          var c = Math.floor( (x - min) / cellSize);
+          var r = Math.floor( (y - min) / cellSize);
+          return _this.isDark(r, c)? 0 : 1;
+        } else {
+          return 1;
+        }
+      } );
+    };
+
+    _this.createImgTag = function(cellSize, margin, alt) {
+
+      cellSize = cellSize || 2;
+      margin = (typeof margin == 'undefined')? cellSize * 4 : margin;
+
+      var size = _this.getModuleCount() * cellSize + margin * 2;
+
+      var img = '';
+      img += '<img';
+      img += '\u0020src="';
+      img += _this.createDataURL(cellSize, margin);
+      img += '"';
+      img += '\u0020width="';
+      img += size;
+      img += '"';
+      img += '\u0020height="';
+      img += size;
+      img += '"';
+      if (alt) {
+        img += '\u0020alt="';
+        img += escapeXml(alt);
+        img += '"';
+      }
+      img += '/>';
+
+      return img;
+    };
+
+    var escapeXml = function(s) {
+      var escaped = '';
+      for (var i = 0; i < s.length; i += 1) {
+        var c = s.charAt(i);
+        switch(c) {
+        case '<': escaped += '&lt;'; break;
+        case '>': escaped += '&gt;'; break;
+        case '&': escaped += '&amp;'; break;
+        case '"': escaped += '&quot;'; break;
+        default : escaped += c; break;
+        }
+      }
+      return escaped;
+    };
+
+    var _createHalfASCII = function(margin) {
+      var cellSize = 1;
+      margin = (typeof margin == 'undefined')? cellSize * 2 : margin;
+
+      var size = _this.getModuleCount() * cellSize + margin * 2;
+      var min = margin;
+      var max = size - margin;
+
+      var y, x, r1, r2, p;
+
+      var blocks = {
+        '██': '█',
+        '█ ': '▀',
+        ' █': '▄',
+        '  ': ' '
+      };
+
+      var blocksLastLineNoMargin = {
+        '██': '▀',
+        '█ ': '▀',
+        ' █': ' ',
+        '  ': ' '
+      };
+
+      var ascii = '';
+      for (y = 0; y < size; y += 2) {
+        r1 = Math.floor((y - min) / cellSize);
+        r2 = Math.floor((y + 1 - min) / cellSize);
+        for (x = 0; x < size; x += 1) {
+          p = '█';
+
+          if (min <= x && x < max && min <= y && y < max && _this.isDark(r1, Math.floor((x - min) / cellSize))) {
+            p = ' ';
+          }
+
+          if (min <= x && x < max && min <= y+1 && y+1 < max && _this.isDark(r2, Math.floor((x - min) / cellSize))) {
+            p += ' ';
+          }
+          else {
+            p += '█';
+          }
+
+          // Output 2 characters per pixel, to create full square. 1 character per pixels gives only half width of square.
+          ascii += (margin < 1 && y+1 >= max) ? blocksLastLineNoMargin[p] : blocks[p];
+        }
+
+        ascii += '\n';
+      }
+
+      if (size % 2 && margin > 0) {
+        return ascii.substring(0, ascii.length - size - 1) + Array(size+1).join('▀');
+      }
+
+      return ascii.substring(0, ascii.length-1);
+    };
+
+    _this.createASCII = function(cellSize, margin) {
+      cellSize = cellSize || 1;
+
+      if (cellSize < 2) {
+        return _createHalfASCII(margin);
+      }
+
+      cellSize -= 1;
+      margin = (typeof margin == 'undefined')? cellSize * 2 : margin;
+
+      var size = _this.getModuleCount() * cellSize + margin * 2;
+      var min = margin;
+      var max = size - margin;
+
+      var y, x, r, p;
+
+      var white = Array(cellSize+1).join('██');
+      var black = Array(cellSize+1).join('  ');
+
+      var ascii = '';
+      var line = '';
+      for (y = 0; y < size; y += 1) {
+        r = Math.floor( (y - min) / cellSize);
+        line = '';
+        for (x = 0; x < size; x += 1) {
+          p = 1;
+
+          if (min <= x && x < max && min <= y && y < max && _this.isDark(r, Math.floor((x - min) / cellSize))) {
+            p = 0;
+          }
+
+          // Output 2 characters per pixel, to create full square. 1 character per pixels gives only half width of square.
+          line += p ? white : black;
+        }
+
+        for (r = 0; r < cellSize; r += 1) {
+          ascii += line + '\n';
+        }
+      }
+
+      return ascii.substring(0, ascii.length-1);
+    };
+
+    _this.renderTo2dContext = function(context, cellSize) {
+      cellSize = cellSize || 2;
+      var length = _this.getModuleCount();
+      for (var row = 0; row < length; row++) {
+        for (var col = 0; col < length; col++) {
+          context.fillStyle = _this.isDark(row, col) ? 'black' : 'white';
+          context.fillRect(row * cellSize, col * cellSize, cellSize, cellSize);
+        }
+      }
+    }
+
+    return _this;
+  };
+
+  //---------------------------------------------------------------------
+  // qrcode.stringToBytes
+  //---------------------------------------------------------------------
+
+  qrcode.stringToBytesFuncs = {
+    'default' : function(s) {
+      var bytes = [];
+      for (var i = 0; i < s.length; i += 1) {
+        var c = s.charCodeAt(i);
+        bytes.push(c & 0xff);
+      }
+      return bytes;
+    }
+  };
+
+  qrcode.stringToBytes = qrcode.stringToBytesFuncs['default'];
+
+  //---------------------------------------------------------------------
+  // qrcode.createStringToBytes
+  //---------------------------------------------------------------------
+
+  /**
+   * @param unicodeData base64 string of byte array.
+   * [16bit Unicode],[16bit Bytes], ...
+   * @param numChars
+   */
+  qrcode.createStringToBytes = function(unicodeData, numChars) {
+
+    // create conversion map.
+
+    var unicodeMap = function() {
+
+      var bin = base64DecodeInputStream(unicodeData);
+      var read = function() {
+        var b = bin.read();
+        if (b == -1) throw 'eof';
+        return b;
+      };
+
+      var count = 0;
+      var unicodeMap = {};
+      while (true) {
+        var b0 = bin.read();
+        if (b0 == -1) break;
+        var b1 = read();
+        var b2 = read();
+        var b3 = read();
+        var k = String.fromCharCode( (b0 << 8) | b1);
+        var v = (b2 << 8) | b3;
+        unicodeMap[k] = v;
+        count += 1;
+      }
+      if (count != numChars) {
+        throw count + ' != ' + numChars;
+      }
+
+      return unicodeMap;
+    }();
+
+    var unknownChar = '?'.charCodeAt(0);
+
+    return function(s) {
+      var bytes = [];
+      for (var i = 0; i < s.length; i += 1) {
+        var c = s.charCodeAt(i);
+        if (c < 128) {
+          bytes.push(c);
+        } else {
+          var b = unicodeMap[s.charAt(i)];
+          if (typeof b == 'number') {
+            if ( (b & 0xff) == b) {
+              // 1byte
+              bytes.push(b);
+            } else {
+              // 2bytes
+              bytes.push(b >>> 8);
+              bytes.push(b & 0xff);
+            }
+          } else {
+            bytes.push(unknownChar);
+          }
+        }
+      }
+      return bytes;
+    };
+  };
+
+  //---------------------------------------------------------------------
+  // QRMode
+  //---------------------------------------------------------------------
+
+  var QRMode = {
+    MODE_NUMBER :    1 << 0,
+    MODE_ALPHA_NUM : 1 << 1,
+    MODE_8BIT_BYTE : 1 << 2,
+    MODE_KANJI :     1 << 3
+  };
+
+  //---------------------------------------------------------------------
+  // QRErrorCorrectionLevel
+  //---------------------------------------------------------------------
+
+  var QRErrorCorrectionLevel = {
+    L : 1,
+    M : 0,
+    Q : 3,
+    H : 2
+  };
+
+  //---------------------------------------------------------------------
+  // QRMaskPattern
+  //---------------------------------------------------------------------
+
+  var QRMaskPattern = {
+    PATTERN000 : 0,
+    PATTERN001 : 1,
+    PATTERN010 : 2,
+    PATTERN011 : 3,
+    PATTERN100 : 4,
+    PATTERN101 : 5,
+    PATTERN110 : 6,
+    PATTERN111 : 7
+  };
+
+  //---------------------------------------------------------------------
+  // QRUtil
+  //---------------------------------------------------------------------
+
+  var QRUtil = function() {
+
+    var PATTERN_POSITION_TABLE = [
+      [],
+      [6, 18],
+      [6, 22],
+      [6, 26],
+      [6, 30],
+      [6, 34],
+      [6, 22, 38],
+      [6, 24, 42],
+      [6, 26, 46],
+      [6, 28, 50],
+      [6, 30, 54],
+      [6, 32, 58],
+      [6, 34, 62],
+      [6, 26, 46, 66],
+      [6, 26, 48, 70],
+      [6, 26, 50, 74],
+      [6, 30, 54, 78],
+      [6, 30, 56, 82],
+      [6, 30, 58, 86],
+      [6, 34, 62, 90],
+      [6, 28, 50, 72, 94],
+      [6, 26, 50, 74, 98],
+      [6, 30, 54, 78, 102],
+      [6, 28, 54, 80, 106],
+      [6, 32, 58, 84, 110],
+      [6, 30, 58, 86, 114],
+      [6, 34, 62, 90, 118],
+      [6, 26, 50, 74, 98, 122],
+      [6, 30, 54, 78, 102, 126],
+      [6, 26, 52, 78, 104, 130],
+      [6, 30, 56, 82, 108, 134],
+      [6, 34, 60, 86, 112, 138],
+      [6, 30, 58, 86, 114, 142],
+      [6, 34, 62, 90, 118, 146],
+      [6, 30, 54, 78, 102, 126, 150],
+      [6, 24, 50, 76, 102, 128, 154],
+      [6, 28, 54, 80, 106, 132, 158],
+      [6, 32, 58, 84, 110, 136, 162],
+      [6, 26, 54, 82, 110, 138, 166],
+      [6, 30, 58, 86, 114, 142, 170]
+    ];
+    var G15 = (1 << 10) | (1 << 8) | (1 << 5) | (1 << 4) | (1 << 2) | (1 << 1) | (1 << 0);
+    var G18 = (1 << 12) | (1 << 11) | (1 << 10) | (1 << 9) | (1 << 8) | (1 << 5) | (1 << 2) | (1 << 0);
+    var G15_MASK = (1 << 14) | (1 << 12) | (1 << 10) | (1 << 4) | (1 << 1);
+
+    var _this = {};
+
+    var getBCHDigit = function(data) {
+      var digit = 0;
+      while (data != 0) {
+        digit += 1;
+        data >>>= 1;
+      }
+      return digit;
+    };
+
+    _this.getBCHTypeInfo = function(data) {
+      var d = data << 10;
+      while (getBCHDigit(d) - getBCHDigit(G15) >= 0) {
+        d ^= (G15 << (getBCHDigit(d) - getBCHDigit(G15) ) );
+      }
+      return ( (data << 10) | d) ^ G15_MASK;
+    };
+
+    _this.getBCHTypeNumber = function(data) {
+      var d = data << 12;
+      while (getBCHDigit(d) - getBCHDigit(G18) >= 0) {
+        d ^= (G18 << (getBCHDigit(d) - getBCHDigit(G18) ) );
+      }
+      return (data << 12) | d;
+    };
+
+    _this.getPatternPosition = function(typeNumber) {
+      return PATTERN_POSITION_TABLE[typeNumber - 1];
+    };
+
+    _this.getMaskFunction = function(maskPattern) {
+
+      switch (maskPattern) {
+
+      case QRMaskPattern.PATTERN000 :
+        return function(i, j) { return (i + j) % 2 == 0; };
+      case QRMaskPattern.PATTERN001 :
+        return function(i, j) { return i % 2 == 0; };
+      case QRMaskPattern.PATTERN010 :
+        return function(i, j) { return j % 3 == 0; };
+      case QRMaskPattern.PATTERN011 :
+        return function(i, j) { return (i + j) % 3 == 0; };
+      case QRMaskPattern.PATTERN100 :
+        return function(i, j) { return (Math.floor(i / 2) + Math.floor(j / 3) ) % 2 == 0; };
+      case QRMaskPattern.PATTERN101 :
+        return function(i, j) { return (i * j) % 2 + (i * j) % 3 == 0; };
+      case QRMaskPattern.PATTERN110 :
+        return function(i, j) { return ( (i * j) % 2 + (i * j) % 3) % 2 == 0; };
+      case QRMaskPattern.PATTERN111 :
+        return function(i, j) { return ( (i * j) % 3 + (i + j) % 2) % 2 == 0; };
+
+      default :
+        throw 'bad maskPattern:' + maskPattern;
+      }
+    };
+
+    _this.getErrorCorrectPolynomial = function(errorCorrectLength) {
+      var a = qrPolynomial([1], 0);
+      for (var i = 0; i < errorCorrectLength; i += 1) {
+        a = a.multiply(qrPolynomial([1, QRMath.gexp(i)], 0) );
+      }
+      return a;
+    };
+
+    _this.getLengthInBits = function(mode, type) {
+
+      if (1 <= type && type < 10) {
+
+        // 1 - 9
+
+        switch(mode) {
+        case QRMode.MODE_NUMBER    : return 10;
+        case QRMode.MODE_ALPHA_NUM : return 9;
+        case QRMode.MODE_8BIT_BYTE : return 8;
+        case QRMode.MODE_KANJI     : return 8;
+        default :
+          throw 'mode:' + mode;
+        }
+
+      } else if (type < 27) {
+
+        // 10 - 26
+
+        switch(mode) {
+        case QRMode.MODE_NUMBER    : return 12;
+        case QRMode.MODE_ALPHA_NUM : return 11;
+        case QRMode.MODE_8BIT_BYTE : return 16;
+        case QRMode.MODE_KANJI     : return 10;
+        default :
+          throw 'mode:' + mode;
+        }
+
+      } else if (type < 41) {
+
+        // 27 - 40
+
+        switch(mode) {
+        case QRMode.MODE_NUMBER    : return 14;
+        case QRMode.MODE_ALPHA_NUM : return 13;
+        case QRMode.MODE_8BIT_BYTE : return 16;
+        case QRMode.MODE_KANJI     : return 12;
+        default :
+          throw 'mode:' + mode;
+        }
+
+      } else {
+        throw 'type:' + type;
+      }
+    };
+
+    _this.getLostPoint = function(qrcode) {
+
+      var moduleCount = qrcode.getModuleCount();
+
+      var lostPoint = 0;
+
+      // LEVEL1
+
+      for (var row = 0; row < moduleCount; row += 1) {
+        for (var col = 0; col < moduleCount; col += 1) {
+
+          var sameCount = 0;
+          var dark = qrcode.isDark(row, col);
+
+          for (var r = -1; r <= 1; r += 1) {
+
+            if (row + r < 0 || moduleCount <= row + r) {
+              continue;
+            }
+
+            for (var c = -1; c <= 1; c += 1) {
+
+              if (col + c < 0 || moduleCount <= col + c) {
+                continue;
+              }
+
+              if (r == 0 && c == 0) {
+                continue;
+              }
+
+              if (dark == qrcode.isDark(row + r, col + c) ) {
+                sameCount += 1;
+              }
+            }
+          }
+
+          if (sameCount > 5) {
+            lostPoint += (3 + sameCount - 5);
+          }
+        }
+      };
+
+      // LEVEL2
+
+      for (var row = 0; row < moduleCount - 1; row += 1) {
+        for (var col = 0; col < moduleCount - 1; col += 1) {
+          var count = 0;
+          if (qrcode.isDark(row, col) ) count += 1;
+          if (qrcode.isDark(row + 1, col) ) count += 1;
+          if (qrcode.isDark(row, col + 1) ) count += 1;
+          if (qrcode.isDark(row + 1, col + 1) ) count += 1;
+          if (count == 0 || count == 4) {
+            lostPoint += 3;
+          }
+        }
+      }
+
+      // LEVEL3
+
+      for (var row = 0; row < moduleCount; row += 1) {
+        for (var col = 0; col < moduleCount - 6; col += 1) {
+          if (qrcode.isDark(row, col)
+              && !qrcode.isDark(row, col + 1)
+              &&  qrcode.isDark(row, col + 2)
+              &&  qrcode.isDark(row, col + 3)
+              &&  qrcode.isDark(row, col + 4)
+              && !qrcode.isDark(row, col + 5)
+              &&  qrcode.isDark(row, col + 6) ) {
+            lostPoint += 40;
+          }
+        }
+      }
+
+      for (var col = 0; col < moduleCount; col += 1) {
+        for (var row = 0; row < moduleCount - 6; row += 1) {
+          if (qrcode.isDark(row, col)
+              && !qrcode.isDark(row + 1, col)
+              &&  qrcode.isDark(row + 2, col)
+              &&  qrcode.isDark(row + 3, col)
+              &&  qrcode.isDark(row + 4, col)
+              && !qrcode.isDark(row + 5, col)
+              &&  qrcode.isDark(row + 6, col) ) {
+            lostPoint += 40;
+          }
+        }
+      }
+
+      // LEVEL4
+
+      var darkCount = 0;
+
+      for (var col = 0; col < moduleCount; col += 1) {
+        for (var row = 0; row < moduleCount; row += 1) {
+          if (qrcode.isDark(row, col) ) {
+            darkCount += 1;
+          }
+        }
+      }
+
+      var ratio = Math.abs(100 * darkCount / moduleCount / moduleCount - 50) / 5;
+      lostPoint += ratio * 10;
+
+      return lostPoint;
+    };
+
+    return _this;
+  }();
+
+  //---------------------------------------------------------------------
+  // QRMath
+  //---------------------------------------------------------------------
+
+  var QRMath = function() {
+
+    var EXP_TABLE = new Array(256);
+    var LOG_TABLE = new Array(256);
+
+    // initialize tables
+    for (var i = 0; i < 8; i += 1) {
+      EXP_TABLE[i] = 1 << i;
+    }
+    for (var i = 8; i < 256; i += 1) {
+      EXP_TABLE[i] = EXP_TABLE[i - 4]
+        ^ EXP_TABLE[i - 5]
+        ^ EXP_TABLE[i - 6]
+        ^ EXP_TABLE[i - 8];
+    }
+    for (var i = 0; i < 255; i += 1) {
+      LOG_TABLE[EXP_TABLE[i] ] = i;
+    }
+
+    var _this = {};
+
+    _this.glog = function(n) {
+
+      if (n < 1) {
+        throw 'glog(' + n + ')';
+      }
+
+      return LOG_TABLE[n];
+    };
+
+    _this.gexp = function(n) {
+
+      while (n < 0) {
+        n += 255;
+      }
+
+      while (n >= 256) {
+        n -= 255;
+      }
+
+      return EXP_TABLE[n];
+    };
+
+    return _this;
+  }();
+
+  //---------------------------------------------------------------------
+  // qrPolynomial
+  //---------------------------------------------------------------------
+
+  function qrPolynomial(num, shift) {
+
+    if (typeof num.length == 'undefined') {
+      throw num.length + '/' + shift;
+    }
+
+    var _num = function() {
+      var offset = 0;
+      while (offset < num.length && num[offset] == 0) {
+        offset += 1;
+      }
+      var _num = new Array(num.length - offset + shift);
+      for (var i = 0; i < num.length - offset; i += 1) {
+        _num[i] = num[i + offset];
+      }
+      return _num;
+    }();
+
+    var _this = {};
+
+    _this.getAt = function(index) {
+      return _num[index];
+    };
+
+    _this.getLength = function() {
+      return _num.length;
+    };
+
+    _this.multiply = function(e) {
+
+      var num = new Array(_this.getLength() + e.getLength() - 1);
+
+      for (var i = 0; i < _this.getLength(); i += 1) {
+        for (var j = 0; j < e.getLength(); j += 1) {
+          num[i + j] ^= QRMath.gexp(QRMath.glog(_this.getAt(i) ) + QRMath.glog(e.getAt(j) ) );
+        }
+      }
+
+      return qrPolynomial(num, 0);
+    };
+
+    _this.mod = function(e) {
+
+      if (_this.getLength() - e.getLength() < 0) {
+        return _this;
+      }
+
+      var ratio = QRMath.glog(_this.getAt(0) ) - QRMath.glog(e.getAt(0) );
+
+      var num = new Array(_this.getLength() );
+      for (var i = 0; i < _this.getLength(); i += 1) {
+        num[i] = _this.getAt(i);
+      }
+
+      for (var i = 0; i < e.getLength(); i += 1) {
+        num[i] ^= QRMath.gexp(QRMath.glog(e.getAt(i) ) + ratio);
+      }
+
+      // recursive call
+      return qrPolynomial(num, 0).mod(e);
+    };
+
+    return _this;
+  };
+
+  //---------------------------------------------------------------------
+  // QRRSBlock
+  //---------------------------------------------------------------------
+
+  var QRRSBlock = function() {
+
+    var RS_BLOCK_TABLE = [
+
+      // L
+      // M
+      // Q
+      // H
+
+      // 1
+      [1, 26, 19],
+      [1, 26, 16],
+      [1, 26, 13],
+      [1, 26, 9],
+
+      // 2
+      [1, 44, 34],
+      [1, 44, 28],
+      [1, 44, 22],
+      [1, 44, 16],
+
+      // 3
+      [1, 70, 55],
+      [1, 70, 44],
+      [2, 35, 17],
+      [2, 35, 13],
+
+      // 4
+      [1, 100, 80],
+      [2, 50, 32],
+      [2, 50, 24],
+      [4, 25, 9],
+
+      // 5
+      [1, 134, 108],
+      [2, 67, 43],
+      [2, 33, 15, 2, 34, 16],
+      [2, 33, 11, 2, 34, 12],
+
+      // 6
+      [2, 86, 68],
+      [4, 43, 27],
+      [4, 43, 19],
+      [4, 43, 15],
+
+      // 7
+      [2, 98, 78],
+      [4, 49, 31],
+      [2, 32, 14, 4, 33, 15],
+      [4, 39, 13, 1, 40, 14],
+
+      // 8
+      [2, 121, 97],
+      [2, 60, 38, 2, 61, 39],
+      [4, 40, 18, 2, 41, 19],
+      [4, 40, 14, 2, 41, 15],
+
+      // 9
+      [2, 146, 116],
+      [3, 58, 36, 2, 59, 37],
+      [4, 36, 16, 4, 37, 17],
+      [4, 36, 12, 4, 37, 13],
+
+      // 10
+      [2, 86, 68, 2, 87, 69],
+      [4, 69, 43, 1, 70, 44],
+      [6, 43, 19, 2, 44, 20],
+      [6, 43, 15, 2, 44, 16],
+
+      // 11
+      [4, 101, 81],
+      [1, 80, 50, 4, 81, 51],
+      [4, 50, 22, 4, 51, 23],
+      [3, 36, 12, 8, 37, 13],
+
+      // 12
+      [2, 116, 92, 2, 117, 93],
+      [6, 58, 36, 2, 59, 37],
+      [4, 46, 20, 6, 47, 21],
+      [7, 42, 14, 4, 43, 15],
+
+      // 13
+      [4, 133, 107],
+      [8, 59, 37, 1, 60, 38],
+      [8, 44, 20, 4, 45, 21],
+      [12, 33, 11, 4, 34, 12],
+
+      // 14
+      [3, 145, 115, 1, 146, 116],
+      [4, 64, 40, 5, 65, 41],
+      [11, 36, 16, 5, 37, 17],
+      [11, 36, 12, 5, 37, 13],
+
+      // 15
+      [5, 109, 87, 1, 110, 88],
+      [5, 65, 41, 5, 66, 42],
+      [5, 54, 24, 7, 55, 25],
+      [11, 36, 12, 7, 37, 13],
+
+      // 16
+      [5, 122, 98, 1, 123, 99],
+      [7, 73, 45, 3, 74, 46],
+      [15, 43, 19, 2, 44, 20],
+      [3, 45, 15, 13, 46, 16],
+
+      // 17
+      [1, 135, 107, 5, 136, 108],
+      [10, 74, 46, 1, 75, 47],
+      [1, 50, 22, 15, 51, 23],
+      [2, 42, 14, 17, 43, 15],
+
+      // 18
+      [5, 150, 120, 1, 151, 121],
+      [9, 69, 43, 4, 70, 44],
+      [17, 50, 22, 1, 51, 23],
+      [2, 42, 14, 19, 43, 15],
+
+      // 19
+      [3, 141, 113, 4, 142, 114],
+      [3, 70, 44, 11, 71, 45],
+      [17, 47, 21, 4, 48, 22],
+      [9, 39, 13, 16, 40, 14],
+
+      // 20
+      [3, 135, 107, 5, 136, 108],
+      [3, 67, 41, 13, 68, 42],
+      [15, 54, 24, 5, 55, 25],
+      [15, 43, 15, 10, 44, 16],
+
+      // 21
+      [4, 144, 116, 4, 145, 117],
+      [17, 68, 42],
+      [17, 50, 22, 6, 51, 23],
+      [19, 46, 16, 6, 47, 17],
+
+      // 22
+      [2, 139, 111, 7, 140, 112],
+      [17, 74, 46],
+      [7, 54, 24, 16, 55, 25],
+      [34, 37, 13],
+
+      // 23
+      [4, 151, 121, 5, 152, 122],
+      [4, 75, 47, 14, 76, 48],
+      [11, 54, 24, 14, 55, 25],
+      [16, 45, 15, 14, 46, 16],
+
+      // 24
+      [6, 147, 117, 4, 148, 118],
+      [6, 73, 45, 14, 74, 46],
+      [11, 54, 24, 16, 55, 25],
+      [30, 46, 16, 2, 47, 17],
+
+      // 25
+      [8, 132, 106, 4, 133, 107],
+      [8, 75, 47, 13, 76, 48],
+      [7, 54, 24, 22, 55, 25],
+      [22, 45, 15, 13, 46, 16],
+
+      // 26
+      [10, 142, 114, 2, 143, 115],
+      [19, 74, 46, 4, 75, 47],
+      [28, 50, 22, 6, 51, 23],
+      [33, 46, 16, 4, 47, 17],
+
+      // 27
+      [8, 152, 122, 4, 153, 123],
+      [22, 73, 45, 3, 74, 46],
+      [8, 53, 23, 26, 54, 24],
+      [12, 45, 15, 28, 46, 16],
+
+      // 28
+      [3, 147, 117, 10, 148, 118],
+      [3, 73, 45, 23, 74, 46],
+      [4, 54, 24, 31, 55, 25],
+      [11, 45, 15, 31, 46, 16],
+
+      // 29
+      [7, 146, 116, 7, 147, 117],
+      [21, 73, 45, 7, 74, 46],
+      [1, 53, 23, 37, 54, 24],
+      [19, 45, 15, 26, 46, 16],
+
+      // 30
+      [5, 145, 115, 10, 146, 116],
+      [19, 75, 47, 10, 76, 48],
+      [15, 54, 24, 25, 55, 25],
+      [23, 45, 15, 25, 46, 16],
+
+      // 31
+      [13, 145, 115, 3, 146, 116],
+      [2, 74, 46, 29, 75, 47],
+      [42, 54, 24, 1, 55, 25],
+      [23, 45, 15, 28, 46, 16],
+
+      // 32
+      [17, 145, 115],
+      [10, 74, 46, 23, 75, 47],
+      [10, 54, 24, 35, 55, 25],
+      [19, 45, 15, 35, 46, 16],
+
+      // 33
+      [17, 145, 115, 1, 146, 116],
+      [14, 74, 46, 21, 75, 47],
+      [29, 54, 24, 19, 55, 25],
+      [11, 45, 15, 46, 46, 16],
+
+      // 34
+      [13, 145, 115, 6, 146, 116],
+      [14, 74, 46, 23, 75, 47],
+      [44, 54, 24, 7, 55, 25],
+      [59, 46, 16, 1, 47, 17],
+
+      // 35
+      [12, 151, 121, 7, 152, 122],
+      [12, 75, 47, 26, 76, 48],
+      [39, 54, 24, 14, 55, 25],
+      [22, 45, 15, 41, 46, 16],
+
+      // 36
+      [6, 151, 121, 14, 152, 122],
+      [6, 75, 47, 34, 76, 48],
+      [46, 54, 24, 10, 55, 25],
+      [2, 45, 15, 64, 46, 16],
+
+      // 37
+      [17, 152, 122, 4, 153, 123],
+      [29, 74, 46, 14, 75, 47],
+      [49, 54, 24, 10, 55, 25],
+      [24, 45, 15, 46, 46, 16],
+
+      // 38
+      [4, 152, 122, 18, 153, 123],
+      [13, 74, 46, 32, 75, 47],
+      [48, 54, 24, 14, 55, 25],
+      [42, 45, 15, 32, 46, 16],
+
+      // 39
+      [20, 147, 117, 4, 148, 118],
+      [40, 75, 47, 7, 76, 48],
+      [43, 54, 24, 22, 55, 25],
+      [10, 45, 15, 67, 46, 16],
+
+      // 40
+      [19, 148, 118, 6, 149, 119],
+      [18, 75, 47, 31, 76, 48],
+      [34, 54, 24, 34, 55, 25],
+      [20, 45, 15, 61, 46, 16]
+    ];
+
+    var qrRSBlock = function(totalCount, dataCount) {
+      var _this = {};
+      _this.totalCount = totalCount;
+      _this.dataCount = dataCount;
+      return _this;
+    };
+
+    var _this = {};
+
+    var getRsBlockTable = function(typeNumber, errorCorrectionLevel) {
+
+      switch(errorCorrectionLevel) {
+      case QRErrorCorrectionLevel.L :
+        return RS_BLOCK_TABLE[(typeNumber - 1) * 4 + 0];
+      case QRErrorCorrectionLevel.M :
+        return RS_BLOCK_TABLE[(typeNumber - 1) * 4 + 1];
+      case QRErrorCorrectionLevel.Q :
+        return RS_BLOCK_TABLE[(typeNumber - 1) * 4 + 2];
+      case QRErrorCorrectionLevel.H :
+        return RS_BLOCK_TABLE[(typeNumber - 1) * 4 + 3];
+      default :
+        return undefined;
+      }
+    };
+
+    _this.getRSBlocks = function(typeNumber, errorCorrectionLevel) {
+
+      var rsBlock = getRsBlockTable(typeNumber, errorCorrectionLevel);
+
+      if (typeof rsBlock == 'undefined') {
+        throw 'bad rs block @ typeNumber:' + typeNumber +
+            '/errorCorrectionLevel:' + errorCorrectionLevel;
+      }
+
+      var length = rsBlock.length / 3;
+
+      var list = [];
+
+      for (var i = 0; i < length; i += 1) {
+
+        var count = rsBlock[i * 3 + 0];
+        var totalCount = rsBlock[i * 3 + 1];
+        var dataCount = rsBlock[i * 3 + 2];
+
+        for (var j = 0; j < count; j += 1) {
+          list.push(qrRSBlock(totalCount, dataCount) );
+        }
+      }
+
+      return list;
+    };
+
+    return _this;
+  }();
+
+  //---------------------------------------------------------------------
+  // qrBitBuffer
+  //---------------------------------------------------------------------
+
+  var qrBitBuffer = function() {
+
+    var _buffer = [];
+    var _length = 0;
+
+    var _this = {};
+
+    _this.getBuffer = function() {
+      return _buffer;
+    };
+
+    _this.getAt = function(index) {
+      var bufIndex = Math.floor(index / 8);
+      return ( (_buffer[bufIndex] >>> (7 - index % 8) ) & 1) == 1;
+    };
+
+    _this.put = function(num, length) {
+      for (var i = 0; i < length; i += 1) {
+        _this.putBit( ( (num >>> (length - i - 1) ) & 1) == 1);
+      }
+    };
+
+    _this.getLengthInBits = function() {
+      return _length;
+    };
+
+    _this.putBit = function(bit) {
+
+      var bufIndex = Math.floor(_length / 8);
+      if (_buffer.length <= bufIndex) {
+        _buffer.push(0);
+      }
+
+      if (bit) {
+        _buffer[bufIndex] |= (0x80 >>> (_length % 8) );
+      }
+
+      _length += 1;
+    };
+
+    return _this;
+  };
+
+  //---------------------------------------------------------------------
+  // qrNumber
+  //---------------------------------------------------------------------
+
+  var qrNumber = function(data) {
+
+    var _mode = QRMode.MODE_NUMBER;
+    var _data = data;
+
+    var _this = {};
+
+    _this.getMode = function() {
+      return _mode;
+    };
+
+    _this.getLength = function(buffer) {
+      return _data.length;
+    };
+
+    _this.write = function(buffer) {
+
+      var data = _data;
+
+      var i = 0;
+
+      while (i + 2 < data.length) {
+        buffer.put(strToNum(data.substring(i, i + 3) ), 10);
+        i += 3;
+      }
+
+      if (i < data.length) {
+        if (data.length - i == 1) {
+          buffer.put(strToNum(data.substring(i, i + 1) ), 4);
+        } else if (data.length - i == 2) {
+          buffer.put(strToNum(data.substring(i, i + 2) ), 7);
+        }
+      }
+    };
+
+    var strToNum = function(s) {
+      var num = 0;
+      for (var i = 0; i < s.length; i += 1) {
+        num = num * 10 + chatToNum(s.charAt(i) );
+      }
+      return num;
+    };
+
+    var chatToNum = function(c) {
+      if ('0' <= c && c <= '9') {
+        return c.charCodeAt(0) - '0'.charCodeAt(0);
+      }
+      throw 'illegal char :' + c;
+    };
+
+    return _this;
+  };
+
+  //---------------------------------------------------------------------
+  // qrAlphaNum
+  //---------------------------------------------------------------------
+
+  var qrAlphaNum = function(data) {
+
+    var _mode = QRMode.MODE_ALPHA_NUM;
+    var _data = data;
+
+    var _this = {};
+
+    _this.getMode = function() {
+      return _mode;
+    };
+
+    _this.getLength = function(buffer) {
+      return _data.length;
+    };
+
+    _this.write = function(buffer) {
+
+      var s = _data;
+
+      var i = 0;
+
+      while (i + 1 < s.length) {
+        buffer.put(
+          getCode(s.charAt(i) ) * 45 +
+          getCode(s.charAt(i + 1) ), 11);
+        i += 2;
+      }
+
+      if (i < s.length) {
+        buffer.put(getCode(s.charAt(i) ), 6);
+      }
+    };
+
+    var getCode = function(c) {
+
+      if ('0' <= c && c <= '9') {
+        return c.charCodeAt(0) - '0'.charCodeAt(0);
+      } else if ('A' <= c && c <= 'Z') {
+        return c.charCodeAt(0) - 'A'.charCodeAt(0) + 10;
+      } else {
+        switch (c) {
+        case ' ' : return 36;
+        case '$' : return 37;
+        case '%' : return 38;
+        case '*' : return 39;
+        case '+' : return 40;
+        case '-' : return 41;
+        case '.' : return 42;
+        case '/' : return 43;
+        case ':' : return 44;
+        default :
+          throw 'illegal char :' + c;
+        }
+      }
+    };
+
+    return _this;
+  };
+
+  //---------------------------------------------------------------------
+  // qr8BitByte
+  //---------------------------------------------------------------------
+
+  var qr8BitByte = function(data) {
+
+    var _mode = QRMode.MODE_8BIT_BYTE;
+    var _data = data;
+    var _bytes = qrcode.stringToBytes(data);
+
+    var _this = {};
+
+    _this.getMode = function() {
+      return _mode;
+    };
+
+    _this.getLength = function(buffer) {
+      return _bytes.length;
+    };
+
+    _this.write = function(buffer) {
+      for (var i = 0; i < _bytes.length; i += 1) {
+        buffer.put(_bytes[i], 8);
+      }
+    };
+
+    return _this;
+  };
+
+  //---------------------------------------------------------------------
+  // qrKanji
+  //---------------------------------------------------------------------
+
+  var qrKanji = function(data) {
+
+    var _mode = QRMode.MODE_KANJI;
+    var _data = data;
+
+    var stringToBytes = qrcode.stringToBytesFuncs['SJIS'];
+    if (!stringToBytes) {
+      throw 'sjis not supported.';
+    }
+    !function(c, code) {
+      // self test for sjis support.
+      var test = stringToBytes(c);
+      if (test.length != 2 || ( (test[0] << 8) | test[1]) != code) {
+        throw 'sjis not supported.';
+      }
+    }('\u53cb', 0x9746);
+
+    var _bytes = stringToBytes(data);
+
+    var _this = {};
+
+    _this.getMode = function() {
+      return _mode;
+    };
+
+    _this.getLength = function(buffer) {
+      return ~~(_bytes.length / 2);
+    };
+
+    _this.write = function(buffer) {
+
+      var data = _bytes;
+
+      var i = 0;
+
+      while (i + 1 < data.length) {
+
+        var c = ( (0xff & data[i]) << 8) | (0xff & data[i + 1]);
+
+        if (0x8140 <= c && c <= 0x9FFC) {
+          c -= 0x8140;
+        } else if (0xE040 <= c && c <= 0xEBBF) {
+          c -= 0xC140;
+        } else {
+          throw 'illegal char at ' + (i + 1) + '/' + c;
+        }
+
+        c = ( (c >>> 8) & 0xff) * 0xC0 + (c & 0xff);
+
+        buffer.put(c, 13);
+
+        i += 2;
+      }
+
+      if (i < data.length) {
+        throw 'illegal char at ' + (i + 1);
+      }
+    };
+
+    return _this;
+  };
+
+  //=====================================================================
+  // GIF Support etc.
+  //
+
+  //---------------------------------------------------------------------
+  // byteArrayOutputStream
+  //---------------------------------------------------------------------
+
+  var byteArrayOutputStream = function() {
+
+    var _bytes = [];
+
+    var _this = {};
+
+    _this.writeByte = function(b) {
+      _bytes.push(b & 0xff);
+    };
+
+    _this.writeShort = function(i) {
+      _this.writeByte(i);
+      _this.writeByte(i >>> 8);
+    };
+
+    _this.writeBytes = function(b, off, len) {
+      off = off || 0;
+      len = len || b.length;
+      for (var i = 0; i < len; i += 1) {
+        _this.writeByte(b[i + off]);
+      }
+    };
+
+    _this.writeString = function(s) {
+      for (var i = 0; i < s.length; i += 1) {
+        _this.writeByte(s.charCodeAt(i) );
+      }
+    };
+
+    _this.toByteArray = function() {
+      return _bytes;
+    };
+
+    _this.toString = function() {
+      var s = '';
+      s += '[';
+      for (var i = 0; i < _bytes.length; i += 1) {
+        if (i > 0) {
+          s += ',';
+        }
+        s += _bytes[i];
+      }
+      s += ']';
+      return s;
+    };
+
+    return _this;
+  };
+
+  //---------------------------------------------------------------------
+  // base64EncodeOutputStream
+  //---------------------------------------------------------------------
+
+  var base64EncodeOutputStream = function() {
+
+    var _buffer = 0;
+    var _buflen = 0;
+    var _length = 0;
+    var _base64 = '';
+
+    var _this = {};
+
+    var writeEncoded = function(b) {
+      _base64 += String.fromCharCode(encode(b & 0x3f) );
+    };
+
+    var encode = function(n) {
+      if (n < 0) {
+        // error.
+      } else if (n < 26) {
+        return 0x41 + n;
+      } else if (n < 52) {
+        return 0x61 + (n - 26);
+      } else if (n < 62) {
+        return 0x30 + (n - 52);
+      } else if (n == 62) {
+        return 0x2b;
+      } else if (n == 63) {
+        return 0x2f;
+      }
+      throw 'n:' + n;
+    };
+
+    _this.writeByte = function(n) {
+
+      _buffer = (_buffer << 8) | (n & 0xff);
+      _buflen += 8;
+      _length += 1;
+
+      while (_buflen >= 6) {
+        writeEncoded(_buffer >>> (_buflen - 6) );
+        _buflen -= 6;
+      }
+    };
+
+    _this.flush = function() {
+
+      if (_buflen > 0) {
+        writeEncoded(_buffer << (6 - _buflen) );
+        _buffer = 0;
+        _buflen = 0;
+      }
+
+      if (_length % 3 != 0) {
+        // padding
+        var padlen = 3 - _length % 3;
+        for (var i = 0; i < padlen; i += 1) {
+          _base64 += '=';
+        }
+      }
+    };
+
+    _this.toString = function() {
+      return _base64;
+    };
+
+    return _this;
+  };
+
+  //---------------------------------------------------------------------
+  // base64DecodeInputStream
+  //---------------------------------------------------------------------
+
+  var base64DecodeInputStream = function(str) {
+
+    var _str = str;
+    var _pos = 0;
+    var _buffer = 0;
+    var _buflen = 0;
+
+    var _this = {};
+
+    _this.read = function() {
+
+      while (_buflen < 8) {
+
+        if (_pos >= _str.length) {
+          if (_buflen == 0) {
+            return -1;
+          }
+          throw 'unexpected end of file./' + _buflen;
+        }
+
+        var c = _str.charAt(_pos);
+        _pos += 1;
+
+        if (c == '=') {
+          _buflen = 0;
+          return -1;
+        } else if (c.match(/^\s$/) ) {
+          // ignore if whitespace.
+          continue;
+        }
+
+        _buffer = (_buffer << 6) | decode(c.charCodeAt(0) );
+        _buflen += 6;
+      }
+
+      var n = (_buffer >>> (_buflen - 8) ) & 0xff;
+      _buflen -= 8;
+      return n;
+    };
+
+    var decode = function(c) {
+      if (0x41 <= c && c <= 0x5a) {
+        return c - 0x41;
+      } else if (0x61 <= c && c <= 0x7a) {
+        return c - 0x61 + 26;
+      } else if (0x30 <= c && c <= 0x39) {
+        return c - 0x30 + 52;
+      } else if (c == 0x2b) {
+        return 62;
+      } else if (c == 0x2f) {
+        return 63;
+      } else {
+        throw 'c:' + c;
+      }
+    };
+
+    return _this;
+  };
+
+  //---------------------------------------------------------------------
+  // gifImage (B/W)
+  //---------------------------------------------------------------------
+
+  var gifImage = function(width, height) {
+
+    var _width = width;
+    var _height = height;
+    var _data = new Array(width * height);
+
+    var _this = {};
+
+    _this.setPixel = function(x, y, pixel) {
+      _data[y * _width + x] = pixel;
+    };
+
+    _this.write = function(out) {
+
+      //---------------------------------
+      // GIF Signature
+
+      out.writeString('GIF87a');
+
+      //---------------------------------
+      // Screen Descriptor
+
+      out.writeShort(_width);
+      out.writeShort(_height);
+
+      out.writeByte(0x80); // 2bit
+      out.writeByte(0);
+      out.writeByte(0);
+
+      //---------------------------------
+      // Global Color Map
+
+      // black
+      out.writeByte(0x00);
+      out.writeByte(0x00);
+      out.writeByte(0x00);
+
+      // white
+      out.writeByte(0xff);
+      out.writeByte(0xff);
+      out.writeByte(0xff);
+
+      //---------------------------------
+      // Image Descriptor
+
+      out.writeString(',');
+      out.writeShort(0);
+      out.writeShort(0);
+      out.writeShort(_width);
+      out.writeShort(_height);
+      out.writeByte(0);
+
+      //---------------------------------
+      // Local Color Map
+
+      //---------------------------------
+      // Raster Data
+
+      var lzwMinCodeSize = 2;
+      var raster = getLZWRaster(lzwMinCodeSize);
+
+      out.writeByte(lzwMinCodeSize);
+
+      var offset = 0;
+
+      while (raster.length - offset > 255) {
+        out.writeByte(255);
+        out.writeBytes(raster, offset, 255);
+        offset += 255;
+      }
+
+      out.writeByte(raster.length - offset);
+      out.writeBytes(raster, offset, raster.length - offset);
+      out.writeByte(0x00);
+
+      //---------------------------------
+      // GIF Terminator
+      out.writeString(';');
+    };
+
+    var bitOutputStream = function(out) {
+
+      var _out = out;
+      var _bitLength = 0;
+      var _bitBuffer = 0;
+
+      var _this = {};
+
+      _this.write = function(data, length) {
+
+        if ( (data >>> length) != 0) {
+          throw 'length over';
+        }
+
+        while (_bitLength + length >= 8) {
+          _out.writeByte(0xff & ( (data << _bitLength) | _bitBuffer) );
+          length -= (8 - _bitLength);
+          data >>>= (8 - _bitLength);
+          _bitBuffer = 0;
+          _bitLength = 0;
+        }
+
+        _bitBuffer = (data << _bitLength) | _bitBuffer;
+        _bitLength = _bitLength + length;
+      };
+
+      _this.flush = function() {
+        if (_bitLength > 0) {
+          _out.writeByte(_bitBuffer);
+        }
+      };
+
+      return _this;
+    };
+
+    var getLZWRaster = function(lzwMinCodeSize) {
+
+      var clearCode = 1 << lzwMinCodeSize;
+      var endCode = (1 << lzwMinCodeSize) + 1;
+      var bitLength = lzwMinCodeSize + 1;
+
+      // Setup LZWTable
+      var table = lzwTable();
+
+      for (var i = 0; i < clearCode; i += 1) {
+        table.add(String.fromCharCode(i) );
+      }
+      table.add(String.fromCharCode(clearCode) );
+      table.add(String.fromCharCode(endCode) );
+
+      var byteOut = byteArrayOutputStream();
+      var bitOut = bitOutputStream(byteOut);
+
+      // clear code
+      bitOut.write(clearCode, bitLength);
+
+      var dataIndex = 0;
+
+      var s = String.fromCharCode(_data[dataIndex]);
+      dataIndex += 1;
+
+      while (dataIndex < _data.length) {
+
+        var c = String.fromCharCode(_data[dataIndex]);
+        dataIndex += 1;
+
+        if (table.contains(s + c) ) {
+
+          s = s + c;
+
+        } else {
+
+          bitOut.write(table.indexOf(s), bitLength);
+
+          if (table.size() < 0xfff) {
+
+            if (table.size() == (1 << bitLength) ) {
+              bitLength += 1;
+            }
+
+            table.add(s + c);
+          }
+
+          s = c;
+        }
+      }
+
+      bitOut.write(table.indexOf(s), bitLength);
+
+      // end code
+      bitOut.write(endCode, bitLength);
+
+      bitOut.flush();
+
+      return byteOut.toByteArray();
+    };
+
+    var lzwTable = function() {
+
+      var _map = {};
+      var _size = 0;
+
+      var _this = {};
+
+      _this.add = function(key) {
+        if (_this.contains(key) ) {
+          throw 'dup key:' + key;
+        }
+        _map[key] = _size;
+        _size += 1;
+      };
+
+      _this.size = function() {
+        return _size;
+      };
+
+      _this.indexOf = function(key) {
+        return _map[key];
+      };
+
+      _this.contains = function(key) {
+        return typeof _map[key] != 'undefined';
+      };
+
+      return _this;
+    };
+
+    return _this;
+  };
+
+  var createDataURL = function(width, height, getPixel) {
+    var gif = gifImage(width, height);
+    for (var y = 0; y < height; y += 1) {
+      for (var x = 0; x < width; x += 1) {
+        gif.setPixel(x, y, getPixel(x, y) );
+      }
+    }
+
+    var b = byteArrayOutputStream();
+    gif.write(b);
+
+    var base64 = base64EncodeOutputStream();
+    var bytes = b.toByteArray();
+    for (var i = 0; i < bytes.length; i += 1) {
+      base64.writeByte(bytes[i]);
+    }
+    base64.flush();
+
+    return 'data:image/gif;base64,' + base64;
+  };
+
+  //---------------------------------------------------------------------
+  // returns qrcode function.
+
+  return qrcode;
+}();
+
+// multibyte support
+!function() {
+
+  qrcode.stringToBytesFuncs['UTF-8'] = function(s) {
+    // http://stackoverflow.com/questions/18729405/how-to-convert-utf8-string-to-byte-array
+    function toUTF8Array(str) {
+      var utf8 = [];
+      for (var i=0; i < str.length; i++) {
+        var charcode = str.charCodeAt(i);
+        if (charcode < 0x80) utf8.push(charcode);
+        else if (charcode < 0x800) {
+          utf8.push(0xc0 | (charcode >> 6),
+              0x80 | (charcode & 0x3f));
+        }
+        else if (charcode < 0xd800 || charcode >= 0xe000) {
+          utf8.push(0xe0 | (charcode >> 12),
+              0x80 | ((charcode>>6) & 0x3f),
+              0x80 | (charcode & 0x3f));
+        }
+        // surrogate pair
+        else {
+          i++;
+          // UTF-16 encodes 0x10000-0x10FFFF by
+          // subtracting 0x10000 and splitting the
+          // 20 bits of 0x0-0xFFFFF into two halves
+          charcode = 0x10000 + (((charcode & 0x3ff)<<10)
+            | (str.charCodeAt(i) & 0x3ff));
+          utf8.push(0xf0 | (charcode >>18),
+              0x80 | ((charcode>>12) & 0x3f),
+              0x80 | ((charcode>>6) & 0x3f),
+              0x80 | (charcode & 0x3f));
+        }
+      }
+      return utf8;
+    }
+    return toUTF8Array(s);
+  };
+
+}();
+
+(function (factory) {
+  if (typeof define === 'function' && define.amd) {
+      define([], factory);
+  } else if (typeof exports === 'object') {
+      module.exports = factory();
+  }
+}(function () {
+    return qrcode;
+}));
+
+</script>
+
+<script>
+/* ═════════════════════════════════════════════════════════════════════════
+   APP — placas.html (PLACAS_V1)
+   ═════════════════════════════════════════════════════════════════════════ */
+var GAS_URL = 'https://script.google.com/macros/s/AKfycbz_qSb4Ib6VoZs4TE15EYp9qO5sSEhrjadY71yK0Sd4vqnu4msidsObXnQtkCGXpIqq/exec';
+var API_KEY = 'fb9e6bd8b112a4a50eb30fbcedc7681fc29c331af4600584656ade9dace002da';
+var URL_BASE_PADRAO = 'HTTPS://PORTAL.PROPERCOMPRESSORES.COM.BR/M/';
+var TAG_RE = /^PL-[A-Z]{2}-\d{3,}$/;
+var ALNUM_RE = /^[0-9A-Z $%*+\-.\/:]*$/;
+
+var LAYOUT_TAG = {"schema": "proper.placa/2", "id": "PROPER_LOCACAO_TAG", "versao": "1.0.0", "nome": "Proper Locação — placa de patrimônio com TAG e QR", "placa": {"largura_mm": 86.0, "altura_mm": 54.0, "raio_canto_mm": 4.0, "desenhar_contorno": false}, "fontes": {"titulo": {"family": "Arial", "weight": "bold"}, "label": {"family": "Arial", "weight": "bold"}, "tag": {"family": "Arial", "weight": "bold"}, "valor": {"family": "Arial", "weight": "normal"}, "rodape": {"family": "Arial", "weight": "normal"}}, "moldura": {"x": 0.5, "y": 0.5, "w": 85.0, "h": 53.0, "r": 3.5}, "logo": {"id": "LOGO_PROPER", "x": 7.5, "y": 3.6, "w": 38.0, "h": 5.54}, "textos_fixos": [{"id": "SUB", "texto": "LOCAÇÃO DE EQUIPAMENTOS", "x": 7.5, "y": 10.2, "w": 38.0, "h": 2.1, "align": "left", "font": "titulo", "tracking": 0.08}, {"id": "LB_TAG", "texto": "TAG / PATRIMÔNIO", "x": 7.5, "y": 14.6, "w": 30.0, "h": 1.8, "align": "left", "font": "label"}, {"id": "LB_EQ", "texto": "EQUIPAMENTO", "x": 7.5, "y": 29.4, "w": 30.0, "h": 1.7, "align": "left", "font": "label"}, {"id": "LB_SER", "texto": "Nº DE SÉRIE", "x": 7.5, "y": 37.6, "w": 30.0, "h": 1.7, "align": "left", "font": "label"}, {"id": "QR1", "texto": "ESCANEIE: HISTÓRICO", "x": 67.0, "y": 36.4, "w": 28.0, "h": 1.7, "align": "center", "font": "label"}, {"id": "QR2", "texto": "E SUPORTE DA MÁQUINA", "x": 67.0, "y": 38.9, "w": 28.0, "h": 1.7, "align": "center", "font": "label"}, {"id": "NR", "texto": "NÃO REMOVER", "x": 67.0, "y": 42.3, "w": 28.0, "h": 1.9, "align": "center", "font": "titulo", "tracking": 0.12}, {"id": "RODAPE", "texto": "(37) 99917-8448  ·  www.propercompressores.com.br", "x": 43.0, "y": 47.9, "w": 62.0, "h": 1.65, "align": "center", "font": "rodape"}], "campos": [{"id": "TAG", "rotulo": "TAG", "box": {"x": 6.5, "y": 17.0, "w": 42.0, "h": 10.6, "r": 1.7}, "h_texto": 6.4, "align": "center", "font": "tag", "transform": "upper", "max_len": 14, "obrigatorio": true}, {"id": "EQUIP", "rotulo": "Equipamento", "box": {"x": 6.5, "y": 31.6, "w": 42.0, "h": 4.9, "r": 1.5}, "h_texto": 2.3, "align": "center", "font": "valor", "transform": "upper", "max_len": 30}, {"id": "SERIE", "rotulo": "Nº de série", "box": {"x": 6.5, "y": 39.8, "w": 42.0, "h": 4.9, "r": 1.5}, "h_texto": 2.3, "align": "center", "font": "valor", "transform": "upper", "max_len": 24}], "qr": {"x": 53.0, "y": 7.0, "w": 28.0, "h": 28.0}, "furos": {"ativo": true, "diametro_mm": 3.5, "inset_x_mm": 4.0, "inset_y_mm": 4.0, "moldura": "interromper", "folga_moldura_mm": 0.7}, "gravacao": {"modo": "contorno", "res_mm": 0.012, "tol_mm": 0.005, "fill_mm": 0.04}, "painel": {"largura_mm": 200.0, "altura_mm": 200.0, "gap_mm": 4.0}};
+
+var FROTA = [], TIPOS = [], SEL = [], MANUAL = null;
+function $(id) { return document.getElementById(id); }
+function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]; }); }
+function quem() {
+  try {
+    var s = JSON.parse(localStorage.getItem('proper_session') || 'null');
+    return (s && (s.nome_tecnico || (s.tecnico && s.tecnico.nome))) || '';
+  } catch (e) { return ''; }
+}
+function dataBR(iso) { var m = /^(\d{4})-(\d{2})-(\d{2})/.exec(String(iso || '')); return m ? m[3] + '/' + m[2] + '/' + m[1] : ''; }
+
+// O transporte: POST com corpo JSON e SEM Content-Type (= text/plain), como o
+// PCM faz — o Apps Script não responde a preflight de CORS.
+async function gas(action, body) {
+  var corpo = Object.assign({ action: action, key: API_KEY, usuario: quem() || 'placas.html' }, body || {});
+  var r = await fetch(GAS_URL, { method: 'POST', body: JSON.stringify(corpo) });
+  var j = await r.json();
+  if (!j || j.status !== 'ok') throw new Error((j && (j.error || j.motivo)) || 'o servidor não respondeu ok');
+  return j;
+}
+
+// ── lista ─────────────────────────────────────────────────────────────────
+async function carregar() {
+  $('listaFrota').innerHTML = '<div class="vazio">⏳ Lendo a frota no servidor…</div>';
+  $('btnGerarFaltam').disabled = true;
+  try {
+    var r = await gas('frotaPlacas', {});
+    FROTA = r.maquinas || []; TIPOS = r.tipos || [];
+  } catch (e) {
+    $('listaFrota').innerHTML = '<div class="msg warn">Não consegui ler a frota: ' + esc(e.message) +
+      '<br>Se o GAS ainda não é o v146, a leitura da frota não existe no servidor. A placa avulsa (abaixo) funciona sem ele.</div>';
+    $('resumo').textContent = 'Frota indisponível.';
+    return;
+  }
+  var q = new URLSearchParams(location.search);
+  if (q.get('id') && !SEL.length) SEL = q.get('id').split(',').filter(Boolean);
+  pintarLista();
+  pintarPrevia();
+}
+function situacao(m) {
+  if (m.tag_ok) return '<span class="pill ok">TAG ok</span>';
+  if (m.tag) return '<span class="pill am">fora do padrão</span>';
+  return '<span class="pill no">sem TAG</span>';
+}
+function posse(m) {
+  if (m.posse) return '<b>' + esc(m.posse.cliente) + '</b><div style="font-size:11.5px;color:var(--muted)">' +
+    (m.posse.tipo === 'locacao' ? 'locação' : 'cessão') + ' desde ' + esc(dataBR(m.posse.desde)) + (m.posse.os_numero ? ' · ' + esc(m.posse.os_numero) : '') + '</div>';
+  if (m.na_oficina) return '<span class="pill">na oficina</span>';
+  return '<span style="color:var(--muted)">na Proper</span>';
+}
+function pintarLista() {
+  var faltam = FROTA.filter(function (m) { return !m.tag_ok; }).length;
+  $('resumo').textContent = FROTA.length + ' máquina(s) · ' + (FROTA.length - faltam) + ' com TAG no padrão · ' + faltam + ' sem';
+  $('btnGerarFaltam').disabled = !faltam;
+  if (!FROTA.length) { $('listaFrota').innerHTML = '<div class="vazio">Nenhuma máquina cadastrada no cliente Proper Locação.</div>'; return; }
+  // A3 — a busca ignora acento e maiúscula ("locacao" acha "Locação")
+  var sem = function (x) { return String(x == null ? '' : x).normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase(); };
+  var q = sem($('busca').value).trim();
+  var vis = FROTA.filter(function (m) {
+    if (!q) return true;
+    return sem([m.tag, m.marca, m.modelo, m.serie, m.tipo_equip, m.posse && m.posse.cliente].join(' ')).indexOf(q) >= 0;
+  });
+  if (!vis.length) { $('listaFrota').innerHTML = '<div class="vazio">Nada encontrado para “' + esc($('busca').value) + '”.</div>'; return; }
+  var h = '<div class="tbl-wrap"><table class="frota"><thead><tr><th></th><th>TAG</th><th>Máquina</th><th>Série</th><th>Tipo</th><th>Com quem está</th><th>Situação</th><th></th></tr></thead><tbody>';
+  vis.forEach(function (m) {
+    var s = SEL.indexOf(m.id) >= 0;
+    h += '<tr class="' + (s ? 'sel' : '') + '">' +
+      '<td><input type="checkbox" data-sel="' + esc(m.id) + '"' + (s ? ' checked' : '') + (m.tag_ok ? '' : ' disabled title="Gere a TAG antes"') + '></td>' +
+      '<td class="tag">' + (m.tag ? esc(m.tag) : '—') + '</td>' +
+      '<td>' + esc([m.marca, m.modelo].filter(Boolean).join(' ')) + '</td>' +
+      '<td>' + esc(m.serie) + '</td>' +
+      '<td>' + esc(m.tipo_equip || '—') + '</td>' +
+      '<td>' + posse(m) + '</td>' +
+      '<td>' + situacao(m) + '</td>' +
+      '<td>' + (m.tag_ok ? '' : '<button class="btn xs" type="button" data-gerar="' + esc(m.id) + '">Gerar TAG</button>') + '</td></tr>';
+  });
+  h += '</tbody></table></div>';
+  $('listaFrota').innerHTML = h;
+}
+document.addEventListener('change', function (ev) {
+  var id = ev.target && ev.target.getAttribute && ev.target.getAttribute('data-sel');
+  if (!id) return;
+  if (ev.target.checked) { if (SEL.indexOf(id) < 0) SEL.push(id); } else SEL = SEL.filter(function (x) { return x !== id; });
+  MANUAL = null;
+  pintarLista(); pintarPrevia();
+});
+document.addEventListener('click', function (ev) {
+  var b = ev.target && ev.target.closest && ev.target.closest('[data-gerar]');
+  if (b) gerarTags([b.getAttribute('data-gerar')]);
+});
+
+// ── gerar TAG: prévia (dry_run) → confirmação → grava ──────────────────────
+function dialogo(tit, corpo, botoes) {
+  return new Promise(function (res) {
+    $('dlgTit').textContent = tit; $('dlgCorpo').innerHTML = corpo; $('dlgPe').innerHTML = '';
+    botoes.forEach(function (b) {
+      var el = document.createElement('button'); el.className = 'btn' + (b.p ? ' p' : ''); el.type = 'button'; el.textContent = b.t;
+      el.onclick = function () { var v = b.v; if (typeof v === 'function') v = v(); $('dlg').close(); res(v); };
+      $('dlgPe').appendChild(el);
+    });
+    $('dlg').onclose = function () { res(undefined); };   // Esc fecha sem decidir
+    $('dlg').showModal();
+  });
+}
+async function gerarTags(ids) {
+  var itens = ids.map(function (id) { return { maquina_id: id }; });
+  var sem = FROTA.filter(function (m) { return ids.indexOf(m.id) >= 0 && !m.tipo_codigo; });
+  if (sem.length) {
+    var opts = TIPOS.map(function (t) { return '<option value="' + esc(t.cod) + '">' + esc(t.cod + ' · ' + t.nome) + '</option>'; }).join('');
+    var corpo = '<p>Estas máquinas estão sem <b>tipo de equipamento</b> no cadastro. Escolha o tipo — ele entra na TAG (PL-<b>CP</b>-001) e no cadastro:</p>' +
+      sem.map(function (m) { return '<label class="f"><span>' + esc([m.marca, m.modelo, m.serie].filter(Boolean).join(' · ')) + '</span><select data-tipo="' + esc(m.id) + '"><option value="">— escolha —</option>' + opts + '</select></label>'; }).join('');
+    var ok = await dialogo('Tipo do equipamento', corpo, [{ t: 'Cancelar', v: false }, { t: 'Continuar', p: true, v: function () {
+      var faltou = false;
+      sem.forEach(function (m) {
+        var v = document.querySelector('[data-tipo="' + m.id + '"]').value;
+        if (!v) { faltou = true; return; }
+        var t = TIPOS.filter(function (x) { return x.cod === v; })[0];
+        itens.forEach(function (it) { if (it.maquina_id === m.id) { it.tipo_codigo = v; it.tipo_equip = t ? t.tipo_equip : ''; } });
+      });
+      return !faltou;
+    } }]);
+    if (!ok) return;
+  }
+  var prev;
+  try { prev = await gas('frotaTagGerar', { itens: itens, dry_run: true }); }
+  catch (e) { await dialogo('Não consegui calcular as TAGs', '<p>' + esc(e.message) + '</p>', [{ t: 'Fechar', v: 0 }]); return; }
+  var lin = (prev.itens || []).map(function (x) {
+    var m = FROTA.filter(function (f) { return f.id === x.maquina_id; })[0] || {};
+    var nome = esc([m.marca, m.modelo, m.serie].filter(Boolean).join(' · ') || x.maquina_id);
+    if (x.situacao === 'proposta') return '<li><b class="tag">' + esc(x.tag) + '</b> — ' + nome + (x.anterior ? ' <span style="color:var(--muted)">(era ' + esc(x.anterior) + ', vai para as observações)</span>' : '') + '</li>';
+    if (x.situacao === 'ja_tinha') return '<li>' + nome + ' — já tem ' + esc(x.tag) + '</li>';
+    if (x.situacao === 'sem_tipo') return '<li>' + nome + ' — <b>sem tipo</b>, não gera</li>';
+    return '<li>' + nome + ' — ' + esc(x.situacao) + '</li>';
+  }).join('');
+  var n = (prev.itens || []).filter(function (x) { return x.situacao === 'proposta'; }).length;
+  if (!n) { await dialogo('Nada a gerar', '<ul>' + lin + '</ul>', [{ t: 'Fechar', v: 0 }]); return; }
+  var vai = await dialogo('Gerar ' + n + ' TAG(s)?', '<p>A TAG é <b>definitiva</b>: depois de gravada na placa, o sistema não deixa trocar.</p><ul>' + lin + '</ul>' +
+    '<p style="font-size:12px;color:var(--muted)">O número final é o que o servidor der na hora da gravação (se alguém gerar outra TAG no meio, ele avança).</p>',
+    [{ t: 'Cancelar', v: false }, { t: 'Gerar e gravar', p: true, v: true }]);
+  if (!vai) return;
+  try {
+    var r = await gas('frotaTagGerar', { itens: itens });
+    var novas = (r.itens || []).filter(function (x) { return x.tag; }).map(function (x) { return x.maquina_id; });
+    novas.forEach(function (id) { if (SEL.indexOf(id) < 0) SEL.push(id); });
+    await carregar();
+  } catch (e) { await dialogo('Não gravou', '<p>' + esc(e.message) + '</p>', [{ t: 'Fechar', v: 0 }]); }
+}
+
+// ── QR ────────────────────────────────────────────────────────────────────
+function urlDoQR(tag) {
+  var base = String($('optBase').value || URL_BASE_PADRAO).trim();
+  return (base + String(tag || '').trim()).toUpperCase();
+}
+function matrizQR(texto) {
+  var q = qrcode(0, 'Q');
+  q.addData(texto, ALNUM_RE.test(texto) ? 'Alphanumeric' : 'Byte');
+  q.make();
+  var n = q.getModuleCount();
+  return { n: n, escuro: function (r, c) { return q.isDark(r, c); }, zona: 3,
+           inverter: $('optPlaca').value !== 'clara', texto: texto };
+}
+function dadosDe(m) {
+  return { TAG: m.tag, EQUIP: [m.marca, m.modelo].filter(Boolean).join(' '), SERIE: m.serie, __qr: matrizQR(urlDoQR(m.tag)) };
+}
+function selecionadas() {
+  if (MANUAL) return [MANUAL];
+  return SEL.map(function (id) { return FROTA.filter(function (m) { return m.id === id; })[0]; }).filter(function (m) { return m && m.tag_ok; });
+}
+function pintarPrevia() {
+  var lista = selecionadas();
+  $('btnBaixarUma').disabled = lista.length !== 1;
+  $('btnBaixarLote').disabled = !lista.length;
+  if (!lista.length) { $('prevArea').innerHTML = '<div class="vazio">Nenhuma máquina selecionada.</div>'; return; }
+  var clara = $('optPlaca').value === 'clara';
+  $('prevArea').innerHTML = lista.slice(0, 6).map(function (m, i) {
+    return '<div><div class="frame' + (clara ? ' clara' : '') + '" id="pv' + i + '">⏳</div>' +
+      '<div class="qrtxt">QR → <a href="' + esc(urlDoQR(m.tag).toLowerCase()) + '" target="_blank" rel="noopener">' + esc(urlDoQR(m.tag)) + '</a>' +
+      (TAG_RE.test(String(m.tag || '')) ? '' : ' <span class="pill am">TAG fora do padrão PL-</span>') + '</div></div>';
+  }).join('') + (lista.length > 6 ? '<div class="sub">+ ' + (lista.length - 6) + ' placa(s) no lote</div>' : '');
+  // desenhar pode levar ~1 s por placa (rasterização do texto): um frame por vez
+  var i = 0;
+  (function prox() {
+    if (i >= Math.min(lista.length, 6)) return;
+    var el = $('pv' + i); if (!el) return;
+    try { el.innerHTML = PlacaDXF.preverSVG(LAYOUT_TAG, dadosDe(lista[i]), { fundo_claro: clara }); }
+    catch (e) { el.innerHTML = '<div class="msg warn">Não desenhou: ' + esc(e.message) + '</div>'; }
+    i++; setTimeout(prox, 0);
+  })();
+}
+function opcoesDXF(m) {
+  return { notas: 'Proper Locacao - placa de patrimonio ' + (m ? m.tag : '(lote)') + ' - PLACAS_V1\n' +
+    'Camadas: QR/TEXTO/LOGO = hachurar; MOLDURA/CAIXAS = linha; FUROS = furacao.\n' +
+    ($('optPlaca').value === 'clara' ? 'Placa CLARA: a camada QR sao os modulos escuros.' : 'Placa ESCURA: a camada QR e o FUNDO claro (zona de silencio + modulos claros); os modulos escuros sao ilhas.') };
+}
+function baixarUma() {
+  var m = selecionadas()[0]; if (!m) return;
+  PWAIT_demorado(function () {
+    var dxf = PlacaDXF.gerar(LAYOUT_TAG, dadosDe(m), opcoesDXF(m));
+    PlacaDXF.baixar('PLACA_' + String(m.tag).replace(/[^A-Za-z0-9-]/g, '_') + '.dxf', dxf);
+  }, 'Gerando o DXF…');
+}
+function baixarLote() {
+  var lista = selecionadas(); if (!lista.length) return;
+  var p = parseFloat(String($('optPainel').value).replace(',', '.')) || 200;
+  var L = JSON.parse(JSON.stringify(LAYOUT_TAG)); L.painel = { largura_mm: p, altura_mm: p, gap_mm: 4 };
+  PWAIT_demorado(function () {
+    var r = PlacaDXF.gerarPainel(L, lista.map(dadosDe), opcoesDXF(null));
+    r.paineis.forEach(function (dxf, i) {
+      PlacaDXF.baixar('PLACAS_FROTA_' + (i + 1) + 'de' + r.paineis.length + '.dxf', dxf);
+    });
+  }, 'Gerando o lote…');
+}
+// Espera que NÃO é rede (rasterizar texto) também avisa — PWAIT.demorado.
+function PWAIT_demorado(fn, msg) {
+  try { if (window.PWAIT && PWAIT.demorado) return PWAIT.demorado(fn, msg); } catch (e) {}
+  return fn();
+}
+
+$('optBase').value = URL_BASE_PADRAO;
+$('busca').addEventListener('input', function () { clearTimeout(window._tBusca); window._tBusca = setTimeout(pintarLista, 140); });
+$('btnAtualizar').onclick = carregar;
+$('btnGerarFaltam').onclick = function () { gerarTags(FROTA.filter(function (m) { return !m.tag_ok; }).map(function (m) { return m.id; })); };
+$('btnBaixarUma').onclick = baixarUma;
+$('btnBaixarLote').onclick = baixarLote;
+$('optPlaca').onchange = pintarPrevia;
+$('optBase').onchange = pintarPrevia;
+$('btnManual').onclick = function () {
+  var tag = String($('mTag').value || '').trim().toUpperCase();
+  if (!tag) { $('mTag').focus(); return; }
+  MANUAL = { id: '__manual', tag: tag, marca: String($('mEquip').value || '').trim(), modelo: '', serie: String($('mSerie').value || '').trim(), tag_ok: true };
+  pintarPrevia();
+};
+carregar();
+</script>
+
+<!-- ████ INICIO BLOCOS PADRAO UX (PWAIT + CFX) ████ -->
+<!-- ═══════════════════════════════════════════════════════════════════════════
+     PWAIT v1 — A ESPERA FICA VISÍVEL, SEMPRE (+ GUARDA DE BOTÃO)
+     Pedido do Fernando em 17/09/2026: "sempre programar pensando em otimizar
+     tempo de abertura das telas e spinner sempre que for necessário aguardar, ou
+     mensagens avisando e deixando o usuário ciente da espera".
+     O problema que ele resolve: o `_comLoadingBtn_` (PCM v77 / PCF v55) só cobre
+     o BOTÃO que alguém se lembrou de embrulhar. Toda chamada disparada por
+     troca de tela, por refresh de 2º plano ou por um botão esquecido acontecia
+     em silêncio — e no GAS cada chamada custa ~3,5 s fixos (medição de 28/08).
+     Como funciona: PWAIT não pede wiring por tela. Ele CONTA as chamadas em voo
+     (fetch, XMLHttpRequest e o <script> do JSONP dos formulários) e mostra:
+       · barra viva no topo enquanto houver qualquer chamada;
+       · aos 3,5 s, um aviso discreto "aguardando o servidor…";
+       · aos 9 s, o aviso vira explicação ("o Google Sheets às vezes demora…").
+     NUNCA bloqueia a tela e NUNCA interfere na resposta: o wrapper devolve a
+     mesma promessa e repropaga o mesmo erro.
+     ADITIVO: nenhum id, função ou classe existente muda. Tudo em try/catch.
+     ── A GUARDA DE BOTÃO (mesma sentada, antes de qualquer publicação) ────
+     A varredura de paridade mediu **46 botões que gravam sem trava de duplo
+     clique** em 19 arquivos. Consertar 46 call sites é trabalho que envelhece:
+     o 47º nasce sem trava. Então a trava passou a ser MECANISMO, não hábito.
+     `PWAIT.guarda()` escuta clique e submit na fase de CAPTURA e, 130 ms depois
+     do clique, pergunta uma coisa só: **o número de chamadas em voo SUBIU?**
+     Se subiu, aquele clique gerou rede — o botão fica ocupado (⏳ no texto,
+     desabilitado) até a contagem voltar ao que era antes dele. Um 2º clique
+     nesse meio-tempo é ENGOLIDO na captura, antes de chegar ao app.
+     🔑 A atribuição é por DELTA, não por "tem chamada em voo": senão um
+        refresh de 2º plano (o PCM faz vários) desabilitaria botão à toa.
+     ⚠ Fora da guarda, de propósito: pílula/chip/toggle/olho/burger, botão com
+       `aria-pressed` ou `role=switch`, botão de rótulo curto (ícone, seta) e
+       qualquer um com `data-pw-off`. Marcar Ok/NOK/N.A. batendo o dedo não
+       pode esperar por nada.
+     ── v2 · 21/09/2026 · 🕳 O BOTÃO QUE MORRIA DE "⏳ PROCESSANDO…" ──────────
+     Fernando, 21/09: "estou tentando editar OS mas fica só processando e não
+     abre pra salvar; pelo que vi é toda OS". Reproduzido no Chrome dele e na
+     bancada: o servidor gravava em ~15 s, a rede ia e voltava — quem travava
+     era ESTA guarda.
+     A guarda tirava a foto do botão (texto e `disabled`) **130 ms depois do
+     clique** — e nesse instante o `_comLoadingBtn_` do app JÁ tinha posto o
+     botão em "⏳ Processando…" e `disabled=true`. Quando a resposta chegava, o
+     `finally` do app devolvia "Salvar"/habilitado corretamente e, até 140 ms
+     depois, a guarda **devolvia a foto velha por cima**: "⏳ Processando…" e
+     desabilitado — para sempre, porque botão desabilitado não recebe clique.
+     Um clique matava o Salvar do modal de OS até o F5; como o elemento é o
+     mesmo para toda OS, virava "não consigo editar OS nenhuma".
+     🔑 A regra que nasce daqui, e vale para qualquer guarda global:
+        **SÓ DESFAÇA O QUE VOCÊ FEZ, E NUNCA PRENDA NA VOLTA.**
+        v2: (a) a foto é tirada na CAPTURA do clique, antes do handler do app;
+            (b) botão que já tem dono (`_comLoadingBtn_`/`is-busy`/
+                `data-pcm-enviando`) a guarda NÃO TOMA — dois donos, um sobra;
+            (c) na volta, o texto só é restaurado se ainda for o que a guarda
+                escreveu, e `disabled` só é SOLTO (nunca reposto em true).
+     ⚠ Dois mecanismos mexendo no mesmo atributo precisam de dono único. Isto
+       não é "esquisitice do PCM": qualquer front com trava própria cairia.
+     ⚠ BLOCO ÚNICO: copiado BYTE A BYTE nos fronts; a varredura reprova divergência.
+     ═══════════════════════════════════════════════════════════════════════════ -->
+<style>
+#pwBar{position:fixed;top:0;left:0;height:3px;width:0;z-index:99500;pointer-events:none;
+  background:linear-gradient(90deg,var(--pw-a),var(--pw-b));box-shadow:0 0 8px var(--pw-a);
+  transition:width .22s ease,opacity .3s ease;opacity:0;border-radius:0 3px 3px 0}
+#pwBar.pw-on{opacity:1}
+#pwMsg{position:fixed;z-index:99501;left:50%;transform:translateX(-50%);top:10px;max-width:calc(100vw - 24px);
+  background:var(--pw-bg);color:var(--pw-fg);border:1px solid var(--pw-line);border-radius:999px;
+  padding:7px 15px;font-size:12.5px;font-family:inherit;box-shadow:0 8px 26px rgba(0,0,0,.3);
+  display:none;align-items:center;gap:9px;line-height:1.35}
+#pwMsg.pw-on{display:flex}
+#pwMsg .pw-sp{width:13px;height:13px;flex:none;border-radius:50%;border:2px solid var(--pw-line);
+  border-top-color:var(--pw-a);animation:pwSpin .8s linear infinite}
+@keyframes pwSpin{to{transform:rotate(360deg)}}
+#pwOv{position:fixed;inset:0;z-index:99400;background:rgba(0,0,0,.42);display:none;
+  align-items:center;justify-content:center;padding:20px}
+#pwOv.pw-on{display:flex}
+#pwOv .pw-cx{background:var(--pw-bg);color:var(--pw-fg);border:1px solid var(--pw-line);border-radius:14px;
+  padding:22px 26px;text-align:center;max-width:340px;font-family:inherit;box-shadow:0 18px 50px rgba(0,0,0,.4)}
+#pwOv .pw-sp2{width:30px;height:30px;margin:0 auto 12px;border-radius:50%;
+  border:3px solid var(--pw-line);border-top-color:var(--pw-a);animation:pwSpin .8s linear infinite}
+#pwOv .pw-t{font-size:14px;font-weight:600}
+#pwOv .pw-s{font-size:12px;opacity:.75;margin-top:6px}
+button.is-busy{opacity:.72;cursor:progress}
+button[data-pw-busy="1"]{opacity:.72;cursor:progress}
+.pw-esq{padding:10px 0}
+.pw-esq i{display:block;height:13px;border-radius:6px;margin:8px 0;
+  background:linear-gradient(90deg,var(--pw-line) 25%,var(--pw-hov) 50%,var(--pw-line) 75%);
+  background-size:400% 100%;animation:pwShim 1.3s linear infinite}
+@keyframes pwShim{0%{background-position:100% 0}100%{background-position:0 0}}
+@media print{#pwBar,#pwMsg,#pwOv{display:none!important}}
+</style>
+<script>
+(function(){
+'use strict';
+try{
+  if(window.PWAIT) return;
+  var VER='PWAIT_V2';
+  var T_AVISO=3500;      // a espera deixa de ser invisível
+  var T_EXPLICA=9000;    // a espera passa a ser explicada
+  var voo=0, t0=0, bar=null, msg=null, ov=null, tA=null, tE=null, raf=null, prog=0;
+
+  function tokens(){
+    try{
+      var cs=getComputedStyle(document.body);
+      var m=/rgba?\(\s*(\d+)[,\s]+(\d+)[,\s]+(\d+)/.exec(cs.backgroundColor||'');
+      var lum=m? (0.299*+m[1]+0.587*+m[2]+0.114*+m[3]) : 255;
+      var claro=lum>=140, r=document.documentElement.style;
+      r.setProperty('--pw-a', claro?'#2563eb':'#f58220');
+      r.setProperty('--pw-b', claro?'#22c55e':'#fbbf24');
+      r.setProperty('--pw-bg', claro?'#ffffff':(m?'rgb('+Math.min(255,+m[1]+16)+','+Math.min(255,+m[2]+18)+','+Math.min(255,+m[3]+24)+')':'#1e293b'));
+      r.setProperty('--pw-fg', cs.color||'inherit');
+      r.setProperty('--pw-line', claro?'#dfe3ea':'rgba(255,255,255,.2)');
+      r.setProperty('--pw-hov', claro?'#f4f6f9':'rgba(255,255,255,.08)');
+    }catch(e){}
+  }
+  function el(id,cls,html){
+    var d=document.getElementById(id);
+    if(d) return d;
+    d=document.createElement('div'); d.id=id; if(cls)d.className=cls; if(html)d.innerHTML=html;
+    (document.body||document.documentElement).appendChild(d);
+    return d;
+  }
+  function montar(){
+    tokens();
+    bar=el('pwBar');
+    msg=el('pwMsg','','<span class="pw-sp"></span><span data-pw-txt>aguardando o servidor…</span>');
+    ov=el('pwOv','','<div class="pw-cx"><div class="pw-sp2"></div><div class="pw-t" data-pw-ovt>Aguarde…</div><div class="pw-s" data-pw-ovs></div></div>');
+  }
+  function pinta(){
+    if(!bar) return;
+    if(voo>0){
+      bar.classList.add('pw-on');
+      prog=prog+ (92-prog)*0.06 + 0.4;           // nunca chega a 100 sozinha
+      if(prog>93) prog=93;
+      bar.style.width=prog.toFixed(1)+'%';
+      raf=requestAnimationFrame(pinta);
+    }else{
+      bar.style.width='100%';
+      setTimeout(function(){ if(voo===0){ bar.classList.remove('pw-on'); bar.style.width='0'; prog=0; } },240);
+    }
+  }
+  function aviso(txt){
+    if(!msg) return;
+    var s=msg.querySelector('[data-pw-txt]'); if(s) s.textContent=txt;
+    msg.classList.add('pw-on');
+  }
+  function some(){ if(msg) msg.classList.remove('pw-on'); }
+
+  function sobe(){
+    voo++;
+    if(voo===1){
+      t0=Date.now(); prog=2;
+      if(!bar) montar();
+      cancelAnimationFrame(raf); raf=requestAnimationFrame(pinta);
+      clearTimeout(tA); clearTimeout(tE);
+      tA=setTimeout(function(){ if(voo>0) aviso('aguardando o servidor…'); },T_AVISO);
+      tE=setTimeout(function(){ if(voo>0) aviso('ainda aguardando — o Google Sheets às vezes leva alguns segundos. Não feche a tela.'); },T_EXPLICA);
+    }
+  }
+  function desce(){
+    voo=Math.max(0,voo-1);
+    if(voo===0){ clearTimeout(tA); clearTimeout(tE); some(); pinta(); }
+  }
+
+  // ── 1) fetch ──
+  try{
+    if(window.fetch && !window.fetch.__pw){
+      var f0=window.fetch.bind(window);
+      var f1=function(){
+        sobe();
+        var p;
+        try{ p=f0.apply(null,arguments); }catch(e){ desce(); throw e; }
+        return p.then(function(r){ desce(); return r; }, function(e){ desce(); throw e; });
+      };
+      f1.__pw=1; window.fetch=f1;
+    }
+  }catch(e){}
+
+  // ── 2) XMLHttpRequest ──
+  try{
+    var XP=window.XMLHttpRequest && window.XMLHttpRequest.prototype;
+    if(XP && !XP.__pw){
+      var s0=XP.send;
+      XP.send=function(){
+        var fim=false, self=this;
+        function ok(){ if(!fim){ fim=true; desce(); } }
+        try{
+          sobe();
+          self.addEventListener('loadend',ok);
+        }catch(e){ ok(); }
+        try{ return s0.apply(self,arguments); }catch(e){ ok(); throw e; }
+      };
+      XP.__pw=1;
+    }
+  }catch(e){}
+
+  // ── 3) JSONP dos formulários: <script src="…/exec?…"> ──
+  // Os forms falam com o GAS por tag <script>, não por fetch. Sem isto, o
+  // "Salvar" de um formulário em campo ficaria exatamente como está hoje:
+  // 20 s de espera com um botão cinza e nenhuma palavra na tela.
+  try{
+    var mo=new MutationObserver(function(recs){
+      for(var i=0;i<recs.length;i++){
+        var ns=recs[i].addedNodes;
+        for(var j=0;j<ns.length;j++){
+          var n=ns[j];
+          if(!n||n.tagName!=='SCRIPT'||!n.src||n.__pw) continue;
+          if(!/script\.google\.com|googleusercontent|supabase/.test(n.src)) continue;
+          n.__pw=1; sobe();
+          var fim=false;
+          var pronto=function(){ if(!fim){ fim=true; desce(); } };
+          n.addEventListener('load',pronto); n.addEventListener('error',pronto);
+          setTimeout(pronto,120000);          // rede que nunca responde não deixa a barra presa
+        }
+      }
+    });
+    mo.observe(document.documentElement,{childList:true,subtree:true});
+  }catch(e){}
+
+
+  // ── 4) GUARDA DE BOTÃO: spinner + trava de duplo clique, sem tocar em call site ──
+  function podeGuardar(b){
+    try{
+      if(!b||!b.tagName) return false;
+      if(b.hasAttribute('data-pw-off')) return false;
+      if(b.closest&&b.closest('[data-pw-off]')) return false;
+      var c=' '+String(b.className||'')+' ';
+      if(/pill|chip|toggle|olho|burger|ecard|-tab|tab-/i.test(c)) return false;
+      if(b.hasAttribute('aria-pressed')) return false;
+      if(String(b.getAttribute('role')||'')==='switch') return false;
+      var t=(b.textContent||'').trim();
+      if(b.type!=='submit' && t.length<4) return false;    // ícone, pílula, seta
+      return true;
+    }catch(e){ return false; }
+  }
+  // v2 — o botão já tem dono? (`_comLoadingBtn_` do PCM v77 / PCF v55, ou trava
+  // própria do call site). Dois donos mexendo em `disabled` = botão preso.
+  function donoApp(b){
+    try{
+      return b.dataset.loadingOriginalText!==undefined ||
+             b.dataset.pcmEnviando!==undefined ||
+             b.dataset.pfEnviando!==undefined;
+    }catch(e){ return true; }                 // na dúvida, NÃO tomo o botão
+  }
+  function temDono(b){
+    try{ return donoApp(b) || !!(b.classList && b.classList.contains('is-busy')); }
+    catch(e){ return true; }
+  }
+  // txt0/dis0 vêm da CAPTURA do clique — antes de o app mexer no botão.
+  function ocupar(b,base,txt0,dis0){
+    if(b.dataset.pwBusy==='1') return;
+    if(temDono(b)) return;                    // o app já cuida deste botão
+    var filhos=!!b.querySelector('*');
+    var escrito=null, euPrendi=false;
+    b.dataset.pwBusy='1';
+    b.classList.add('is-busy');
+    if(!filhos && txt0 && txt0.trim().length>3){ escrito='⏳ '+txt0.trim(); b.textContent=escrito; }
+    if(!dis0){ try{ b.disabled=true; euPrendi=true; }catch(e){} }
+    var t0=Date.now();
+    var iv=setInterval(function(){
+      if(voo<=base || Date.now()-t0>60000){
+        clearInterval(iv);
+        try{
+          if(!donoApp(b)) b.classList.remove('is-busy');
+          // só desfaço o que EU escrevi: se outro mudou o texto, o dele fica
+          if(escrito!==null && b.textContent===escrito) b.textContent=txt0;
+          // e só SOLTO: repor disabled=true é o que matava o Salvar do modal
+          if(euPrendi && b.disabled) b.disabled=false;
+        }catch(e){}
+        delete b.dataset.pwBusy;
+      }
+    },140);
+  }
+  function vigiar(b){
+    var base=voo, txt0=b.textContent, dis0=!!b.disabled;   // foto ANTES do handler do app
+    setTimeout(function(){ if(voo>base) ocupar(b,base,txt0,dis0); },130);   // só se ESTE clique gerou rede
+  }
+  function noClique(ev){
+    try{
+      var el=ev.target; if(!el||!el.closest) return;
+      var b=el.closest('button,input[type=submit]'); if(!b) return;
+      if(b.dataset.pwBusy==='1'){                                  // 2º clique: engolido aqui
+        ev.preventDefault(); ev.stopImmediatePropagation();
+        aviso('esse botão já está processando — aguarde a resposta do servidor.');
+        return;
+      }
+      if(podeGuardar(b)) vigiar(b);
+    }catch(e){}
+  }
+  function noSubmit(ev){
+    try{
+      var f=ev.target; if(!f||f.tagName!=='FORM') return;
+      var b=f.querySelector('button[type=submit],input[type=submit],button:not([type])');
+      if(!b) return;
+      if(b.dataset.pwBusy==='1'){ ev.preventDefault(); ev.stopImmediatePropagation(); return; }
+      vigiar(b);
+    }catch(e){}
+  }
+
+  window.PWAIT={
+    versao:VER,
+    guarda:function(){ try{ document.addEventListener('click',noClique,true); document.addEventListener('submit',noSubmit,true); }catch(e){} },
+    podeGuardar:podeGuardar,
+    emVoo:function(){ return voo; },
+    // espera com mensagem própria, para trecho que NÃO é chamada de rede
+    // (gerar PDF, desenhar canvas, montar 2.000 linhas)
+    tela:function(titulo,sub){
+      if(!ov) montar();
+      var a=ov.querySelector('[data-pw-ovt]'), b=ov.querySelector('[data-pw-ovs]');
+      if(a) a.textContent=titulo||'Aguarde…';
+      if(b) b.textContent=sub||'';
+      ov.classList.add('pw-on');
+      return function(){ ov.classList.remove('pw-on'); };
+    },
+    fim:function(){ if(ov) ov.classList.remove('pw-on'); },
+    // só mostra a tela de espera se o trecho passar de `atraso` ms (sem piscada)
+    demorado:function(fn,titulo,sub,atraso){
+      var fechar=null, tt=setTimeout(function(){ fechar=window.PWAIT.tela(titulo,sub); },atraso==null?350:atraso);
+      var pronto=function(){ clearTimeout(tt); if(fechar) fechar(); };
+      var r;
+      try{ r=fn(); }catch(e){ pronto(); throw e; }
+      if(r&&typeof r.then==='function') return r.then(function(v){ pronto(); return v; },function(e){ pronto(); throw e; });
+      pronto(); return r;
+    },
+    // par do _comLoadingBtn_ do PCM/PCF, para os fronts que não têm o helper
+    btn:function(btnEl,fn){
+      if(!btnEl) return fn();
+      var txt=btnEl.textContent, dis=btnEl.disabled;
+      btnEl.disabled=true; btnEl.classList.add('is-busy'); btnEl.textContent='⏳ Processando…';
+      var volta=function(){ btnEl.disabled=dis; btnEl.classList.remove('is-busy'); btnEl.textContent=txt; };
+      var r;
+      try{ r=fn(); }catch(e){ volta(); throw e; }
+      if(r&&typeof r.then==='function') return r.then(function(v){ volta(); return v; },function(e){ volta(); throw e; });
+      volta(); return r;
+    },
+    // esqueleto: a tela mostra a FORMA do conteúdo antes do dado chegar
+    esqueleto:function(alvo,linhas){
+      var t=typeof alvo==='string'? document.getElementById(alvo)||document.querySelector(alvo) : alvo;
+      if(!t) return;
+      var n=linhas||6, h='<div class="pw-esq">';
+      for(var i=0;i<n;i++) h+='<i style="width:'+(96-(i%4)*13)+'%"></i>';
+      t.innerHTML=h+'</div>';
+    }
+  };
+
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',montar);
+  else montar();
+  window.PWAIT.guarda();
+}catch(e){ try{ console.error('[PWAIT] nao iniciou; a espera segue invisivel',e); }catch(_){} }
+})();
+</script>
+
+<!-- ═══════════════════════════════════════════════════════════════════════════
+     ERRO v1 — ERRO NUNCA ACONTECE EM SILÊNCIO
+     Par do PCM V108 (item 8), que criou este tratador no PCM depois do incidente
+     v39: um ReferenceError no boot deixava o app quebrado SEM DEIXAR RASTRO.
+     Em 17/09/2026 a varredura de paridade mostrou que a lição nunca viajou:
+     PCM, PCF e Hub tinham o tratador; **Portal do Cliente, Mural, Ficha de
+     Rotores e os 14 formulários não tinham nenhum** — e o Portal é a tela que
+     o CLIENTE olha.
+     O que faz:
+       · `window.onerror` e `unhandledrejection`, os dois, com anti-repetição
+         (o mesmo erro não aparece duas vezes em 15 s, no máximo 1 aviso / 4 s);
+       · traduz falha de rede para a frase que importa:
+         "Sem conexão — a alteração NÃO foi gravada.";
+       · usa o `toast()` do app quando existe; quando não existe, desenha o
+         próprio aviso (Portal e Mural não têm toast).
+     ⚠ NÃO entra em front que já tem tratador próprio (PCM, PCF, Hub): dois
+       tratadores = aviso em dobro. Quem controla isso é a lista do aplicador,
+       e a varredura confere que TODO front tem UM.
+     ⚠ BLOCO ÚNICO: copiado BYTE A BYTE; a varredura reprova divergência.
+     ═══════════════════════════════════════════════════════════════════════════ -->
+<style>
+#perrToast{position:fixed;z-index:99600;left:50%;transform:translateX(-50%);bottom:20px;
+  max-width:calc(100vw - 28px);background:#b42318;color:#fff;border-radius:10px;padding:11px 16px;
+  font:13.5px/1.45 inherit;box-shadow:0 10px 32px rgba(0,0,0,.35);display:none;text-align:left}
+#perrToast.perr-on{display:block}
+@media print{#perrToast{display:none!important}}
+</style>
+<script>
+(function(){
+'use strict';
+try{
+  if(window.__PERR) return;
+  window.__PERR='ERRO_V1';
+  var vistos={}, ultimo=0;
+
+  function proprio(txt){
+    var el=document.getElementById('perrToast');
+    if(!el){
+      el=document.createElement('div'); el.id='perrToast';
+      (document.body||document.documentElement).appendChild(el);
+    }
+    el.textContent=txt;
+    el.className='perr-on';
+    setTimeout(function(){ if(el.textContent===txt) el.className=''; },7000);
+  }
+  function mostrar(tipo,msg,detalhe){
+    try{
+      var agora=Date.now();
+      var chave=tipo+'|'+String(msg).slice(0,120);
+      if(vistos[chave] && agora-vistos[chave]<15000) return;   // não repete o mesmo em 15 s
+      vistos[chave]=agora;
+      try{ console.error('[ERRO_V1]['+tipo+']',msg,detalhe||''); }catch(e){}
+      if(agora-ultimo<4000) return;                            // no máx. 1 aviso a cada 4 s
+      ultimo=agora;
+      var t=String(msg||'erro desconhecido');
+      if(/OFFLINE|Failed to fetch|NetworkError|Load failed|Sem conex/i.test(t))
+        t='Sem conexão — a alteração NÃO foi gravada.';
+      if(typeof window.toast==='function'){ try{ window.toast('⚠ '+t,'error'); return; }catch(e){} }
+      proprio('⚠ '+t);
+    }catch(e){ /* o tratador de erro nunca pode ser a causa de um erro */ }
+  }
+  window.addEventListener('error',function(ev){
+    if(ev && ev.target && ev.target!==window && ev.target.tagName) return;   // 404 de <img>/<script>
+    mostrar('erro',(ev&&ev.message)||'falha no script',
+            ev&&ev.filename? (ev.filename+':'+ev.lineno):'');
+  });
+  window.addEventListener('unhandledrejection',function(ev){
+    var r=ev&&ev.reason;
+    mostrar('promessa',(r&&r.message)||String(r||'promessa rejeitada'), r&&r.stack);
+  });
+  window.__perrUltimos=function(){ return vistos; };
+}catch(e){}
+})();
+</script>
+
+<!-- ═══════════════════════════════════════════════════════════════════════════
+     CFX v1 — FILTRO DE COLUNA (estilo Excel) EM QUALQUER TABELA
+     Pedido do Fernando em 17/09/2026: "toda tela que contém lista de máquinas,
+     clientes, peças etc, os títulos de cada coluna devem ser dotados de filtros".
+     Motivo de existir: o motor XF (V94) resolve isso, mas exige configuração
+     tela por tela — e por isso só 5 das 36 tabelas do PCM tinham filtro. A tela
+     de Inventário (V190) nasceu sem, como toda tela nova nasceria.
+     O CFX não substitui o XF: ele se acopla ao DOM JÁ RENDERIDO, leia quem
+     renderizou. Tabela com `class="xf-table"` é ignorada de propósito.
+     ADITIVO por construção: nenhum id, função, classe ou render existente muda.
+     Tudo dentro de try/catch — o motor NUNCA pode ser a causa de um erro de boot.
+     ⚠ BLOCO ÚNICO: este arquivo é copiado BYTE A BYTE nos fronts. Se divergir
+     entre eles, a varredura NEWFILE_VARREDURA_PARIDADE_UX.py reprova.
+     ═══════════════════════════════════════════════════════════════════════════ -->
+<style>
+.cfx-b{all:unset;cursor:pointer;display:inline-block;margin-left:5px;padding:0 3px;font-size:10px;line-height:1;
+  opacity:.45;border-radius:4px;vertical-align:middle;font-family:inherit}
+.cfx-b:hover{opacity:1;background:var(--cfx-hov)}
+.cfx-b.cfx-act{opacity:1;color:var(--cfx-acc);font-weight:700}
+.cfx-menu{position:fixed;z-index:99000;width:262px;max-width:calc(100vw - 16px);background:var(--cfx-bg);
+  color:var(--cfx-fg);border:1px solid var(--cfx-line);border-radius:10px;box-shadow:0 14px 40px rgba(0,0,0,.28);
+  display:none;flex-direction:column;overflow:hidden;font-size:12px;font-family:inherit}
+.cfx-menu.cfx-on{display:flex}
+.cfx-h{padding:8px 11px;font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
+  color:var(--cfx-mut);background:var(--cfx-hov);border-bottom:1px solid var(--cfx-line);
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cfx-row{display:flex;gap:6px;padding:7px 9px;border-bottom:1px solid var(--cfx-line)}
+.cfx-row button{flex:1;cursor:pointer;background:var(--cfx-bg);color:var(--cfx-fg);border:1px solid var(--cfx-line);
+  border-radius:7px;padding:6px 4px;font-size:11.5px;font-family:inherit}
+.cfx-row button:hover{border-color:var(--cfx-acc);color:var(--cfx-acc)}
+.cfx-row button.cfx-cur{border-color:var(--cfx-acc);color:var(--cfx-acc);font-weight:700}
+.cfx-menu input{width:100%;box-sizing:border-box;background:var(--cfx-bg);color:var(--cfx-fg);
+  border:1px solid var(--cfx-line);border-radius:7px;padding:6px 9px;font-size:12px;outline:none;font-family:inherit}
+.cfx-menu input:focus{border-color:var(--cfx-acc)}
+.cfx-rg{display:flex;gap:6px;padding:7px 9px;border-bottom:1px solid var(--cfx-line);align-items:center}
+.cfx-rg span{font-size:10px;color:var(--cfx-mut);font-weight:700}
+.cfx-list{max-height:238px;overflow:auto;padding:3px 0}
+.cfx-it{display:flex;align-items:center;gap:8px;padding:5px 11px;cursor:pointer;user-select:none;line-height:1.3}
+.cfx-it:hover{background:var(--cfx-hov)}
+.cfx-it input{width:auto;accent-color:var(--cfx-acc);flex:none;padding:0}
+.cfx-it span.cfx-v{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cfx-it b.cfx-n{margin-left:auto;font-size:10px;color:var(--cfx-mut);font-weight:600;flex:none}
+.cfx-it.cfx-all{position:sticky;top:0;background:var(--cfx-bg);border-bottom:1px solid var(--cfx-line);font-weight:700}
+.cfx-foot{display:flex;gap:7px;padding:8px 9px;border-top:1px solid var(--cfx-line);background:var(--cfx-hov)}
+.cfx-foot button{flex:1;cursor:pointer;border-radius:7px;padding:6px 4px;font-size:11.5px;font-family:inherit;
+  border:1px solid var(--cfx-line);background:var(--cfx-bg);color:var(--cfx-fg)}
+.cfx-foot button.cfx-pri{background:var(--cfx-acc);border-color:var(--cfx-acc);color:#fff;font-weight:700}
+.cfx-bar{display:none;align-items:center;gap:8px;flex-wrap:wrap;padding:6px 2px;font-size:11.5px;color:var(--cfx-mut)}
+.cfx-bar.cfx-on{display:flex}
+.cfx-bar b{color:var(--cfx-fg)}
+.cfx-chip{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--cfx-acc);color:var(--cfx-acc);
+  border-radius:999px;padding:2px 9px;font-size:11px;font-weight:600;max-width:260px}
+.cfx-chip span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cfx-chip button{all:unset;cursor:pointer;font-size:12px;line-height:1}
+.cfx-clr{all:unset;cursor:pointer;color:var(--cfx-acc);font-weight:700;font-size:11.5px;text-decoration:underline}
+.cfx-hide{display:none!important}
+tr.cfx-vazio td{padding:14px 12px!important;text-align:center;color:var(--cfx-mut);font-style:italic}
+@media print{.cfx-b,.cfx-bar,.cfx-menu{display:none!important}}
+</style>
+<script>
+(function(){
+'use strict';
+try{
+  if(window.CFX) return;
+  var VER='CFX_V1';
+  var MIN_LINHAS=3;          // tabela de 1 ou 2 linhas não ganha filtro (ruído)
+  var MAX_VALORES=400;       // teto de valores distintos listados no menu
+  var MAX_LINHAS=4000;       // acima disso o motor se recusa (e diz por quê)
+  var CAB_IGNORAR={'':1,'#':1,'ações':1,'acoes':1,'ação':1,'acao':1,'ver':1,'abrir':1,'sel':1,' ':1};
+
+  var S={};                  // chave da tabela -> estado {f:{}, sort:null}
+  var vivos=(typeof WeakSet==='function')? new WeakSet() : null;  // botões com handler de verdade
+  var menu=null, mAlvo=null, mCol=-1, mBusca='';
+  var mo=null, timer=null, proprio=0;
+
+  function norm(v){
+    return String(v==null?'':v).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/\s+/g,' ').trim();
+  }
+  function txt(el){
+    if(!el) return '';
+    var d=el.getAttribute&&el.getAttribute('data-cfx-val');
+    if(d!=null) return String(d).trim();
+    return (el.textContent||'').replace(/\s+/g,' ').trim();
+  }
+  function esc(s){
+    return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+  function dataBR(s){
+    var m=/^(\d{2})\/(\d{2})\/(\d{4})/.exec(String(s).trim());
+    return m? (m[3]+m[2]+m[1]) : null;
+  }
+  function numDe(s){
+    var t=String(s).trim();
+    if(!t) return null;
+    if(!/\d/.test(t)) return null;
+    // aceita  1.234,56  ·  1234  ·  R$ 1.200,00  ·  5.614 h  ·  -3  ·  12%
+    if(!/^[-+]?[\sR$€]*[\d.,]+\s*(h|hs|horas|dias|d|%|km|kg|un|pç|pcs|m|mm|min)?$/i.test(t)) return null;
+    var x=t.replace(/[^\d,.\-+]/g,'');
+    if(x.indexOf(',')>=0) x=x.replace(/\./g,'').replace(',','.');
+    // 🕳 achado da bancada: '1.200' ordenava como 1,2 e ia para ANTES de '90'.
+    // Em pt-BR o ponto é milhar quando os grupos depois dele têm 3 dígitos.
+    else if(/^[-+]?\d{1,3}(\.\d{3})+$/.test(x)) x=x.replace(/\./g,'');
+    else if((x.match(/\./g)||[]).length>1) x=x.replace(/\./g,'');
+    var n=parseFloat(x);
+    return isNaN(n)? null : n;
+  }
+
+  // ── tokens de cor derivados do próprio app (um bloco, seis temas) ──
+  function tokens(){
+    try{
+      var cs=getComputedStyle(document.body);
+      var bg=cs.backgroundColor, fg=cs.color;
+      var m=/rgba?\(\s*(\d+)[,\s]+(\d+)[,\s]+(\d+)/.exec(bg||'');
+      var lum=m? (0.299*+m[1]+0.587*+m[2]+0.114*+m[3]) : 255;
+      var claro=lum>=140;
+      var r=document.documentElement.style;
+      r.setProperty('--cfx-bg', claro?'#ffffff':(m?'rgb('+Math.min(255,+m[1]+14)+','+Math.min(255,+m[2]+16)+','+Math.min(255,+m[3]+22)+')':'#1e293b'));
+      r.setProperty('--cfx-fg', fg||'inherit');
+      r.setProperty('--cfx-mut', claro?'#64748b':'#9aa8bf');
+      r.setProperty('--cfx-line', claro?'#dfe3ea':'rgba(255,255,255,.16)');
+      r.setProperty('--cfx-hov', claro?'#f4f6f9':'rgba(255,255,255,.07)');
+      if(!r.getPropertyValue('--cfx-acc')) r.setProperty('--cfx-acc', claro?'#2563eb':'#f58220');
+    }catch(e){}
+  }
+
+  // ── anatomia da tabela ──
+  function cabecalho(t){
+    if(!t.tHead||!t.tHead.rows.length) return null;
+    var tr=t.tHead.rows[t.tHead.rows.length-1];
+    for(var i=0;i<tr.cells.length;i++) if(tr.cells[i].colSpan>1) return null;  // cabeçalho agrupado: não é grade
+    return tr;
+  }
+  function linhas(t,n){
+    var out=[];
+    for(var b=0;b<t.tBodies.length;b++){
+      var rs=t.tBodies[b].rows;
+      for(var i=0;i<rs.length;i++){
+        var r=rs[i];
+        if(r.hasAttribute('data-cfx-skip')||r.classList.contains('cfx-vazio')) continue;
+        if(r.cells.length!==n) continue;                   // linha de grupo / colspan / "nenhum item"
+        var ok=true;
+        for(var c=0;c<r.cells.length;c++) if(r.cells[c].colSpan>1||r.cells[c].rowSpan>1){ok=false;break;}
+        if(ok) out.push(r);
+      }
+    }
+    return out;
+  }
+  function chave(t,cab){
+    if(t.dataset.cfxKey) return t.dataset.cfxKey;
+    var a=t.parentElement, id='';
+    while(a&&a!==document.body){ if(a.id){id=a.id;break;} a=a.parentElement; }
+    var h=[];
+    for(var i=0;i<cab.cells.length;i++) h.push(norm(txt(cab.cells[i])));
+    return (t.id||id||'raiz')+'#'+h.join('|').slice(0,180);
+  }
+  function est(k){ if(!S[k]) S[k]={f:{},sort:null}; return S[k]; }
+  function temEstado(k){ var e=S[k]; return !!(e&&(e.sort||Object.keys(e.f).length)); }
+
+  // ── colunas que não ganham menu: ação, seleção, só botões ──
+  function filtravel(cab,i,rs){
+    var h=norm(txt(cab.cells[i]));
+    if(CAB_IGNORAR[h]) return false;
+    var n=Math.min(rs.length,12), comCtrl=0, vis=0;
+    for(var k=0;k<n;k++){
+      var td=rs[k].cells[i]; if(!td) continue;
+      vis++;
+      if(td.querySelector&&td.querySelector('button,input,select,textarea,a[onclick]')) comCtrl++;
+    }
+    return !(vis&&comCtrl/vis>0.6);
+  }
+
+  function tipoCol(rs,i){
+    var d=0,nu=0,tot=0;
+    for(var k=0;k<rs.length&&k<60;k++){
+      var v=txt(rs[k].cells[i]); if(!v||v==='—'||v==='-') continue;
+      tot++;
+      if(dataBR(v)) d++; else if(numDe(v)!=null) nu++;
+    }
+    if(!tot) return 'txt';
+    if(d/tot>=0.7) return 'data';
+    if(nu/tot>=0.7) return 'num';
+    return 'txt';
+  }
+  function valOrd(v,tp){
+    if(tp==='data'){ var d=dataBR(v); return d==null?null:+d; }
+    if(tp==='num'){ return numDe(v); }
+    return null;
+  }
+
+  // ── acoplagem ──
+  function acoplar(t){
+    if(t.dataset.cfx) return;
+    if(t.classList.contains('xf-table')) { t.dataset.cfx='xf'; return; }      // motor XF já filtra
+    if(t.getAttribute('data-cfx-off')!=null||t.closest('[data-cfx-off]')){ t.dataset.cfx='off'; return; }
+    var cab=cabecalho(t);
+    if(!cab){ t.dataset.cfx='sem-cabecalho'; return; }
+    var rs=linhas(t,cab.cells.length);
+    if(rs.length<MIN_LINHAS) return;                       // sem marca: volta a ser avaliada quando crescer
+    if(rs.length>MAX_LINHAS){ t.dataset.cfx='grande'; return; }
+    var k=chave(t,cab);
+    t.dataset.cfx='on'; t.dataset.cfxK=k;
+    menusDaTabela(t,cab,rs);
+    barraDaTabela(t,k);
+    aplicar(t);
+  }
+
+  // 🕳 Achado da bancada: `cloneNode`/`outerHTML` COPIA o botão ▾ mas NÃO copia o
+  // handler — a tabela reaparecia com a setinha morta, e clicar nela não fazia nada
+  // (sem erro nenhum no console). Por isso o botão só vale se estiver no WeakSet
+  // de botões que ESTE motor criou nesta página; um clone é descartado e refeito.
+  function menusDaTabela(t,cab,rs){
+    for(var i=0;i<cab.cells.length;i++){
+      var th=cab.cells[i];
+      var velho=th.querySelector('.cfx-b');
+      if(velho){
+        if(!vivos||vivos.has(velho)) continue;
+        velho.parentNode.removeChild(velho);
+      }
+      if(!filtravel(cab,i,rs)) continue;
+      var b=document.createElement('button');
+      b.className='cfx-b'; b.type='button'; b.textContent='▾';
+      b.title='Filtrar e ordenar por esta coluna';
+      b.setAttribute('data-cfx-i',String(i));
+      b.onclick=(function(tab,idx){return function(ev){ ev.preventDefault(); ev.stopPropagation(); abrir(tab,idx,this); };})(t,i);
+      th.appendChild(b);
+      if(vivos) vivos.add(b);
+    }
+  }
+
+  // uma barra por tabela, sempre: re-render deixava a barra velha para trás e o
+  // "limpar tudo" da barra órfã mexia num nó que já não estava na tela.
+  function barraDaTabela(t,k){
+    var orf=document.querySelectorAll('[data-cfx-bar="'+String(k).replace(/"/g,'\\"')+'"]');
+    for(var i=0;i<orf.length;i++) if(orf[i].parentNode) orf[i].parentNode.removeChild(orf[i]);
+    var bar=document.createElement('div');
+    bar.className='cfx-bar';
+    bar.setAttribute('data-cfx-bar',k);
+    (t.parentNode||document.body).insertBefore(bar,t);
+    t._cfxBar=bar;
+    return bar;
+  }
+
+  // ── filtro + ordenação ──
+  function passa(e,r,cab,pular){
+    for(var k in e.f){
+      if(String(k)===String(pular)) continue;
+      var i=+k, f=e.f[k], td=r.cells[i]; if(!td) return false;
+      var v=txt(td);
+      if(f.tipo==='vals'){ if(!f.set[v]) return false; }
+      else if(f.tipo==='fx'){
+        var tp=f.cmp||'txt', x=valOrd(v,tp);
+        if(x==null) return false;
+        if(f.min!=null&&x<f.min) return false;
+        if(f.max!=null&&x>f.max) return false;
+      }
+      else if(f.tipo==='txt'){ if(norm(v).indexOf(f.q)<0) return false; }
+    }
+    return true;
+  }
+
+  function aplicar(t,silencio){
+    var cab=cabecalho(t); if(!cab) return;
+    var rs=linhas(t,cab.cells.length);
+    var e=est(t.dataset.cfxK||chave(t,cab));
+    var vis=0;
+    for(var i=0;i<rs.length;i++){
+      var ok=passa(e,rs[i],cab,null);
+      rs[i].classList.toggle('cfx-hide',!ok);
+      if(ok) vis++;
+    }
+    if(e.sort){
+      var i2=e.sort.i, dir=e.sort.dir, tp=e.sort.tp||'txt';
+      var arr=rs.slice();
+      arr.forEach(function(r,n){ r._cfxN=n; });
+      arr.sort(function(a,b){
+        var va=txt(a.cells[i2]), vb=txt(b.cells[i2]), c;
+        if(tp==='txt'){ c=va.localeCompare(vb,'pt-BR',{numeric:true,sensitivity:'base'}); }
+        else{
+          var xa=valOrd(va,tp), xb=valOrd(vb,tp);
+          if(xa==null&&xb==null) c=0; else if(xa==null) c=1; else if(xb==null) c=-1; else c=xa-xb;
+        }
+        if(c===0) return a._cfxN-b._cfxN;                  // estável
+        return dir==='desc'? -c : c;
+      });
+      var tb=arr.length? arr[0].parentNode : null;
+      if(tb){
+        proprio++;
+        try{ arr.forEach(function(r){ tb.appendChild(r); }); }
+        finally{ if(mo) mo.takeRecords(); proprio--; }
+      }
+    }
+    // linha "nada passou"
+    var antiga=t.querySelector('tr.cfx-vazio'); if(antiga) antiga.remove();
+    if(!vis&&rs.length){
+      var tr=document.createElement('tr'); tr.className='cfx-vazio';
+      var td=document.createElement('td'); td.colSpan=cab.cells.length;
+      td.textContent='Nenhuma linha passa pelos filtros desta tela.';
+      tr.appendChild(td); (rs[0].parentNode||t.tBodies[0]).appendChild(tr);
+    }
+    marcarCab(t,cab,e);
+    barra(t,e,cab,vis,rs.length);
+    t._cfxSig=assinatura(t,cab);
+  }
+
+  function assinatura(t,cab){
+    var rs=linhas(t,cab.cells.length);
+    return rs.length+'/'+(t.tBodies[0]?t.tBodies[0].childElementCount:0)+'/'+(rs[0]?txt(rs[0].cells[0]).length:0);
+  }
+  function marcarCab(t,cab,e){
+    for(var i=0;i<cab.cells.length;i++){
+      var b=cab.cells[i].querySelector('.cfx-b'); if(!b) continue;
+      var f=e.f[i], so=e.sort&&e.sort.i===i;
+      b.classList.toggle('cfx-act',!!f||!!so);
+      b.textContent = f? '▼' : (so? (e.sort.dir==='desc'?'↓':'↑') : '▾');
+    }
+  }
+  function rotulo(cab,i){ var s=txt(cab.cells[i]).replace('▾','').replace('▼','').replace('↑','').replace('↓','').trim(); return s||('coluna '+(i+1)); }
+
+  function barra(t,e,cab,vis,tot){
+    var bar=t._cfxBar; if(!bar||!bar.parentNode) return;
+    var chips=[], n=0;
+    for(var k in e.f){
+      n++;
+      var f=e.f[k], d='';
+      if(f.tipo==='vals') d=Object.keys(f.set).length===1? Object.keys(f.set)[0] : (Object.keys(f.set).length+' valores');
+      else if(f.tipo==='fx') d=(f.min!=null?f.min:'')+'…'+(f.max!=null?f.max:'');
+      else d='contém "'+f.q+'"';
+      chips.push('<span class="cfx-chip"><span>'+esc(rotulo(cab,+k))+': '+esc(d)+'</span><button type="button" title="tirar este filtro" data-cfx-x="'+k+'">✕</button></span>');
+    }
+    if(!n&&!e.sort){ bar.className='cfx-bar'; bar.innerHTML=''; return; }
+    bar.className='cfx-bar cfx-on';
+    bar.innerHTML='🔎 <b>'+vis+'</b> de <b>'+tot+'</b> '+(tot===1?'linha':'linhas')+
+      (e.sort? ' · ordenado por <b>'+esc(rotulo(cab,e.sort.i))+'</b> '+(e.sort.dir==='desc'?'↓':'↑'):'')+
+      (chips.length? ' · '+chips.join(' ') : '')+
+      ' <button type="button" class="cfx-clr" data-cfx-clr="1">limpar tudo</button>';
+    bar.onclick=function(ev){
+      var x=ev.target.closest&&ev.target.closest('[data-cfx-x]');
+      if(x){ delete e.f[x.getAttribute('data-cfx-x')]; aplicar(t); return; }
+      if(ev.target.closest&&ev.target.closest('[data-cfx-clr]')){ e.f={}; e.sort=null; aplicar(t); }
+    };
+  }
+
+  // ── menu ──
+  function fechar(){ if(menu) menu.className='cfx-menu'; mAlvo=null; mCol=-1; mBusca=''; }
+  function abrir(t,i,btn){
+    tokens();
+    if(!menu){
+      menu=document.createElement('div'); menu.className='cfx-menu';
+      document.body.appendChild(menu);
+      menu.addEventListener('click',function(ev){ ev.stopPropagation(); });
+    }
+    if(mAlvo===t&&mCol===i&&menu.classList.contains('cfx-on')){ fechar(); return; }
+    mAlvo=t; mCol=i; mBusca='';
+    pintarMenu();
+    menu.className='cfx-menu cfx-on';
+    var r=btn.getBoundingClientRect();
+    var w=menu.offsetWidth||262, h=menu.offsetHeight||300;
+    var L=Math.max(6,Math.min(r.left, (window.innerWidth||800)-w-6));
+    var T=r.bottom+4;
+    if(T+h>(window.innerHeight||600)-6) T=Math.max(6,r.top-h-4);
+    menu.style.left=L+'px'; menu.style.top=T+'px';
+    var bu=menu.querySelector('[data-cfx-q]'); if(bu) try{bu.focus();}catch(e){}
+  }
+
+  function pintarMenu(){
+    var t=mAlvo, i=mCol; if(!t||i<0) return;
+    var cab=cabecalho(t); if(!cab) return;
+    var rs=linhas(t,cab.cells.length);
+    var e=est(t.dataset.cfxK||chave(t,cab));
+    var tp=tipoCol(rs,i);
+    var f=e.f[i];
+    // contagem estilo Excel: conta o que passa pelos filtros DAS OUTRAS colunas
+    var cont={}, ordem=[];
+    for(var k=0;k<rs.length;k++){
+      if(!passa(e,rs[k],cab,i)) continue;
+      var v=txt(rs[k].cells[i]);
+      if(cont[v]==null){ cont[v]=0; ordem.push(v); }
+      cont[v]++;
+    }
+    if(tp==='data') ordem.sort(function(a,b){ var A=dataBR(a),B=dataBR(b); return (A==null?1:B==null?-1:(A<B?-1:A>B?1:0)); });
+    else if(tp==='num') ordem.sort(function(a,b){ var A=numDe(a),B=numDe(b); return (A==null?1:B==null?-1:A-B); });
+    else ordem.sort(function(a,b){ return String(a).localeCompare(String(b),'pt-BR',{numeric:true,sensitivity:'base'}); });
+
+    var q=norm(mBusca);
+    var mostra=q? ordem.filter(function(v){ return norm(v).indexOf(q)>=0; }) : ordem;
+    var corte=mostra.length>MAX_VALORES;
+    if(corte) mostra=mostra.slice(0,MAX_VALORES);
+    var sel=(f&&f.tipo==='vals')? f.set : null;
+    var todos=mostra.length&&mostra.every(function(v){ return !sel||sel[v]; });
+
+    var h='';
+    h+='<div class="cfx-h" title="'+esc(rotulo(cab,i))+'">'+esc(rotulo(cab,i))+'</div>';
+    h+='<div class="cfx-row">'+
+       '<button type="button" data-cfx-s="asc"'+(e.sort&&e.sort.i===i&&e.sort.dir==='asc'?' class="cfx-cur"':'')+'>'+(tp==='txt'?'↑ A→Z':'↑ menor')+'</button>'+
+       '<button type="button" data-cfx-s="desc"'+(e.sort&&e.sort.i===i&&e.sort.dir==='desc'?' class="cfx-cur"':'')+'>'+(tp==='txt'?'↓ Z→A':'↓ maior')+'</button>'+
+       '</div>';
+    if(tp!=='txt'){
+      var fx=(f&&f.tipo==='fx')?f:{};
+      var ph=tp==='data'?'dd/mm/aaaa':'nº';
+      h+='<div class="cfx-rg"><span>DE</span><input data-cfx-min value="'+esc(fx.minTxt||'')+'" placeholder="'+ph+'" '+
+         'readonly onfocus="this.removeAttribute(\'readonly\')" autocomplete="off" name="cfxmin_nofill" data-lpignore="true" data-1p-ignore>'+
+         '<span>ATÉ</span><input data-cfx-max value="'+esc(fx.maxTxt||'')+'" placeholder="'+ph+'" '+
+         'readonly onfocus="this.removeAttribute(\'readonly\')" autocomplete="off" name="cfxmax_nofill" data-lpignore="true" data-1p-ignore></div>';
+    }
+    h+='<div class="cfx-row" style="border-bottom:none;padding-bottom:4px"><input data-cfx-q value="'+esc(mBusca)+'" placeholder="buscar valor nesta coluna" '+
+       'readonly onfocus="this.removeAttribute(\'readonly\')" autocomplete="off" name="cfxq_nofill" data-lpignore="true" data-1p-ignore></div>';
+    h+='<div class="cfx-list">';
+    h+='<label class="cfx-it cfx-all"><input type="checkbox" data-cfx-todos'+(todos?' checked':'')+'><span class="cfx-v">(Selecionar tudo)</span><b class="cfx-n">'+mostra.length+'</b></label>';
+    for(var n=0;n<mostra.length;n++){
+      var v=mostra[n];
+      h+='<label class="cfx-it"><input type="checkbox" data-cfx-v="'+esc(v)+'"'+((!sel||sel[v])?' checked':'')+'>'+
+         '<span class="cfx-v" title="'+esc(v)+'">'+esc(v===''?'(vazio)':v)+'</span><b class="cfx-n">'+cont[v]+'</b></label>';
+    }
+    if(corte) h+='<div class="cfx-it" style="cursor:default;color:var(--cfx-mut)">…só os '+MAX_VALORES+' primeiros. Use a busca acima.</div>';
+    h+='</div>';
+    h+='<div class="cfx-foot"><button type="button" data-cfx-lim>Limpar coluna</button><button type="button" class="cfx-pri" data-cfx-ok>Fechar</button></div>';
+    menu.innerHTML=h;
+
+    menu.querySelectorAll('[data-cfx-s]').forEach(function(b){
+      b.onclick=function(){
+        var dir=b.getAttribute('data-cfx-s');
+        if(e.sort&&e.sort.i===i&&e.sort.dir===dir) e.sort=null; else e.sort={i:i,dir:dir,tp:tp};
+        aplicar(t); pintarMenu();
+      };
+    });
+    var qi=menu.querySelector('[data-cfx-q]');
+    if(qi) qi.oninput=function(){ mBusca=qi.value; var p=qi.selectionStart; pintarMenu(); var n2=menu.querySelector('[data-cfx-q]'); if(n2){ n2.focus(); try{n2.setSelectionRange(p,p);}catch(_){} } };
+    var lo=menu.querySelector('[data-cfx-min]'), hi=menu.querySelector('[data-cfx-max]');
+    function faixa(){
+      var a=lo?lo.value.trim():'', b=hi?hi.value.trim():'';
+      if(!a&&!b){ delete e.f[i]; }
+      else e.f[i]={tipo:'fx',cmp:tp,minTxt:a,maxTxt:b,min:a?valOrd(a,tp):null,max:b?valOrd(b,tp):null};
+      aplicar(t);
+    }
+    if(lo){ lo.onchange=faixa; lo.oninput=faixa; }
+    if(hi){ hi.onchange=faixa; hi.oninput=faixa; }
+    var tds=menu.querySelector('[data-cfx-todos]');
+    if(tds) tds.onchange=function(){
+      if(tds.checked){ delete e.f[i]; }
+      else { var s={}; e.f[i]={tipo:'vals',set:s}; }                 // desmarcar tudo = nada passa
+      aplicar(t); pintarMenu();
+    };
+    menu.querySelectorAll('[data-cfx-v]').forEach(function(cb){
+      cb.onchange=function(){
+        var atual=(e.f[i]&&e.f[i].tipo==='vals')? e.f[i].set : null;
+        var s={};
+        if(atual) for(var kk in atual) s[kk]=1;
+        else ordem.forEach(function(v){ s[v]=1; });                  // primeiro clique parte de "todos"
+        var v=cb.getAttribute('data-cfx-v');
+        if(cb.checked) s[v]=1; else delete s[v];
+        var faltam=ordem.some(function(v2){ return !s[v2]; });
+        if(!faltam) delete e.f[i]; else e.f[i]={tipo:'vals',set:s};
+        aplicar(t); pintarMenu();
+      };
+    });
+    var lim=menu.querySelector('[data-cfx-lim]');
+    if(lim) lim.onclick=function(){ delete e.f[i]; if(e.sort&&e.sort.i===i) e.sort=null; aplicar(t); pintarMenu(); };
+    var ok=menu.querySelector('[data-cfx-ok]');
+    if(ok) ok.onclick=fechar;
+  }
+
+  // ── varredura: acopla tabela nova, reaplica estado após re-render ──
+  function varrer(){
+    try{
+      proprio++;
+      tokens();
+      var todas=document.querySelectorAll('table');
+      for(var i=0;i<todas.length;i++){
+        var t=todas[i];
+        if(!t.dataset.cfx){ acoplar(t); continue; }
+        if(t.dataset.cfx!=='on') continue;
+        var cab=cabecalho(t); if(!cab) continue;
+        if(!t._cfxBar||!t._cfxBar.parentNode||t._cfxBar.nextSibling!==t) barraDaTabela(t,t.dataset.cfxK||chave(t,cab));
+        if(assinatura(t,cab)!==t._cfxSig){
+          menusDaTabela(t,cab,linhas(t,cab.cells.length));
+          aplicar(t);
+        }
+      }
+    }catch(e){ try{console.error('[CFX] varredura',e);}catch(_){} }
+    finally{ if(mo) mo.takeRecords(); proprio--; }
+  }
+  function agenda(){ clearTimeout(timer); timer=setTimeout(varrer,160); }
+
+  function iniciar(){
+    tokens();
+    varrer();
+    try{
+      mo=new MutationObserver(function(){ if(proprio>0) return; agenda(); });
+      mo.observe(document.documentElement,{childList:true,subtree:true});
+    }catch(e){}
+    document.addEventListener('click',function(ev){
+      if(menu&&menu.classList.contains('cfx-on')&&!menu.contains(ev.target)&&!(ev.target.closest&&ev.target.closest('.cfx-b'))) fechar();
+    },true);
+    document.addEventListener('keydown',function(ev){ if(ev.key==='Escape') fechar(); });
+    window.addEventListener('resize',fechar);
+  }
+
+  window.CFX={
+    versao:VER,
+    varrer:varrer,
+    limpar:function(sel){ var t=typeof sel==='string'?document.querySelector(sel):sel; if(!t) return; var e=est(t.dataset.cfxK||''); e.f={}; e.sort=null; aplicar(t); },
+    desligar:function(sel){ var t=typeof sel==='string'?document.querySelector(sel):sel; if(t) t.setAttribute('data-cfx-off',''); },
+    estado:function(){ return S; },
+    diag:function(){
+      var o={versao:VER,tabelas:[]};
+      document.querySelectorAll('table').forEach(function(t){
+        o.tabelas.push({cfx:t.dataset.cfx||'(nao avaliada)',chave:t.dataset.cfxK||'',menus:t.querySelectorAll('.cfx-b').length,linhas:(t.tBodies[0]?t.tBodies[0].rows.length:0)});
+      });
+      return o;
+    }
+  };
+
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',iniciar);
+  else iniciar();
+}catch(e){ try{ console.error('[CFX] nao iniciou; tabelas seguem sem filtro',e); }catch(_){} }
+})();
+</script>
+
+<!-- ████ FIM BLOCOS PADRAO UX ████ -->
+
+</body>
+</html>
