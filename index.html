@@ -4655,8 +4655,14 @@ v50 — Resiliência de rede: retry/backoff em gsGet e syncToGS
   na busca, no modal Designar e na lista do Designar em lote. Zero requisição nova, zero GAS, zero SQL:
   a lista de OS já vinha para a grade (_v151OsAgenda) e a resolução é a das outras vistas (_g8Maq*).
 -->
-<title>ProperCare Manager · Gestão PGP v4.03 (PCM V210)</title>
-<meta name="app-build" content="PCM_V210" data-date="2026-09-29">
+<!--
+  PCM V211 — 29/09/2026 — VELOCIDADE DA ESCRITA. V210 (a máquina da OS no pool, rodada pool_maquina) + (1) OS nova numa ida só (o GAS v158 monta o
+  pipeline dentro do saveOS; sem o v158, o caminho antigo) · (2) motor de leitura regerado do GAS v158:
+  frotaDisponivel/frotaForaDeCasa do Postgres, descompasso momentâneo do carimbo relê em vez de ir ao GAS,
+  registro de lentidão (pcmLento() no console). Par: GAS v158 (rodar v158Instalar depois de publicar).
+-->
+<title>ProperCare Manager · Gestão PGP v4.03 (PCM V211)</title>
+<meta name="app-build" content="PCM_V211" data-date="2026-09-29">
 <link rel="icon" type="image/jpeg" href="data:image/jpeg;base64,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">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -6173,7 +6179,7 @@ tr.tadm-feito td{background:#dcfce7 !important;color:#15803d;font-weight:700}
        operacao/planejamento/campo/documentos/cadastros/admin). -->
   <div class="nav-brand">
     <span class="nav-brand-mark">PCM</span>
-    <span class="nav-brand-sub" data-carimbo="v4.03 · {v}">v4.03 · V210</span>
+    <span class="nav-brand-sub" data-carimbo="v4.03 · {v}">v4.03 · V211</span>
     <button type="button" class="nav-rail-btn" id="navRailBtn" onclick="_v179NavRailToggle()"
             title="Recolher o menu" aria-label="Recolher o menu" aria-expanded="true">
       <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path class="nav-rail-ico-in" d="M10 3.5L5.5 8 10 12.5"/><path class="nav-rail-ico-out" d="M6 3.5L10.5 8 6 12.5"/></svg>
@@ -9843,10 +9849,26 @@ async function _gsRequestComRetry_(url, options, maxRetries, forcarTetoEscrita) 
     try { if (_pcConfigurar()) _r = await PCL.ler(_pc.verbo, _pc.action, _pc.params); } catch (e) { _r = null; }
     if (_r) return _r;
   }
-  var _json = await _gsRequestComRetryGAS_(url, options, maxRetries, forcarTetoEscrita);
+  // V211 — REGISTRO DE LENTIDÃO: toda ida ao Apps Script fica anotada (ação, ms, espelho da escrita).
+  //   No console: pcmLento(). Existe para a próxima lentidão ter causa escrita, não suposta.
+  var _t211 = Date.now(), _json;
+  try { _json = await _gsRequestComRetryGAS_(url, options, maxRetries, forcarTetoEscrita); }
+  catch (e211) { _v211Anotar(_pc, _t211, null, e211); throw e211; }
+  _v211Anotar(_pc, _t211, _json);
   if (_pc && _pc.verbo === 'POST') { try { if (_pcConfigurar()) PCL.aposEscrita(_pc.action, _json); } catch (e) {} }
   return _json;
 }
+function _v211Anotar(pc, t0, json, erro) {
+  try {
+    if (typeof PCL === 'undefined' || !PCL.anotar) return;
+    var esp = json && json.espelho;
+    PCL.anotar({ a: (pc && pc.action) || '?', v: (pc && pc.verbo) || '', f: 'gas', ms: Date.now() - t0,
+                 em: esp && typeof esp.ms === 'number' ? esp.ms : undefined,
+                 tm: esp && typeof esp.total_ms === 'number' ? esp.total_ms : undefined,
+                 m: erro ? ('erro: ' + String(erro && erro.message || erro).slice(0, 120)) : (json && json.status !== 'ok' ? 'recusado' : '') });
+  } catch (e) {}
+}
+window.pcmLento = function () { try { return (typeof PCL !== 'undefined' && PCL.historico) ? PCL.historico() : []; } catch (e) { return []; } };
 async function _gsRequestComRetryGAS_(url, options, maxRetries, forcarTetoEscrita) {
   if (maxRetries === undefined) maxRetries = 2;
   var lastErr;
@@ -18199,7 +18221,7 @@ function renderConfigStats(){
     <div class="card">
       <div style="font-size:13px;font-weight:600;margin-bottom:4px">Sobre o sistema</div>
       <div style="font-size:12px;color:var(--text2);line-height:1.8">
-        <strong>Catálogo Administrativo v3.43 · <span data-carimbo="PCM {v}">PCM V210</span></strong> — Proper Compressores<br>
+        <strong>Catálogo Administrativo v3.43 · <span data-carimbo="PCM {v}">PCM V211</span></strong> — Proper Compressores<br>
         Catálogo de modelos · Peças com similares · Fotos · Subsistemas nomeados · Máquinas PGP com dados completos de cliente<br>
         Detecção de duplicados em modelos e máquinas · Google Sheets como backend
       </div>
@@ -24685,6 +24707,16 @@ async function saveOSModal(btnEl) {
   // toda re-submissão deste formulário (duplo-clique, retry manual) e em todo
   // retry interno do _gsRequestComRetry_ → criação idempotente no GAS v79.
   if (!id) payload.client_uid = (_osClientUid || _novoOsClientUid());
+  // V211 — OS NOVA NUMA IDA SÓ. O GAS v158 monta o pipeline do template padrão DENTRO do saveOS
+  //   (idempotente por client_uid|pipe). Medido em 29/09: eram dois doPost em fila (12,5 s + 5,5 s).
+  //   GAS anterior ao v158 ignora a chave e não devolve `pipeline` ⇒ o ramo antigo, abaixo, faz como antes.
+  if (!id) {
+    try {
+      const _t211 = (_tiposOS || []).find(t => t.Tipo_ID === tipo);
+      const _tpl211 = String((_t211 && _t211.Template_ID_Padrao) || '').trim();
+      if (_tpl211) payload.instanciar_template_id = _tpl211;
+    } catch (e211) {}
+  }
   // V178 — quem paga (L-7) e o destino completo da OS externa (G-10). false =
   //   a tela ja disse o que falta e NADA e gravado.
   if (typeof _v178AntesDeSalvarOS === 'function') {
@@ -24746,14 +24778,22 @@ async function saveOSModal(btnEl) {
     // Após criar nova OS, instanciar pipeline automaticamente
     // V98 F-08: em duplicate:true a OS (e o pipeline dela) já existem — instanciar
     // de novo empilharia as tarefas do template em cima das existentes.
-    if (!id && !(result && result.duplicate)) {
+    const _p211 = result && result.pipeline;   // V211: o servidor já montou (ou tentou montar) o pipeline
+    if (!id && _p211 && typeof _p211 === 'object') {
+      if (!result.pipeline_instanciado) {
+        toast('⚠ Pipeline não foi configurado automaticamente: ' + (_p211.error || 'o servidor não confirmou') + ' — use "Trocar pipeline" na OS.', 'warning');
+        console.warn('[V211] pipeline dentro do saveOS:', _p211);
+      }
+    } else if (!id && !(result && result.duplicate)) {
       const novoIdOs = result?.id_os || result?.data?.id_os;
       if (novoIdOs) {
         const tipoObj = _tiposOS.find(t => t.Tipo_ID === tipo);
         const templatePadrao = tipoObj?.Template_ID_Padrao;
         if (templatePadrao) {
           try {
-            await syncToGS('instanciarPipeline', { os_id: novoIdOs, template_id: templatePadrao });
+            // V211 — idempotente também no caminho antigo (o GAS aceita client_uid desde o v79)
+            await syncToGS('instanciarPipeline', Object.assign({ os_id: novoIdOs, template_id: templatePadrao },
+              payload.client_uid ? { client_uid: payload.client_uid + '|pipe' } : {}));
           } catch(epi) {
             if (epi.message && epi.message.includes('AUTH_GOOGLE')) { hubLogout(); return; }
             toast('⚠ Pipeline não foi configurado automaticamente: ' + epi.message, 'warning');
@@ -44331,9 +44371,9 @@ _v178Embrulhar('openOSDetail', function (orig) {
 })();
 
 </script>
-<!-- ████ INICIO PC_LEITURA (PC_LEITURA_V1 · v152 · 0cec2d74e3) — gerado por gerar_bloco.js; NÃO EDITAR À MÃO ████ -->
+<!-- ████ INICIO PC_LEITURA (PC_LEITURA_V1 · v158 · 5ec632f91b) — gerado por gerar_bloco.js; NÃO EDITAR À MÃO ████ -->
 <script>
-/* PC_LEITURA · motor extraído de GAS_properCare_v152.js (223 KB) — NÃO EDITAR À MÃO.
+/* PC_LEITURA · motor extraído de GAS_properCare_v158.js (228 KB) — NÃO EDITAR À MÃO.
    Roda em modo NÃO estrito de propósito: é código do Apps Script, escrito para o modo
    do Apps Script (função declarada dentro de bloco, etc.). Uma instância por leitura. */
 var __PCL_MOTOR = function (S) {
@@ -45373,6 +45413,13 @@ function ensureOSHeaders_() {
   ensureSheetHeaders('OS_DRAFTS', HEADERS.OS_DRAFTS);
   ensureSheetHeaders('CAT_USUARIOS', HEADERS.CAT_USUARIOS);
   ensureSheetHeaders('CAT_PERFIS', HEADERS.CAT_PERFIS);
+}
+function _mesmoCliente_(a, b) {
+  function norm(s){ return String(s || '').trim().toLowerCase().replace(/\s+/g, ' '); }
+  var ca, cb;
+  try { ca = resolveCanonicalClientName(a) || a; } catch (e) { ca = a; }
+  try { cb = resolveCanonicalClientName(b) || b; } catch (e) { cb = b; }
+  return !!norm(ca) && norm(ca) === norm(cb);
 }
 function getUsuarios(params) {
   ensureSheetHeaders('CAT_USUARIOS', HEADERS.CAT_USUARIOS);
@@ -48483,6 +48530,12 @@ function getHorimetroPendencias(params) {
            total: pendentes.length, total_sem_regime: semRegime.length };
 }
 var V140_BLOCOS = ['S', 'G', 'L', 'D', 'R'];
+function _blocoLigado_(letra) {
+  try {
+    return String(PropertiesService.getScriptProperties().getProperty('BLOCO_' + letra) || '')
+      .trim().toLowerCase() === 'on';
+  } catch (e) { return false; }
+}
 function getBlocos_() {
   // UMA leitura das propriedades (getProperties), não cinco getProperty.
   var props = {};
@@ -48491,6 +48544,10 @@ function getBlocos_() {
   V140_BLOCOS.forEach(function (b) { out[b] = String(props['BLOCO_' + b] || '').trim().toLowerCase() === 'on'; });
   out.A = true;
   return out;
+}
+function _v140Desligado_(letra) {
+  return { status: 'error', desligado: true, bloco: letra,
+           error: 'Este recurso ainda está desligado (Propriedade do script BLOCO_' + letra + ').' };
 }
 HEADERS.GEO_LOCAIS = [
   'Geo_ID', 'Tipo', 'Entidade_ID', 'Entidade_Nome', 'Latitude', 'Longitude', 'Precisao_M',
@@ -48755,6 +48812,87 @@ function _v140ResumoPresenca_(evs, tecnicoId) {
     inicio_distancia_m: ch ? ch.distancia_m : null,
     fim: sai ? sai.hora : '', saida: part ? part.hora : '', eventos: meus.length
   };
+}
+function _frotaClienteId_() {
+  try {
+    var p = String(PropertiesService.getScriptProperties().getProperty('FROTA_CLIENTE_ID') || '').trim();
+    if (p) return p;
+  } catch (e) {}
+  var achados = getSheetDataActive('CLIENTES').filter(function (c) {
+    return /proper\s*loca/i.test(String(c.Nome || '').normalize('NFD').replace(/[̀-ͯ]/g, ''));
+  });
+  return achados.length === 1 ? String(achados[0].ID || '').trim() : '';
+}
+function _v140MaquinaEhDaFrota_(m, frotaId) {
+  if (!m || !frotaId) return false;
+  if (String(m.Cliente_ID || '').trim() === frotaId) return true;
+  var cli = getSheetDataActive('CLIENTES').filter(function (c) { return String(c.ID || '').trim() === frotaId; })[0];
+  return !!(cli && _mesmoCliente_(String(m.Cliente || ''), String(cli.Nome || '')));
+}
+function _v140CustodiasAtivas_() {
+  var m = {};
+  try {
+    getSheetData('CUSTODIA_FROTA').forEach(function (c) {
+      if (String(c.Status || '').toUpperCase() !== 'ATIVA') return;
+      m[String(c.Maquina_ID || '').trim()] = c;
+    });
+  } catch (e) {}
+  return m;
+}
+function frotaDisponivel(params) {
+  if (!_blocoLigado_('L')) return _v140Desligado_('L');
+  var frotaId = _frotaClienteId_();
+  if (!frotaId) return { status: 'error', error: 'Não achei o cliente "Proper Locação" (dono da frota). Cadastre a Propriedade do script FROTA_CLIENTE_ID com o ID dele.' };
+  var cus = _v140CustodiasAtivas_();
+  var lista = getSheetDataActive('MAQUINAS').filter(function (m) {
+    return _v140MaquinaEhDaFrota_(m, frotaId) && String(m.Tipo_Registro || 'PRODUCAO').toUpperCase() !== 'TESTE';
+  }).map(function (m) {
+    var c = cus[String(m.ID)];
+    return { id: String(m.ID), rotulo: _v140RotuloMaquina_(m), marca: String(m.Marca || ''), modelo: String(m.Modelo || ''),
+             serie: String(m['Série'] || ''), tag: String(m.TAG || ''),
+             disponivel: !c && String(m.Custodia || '').toUpperCase() !== 'OFICINA',
+             com_cliente: c ? { cliente: String(c.Cliente_Nome || ''), desde: String(c.Desde || ''), tipo: String(c.Tipo || '') } : null,
+             na_oficina: String(m.Custodia || '').toUpperCase() === 'OFICINA' };
+  });
+  return { status: 'ok', frota_cliente_id: frotaId, maquinas: lista };
+}
+function frotaForaDeCasa(params) {
+  if (!_blocoLigado_('L')) return _v140Desligado_('L');
+  params = params || {};
+  var agora = Date.now();
+  var lista = [];
+  try {
+    getSheetData('CUSTODIA_FROTA').forEach(function (c) {
+      if (String(c.Status || '').toUpperCase() !== 'ATIVA') return;
+      if (params.cliente_id && String(c.Cliente_ID || '') !== String(params.cliente_id)) return;
+      var d = new Date(c.Desde).getTime();
+      var dias = isFinite(d) ? Math.floor((agora - d) / 86400000) : null;
+      var prev = String(c.Devolucao_Prevista || '').slice(0, 10);
+      lista.push({ custodia_id: String(c.Custodia_ID), maquina_id: String(c.Maquina_ID), maquina: String(c.Maquina_Rotulo || ''),
+                   cliente_id: String(c.Cliente_ID || ''), cliente: String(c.Cliente_Nome || ''), tipo: String(c.Tipo || ''),
+                   desde: String(c.Desde || ''), dias: dias, os_id: String(c.OS_ID || ''), os_numero: String(c.OS_Numero || ''),
+                   devolucao_prevista: prev,
+                   // o formulário de empréstimo calcula a conversão em aluguel a partir de 30 dias
+                   alerta: String(c.Tipo || '') === 'emprestimo' && dias !== null && dias > 30,
+                   atrasada: !!(prev && prev < Utilities.formatDate(new Date(), 'America/Sao_Paulo', 'yyyy-MM-dd')) });
+    });
+  } catch (e) {}
+  lista.sort(function (a, b) { return (b.alerta - a.alerta) || ((b.dias || 0) - (a.dias || 0)); });
+  // L-10: OS antigas de frota abertas em nome da própria Proper Locação — para
+  // o Fernando decidir uma a uma. NUNCA migram sozinhas (decisão 12).
+  var frotaId = _frotaClienteId_(), antigas = [];
+  if (frotaId) {
+    var tipos = _v140MapaTiposNome_();
+    getSheetData('ORDENS_SERVICO').forEach(function (o) {
+      var at = (o.Ativo === undefined || String(o.Ativo).trim() === '') ? 'SIM' : o.Ativo;
+      if (!isActive_(at) || isOsClosed_(o.status)) return;
+      if (String(o.id_cliente || '').trim() !== frotaId) return;
+      var tk = String(o.tipo_os || '').trim().toUpperCase();
+      antigas.push({ id_os: String(o.id_os), numero_os: String(o.numero_os || ''), tipo: tipos[tk] ? tipos[tk].nome : String(o.tipo_os || ''),
+                     usa_frota: !!(tipos[tk] && tipos[tk].frota), descricao: String(o.descricao || '').slice(0, 140) });
+    });
+  }
+  return { status: 'ok', fora_de_casa: lista, os_em_nome_da_frota: antigas, frota_cliente_id: frotaId };
 }
 HEADERS.DOCS_INTERNOS = [
   'Doc_ID', 'Client_UID', 'OS_ID', 'OS_Numero', 'Cliente', 'Maquina_ID', 'Maquina_Label',
@@ -49054,6 +49192,12 @@ function __pcPOST(action, body) {
       case "getBlocos":
         result = { status: 'ok', blocos: getBlocos_() };
         break;
+      case "frotaDisponivel":
+        result = frotaDisponivel(body);
+        break;
+      case "frotaForaDeCasa":
+        result = frotaForaDeCasa(body);
+        break;
       case "getTiposMedida":
         result = getTiposMedida();
         break;
@@ -49068,7 +49212,7 @@ function __pcPOST(action, body) {
 /* ════════════════════════════════════════════════════════════════════════════
    PC_LEITURA — o motor de leitura do ProperCare no navegador (rodada TURBO, 28/09/2026)
    ────────────────────────────────────────────────────────────────────────────
-   GERADO por gerar_bloco.js a partir do GAS v152. NÃO EDITAR À MÃO.
+   GERADO por gerar_bloco.js a partir do GAS v158. NÃO EDITAR À MÃO.
 
    O QUE É: as funções de LEITURA do Apps Script (getOS, getTarefasAdm, getKanbanOficina,
    getSaturacaoUsuarios, …) COPIADAS do próprio GAS e executadas aqui, sobre uma
@@ -49086,25 +49230,32 @@ function __pcPOST(action, body) {
      · o Postgres devolveu um número de linhas diferente do que o carimbo diz (parcial/RLS);
      · a leitura passou do prazo (12 s por padrão) — rede lenta não prende a tela;
      · a leitura tentou escrever, usar Drive/e-mail/rede, ou lançou qualquer erro;
-     · a action foi rebaixada pela SENTINELA (divergiu do GAS duas vezes) — 24 h.
+     · a action foi rebaixada pela SENTINELA (divergiu do GAS duas vezes) — 24 h;
+     · (V211) a action exige uma chave da config pública que o GAS ainda não publicou (M.exigirConfig).
+   V211 (29/09): descompasso MOMENTÂNEO entre o carimbo e as linhas (um push no meio do caminho) não
+   manda mais a tela ao GAS de primeira — relê o carimbo e tenta de novo (até 2×, dentro do prazo).
+   E toda ida ao GAS (e toda leitura lenta) fica anotada em localStorage 'pc_log' (PCL.historico()).
    A SENTINELA: uma vez a cada 24 h por action e por navegador, a mesma leitura vai
    também ao GAS em 2º plano e as duas respostas são comparadas. PCL.relatorio() mostra.
    ════════════════════════════════════════════════════════════════════════════ */
 (function (G) {
   'use strict';
   if (G.PCL) return;
-  var BUILD = 'PC_LEITURA_V1 · v152 · 0cec2d74e3';
+  var BUILD = 'PC_LEITURA_V1 · v158 · 5ec632f91b';
   var M = {
   abas: {"MODELOS":{"tabela":"modelos","pk":"id"},"PARTS_MASTER":{"tabela":"parts_master","pk":"part_id"},"PART_SIMILARITIES":{"tabela":"part_similarities","pk":"sim_id"},"SUBSISTEMAS_LIB":{"tabela":"subsistemas_lib","pk":"sub_lib_id"},"SUBSISTEMA_LIB_PARTS":{"tabela":"subsistema_lib_parts","pk":"part_id"},"MODELO_SUBSISTEMA_LIB":{"tabela":"modelo_subsistema_lib","pk":"link_id"},"CLIENTES":{"tabela":"clientes","pk":"id"},"MAQUINAS":{"tabela":"maquinas","pk":"id"},"MACHINE_PARTS":{"tabela":"machine_parts","pk":"machine_id,part_id"},"PIPELINE_TEMPLATES":{"tabela":"pipeline_templates","pk":"template_id"},"ORDENS_SERVICO":{"tabela":"ordens_servico","pk":"id_os"},"PIPELINE_TAREFAS":{"tabela":"pipeline_tarefas","pk":"os_id,tarefa_id"},"AGENDA_DEMANDAS":{"tabela":"agenda_demandas","pk":"demanda_id"},"OS_MAQUINAS":{"tabela":"os_maquinas","pk":"id_link"},"TECH_ATTACHMENTS":{"tabela":"tech_attachments","pk":"attachment_id"},"UNIDADES":{"tabela":"unidades","pk":"id"},"CAT_TIPOS_OS":{"tabela":"cat_tipos_os","pk":"tipo_id"},"CUSTODIA_FROTA":{"tabela":"frota_custodia","pk":"custodia_id"},"CAT_PERFIS":{"tabela":"cat_perfis","pk":"id_perfil"},"PARAMETROS_TURNO":{"tabela":"parametros_turno","pk":"id"},"CAT_USUARIOS":{"tabela":"usuarios_publico","pk":"id"},"FORMULARIOS":{"tabela":"formularios","pk":"id"},"VISITAS":{"tabela":"visitas","pk":"id"},"PIPELINE_NOTIF":{"tabela":"pipeline_notif","pk":"notif_id"},"HORIMETRO_CALIB":{"tabela":"horimetro_calib","pk":"machine_id"},"HORIMETRO_HIST":{"tabela":"horimetro_hist","pk":"id"},"PRESENCA_OS":{"tabela":"presenca_os","pk":"evento_id"},"GEO_LOCAIS":{"tabela":"geo_locais","pk":"geo_id"},"SOLICITACOES_CADASTRO":{"tabela":"solicitacoes_cadastro","pk":"solic_id"},"CAT_TIPOS_MEDIDA":{"tabela":"cat_tipos_medida","pk":"tipo_id"}},
   override: {"OS_MAQUINAS":{"machineKey":"machine_key"}},
   soCabecalho: {"PECAS_LOG":["ID_Visita","ID_Peça","Nome Peça","Ref.","Subsistema","Últ.Troca(h)","N/A","Observação","Ref_Nova","Ref_Anterior","Tipo_Referencia","Acao","Horimetro","Data_Troca","Ativo","Tipo_Registro","Created_At","Deleted_At","Deleted_By","Intervalo_H","H_Rodadas","H_Restantes","Status","Valor_Mostrado","Tipo_Contador","Estado"],"ASSINATURAS_REMOTAS":["Token","Attachment_ID","OS_ID","OS_Numero","Cliente","Maquina_Label","File_Name","Status","Criado_Em","Criado_Por","Expira_Em","Assinado_Em","Assinado_Nome","Assinado_Info","Novo_File_ID","Ativo"],"LOG_OPERACIONAL":["id_evento","timestamp","tipo_evento","id_os","numero_os","id_cliente","cliente","id_usuario","nome_usuario","id_maquina","machineKey","status_anterior","status_novo","acao_realizada","responsavel_nome","origem","observacao","payload_json"],"HISTORICO_OS":["id_historico","id_os","numero_os","id_cliente","cliente","tipo_os","data_abertura","data_encerramento","status_final","tecnicos_vinculados_json","total_maquinas","maquinas_atendidas","maquinas_pendentes","visit_ids_resultado_json","pdf_url","assinatura_tecnico_url","assinatura_cliente_url","observacao_fechamento","motivo_cancelamento","encerrada_por","timestamp"],"OS_DRAFTS":["id_draft","id_os","numero_os","id_usuario","nome_usuario","tipo_os","timestamp_atualizacao","payload_json","status_draft"],"ROTORES_MODELOS":["Model_ID","Marca","Modelo","Foto_Ref_URL","Anchors_JSON","Ativo","Tipo_Registro","Created_At","Updated_At","Deleted_At","Deleted_By"],"ROTORES_COLETAS":["Coleta_ID","Machine_ID","Visit_ID","Model_ID","Cliente","Marca","Modelo","Serie","TAG","Tecnico","Data_Coleta","Foto_Rotores_URL","Anchors_JSON","Medicoes_JSON","Obs","Ativo","Tipo_Registro","Created_At","Deleted_At","Deleted_By"],"DOC_VERSOES":["Versao_ID","Attachment_ID","Anterior_ID","Entity_Type","Entity_ID","OS_Numero","File_Name","Versao","Motivo_Tipo","Motivo","SHA256","Assinada","Origem","Criado_Em","Criado_Por"],"LOG_COMPARTILHAMENTO":["Log_ID","Attachment_ID","OS_Numero","File_Name","Canal","Destino","Link_ID","Status","Criado_Em","Criado_Por","Obs"],"DOC_LINKS":["Link_ID","Token_Hash","Attachment_ID","OS_Numero","File_Name","Expira_Em","Criado_Em","Criado_Por","Cancelado_Em","Cancelado_Por","Aberturas","Ultima_Abertura","Ativo"],"CAT_FERRAMENTAL":["Item_ID","Nome","Categoria","Unidade","Controla_Qtde","Patrimonio","Obs","Ativo","Created_At","Updated_At","Updated_By"],"CAT_VEICULOS":["Veiculo_ID","Nome","Placa","Obs","Ativo","Created_At","Updated_At","Updated_By"],"KIT_VEICULO":["Kit_ID","Veiculo_ID","Item_ID","Qtde","Ativo","Updated_At","Updated_By"],"KIT_SERVICO":["Kit_ID","Tipo_ID","Item_ID","Qtde","Ativo","Updated_At","Updated_By"],"CARGA_OS":["Linha_ID","OS_ID","OS_Numero","Tipo","Item_ID","Descricao","Qtde","Sinal","Obs","Ativo","Created_At","Created_By"],"ROMANEIO_CONF":["Conf_ID","Data","Veiculo_ID","Tecnico_ID","Tecnico_Nome","Momento","Itens_JSON","Faltas","Pendente","Resolvido_Em","Resolvido_Por","Obs","Created_At"],"DOCS_INTERNOS":["Doc_ID","Client_UID","OS_ID","OS_Numero","Cliente","Maquina_ID","Maquina_Label","Categoria","Descricao","File_ID","File_URL","File_Name","Mime","Bytes","Folder_ID","Folder_URL","Created_At","Created_By","Ativo","Removido_Em","Removido_Por"],"ASSIN_LEMBRETES":["Evento_ID","Tipo","Canal","Pedido_Chave","Attachment_ID","OS_Numero","Cliente","File_Name","Destinatarios","Destinos","Em","Por","Status","Obs","Ativo"]},
   extras: { 'PIPELINE_TAREFAS#ARQ': { tabela: 'pipeline_tarefas_arq', pk: 'os_id,tarefa_id,arq_seq' } },
   juntar: { PIPELINE_TAREFAS: 'PIPELINE_TAREFAS#ARQ' },
-  acoes: {"getOS":"ambos","getTarefasAdm":"ambos","getItensNaOficina":"ambos","getKanbanOficina":"ambos","getFilaOficina":"ambos","getSaturacaoUsuarios":"ambos","getTermometroEspera":"ambos","listarPresasOsEncerrada":"ambos","getPipelineByOS":"ambos","getMaquinasByOS":"ambos","getEquipamentosByOS":"ambos","getAttachments":"ambos","getFormulariosByOS":"ambos","getNotificacoes":"ambos","getHorimetroCalib":"ambos","getHorimetroPendencias":"ambos","getTemplates":"ambos","getTiposOS":"ambos","getPerfis":"ambos","getUnidades":"ambos","getParametrosTurno":"ambos","getTiposMedida":"ambos","getBlocos":"ambos","getSolicitacoesCadastro":"ambos","getAgendaDemandas":"ambos","getUsuarios":"ambos","getMachinesByClient":"ambos","getClientsForField":"ambos","searchMachine":"ambos","getCatalogFull":"ambos","calcularPrazoOS":"ambos"},
+  acoes: {"getOS":"ambos","getTarefasAdm":"ambos","getItensNaOficina":"ambos","getKanbanOficina":"ambos","getFilaOficina":"ambos","getSaturacaoUsuarios":"ambos","getTermometroEspera":"ambos","listarPresasOsEncerrada":"ambos","getPipelineByOS":"ambos","getMaquinasByOS":"ambos","getEquipamentosByOS":"ambos","getAttachments":"ambos","getFormulariosByOS":"ambos","getNotificacoes":"ambos","getHorimetroCalib":"ambos","getHorimetroPendencias":"ambos","getTemplates":"ambos","getTiposOS":"ambos","getPerfis":"ambos","getUnidades":"ambos","getParametrosTurno":"ambos","getTiposMedida":"ambos","getBlocos":"ambos","getSolicitacoesCadastro":"ambos","getAgendaDemandas":"ambos","getUsuarios":"ambos","getMachinesByClient":"ambos","getClientsForField":"ambos","searchMachine":"ambos","getCatalogFull":"ambos","calcularPrazoOS":"ambos","frotaDisponivel":"POST","frotaForaDeCasa":"POST"},
   // getUsuarios com incluir_inativos é a tela de ADMINISTRAÇÃO: precisa de e-mail/telefone,
   // que NÃO sobem ao Postgres (D1). Ela continua no GAS; a lista de nomes vem do Postgres.
   condicao: { getUsuarios: function (p) { var v = String(p.incluir_inativos || p.incluirInativos || '').toLowerCase(); return !(v === '1' || v === 'true' || v === 'sim' || v === 'on' || v === 'yes'); } },
-  ignorar: { getUsuarios: ['email', 'telefone'] }
+  ignorar: { getUsuarios: ['email', 'telefone'] },
+  // V211 — a frota só é lida fora do GAS quando o v158 já publicou FROTA_CLIENTE_ID na config
+  // pública; antes disso o motor recusa (vai ao GAS) em vez de adivinhar pelo nome do cliente.
+  exigirConfig: { frotaDisponivel: ['FROTA_CLIENTE_ID', 'BLOCO_L'], frotaForaDeCasa: ['FROTA_CLIENTE_ID', 'BLOCO_L'] }
 };
   var PARADA = { __pcParada: true };
   var JANELA_MS = 20 * 60000;
@@ -49126,6 +49277,26 @@ function __pcPOST(action, body) {
     ESTADO.ultimo = estado;
     ESTADO.ouvintes.forEach(function (f) { try { f(estado); } catch (e) {} });
   }
+  // V211 — o REGISTRO DE LENTIDÃO: as últimas 60 idas ao GAS (com o motivo) e leituras lentas do
+  // Postgres, no localStorage do aparelho. Existe porque em 29/09 a Agenda ficou presa em
+  // "Calculando saturação…" e não havia como saber POR QUE aquela leitura foi ao Apps Script.
+  var LOG_MAX = 120;   // (toda ida ao GAS por leitura gera 2 linhas: o motivo, do motor, e o tempo, do transporte)
+  function anotar(o) {
+    try {
+      var l = JSON.parse(ls('pc_log') || '[]');
+      if (!Array.isArray(l)) l = [];
+      o.q = o.q || agora();
+      l.push(o);
+      if (l.length > LOG_MAX) l = l.slice(l.length - LOG_MAX);
+      ls('pc_log', JSON.stringify(l));
+    } catch (e) {}
+  }
+  // descompasso momentâneo: o push está entre o upsert e o carimbo (ou vice-versa)
+  // (ZERO linhas com carimbo > 0 é RLS/token — permanente: não repete. Auditoria V211.)
+  function transitorio(msg) { return /: [1-9]\d* linhas lidas, espelho diz \d+/.test(String(msg || '')); }
+  // Descompasso que NÃO se desfez em 3 tentativas (ex.: carimbo recusado; só cura na reconciliação de
+  // 5 min): por 60 s as próximas leituras vão ao GAS de primeira, sem pagar 2 s de espera cada.
+  var SEM_REPETIR_MS = 60000;
 
   // ── supaCol_ do GAS, byte a byte (a bancada compara com o original) ─────────
   function supaCol(h, aba) {
@@ -49141,7 +49312,7 @@ function __pcPOST(action, body) {
   var RX_NUM = /^-?(0|[1-9]\d*)(\.\d*[1-9])?$/;
   function paraData(s) {
     var d = new Date(String(s).replace(' ', 'T'));
-    return isNaN(d.getTime()) ? null : d;
+    return isNaN(d.getTime()) ? null : DataGAS(d.getTime());
   }
   function celula(v, t) {
     if (v === null || v === undefined) return '';
@@ -49162,7 +49333,29 @@ function __pcPOST(action, body) {
     if (s === 'false') return false;
     return s;
   }
-  function copiaCelula(v) { return (v instanceof Date) ? new Date(v.getTime()) : v; }
+  // V211 (auditoria) — String(data) no navegador sai no IDIOMA do aparelho ("… (Horário Padrão de
+  //   Brasília)"), e no Apps Script sai "… GMT-0300 (Brasilia Standard Time)". Leitura que faz String()
+  //   de uma célula de data (a frota: `desde`) divergiria da do GAS e a sentinela a rebaixaria todo dia.
+  //   A célula de data do motor é uma Date cujo texto é o do Apps Script (en-US, fuso de São Paulo).
+  var DS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'], MS_ = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  var FMT_TXT = null, FMT_TZN = null;
+  function textoGAS(d) {
+    try {
+      if (isNaN(d.getTime())) return 'Invalid Date';
+      FMT_TXT = FMT_TXT || new Intl.DateTimeFormat('en-US', { timeZone: 'America/Sao_Paulo', year: 'numeric', month: 'numeric', day: '2-digit',
+        weekday: 'short', hour: '2-digit', minute: '2-digit', second: '2-digit', hourCycle: 'h23' });
+      FMT_TZN = FMT_TZN || new Intl.DateTimeFormat('en-US', { timeZone: 'America/Sao_Paulo', timeZoneName: 'long' });
+      var p = {}; FMT_TXT.formatToParts(d).forEach(function (x) { p[x.type] = x.value; });
+      var nome = ''; FMT_TZN.formatToParts(d).forEach(function (x) { if (x.type === 'timeZoneName') nome = x.value; });
+      var off = -d.getTimezoneOffset(), sinal = off >= 0 ? '+' : '-', a = Math.abs(off);
+      var gmt = 'GMT' + sinal + ('0' + Math.floor(a / 60)).slice(-2) + ('0' + (a % 60)).slice(-2);
+      return p.weekday + ' ' + MS_[Number(p.month) - 1] + ' ' + p.day + ' ' + p.year + ' ' + p.hour + ':' + p.minute + ':' + p.second + ' ' + gmt + ' (' + nome + ')';
+    } catch (e) { return Date.prototype.toString.call(d); }
+  }
+  function DataGAS(ms) { var d = new Date(ms); Object.setPrototypeOf(d, DataGAS.prototype); return d; }
+  DataGAS.prototype = Object.create(Date.prototype, { constructor: { value: Date, writable: true, configurable: true } });
+  DataGAS.prototype.toString = function () { return textoGAS(this); };
+  function copiaCelula(v) { return (v instanceof Date) ? DataGAS(v.getTime()) : v; }
 
   // ── a planilha virtual (só o que o código de leitura do GAS usa) ────────────
   function criarAba(nome, m, ctx) {
@@ -49464,6 +49657,12 @@ function __pcPOST(action, body) {
   async function executarLift(verbo, action, params) {
     var esp = await lerEspelho(), cfg = await lerConfig();
     if (String(cfg.TURBO || '').toLowerCase() !== 'on') throw new Error('servidor com TURBO desligado');
+    // V211 — a chave tem de estar publicada E preenchida: o GAS publica '' quando a Property não existe
+    //   (aí ele acha pelo nome), e adivinhar pelo nome aqui seria outra fonte de verdade.
+    (M.exigirConfig && M.exigirConfig[action] || []).forEach(function (k) {
+      if (!Object.prototype.hasOwnProperty.call(cfg, k) || !String(cfg[k] === null || cfg[k] === undefined ? '' : cfg[k]).trim())
+        throw new Error('config pública sem ' + k + ' (rode v158Instalar no Apps Script)');
+    });
     var dados = {};
     async function garantir(aba) {
       if (dados[aba]) return;
@@ -49594,12 +49793,29 @@ function __pcPOST(action, body) {
     ler: async function (verbo, action, params, opcoes) {
       params = limparParams(params);
       var pode = podeAtender(verbo, action, params);
-      if (pode !== 'ok') { if (pode) log('GAS:', action, pode); return null; }
+      if (pode !== 'ok') { if (pode) { log('GAS:', action, pode); anotar({ a: action, f: 'gas', m: pode }); } return null; }
       var t0 = agora(), prazo = (opcoes && opcoes.prazoMs) || 12000;
       try {
-        var r = await comPrazo(executarLift(verbo, action, params), prazo, action);
+        // V211 — descompasso momentâneo: relê o carimbo e tenta de novo (até 2×) em vez de ir ao GAS
+        var desistiu = false;
+        var tentar = async function () {
+          for (var volta = 0; ; volta++) {
+            try { return await executarLift(verbo, action, params); }
+            catch (eL) {
+              var tr = transitorio(eL && eL.message);
+              if (tr && volta >= 2) ESTADO.semRepetirAte = agora() + SEM_REPETIR_MS;
+              if (volta >= 2 || !tr || desistiu || ESTADO.semRepetirAte > agora()) throw eL;
+              log('descompasso momentâneo em', action, '— relendo o carimbo:', eL && eL.message);
+              await new Promise(function (ok) { setTimeout(ok, 700 * (volta + 1)); });
+              if (desistiu) throw eL;                 // o prazo já passou: não continua baixando em 2º plano
+              ESTADO.esp = null; ESTADO.espVoo = null;
+            }
+          }
+        };
+        var r = await comPrazo(tentar(), prazo, action).catch(function (eP) { desistiu = true; throw eP; });
         var ms = agora() - t0;
         log('Postgres:', action, ms + ' ms');
+        if (ms > 1500) anotar({ a: action, f: 'postgres', ms: ms, m: 'leitura lenta' });
         avisar({ fonte: 'postgres', action: action, ms: ms, quando: agora() });
         if (sentinelaDevida(action)) {
           setTimeout(function () { sentinela(verbo, action, params, 0); }, 6000 + Math.floor(Math.random() * 6000));
@@ -49607,6 +49823,7 @@ function __pcPOST(action, body) {
         return r;
       } catch (e) {
         console.info('[PCL] ' + action + ' vai ao GAS: ' + (e && e.message));
+        anotar({ a: action, f: 'gas', ms: agora() - t0, m: String(e && e.message || e).slice(0, 160) });
         avisar({ fonte: 'gas', action: action, motivo: e && e.message, quando: agora() });
         return null;
       }
@@ -49644,6 +49861,18 @@ function __pcPOST(action, body) {
       } catch (e) { return false; }
     },
     estado: function () { return ESTADO.ultimo; },
+    // V211 — o transporte anota aqui cada ida ao GAS (verbo, action, ms, espelho da escrita)
+    anotar: function (o) { if (o && typeof o === 'object') anotar(o); },
+    historico: function () {
+      var l = [];
+      try { l = JSON.parse(ls('pc_log') || '[]') || []; } catch (e) {}
+      var t = l.map(function (x) {
+        return { quando: new Date(x.q).toLocaleString('pt-BR'), action: x.a, verbo: x.v || '', fonte: x.f || '', ms: x.ms,
+                 espelho_ms: x.em, total_servidor_ms: x.tm, motivo: x.m || '' };
+      });
+      try { console.table(t); } catch (e) {}
+      return t;
+    },
     relatorio: function () {
       var out = {};
       Object.keys(M.acoes).forEach(function (a) {
@@ -49657,7 +49886,7 @@ function __pcPOST(action, body) {
       return out;
     },
     // só para a bancada
-    _t: { celula: celula, supaCol: supaCol, formatDate: formatDate, ESTADO: ESTADO, M: M, executarLift: executarLift, normalizar: normalizar, diferencas: diferencas, lerEspelho: lerEspelho, carregarAba: carregarAba }
+    _t: { transitorio: transitorio, anotar: anotar, textoGAS: textoGAS, DataGAS: DataGAS, celula: celula, supaCol: supaCol, formatDate: formatDate, ESTADO: ESTADO, M: M, executarLift: executarLift, normalizar: normalizar, diferencas: diferencas, lerEspelho: lerEspelho, carregarAba: carregarAba }
   };
   G.PCL = PCL;
 })(typeof window !== 'undefined' ? window : globalThis);
