@@ -4682,8 +4682,18 @@ v50 — Resiliência de rede: retry/backoff em gsGet e syncToGS
   (4) ⚙ → 🔌 Integração Omie (só leitura): Edge, chave, os 3 ensaios, "Ler agora", fila, disjuntor, relógio.
   Par: SQL CRM_1C + SQL OMIE_41_LEITURA (rodam ANTES) · GAS v160 (que contém o v159 da reabertura) · Edge erp-omie. Sem o SQL, a tela é a de antes.
 -->
-<title>ProperCare Manager · Gestão PGP v4.03 (PCM V214)</title>
-<meta name="app-build" content="PCM_V214" data-date="2026-09-29">
+<!--
+  PCM V215 — 30/09/2026 — R0 DO REDESENHO. V214 (no ar) + (1) TEMA: Inter em tudo (sai a letra de máquina de escrever), cores do
+  manual de marca, barra lateral clara, botão principal grafite · (2) MENU de 10 lugares; as telas de cada lugar viram abas logo abaixo
+  do cabeçalho (o menu antigo segue no DOM, escondido — permissões e números vêm dele) · (3) BUSCA Ctrl K: cliente, máquina, OS, telas e
+  ações numa caixa só (a caixa "Buscar…" do cabeçalho, que não fazia nada, abre a mesma) · (4) JANELAS: janela com formulário não fecha
+  pelo clique fora nem pelo Esc depois de você digitar; fechou pelo ×/Cancelar sem salvar ⇒ rascunho guardado e "Recuperar" ao reabrir ·
+  (5) motor de leitura regerado do GAS v161: a abertura do PCM (getVisits, getRotorModels) e o histórico da máquina leem do Postgres.
+  Par: SQL R0_ESPELHO_VISITAS_ROTORES (roda ANTES) · GAS v161 (+ v161Instalar). Sem o SQL/GAS novo, essas leituras seguem no GAS.
+  Voltar ao visual antigo sem publicar nada: Ctrl K → "Voltar ao visual antigo" (ou localStorage pcm_tema/pcm_menu = 'antigo').
+-->
+<title>ProperCare Manager · Gestão PGP v4.03 (PCM V215)</title>
+<meta name="app-build" content="PCM_V215" data-date="2026-09-30">
 <link rel="icon" type="image/jpeg" href="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/4gHYSUNDX1BST0ZJTEUAAQEAAAHIAAAAAAQwAABtbnRyUkdCIFhZWiAH4AABAAEAAAAAAABhY3NwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlkZXNjAAAA8AAAACRyWFlaAAABFAAAABRnWFlaAAABKAAAABRiWFlaAAABPAAAABR3dHB0AAABUAAAABRyVFJDAAABZAAAAChnVFJDAAABZAAAAChiVFJDAAABZAAAAChjcHJ0AAABjAAAADxtbHVjAAAAAAAAAAEAAAAMZW5VUwAAAAgAAAAcAHMAUgBHAEJYWVogAAAAAAAAb6IAADj1AAADkFhZWiAAAAAAAABimQAAt4UAABjaWFlaIAAAAAAAACSgAAAPhAAAts9YWVogAAAAAAAA9tYAAQAAAADTLXBhcmEAAAAAAAQAAAACZmYAAPKnAAANWQAAE9AAAApbAAAAAAAAAABtbHVjAAAAAAAAAAEAAAAMZW5VUwAAACAAAAAcAEcAbwBvAGcAbABlACAASQBuAGMALgAgADIAMAAxADb/2wBDAAUDBAQEAwUEBAQFBQUGBwwIBwcHBw8LCwkMEQ8SEhEPERETFhwXExQaFRERGCEYGh0dHx8fExciJCIeJBweHx7/2wBDAQUFBQcGBw4ICA4eFBEUHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh7/wAARCAGGAc0DASIAAhEBAxEB/8QAHAABAAIDAQEBAAAAAAAAAAAAAAYHBAUIAwIB/8QATBAAAQMCAgMJCBAFBAMBAAAAAAECAwQFBhEHIUESFjFRVnSBk7EIFyJVYZHR0hMUIzI0NTY3QmJxc6GissEVM4KU8FJ1krNypMKE/8QAHAEBAAIDAQEBAAAAAAAAAAAAAAYHAQMEBQII/8QAOhEAAQMBAwgHCAMAAwEBAAAAAAECAwQFETEGFCFBU3GRsRMVUVJh0eESIjI0NXKSwTOB8CRC8SOh/9oADAMBAAIRAxEAPwAACqj9AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA+JpY4YXzTSNjjY1XPe5ckaicKqvEZxMKqIl6iaWOGF800jY42NVz3uXJGonCqrxFFaRtJ1fcLj7Uw5VzUdDA5fd413L514+NG8SdK8SeGlbSDJiCZ9ptMjo7Ux3hOTUtSqbV+rxJ0rsRK7JjZFjJEnTTp72pOzf48itMo8pnTuWnpHXNTFya93hz3Y7/fri3lDcevUb9cW8obj16mgB72bQ9xOCERz2p2juKm/wB+uLeUNx69Rv1xbyhuPXqaADNoe4nBBntTtHcVN/v1xbyhuPXqN+uLeUNx69TQAZtD3E4IM9qdo7ipv9+uLeUNx69Rv1xbyhuPXqaADNoe4nBBntTtHcVN/v1xbyhuPXqN+uLeUNx69TQAZtD3E4IM9qdo7ipv9+uLeUNx69Rv1xbyhuPXqaADNoe4nBBntTtHcVN/v1xbyhuPXqN+uLeUNx69TQAZtD3E4IM9qdo7ipv9+uLeUNx69TY4ZxRjW4YgoKKkvldLNLO1rWySK5q69e6RdmWar5CHlxdz5hzVUYmqY+OClzT/AJuT9P8AyOOvWClp3SKxPDQmJ6dkNq6+sZC2R3auldCJj/u0uEAFdlzgAAAAAAqTTXjivttwisVkrHU0rGeyVcseW6RV1tYi7NWtftQszEV1p7JZKu61S+5U0avyzy3S7Gp5VXJOk5UutdUXO5VNwq37ueokdI9fKq7PISGwKFJpFlel7W8/TyIblfazqWFtPE65ztK3YonqvJTbb9cW8obj16jfri3lDcevU0AJfm0PcTghW+e1O0dxU3+/XFvKG49eo364t5Q3Hr1NABm0PcTggz2p2juKm/364t5Q3Hr1G/XFvKG49epoAM2h7icEGe1O0dxU3+/XFvKG49eo364t5Q3Hr1NABm0PcTggz2p2juKm/wB+uLeUNx69Rv1xbyhuPXqaADNoe4nBBntTtHcVN/v1xbyhuPXqN+uLeUNx69TQAZtD3E4IM9qdo7ipv9+uLeUNx69T0p8dYugnZM2/1zlYue5kk3TV+1F1KRwBaaFf+icEMpXVKLekjuKnTGjnGlFiy3fRguMLU9sU+f5m8bV/DgXYqys5HtFxrbTcYbhb53QVMLt0x7exeNF4jo3RzjSixZbvowXGFqe2KfP8zeNq/hwLsVYda9kLTL0sXwcvQsrJzKNK5Ep6hbpEwXvev/qErAB4BLwAAAAAAAAAAAAAAAAfMj2Rxukke1jGornOcuSIicKqoCrcJHsjjdJI9rGNRXOc5ckRE4VVSg9LWP5L9UPtFplVtqjdk96alqXJt/8AFNibeHiy9NLGkJ98kks1mlcy2NXKWVNS1Cp/8eTaVsTKxrH6K6eZPe1J2evLeVnlLlJnF9LSr7mte3wTw57sQAJKQgAAAAAAAAAAAAAAAAAAAAAzLHbai73eltlI3OapkSNvkz4VXyIma9B1XZLdT2i00tspG7mGmjSNvGuXCq+VV19JVXc+Yc1VGJqmPjgpc0/5uT9P/IuEhOUFZ0syQtwbz9PMtHI6zM3plqXp7z8Pt9V08AACPEyAAAABrsS3ansViq7rUr7nTxq7c55bp3A1qeVVyTpPpjHPcjW4qfEkjYmK963ImlSqO6CxH7LU0+GqaTNsWU9Vkv0lTwGr9ia+lOIqQyLnW1FxuFRX1b93PUSOkkdxqq5+YxyyqKlbSwNiTVjv1lH2pXur6p87teHgmoAA6zzwAAAAAAAAAAAAAAAAAAZdouNbabjDcLfO6CphdumPb2LxovEYgMOajkuXAy1yscjmrcqHTGjnGlFiy3fRguMLU9sU+f5m8bV/DgXYqys5HtFxrbTcYbhb53QVMLt0x7exeNF4jo3RzjSixZbvowXGFqe2KfP8zeNq/hwLsVYRa9kLTL0sXwcvQtPJzKNK5Ep6hbpEwXvev/qErAB4BLwAAAAAAAAAAfMj2Rxukke1jGornOcuSIicKqoCrcJHsjjdJI9rGNRXOc5ckRE4VVSh9LGkJ98kks1mlcy2NXKWVNS1Cp/8eTaNLGkJ98kks1mlcy2NXKWVNS1Cp/8AHk2lbEysex+iunnT3tSdnry3lZ5S5S5xfS0q+5rXt8E8Oe7EACSkIAAAAAAAAAAAAAAAAAAAAABmWO21F3u9LbKRuc1TIkbfJnwqvkRM16DDLj7n3Daok+JqqP3yLBSZ/ncn6f8AkcdfVJSwOkXHVvPSsmz3WhVsgTBcfBEx/wB2lqWS3U9otNLbKRu5hpo0jbxrlwqvlVdfSZgBWznK5VcuKl3sY2NqNalyJoAAPk+gAAAUr3QWI/Zq2nw3TSeBBlNVZLwvVPBb0Iuf9ScRbOJbtT2KxVd1qV9zp41duc8t07ga1PKq5J0nKtzrai43Cor6t+7nqJHSSO41Vc/MSPJ6j6SVZ3YNw3+hCss7T6GBKVi6X6V3J5ryUxwATQrEAAAAAAAAAAAAAAAAAAAAAAAAGXaLjW2m4w3C3zugqYXbpj29i8aLxGIDDmo5LlwMtcrHI5q3Kh0xo5xpRYst30YLjC1PbFPn+ZvG1fw4F2KsrOR7Rca203GG4W+d0FTC7dMe3sXjReI6N0c40osWW76MFxhantinz/M3jav4cC7FWEWvZC0y9LF8HL0LTycyjSuRKeoW6RMF73r/AOoSsAHgEvAAAAB+Pc1jVe9yNa1M1VVyREAD3NY1XvcjWtTNVVckRCitLekNbw6Sx2SVUtzVynnbw1CpsT6nb9nC0taRHXd0tjscyttzV3M87VyWoXiT6nb9nDWRMbHsfo7p5006k7PFfHlvK1ylyl6e+lpV93Wvb4J4dvbuxAAkxBgAAAAAAAAAAAAAAAAAAAAAAADOsFsqLzeaS10iZzVMiMRctTU2uXyIma9B1XaKCntVrprdSN3MFPGkbE25InCvlXhKr7nzDm4iqMTVMet+cFLmmxPfuTp8HocW8QjKCs6WboW4N5+nmWlkdZmb0y1L095+H2+uPAAAj5MQAAAAa7Et2p7FYqu61K+508au3OeW6dwNanlVck6T6Yxz3I1uKnxJI2JivetyJpUqbugsR+zVtPhumk8CDKaqyXheqeC3oRc/6k4ipjIudbUXG4VFfVv3c9RI6SR3Gqrn5jHLKoqVtLA2JNXPWUdale6vqnzu14eCakAAOs4AAAAAAAAAAAAAAAAAAAAAAAAAAAAZdouNbabjDcLfO6CphdumPb2LxovEYgMOajkuXAy1yscjmrcqHTGjnGlFiy3fRguMLU9sU+f5m8bV/DgXYqys5HtFxrbTcYbhb53QVMLt0x7exeNF4jo3RzjSixZbvowXGFqe2KfP8zeNq/hwLsVYRa9kLTL0sXwcvQtPJzKNK5Ep6hbpEwXvev8A6hKwAeAS8EC071M9PgJ6QTPj9mqWRyblct01UcqtXyakJ6V7p/8AkI3nkfY477LS+sjv7TyLeVUs2ZU7qnPwALIKTAAAAAAAAAABIcC4TuGK7qlLSosdPHktRUKngxt/dy7E/Y1yysiYr3rciG2CCSokSONL3LggwLhO4YruqUtKix08eS1FQqeDG393LsT9i5qfRNg6JqJJT1c6omSq+oVM14/ByJXh2y2+wWqK222FI4Y+FV98921zl2qpsSD19tzzyf8AyVWtTD1LVsnJalpYf+Q1HvXG/SieCf7SQjvV4L8XTf3MnpHerwX4um/uZPSTcHD1jV7ReKnq9SWdsG8EIR3q8F+Lpv7mT0jvV4L8XTf3MnpJuB1jV7ReKjqSztg3ghCO9XgvxdN/cyekd6vBfi6b+5k9JNwOsavaLxUdSWdsG8EIR3q8F+Lpv7mT0n6mivBSL8WzL/8Apk9JNgOsavaLxUz1LZ2wbwQ8KGkpqGjio6OBkFPE3cxxsTJGoe4Bxqqqt6npNajURES5EAAMGQAAAUn3QGJFqK+HDdNJ7lT5S1OS8Mip4LehFz6fIWzim8QWGwVl2qMlbTxqrW5+/dwNb0rkhytcKuevrp62qesk88jpJHLtcq5qSTJ6j6SRZ3Jobhv9CE5Z2n0MCUjF0v0ru9V5HgACZlZAAAAAAAAl2ifDm+LFsDJo91RUvu9RmmpURdTelcujM1TTNhjWR2CG+lpn1MzYY8XLcWJgDRfY34bpqvEFFJU1tSxJVY6Z7EiautG5NVNeWWee0kHexwP4k/8Aam9cmIK8ltOqkerukVL9SKtxc1PYdBDE2PomrcmKtRVXxUh3exwP4k/9qb1z6j0aYIjdum2Nqr9aolcnmVxLwa8/qto7ipu6poNgz8U8iK97vBfiGDrH+sO93gvxDB1j/WJUDGfVO0dxUz1VQ7Fn4p5FZ440U2mrtr5sOU6UVdGmbY/ZFVkyf6darkvEvBx8aUZVQTUtRJT1ET4po3K17HpkrVThRUOvyBaU8Aw4lp3XG3NZFd426l4EqET6LvLxL0Lq4Pbsm2nRu6KoW9F1rq3+HIi2UOS7JWdPRtucmLUwXcnbz3488g9KqCalqJKeoifFNG5WvY9MlaqcKKh5kxRbytFRUW5QADIAAAAAABsMN19Xbb7R1tFM6KaOZuTmrwpnrReNFTUqGvPe3/D6f71vah8vRHNVFPuNytejmrcqHXgAKqP0ACvdP/yEbzyPscWEV7p/+QjeeR9jjvsv5yPeeRb/ANNm+1Tn4AFkFJgAAAAAAA3OC7BPibEVPaYZWwpJm6SRUz3DETNVy2rxeVT4ke2NqvctyIbIonzSJGxL1Vbk3qZGBcJ3DFd1SlpUWOnjyWoqFTwY2/u5difsdI4dstvsFqittthSOGPhVffPdtc5dqqMO2W32C1RW22wpHDHwqvvnu2ucu1VNiQG1LUfWvuTQxME/alu2BYMdmR+07TIuK9ngn+0gAHkkiAAAAAAAAAAAAAAAAAAABrMU3iCw2Csu1RkraeNVa3P37uBrelckPpjHPcjW4qa5ZWxMWR63IiXqVL3QOI/bNxgw5TSZxU2UtTkvDIqeC3oRc/6vIVSe9wq56+unrap6yTzyOkkcu1yrmp4Fl0VM2lgbEmrnrKPtOudX1T53a10eCakAAOo4AAAAAAAdH6HsOfwDCUT549zW12U8+aa2oqeA3oT8VUp7RPhzfFi2Bk0e6oqX3eozTUqIupvSuXRmdKkVyjrLkSnbvX9J++BYGRVmXq6teng39r+uIABEiwwAAAAAAAACBaU8Aw4lp3XG3NZFd426l4EqET6LvLxL0Lq4OfaqCalqJKeoifFNG5WvY9MlaqcKKh1+V9pdwPTX23TXmia2K500SvcqJqna1M9yv1sk1L0L5JJY1rrEqQTL7upez05EIymycSoRaumS56aVTt8d/Pfjz6ACZlZgAAAAAA97f8AD6f71vah4Hvb/h9P963tQwuBluKHXgAKpP0ECvdP/wAhG88j7HFhFe6f/kI3nkfY477L+cj3nkW/9Nm+1Tn4AFkFJgAAAAAAnugb5wIubS9iECJ7oG+cCLm0vYhxWj8pJuXkenYv1CD7m8zoYAFal4AAAAAAAAAAAAAAAAAAAAAApLugcR+2bjBhymkzipspanJeGRU8FvQi5/1eQtrFN4gsNgrLtUZK2njVWtz9+7ga3pXJDla4Vc9fXT1tU9ZJ55HSSOXa5VzUkmTtH0kizuwbhv8AQhOWdp9DAlIxdL9K7vVeR4AAmZWQAAAAAAAJjoiw5vgxbCs0e6o6LKefNNS5L4LelfwRTTPM2CN0jsEOilpn1UzYY8XLcW/ogw2uHsJxuqI9xW1uU8+aa2pl4LehPxVSZgFaVE7p5XSOxUvKjpWUkDYI8Gpd/t+IABpOkAAAAAAAAAGHe/iWu5vJ+lTMMO9/EtdzeT9KmyL427zVUfxO3KckAAtMoEAAAAAAHvb/AIfT/et7UPA97f8AD6f71vahhcDLcUOvAAVSfoIFe6f/AJCN55H2OLCK90//ACEbzyPscd9l/OR7zyLf+mzfapz8ACyCkwAAAAAAT3QN84EXNpexCBE90DfOBFzaXsQ4rR+Uk3LyPTsX6hB9zeZ0MACtS8AAAAAAAAAAAAAAAAAAAAazFV3jsOHa27yt3SU0Sua3/U5dTU6XKiH0xivcjW4qfEsjYmLI9bkRL13IVFp/xItVdIsOU0nuFJlJUZL76VU1J0Ivnd5CrD2rametrJqypkWSeeR0kj14XOVc1U8Sy6OmbSwtibq56yjbSrn19U+d2tdHgmpAADqOEAAAAAAHSeiPDm97CUKTR7msrMp6jNNaZp4LehPxVSndEWHN8GLYVmj3VHRZTz5pqXJfBb0r+CKdJEUyjrMKdu9f0n74Fg5FWZpdWvTwb+1/XEAAiZYQAAAAAAAAAAAAMO9/EtdzeT9KmYYd7+Ja7m8n6VNkXxt3mqo/iduU5IABaZQIAAAAAAPe3/D6f71vah4Hvb/h9P8Aet7UMLgZbih14ACqT9BArLuiZHtwnQxtcqNfWpuk48mOyLNK07olrVwbRPy8JLgxEXyLHJ6EPRshf+bHvPFyiRVsya7s/aFDgAsYpYAAAAAAE90DfOBFzaXsQgRPdA3zgRc2l7EOK0flJNy8j07F+oQfc3mdDAArUvAAAAAAAAAAAAAAAAAAAHjW0tNW0ktJVwsnglbuZI3pmjkPYGUVUW9DDmo5FRU0EV73eC/EMHWP9Yd7vBfiGDrH+sSoHTn1TtHcVOHqqh2LPxTyIr3u8F+IYOsf6w73eC/EMHWP9YlQGfVO0dxUdVUOxZ+KeRFe93gvxDB1j/WHe7wX4hg6x/rEqAz6p2juKjqqh2LPxTyIr3u8F+IYOsf6w73eC/EMHWP9YlQGfVO0dxUdVUOxZ+KeRr7JZbVZKZ1NaqGGkjcubkYmty8arwr0mwAOd73PX2nLep2RxsjajGJciak0IAAfJ9gAAAAAAAAAAAAw738S13N5P0qZhh3v4lrubyfpU2RfG3eaqj+J25TkgAFplAgAAAAAA97f8Pp/vW9qHge9v+H0/wB63tQwuBluKHXgAKpP0ECtu6I+RVH/ALiz/rlLJK27oj5FUf8AuLP+uU9CyvnI9542UH02bcUKACxylQAAAAAAT3QN84EXNpexCBE90DfOBFzaXsQ4rR+Uk3LyPTsX6hB9zeZ0MACtS8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAYd7+Ja7m8n6VMww738S13N5P0qbIvjbvNVR/E7cpyQAC0ygQAAAAAAe9v+H0/3re1DwPe3/D6f71vahhcDLcUOvAAVSfoIFbd0R8iqP/cWf9cpZJW3dEfIqj/3Fn/XKehZXzke88bKD6bNuKFABY5SoAAAAAAJ7oG+cCLm0vYhAie6BvnAi5tL2IcVo/KSbl5Hp2L9Qg+5vM6GABWpeAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMO9/EtdzeT9KmYYd7+Ja7m8n6VNkXxt3mqo/iduU5IABaZQIAAAAAAPe3/D6f71vah4Hvb/AIfT/et7UMLgZbih14ACqT9BArzugGtXAsaqiKra2NU8i7l6fuWGV7p/+QjeeR9jjvsv5yPeeRb/ANNm+1Tn4AFkFJgAAAAAAnugb5wIubS9iECJ7oG+cCLm0vYhxWj8pJuXkenYv1CD7m8zoYAFal4AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAw738S13N5P0qZhh3v4lrubyfpU2RfG3eaqj+J25TkgAFplAgAAAAAA97f8Pp/vW9qHge9v+H0/wB63tQwuBluKHXgAKpP0ECvdP8A8hG88j7HFhFe6f8A5CN55H2OO+y/nI955Fv/AE2b7VOfgAWQUmAAAAAACe6BvnAi5tL2IQInugb5wIubS9iHFaPykm5eR6di/UIPubzOhgAVqXgAAAAAAAAAAAAAAAfMj2RxukkcjWNRVc5VyRETac8Ys0lYirr5UyWu5zUdA16tp440RM2Iupy6s814fIWNp0xH/CcMpaqeTKquWbFyXW2JPfr06m9K8Rz+S2wLPasazyNvvwv5ldZYWxI2ZtLA5U9nS65btK4J/Saf7JLv9xhygrPOnoG/3GHKCs86egjQJFmsHcTghDM/qtq7ivmSXf7jDlBWedPQN/uMOUFZ509BGgM1g7icEGf1W1dxXzJLv9xhygrPOnoG/wBxhygrPOnoI0BmsHcTggz+q2ruK+ZJd/uMOUFZ509BtMJYvxtccTW6ihvFTO6WoaixvyVqtzzdnq4Ms1Ugxcvc+Yc3EVRiapj1vzgpc02J79ydPg9DjitDN6WndIrE8NCYnp2MtbXVjIWyuuvvXSuhEx/3aW8ACvS5QAAAAAAAAAAAAAAAAAAYd7+Ja7m8n6VMww738S13N5P0qbIvjbvNVR/E7cpyQAC0ygQAAAAAAe9v+H0/3re1DwPe3/D6f71vahhcDLcUOvAAVSfoIFe6f/kI3nkfY4sIr3T/APIRvPI+xx32X85HvPIt/wCmzfapz8ACyCkwAAAAAAT3QN84EXNpexCBE90DfOBFzaXsQ4rR+Uk3LyPTsX6hB9zeZ0MACtS8AAAAAAAAAAAAAfMj2RxukkcjWNRVc5VyRETafRXmnPEaWnDX8Jp5Mqu45sXJdbYk98vT73pXiOilp3VMzYm6zjtCtZRUz534NTiupP7Up/SFiB+JcVVVxRV9rovsVM1dkbeDz61+1VI+AWXFG2JiMbghRs8z55HSvW9VW9QADYagAAAAADPw7aqi93uktVKnutTIjEXLNGpwq5fIiZr0HVVooKe1Wumt1I3cwU8aRsTbkicK+VeEq7ufMOexU1RiWpj8KXOClzT6KL4bulUy6F4y2yEZQVvTTdC3BvP08y08j7MzemWpenvPw+3Vxx4AAEfJgAAAAAAAAAAAAAAAAAADDvfxLXc3k/SpmGHe/iWu5vJ+lTZF8bd5qqP4nblOSAAWmUCAAAAAAD3t/wAPp/vW9qHge9v+H0/3re1DC4GW4odeAAqk/QQK90//ACEbzyPscWEV7p/+QjeeR9jjvsv5yPeeRb/02b7VOfgAWQUmAAAAAACb6EKqnpdIFL7YlbGk0UkTFcuSK5U1J05echAaqtVHNVUVNaKmw01EKTROjVbr0VDpo6haWoZMiX+yqLwOwwVbok0iJckisV9mRK1Mm09Q9f5/E1y/6/Lt+3htIrirpJKWRY5E9S7LOtGG0IUmhXRrTWi9igAHKdwAAAAAAAAB8yyMiifLI9GMY1XOcq5IiJwqcuY+v78SYpq7mqr7CrvY6dq/Rib73z61Xyqpb+nbEf8AC8NttFPJlVXHNrsl1thT33n1N+zMoImOTtH7DFqHYroTd/uRWuWlp9JK2jYuhuld+pP6TmAASYgwAAAAAAM/DtqqL3e6S1Uqe61MiMzyz3KcKuXyIma9BgF0dz5hz2KmqMS1MfhS5wUuafRRfDd0qmXQvGcVoVaUlO6TXq3np2PZ62hVshTDFdyY+W8tK1UNPbLbT2+kZuIKeNsbE8iJlr8pkgFbOcrlvXEu5jUY1GtS5EAAMH0AAAAAAAAAAAAAAAAAADV4sraa34auNVVytiiZTvRVcvCqtVERONVXUiGTd7jRWm3TXC4TsgpoW7p73dicarsTac56Rsa1uLLjkm7gtsLl9r0+f53cbl/DgTaq+rZdnSVciLg1MV/RH7ftqKzoFaul7k0J+18OZEwAWEU4AAAAAAD3t/w+n+9b2oeB72/4fT/et7UMLgZbih14ACqT9BAr3T/8hG88j7HFhFe6f/kI3nkfY477L+cj3nkW/wDTZvtU5+ABZBSYAAAAAAAAAaqtVHNVUVNaKmwvHRJpES5JFYr7MiVqZNp6h6/z+Jrl/wBfl2/bw0cGqrVRzVVFTWipsOKuoY6yP2H/ANL2HpWVas1mz9LFhrTUqf7BTsMFW6JNIiXJIrFfZkStTJtPUPX+fxNcv+vy7ft4bSK/q6SSlkWORPUuOzrRhtCFJoV0a01ovYoAByncAAAD5lkZFE+WR6MYxquc5VyREThU+iudO2I/4Xhttop5Mqq45tdkutsKe+8+pv2ZnTSU7qmZsTdZxWjWsoaZ87/+qcV1J/alQY+v78SYpq7mqr7CrvY6dq/Rib73z61XyqpoQCy442xsRjcEKNmmfPI6R63qq3qAAfZrAAAAAAM/DtqqL3e6S1Uqe61MiMzyz3KcKuXyIma9B1XaqGntltp7fSM3EFPG2NieREy1+Uq3ufMOexU1RiWpj8KXOClzT6KL4bulUy6F4y2yEZQVnTTdC3BvP08y08j7MzelWoenvPw+3Vxx4AAEfJgAAAAAAAAAAAAAAAAAADEu9xorTbprhcJ2QU0Ld097uxONV2JtF3uNFabdNcLhOyCmhbunvd2JxquxNpznpGxrW4suOSbuC2wuX2vT5/ndxuX8OBNqr6lmWY+tf2NTFf0nieDbluRWXF2vXBP2vhzGkbGtbiy45Ju4LbC5fa9Pn+d3G5fw4E2qsTAJ9DCyFiMYlyIVDU1MtVKssq3uUAA2mgAAAAAAHvb/AIfT/et7UPA97f8AD6f71vahhcDLcUOvAAVSfoIGlxrh6nxPh6e1VEixK9UfFKiZ7h6cC5bU2KnEqm6B9xyOjej2rcqGqaFk8bo5EvaqXKcm4jstwsF2lttyhWOaPWipra9uxzV2ov8Ams1x1FjrClvxXalpapEjqI81p6hEzdE792rtT98lObsR2W4WC7S225QrHNHrRU1te3Y5q7UX/NZPrLtRlay5dD0xT9oVDb1gyWZJ7TdMa4L+l8eZrgAesR8AAAAAAAAANVWqjmqqKmtFTYSOLHWL442xtxBXblqZJun7pfOutSOA1viZJ8aIu82xTyw39G5Uv7FuJLv9xhygrPOnoG/3GHKCs86egjQNeawdxOCG7P6rau4r5kl3+4w5QVnnT0Df7jDlBWedPQRoDNYO4nBBn9VtXcV8yS7/AHGHKCs86eg0l0uNddKx1ZcauWqqHalkkdmuXF9nkMUH2yGNi3taif0a5aqaVPZkeqp4qqgAG00AAAAAAA2OGbRUX2/Ulppv5lRIjVdlnuG8LndCIq9Bri6+59w57BQ1GJKmP3Sozhpc04GIvhO6VTL+leM4bQq0pKd0mvVvPUsazltCsZDqxXcmPkWhbKKnt1vp6CkjSOCnjSONqbERO0yACt1VXLepdrWoxEa1LkQAAwfQAAAKG0j6Rr1JiWopLHcX0tDSuWJqxImcrk1Ocq5cGeaJsyTMszSviPe7hKeSGTc1lV7hTZLrRVTW7oTNftyOaSU5P0DXos8iXpgl/wD+r/vEgOWNsPic2khcqLi65btyfvgSXf7jDlBWedPQN/uMOUFZ509BGgSbNYO4nBCC5/VbV3FfMku/3GHKCs86egb/AHGHKCs86egjQGawdxOCDP6rau4r5kl3+4w5QVnnT0Df7jDlBWedPQRoDNYO4nBBn9VtXcV8yS7/AHGHKCs86egb/cYcoKzzp6CNAZrB3E4IM/qtq7ivmbS9Yivl6jZHdLpU1cbF3TWPf4KLx5cGflNWAbmsaxLmpchzySPkd7T1VV8QAD6PgAAAAAAAAAFi6JMAzXyqivVzY6K2QvR0bVTJahyLwJ9XPhXbwJty/NFOj6TEEzLtdo3R2pjvBaupalU2J9XjXoTaqX5DFHDCyGGNscbGo1jGpkjUTgRE4iN2xbHQ3wQr72tez15E2yaybWpVKqpT3NSdvivhz3Y/YAIYWaAAACPY6wpb8V2paWqRI6iPNaeoRM3RO/dq7U/fJSQg2RSviej2LcqGmop46iNYpUvauKHJuI7LcLBdpbbcoVjmj1oqa2vbsc1dqL/ms1x1FjrClvxXalpapEjqI81p6hEzdE792rtT98lObsR2W4WC7S225QrHNHrRU1te3Y5q7UX/ADWT2y7UZWsuXQ9MU/aFRW9YMlmSe03TGuC/pfHma4AHrEfAAAAAAAAAAAAAAAAAAAAAAAAAAANjhm0VF9v1Jaab+ZUSI1XZZ7hvC53QiKvQdVW2jp7db6ehpWbiCnjbHG3iREyQq/ufcOewUNRiSpj90qM4aXNOBiL4TulUy/pXjLYIPb9Z00/RNwbz9MC1Mj7Mzalzh6e8/lq448AADwCXgAAAAiOljEaYdwlO+GTc1tVnBTZLrRVTW7oTX9uXGboIXTyNjbipz1dSylgdNJg1LyntMWI/4/i2WOCTdUdBnBDkupyovhu6V1fYiELALLghbBG2NuCFGVdS+qndNJi5bwADcc4AAAAAAAAAAAAAAAAAAAAALE0U6PpMQTMu12jdHamO8Fq6lqVTYn1eNehNqo0U6PpMQTMu12jdHamO8Fq6lqVTYn1eNehNqpfkMUcMLIYY2xxsajWMamSNROBETiI3bFsdDfDCvva17PXkTbJrJpalUqqpPc1J2+K+HPdihijhhZDDG2ONjUaxjUyRqJwIicR9gENXSWYiIiXIAAYMgAAAAAAj2OsKW/FdqWlqkSOojzWnqETN0Tv3au1P3yUkINkUr4no9i3KhpqKeOojWKVL2rihybiOy3CwXaW23KFY5o9aKmtr27HNXai/5rNcdRY6wpb8V2paWqRI6iPNaeoRM3RO/dq7U/fJTm7EdluFgu0ttuUKxzR60VNbXt2Oau1F/wA1k9su1GVrLl0PTFP2hUVvWDJZkntN0xrgv6Xx5muAB6xHwAAAAAAAAAAAAAAAAAAAAAbHDNoqL7fqS0038yokRquyz3DeFzuhEVeg1xdnc/4bWnoZ8SVUeUlSixUuacEaL4TulUy6F4zhtGrSkp3Sa9W89SxrOW0KxkOrFdyY+X9ln22jp7db6ehpWbiCnjbHG3iREyQyACt1VXLepdrWo1Ea1NCAAGD6AAABzbpdxHvgxbMkMm6o6LOCDJdS5L4TulfwRC4tLmI972Eplhk3NZWZwU+S60zTwndCfiqHNhLMnKPGoduT9r+uJXuWtp6W0TF8XfpP3wAAJWV8AAAAAAAAAAAAAAAAAAAAACxNFOj6TEEzLtdo3R2pjvBaupalU2J9XjXoTaqNFOj6TEEzLtdo3R2pjvBaupalU2J9XjXoTaqX5DFHDCyGGNscbGo1jGpkjUTgRE4iN2xbHQ3wwr72tez15E2yayaWpVKqqT3NSdvivhz3YoYo4YWQwxtjjY1GsY1MkaicCInEfYBDV0lmIiIlyAAGDIAAAAAAAAAAAAI9jrClvxXalpapEjqI81p6hEzdE792rtT98lJCDZFK+J6PYtyoaainjqI1ilS9q4ocm4jstwsF2lttyhWOaPWipra9uxzV2ov+azXHUWOsKW/FdqWlqkSOojzWnqETN0Tv3au1P3yU5uxHZbhYLtLbblCsc0etFTW17djmrtRf81k9su1GVrLl0PTFP2hUVvWDJZkntN0xrgv6Xx5muAB6xHwAAAAAAAAAAAAAAAAADZ4Vs89/xBR2mnzR08iI5yJ7xia3O6EzOqaCkgoaGCipY0jggjbHG1NjUTJCse5/w57Wts+IqmPKWqzip804I0Xwl6VTL+nylqkGt+s6afom4N56/ItXJCzM2pM4envP5auOPAAA8ElwAAAAIfpcxCuH8ITugeraurX2vAqcLVVPCd0Jn05G6CF08jY24qc1XVMpIHTSYNS//byndLuI98GLZkhk3VHRZwQZLqXJfCd0r+CIQ4AsuCFsEbY24IUbVVL6qZ00mLlvAANxzgAAAAAAAAAAAAAAAAAAsTRTo+kxBMy7XaN0dqY7wWrqWpVNifV416E2qjRTo+kxBMy7XaN0dqY7wWrqWpVNifV416E2ql+QxRwwshhjbHGxqNYxqZI1E4EROIjdsWx0N8MK+9rXs9eRNsmsmlqVSqqk9zUnb4r4c92KGKOGFkMMbY42NRrGNTJGonAiJxH2AQ1dJZiIiJcgABgyAAAAAAAAAAAAAAAAAADWX6wWa+xxsu1vhq0jVdwr01tz4clTWhswfTHuY72mrcp8SRMlarJERUXUulCK97vBfiGDrH+sO93gvxDB1j/WJUDoz6p2juKnH1VQ7Fn4p5EV73eC/EMHWP8AWHe7wX4hg6x/rEqAz6p2juKjqqh2LPxTyIr3u8F+IYOsf6w73eC/EMHWP9YlQGfVO0dxUdVUOxZ+KeRFe93gvxDB1j/WHe7wX4hg6x/rEqAz6p2juKjqqh2LPxTyIr3u8F+IYOsf6w73eC/EMHWP9YlQGfVO0dxUdVUOxZ+KeRFe93gvxDB1j/WHe7wX4hg6x/rEqAz6p2juKjqqh2LPxTyIr3u8F+IYOsf6x+po8wYi5/wGD/m/1iUgZ9U7R3FR1VQ7Fn4p5HnTww08DIKeJkUUbUaxjGo1rUTgRETgQ9ADmVb9KnciIiXIAAYMgAAAwL5Z7Ze6NKS60cdVCj0ejX56nJtRU1pwqZ4Ppr3MX2mrcp8SRskarHpei6lIr3u8F+IYOsf6w73eC/EMHWP9YlQOjPqnaO4qcfVVDsWfinkRXvd4L8QwdY/1h3u8F+IYOsf6xKgM+qdo7io6qodiz8U8iK97vBfiGDrH+sO93gvxDB1j/WJUBn1TtHcVHVVDsWfinkRXvd4L8QwdY/1h3u8F+IYOsf6xKgM+qdo7io6qodiz8U8iK97vBfiGDrH+sO93gvxDB1j/AFiVAZ9U7R3FR1VQ7Fn4p5EV73eC/EMHWP8AWHe7wX4hg6x/rEqAz6p2juKjqqh2LPxTyIr3u8F+IYOsf6w73eC/EMHWP9YlQGfVO0dxUdVUOxZ+KeRFe93gvxDB1j/WP1ujzBiORUsNPmi563vX9yUgZ9U7R3FR1VQ7Fn4p5HxDFHDCyGGNscbGo1jGpkjUTgRE4j7AOZdJ3IiIlyAAGDIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB//2Q==">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -6170,6 +6180,138 @@ tr.tadm-feito td{background:#dcfce7 !important;color:#15803d;font-weight:700}
   html.nav-rail .nav-group-bottom{padding-top:6px}
 }
 </style>
+<!-- ████ INICIO PCM V215 · TEMA_V1 (cabeça) ████
+  R0 do redesenho (30/09/2026): o tema e o menu decidem ANTES da primeira pintura (sem piscar o visual velho).
+  Duas chaves no navegador, para voltar atrás sem publicar nada (ou pelo Ctrl K → "Voltar ao visual antigo"):
+    localStorage pcm_tema = 'antigo'  → cores/fontes de antes      localStorage pcm_menu = 'antigo' → menu de antes
+-->
+<style id="m1css">
+/* ── TEMA_V1 · Inter + cores do manual de marca Proper ─────────────────────────────────────────────
+   Uma só família (Inter, a do TapFlow), dígitos de largura igual para número de OS/série/horímetro.
+   Laranja #EE7625 é a MARCA (item ativo, sublinhado, foco); ação principal é grafite #353434. */
+html.m1-tema{
+  --accent:#EE7625; --accent-hover:#D9661A;
+  --bg:#F7F7F7; --surface:#FFFFFF; --surface-2:#FFFFFF;
+  --border:#E6E6E6; --border-strong:#DADADA; --border2:#DADADA;
+  --text:#262626; --text-muted:#6B6B6B; --text2:#4F4F4F; --text3:#8F8F8F;
+  --font-sans:'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-mono:'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --red:#B42318; --red-light:#FDF0EF; --green:#1E7B45; --green-light:#EEF7F1;
+  --sidebar-bg:#FFFFFF; --sidebar-fg:#4F4F4F; --sidebar-fg-active:#262626;
+  --sidebar-hover:#F4F4F4; --sidebar-active:#FDF1E7; --sidebar-group:#8F8F8F;
+  --shadow:0 1px 2px rgba(0,0,0,.05); --shadow-lg:0 12px 32px rgba(0,0,0,.10);
+}
+html.m1-tema body{font-feature-settings:"cv11","ss01";font-variant-numeric:tabular-nums;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+html.m1-tema .breadcrumb{font-family:var(--font-sans);font-size:13.5px}
+html.m1-tema .breadcrumb #breadcrumb-current{font-weight:600}
+html.m1-tema .app-header{background:#FFFFFF;border-bottom:1px solid #E6E6E6}
+html.m1-tema .btn-primary{background:#353434;color:#FFFFFF}
+html.m1-tema .btn-primary:hover{background:#262626}
+html.m1-tema :focus-visible{outline-color:#EE7625}
+/* a barra lateral fica clara (era preta): o conteúdo é o que chama o olho, não o menu */
+html.m1-tema .nav-sidebar{background:#FFFFFF;color:#4F4F4F;border-right:1px solid #E6E6E6;box-shadow:none}
+html.m1-tema .nav-brand{border-bottom:0;margin-bottom:0;align-items:center;padding:2px 12px 6px 18px}
+html.m1-tema .nav-brand-mark{font-family:var(--font-sans);color:#262626;font-weight:700;font-size:16px;letter-spacing:.02em}
+html.m1-tema .nav-brand-sub{font-family:var(--font-sans);color:#8F8F8F}
+html.m1-tema .nav-brand-mark::before{content:"";display:inline-block;width:28px;height:21px;margin-right:9px;vertical-align:-4px;background:url(data:image/png;base64,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) center/contain no-repeat}
+html.m1-tema .nav-rail-btn{color:#8F8F8F}
+html.m1-tema .nav-rail-btn:hover{background:#F4F4F4;color:#262626}
+html.m1-tema .nav-group-bottom{border-top-color:#E6E6E6}
+html.m1-tema .nav-item.is-active .nav-icon,html.m1-tema .nav-item.active .nav-icon{color:#EE7625}
+html.m1-tema .nav-groups{scrollbar-color:#DADADA transparent}
+html.m1-tema .nav-groups::-webkit-scrollbar-thumb{background:#DADADA}
+
+/* ── MENU_V1 · 10 lugares (o menu antigo continua no DOM, escondido: é dele que vêm permissões e números) ── */
+html.m1-on .nav-sidebar > .nav-groups{display:none !important}
+.m1-nav{display:none}
+html.m1-on .m1-nav{display:flex;flex-direction:column;flex:1;min-height:0;padding:2px 10px 10px}
+.m1-busca{all:unset;box-sizing:border-box;display:flex;align-items:center;gap:8px;width:100%;height:36px;margin:8px 0 10px;padding:0 8px 0 10px;border:1px solid #E6E6E6;border-radius:9px;background:#F7F7F7;color:#6B6B6B;font-size:13.5px;cursor:pointer;white-space:nowrap}
+.m1-busca:hover{border-color:#DADADA;color:#262626}
+.m1-busca:focus-visible{outline:2px solid #EE7625;outline-offset:1px}
+.m1-busca svg{width:15px;height:15px;color:#8F8F8F;flex-shrink:0}
+.m1-busca span{flex:1;overflow:hidden;text-overflow:ellipsis}
+.m1-busca kbd,.m1-k kbd{font:500 11px/1.4 var(--font-sans,Inter),sans-serif;color:#6B6B6B;border:1px solid #DADADA;background:#FFFFFF;border-radius:5px;padding:0 5px}
+.m1-lista{display:flex;flex-direction:column;gap:2px;overflow-y:auto;flex:1;min-height:0;scrollbar-width:thin;scrollbar-color:#DADADA transparent}
+.m1-item{all:unset;box-sizing:border-box;position:relative;display:flex;align-items:center;gap:11px;min-height:36px;padding:0 8px 0 10px;border-radius:8px;font-size:14px;font-weight:500;color:#4F4F4F;cursor:pointer;white-space:nowrap}
+.m1-item:hover{background:#F4F4F4;color:#262626}
+.m1-item:focus-visible{outline:2px solid #EE7625;outline-offset:-2px}
+.m1-item[aria-current="page"]{background:#FDF1E7;color:#262626;font-weight:600}
+.m1-item svg{width:18px;height:18px;flex-shrink:0;color:#8F8F8F}
+.m1-item[aria-current="page"] svg{color:#EE7625}
+.m1-item[hidden]{display:none}
+.m1-rot{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis}
+.m1-n{display:inline-flex;align-items:center;justify-content:center;min-width:20px;height:20px;padding:0 6px;border-radius:10px;background:#EE7625;color:#FFFFFF;font-size:11px;font-weight:600;line-height:1}
+.m1-n.urg{background:#B42318}
+.m1-n[hidden]{display:none}
+.m1-sep{height:1px;background:#F0F0F0;margin:8px 10px;flex-shrink:0}
+.m1-pe{display:flex;align-items:center;gap:10px;margin-top:8px;padding:12px 4px 0 6px;border-top:1px solid #E6E6E6}
+.m1-av{width:32px;height:32px;border-radius:50%;background:#353434;color:#FFFFFF;font-size:12px;font-weight:600;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0}
+.m1-quem{flex:1;min-width:0;display:flex;flex-direction:column;gap:1px}
+.m1-quem b{font-size:13.5px;font-weight:600;color:#262626;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.m1-quem span{font-size:11.5px;color:#6B6B6B;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.m1-sair{all:unset;box-sizing:border-box;cursor:pointer;width:30px;height:30px;border-radius:8px;display:inline-flex;align-items:center;justify-content:center;color:#8F8F8F;flex-shrink:0}
+.m1-sair:hover{background:#FDF0EF;color:#B42318}
+.m1-sair:focus-visible{outline:2px solid #EE7625}
+.m1-sair svg{width:17px;height:17px}
+@media(min-width:769px){
+  html.nav-rail .m1-nav{padding:2px 8px 10px}
+  html.nav-rail .m1-busca{justify-content:center;padding:0}
+  html.nav-rail .m1-busca span,html.nav-rail .m1-busca kbd,html.nav-rail .m1-rot,html.nav-rail .m1-quem,html.nav-rail .m1-av{display:none}
+  html.nav-rail .m1-item{justify-content:center;padding:0}
+  html.nav-rail .m1-n{position:absolute;top:2px;right:2px;min-width:15px;height:15px;font-size:9px;padding:0 4px}
+  html.nav-rail .m1-pe{justify-content:center;padding:12px 0 0}
+}
+/* abas do lugar: as telas do lugar lado a lado, logo abaixo do cabeçalho */
+.m1-abas{display:flex;align-items:flex-end;gap:22px;height:42px;padding:0 24px;background:#FFFFFF;border-bottom:1px solid #E6E6E6;position:sticky;top:var(--header-h,56px);z-index:49;overflow-x:auto;scrollbar-width:none;flex-shrink:0}
+.m1-abas::-webkit-scrollbar{display:none}
+.m1-abas[hidden],html:not(.m1-on) .m1-abas,body.mob-on .m1-abas{display:none}
+.m1-aba{all:unset;box-sizing:border-box;cursor:pointer;height:42px;display:inline-flex;align-items:center;gap:6px;font-size:13.5px;font-weight:500;color:#6B6B6B;border-bottom:2px solid transparent;white-space:nowrap}
+.m1-aba:hover{color:#262626}
+.m1-aba:focus-visible{outline:2px solid #EE7625;outline-offset:-4px;border-radius:4px}
+.m1-aba[aria-selected="true"]{color:#262626;font-weight:600;border-bottom-color:#EE7625}
+.m1-aba .m1-n{min-width:18px;height:18px;font-size:10.5px}
+
+/* ── BUSCA_V1 · Ctrl K ─────────────────────────────────────────────────────────────────────────── */
+.m1-k-fundo{position:fixed;inset:0;z-index:12000;background:rgba(38,38,38,.28);display:flex;align-items:flex-start;justify-content:center;padding:12vh 16px 16px}
+.m1-k-fundo[hidden]{display:none}
+.m1-k{width:640px;max-width:100%;max-height:72vh;display:flex;flex-direction:column;background:#FFFFFF;border:1px solid #E6E6E6;border-radius:14px;box-shadow:0 24px 64px rgba(0,0,0,.18);overflow:hidden;font-family:var(--font-sans,Inter),sans-serif;color:#262626}
+.m1-k-topo{display:flex;align-items:center;gap:10px;padding:0 16px;height:54px;border-bottom:1px solid #F0F0F0}
+.m1-k-topo svg{width:18px;height:18px;color:#8F8F8F;flex-shrink:0}
+.m1-k-topo input{flex:1;min-width:0;height:52px;border:0;outline:0;background:transparent;font:400 16px var(--font-sans,Inter),sans-serif;color:#262626}
+.m1-k-res{overflow-y:auto;padding:6px 8px 8px}
+.m1-k-grp{font-size:11.5px;font-weight:600;color:#8F8F8F;padding:10px 10px 4px;text-transform:none}
+.m1-k-it{display:flex;align-items:center;gap:12px;min-height:40px;padding:6px 10px;border-radius:8px;cursor:pointer}
+.m1-k-it[aria-selected="true"]{background:#F4F4F4}
+.m1-k-it svg{width:17px;height:17px;color:#8F8F8F;flex-shrink:0}
+.m1-k-it b{font-weight:500;font-size:14px;color:#262626;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.m1-k-it span{font-size:12.5px;color:#6B6B6B;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.m1-k-it .m1-k-txt{display:flex;flex-direction:column;min-width:0;flex:1}
+.m1-k-it mark{background:#FDF1E7;color:inherit;border-radius:3px}
+.m1-k-vazio{padding:22px 12px;font-size:13.5px;color:#6B6B6B}
+.m1-k-pe{display:flex;gap:16px;align-items:center;padding:8px 16px;border-top:1px solid #F0F0F0;font-size:12px;color:#6B6B6B}
+
+/* ── JANELA_V1 · janela com formulário não fecha pelo fundo; rascunho de volta ─────────────────── */
+@keyframes j1pulso{0%{transform:scale(1)}40%{transform:scale(1.012);box-shadow:0 0 0 4px rgba(238,118,37,.35),0 20px 50px rgba(0,0,0,.2)}100%{transform:scale(1)}}
+.j1-pulso{animation:j1pulso .38s ease}
+.j1-rasc{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:0 0 12px;padding:9px 12px;border:1px solid #F3D9B8;background:#FFF6E6;color:#6B3A00;border-radius:8px;font-size:13px;font-weight:500}
+.j1-rasc b{font-weight:600}
+.j1-rasc .j1-rasc-b{margin-left:auto;display:flex;gap:8px}
+.j1-rasc button{all:unset;cursor:pointer;height:28px;padding:0 10px;border-radius:7px;font-size:12.5px;font-weight:600}
+.j1-rasc button.j1-sim{background:#353434;color:#FFFFFF}
+.j1-rasc button.j1-nao{background:#FFFFFF;color:#262626;border:1px solid #DADADA}
+.j1-rasc button:focus-visible{outline:2px solid #EE7625;outline-offset:1px}
+</style>
+<script>
+/* V215 — decide tema e menu ANTES de pintar (chaves no navegador; sem chave = o visual novo) */
+(function(){
+  try{
+    var h = document.documentElement;
+    if (localStorage.getItem('pcm_tema') !== 'antigo') h.classList.add('m1-tema');
+    if (localStorage.getItem('pcm_menu') !== 'antigo') h.classList.add('m1-on');
+  }catch(e){ document.documentElement.classList.add('m1-tema','m1-on'); }
+})();
+</script>
+<!-- ████ FIM PCM V215 · TEMA_V1 (cabeça) ████ -->
 </head>
 <body>
 
@@ -6200,11 +6342,31 @@ tr.tadm-feito td{background:#dcfce7 !important;color:#15803d;font-weight:700}
        operacao/planejamento/campo/documentos/cadastros/admin). -->
   <div class="nav-brand">
     <span class="nav-brand-mark">PCM</span>
-    <span class="nav-brand-sub" data-carimbo="v4.03 · {v}">v4.03 · V214</span>
+    <span class="nav-brand-sub" data-carimbo="v4.03 · {v}">v4.03 · V215</span>
     <button type="button" class="nav-rail-btn" id="navRailBtn" onclick="_v179NavRailToggle()"
             title="Recolher o menu" aria-label="Recolher o menu" aria-expanded="true">
       <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path class="nav-rail-ico-in" d="M10 3.5L5.5 8 10 12.5"/><path class="nav-rail-ico-out" d="M6 3.5L10.5 8 6 12.5"/></svg>
     </button>
+  </div>
+
+  <!-- V215 · MENU_V1 — 10 lugares (R0 do redesenho, 30/09/2026). O <nav class="nav-groups"> abaixo continua sendo o
+       menu de verdade (permissões e números moram nele); este lê dele. pcm_menu='antigo' no navegador volta ao de antes. -->
+  <div class="m1-nav" id="m1Nav" aria-label="Menu principal">
+    <button type="button" class="m1-busca" data-m1-busca title="Buscar cliente, máquina, OS ou tela (Ctrl K)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7.5"/><path d="m20.5 20.5-4.2-4.2"/></svg><span>Buscar</span><kbd>Ctrl K</kbd></button>
+    <div class="m1-lista">
+      <button type="button" class="m1-item" data-m1-lugar="inicio" title="Início"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 12h-6l-2 3h-4l-2-3H2"/><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/></svg><span class="m1-rot">Início</span><span class="m1-n" hidden></span></button>
+      <button type="button" class="m1-item" data-m1-lugar="os" title="Ordens de serviço"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="8" height="4" x="8" y="2" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="M12 11h4"/><path d="M12 16h4"/><path d="M8 11h.01"/><path d="M8 16h.01"/></svg><span class="m1-rot">Ordens de serviço</span><span class="m1-n" hidden></span></button>
+      <button type="button" class="m1-item" data-m1-lugar="agenda" title="Agenda"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M16 2v4"/><path d="M8 2v4"/><path d="M3 10h18"/></svg><span class="m1-rot">Agenda</span><span class="m1-n" hidden></span></button>
+      <button type="button" class="m1-item" data-m1-lugar="comercial" title="Comercial"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="20" height="14" x="2" y="7" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg><span class="m1-rot">Comercial</span><span class="m1-n" hidden></span></button>
+      <button type="button" class="m1-item" data-m1-lugar="maquinas" title="Máquinas"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="7" width="18" height="11" rx="2"/><path d="M7 18v3"/><path d="M17 18v3"/><circle cx="9" cy="12.5" r="2.5"/><path d="M14 11h4"/><path d="M14 14h4"/><path d="M8 7V4h5v3"/></svg><span class="m1-rot">Máquinas</span><span class="m1-n" hidden></span></button>
+      <button type="button" class="m1-item" data-m1-lugar="clientes" title="Clientes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg><span class="m1-rot">Clientes</span><span class="m1-n" hidden></span></button>
+      <button type="button" class="m1-item" data-m1-lugar="catalogo" title="Catálogo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg><span class="m1-rot">Catálogo</span><span class="m1-n" hidden></span></button>
+      <button type="button" class="m1-item" data-m1-lugar="campo" title="Campo e frota"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"/><path d="M15 18H9"/><path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.624l-3.48-4.35A1 1 0 0 0 17.52 8H14"/><circle cx="17" cy="18" r="2"/><circle cx="7" cy="18" r="2"/></svg><span class="m1-rot">Campo e frota</span><span class="m1-n" hidden></span></button>
+      <button type="button" class="m1-item" data-m1-lugar="docs" title="Documentos"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M16 13H8"/><path d="M16 17H8"/><path d="M10 9H8"/></svg><span class="m1-rot">Documentos</span><span class="m1-n" hidden></span></button>
+      <div class="m1-sep" role="separator"></div>
+      <button type="button" class="m1-item" data-m1-lugar="admin" title="Administração"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg><span class="m1-rot">Administração</span><span class="m1-n" hidden></span></button>
+    </div>
+    <div class="m1-pe"><span class="m1-av" id="m1Av" aria-hidden="true"></span><span class="m1-quem"><b id="m1Nome"></b><span id="m1Papel"></span></span><button type="button" class="m1-sair" onclick="hubLogout()" title="Sair" aria-label="Sair"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5"/><path d="M21 12H9"/></svg></button></div>
   </div>
 
   <nav class="nav-groups">
@@ -6460,6 +6622,7 @@ tr.tadm-feito td{background:#dcfce7 !important;color:#15803d;font-weight:700}
       </button>
     </div>
   </header>
+  <div class="m1-abas" id="m1Abas" role="tablist" hidden></div>
 
   <div class="app-body">
   <!-- SIDEBAR -->
@@ -18242,7 +18405,7 @@ function renderConfigStats(){
     <div class="card">
       <div style="font-size:13px;font-weight:600;margin-bottom:4px">Sobre o sistema</div>
       <div style="font-size:12px;color:var(--text2);line-height:1.8">
-        <strong>Catálogo Administrativo v3.43 · <span data-carimbo="PCM {v}">PCM V214</span></strong> — Proper Compressores<br>
+        <strong>Catálogo Administrativo v3.43 · <span data-carimbo="PCM {v}">PCM V215</span></strong> — Proper Compressores<br>
         Catálogo de modelos · Peças com similares · Fotos · Subsistemas nomeados · Máquinas PGP com dados completos de cliente<br>
         Detecção de duplicados em modelos e máquinas · Google Sheets como backend
       </div>
@@ -24989,7 +25152,7 @@ async function abrirReabrirOS(osId, btnEl) {
          mostra ação em tarefa aberta, então uma tarefa concluída vira um card sem nenhum botão.
          <br>⚠ Marque abaixo o que precisa voltar para o técnico. <b>Ele corrige o que enviou</b>: o formulário
          abre com os dados do envio (se foi deste celular, nos últimos 7 dias) e o envio novo <b>substitui</b> o
-         anterior. Em outro celular, ele preenche de novo. <span style="color:var(--text-muted)">(V214 · GAS v160)</span>`;
+         anterior. Em outro celular, ele preenche de novo. <span style="color:var(--text-muted)">(V215 · GAS v161)</span>`;
 
     const box = document.getElementById('reabrirTarefas');
     if (box) box.innerHTML = '<p style="font-size:12px;color:var(--text-muted)">Carregando as tarefas do pipeline…</p>';
@@ -44447,9 +44610,9 @@ _v178Embrulhar('openOSDetail', function (orig) {
 })();
 
 </script>
-<!-- ████ INICIO PC_LEITURA (PC_LEITURA_V1 · v158 · 5ec632f91b) — gerado por gerar_bloco.js; NÃO EDITAR À MÃO ████ -->
+<!-- ████ INICIO PC_LEITURA (PC_LEITURA_V1 · v161 · 9aefa7c71c) — gerado por gerar_bloco.js; NÃO EDITAR À MÃO ████ -->
 <script>
-/* PC_LEITURA · motor extraído de GAS_properCare_v158.js (228 KB) — NÃO EDITAR À MÃO.
+/* PC_LEITURA · motor extraído de GAS_properCare_v161.js (243 KB) — NÃO EDITAR À MÃO.
    Roda em modo NÃO estrito de propósito: é código do Apps Script, escrito para o modo
    do Apps Script (função declarada dentro de bloco, etc.). Uma instância por leitura. */
 var __PCL_MOTOR = function (S) {
@@ -45161,6 +45324,298 @@ function getMachinePartsById(machineId, serial, tag, preData) {
   } catch(e) {
     return {};
   }
+}
+function getVisitsNormalized() {
+  ensureSheetHeaders('VISITAS', HEADERS.VISITAS);
+  const sheet = getOrCreateSheet('VISITAS', HEADERS.VISITAS);
+  const data  = sheet.getDataRange().getValues();
+  if (data.length < 2) return [];
+  const headers = data[0];
+
+  // v1.8: JOIN com PECAS_LOG para retornar parts por visita
+  const partsMap = {};
+  try {
+    const plSheet = SS.getSheetByName('PECAS_LOG');
+    if (plSheet) {
+      const plData = plSheet.getDataRange().getValues();
+      const plH = plData[0];
+      const piVid  = plH.indexOf('ID_Visita');
+      const piPid  = plH.indexOf('ID_Peça');
+      const piName = plH.indexOf('Nome Peça');
+      const piRefNova = plH.indexOf('Ref_Nova');
+      const piRefBase = plH.indexOf('Ref.');
+      const piLch  = plH.indexOf('Últ.Troca(h)');
+      const piInt  = plH.indexOf('Intervalo_H');
+      const piNA   = plH.indexOf('N/A');
+      const piVM   = plH.indexOf('Valor_Mostrado');
+      const piCnt  = plH.indexOf('Tipo_Contador');
+      const piHRod = plH.indexOf('H_Rodadas');
+      const piHRes = plH.indexOf('H_Restantes');
+      const piStat = plH.indexOf('Status');
+      const piAcao = plH.indexOf('Acao');
+      const piRefAnt = plH.indexOf('Ref_Anterior'); // v81
+      const piEstado = plH.indexOf('Estado');       // v81
+      const piSub    = plH.indexOf('Subsistema');   // v81
+      const piAtv    = plH.indexOf('Ativo');        // v93
+      for (let r = 1; r < plData.length; r++) {
+        // v93 — par do _arquivarPecasLogDaVisita_ (ver getVisitsByMachine). Aqui
+        // o efeito seria pior: partsMap[vid][pid] é um MAPA por peça, então a
+        // linha arquivada e a corrigida disputam a mesma chave e quem vence é a
+        // ÚLTIMA da planilha — ordem de append, não verdade.
+        if (piAtv >= 0 && String(plData[r][piAtv] || 'SIM').trim().toUpperCase() === 'NÃO') continue;
+        const vid = cellStr(plData[r][piVid]).trim();
+        const pid = cellStr(plData[r][piPid]).trim();
+        if (!vid || !pid) continue;
+        if (!partsMap[vid]) partsMap[vid] = {};
+        partsMap[vid][pid] = {
+          name:          piName >= 0 ? String(plData[r][piName] || pid) : pid,
+          ref:           (piRefNova >= 0 ? cellStr(plData[r][piRefNova]) : '') || (piRefBase >= 0 ? cellStr(plData[r][piRefBase]) : ''),
+          lastChange:    piLch  >= 0 ? intOrBlank(plData[r][piLch]) : '',
+          interval:      piInt  >= 0 ? intOrBlank(plData[r][piInt]) : '',
+          na:            piNA   >= 0 && String(plData[r][piNA] || '').toUpperCase() === 'SIM',
+          valorMostrado: piVM   >= 0 ? cellStr(plData[r][piVM])   : '',
+          contador:      piCnt  >= 0 ? cellStr(plData[r][piCnt])  : '',
+          horasRodadas:  piHRod >= 0 ? cellStr(plData[r][piHRod]) : '',
+          horasRestantes:piHRes >= 0 ? cellStr(plData[r][piHRes]) : '',
+          status:        piStat >= 0 ? cellStr(plData[r][piStat]) : '',
+          acao:          piAcao >= 0 ? cellStr(plData[r][piAcao]) : '',
+          // v81 — mesma correção do getVisitsByMachine: o PCM não pode ter duas
+          // verdades sobre a mesma visita dependendo da rota que leu.
+          refAnterior:   piRefAnt >= 0 ? cellStr(plData[r][piRefAnt]) : '',
+          estado:        piEstado >= 0 ? cellStr(plData[r][piEstado]) : '',
+          sub:           piSub    >= 0 ? cellStr(plData[r][piSub])    : '',
+        };
+      }
+    }
+  } catch(e) { Logger.log('getVisitsNormalized: erro ao ler PECAS_LOG — ' + e.message); }
+
+  return data.slice(1).map(row => {
+    const obj = {};
+    headers.forEach((h, j) => obj[h] = row[j]);
+    const vid = String(obj['ID'] || '').trim();
+    return {
+      visitId:    obj['ID']           || '',
+      machine_id: obj['Machine_ID']   || '',
+      client:     obj['Cliente']      || '',
+      branch:     obj['Filial']       || '',
+      brand:      obj['Marca']        || '',
+      model:      obj['Modelo']       || '',
+      serial:     obj['Série']        || '',
+      tag:        obj['TAG']          || '',
+      hourTotal:  parseInt(obj['Hor.Visita']) || 0,
+      hpw:        parseInt(obj['h/Semana'])   || 0,
+      scenario:   obj['Cenário']      || '',
+      tech:       obj['Técnico']      || '',
+      visitDate:  obj['Data Visita']  || '',
+      tipo:       obj['Tipo']         || 'inspecao',
+      generalObs: obj['Obs.Gerais']   || '',
+      // v1.5:
+      nextVisit:  obj['Prox_Visita']  || '',
+      contact:    obj['Contato']      || '',
+      cnpj:       obj['CNPJ']         || '',
+      // v1.9: dados de contato e campos operacionais
+      phone:      obj['Telefone']     || '',
+      email:      obj['Email']        || '',
+      city:       obj['Cidade']       || '',
+      obsOp:      obj['Obs_Op']       || '',
+      regimeData: (()=>{ try{ const v=obj['Regime_JSON']; return v?JSON.parse(v):null; }catch(e){return null;} })(),
+      // v42: Dados da Preventiva
+      auxiliar:   obj['Auxiliar']     || '',
+      horaInicio: obj['Hora_Inicio']  || '',
+      horaFim:    obj['Hora_Fim']     || '',
+      // v81 — faltavam também aqui (esta rota já devolvia contato/regime, o
+      // getVisitsByMachine é que parava no CNPJ)
+      osNumero:    obj['OS_Numero']    || '',
+      regimeJson:  obj['Regime_JSON']  || '',
+      dataLeitura: obj['Data_Leitura'] || '',
+      partsObs:    obj['Parts_Obs']    || '',
+      // v1.8: partes da visita via JOIN com PECAS_LOG
+      parts:      partsMap[vid] || null,
+      // v77: carimbo de criação do registro (p/ o replay de visitas do PCM V97)
+      createdAt:  obj['Created_At'] || '',
+      // v129 — `ativo` FALTAVA nesta rota, e só nela: o `getVisitsByMachine`
+      // já filtra as desativadas, mas o `getVisits` (o dado quente do boot do
+      // PCM) devolvia a linha inteira sem dizer se ela ainda vale. Consequência
+      // concreta: o indicador "Preventivas fora de OS" do PCM V154 contaria
+      // para sempre uma visita fantasma que o administrativo acabou de
+      // desativar — o número nunca desceria e o indicador perderia a
+      // credibilidade na primeira correção.
+      // ⚠ ADITIVO PURO: chave NOVA. Nenhum consumidor atual lê `ativo` daqui,
+      //   e a rota continua devolvendo TODAS as linhas — quem filtra é quem
+      //   consome. Filtrar aqui mudaria o comportamento do replay de visitas do
+      //   PCM V97, que depende de ver o acervo inteiro.
+      ativo:      obj['Ativo'] || 'SIM',
+      'Machine_ID':  obj['Machine_ID']  || '',
+      'Série':       obj['Série']       || '',
+      'TAG':         obj['TAG']         || '',
+      'Hor.Total':   parseInt(obj['Hor.Visita']) || 0,
+      'h/Semana':    parseInt(obj['h/Semana'])   || 0,
+      'Data':        obj['Data Visita'] || '',
+      'Visit_Date':  obj['Data Visita'] || '',
+    };
+  });
+}
+function _responsavelDaOS_(osId, numeroOs) {
+  try {
+    var alvoId  = String(osId || '').trim();
+    var alvoNum = String(numeroOs || '').trim();
+    if (!alvoId && !alvoNum) return '';
+    var mapa = {};
+    try { mapa = _satMapaUsuarios_() || {}; } catch (e) { mapa = {}; }
+    var linhas = getSheetData('ORDENS_SERVICO');
+    for (var i = 0; i < linhas.length; i++) {
+      var o = linhas[i];
+      var bate = (alvoId  && String(o.id_os     || '').trim() === alvoId) ||
+                 (alvoNum && String(o.numero_os || '').trim() === alvoNum);
+      if (!bate) continue;
+      var bruto = String(o.usuario_atual || '').trim();
+      if (!bruto) {
+        // sem responsável corrente: o primeiro VINCULADO ainda é uma resposta
+        // melhor que vazio (é quem a OS nomeou na abertura).
+        var vin = o.usuarios_vinculados;
+        try {
+          if (typeof vin === 'string' && vin.indexOf('[') === 0) vin = JSON.parse(vin);
+        } catch (eJ) {}
+        if (Array.isArray(vin) && vin.length) bruto = String(vin[0] || '').trim();
+        else if (typeof vin === 'string' && vin) bruto = String(vin.split(',')[0] || '').trim();
+      }
+      if (!bruto) return '';
+      var nome = mapa[bruto.toLowerCase()];
+      return String(nome || bruto).trim();   // id desconhecido: devolve o cru, não ''
+    }
+  } catch (e) { Logger.log('_responsavelDaOS_: ' + e.message); }
+  return '';
+}
+function getVisitsByMachine(machineId) {
+  const mId = String(machineId || '').trim();
+  if (!mId) return { status: 'error', error: 'machine_id obrigatório' };
+  ensureSheetHeaders('VISITAS', HEADERS.VISITAS);
+  ensureSheetHeaders('PECAS_LOG', HEADERS.PECAS_LOG);
+
+  const allVisits = getSheetData('VISITAS');
+  const visits = allVisits
+    .filter(v => String(v['Machine_ID'] || '').trim() === mId)
+    .map(v => ({
+      visitId:    v['ID'] || '',
+      machine_id: v['Machine_ID'] || '',
+      tipo:       v['Tipo'] || 'inspecao',
+      visitDate:  v['Data Visita'] || '',
+      hourTotal:  parseInt(v['Hor.Visita']) || 0,
+      tech:       v['Técnico'] || '',
+      scenario:   v['Cenário'] || '',
+      generalObs: v['Obs.Gerais'] || '',
+      client:     v['Cliente'] || '',
+      brand:      v['Marca'] || '',
+      model:      v['Modelo'] || '',
+      // v1.5:
+      nextVisit:  v['Prox_Visita'] || '',
+      contact:    v['Contato'] || '',
+      cnpj:       v['CNPJ'] || '',
+      // ═══════════════════════════════════════════════════════════════════
+      // v81 — CAMPOS QUE JÁ ERAM GRAVADOS E A LEITURA NÃO DEVOLVIA.
+      // saveVisit/savePreventiva escrevem todos eles desde a v1.9/v20/v42,
+      // mas getVisitsByMachine parou no CNPJ — então quem lê a visita (o PCM,
+      // que agora regera o relatório de preventiva) não tinha como preencher
+      // telefone, e-mail, cidade, obs. operacional, regime, nº da OS nem os
+      // dados da preventiva, e imprimia "—" num dado que existia na planilha.
+      // Aditivo puro: linha antiga sem a célula devolve ''.
+      // ═══════════════════════════════════════════════════════════════════
+      phone:      v['Telefone']    || '',
+      email:      v['Email']       || '',
+      city:       v['Cidade']      || '',
+      obsOp:      v['Obs_Op']      || '',
+      regimeJson: v['Regime_JSON'] || '',   // string JSON; o front parseia
+      osNumero:   v['OS_Numero']   || '',
+      auxiliar:   v['Auxiliar']    || '',
+      horaInicio: v['Hora_Inicio'] || '',
+      horaFim:    v['Hora_Fim']    || '',
+      // v139 (C11) — 'SIM' | 'NAO' | '' (visita antiga, ou máquina sem contador
+      // por peça). O PCM usa isto para marcar a pendência "contador não zerado".
+      contadoresZerados: v['Contadores_Zerados'] || '',
+      // v81 — colunas novas
+      dataLeitura: v['Data_Leitura'] || '',
+      partsObs:    v['Parts_Obs']    || '',
+    }));
+
+  // v79 F-21 — ordenação por dia LOCAL normalizado. new Date('28/07/2026') é
+  // Invalid Date em JS (formato brasileiro), então toda visita gravada em
+  // dd/mm/aaaa comparava NaN e a ordem virava indefinida — o PCF mostrava
+  // "última visita" errada. _ymdLocal_ normaliza Date/ISO/dd-mm-aaaa para
+  // 'yyyy-mm-dd', que ordena corretamente como string. Empates/vazios ficam ao fim.
+  visits.sort((a, b) => {
+    const ka = _ymdLocal_(a.visitDate) || '';
+    const kb = _ymdLocal_(b.visitDate) || '';
+    if (ka === kb) return 0;
+    if (!ka) return 1;
+    if (!kb) return -1;
+    return kb < ka ? -1 : 1; // decrescente (mais recente primeiro), como antes
+  });
+  // ══════════════════════════════════════════════════════════════════════
+  // v122 (R3) — LEITURA HONESTA DAS VISITAS ANTIGAS.
+  // A correção de escrita (R2) só vale de hoje em diante. As visitas já
+  // gravadas com `Técnico` em branco continuariam imprimindo "Responsável: —"
+  // na tela E no PDF regerado. Aqui o responsável da OS entra como ÚLTIMO
+  // recurso de LEITURA — e vem carimbado (`tech_fonte:'os'`) para o front poder
+  // dizer de onde veio. Repor isso por ESCRITA seria inventar um dado que
+  // ninguém registrou: quem abriu a OS não é, necessariamente, quem executou.
+  // Custo: uma leitura de ORDENS_SERVICO, e SÓ quando existe visita sem técnico.
+  // ══════════════════════════════════════════════════════════════════════
+  try {
+    if (visits.some(function (v) { return !String(v.tech || '').trim(); })) {
+      var _mapaResp = {};
+      visits.forEach(function (v) {
+        if (String(v.tech || '').trim()) { v.tech_fonte = 'visita'; return; }
+        var num = String(v.osNumero || '').trim();
+        if (!num) { v.tech_fonte = ''; v.responsavel_os = ''; return; }
+        if (!(num in _mapaResp)) _mapaResp[num] = _responsavelDaOS_('', num);
+        var nome = _mapaResp[num];
+        v.responsavel_os = nome || '';
+        if (nome) { v.tech = nome; v.tech_fonte = 'os'; } else { v.tech_fonte = ''; }
+      });
+    } else {
+      visits.forEach(function (v) { v.tech_fonte = 'visita'; });
+    }
+  } catch (eR3) { Logger.log('getVisitsByMachine R3: ' + eR3.message); }
+
+  const allPecasLog = getSheetData('PECAS_LOG');
+  const visitIds = new Set(visits.map(v => String(v.visitId || '').trim()));
+  const pecasLog = {};
+  allPecasLog.forEach(p => {
+    // v93 — PAR OBRIGATÓRIO do _arquivarPecasLogDaVisita_. Sem este filtro, uma
+    // preventiva corrigida devolveria as peças ANTIGAS e as NOVAS juntas para o
+    // mesmo ID_Visita, e o relatório regerado pelo PCM mostraria a peça em dois
+    // estados. A coluna Ativo existe no HEADERS.PECAS_LOG desde sempre e nunca
+    // tinha sido consultada aqui.
+    if (String(p['Ativo'] || 'SIM').trim().toUpperCase() === 'NÃO') return;
+    const vid = String(p['ID_Visita'] || '').trim();
+    if (!visitIds.has(vid)) return;
+    if (!pecasLog[vid]) pecasLog[vid] = [];
+    pecasLog[vid].push({
+      partId:         p['ID_Peça'] || '',
+      name:           p['Nome Peça'] || '',
+      acao:           p['Acao'] || '',
+      refNova:        p['Ref_Nova'] || p['Ref.'] || '',
+      refAnterior:    p['Ref_Anterior'] || '',
+      tipoReferencia: p['Tipo_Referencia'] || '',
+      horimetro:      parseInt(p['Horimetro']) || 0,
+      dataTroca:      p['Data_Troca'] || '',
+      na:             String(p['N/A'] || '').toUpperCase() === 'SIM',
+      obs:            p['Observação'] || '',
+      // v1.5:
+      intervalo:      parseInt(p['Intervalo_H']) || 0,
+      horasRodadas:   cellVal(p['H_Rodadas']),
+      horasRestantes: cellVal(p['H_Restantes']),
+      status:         cellVal(p['Status']),
+      valorMostrado:  cellVal(p['Valor_Mostrado']),
+      tipoContador:   cellVal(p['Tipo_Contador']),
+      // v81 — gravados desde sempre, nunca devolvidos: sem lastChange o PCM
+      // precisava DERIVAR a "Últ.Troca(h)" do parafuso (horímetro − rodadas).
+      lastChange:     intOrBlank(p['Últ.Troca(h)']),
+      sub:            cellVal(p['Subsistema']),
+      estado:         cellVal(p['Estado']), // v81 (coluna nova)
+    });
+  });
+  return { status: 'ok', visits, pecasLog };
 }
 function getMachinesByClient(clientQuery, opts) {
   // ── v128 · ALIASES E ID ───────────────────────────────────────────────────
@@ -45949,6 +46404,10 @@ function getAttachments(params){
   if (params.entityType) rows = rows.filter(function(a){ return String(a.Entity_Type || '') === String(params.entityType); });
   if (params.entityId) rows = rows.filter(function(a){ return String(a.Entity_ID || '') === String(params.entityId); });
   return { status:'ok', attachments:rows };
+}
+function getRotorModels() {
+  ensureSheetHeaders('ROTORES_MODELOS', HEADERS.ROTORES_MODELOS);
+  return { status: 'ok', rotorModels: getSheetDataActive('ROTORES_MODELOS') };
 }
 function getSheetData(sheetName) {
   const data = _getRawSheetValues_(sheetName); // v59 PERF: usa cache de requisição quando ativo
@@ -49122,6 +49581,9 @@ function __pcGET(action, params) {
       case "searchMachine":
         result = searchMachine(params.q || '');
         break;
+      case "getVisits":
+        result = { status: 'ok', visits: getVisitsNormalized() };
+        break;
       case "getOS":
         result = getOS(params);
         break;
@@ -49146,6 +49608,9 @@ function __pcGET(action, params) {
       case "getCatalogFull":
         result = getCatalogFull();
         break;
+      case "getVisitsByMachine":
+        result = getVisitsByMachine(params.machine_id || '');
+        break;
       case "getMachinesByClient":
         result = getMachinesByClient(params.client || '', params);
         break;
@@ -49154,6 +49619,9 @@ function __pcGET(action, params) {
         break;
       case "getClientsForField":
         result = getClientsForField();
+        break;
+      case "getRotorModels":
+        result = getRotorModels();
         break;
       case "getPerfis":
         result = getPerfis(params);
@@ -49288,7 +49756,7 @@ function __pcPOST(action, body) {
 /* ════════════════════════════════════════════════════════════════════════════
    PC_LEITURA — o motor de leitura do ProperCare no navegador (rodada TURBO, 28/09/2026)
    ────────────────────────────────────────────────────────────────────────────
-   GERADO por gerar_bloco.js a partir do GAS v158. NÃO EDITAR À MÃO.
+   GERADO por gerar_bloco.js a partir do GAS v161. NÃO EDITAR À MÃO.
 
    O QUE É: as funções de LEITURA do Apps Script (getOS, getTarefasAdm, getKanbanOficina,
    getSaturacaoUsuarios, …) COPIADAS do próprio GAS e executadas aqui, sobre uma
@@ -49317,14 +49785,14 @@ function __pcPOST(action, body) {
 (function (G) {
   'use strict';
   if (G.PCL) return;
-  var BUILD = 'PC_LEITURA_V1 · v158 · 5ec632f91b';
+  var BUILD = 'PC_LEITURA_V1 · v161 · 9aefa7c71c';
   var M = {
-  abas: {"MODELOS":{"tabela":"modelos","pk":"id"},"PARTS_MASTER":{"tabela":"parts_master","pk":"part_id"},"PART_SIMILARITIES":{"tabela":"part_similarities","pk":"sim_id"},"SUBSISTEMAS_LIB":{"tabela":"subsistemas_lib","pk":"sub_lib_id"},"SUBSISTEMA_LIB_PARTS":{"tabela":"subsistema_lib_parts","pk":"part_id"},"MODELO_SUBSISTEMA_LIB":{"tabela":"modelo_subsistema_lib","pk":"link_id"},"CLIENTES":{"tabela":"clientes","pk":"id"},"MAQUINAS":{"tabela":"maquinas","pk":"id"},"MACHINE_PARTS":{"tabela":"machine_parts","pk":"machine_id,part_id"},"PIPELINE_TEMPLATES":{"tabela":"pipeline_templates","pk":"template_id"},"ORDENS_SERVICO":{"tabela":"ordens_servico","pk":"id_os"},"PIPELINE_TAREFAS":{"tabela":"pipeline_tarefas","pk":"os_id,tarefa_id"},"AGENDA_DEMANDAS":{"tabela":"agenda_demandas","pk":"demanda_id"},"OS_MAQUINAS":{"tabela":"os_maquinas","pk":"id_link"},"TECH_ATTACHMENTS":{"tabela":"tech_attachments","pk":"attachment_id"},"UNIDADES":{"tabela":"unidades","pk":"id"},"CAT_TIPOS_OS":{"tabela":"cat_tipos_os","pk":"tipo_id"},"CUSTODIA_FROTA":{"tabela":"frota_custodia","pk":"custodia_id"},"CAT_PERFIS":{"tabela":"cat_perfis","pk":"id_perfil"},"PARAMETROS_TURNO":{"tabela":"parametros_turno","pk":"id"},"CAT_USUARIOS":{"tabela":"usuarios_publico","pk":"id"},"FORMULARIOS":{"tabela":"formularios","pk":"id"},"VISITAS":{"tabela":"visitas","pk":"id"},"PIPELINE_NOTIF":{"tabela":"pipeline_notif","pk":"notif_id"},"HORIMETRO_CALIB":{"tabela":"horimetro_calib","pk":"machine_id"},"HORIMETRO_HIST":{"tabela":"horimetro_hist","pk":"id"},"PRESENCA_OS":{"tabela":"presenca_os","pk":"evento_id"},"GEO_LOCAIS":{"tabela":"geo_locais","pk":"geo_id"},"SOLICITACOES_CADASTRO":{"tabela":"solicitacoes_cadastro","pk":"solic_id"},"CAT_TIPOS_MEDIDA":{"tabela":"cat_tipos_medida","pk":"tipo_id"}},
+  abas: {"MODELOS":{"tabela":"modelos","pk":"id"},"PARTS_MASTER":{"tabela":"parts_master","pk":"part_id"},"PART_SIMILARITIES":{"tabela":"part_similarities","pk":"sim_id"},"SUBSISTEMAS_LIB":{"tabela":"subsistemas_lib","pk":"sub_lib_id"},"SUBSISTEMA_LIB_PARTS":{"tabela":"subsistema_lib_parts","pk":"part_id"},"MODELO_SUBSISTEMA_LIB":{"tabela":"modelo_subsistema_lib","pk":"link_id"},"CLIENTES":{"tabela":"clientes","pk":"id"},"MAQUINAS":{"tabela":"maquinas","pk":"id"},"MACHINE_PARTS":{"tabela":"machine_parts","pk":"machine_id,part_id"},"PIPELINE_TEMPLATES":{"tabela":"pipeline_templates","pk":"template_id"},"ORDENS_SERVICO":{"tabela":"ordens_servico","pk":"id_os"},"PIPELINE_TAREFAS":{"tabela":"pipeline_tarefas","pk":"os_id,tarefa_id"},"AGENDA_DEMANDAS":{"tabela":"agenda_demandas","pk":"demanda_id"},"OS_MAQUINAS":{"tabela":"os_maquinas","pk":"id_link"},"TECH_ATTACHMENTS":{"tabela":"tech_attachments","pk":"attachment_id"},"UNIDADES":{"tabela":"unidades","pk":"id"},"CAT_TIPOS_OS":{"tabela":"cat_tipos_os","pk":"tipo_id"},"CUSTODIA_FROTA":{"tabela":"frota_custodia","pk":"custodia_id"},"CAT_PERFIS":{"tabela":"cat_perfis","pk":"id_perfil"},"PARAMETROS_TURNO":{"tabela":"parametros_turno","pk":"id"},"CAT_USUARIOS":{"tabela":"usuarios_publico","pk":"id"},"FORMULARIOS":{"tabela":"formularios","pk":"id"},"VISITAS":{"tabela":"visitas","pk":"id"},"PIPELINE_NOTIF":{"tabela":"pipeline_notif","pk":"notif_id"},"HORIMETRO_CALIB":{"tabela":"horimetro_calib","pk":"machine_id"},"HORIMETRO_HIST":{"tabela":"horimetro_hist","pk":"id"},"PRESENCA_OS":{"tabela":"presenca_os","pk":"evento_id"},"GEO_LOCAIS":{"tabela":"geo_locais","pk":"geo_id"},"SOLICITACOES_CADASTRO":{"tabela":"solicitacoes_cadastro","pk":"solic_id"},"CAT_TIPOS_MEDIDA":{"tabela":"cat_tipos_medida","pk":"tipo_id"},"PECAS_LOG":{"tabela":"pecas_log","pk":"pc_linha"},"ROTORES_MODELOS":{"tabela":"rotores_modelos","pk":"pc_linha"}},
   override: {"OS_MAQUINAS":{"machineKey":"machine_key"}},
-  soCabecalho: {"PECAS_LOG":["ID_Visita","ID_Peça","Nome Peça","Ref.","Subsistema","Últ.Troca(h)","N/A","Observação","Ref_Nova","Ref_Anterior","Tipo_Referencia","Acao","Horimetro","Data_Troca","Ativo","Tipo_Registro","Created_At","Deleted_At","Deleted_By","Intervalo_H","H_Rodadas","H_Restantes","Status","Valor_Mostrado","Tipo_Contador","Estado"],"ASSINATURAS_REMOTAS":["Token","Attachment_ID","OS_ID","OS_Numero","Cliente","Maquina_Label","File_Name","Status","Criado_Em","Criado_Por","Expira_Em","Assinado_Em","Assinado_Nome","Assinado_Info","Novo_File_ID","Ativo"],"LOG_OPERACIONAL":["id_evento","timestamp","tipo_evento","id_os","numero_os","id_cliente","cliente","id_usuario","nome_usuario","id_maquina","machineKey","status_anterior","status_novo","acao_realizada","responsavel_nome","origem","observacao","payload_json"],"HISTORICO_OS":["id_historico","id_os","numero_os","id_cliente","cliente","tipo_os","data_abertura","data_encerramento","status_final","tecnicos_vinculados_json","total_maquinas","maquinas_atendidas","maquinas_pendentes","visit_ids_resultado_json","pdf_url","assinatura_tecnico_url","assinatura_cliente_url","observacao_fechamento","motivo_cancelamento","encerrada_por","timestamp"],"OS_DRAFTS":["id_draft","id_os","numero_os","id_usuario","nome_usuario","tipo_os","timestamp_atualizacao","payload_json","status_draft"],"ROTORES_MODELOS":["Model_ID","Marca","Modelo","Foto_Ref_URL","Anchors_JSON","Ativo","Tipo_Registro","Created_At","Updated_At","Deleted_At","Deleted_By"],"ROTORES_COLETAS":["Coleta_ID","Machine_ID","Visit_ID","Model_ID","Cliente","Marca","Modelo","Serie","TAG","Tecnico","Data_Coleta","Foto_Rotores_URL","Anchors_JSON","Medicoes_JSON","Obs","Ativo","Tipo_Registro","Created_At","Deleted_At","Deleted_By"],"DOC_VERSOES":["Versao_ID","Attachment_ID","Anterior_ID","Entity_Type","Entity_ID","OS_Numero","File_Name","Versao","Motivo_Tipo","Motivo","SHA256","Assinada","Origem","Criado_Em","Criado_Por"],"LOG_COMPARTILHAMENTO":["Log_ID","Attachment_ID","OS_Numero","File_Name","Canal","Destino","Link_ID","Status","Criado_Em","Criado_Por","Obs"],"DOC_LINKS":["Link_ID","Token_Hash","Attachment_ID","OS_Numero","File_Name","Expira_Em","Criado_Em","Criado_Por","Cancelado_Em","Cancelado_Por","Aberturas","Ultima_Abertura","Ativo"],"CAT_FERRAMENTAL":["Item_ID","Nome","Categoria","Unidade","Controla_Qtde","Patrimonio","Obs","Ativo","Created_At","Updated_At","Updated_By"],"CAT_VEICULOS":["Veiculo_ID","Nome","Placa","Obs","Ativo","Created_At","Updated_At","Updated_By"],"KIT_VEICULO":["Kit_ID","Veiculo_ID","Item_ID","Qtde","Ativo","Updated_At","Updated_By"],"KIT_SERVICO":["Kit_ID","Tipo_ID","Item_ID","Qtde","Ativo","Updated_At","Updated_By"],"CARGA_OS":["Linha_ID","OS_ID","OS_Numero","Tipo","Item_ID","Descricao","Qtde","Sinal","Obs","Ativo","Created_At","Created_By"],"ROMANEIO_CONF":["Conf_ID","Data","Veiculo_ID","Tecnico_ID","Tecnico_Nome","Momento","Itens_JSON","Faltas","Pendente","Resolvido_Em","Resolvido_Por","Obs","Created_At"],"DOCS_INTERNOS":["Doc_ID","Client_UID","OS_ID","OS_Numero","Cliente","Maquina_ID","Maquina_Label","Categoria","Descricao","File_ID","File_URL","File_Name","Mime","Bytes","Folder_ID","Folder_URL","Created_At","Created_By","Ativo","Removido_Em","Removido_Por"],"ASSIN_LEMBRETES":["Evento_ID","Tipo","Canal","Pedido_Chave","Attachment_ID","OS_Numero","Cliente","File_Name","Destinatarios","Destinos","Em","Por","Status","Obs","Ativo"]},
+  soCabecalho: {"ASSINATURAS_REMOTAS":["Token","Attachment_ID","OS_ID","OS_Numero","Cliente","Maquina_Label","File_Name","Status","Criado_Em","Criado_Por","Expira_Em","Assinado_Em","Assinado_Nome","Assinado_Info","Novo_File_ID","Ativo"],"LOG_OPERACIONAL":["id_evento","timestamp","tipo_evento","id_os","numero_os","id_cliente","cliente","id_usuario","nome_usuario","id_maquina","machineKey","status_anterior","status_novo","acao_realizada","responsavel_nome","origem","observacao","payload_json"],"HISTORICO_OS":["id_historico","id_os","numero_os","id_cliente","cliente","tipo_os","data_abertura","data_encerramento","status_final","tecnicos_vinculados_json","total_maquinas","maquinas_atendidas","maquinas_pendentes","visit_ids_resultado_json","pdf_url","assinatura_tecnico_url","assinatura_cliente_url","observacao_fechamento","motivo_cancelamento","encerrada_por","timestamp"],"OS_DRAFTS":["id_draft","id_os","numero_os","id_usuario","nome_usuario","tipo_os","timestamp_atualizacao","payload_json","status_draft"],"ROTORES_COLETAS":["Coleta_ID","Machine_ID","Visit_ID","Model_ID","Cliente","Marca","Modelo","Serie","TAG","Tecnico","Data_Coleta","Foto_Rotores_URL","Anchors_JSON","Medicoes_JSON","Obs","Ativo","Tipo_Registro","Created_At","Deleted_At","Deleted_By"],"DOC_VERSOES":["Versao_ID","Attachment_ID","Anterior_ID","Entity_Type","Entity_ID","OS_Numero","File_Name","Versao","Motivo_Tipo","Motivo","SHA256","Assinada","Origem","Criado_Em","Criado_Por"],"LOG_COMPARTILHAMENTO":["Log_ID","Attachment_ID","OS_Numero","File_Name","Canal","Destino","Link_ID","Status","Criado_Em","Criado_Por","Obs"],"DOC_LINKS":["Link_ID","Token_Hash","Attachment_ID","OS_Numero","File_Name","Expira_Em","Criado_Em","Criado_Por","Cancelado_Em","Cancelado_Por","Aberturas","Ultima_Abertura","Ativo"],"CAT_FERRAMENTAL":["Item_ID","Nome","Categoria","Unidade","Controla_Qtde","Patrimonio","Obs","Ativo","Created_At","Updated_At","Updated_By"],"CAT_VEICULOS":["Veiculo_ID","Nome","Placa","Obs","Ativo","Created_At","Updated_At","Updated_By"],"KIT_VEICULO":["Kit_ID","Veiculo_ID","Item_ID","Qtde","Ativo","Updated_At","Updated_By"],"KIT_SERVICO":["Kit_ID","Tipo_ID","Item_ID","Qtde","Ativo","Updated_At","Updated_By"],"CARGA_OS":["Linha_ID","OS_ID","OS_Numero","Tipo","Item_ID","Descricao","Qtde","Sinal","Obs","Ativo","Created_At","Created_By"],"ROMANEIO_CONF":["Conf_ID","Data","Veiculo_ID","Tecnico_ID","Tecnico_Nome","Momento","Itens_JSON","Faltas","Pendente","Resolvido_Em","Resolvido_Por","Obs","Created_At"],"DOCS_INTERNOS":["Doc_ID","Client_UID","OS_ID","OS_Numero","Cliente","Maquina_ID","Maquina_Label","Categoria","Descricao","File_ID","File_URL","File_Name","Mime","Bytes","Folder_ID","Folder_URL","Created_At","Created_By","Ativo","Removido_Em","Removido_Por"],"ASSIN_LEMBRETES":["Evento_ID","Tipo","Canal","Pedido_Chave","Attachment_ID","OS_Numero","Cliente","File_Name","Destinatarios","Destinos","Em","Por","Status","Obs","Ativo"]},
   extras: { 'PIPELINE_TAREFAS#ARQ': { tabela: 'pipeline_tarefas_arq', pk: 'os_id,tarefa_id,arq_seq' } },
   juntar: { PIPELINE_TAREFAS: 'PIPELINE_TAREFAS#ARQ' },
-  acoes: {"getOS":"ambos","getTarefasAdm":"ambos","getItensNaOficina":"ambos","getKanbanOficina":"ambos","getFilaOficina":"ambos","getSaturacaoUsuarios":"ambos","getTermometroEspera":"ambos","listarPresasOsEncerrada":"ambos","getPipelineByOS":"ambos","getMaquinasByOS":"ambos","getEquipamentosByOS":"ambos","getAttachments":"ambos","getFormulariosByOS":"ambos","getNotificacoes":"ambos","getHorimetroCalib":"ambos","getHorimetroPendencias":"ambos","getTemplates":"ambos","getTiposOS":"ambos","getPerfis":"ambos","getUnidades":"ambos","getParametrosTurno":"ambos","getTiposMedida":"ambos","getBlocos":"ambos","getSolicitacoesCadastro":"ambos","getAgendaDemandas":"ambos","getUsuarios":"ambos","getMachinesByClient":"ambos","getClientsForField":"ambos","searchMachine":"ambos","getCatalogFull":"ambos","calcularPrazoOS":"ambos","frotaDisponivel":"POST","frotaForaDeCasa":"POST"},
+  acoes: {"getOS":"ambos","getTarefasAdm":"ambos","getItensNaOficina":"ambos","getKanbanOficina":"ambos","getFilaOficina":"ambos","getSaturacaoUsuarios":"ambos","getTermometroEspera":"ambos","listarPresasOsEncerrada":"ambos","getPipelineByOS":"ambos","getMaquinasByOS":"ambos","getEquipamentosByOS":"ambos","getAttachments":"ambos","getFormulariosByOS":"ambos","getNotificacoes":"ambos","getHorimetroCalib":"ambos","getHorimetroPendencias":"ambos","getTemplates":"ambos","getTiposOS":"ambos","getPerfis":"ambos","getUnidades":"ambos","getParametrosTurno":"ambos","getTiposMedida":"ambos","getBlocos":"ambos","getSolicitacoesCadastro":"ambos","getAgendaDemandas":"ambos","getUsuarios":"ambos","getMachinesByClient":"ambos","getClientsForField":"ambos","searchMachine":"ambos","getCatalogFull":"ambos","calcularPrazoOS":"ambos","frotaDisponivel":"POST","frotaForaDeCasa":"POST","getVisits":"GET","getVisitsByMachine":"GET","getRotorModels":"GET"},
   // getUsuarios com incluir_inativos é a tela de ADMINISTRAÇÃO: precisa de e-mail/telefone,
   // que NÃO sobem ao Postgres (D1). Ela continua no GAS; a lista de nomes vem do Postgres.
   condicao: { getUsuarios: function (p) { var v = String(p.incluir_inativos || p.incluirInativos || '').toLowerCase(); return !(v === '1' || v === 'true' || v === 'sim' || v === 'on' || v === 'yes'); } },
@@ -49660,14 +50128,33 @@ function __pcPOST(action, body) {
       var pk = String(e.pk || cfgAba.pk).split(',').map(function (x) { return x.trim(); });
       var ordem = (cols.indexOf('pc_linha') >= 0 ? 'pc_linha.asc.nullslast,' : '') + pk.map(function (x) { return x + '.asc'; }).join(',');
       var linhas = [], ini = 0, passo = 1000;
-      for (var volta = 0; volta < 60; volta++) {
+      async function pagina(ini) {
         var r = await rest('/rest/v1/' + cfgAba.tabela + '?select=' + cols.join(',') + '&order=' + ordem,
           { headers: { 'Range-Unit': 'items', Range: ini + '-' + (ini + passo - 1) }, timeout: 25000 });
         if (r.status !== 200 && r.status !== 206) throw new Error(cfgAba.tabela + ': HTTP ' + r.status + ' ' + String(r.texto || '').slice(0, 120));
         if (!Array.isArray(r.json)) throw new Error(cfgAba.tabela + ': resposta inválida');
-        linhas = linhas.concat(r.json);
-        if (r.json.length < passo) { volta = -1; break; }
-        ini += passo;
+        return r.json;
+      }
+      // R0 (30/09) — ABA GRANDE: o carimbo diz quantas linhas há ⇒ as páginas saem em PARALELO (4 por vez)
+      //   em vez de uma depois da outra. Pede floor(total/passo)+1 páginas: a última vem incompleta (ou vazia)
+      //   quando o banco tem o que o carimbo diz; linha a mais ou a menos cai na conferência de contagem abaixo.
+      var total = (e.fonte !== 'postgres' && e.linhas !== null && e.linhas !== undefined) ? Number(e.linhas) : NaN;
+      var volta = 0;
+      if (isFinite(total) && total >= passo) {
+        var nPag = Math.floor(total / passo) + 1;
+        if (nPag > 60) throw new Error(cfgAba.tabela + ': mais de 60 páginas — leitura cortada');
+        var pags = new Array(nPag), prox = 0;
+        var trab = async function () { while (prox < nPag) { var i = prox++; pags[i] = await pagina(i * passo); } };
+        await Promise.all([trab(), trab(), trab(), trab()]);
+        for (var ip = 0; ip < nPag; ip++) linhas = linhas.concat(pags[ip]);
+        volta = -1;
+      } else {
+        for (volta = 0; volta < 60; volta++) {
+          var lote = await pagina(ini);
+          linhas = linhas.concat(lote);
+          if (lote.length < passo) { volta = -1; break; }
+          ini += passo;
+        }
       }
       if (volta !== -1) throw new Error(cfgAba.tabela + ': mais de 60 páginas — leitura cortada');
       // 🔴 "ausência de dado exibida como fato": espelho que diz ter N linhas e devolve 0
@@ -56356,5 +56843,670 @@ function _v214Mudou(ev) {
 })();
 </script>
 <!-- ████ FIM PCM V214 ████ -->
+<!-- ████ INICIO PCM V215 · MENU_V1 · BUSCA_V1 · JANELA_V1 ████ -->
+<script>
+/* ══════════════════════════════════════════════════════════════════════════════════════════════════
+   PCM V215 · R0 DO REDESENHO (30/09/2026) — MENU_V1 · BUSCA_V1 · JANELA_V1
+   Pedido do Fernando (29/09, 21h42/21h46): "pode iniciar o processo de redesign" e "ao clicar fora de
+   algumas janelas, essa janela se fecha e o que estava sendo feito nela se perde … ou que ela não se
+   feche, ou que minimize ou que nada se perca".
+   100% ADITIVO: nenhum id, data-view, onclick, view ou função existente foi renomeado. O menu antigo
+   continua no DOM (escondido): as permissões (style.display dos botões) e os números (.nav-count) que
+   o resto do PCM escreve nele são LIDOS daqui — nada precisa saber que o menu mudou.
+   ══════════════════════════════════════════════════════════════════════════════════════════════════ */
+(function () {
+  'use strict';
+  var LUGARES = [{"k": "inicio", "rot": "Início", "ico": "inbox", "abas": [["tarefasAdm", "Tarefas do Adm"], ["chamadosPortal", "Chamados do portal"]]}, {"k": "os", "rot": "Ordens de serviço", "ico": "os", "abas": [["os", "Ordens de serviço"], ["termometro", "Termômetro de espera"]]}, {"k": "agenda", "rot": "Agenda", "ico": "calendar", "abas": [["saturacao", "Agenda da equipe"]]}, {"k": "comercial", "rot": "Comercial", "ico": "brief", "abas": [["comercial", "Quadro comercial"], ["pecasTrocar", "Peças a trocar"]]}, {"k": "maquinas", "rot": "Máquinas", "ico": "machine", "abas": [["preventivas", "Preventivas"], ["estoque", "Peças a vencer"], ["calibracao", "Calibração"], ["machines", "Todas as máquinas"]]}, {"k": "clientes", "rot": "Clientes", "ico": "users", "abas": [["clients", "Clientes"], ["unidades", "Unidades"]]}, {"k": "catalogo", "rot": "Catálogo", "ico": "book", "abas": [["catalog", "Modelos e peças"], ["itensCampo", "Itens adicionados em campo"]]}, {"k": "campo", "rot": "Campo e frota", "ico": "truck", "abas": [["campo", "Campo"], ["frota", "Frota fora de casa"], ["romaneio", "Romaneio"]]}, {"k": "docs", "rot": "Documentos", "ico": "file", "abas": [["docs", "Documentos"]]}, null, {"k": "admin", "rot": "Administração", "ico": "cog", "abas": [["tecnicos", "Usuários"], ["perfis", "Perfis"], ["tiposOS", "Tipos de OS"], ["templates", "Templates de pipeline"], ["portalAcessos", "Acessos do portal"], ["config", "Configurações"]]}];
+  var ICO = {"search": "<circle cx=\"11\" cy=\"11\" r=\"7.5\"/><path d=\"m20.5 20.5-4.2-4.2\"/>", "inbox": "<path d=\"M22 12h-6l-2 3h-4l-2-3H2\"/><path d=\"M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z\"/>", "os": "<rect width=\"8\" height=\"4\" x=\"8\" y=\"2\" rx=\"1\"/><path d=\"M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2\"/><path d=\"M12 11h4\"/><path d=\"M12 16h4\"/><path d=\"M8 11h.01\"/><path d=\"M8 16h.01\"/>", "calendar": "<rect width=\"18\" height=\"18\" x=\"3\" y=\"4\" rx=\"2\"/><path d=\"M16 2v4\"/><path d=\"M8 2v4\"/><path d=\"M3 10h18\"/>", "brief": "<rect width=\"20\" height=\"14\" x=\"2\" y=\"7\" rx=\"2\"/><path d=\"M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16\"/>", "machine": "<rect x=\"3\" y=\"7\" width=\"18\" height=\"11\" rx=\"2\"/><path d=\"M7 18v3\"/><path d=\"M17 18v3\"/><circle cx=\"9\" cy=\"12.5\" r=\"2.5\"/><path d=\"M14 11h4\"/><path d=\"M14 14h4\"/><path d=\"M8 7V4h5v3\"/>", "users": "<path d=\"M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2\"/><circle cx=\"9\" cy=\"7\" r=\"4\"/><path d=\"M22 21v-2a4 4 0 0 0-3-3.87\"/><path d=\"M16 3.13a4 4 0 0 1 0 7.75\"/>", "book": "<path d=\"M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z\"/><path d=\"M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z\"/>", "truck": "<path d=\"M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2\"/><path d=\"M15 18H9\"/><path d=\"M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.624l-3.48-4.35A1 1 0 0 0 17.52 8H14\"/><circle cx=\"17\" cy=\"18\" r=\"2\"/><circle cx=\"7\" cy=\"18\" r=\"2\"/>", "file": "<path d=\"M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z\"/><path d=\"M14 2v4a2 2 0 0 0 2 2h4\"/><path d=\"M16 13H8\"/><path d=\"M16 17H8\"/><path d=\"M10 9H8\"/>", "cog": "<circle cx=\"12\" cy=\"12\" r=\"3\"/><path d=\"M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z\"/>", "logout": "<path d=\"M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4\"/><path d=\"m16 17 5-5-5-5\"/><path d=\"M21 12H9\"/>", "plus": "<path d=\"M5 12h14\"/><path d=\"M12 5v14\"/>", "userplus": "<path d=\"M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2\"/><circle cx=\"9\" cy=\"7\" r=\"4\"/><path d=\"M19 8v6\"/><path d=\"M22 11h-6\"/>", "refresh": "<path d=\"M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8\"/><path d=\"M21 3v5h-5\"/><path d=\"M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16\"/><path d=\"M8 16H3v5\"/>", "swap": "<path d=\"m16 3 4 4-4 4\"/><path d=\"M20 7H4\"/><path d=\"m8 21-4-4 4-4\"/><path d=\"M4 17h16\"/>"};
+  function ls(k, v) {
+    try { if (v === undefined) return localStorage.getItem(k); if (v === null) localStorage.removeItem(k); else localStorage.setItem(k, String(v)); }
+    catch (e) { return null; }
+    return null;
+  }
+  function svg(nome) {
+    return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + (ICO[nome] || '') + '</svg>';
+  }
+  function esc(s) { return String(s === undefined || s === null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+  function aviso(msg) { try { if (typeof toast === 'function') toast(msg, ''); } catch (e) {} }
+  var H = document.documentElement;
+
+  // ════════════════════════════════════════════════════════════════════════════════════════════════
+  // 1 · MENU_V1 — 10 lugares; as telas de cada lugar viram abas logo abaixo do cabeçalho
+  // ════════════════════════════════════════════════════════════════════════════════════════════════
+  var M1 = window.M1 = { lugares: LUGARES };
+  function velho(view) { return document.querySelector('.nav-groups .nav-item[data-view="' + view + '"]'); }
+  function visivel(view) {
+    var b = velho(view);
+    if (!b || b.hidden) return false;
+    if (b.style && b.style.display === 'none') return false;
+    return true;
+  }
+  function numero(view) {
+    var b = velho(view), c = b && b.querySelector('.nav-count');
+    var t = c ? String(c.textContent || '').trim() : '';
+    var n = /^\d+$/.test(t) ? parseInt(t, 10) : 0;
+    return { n: n, urg: !!(c && /urgente/.test(c.className)), titulo: (b && b.title) || '' };
+  }
+  function lugarDe(view) {
+    for (var i = 0; i < LUGARES.length; i++) {
+      var L = LUGARES[i]; if (!L) continue;
+      for (var j = 0; j < L.abas.length; j++) if (L.abas[j][0] === view) return L;
+    }
+    return null;
+  }
+  function abasVisiveis(L) { return L.abas.filter(function (a) { return visivel(a[0]); }); }
+  function viewAtual() { try { return String(typeof currentView === 'string' ? currentView : ''); } catch (e) { return ''; } }
+
+  function irPara(k) {
+    var L = null; LUGARES.forEach(function (x) { if (x && x.k === k) L = x; });
+    if (!L) return;
+    var vis = abasVisiveis(L); if (!vis.length) return;
+    var lembrada = ls('pcm_m1_aba_' + k);
+    var alvo = vis[0][0];
+    vis.forEach(function (a) { if (a[0] === lembrada) alvo = lembrada; });
+    if (typeof showView === 'function') showView(alvo);
+  }
+  M1.irPara = irPara;
+
+  var pintando = false;
+  function pintar() {
+    if (pintando) return; pintando = true;
+    try {
+      var nav = document.getElementById('m1Nav'); if (!nav) return;
+      var v = viewAtual(), La = lugarDe(v);
+      LUGARES.forEach(function (L) {
+        if (!L) return;
+        var b = nav.querySelector('[data-m1-lugar="' + L.k + '"]'); if (!b) return;
+        var vis = abasVisiveis(L);
+        b.hidden = vis.length === 0;
+        if (La && La.k === L.k) b.setAttribute('aria-current', 'page'); else b.removeAttribute('aria-current');
+        var soma = 0, urg = false, tits = [];
+        vis.forEach(function (a) { var x = numero(a[0]); soma += x.n; urg = urg || x.urg; if (x.n && x.titulo) tits.push(x.titulo); });
+        var n = b.querySelector('.m1-n');
+        if (n) { n.textContent = soma ? String(soma) : ''; n.hidden = !soma; n.classList.toggle('urg', urg); }
+        b.title = L.rot + (tits.length ? ' — ' + tits.join(' · ') : '');
+      });
+      // separador só quando há algo acima e abaixo dele
+      var sep = nav.querySelector('.m1-sep'), adm = nav.querySelector('[data-m1-lugar="admin"]');
+      if (sep) sep.hidden = !adm || adm.hidden;
+      // quem está usando
+      try {
+        var s = window.PROPER_SESSION || {};
+        var nome = String((s.tecnico && s.tecnico.nome) || s.nome_tecnico || s.nome || '').trim();
+        var elN = document.getElementById('m1Nome'), elA = document.getElementById('m1Av'), elP = document.getElementById('m1Papel');
+        if (elN && nome) elN.textContent = nome;
+        if (elA && nome) elA.textContent = nome.split(/\s+/).filter(Boolean).slice(0, 2).map(function (p) { return p.charAt(0).toUpperCase(); }).join('');
+        if (elP) elP.textContent = String(s.nome_perfil || (s.is_admin ? 'Administrador' : '') || '');
+      } catch (e) {}
+      pintarAbas();
+    } finally { pintando = false; }
+  }
+  function pintarAbas() {
+    var bar = document.getElementById('m1Abas'); if (!bar) return;
+    var v = viewAtual(), L = lugarDe(v);
+    var vis = L ? abasVisiveis(L) : [];
+    if (!L || vis.length < 2) { bar.hidden = true; bar.innerHTML = ''; return; }
+    var chave = L.k + '|' + vis.map(function (a) { return a[0]; }).join(',');
+    if (bar.getAttribute('data-chave') !== chave) {
+      bar.setAttribute('data-chave', chave);
+      bar.setAttribute('aria-label', L.rot);
+      bar.innerHTML = vis.map(function (a) {
+        return '<button type="button" class="m1-aba" role="tab" data-m1-aba="' + esc(a[0]) + '">' + esc(a[1]) + '<span class="m1-n" hidden></span></button>';
+      }).join('');
+    }
+    bar.hidden = false;
+    bar.querySelectorAll('[data-m1-aba]').forEach(function (b) {
+      var view = b.getAttribute('data-m1-aba'), x = numero(view);
+      b.setAttribute('aria-selected', view === v ? 'true' : 'false');
+      b.tabIndex = view === v ? 0 : -1;
+      var n = b.querySelector('.m1-n'); if (n) { n.textContent = x.n ? String(x.n) : ''; n.hidden = !x.n; n.classList.toggle('urg', x.urg); }
+      b.title = x.titulo || '';
+    });
+  }
+  M1.pintar = pintar;
+
+  var agendado = 0;
+  function agendar() { if (agendado) return; agendado = requestAnimationFrame(function () { agendado = 0; pintar(); }); }
+
+  function ligarMenu() {
+    var nav = document.getElementById('m1Nav');
+    if (nav) {
+      nav.addEventListener('click', function (ev) {
+        var b = ev.target.closest && ev.target.closest('[data-m1-lugar]');
+        if (b) { irPara(b.getAttribute('data-m1-lugar')); return; }
+        if (ev.target.closest && ev.target.closest('[data-m1-busca]')) abrirBusca('');
+      });
+    }
+    var bar = document.getElementById('m1Abas');
+    if (bar) {
+      bar.addEventListener('click', function (ev) {
+        var b = ev.target.closest && ev.target.closest('[data-m1-aba]');
+        if (b && typeof showView === 'function') showView(b.getAttribute('data-m1-aba'));
+      });
+      bar.addEventListener('keydown', function (ev) {
+        if (ev.key !== 'ArrowRight' && ev.key !== 'ArrowLeft') return;
+        var bs = [].slice.call(bar.querySelectorAll('[data-m1-aba]')), i = bs.indexOf(document.activeElement);
+        if (i < 0) return;
+        var j = (i + (ev.key === 'ArrowRight' ? 1 : -1) + bs.length) % bs.length;
+        bs[j].focus(); bs[j].click(); ev.preventDefault();
+      });
+    }
+    // a tela trocou → marca o lugar/aba e lembra a aba do lugar
+    var embrulhar = typeof _v178Embrulhar === 'function' ? _v178Embrulhar : function (nome, f) { var o = window[nome]; if (typeof o === 'function') window[nome] = f(o); };
+    embrulhar('showView', function (orig) {
+      return function (v) {
+        var r = orig.apply(this, arguments);
+        try { var L = lugarDe(String(v || '')); if (L) ls('pcm_m1_aba_' + L.k, v); pintar(); } catch (e) {}
+        return r;
+      };
+    });
+    // permissões e números chegam no menu antigo (escondido) — observar e repintar
+    var velhoNav = document.querySelector('.nav-sidebar > .nav-groups');
+    if (velhoNav && window.MutationObserver) {
+      new MutationObserver(agendar).observe(velhoNav, { subtree: true, childList: true, characterData: true, attributes: true, attributeFilter: ['style', 'class', 'hidden', 'title'] });
+    }
+    pintar();
+    setTimeout(pintar, 1500); setTimeout(pintar, 6000);
+  }
+
+  // ════════════════════════════════════════════════════════════════════════════════════════════════
+  // 2 · BUSCA_V1 — Ctrl K: lugares, telas, ações, clientes, máquinas e OS numa caixa só
+  // ════════════════════════════════════════════════════════════════════════════════════════════════
+  var K = { el: null, itens: [], sel: 0, antes: null };
+  function norm(s) { return String(s === undefined || s === null ? '' : s).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, ''); }
+  function marcar(txt, termos) {
+    var t = esc(txt); if (!termos.length) return t;
+    var n = norm(txt), out = '', i = 0, marcas = [];
+    termos.forEach(function (q) { var p = n.indexOf(q); if (p >= 0 && q) marcas.push([p, p + q.length]); });
+    if (!marcas.length) return t;
+    marcas.sort(function (a, b) { return a[0] - b[0]; });
+    var s = String(txt);
+    marcas.forEach(function (m) { if (m[0] < i) return; out += esc(s.slice(i, m[0])) + '<mark>' + esc(s.slice(m[0], m[1])) + '</mark>'; i = m[1]; });
+    return out + esc(s.slice(i));
+  }
+  function acoes() {
+    var a = [];
+    if (typeof openModalOS === 'function') a.push({ ico: 'plus', t: 'Nova OS', s: 'Abrir uma ordem de serviço', f: function () { openModalOS(); } });
+    if (typeof openModalClient === 'function') a.push({ ico: 'userplus', t: 'Novo cliente', s: 'Cadastrar um cliente', f: function () { openModalClient(); } });
+    if (typeof openModalMachine === 'function') a.push({ ico: 'plus', t: 'Nova máquina', s: 'Cadastrar uma máquina', f: function () { openModalMachine(); } });
+    if (typeof syncFromGS === 'function') a.push({ ico: 'refresh', t: 'Sincronizar agora', s: 'Buscar o que o campo gravou', f: function () { syncFromGS(); } });
+    if (H.classList.contains('m1-tema') || H.classList.contains('m1-on'))
+      a.push({ ico: 'swap', t: 'Voltar ao visual antigo', s: 'Cores e menu de antes, só neste navegador (dá para voltar ao novo por aqui)', f: function () { ls('pcm_tema', 'antigo'); ls('pcm_menu', 'antigo'); location.reload(); } });
+    else
+      a.push({ ico: 'swap', t: 'Usar o visual novo', s: 'Tema Inter e menu de lugares', f: function () { ls('pcm_tema', null); ls('pcm_menu', null); location.reload(); } });
+    return a;
+  }
+  function telas() {
+    var out = [];
+    LUGARES.forEach(function (L) {
+      if (!L) return;
+      abasVisiveis(L).forEach(function (a) {
+        out.push({ ico: L.ico, t: a[1], s: L.rot === a[1] ? 'Ir para a tela' : L.rot, f: function () { showView(a[0]); } });
+      });
+    });
+    return out;
+  }
+  function dadosDe() {
+    var d = { cli: [], maq: [], os: [] };
+    try { if (typeof db !== 'undefined' && db) { d.cli = Array.isArray(db.clients) ? db.clients : []; d.maq = Array.isArray(db.machines) ? db.machines : []; } } catch (e) {}
+    try { if (typeof _osList !== 'undefined' && Array.isArray(_osList)) d.os = _osList; } catch (e) {}
+    return d;
+  }
+  function casa(campos, termos) {
+    var h = norm(campos.join(' '));
+    for (var i = 0; i < termos.length; i++) if (h.indexOf(termos[i]) < 0) return false;
+    return true;
+  }
+  function ordenar(lista, termos, chave) {
+    return lista.map(function (x) { var p = norm(chave(x)); var peso = termos.length && p.indexOf(termos[0]) === 0 ? 0 : 1; return [peso, p, x]; })
+      .sort(function (a, b) { return a[0] - b[0] || (a[1] < b[1] ? -1 : a[1] > b[1] ? 1 : 0); }).map(function (y) { return y[2]; });
+  }
+  function resultados(q) {
+    var termos = norm(q).split(/\s+/).filter(Boolean);
+    var grupos = [];
+    var ts = telas().filter(function (x) { return casa([x.t, x.s], termos); });
+    var ac = acoes().filter(function (x) { return casa([x.t, x.s], termos); });
+    if (!termos.length) {
+      grupos.push(['Ações', ac.slice(0, 5)]);
+      grupos.push(['Ir para', ts]);
+      return grupos;
+    }
+    var d = dadosDe();
+    var os = ordenar(d.os.filter(function (o) { return o && casa([o.numero_os, o.cliente, o.descricao, o.status, o.tipo_os], termos); }), termos, function (o) { return String(o.numero_os || ''); }).slice(0, 6)
+      .map(function (o) { return { ico: 'os', t: String(o.numero_os || o.id_os || 'OS'), s: [o.cliente, o.descricao, o.status].filter(Boolean).join(' · '), f: function () { openOSDetail(o.id_os); } }; });
+    var cl = ordenar(d.cli.filter(function (c) { return c && String(c.ativo || 'SIM').toUpperCase() !== 'NÃO' && casa([c.nome, c.cnpj, c.cidade, c.uf, c.id], termos); }), termos, function (c) { return c.nome || ''; }).slice(0, 6)
+      .map(function (c) { return { ico: 'users', t: String(c.nome || c.id), s: [c.cidade, c.uf, c.cnpj].filter(Boolean).join(' · '), f: function () { abrirCliente(c); } }; });
+    var mq = ordenar(d.maq.filter(function (m) { return m && casa([m.client, m.brand, m.model, m.serial, m.tag, m.id, m.location], termos); }), termos, function (m) { return (m.tag || '') + ' ' + (m.serial || ''); }).slice(0, 6)
+      .map(function (m) { return { ico: 'machine', t: [m.brand, m.model].filter(Boolean).join(' ') + (m.tag ? ' · ' + m.tag : ''), s: [m.client, m.serial ? 'série ' + m.serial : ''].filter(Boolean).join(' · '), f: function () { if (typeof openMachineDetail === 'function') openMachineDetail(m.id); } }; });
+    if (os.length) grupos.push(['Ordens de serviço', os]);
+    if (cl.length) grupos.push(['Clientes', cl]);
+    if (mq.length) grupos.push(['Máquinas', mq]);
+    if (ts.length) grupos.push(['Ir para', ts.slice(0, 6)]);
+    if (ac.length) grupos.push(['Ações', ac]);
+    return grupos;
+  }
+  function abrirCliente(c) {
+    try {
+      showView('clients');
+      if (typeof _clientSearch !== 'undefined') { _clientSearch = String(c.nome || ''); }
+      var inp = document.getElementById('clientSearchInput'); if (inp) inp.value = String(c.nome || '');
+      if (typeof renderClients === 'function') renderClients();
+    } catch (e) { console.warn('[V215] abrir cliente:', e && e.message); }
+  }
+  function montarBusca() {
+    if (K.el) return K.el;
+    var f = document.createElement('div');
+    f.className = 'm1-k-fundo'; f.id = 'm1Busca'; f.hidden = true; f.setAttribute('data-j1-livre', '1');
+    f.innerHTML = '<div class="m1-k" role="dialog" aria-modal="true" aria-label="Buscar ou ir para">' +
+      '<div class="m1-k-topo">' + svg('search') + '<input type="text" id="m1BuscaQ" name="pcm_m1_busca_nofill" placeholder="Buscar cliente, máquina, OS ou tela…" autocomplete="off" spellcheck="false" aria-controls="m1BuscaRes" data-lpignore="true" data-1p-ignore readonly onfocus="this.removeAttribute(\'readonly\')">' +
+      '<span class="m1-k-dica"><kbd>Esc</kbd></span></div>' +
+      '<div class="m1-k-res" id="m1BuscaRes" role="listbox"></div>' +
+      '<div class="m1-k-pe"><span><kbd>↑</kbd> <kbd>↓</kbd> escolher</span><span><kbd>Enter</kbd> abrir</span><span><kbd>Esc</kbd> fechar</span></div></div>';
+    document.body.appendChild(f);
+    var q = f.querySelector('#m1BuscaQ');
+    q.addEventListener('input', function () { K.sel = 0; pintarBusca(); });
+    q.addEventListener('keydown', function (ev) {
+      if (ev.key === 'ArrowDown' || ev.key === 'ArrowUp') { ev.preventDefault(); var n = K.itens.length; if (!n) return; K.sel = (K.sel + (ev.key === 'ArrowDown' ? 1 : -1) + n) % n; marcarSel(true); }
+      else if (ev.key === 'Enter') { ev.preventDefault(); escolher(K.sel); }
+      else if (ev.key === 'Escape') { ev.preventDefault(); ev.stopPropagation(); fecharBusca(); }
+    });
+    f.addEventListener('mousedown', function (ev) { if (ev.target === f) { ev.preventDefault(); fecharBusca(); } });
+    f.addEventListener('keydown', function (ev) {
+      if (ev.key === 'Escape') { ev.preventDefault(); ev.stopPropagation(); fecharBusca(); }
+      else if (ev.key === 'Tab') { ev.preventDefault(); q.focus(); }   // a busca é uma caixa só: o foco não escapa
+    });
+    f.querySelector('#m1BuscaRes').addEventListener('click', function (ev) {
+      var it = ev.target.closest && ev.target.closest('[data-i]'); if (it) escolher(+it.getAttribute('data-i'));
+    });
+    f.querySelector('#m1BuscaRes').addEventListener('mousemove', function (ev) {
+      var it = ev.target.closest && ev.target.closest('[data-i]'); if (it && +it.getAttribute('data-i') !== K.sel) { K.sel = +it.getAttribute('data-i'); marcarSel(false); }
+    });
+    K.el = f;
+    return f;
+  }
+  function pintarBusca() {
+    var f = montarBusca(), q = f.querySelector('#m1BuscaQ').value, res = f.querySelector('#m1BuscaRes');
+    var termos = norm(q).split(/\s+/).filter(Boolean);
+    var gs = resultados(q), html = '', i = 0;
+    K.itens = [];
+    gs.forEach(function (g) {
+      if (!g[1].length) return;
+      html += '<div class="m1-k-grp">' + esc(g[0]) + '</div>';
+      g[1].forEach(function (it) {
+        K.itens.push(it);
+        html += '<div class="m1-k-it" role="option" id="m1k' + i + '" data-i="' + i + '">' + svg(it.ico) +
+          '<span class="m1-k-txt"><b>' + marcar(it.t, termos) + '</b>' + (it.s ? '<span>' + marcar(it.s, termos) + '</span>' : '') + '</span></div>';
+        i++;
+      });
+    });
+    if (!K.itens.length) {
+      var d = dadosDe();
+      html = '<div class="m1-k-vazio">Nada encontrado para “' + esc(q) + '”.' +
+        (d.os.length ? '' : ' As OS entram na busca depois que a tela de Ordens de serviço carregar uma vez.') + '</div>';
+    }
+    res.innerHTML = html;
+    if (K.sel >= K.itens.length) K.sel = 0;
+    marcarSel(false);
+  }
+  function marcarSel(rolar) {
+    if (!K.el) return;
+    var its = K.el.querySelectorAll('[data-i]');
+    its.forEach(function (x) { x.setAttribute('aria-selected', +x.getAttribute('data-i') === K.sel ? 'true' : 'false'); });
+    var s = K.el.querySelector('[data-i="' + K.sel + '"]');
+    var q = K.el.querySelector('#m1BuscaQ'); if (q) q.setAttribute('aria-activedescendant', s ? s.id : '');
+    if (s && rolar) s.scrollIntoView({ block: 'nearest' });
+  }
+  function escolher(i) {
+    var it = K.itens[i]; if (!it) return;
+    fecharBusca(true);
+    try { it.f(); } catch (e) { console.warn('[V215] busca:', e && e.message); aviso('Não consegui abrir: ' + (e && e.message)); }
+  }
+  function abrirBusca(txt) {
+    var f = montarBusca();
+    if (!f.hidden) { f.querySelector('#m1BuscaQ').focus(); return; }
+    K.antes = document.activeElement;
+    f.hidden = false;
+    var q = f.querySelector('#m1BuscaQ'); q.value = txt || ''; K.sel = 0;
+    pintarBusca();
+    setTimeout(function () { q.focus(); q.select(); }, 0);
+  }
+  function fecharBusca(escolheu) {
+    if (!K.el || K.el.hidden) return;
+    K.el.hidden = true;
+    if (!escolheu && K.antes && K.antes.focus) { try { K.antes.focus(); } catch (e) {} }
+    K.antes = null;
+  }
+  M1.buscar = abrirBusca;
+  function ligarBusca() {
+    document.addEventListener('keydown', function (ev) {
+      if ((ev.ctrlKey || ev.metaKey) && !ev.altKey && (ev.key === 'k' || ev.key === 'K')) {
+        if (document.body.classList.contains('mob-on')) return;
+        ev.preventDefault(); abrirBusca('');
+      }
+    }, true);
+    // a busca do cabeçalho (era só enfeite: não tinha nenhuma ação ligada) abre a mesma caixa
+    var hb = document.querySelector('.app-header .header-search');
+    if (hb) {
+      hb.placeholder = 'Buscar ou ir para…  Ctrl K';
+      hb.setAttribute('readonly', 'readonly');
+      hb.removeAttribute('onfocus');
+      hb.onfocus = null;
+      var abrir = function (ev) { if (ev) ev.preventDefault(); hb.blur(); abrirBusca(''); };
+      hb.addEventListener('mousedown', abrir);
+      hb.addEventListener('keydown', function (ev) {
+        if (ev.key === 'Tab' || ev.key === 'Shift') return;
+        ev.preventDefault(); hb.blur(); abrirBusca(ev.key && ev.key.length === 1 ? ev.key : '');
+      });
+    }
+  }
+
+  // ════════════════════════════════════════════════════════════════════════════════════════════════
+  // 3 · JANELA_V1 — "nada se perde"
+  //   (a) janela COM campo de formulário não fecha pelo clique no fundo escuro (a janela dá um pulso e o
+  //       aviso diz como fechar); janela só de leitura (foto, detalhe) continua fechando pelo fundo;
+  //   (b) Esc numa janela em que você digitou não fecha;
+  //   (c) fechou pelo × ou por Cancelar/Fechar com coisa digitada ⇒ o rascunho fica guardado nesta aba
+  //       do navegador (sessionStorage, 12 h) e, ao abrir a MESMA janela de novo, uma faixa oferece
+  //       "Recuperar" ou "Descartar". Salvar não guarda rascunho (só fechar sem salvar guarda).
+  //   Vale para TODA janela do PCM — as .overlay e as montadas à mão (fundo fixo cobrindo a tela) —,
+  //   inclusive as que ainda não existem. Opt-out: data-j1-livre no fundo (a própria busca Ctrl K).
+  // ════════════════════════════════════════════════════════════════════════════════════════════════
+  var J = { estado: new Map(), ultAviso: 0, esc: false };
+  var CAMPOS = 'input:not([type=hidden]):not([type=button]):not([type=submit]):not([type=reset]):not([type=file]):not([type=image]):not([readonly]):not([disabled]), textarea:not([readonly]):not([disabled]), select:not([disabled]), [contenteditable="true"]';
+  // (sem \b: no JS ele só entende letra ASCII, e "×" sozinho não casaria — auditoria R0, achado 7)
+  var CANCELAR = /^(×|✕|✖|x|cancelar|fechar|voltar|descartar|sair|agora não|agora nao)(?![0-9A-Za-zÀ-ÿ])/i;
+  function ehFundo(el) {
+    if (!el || el.nodeType !== 1 || el === document.body || el === H) return false;
+    if (el.hasAttribute('data-j1-livre') || el.id === 'mobApp' || el.id === 'pwOv') return false;
+    if (document.body.classList.contains('mob-on')) return false;   // o modo celular tem as folhas dele
+    if (el.classList.contains('overlay')) return el.classList.contains('open') || getComputedStyle(el).display !== 'none';
+    var cs = getComputedStyle(el);
+    if (cs.position !== 'fixed' || cs.display === 'none' || cs.visibility === 'hidden') return false;
+    var r = el.getBoundingClientRect();
+    return r.width >= innerWidth * 0.9 && r.height >= innerHeight * 0.9 && el.children.length > 0;
+  }
+  function janelaDe(el) {
+    // a janela aberta que contém el (o fundo mais externo que é "janela")
+    var achou = null;
+    for (var n = el; n && n !== document.body; n = n.parentElement) if (ehFundo(n)) achou = n;
+    return achou;
+  }
+  function temCampo(fundo) { return !!fundo.querySelector(CAMPOS); }
+  function painelDe(fundo) {
+    var p = fundo.querySelector('.modal, [role="dialog"]');
+    if (p && fundo.contains(p)) return p;
+    for (var i = 0; i < fundo.children.length; i++) { var c = fundo.children[i]; if (c.nodeType === 1 && c.tagName !== 'SCRIPT' && c.tagName !== 'STYLE') return c; }
+    return fundo;
+  }
+  function tituloDe(fundo) {
+    var t = fundo.querySelector('.modal-title, h1, h2, h3, [class*="titulo"], [class*="title"]');
+    var s = t ? String(t.textContent || '') : '';
+    return s.replace(/[×✕✖]/g, '').replace(/\s+/g, ' ').trim().slice(0, 80);
+  }
+  function chaveDe(fundo) { return fundo.id ? 'pcm_j1|' + fundo.id + '|' + tituloDe(fundo) : ''; }
+  function avisar(fundo) {
+    var p = painelDe(fundo);
+    try { p.classList.remove('j1-pulso'); void p.offsetWidth; p.classList.add('j1-pulso'); setTimeout(function () { p.classList.remove('j1-pulso'); }, 450); } catch (e) {}
+    var agora = Date.now();
+    if (agora - J.ultAviso > 15000) { J.ultAviso = agora; aviso('Esta janela fecha pelo × ou por Cancelar — assim nada do que você digitou se perde.'); }
+  }
+  function camposComId(fundo) {
+    return [].slice.call(fundo.querySelectorAll(CAMPOS)).filter(function (el) {
+      var id = el.id || '';
+      if (!id || /pin|senha|password|token|secret/i.test(id)) return false;
+      if (el.type === 'password') return false;
+      return true;
+    });
+  }
+  function valorDe(el) { return (el.type === 'checkbox' || el.type === 'radio') ? !!el.checked : (el.isContentEditable ? el.innerHTML : el.value); }
+  // 🔑 QUAL REGISTRO está nesta janela (auditoria R0, achado 1: "Editar cliente" tem o mesmo título para
+  //    todo cliente, e o rascunho da Metasal caía na ficha da SORRAG). A identidade é o retrato dos campos
+  //    NÃO digitados — tirado no 1º toque do usuário, quando o registro já carregou — mais os campos ocultos
+  //    (ids). O rascunho só é oferecido quando a janela reaberta mostra o MESMO retrato.
+  function identidade(fundo, exceto) {
+    var out = {};
+    camposComId(fundo).forEach(function (el) { if (!exceto || !exceto[el.id]) out[el.id] = valorDe(el); });
+    [].forEach.call(fundo.querySelectorAll('input[type=hidden][id]'), function (el) { if (!/pin|senha|token|secret/i.test(el.id)) out[el.id] = el.value; });
+    return out;
+  }
+  function mesmoRegistro(fundo, base, tocados) {
+    if (!base) return false;
+    var ids = Object.keys(base);
+    for (var i = 0; i < ids.length; i++) {
+      var id = ids[i]; if (tocados && tocados[id]) continue;
+      var el = document.getElementById(id);
+      if (!el || !fundo.contains(el)) continue;
+      if (valorDe(el) !== base[id]) return false;
+    }
+    return true;
+  }
+  function estadoDe(fundo) {
+    var e = J.estado.get(fundo);
+    if (!e) { e = { aberta: Date.now(), tocados: {}, rasc: null, cancelEm: 0, chave: '', base: null }; J.estado.set(fundo, e); }
+    return e;
+  }
+  // "mexido" = digitou em campo com id (vira rascunho) OU mudou campo SEM id (turno, dias… — auditoria R0, D1:
+  // não vira rascunho, mas a janela não fecha pelo fundo/Esc e o "alterações não salvas?" continua valendo)
+  function sujo(fundo) { var e = J.estado.get(fundo); return !!(e && (e.semId || Object.keys(e.tocados).length)); }
+  function fotografar(fundo) {
+    var e = estadoDe(fundo), campos = {};
+    camposComId(fundo).forEach(function (el) { if (e.tocados[el.id]) campos[el.id] = valorDe(el); });
+    var base = {}; Object.keys(e.base || {}).forEach(function (id) { if (!e.tocados[id]) base[id] = e.base[id]; });
+    return { t: Date.now(), titulo: tituloDe(fundo), campos: campos, base: base, chave: chaveDe(fundo) };
+  }
+  function guardar(f) {
+    if (!f || !f.chave || !Object.keys(f.campos).length) return false;
+    try { sessionStorage.setItem(f.chave, JSON.stringify(f)); return true; } catch (e) { return false; }
+  }
+  function lerRascunho(chave) {
+    try {
+      var x = JSON.parse(sessionStorage.getItem(chave) || 'null');
+      if (x && x.t && Date.now() - x.t < 12 * 3600000 && x.campos && Object.keys(x.campos).length) return x;
+      if (x) sessionStorage.removeItem(chave);
+    } catch (e) {}
+    return null;
+  }
+  function oferecer(fundo) {
+    var ch = chaveDe(fundo); if (!ch) return;
+    var r = lerRascunho(ch); if (!r) return;
+    var p = painelDe(fundo);
+    if (p.querySelector('.j1-rasc')) return;
+    if (!mesmoRegistro(fundo, r.base, r.campos)) return;   // outro registro (ou ainda carregando): não oferece
+    // só oferece se há, na janela aberta agora, algum campo do rascunho com valor diferente
+    var dif = Object.keys(r.campos).filter(function (id) { var el = document.getElementById(id); return el && fundo.contains(el) && valorDe(el) !== r.campos[id]; });
+    if (!dif.length) { try { sessionStorage.removeItem(ch); } catch (e) {} return; }
+    var hh = new Date(r.t), hora = String(hh.getHours()).padStart(2, '0') + ':' + String(hh.getMinutes()).padStart(2, '0');
+    var bar = document.createElement('div');
+    bar.className = 'j1-rasc'; bar.setAttribute('role', 'status');
+    bar.innerHTML = '<span>↺ Você fechou esta janela às <b>' + hora + '</b> sem salvar. Quer recuperar o que tinha digitado?</span>' +
+      '<span class="j1-rasc-b"><button type="button" class="j1-sim">Recuperar</button><button type="button" class="j1-nao">Descartar</button></span>';
+    var alvo = p.querySelector('.modal-title');
+    if (alvo && alvo.parentElement === p) alvo.insertAdjacentElement('afterend', bar); else p.insertBefore(bar, p.firstChild);
+    bar.setAttribute('data-j1-ch', ch);
+    bar.__j1r = r;
+    bar.querySelector('.j1-sim').addEventListener('click', function (ev) {
+      ev.stopPropagation();
+      if (!mesmoRegistro(fundo, r.base, r.campos)) { bar.remove(); aviso('Esta janela agora mostra outro registro — o rascunho não foi aplicado.'); return; }
+      bar.__j1feito = true;
+      var e0 = estadoDe(fundo); if (!e0.base) e0.base = Object.assign({}, r.base || {});   // continua sendo o MESMO registro
+      var n = 0;
+      Object.keys(r.campos).forEach(function (id) {
+        var el = document.getElementById(id); if (!el || !fundo.contains(el)) return;
+        var v = r.campos[id];
+        if (el.type === 'checkbox' || el.type === 'radio') el.checked = !!v;
+        else if (el.tagName === 'SELECT') { if ([].some.call(el.options, function (o) { return o.value === v; })) el.value = v; else return; }
+        else if (el.isContentEditable) el.innerHTML = v;
+        else el.value = v;
+        estadoDe(fundo).tocados[id] = 1;
+        try { el.dispatchEvent(new Event('input', { bubbles: true })); el.dispatchEvent(new Event('change', { bubbles: true })); } catch (e) {}
+        n++;
+      });
+      try { sessionStorage.removeItem(ch); } catch (e) {}
+      bar.innerHTML = '<span>✓ ' + n + ' campo' + (n === 1 ? '' : 's') + ' recuperado' + (n === 1 ? '' : 's') + '. Confira antes de salvar.</span>';
+      setTimeout(function () { try { bar.remove(); } catch (e) {} }, 5000);
+    });
+    bar.querySelector('.j1-nao').addEventListener('click', function (ev) {
+      ev.stopPropagation();
+      try { sessionStorage.removeItem(ch); } catch (e) {}
+      bar.remove();
+    });
+  }
+  // janelas abertas agora: as .overlay abertas + fundos fixos filhos diretos do body
+  function abertas() {
+    var out = [];
+    document.querySelectorAll('.overlay.open').forEach(function (o) { if (!o.hasAttribute('data-j1-livre')) out.push(o); });
+    for (var i = 0; i < document.body.children.length; i++) {
+      var c = document.body.children[i];
+      if (c.classList.contains('overlay') || out.indexOf(c) >= 0) continue;
+      if (c.tagName === 'SCRIPT' || c.tagName === 'STYLE' || c.id === 'toast') continue;
+      if (ehFundo(c)) out.push(c);
+    }
+    return out;
+  }
+  var varrendo = 0;
+  function varrer() {
+    varrendo = 0;
+    var agora = abertas();
+    // abriu
+    agora.forEach(function (f) {
+      if (J.estado.has(f)) return;
+      var e = estadoDe(f);
+      // janelas que carregam o registro depois de abrir: confere de novo com a janela pronta; a faixa que
+      // deixou de valer (o registro que carregou é outro) sai
+      [400, 1500, 3500].forEach(function (ms) {
+        setTimeout(function () {
+          if (J.estado.get(f) !== e) return;
+          e.chave = chaveDe(f);
+          var bar = painelDe(f).querySelector('.j1-rasc[data-j1-ch]');
+          if (bar && !bar.__j1feito && bar.__j1r && !mesmoRegistro(f, bar.__j1r.base, bar.__j1r.campos)) bar.remove();
+          if (!bar) oferecer(f);
+        }, ms);
+      });
+    });
+    // fechou
+    J.estado.forEach(function (e, f) {
+      if (agora.indexOf(f) >= 0 && document.body.contains(f)) return;
+      J.estado.delete(f);
+      if (e.rasc && Date.now() - e.cancelEm < 4000 && guardar(e.rasc)) {
+        aviso('Rascunho guardado: ao abrir esta janela de novo, dá para recuperar o que você digitou.');
+      }
+    });
+  }
+  function agendarVarredura() { if (!varrendo) varrendo = setTimeout(varrer, 60); }
+
+  function ligarJanelas() {
+    // (a) o clique no fundo — em CAPTURA na janela do navegador, antes de qualquer outro ouvinte
+    window.addEventListener('click', function (ev) {
+      if (!ev.isTrusted) return;
+      var t = ev.target;
+      if (t && t.nodeType === 1 && ehFundo(t) && temCampo(t)) {
+        ev.stopImmediatePropagation(); ev.preventDefault();
+        avisar(t);
+        return;
+      }
+      // intenção de fechar sem salvar (× / Cancelar / Fechar …) → fotografa o que foi digitado AGORA,
+      // antes de o fechamento limpar os campos
+      var f = t && t.nodeType === 1 ? janelaDe(t) : null;
+      if (!f) return;
+      var b = t.closest && t.closest('button, a, [role="button"], .modal-close-x, [onclick]');
+      if (!b || !f.contains(b) || (b.closest && b.closest('.j1-rasc'))) return;
+      var rot = String(b.getAttribute('aria-label') || b.title || b.textContent || '').replace(/\s+/g, ' ').trim();
+      var e = estadoDe(f);
+      if (b.classList.contains('modal-close-x') || CANCELAR.test(rot)) {
+        if (sujo(f)) { e.rasc = fotografar(f); e.cancelEm = Date.now(); }
+        return;
+      }
+      e.rasc = null; e.cancelEm = 0;   // Salvar & cia.: fechar depois disso não é "sem salvar"
+      // botão que PREENCHE campos (🔎 Buscar CNPJ, sugestões…): o que ele pôs também é trabalho do usuário
+      var antes = identidade(f);
+      [400, 1500, 4000, 8000].forEach(function (ms) {
+        setTimeout(function () {
+          if (J.estado.get(f) !== e || !document.body.contains(f)) return;
+          var agora = identidade(f);
+          Object.keys(agora).forEach(function (id) {
+            if (e.tocados[id]) return;
+            var mudou = (id in antes) ? antes[id] !== agora[id] : (agora[id] !== '' && agora[id] !== false);
+            if (mudou) { if (!e.base) e.base = antes; e.tocados[id] = 1; }
+          });
+        }, ms);
+      });
+    }, true);
+    // (b) Esc com coisa digitada não fecha. O Esc das janelas .overlay passa pelo closeModalSafe (V103):
+    //     embrulhá-lo (em vez de engolir a tecla) deixa o Esc de listas/autocompletar dentro da janela funcionando.
+    //     (a marca vale só durante o despacho da própria tecla: o fechamento do V103 é síncrono)
+    window.addEventListener('keydown', function (ev) {
+      if (ev.key !== 'Escape' && ev.key !== 'Esc') return;
+      J.esc = true; setTimeout(function () { J.esc = false; }, 0);
+    }, true);
+    function mudouValor(el, id) {
+      try {
+        var snap = JSON.parse((typeof _modalSnapshots !== 'undefined' && _modalSnapshots[id]) || 'null');
+        if (!Array.isArray(snap)) return false;
+        var atual = {};
+        el.querySelectorAll('input, select, textarea').forEach(function (f) { var k = f.id || f.name; if (k) atual[k] = f.type === 'checkbox' ? f.checked : f.value; });
+        return snap.some(function (x) { return Object.prototype.hasOwnProperty.call(atual, x.k) && atual[x.k] !== x.v; });
+      } catch (e) { return true; }
+    }
+    if (typeof window.closeModalSafe === 'function') {
+      var cms = window.closeModalSafe;
+      window.closeModalSafe = function (id) {
+        try {
+          var el = document.getElementById(id);
+          if (el && !document.body.classList.contains('mob-on') && J.estado.has(el)) {
+            if (J.esc && sujo(el)) { avisar(el); return undefined; }
+            // ninguém digitou nem preencheu nada nesta abertura ⇒ fecha sem o "Existem alterações não salvas?"
+            // do V103 (ele comparava o retrato da abertura e acusava alteração que não houve — ex.: "Novo
+            // cliente" aberto depois de editar um cliente; reproduzido no V214 em 30/09)
+            //    ⚠ mas valor que MUDOU por código (turno recalcula o h/semana — auditoria R0, D1) continua perguntando:
+            //    só a mudança de ESTRUTURA (campo que entrou/saiu) deixa de contar como alteração.
+            if (!sujo(el) && !mudouValor(el, id)) {
+              el.classList.remove('open');
+              try { if (typeof _modalSnapshots !== 'undefined') delete _modalSnapshots[id]; } catch (e2) {}
+              return undefined;
+            }
+          }
+        } catch (e) {}
+        return cms.apply(this, arguments);
+      };
+    }
+    // o que foi digitado (só gesto do usuário conta)
+    document.addEventListener('input', marcarTocado, true);
+    document.addEventListener('change', marcarTocado, true);
+    function marcarTocado(ev) {
+      if (!ev.isTrusted) return;
+      var el = ev.target; if (!el || el.nodeType !== 1) return;
+      var f = janelaDe(el); if (!f) return;
+      var e = estadoDe(f);
+      if (!el.id) { e.semId = true; return; }
+      if (!Object.keys(e.tocados).length && !e.base) { var ex = {}; ex[el.id] = 1; e.base = identidade(f, ex); }   // o retrato do registro, antes do 1º toque
+      e.tocados[el.id] = 1;
+    }
+    // fechou a aba/recarregou com janela suja → guarda também
+    window.addEventListener('pagehide', function () {
+      abertas().forEach(function (f) { if (sujo(f)) guardar(fotografar(f)); });
+    });
+    if (window.MutationObserver) {
+      new MutationObserver(function (ms) {
+        for (var i = 0; i < ms.length; i++) {
+          var m = ms[i];
+          if (m.type === 'childList' && m.target === document.body) { agendarVarredura(); return; }
+          if (m.type === 'attributes' && m.target.classList && (m.target.classList.contains('overlay') || m.target.parentElement === document.body)) { agendarVarredura(); return; }
+        }
+      }).observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['class', 'style', 'hidden'] });
+    }
+    varrer();
+  }
+  M1.janelas = { abertas: abertas, sujo: sujo, estado: J.estado };
+
+  // ── ligar ─────────────────────────────────────────────────────────────────────────────────────────
+  function ligar() {
+    try { ligarMenu(); } catch (e) { console.warn('[V215] menu:', e); }
+    try { ligarBusca(); } catch (e) { console.warn('[V215] busca:', e); }
+    try { ligarJanelas(); } catch (e) { console.warn('[V215] janelas:', e); }
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', ligar); else ligar();
+})();
+</script>
+<!-- ████ FIM PCM V215 ████ -->
 </body>
 </html>
