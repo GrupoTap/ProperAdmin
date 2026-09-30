@@ -4692,8 +4692,33 @@ v50 — Resiliência de rede: retry/backoff em gsGet e syncToGS
   Par: SQL R0_ESPELHO_VISITAS_ROTORES (roda ANTES) · GAS v161 (+ v161Instalar). Sem o SQL/GAS novo, essas leituras seguem no GAS.
   Voltar ao visual antigo sem publicar nada: Ctrl K → "Voltar ao visual antigo" (ou localStorage pcm_tema/pcm_menu = 'antigo').
 -->
-<title>ProperCare Manager · Gestão PGP v4.03 (PCM V215)</title>
-<meta name="app-build" content="PCM_V215" data-date="2026-09-30">
+<!--
+  PCM V216 — 30/09/2026 — O CATÁLOGO NÃO QUEBRA. V215 (no ar) + (1) o catálogo vindo do Apps Script tem os números convertidos
+  para texto antes de montar a tela (referência 704720, 68… vinha como número e derrubava a tela com "(ref || '').replace is not
+  a function") · (2) normalizeRef e Peças a Vencer aceitam número · (3) a guarda do catálogo não recusa o Postgres por "espelho
+  velho" em tabela graduada (carimbo com origem f3_fonte_postgres: o Postgres é a fonte) · (4) erro dentro de uma tela não deixa
+  a trilha com o nome da tela anterior. Par: GAS v162 (volta a carimbar as graduadas). Funciona também com o GAS v161.
+-->
+<!--
+  PCM V218 — 30/09/2026 — R1 DO REDESENHO + ETAPA 4.2 DO OMIE. JUNTADO SOBRE O PCM V217 (que contém o V216) + (1) INÍCIO: a caixa de entrada — chamados do portal,
+  decisões e tarefas do Adm, as demandas esperando o SEU ciente, calibração, peças urgentes e tarefas paradas sem ninguém,
+  cada uma resolvida no próprio cartão; hoje na equipe e o pulso da operação ao lado. Com o menu novo o PCM abre nela.
+  Uma chamada ao Postgres (pc_inicio) monta a caixa · (2) chamado do portal aprovado/recusado NO BANCO (pc_chamado_decidir),
+  também na tela Chamados · (3) ⚙ → Integração Omie: locais vendáveis, conferência com a Posição de Estoque colada do
+  Excel (G5), conciliação PCM × Omie (casar/ignorar/reabrir) · (4) chip de estoque e preço do Omie na proposta (só depois
+  da conferência) · (5) selo fiscal no cadastro do cliente. Par: SQL R1_INICIO + SQL OMIE_42_CONCILIACAO (rodam ANTES).
+  Sem os SQL, o Início cai para o caminho antigo e a proposta fica como antes.
+-->
+<!--
+  PCM V217 — 30/09/2026 — AS TELAS VOLTAM A SER RÁPIDAS E FICAM. V216 + (1) o crachá do banco (12 h) se renova sozinho
+  (GAS v163 renovarCracha); recusado ⇒ faixa "Modo rápido desligado" com PIN na própria tela · (2) a janela de 20 min de
+  Apps Script depois de uma escrita com espelho falho fecha no próximo push · (3) Máquinas/Clientes não esperam mais o ping
+  do Apps Script para carregar · (4) o motor escreve data em texto no idioma do servidor e a sentinela não rebaixa leitura
+  por causa do nome do fuso (V211 supôs inglês; a produção escreve português). Com o GAS v162/v161: (1) e (2) degradam para
+  o comportamento antigo sem erro; (3) e (4) valem igual.
+-->
+<title>ProperCare Manager · Gestão PGP v4.03 (PCM V218)</title>
+<meta name="app-build" content="PCM_V218" data-date="2026-09-30">
 <link rel="icon" type="image/jpeg" href="data:image/jpeg;base64,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">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -6342,7 +6367,7 @@ html.m1-on .m1-nav{display:flex;flex-direction:column;flex:1;min-height:0;paddin
        operacao/planejamento/campo/documentos/cadastros/admin). -->
   <div class="nav-brand">
     <span class="nav-brand-mark">PCM</span>
-    <span class="nav-brand-sub" data-carimbo="v4.03 · {v}">v4.03 · V215</span>
+    <span class="nav-brand-sub" data-carimbo="v4.03 · {v}">v4.03 · V218</span>
     <button type="button" class="nav-rail-btn" id="navRailBtn" onclick="_v179NavRailToggle()"
             title="Recolher o menu" aria-label="Recolher o menu" aria-expanded="true">
       <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path class="nav-rail-ico-in" d="M10 3.5L5.5 8 10 12.5"/><path class="nav-rail-ico-out" d="M6 3.5L10.5 8 6 12.5"/></svg>
@@ -6385,6 +6410,11 @@ html.m1-on .m1-nav{display:flex;flex-direction:column;flex:1;min-height:0;paddin
       <button type="button" class="nav-group-toggle" aria-expanded="true"
               onclick="_navGrpToggle('operacao')" title="Recolher / expandir este grupo">
         <span class="nav-grp-car" aria-hidden="true">&#9662;</span><span class="nav-grp-txt">OPERAÇÃO</span><span class="nav-grp-n" aria-hidden="true"></span>
+      </button>
+      <!-- V218 — R1: o Início (caixa de entrada). Para todos: cada um vê o que é seu. -->
+      <button class="nav-item" data-view="inicio" onclick="showView('inicio')" id="navInicio">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-6l-2 3h-4l-2-3H2"/><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/></svg>
+        <span>Início</span>
       </button>
       <button class="nav-item" data-view="os" onclick="showView('os')" id="navOs">
         <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -6651,6 +6681,7 @@ html.m1-on .m1-nav{display:flex;flex-direction:column;flex:1;min-height:0;paddin
     <!-- DASHBOARD VIEW (oculta do nav no v61 — ver Portão 3; mantido display:none para não piscar antes do JS trocar o boot para Preventivas) -->
     <div id="viewDashboard" style="display:none"></div>
     <!-- PREVENTIVAS VIEW (nova view de boot no v61) -->
+    <div id="viewInicio" style="display:none"></div>
     <div id="viewPreventivas"></div>
     <!-- CATALOG VIEW -->
     <div id="viewCatalog" style="display:none"></div>
@@ -8651,7 +8682,8 @@ function escAttrJs(v) { return escHtml(escJs(v)); }
 
 // Normaliza referência para comparação: remove pontos, traços, espaços, uppercase
 function normalizeRef(ref) {
-  return (ref || '').replace(/[^a-zA-Z0-9]/g, '').toUpperCase();
+  // V216 — a planilha devolve referência só de números como NÚMERO (704720, 68): String() antes do replace.
+  return String(ref == null ? '' : ref).replace(/[^a-zA-Z0-9]/g, '').toUpperCase();
 }
 
 // Retorna todas as peças de um modelo (diretas + de subsistemas)
@@ -9948,6 +9980,8 @@ function _pcConfigurar() {
 // GAS como antes (sessão aberta antes do Hub v29 ⇒ sair e entrar de novo liga o TURBO).
 function _pcJwt(t) { try { return JSON.parse(atob(String(t).split('.')[1].replace(/-/g, '+').replace(/_/g, '/'))) || {}; } catch (e) { return {}; } }
 async function _pcTokenTurbo() {
+  // V217 — crachá renovável: fresco da sessão, renova antes de vencer, e vencido espera a renovação (até 12 s)
+  try { if (window.CRACHA_V1) return await window.CRACHA_V1.token(300, 12000); } catch (e217) {}
   try {
     var s = window.PROPER_SESSION || JSON.parse(localStorage.getItem('proper_session') || sessionStorage.getItem('proper_session') || 'null');
     var uid = s && (s.id_tecnico || (s.tecnico && s.tecnico.id));
@@ -12349,7 +12383,7 @@ function _docsToggleOV96(tr){
 // ═══════════════════════════════════════════════════════════
 function showView(v){
   currentView=v;
-  const allViews=['dashboard','preventivas','catalog','machines','clients','estoque','docs','config','tecnicos','perfis','os','templates','tiposOS','saturacao','tarefasAdm','termometro','unidades','portalAcessos','calibracao','chamadosPortal','campo','frota','romaneio','comercial','pecasTrocar','itensCampo'];   // V178 · V200 · V208 · V209
+  const allViews=['inicio','dashboard','preventivas','catalog','machines','clients','estoque','docs','config','tecnicos','perfis','os','templates','tiposOS','saturacao','tarefasAdm','termometro','unidades','portalAcessos','calibracao','chamadosPortal','campo','frota','romaneio','comercial','pecasTrocar','itensCampo'];   // V178 · V200 · V208 · V209
   // A view 'tecnicos' usa IDs viewUsuarios/navUsuarios (renomeados na migração
   // técnico→usuário), que divergem da capitalização automática abaixo — sem este
   // mapa, getElementById procurava viewTecnicos/navTecnicos (inexistentes) e a
@@ -12367,7 +12401,9 @@ function showView(v){
   const sidebar=document.querySelector('.sidebar');
   if(sidebar) sidebar.classList.toggle('sidebar-hidden', v!=='catalog');
 
-  if(v==='dashboard'){
+  if(v==='inicio'){   // V218 — R1: a caixa de entrada
+    _v218Inicio();
+  } else if(v==='dashboard'){
     renderDashboard();
   } else if(v==='preventivas'){
     _prevSearch='';               // v79: evita busca presa/autofill deixar a tabela vazia ao entrar
@@ -12468,6 +12504,7 @@ function _usuarioEstaDigitandoEm_(el) {
     // V172 (Z2) — as três que faltavam. Sem elas a trilha não era atualizada, e
     // aí ela não ficava vazia: ficava mostrando o nome da tela ANTERIOR.
     tarefasAdm: 'Tarefas do Adm',
+    inicio: 'Início',   // V218
     calibracao: 'Calibração',
     termometro: 'Termômetro',
   };
@@ -12486,7 +12523,10 @@ function _usuarioEstaDigitandoEm_(el) {
       if (!confirm('Há alterações NÃO salvas no template.\n\nVoltar para a lista sem salvar? As alterações serão perdidas.\n\n(Cancele e clique em "Salvar template" para gravar.)')) return undefined;
       _tplEditorDirty = false;
     }
-    const r = _origShowView ? _origShowView.apply(this, arguments) : undefined;
+    // V216 — um erro DENTRO da tela (ex.: o catálogo de 30/09) saía daqui antes de atualizar menu e trilha: a tela
+    //   nova aparecia com "PCM / <tela anterior>". Guarda o erro, termina o serviço e relança no fim.
+    let r, _v216Erro = null;
+    try { r = _origShowView ? _origShowView.apply(this, arguments) : undefined; } catch (e) { _v216Erro = e; }
     document.querySelectorAll('.nav-item').forEach(b => {
       b.classList.toggle('is-active', b.dataset.view === view);
     });
@@ -12525,6 +12565,7 @@ function _usuarioEstaDigitandoEm_(el) {
       }
       if (_v172Rot) bc.textContent = _v172Rot;
     }
+    if (_v216Erro) throw _v216Erro;
     return r;
   };
 })();
@@ -17266,7 +17307,7 @@ async function calcularEstoque(){
 
       if(horasRestantes <= horasHorizonte){
         const diasRestantes = Math.round(horasRestantes / horasPorDia);
-        const ref = (part.ref || '').trim();
+        const ref = String(part.ref || '').trim();   // V216 — ref numérica
         if (!ref) return;
         if (ref === '—' || ref === '-') return;
         const clientMatch = (db.clients || []).find(c => clientKey(c.nome) === clientKey(eq.client || ''));
@@ -18405,7 +18446,7 @@ function renderConfigStats(){
     <div class="card">
       <div style="font-size:13px;font-weight:600;margin-bottom:4px">Sobre o sistema</div>
       <div style="font-size:12px;color:var(--text2);line-height:1.8">
-        <strong>Catálogo Administrativo v3.43 · <span data-carimbo="PCM {v}">PCM V215</span></strong> — Proper Compressores<br>
+        <strong>Catálogo Administrativo v3.43 · <span data-carimbo="PCM {v}">PCM V218</span></strong> — Proper Compressores<br>
         Catálogo de modelos · Peças com similares · Fotos · Subsistemas nomeados · Máquinas PGP com dados completos de cliente<br>
         Detecção de duplicados em modelos e máquinas · Google Sheets como backend
       </div>
@@ -18636,13 +18677,18 @@ const _F2A_MAX_H = 48;
 // Devolve '' quando está tudo em dia, ou o motivo COM a tabela culpada.
 function _f2aMotivoVelho(meta, maxHoras) {
   const mapa = {};
-  (meta || []).forEach(m => { mapa[m.tabela] = new Date(m.pushed_at).getTime(); });
+  // V216 — tabela GRADUADA (último carimbo com origem 'f3_fonte_postgres'): o Postgres é a FONTE, então "espelho
+  //   velho" não existe para ela. O GAS v152–v161 parou de renovar esse carimbo e o catálogo inteiro caía para o
+  //   Apps Script depois de 48 h. Sem carimbo nenhum continua recusando (ausente ≠ em dia).
+  const _v216Grad = {};
+  (meta || []).forEach(m => { mapa[m.tabela] = new Date(m.pushed_at).getTime(); if (m.origem === 'f3_fonte_postgres') _v216Grad[m.tabela] = true; });
   const ausentes = _F2A_TABELAS.filter(t => !mapa[t]);
   // ⚠ ausente ≠ velha, e ausente é PIOR: ler uma tabela nunca espelhada
   //   devolveria [] em silêncio. Cair para o GAS é a resposta honesta.
   if (ausentes.length) return 'sync_meta sem carimbo de: ' + ausentes.join(', ') +
     ' (o GAS v132 carimba aba vazia e aba graduada; publique-o antes deste front)';
   const velhas = _F2A_TABELAS
+    .filter(t => !_v216Grad[t])
     .map(t => ({ t, h: (Date.now() - mapa[t]) / 3600000 }))
     .filter(x => x.h > (maxHoras || _F2A_MAX_H));
   if (velhas.length) return 'espelho velho: ' +
@@ -18652,7 +18698,7 @@ function _f2aMotivoVelho(meta, maxHoras) {
 
 async function getCatalogFullFromSupabase(){
   // guard de frescura: sync_meta é o heartbeat do push do GAS
-  const meta = await supaGet_('sync_meta', 'tabela,pushed_at');
+  const meta = await supaGet_('sync_meta', 'tabela,pushed_at,origem');   // V216: + origem (graduada não envelhece)
   if (!meta.length) throw new Error('sync_meta vazio — push do GAS nunca rodou');
   // 🔴 V160 — era `Math.min` de TODAS as tabelas. Uma tabela que esta leitura
   //   nem usa derrubava o catálogo inteiro, e a mensagem não dizia qual.
@@ -19052,12 +19098,21 @@ async function syncCatalogFromGS(gsGet, preResult){
     // v67 PERF: aceita resultado já baixado (boot em paralelo). Se não vier, busca.
     const result = preResult || await gsGet('getCatalogFull');
     if(!result || result.status!=='ok'){ console.warn('getCatalogFull retornou erro:', (result&&result.error)||''); return; }
-    const modelsRows = result.models || [];
-    const partsRows = result.parts || [];
-    const simRows = result.similarities || [];
-    const subLibRows = result.subsistemasLib || [];
-    const subLibPartRows = result.subLibParts || [];
-    const modeloSubLinkRows = result.modeloSubLinks || [];
+    // V216 — número da planilha vira TEXTO (o Postgres já entrega texto). Referência só de dígitos (704720) vinha
+    //   como número e quebrava todo lugar que faz .replace/.trim nela. parseInt/parseFloat dos campos numéricos
+    //   (Qty_Default, Interval_H, Cost…) leem texto do mesmo jeito.
+    const _v216Txt = (rows) => (Array.isArray(rows) ? rows : []).map(r => {
+      if (!r || typeof r !== 'object') return r;
+      const o = {};
+      for (const k in r) o[k] = (typeof r[k] === 'number' && isFinite(r[k])) ? String(r[k]) : r[k];
+      return o;
+    });
+    const modelsRows = _v216Txt(result.models);
+    const partsRows = _v216Txt(result.parts);
+    const simRows = _v216Txt(result.similarities);
+    const subLibRows = _v216Txt(result.subsistemasLib);
+    const subLibPartRows = _v216Txt(result.subLibParts);
+    const modeloSubLinkRows = _v216Txt(result.modeloSubLinks);
     const norm=(v)=>String(v||'').trim().toLowerCase();
     const stableSubId=(name)=>'sub-'+normText(name||'').slice(0,30);
     const modelById = new Map((db.models||[]).map(m=>[String(m.id), m]));
@@ -19217,7 +19272,7 @@ function _v192AdotarId(loc, novoId, sc) {
 // ████ FIM V192 (casamento) ████
 
 async function syncFromGS({ silent = false } = {}){
-  if(!gsUrl||!gsConnected){
+  if(!gsUrl||(!gsConnected && !window.__v217SemPing)){   // V217: a de abertura sai sem o ping quando o motor atende
     setSyncHeaderStatus('error');
     if(!silent) toast('Configure e conecte o Google Sheets primeiro','error');
     return;
@@ -19847,6 +19902,7 @@ const _AUTH_HASH = 'fb9e6bd8b112a4a50eb30fbcedc7681fc29c331af4600584656ade9dace0
 
 function hubLogout() {
   sessionStorage.removeItem('proper_session');
+  try { localStorage.removeItem('proper_session'); } catch (e) {}   // V217 — Sair é sair do aparelho (o Hub faz o mesmo)
   try { localStorage.removeItem('pc_supa_token'); } catch (e) {}   // V203
   window.location.href = 'https://grupotap.github.io/ProperHub/';
 }
@@ -25152,7 +25208,7 @@ async function abrirReabrirOS(osId, btnEl) {
          mostra ação em tarefa aberta, então uma tarefa concluída vira um card sem nenhum botão.
          <br>⚠ Marque abaixo o que precisa voltar para o técnico. <b>Ele corrige o que enviou</b>: o formulário
          abre com os dados do envio (se foi deste celular, nos últimos 7 dias) e o envio novo <b>substitui</b> o
-         anterior. Em outro celular, ele preenche de novo. <span style="color:var(--text-muted)">(V215 · GAS v161)</span>`;
+         anterior. Em outro celular, ele preenche de novo. <span style="color:var(--text-muted)">(V218 · GAS v163)</span>`;
 
     const box = document.getElementById('reabrirTarefas');
     if (box) box.innerHTML = '<p style="font-size:12px;color:var(--text-muted)">Carregando as tarefas do pipeline…</p>';
@@ -49785,7 +49841,7 @@ function __pcPOST(action, body) {
 (function (G) {
   'use strict';
   if (G.PCL) return;
-  var BUILD = 'PC_LEITURA_V1 · v161 · 9aefa7c71c';
+  var BUILD = 'PC_LEITURA_V1 · v161 · 9aefa7c71c · V217';
   var M = {
   abas: {"MODELOS":{"tabela":"modelos","pk":"id"},"PARTS_MASTER":{"tabela":"parts_master","pk":"part_id"},"PART_SIMILARITIES":{"tabela":"part_similarities","pk":"sim_id"},"SUBSISTEMAS_LIB":{"tabela":"subsistemas_lib","pk":"sub_lib_id"},"SUBSISTEMA_LIB_PARTS":{"tabela":"subsistema_lib_parts","pk":"part_id"},"MODELO_SUBSISTEMA_LIB":{"tabela":"modelo_subsistema_lib","pk":"link_id"},"CLIENTES":{"tabela":"clientes","pk":"id"},"MAQUINAS":{"tabela":"maquinas","pk":"id"},"MACHINE_PARTS":{"tabela":"machine_parts","pk":"machine_id,part_id"},"PIPELINE_TEMPLATES":{"tabela":"pipeline_templates","pk":"template_id"},"ORDENS_SERVICO":{"tabela":"ordens_servico","pk":"id_os"},"PIPELINE_TAREFAS":{"tabela":"pipeline_tarefas","pk":"os_id,tarefa_id"},"AGENDA_DEMANDAS":{"tabela":"agenda_demandas","pk":"demanda_id"},"OS_MAQUINAS":{"tabela":"os_maquinas","pk":"id_link"},"TECH_ATTACHMENTS":{"tabela":"tech_attachments","pk":"attachment_id"},"UNIDADES":{"tabela":"unidades","pk":"id"},"CAT_TIPOS_OS":{"tabela":"cat_tipos_os","pk":"tipo_id"},"CUSTODIA_FROTA":{"tabela":"frota_custodia","pk":"custodia_id"},"CAT_PERFIS":{"tabela":"cat_perfis","pk":"id_perfil"},"PARAMETROS_TURNO":{"tabela":"parametros_turno","pk":"id"},"CAT_USUARIOS":{"tabela":"usuarios_publico","pk":"id"},"FORMULARIOS":{"tabela":"formularios","pk":"id"},"VISITAS":{"tabela":"visitas","pk":"id"},"PIPELINE_NOTIF":{"tabela":"pipeline_notif","pk":"notif_id"},"HORIMETRO_CALIB":{"tabela":"horimetro_calib","pk":"machine_id"},"HORIMETRO_HIST":{"tabela":"horimetro_hist","pk":"id"},"PRESENCA_OS":{"tabela":"presenca_os","pk":"evento_id"},"GEO_LOCAIS":{"tabela":"geo_locais","pk":"geo_id"},"SOLICITACOES_CADASTRO":{"tabela":"solicitacoes_cadastro","pk":"solic_id"},"CAT_TIPOS_MEDIDA":{"tabela":"cat_tipos_medida","pk":"tipo_id"},"PECAS_LOG":{"tabela":"pecas_log","pk":"pc_linha"},"ROTORES_MODELOS":{"tabela":"rotores_modelos","pk":"pc_linha"}},
   override: {"OS_MAQUINAS":{"machineKey":"machine_key"}},
@@ -49803,6 +49859,50 @@ function __pcPOST(action, body) {
 };
   var PARADA = { __pcParada: true };
   var JANELA_MS = 20 * 60000;
+  // ── V217 · A JANELA QUE FECHA SOZINHA ──────────────────────────────────────────────────────────────
+  // Antes: escrita cujo espelho falhou (acionador de 5 min segurando o espelho, rede) ⇒ 20 min FIXOS de GAS em
+  // TODAS as leituras do aparelho (medido 30/09 07:52 → 08:12). Agora a janela guarda (a) a HORA DO SERVIDOR em que
+  // a escrita terminou (GAS v163: espelho.em) e (b) as ABAS que ela escreveu (espelho.abas). Só essas abas esperam,
+  // e cada uma volta ao Postgres assim que o carimbo dela mostra uma FOTO tirada depois da escrita (GAS v163:
+  // pushed_at = hora da foto) — em geral o repush do próprio acionador, < 1 min. As outras abas nem esperam.
+  // Sem a hora (GAS ≤ v162, fila do service worker, TURBO off) ⇒ os 20 min fixos de sempre, em tudo.
+  // localStorage 'pc_janela_desde' = JSON {d, a, abas}: só vale se `a` for o MESMO 'pc_janela_ate' (outra aba com
+  // código antigo que abrir janela nova sem hora ⇒ fixa: o caminho seguro vence).
+  function janelaInfo() {
+    var t = agora(), memAte = Number(ESTADO.janelaAte) || 0, lsAte = Number(ls('pc_janela_ate') || 0);
+    var partes = [];
+    if (memAte > t) partes.push(Number(ESTADO.janelaDesde) > 0 ? { desde: Number(ESTADO.janelaDesde), abas: ESTADO.janelaAbas || null } : { fixa: true });
+    if (lsAte > t) {
+      var j = null; try { j = JSON.parse(ls('pc_janela_desde') || 'null'); } catch (e) { j = null; }
+      partes.push(j && Number(j.a) === lsAte && Number(j.d) > 0 ? { desde: Number(j.d), abas: Array.isArray(j.abas) ? j.abas : null } : { fixa: true });
+    }
+    if (!partes.length) return null;
+    if (partes.some(function (x) { return x.fixa; })) return { fixa: true };
+    var desde = 0, abas = [];
+    partes.forEach(function (x) { desde = Math.max(desde, x.desde); if (abas && x.abas) x.abas.forEach(function (a) { if (abas.indexOf(a) < 0) abas.push(a); }); else abas = null; });
+    return { desde: desde, abas: abas };
+  }
+  function janelaDesde() { var j = janelaInfo(); return !j ? 0 : (j.fixa ? -1 : j.desde); }   // 0 sem · -1 fixa · >0 hora
+  function janelaAnotar(o) { try { if (typeof anotar === 'function') anotar(o); } catch (e) {} }
+  function naJanela(j, aba) { return !j.abas || j.abas.indexOf(String(aba).split('#')[0]) >= 0; }
+  // aba lida DEPOIS de uma escrita que a tocou: só serve se o carimbo dela é de uma foto posterior à escrita
+  function posJanela(aba, e) {
+    var j = janelaInfo();
+    if (j && !j.fixa && naJanela(j, aba) && e && e.fonte !== 'postgres' && !(Date.parse(e.pushed_at) > j.desde))
+      throw new Error(aba + ': janela depois de escrita (o espelho ainda não tem push posterior à escrita)');
+  }
+  // as abas da escrita empurradas depois dela ⇒ a janela acaba (nesta aba e no aparelho)
+  function fecharJanelaSe(m) {
+    var j = janelaInfo();
+    if (!j || j.fixa || !m) return false;
+    for (var a in m) { var e = m[a]; if (!e || e.fonte === 'postgres' || !naJanela(j, a)) continue; if (!(Date.parse(e.pushed_at) > j.desde)) return false; }
+    if (j.abas) for (var k = 0; k < j.abas.length; k++) if (!m[j.abas[k]]) return false;   // aba da escrita fora do carimbo: não conclui
+    ESTADO.janelaAte = 0; ESTADO.janelaDesde = 0; ESTADO.janelaAbas = null;
+    var lj = null; try { lj = JSON.parse(ls('pc_janela_desde') || 'null'); } catch (e2) { lj = null; }
+    if (lj && Number(lj.a) === Number(ls('pc_janela_ate') || 0) && Number(lj.d) > 0 && Number(lj.d) <= j.desde) { ls('pc_janela_ate', null); ls('pc_janela_desde', null); }
+    janelaAnotar({ a: 'janela', f: 'postgres', m: 'janela fechada: o espelho já tem push posterior à escrita' });
+    return true;
+  }
   var ESTADO = {
     url: '', anon: '', tokenFn: null, fetchFn: null, gasFn: null,
     esp: null, espAt: 0, espVoo: null, espVooEp: -1, cfg: null, cfgAt: 0, cfgVoo: null,
@@ -49888,13 +49988,36 @@ function __pcPOST(action, body) {
       if (isNaN(d.getTime())) return 'Invalid Date';
       FMT_TXT = FMT_TXT || new Intl.DateTimeFormat('en-US', { timeZone: 'America/Sao_Paulo', year: 'numeric', month: 'numeric', day: '2-digit',
         weekday: 'short', hour: '2-digit', minute: '2-digit', second: '2-digit', hourCycle: 'h23' });
-      FMT_TZN = FMT_TZN || new Intl.DateTimeFormat('en-US', { timeZone: 'America/Sao_Paulo', timeZoneName: 'long' });
       var p = {}; FMT_TXT.formatToParts(d).forEach(function (x) { p[x.type] = x.value; });
-      var nome = ''; FMT_TZN.formatToParts(d).forEach(function (x) { if (x.type === 'timeZoneName') nome = x.value; });
+      var nome = nomeZonaGAS(d);   // V217 — no idioma do servidor (GAS_DATA_TEXTO); sem amostra, português
       var off = -d.getTimezoneOffset(), sinal = off >= 0 ? '+' : '-', a = Math.abs(off);
       var gmt = 'GMT' + sinal + ('0' + Math.floor(a / 60)).slice(-2) + ('0' + (a % 60)).slice(-2);
       return p.weekday + ' ' + MS_[Number(p.month) - 1] + ' ' + p.day + ' ' + p.year + ' ' + p.hour + ':' + p.minute + ':' + p.second + ' ' + gmt + ' (' + nome + ')';
     } catch (e) { return Date.prototype.toString.call(d); }
+  }
+  // V217 — como ESTE Apps Script escreve o nome do fuso. A amostra vem da config pública (GAS v163: GAS_DATA_TEXTO =
+  //   String(1º/01/2026 09:00)). Sem amostra (GAS ≤ v162): português, que é o que a produção escreve (medido 30/09).
+  var ZONA_FMT = {}, ZONA_AM = null, ZONA_ID = 'pt-BR';
+  function nomeZonaEm(d, loc) {
+    try {
+      ZONA_FMT[loc] = ZONA_FMT[loc] || new Intl.DateTimeFormat(loc, { timeZone: 'America/Sao_Paulo', timeZoneName: 'long' });
+      var n = ''; ZONA_FMT[loc].formatToParts(d).forEach(function (x) { if (x.type === 'timeZoneName') n = x.value; });
+      return n;
+    } catch (e) { return ''; }
+  }
+  function nomeZonaGAS(d) {
+    var am = (ESTADO && ESTADO.cfg && ESTADO.cfg.GAS_DATA_TEXTO) || '';
+    if (am !== ZONA_AM) {
+      ZONA_AM = am; ZONA_ID = 'pt-BR';
+      var m = /\(([^)]+)\)\s*$/.exec(String(am));
+      if (m) {
+        var ref = new Date(Date.UTC(2026, 0, 1, 12, 0, 0));
+        if (nomeZonaEm(ref, 'pt-BR') === m[1]) ZONA_ID = 'pt-BR';
+        else if (nomeZonaEm(ref, 'en-US') === m[1]) ZONA_ID = 'en-US';
+        else ZONA_ID = { fixo: m[1] };
+      }
+    }
+    return typeof ZONA_ID === 'string' ? nomeZonaEm(d, ZONA_ID) : ZONA_ID.fixo;
   }
   function DataGAS(ms) { var d = new Date(ms); Object.setPrototypeOf(d, DataGAS.prototype); return d; }
   DataGAS.prototype = Object.create(Date.prototype, { constructor: { value: Date, writable: true, configurable: true } });
@@ -50088,6 +50211,7 @@ function __pcPOST(action, body) {
       var m = {};
       r.json.forEach(function (x) { if (x && x.aba) m[x.aba] = x; });
       if (ep === ESTADO.epoca) { ESTADO.esp = m; ESTADO.espAt = agora(); }
+      try { fecharJanelaSe(m); } catch (eJ) {}   // V217
       return m;
     })();
     try { return await meuVoo; } finally { if (ESTADO.espVoo === meuVoo) ESTADO.espVoo = null; }
@@ -50194,7 +50318,7 @@ function __pcPOST(action, body) {
   function rebaixada(action) {
     try {
       var r = JSON.parse(ls('pc_rebaixada_' + action) || 'null');
-      if (r && r.ate > agora()) return r;
+      if (r && r.ate > agora() && (!r.build || r.build === BUILD)) return r;   // V217: rebaixa vale para o MESMO motor
     } catch (e) {}
     return null;
   }
@@ -50205,7 +50329,7 @@ function __pcPOST(action, body) {
     if (M.condicao[action] && !M.condicao[action](params || {})) return '';
     if (ls('pc_fonte') === 'gas') return 'kill-switch global';
     if (ls('pc_fonte_' + action) === 'gas') return 'kill-switch da action';
-    if (ESTADO.janelaAte > agora() || Number(ls('pc_janela_ate') || 0) > agora()) return 'janela depois de escrita';
+    if (janelaDesde() < 0) return 'janela depois de escrita';   // V217: janela COM hora ⇒ decide cada aba (posJanela)
     if (rebaixada(action)) return 'rebaixada pela sentinela';
     if (!tzOk()) return 'fuso do aparelho';
     return 'ok';
@@ -50232,12 +50356,14 @@ function __pcPOST(action, body) {
       var e = esp[aba];
       var v = velha(e);
       if (v) throw new Error(aba + ': ' + v);
+      posJanela(aba, e);   // V217
       var m = await carregarAba(aba, e);
       // PIPELINE_TAREFAS = geração viva + ARQUIVADAS, na ordem física da planilha (pc_linha)
       var extra = M.juntar[aba];
       if (extra) {
         var ex = esp[extra], v2 = velha(ex);
         if (v2) throw new Error(extra + ': ' + v2);
+        posJanela(extra, ex);   // V217
         var m2 = await carregarAba(extra, ex);
         if (m2.length > 1) {
           var todas = [];
@@ -50281,6 +50407,7 @@ function __pcPOST(action, body) {
       return o;
     }
     if (typeof v === 'string' && /^[\[{]/.test(v)) { try { return normalizar(JSON.parse(v), ign); } catch (e) {} }
+    if (typeof v === 'string' && /^[A-Z][a-z]{2} [A-Z][a-z]{2} \d{2} \d{4} \d{2}:\d{2}:\d{2} GMT[+-]\d{4} \([^)]*\)$/.test(v)) return v.replace(/ \([^)]*\)$/, '');   // V217
     if (typeof v === 'number' || typeof v === 'boolean') return String(v);
     return v === null || v === undefined ? '' : v;
   }
@@ -50307,7 +50434,7 @@ function __pcPOST(action, body) {
   }
   function sentinelaDevida(action) {
     if (ls('pc_sentinela') === 'off') return false;
-    try { var s = JSON.parse(ls('pc_sentinela_' + action) || 'null'); return !s || (agora() - s.quando) > 24 * 3600000; }
+    try { var s = JSON.parse(ls('pc_sentinela_' + action) || 'null'); return !s || (s.ok === false && s.build !== BUILD) || (agora() - s.quando) > 24 * 3600000; }   // V217: julgamento RUIM de outro motor é refeito (o bom não: PCM e PCF dividem a chave — auditoria 30/09)
     catch (e) { return true; }
   }
   async function sentinela(verbo, action, params, tentativa) {
@@ -50347,7 +50474,7 @@ function __pcPOST(action, body) {
     // Leitura direta que não passa pelo motor (o sino do portal): mesmas travas gerais.
     disponivel: function () {
       if (!ESTADO.url || !ESTADO.tokenFn || ls('pc_fonte') === 'gas' || !tzOk()) return false;
-      if (ESTADO.janelaAte > agora() || Number(ls('pc_janela_ate') || 0) > agora()) return false;
+      if (janelaDesde() < 0) return false;   // V217
       if (ESTADO.cfg && String(ESTADO.cfg.TURBO || '').toLowerCase() !== 'on') return false;
       return true;
     },
@@ -50401,9 +50528,24 @@ function __pcPOST(action, body) {
       if (!json || json.status !== 'ok') return;           // escrita recusada não mudou nada
       var esp = json && json.espelho;
       if (!esp || esp.ok !== true) {
+        // V217 — com espelho.em (GAS v163) a janela fecha sozinha no próximo push; sem ele, 20 min fixos.
+        //   Janela fixa já aberta continua fixa (o caminho seguro vence); duas escritas ⇒ vale a mais nova.
+        var jAnt = janelaInfo(), jEm = esp && esp.em ? Date.parse(esp.em) : NaN;
+        var jNovasAbas = (esp && Array.isArray(esp.abas) && esp.abas.length) ? esp.abas.map(String) : null;
+        var jDesde = -1, jAbas = null;
+        if (isFinite(jEm) && jEm > 0 && !(jAnt && jAnt.fixa)) {
+          jDesde = jAnt ? Math.max(jEm, jAnt.desde) : jEm;
+          jAbas = (jAnt && !jAnt.abas) ? null : jNovasAbas;
+          if (jAbas && jAnt && jAnt.abas) jAnt.abas.forEach(function (a) { if (jAbas.indexOf(a) < 0) jAbas.push(a); });
+        }
         ESTADO.janelaAte = agora() + JANELA_MS;
+        ESTADO.janelaDesde = jDesde;
+        ESTADO.janelaAbas = jAbas;
         ls('pc_janela_ate', String(ESTADO.janelaAte));     // vale para as OUTRAS abas/apps do aparelho também
-        log('janela GAS aberta por 20 min depois de', action, esp ? 'espelho falhou' : 'sem espelho (GAS antigo ou TURBO off)');
+        ls('pc_janela_desde', jDesde > 0 ? JSON.stringify({ d: jDesde, a: ESTADO.janelaAte, abas: jAbas }) : null);
+        log('janela GAS aberta depois de', action, esp ? 'espelho falhou' : 'sem espelho (GAS antigo ou TURBO off)', jDesde > 0 ? '(fecha no próximo push)' : '(20 min)');
+        janelaAnotar({ a: action, f: 'janela', m: (jDesde > 0 ? 'janela até o próximo push: ' : 'janela de 20 min: ') +
+          String(esp ? (esp.motivo || esp.erro || 'o espelho não confirmou') : 'resposta sem espelho (GAS antigo ou TURBO off)').slice(0, 120) });
       }
     },
     aoMudar: function (fn) { ESTADO.ouvintes.push(fn); },
@@ -53604,7 +53746,7 @@ var V204_AVISO_SQL = 'A proposta precisa do SQL <code>PROPOSTA_1B1_2026-09-29.sq
 // Cópia de getCatalogFullFromSupabase (V160) com as duas tabelas de peça pelo token-ponte.
 // Sem o crachá (ou com erro), o chamador de sempre cai para o Apps Script — como antes.
 getCatalogFullFromSupabase = async function () {
-  const meta = await supaGet_('sync_meta', 'tabela,pushed_at');
+  const meta = await supaGet_('sync_meta', 'tabela,pushed_at,origem');   // V216: + origem (graduada não envelhece)
   if (!meta.length) throw new Error('sync_meta vazio — push do GAS nunca rodou');
   const _motivo = _f2aMotivoVelho(meta, _F2A_MAX_H);
   if (_motivo) throw new Error(_motivo);
@@ -56753,7 +56895,6 @@ function _v214PintarOmie(M) {
       var aberto = d.aberto_ate && new Date(d.aberto_ate) > new Date();
       return '<tr style="cursor:default"><td>' + _v214E(d.metodo) + '</td><td>' + _v214E(d.erros_seguidos) + '</td><td>' + (aberto ? '<span class="v214-err">' + hora(d.aberto_ate) + '</span>' : 'fechado') + '</td><td>' + _v214E(d.ultimo_erro || '') + (d.ultimo_http ? ' <small>HTTP ' + _v214E(d.ultimo_http) + '</small>' : '') + '</td></tr>';
     }).join('') + '</tbody></table>';
-  h += '<div class="v200-sub" style="margin-top:10px">O chip de estoque e o preço do Omie na proposta entram na 4.2, depois de a 1ª leitura bater com a exportação da Posição de Estoque (G5).</div>';
   h += '<div style="margin-top:8px"><button type="button" class="btn btn-sm btn-secondary" data-v214="omieAtualizar">↻ Atualizar</button></div></div>';
   _v200Corpo(h);
 }
@@ -56856,7 +56997,7 @@ function _v214Mudou(ev) {
    ══════════════════════════════════════════════════════════════════════════════════════════════════ */
 (function () {
   'use strict';
-  var LUGARES = [{"k": "inicio", "rot": "Início", "ico": "inbox", "abas": [["tarefasAdm", "Tarefas do Adm"], ["chamadosPortal", "Chamados do portal"]]}, {"k": "os", "rot": "Ordens de serviço", "ico": "os", "abas": [["os", "Ordens de serviço"], ["termometro", "Termômetro de espera"]]}, {"k": "agenda", "rot": "Agenda", "ico": "calendar", "abas": [["saturacao", "Agenda da equipe"]]}, {"k": "comercial", "rot": "Comercial", "ico": "brief", "abas": [["comercial", "Quadro comercial"], ["pecasTrocar", "Peças a trocar"]]}, {"k": "maquinas", "rot": "Máquinas", "ico": "machine", "abas": [["preventivas", "Preventivas"], ["estoque", "Peças a vencer"], ["calibracao", "Calibração"], ["machines", "Todas as máquinas"]]}, {"k": "clientes", "rot": "Clientes", "ico": "users", "abas": [["clients", "Clientes"], ["unidades", "Unidades"]]}, {"k": "catalogo", "rot": "Catálogo", "ico": "book", "abas": [["catalog", "Modelos e peças"], ["itensCampo", "Itens adicionados em campo"]]}, {"k": "campo", "rot": "Campo e frota", "ico": "truck", "abas": [["campo", "Campo"], ["frota", "Frota fora de casa"], ["romaneio", "Romaneio"]]}, {"k": "docs", "rot": "Documentos", "ico": "file", "abas": [["docs", "Documentos"]]}, null, {"k": "admin", "rot": "Administração", "ico": "cog", "abas": [["tecnicos", "Usuários"], ["perfis", "Perfis"], ["tiposOS", "Tipos de OS"], ["templates", "Templates de pipeline"], ["portalAcessos", "Acessos do portal"], ["config", "Configurações"]]}];
+  var LUGARES = [{"k": "inicio", "rot": "Início", "ico": "inbox", "abas": [["inicio", "Caixa de entrada"], ["tarefasAdm", "Tarefas do Adm"], ["chamadosPortal", "Chamados do portal"]]}, {"k": "os", "rot": "Ordens de serviço", "ico": "os", "abas": [["os", "Ordens de serviço"], ["termometro", "Termômetro de espera"]]}, {"k": "agenda", "rot": "Agenda", "ico": "calendar", "abas": [["saturacao", "Agenda da equipe"]]}, {"k": "comercial", "rot": "Comercial", "ico": "brief", "abas": [["comercial", "Quadro comercial"], ["pecasTrocar", "Peças a trocar"]]}, {"k": "maquinas", "rot": "Máquinas", "ico": "machine", "abas": [["preventivas", "Preventivas"], ["estoque", "Peças a vencer"], ["calibracao", "Calibração"], ["machines", "Todas as máquinas"]]}, {"k": "clientes", "rot": "Clientes", "ico": "users", "abas": [["clients", "Clientes"], ["unidades", "Unidades"]]}, {"k": "catalogo", "rot": "Catálogo", "ico": "book", "abas": [["catalog", "Modelos e peças"], ["itensCampo", "Itens adicionados em campo"]]}, {"k": "campo", "rot": "Campo e frota", "ico": "truck", "abas": [["campo", "Campo"], ["frota", "Frota fora de casa"], ["romaneio", "Romaneio"]]}, {"k": "docs", "rot": "Documentos", "ico": "file", "abas": [["docs", "Documentos"]]}, null, {"k": "admin", "rot": "Administração", "ico": "cog", "abas": [["tecnicos", "Usuários"], ["perfis", "Perfis"], ["tiposOS", "Tipos de OS"], ["templates", "Templates de pipeline"], ["portalAcessos", "Acessos do portal"], ["config", "Configurações"]]}];
   var ICO = {"search": "<circle cx=\"11\" cy=\"11\" r=\"7.5\"/><path d=\"m20.5 20.5-4.2-4.2\"/>", "inbox": "<path d=\"M22 12h-6l-2 3h-4l-2-3H2\"/><path d=\"M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z\"/>", "os": "<rect width=\"8\" height=\"4\" x=\"8\" y=\"2\" rx=\"1\"/><path d=\"M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2\"/><path d=\"M12 11h4\"/><path d=\"M12 16h4\"/><path d=\"M8 11h.01\"/><path d=\"M8 16h.01\"/>", "calendar": "<rect width=\"18\" height=\"18\" x=\"3\" y=\"4\" rx=\"2\"/><path d=\"M16 2v4\"/><path d=\"M8 2v4\"/><path d=\"M3 10h18\"/>", "brief": "<rect width=\"20\" height=\"14\" x=\"2\" y=\"7\" rx=\"2\"/><path d=\"M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16\"/>", "machine": "<rect x=\"3\" y=\"7\" width=\"18\" height=\"11\" rx=\"2\"/><path d=\"M7 18v3\"/><path d=\"M17 18v3\"/><circle cx=\"9\" cy=\"12.5\" r=\"2.5\"/><path d=\"M14 11h4\"/><path d=\"M14 14h4\"/><path d=\"M8 7V4h5v3\"/>", "users": "<path d=\"M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2\"/><circle cx=\"9\" cy=\"7\" r=\"4\"/><path d=\"M22 21v-2a4 4 0 0 0-3-3.87\"/><path d=\"M16 3.13a4 4 0 0 1 0 7.75\"/>", "book": "<path d=\"M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z\"/><path d=\"M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z\"/>", "truck": "<path d=\"M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2\"/><path d=\"M15 18H9\"/><path d=\"M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.624l-3.48-4.35A1 1 0 0 0 17.52 8H14\"/><circle cx=\"17\" cy=\"18\" r=\"2\"/><circle cx=\"7\" cy=\"18\" r=\"2\"/>", "file": "<path d=\"M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z\"/><path d=\"M14 2v4a2 2 0 0 0 2 2h4\"/><path d=\"M16 13H8\"/><path d=\"M16 17H8\"/><path d=\"M10 9H8\"/>", "cog": "<circle cx=\"12\" cy=\"12\" r=\"3\"/><path d=\"M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z\"/>", "logout": "<path d=\"M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4\"/><path d=\"m16 17 5-5-5-5\"/><path d=\"M21 12H9\"/>", "plus": "<path d=\"M5 12h14\"/><path d=\"M12 5v14\"/>", "userplus": "<path d=\"M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2\"/><circle cx=\"9\" cy=\"7\" r=\"4\"/><path d=\"M19 8v6\"/><path d=\"M22 11h-6\"/>", "refresh": "<path d=\"M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8\"/><path d=\"M21 3v5h-5\"/><path d=\"M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16\"/><path d=\"M8 16H3v5\"/>", "swap": "<path d=\"m16 3 4 4-4 4\"/><path d=\"M20 7H4\"/><path d=\"m8 21-4-4 4-4\"/><path d=\"M4 17h16\"/>"};
   function ls(k, v) {
     try { if (v === undefined) return localStorage.getItem(k); if (v === null) localStorage.removeItem(k); else localStorage.setItem(k, String(v)); }
@@ -57508,5 +57649,1187 @@ function _v214Mudou(ev) {
 })();
 </script>
 <!-- ████ FIM PCM V215 ████ -->
+<!-- ████ PCM V217 · CRACHÁ RENOVÁVEL · JANELA QUE FECHA · ABERTURA SEM PING (30/09/2026) ████ -->
+<script>
+/* ════════════════════════════════════════════════════════════════════════════════════════════════
+   CRACHA_V1 — o crachá do banco se renova sozinho (30/09/2026). Par do GAS v163 (action renovarCracha).
+   ────────────────────────────────────────────────────────────────────────────────────────────────
+   POR QUE EXISTE (medido no Chrome do Fernando, 30/09 06:49–07:42): o crachá (supa_token) do login com PIN vale
+   12 h; a sessão do PCM/PCF vale dias. Vencido o crachá, o motor TURBO recusava ("sem token do Postgres") e TODA
+   leitura voltava ao Apps Script — 120 de 120, getOS 35 s. Parecia regressão de rodada; era o relógio.
+   O QUE FAZ:
+     · token(minSeg, esperarMs): o crachá da sessão (fresco do localStorage — o Hub pode ter acabado de gravar outro),
+       do MESMO usuário desta página, com PIN. Faltando < 2 h: renova em 2º plano. Vencido: espera a renovação
+       (uma só por vez, entre abas também) até esperarMs — melhor 4 s de espera do que 35 s de Apps Script.
+     · vigia: a cada 5 min e ao voltar para a aba (PC que dormiu), renova o que está para vencer.
+     · recusa ('pin' | 'usuario' | 'assinatura' | 'formato'): não insiste com o MESMO crachá; avisa quem ouve
+       (o PCM mostra a faixa "Modo rápido desligado — digitar PIN"). Falha de rede/GAS antigo: tenta de novo em 5 min.
+   NUNCA: renova crachá sem PIN; grava crachá de outro usuário; ressuscita sessão de quem já saiu (sem proper_session
+   do mesmo usuário no aparelho, não renova); escreve o crachá em log.
+   ════════════════════════════════════════════════════════════════════════════════════════════════ */
+(function (G) {
+  if (G.CRACHA_V1) return;
+  var RENOVAR_ANTES_SEG = 2 * 3600;        // o GAS recusa ('cedo') com mais de 3 h de vida
+  var FALHA_ESPERA_MS = 5 * 60000;
+  var CEDO_ESPERA_MS = 15 * 60000;       // 'cedo' = relógio do aparelho adiantado: não repergunta a cada leitura
+  var DESCONHECIDA_ESPERA_MS = 6 * 3600000;   // GAS anterior ao v163 ("Ação desconhecida")
+  var PRAZO_RENOVAR_MS = 20000;         // a renovação tem prazo PRÓPRIO: pendurada não prende leitura nenhuma além dele
+  var E = { voo: null, recusado: '', motivo: '', falhaAte: 0, ultima: null, ouvintes: [], cfg: { gas: null, ativo: null } };
+  function agoraS() { return Date.now() / 1000; }
+  function jwt(t) { try { return JSON.parse(atob(String(t).split('.')[1].replace(/-/g, '+').replace(/_/g, '/'))) || {}; } catch (e) { return {}; } }
+  function idDe(s) { return s ? String(s.id_tecnico || (s.tecnico && s.tecnico.id) || '') : ''; }
+  function lerDe(st) { try { return JSON.parse(st.getItem('proper_session') || 'null'); } catch (e) { return null; } }
+  function sessoes() {
+    var out = [];
+    try { var a = lerDe(G.localStorage); if (a) out.push(a); } catch (e) {}
+    try { var b = lerDe(G.sessionStorage); if (b) out.push(b); } catch (e) {}
+    return out;
+  }
+  // O usuário DESTA página é o da foto do boot (PROPER_SESSION); sem ela, o da sessão guardada.
+  function uidPagina() {
+    var p = G.PROPER_SESSION && idDe(G.PROPER_SESSION);
+    if (p) return p;
+    var s = sessoes()[0];
+    return idDe(s);
+  }
+  function comPin(tok, uid) { var c = jwt(tok); return !!tok && c.pc_pin === '1' && String(c.sub) === String(uid); }
+  function resta(tok) { return (jwt(tok).exp || 0) - agoraS(); }
+  // O melhor crachá com PIN do usuário da página entre as cópias (localStorage, sessionStorage, memória).
+  function atual() {
+    var uid = uidPagina(), melhor = '';
+    if (!uid) return { uid: '', tok: '', sessao: false };
+    var sess = sessoes().filter(function (s) { return idDe(s) === uid; });
+    var cands = sess.map(function (s) { return s.supa_token; });
+    // "ainda logado" = a sessão do localStorage (a que o Sair do Hub e do PCM apagam). A cópia do sessionStorage
+    // sobrevive ao Sair feito em outra aba — ela serve o crachá que já vale, mas não autoriza RENOVAR (auditoria 30/09).
+    var noLocal = false; try { var sl = lerDe(G.localStorage); noLocal = !!sl && idDe(sl) === uid; } catch (e) {}
+    if (G.PROPER_SESSION && idDe(G.PROPER_SESSION) === uid) cands.push(G.PROPER_SESSION.supa_token);
+    cands.forEach(function (t) { if (comPin(t, uid) && (!melhor || resta(t) > resta(melhor))) melhor = t; });
+    return { uid: uid, tok: melhor, sessao: noLocal };
+  }
+  function gravar(uid, novo, marcarLogin) {
+    var cn = jwt(novo);
+    [G.localStorage, G.sessionStorage].forEach(function (st) {
+      try {
+        var o = lerDe(st);
+        if (!o || idDe(o) !== uid) return;                         // outra pessoa entrou neste aparelho: não mexe
+        if (o.supa_token && comPin(o.supa_token, uid) && (jwt(o.supa_token).exp || 0) >= (cn.exp || 0)) return;   // já tem um melhor
+        o.supa_token = novo;
+        if (marcarLogin) o.token_at = new Date().toISOString();
+        st.setItem('proper_session', JSON.stringify(o));
+      } catch (e) {}
+    });
+    try {
+      if (G.PROPER_SESSION && idDe(G.PROPER_SESSION) === uid) {
+        G.PROPER_SESSION.supa_token = novo;
+        if (marcarLogin) G.PROPER_SESSION.token_at = new Date().toISOString();
+      }
+    } catch (e) {}
+  }
+  function anotar(o) {
+    try {
+      var l = JSON.parse(G.localStorage.getItem('pc_log') || '[]');
+      if (!Array.isArray(l)) l = [];
+      o.q = Date.now(); l.push(o);
+      if (l.length > 120) l = l.slice(l.length - 120);
+      G.localStorage.setItem('pc_log', JSON.stringify(l));
+    } catch (e) {}
+  }
+  function avisar() {
+    var est = estado();
+    E.ouvintes.forEach(function (f) { try { f(est); } catch (e) {} });
+  }
+  function estado() {
+    var a = atual();
+    return { uid: a.uid, tem: !!a.tok, resta_min: a.tok ? Math.round(resta(a.tok) / 60) : null, motivo: E.motivo,
+             desligado: !a.tok || resta(a.tok) <= 300, ultima: E.ultima, em_voo: !!E.voo };
+  }
+  function dormir(ms) { return new Promise(function (ok) { setTimeout(ok, ms); }); }
+  function corrida(p, ms) { return Promise.race([p, dormir(ms).then(function () { return null; })]); }
+
+  function renovar(porque) {
+    if (E.voo) return E.voo;
+    var a = atual();
+    if (!a.uid || !a.tok || !a.sessao || !E.cfg.gas) return Promise.resolve(null);
+    try { if (E.cfg.ativo && !E.cfg.ativo()) return Promise.resolve(null); } catch (e) {}   // PCF em modo offline: nem tenta, nem anota
+    if (E.recusado && E.recusado === a.tok) return Promise.resolve(null);
+    if (Date.now() < E.falhaAte) return Promise.resolve(null);
+    E.voo = (async function () {
+      // outra aba/app deste aparelho já está renovando? espera o resultado dela (até 8 s) antes de pedir outro
+      try {
+        var tr = JSON.parse(G.localStorage.getItem('pc_cracha_voo') || 'null');
+        if (tr && tr.uid === a.uid && Date.now() - tr.t < 15000) {
+          for (var i = 0; i < 16; i++) {
+            await dormir(500);
+            var b = atual();
+            if (b.tok && b.tok !== a.tok && resta(b.tok) > resta(a.tok) + 60) return b.tok;
+          }
+        }
+      } catch (e) {}
+      try { G.localStorage.setItem('pc_cracha_voo', JSON.stringify({ uid: a.uid, t: Date.now() })); } catch (e) {}
+      var t0 = Date.now(), r = null, erro = '';
+      try {
+        r = await corrida(E.cfg.gas({ action: 'renovarCracha', cracha: a.tok }), PRAZO_RENOVAR_MS);
+        if (r === null) erro = 'sem resposta em ' + (PRAZO_RENOVAR_MS / 1000) + ' s';
+      } catch (e) { erro = (e && e.message) || String(e); }
+      try { G.localStorage.removeItem('pc_cracha_voo'); } catch (e) {}
+      var ms = Date.now() - t0;
+      // aceito pelo relógio do SERVIDOR (exp − iat), não pelo do aparelho: PC com relógio errado também renova
+      var cn = r && r.supa_token ? jwt(r.supa_token) : {};
+      if (r && r.status === 'ok' && r.renovado === true && r.supa_token && comPin(r.supa_token, a.uid) && (cn.exp - cn.iat) >= 11 * 3600) {
+        gravar(a.uid, r.supa_token, false);
+        E.motivo = ''; E.recusado = ''; E.falhaAte = 0; E.ultima = { quando: Date.now(), ms: ms, ok: true, porque: porque };
+        anotar({ a: 'renovarCracha', f: 'cracha', ms: ms, m: 'crachá renovado (' + porque + ')' });
+        avisar();
+        return r.supa_token;
+      }
+      if (r && r.status === 'ok' && r.renovado === false) {
+        if (r.motivo === 'cedo') { E.falhaAte = Date.now() + CEDO_ESPERA_MS; return a.tok; }   // ainda tem vida (relógio do aparelho adiantado?)
+        E.recusado = a.tok; E.motivo = String(r.motivo || 'recusado');
+        E.ultima = { quando: Date.now(), ms: ms, ok: false, motivo: E.motivo };
+        anotar({ a: 'renovarCracha', f: 'cracha', ms: ms, m: 'renovação recusada: ' + E.motivo });
+        avisar();
+        return null;
+      }
+      // GAS anterior ao v163 ("ação desconhecida"), rede, 5xx, erro de script: tenta de novo daqui a 5 min
+      var desconhecida = /desconhecid/i.test(String((r && (r.error || r.erro)) || ''));
+      E.falhaAte = Date.now() + (desconhecida ? DESCONHECIDA_ESPERA_MS : FALHA_ESPERA_MS);
+      E.motivo = 'falha';
+      E.ultima = { quando: Date.now(), ms: ms, ok: false, motivo: 'falha: ' + String(erro || (r && (r.error || r.erro)) || 'sem resposta').slice(0, 120) };
+      anotar({ a: 'renovarCracha', f: 'cracha', ms: ms, m: E.ultima.motivo });
+      avisar();
+      return null;
+    })();
+    var p = E.voo;
+    p.then(function () { if (E.voo === p) E.voo = null; }, function () { if (E.voo === p) E.voo = null; });
+    return p;
+  }
+
+  async function token(minSeg, esperarMs) {
+    minSeg = minSeg || 300;
+    var a = atual();
+    if (!a.uid) return null;
+    if (a.tok && resta(a.tok) > minSeg) {
+      if (resta(a.tok) < RENOVAR_ANTES_SEG) renovar('antes de vencer').catch(function () {});
+      return a.tok;
+    }
+    var novo = null;
+    try { novo = await corrida(renovar('vencido'), esperarMs === undefined ? 12000 : esperarMs); } catch (e) { novo = null; }
+    var b = atual();                                              // a renovação (desta ou de outra aba) grava na sessão
+    if (b.tok && resta(b.tok) > minSeg) return b.tok;
+    return (novo && comPin(novo, a.uid) && resta(novo) > minSeg) ? novo : null;
+  }
+  // Síncrono: o crachá que JÁ vale (para quem não pode esperar). Não renova.
+  function tokenJa(minSeg) { var a = atual(); return (a.tok && resta(a.tok) > (minSeg || 300)) ? a.tok : null; }
+
+  function vigiar() {
+    var a = atual();
+    if (!a.tok) { if (a.uid && a.sessao && !E.motivo) { E.motivo = 'sem_cracha'; avisar(); } return; }
+    if (resta(a.tok) < RENOVAR_ANTES_SEG) renovar(resta(a.tok) > 0 ? 'vigia' : 'vencido').catch(function () {});
+  }
+  // o login novo (Hub, em outra aba) apaga a recusa: o crachá mudou
+  function aoMudarSessao() {
+    var a = atual();
+    if (a.tok && a.tok !== E.recusado && resta(a.tok) > 300 && (E.motivo === 'pin' || E.motivo === 'usuario' || E.motivo === 'sem_cracha' || E.motivo === 'assinatura' || E.motivo === 'formato')) {
+      E.motivo = ''; E.recusado = ''; avisar();
+    }
+  }
+
+  G.CRACHA_V1 = {
+    configurar: function (o) { if (o && typeof o.gas === 'function') E.cfg.gas = o.gas; if (o && typeof o.ativo === 'function') E.cfg.ativo = o.ativo; },
+    token: token, tokenJa: tokenJa, renovar: renovar, estado: estado, gravar: gravar,
+    aoMudar: function (f) { if (typeof f === 'function') E.ouvintes.push(f); },
+    _t: { E: E, atual: atual, jwt: jwt, vigiar: vigiar, uidPagina: uidPagina }
+  };
+  try { setInterval(vigiar, 5 * 60000); } catch (e) {}
+  try { G.document.addEventListener('visibilitychange', function () { if (G.document.visibilityState === 'visible') vigiar(); }); } catch (e) {}
+  try { G.addEventListener('storage', function (ev) { if (!ev || ev.key === 'proper_session') aoMudarSessao(); }); } catch (e) {}
+})(typeof window !== 'undefined' ? window : this);
+
+</script>
+<script>
+/* ════════════════════════════════════════════════════════════════════════════════════════════════
+   PCM V217 — 30/09/2026 — AS TELAS VOLTAM A SER RÁPIDAS E FICAM. Par: GAS v163. Três causas medidas no Chrome
+   do Fernando, três consertos:
+   (1) CRACHÁ: o supa_token (12 h) vencia e TODA leitura voltava ao Apps Script (0 de 120 no Postgres, getOS 35 s).
+       ⇒ CRACHA_V1 renova sozinho (GAS renovarCracha); recusado ⇒ faixa "Modo rápido desligado — digitar PIN".
+   (2) JANELA: escrita com espelho falho ⇒ 20 min de GAS no aparelho inteiro. ⇒ fecha no próximo push (motor).
+   (3) BOOT: Máquinas/Clientes (db.machines/db.clients) só carregavam DEPOIS do ping ao Apps Script (3–10 s frio);
+       na aba anônima, sem cópia local, a tela esperava. ⇒ com o motor disponível, a sincronização de abertura sai
+       já, sem esperar o ping (as leituras vão ao Postgres; o ping segue em paralelo e governa as escritas).
+       + o motor escreve a data em texto no idioma do servidor (V211 supôs inglês; a produção é português) e a
+       sentinela deixa de rebaixar getVisits/getItensNaOficina/… por 24 h por causa do nome do fuso.
+   ════════════════════════════════════════════════════════════════════════════════════════════════ */
+var V217 = { orig: {} };
+(function () {
+  if (!window.CRACHA_V1) return;
+  // transporte do crachá: direto ao Apps Script (sem motor, sem aposEscrita — não é escrita)
+  // Direto ao /exec, com prazo PRÓPRIO de 15 s e SEM as 3 tentativas do transporte: renovação pendurada não prende
+  // leitura, e falha dela não pinta o PCM de "Sem conexão" (auditoria 30/09).
+  CRACHA_V1.configurar({ gas: async function (corpo) {
+    if (typeof gsUrl === 'undefined' || !gsUrl) throw new Error('sem gsUrl');
+    var ctl = (typeof AbortController !== 'undefined') ? new AbortController() : null;
+    var tmo = ctl ? setTimeout(function () { try { ctl.abort(); } catch (e) {} }, 15000) : 0;
+    try {
+      var r = await fetch(gsUrl, { method: 'POST', body: gcBody(Object.assign({ action: corpo.action, key: _AUTH_HASH }, corpo)), signal: ctl ? ctl.signal : undefined });
+      var txt = await r.text();
+      if (String(txt).trim().charAt(0) === '<') throw new Error('o Apps Script respondeu HTML');
+      return JSON.parse(txt);
+    } finally { if (tmo) clearTimeout(tmo); }
+  } });
+
+  // ── os dois pedidos de crachá do PCM (F2/CRM) passam a usar o crachá renovável antes do getSupabaseToken ──
+  try {
+    V217.orig.supaTokenGet = _supaTokenGet;
+    _supaTokenGet = async function () {
+      try {
+        var t = await CRACHA_V1.token(3600, 12000);
+        if (t) { _supaTokenCache = { token: t, exp: CRACHA_V1._t.jwt(t).exp }; return t; }
+      } catch (e) {}
+      return V217.orig.supaTokenGet();
+    };
+  } catch (e) { console.warn('[V217] _supaTokenGet:', e); }
+  try {
+    V217.orig.v200Token = _v200Token;
+    _v200Token = async function (forcar) {
+      try {
+        var t = await CRACHA_V1.token(300, 12000);
+        if (t && String(CRACHA_V1._t.jwt(t).sub) === String(_v200UsuarioId())) { _v200Tok = { token: t, exp: CRACHA_V1._t.jwt(t).exp }; return t; }
+      } catch (e) {}
+      return V217.orig.v200Token(forcar);
+    };
+  } catch (e) { console.warn('[V217] _v200Token:', e); }
+
+  // ── a FAIXA: modo rápido desligado precisa ser VISÍVEL (o defeito de hoje era silencioso) ─────────────
+  var TXT = {
+    pin: 'faz mais de uma semana que você digitou o PIN, ou ele foi trocado.',
+    sem_cracha: 'esta sessão não tem o acesso rápido ao banco.',
+    assinatura: 'o acesso ao banco desta sessão não foi reconhecido.',
+    formato: 'o acesso ao banco desta sessão não foi reconhecido.',
+    usuario: 'seu usuário não está ativo no cadastro.'
+  };
+  function faixa() { return document.getElementById('v217Faixa'); }
+  function pintar(est) {
+    try {
+      var motivo = est && est.motivo, f = faixa();
+      var mostrar = !!(motivo && TXT[motivo]) && est.desligado && sessionStorage.getItem('v217_faixa_fechada') !== motivo;
+      if (!mostrar) { if (f) f.remove(); return; }
+      if (!f) {
+        f = document.createElement('div');
+        f.id = 'v217Faixa';
+        f.setAttribute('role', 'status');
+        f.setAttribute('data-j1-livre', '1');
+        f.style.cssText = 'position:fixed;top:10px;left:50%;transform:translateX(-50%);z-index:9000;max-width:min(680px,calc(100vw - 32px));' +
+          'display:flex;gap:10px;align-items:center;padding:9px 12px 9px 14px;border-radius:10px;background:#FFF4E5;color:#5A3200;' +
+          'border:1px solid #F3C38B;box-shadow:0 6px 18px rgba(0,0,0,.12);font:500 13px/1.35 Inter,system-ui,sans-serif';
+        document.body.appendChild(f);
+      }
+      var comPin = motivo !== 'usuario';
+      f.innerHTML = '<span style="flex:1">⚡ <b>Modo rápido desligado:</b> ' + TXT[motivo] + (comPin ? ' As telas estão lendo do Apps Script (lento).' : '') + '</span>' +
+        (comPin ? '<button type="button" id="v217FaixaPin" style="border:0;border-radius:8px;padding:7px 12px;background:#353434;color:#fff;font:600 13px Inter,system-ui,sans-serif;cursor:pointer;white-space:nowrap">Digitar PIN</button>' : '') +
+        '<button type="button" id="v217FaixaX" aria-label="Fechar aviso" style="border:0;background:transparent;color:#5A3200;font-size:18px;line-height:1;cursor:pointer;padding:2px 4px">×</button>';
+      var bp = document.getElementById('v217FaixaPin'); if (bp) bp.onclick = abrirPin;
+      document.getElementById('v217FaixaX').onclick = function () { try { sessionStorage.setItem('v217_faixa_fechada', motivo); } catch (e) {} f.remove(); };
+    } catch (e) { console.warn('[V217] faixa:', e); }
+  }
+  CRACHA_V1.aoMudar(pintar);
+  V217.pintar = pintar;
+
+  // ── PIN aqui mesmo (não precisa sair e entrar pelo Hub) ─────────────────────────────────────────────
+  async function hashPin(pin) {
+    var buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(pin));
+    return Array.from(new Uint8Array(buf)).map(function (b) { return b.toString(16).padStart(2, '0'); }).join('');
+  }
+  function abrirPin() {
+    if (document.getElementById('v217Pin')) return;
+    var ov = document.createElement('div');
+    ov.id = 'v217Pin';
+    ov.setAttribute('data-j1-livre', '1');
+    ov.style.cssText = 'position:fixed;inset:0;z-index:9500;background:rgba(20,20,20,.38);display:flex;align-items:center;justify-content:center;padding:16px';
+    ov.innerHTML = '<form id="v217PinForm" autocomplete="off" style="background:#fff;color:#1D1D1B;border-radius:14px;padding:20px 20px 16px;width:min(340px,100%);box-shadow:0 18px 50px rgba(0,0,0,.25);font:14px/1.4 Inter,system-ui,sans-serif">' +
+      '<div style="font-weight:700;font-size:16px;margin-bottom:4px">Ligar o modo rápido</div>' +
+      '<div style="color:#555;margin-bottom:12px">Digite o seu PIN (o mesmo do Hub). As telas voltam a ler direto do banco por até 7 dias.</div>' +
+      '<input id="v217PinIn" type="password" inputmode="numeric" autocomplete="one-time-code" name="v217-pin-' + Date.now() + '" maxlength="12" ' +
+      'style="width:100%;box-sizing:border-box;font:600 20px Inter,system-ui,sans-serif;letter-spacing:6px;text-align:center;padding:10px;border:1px solid #CFCFCF;border-radius:10px" aria-label="PIN">' +
+      '<div id="v217PinErr" role="alert" style="min-height:18px;color:#B42318;font-size:13px;margin:8px 0 4px"></div>' +
+      '<div style="display:flex;gap:8px;justify-content:flex-end">' +
+      '<button type="button" id="v217PinCancel" style="border:1px solid #CFCFCF;background:#fff;border-radius:8px;padding:8px 14px;font:600 13px Inter,system-ui,sans-serif;cursor:pointer">Cancelar</button>' +
+      '<button type="submit" id="v217PinOk" style="border:0;background:#353434;color:#fff;border-radius:8px;padding:8px 16px;font:600 13px Inter,system-ui,sans-serif;cursor:pointer">Entrar</button>' +
+      '</div></form>';
+    document.body.appendChild(ov);
+    var inp = document.getElementById('v217PinIn'), err = document.getElementById('v217PinErr'), bt = document.getElementById('v217PinOk');
+    var fechar = function () { try { ov.remove(); } catch (e) {} };
+    document.getElementById('v217PinCancel').onclick = fechar;
+    ov.addEventListener('keydown', function (ev) { if (ev.key === 'Escape' && !bt.disabled) fechar(); });
+    setTimeout(function () { try { inp.focus(); } catch (e) {} }, 30);
+    document.getElementById('v217PinForm').onsubmit = async function (ev) {
+      ev.preventDefault();
+      if (bt.disabled) return;                                       // trava de duplo clique
+      var pin = String(inp.value || '').trim();
+      if (!pin) { err.textContent = 'Digite o PIN.'; return; }
+      bt.disabled = true; bt.textContent = '⏳ Conferindo…'; err.textContent = '';
+      try {
+        var uid = CRACHA_V1._t.uidPagina();
+        // somente_id (GAS v163): PIN de OUTRA pessoa conta como PIN errado no servidor — não loga ninguém à toa
+        var r = await _pcChamarGAS('POST', 'loginTecnico', { pin_hash: await hashPin(pin), sem_os: 1, somente_id: uid });
+        inp.value = '';
+        if (!(r && r.status === 'ok' && r.valido)) { err.textContent = (r && r.error) || 'PIN inválido.'; return; }
+        if (!r.tecnico || String(r.tecnico.id) !== String(uid)) { err.textContent = 'PIN inválido.'; return; }   // não confirma de quem é o PIN
+        if (!r.supa_token) { err.textContent = 'O servidor não entregou o acesso ao banco agora. Tente de novo em alguns minutos.'; return; }
+        CRACHA_V1.gravar(uid, r.supa_token, true);
+        CRACHA_V1._t.E.motivo = ''; CRACHA_V1._t.E.recusado = '';
+        pintar(CRACHA_V1.estado());
+        fechar();
+        try { toast('⚡ Modo rápido ligado'); } catch (e) {}
+      } catch (e) {
+        err.textContent = 'Não consegui falar com o servidor: ' + ((e && e.message) || e);
+      } finally { bt.disabled = false; bt.textContent = 'Entrar'; }
+    };
+  }
+  V217.abrirPin = abrirPin;
+
+  // ── (3) a sincronização de abertura sem esperar o ping ───────────────────────────────────────────────
+  V217.syncSemPing = async function () {
+    try {
+      if (!(typeof _bootSilentSyncPending !== 'undefined' && _bootSilentSyncPending && !_bootSilentSyncDone)) return 'já saiu';
+      if (window._pcmModoApp && window._pcmModoApp()) return 'modo app (a agenda tem prioridade — V159)';
+      if (typeof gsUrl === 'undefined' || !gsUrl) return 'sem gsUrl';
+      if (!(typeof _pcConfigurar === 'function' && _pcConfigurar()) || !PCL.disponivel()) return 'motor indisponível';
+      var t = await CRACHA_V1.token(300, 12000);
+      if (!t) return 'sem crachá';
+      if (!(_bootSilentSyncPending && !_bootSilentSyncDone)) return 'o ping chegou antes';
+      _bootSilentSyncPending = false; _bootSilentSyncDone = true;
+      var antes = _lastSyncAt;
+      window.__v217SemPing = true;
+      try { await syncFromGS({ silent: true }); } finally { window.__v217SemPing = false; }
+      if (_lastSyncAt === antes) {                                  // não concluiu: devolve ao caminho de sempre
+        _bootSilentSyncPending = true; _bootSilentSyncDone = false;
+        if (gsConnected) Promise.resolve().then(function () { syncFromGS({ silent: true }); });
+        return 'falhou — devolvido ao ping';
+      }
+      return 'ok';
+    } catch (e) { console.warn('[V217] sync sem ping:', e); return 'erro: ' + (e && e.message); }
+  };
+
+  function ligar() {
+    try { CRACHA_V1._t.vigiar(); } catch (e) {}                     // crachá vencido começa a renovar JÁ, antes da 1ª tela
+    try { pintar(CRACHA_V1.estado()); } catch (e) {}
+    setTimeout(function () { V217.syncSemPing().then(function (r) { try { if (localStorage.getItem('pc_debug') === '1') console.info('[V217] sync sem ping:', r); } catch (e) {} }); }, 0);
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', ligar); else ligar();
+})();
+
+</script>
+<!-- ████ FIM PCM V217 ████ -->
+<!-- ████ INICIO PCM V218 ████ -->
+<style id="v218css">
+/* ── V218 · R1 DO REDESENHO: o INÍCIO (caixa de entrada) · ETAPA 4.2 (conciliação, chip de estoque, selo fiscal) ── */
+.v218{max-width:1320px}
+.v218-topo{display:flex;align-items:flex-end;gap:12px;flex-wrap:wrap;margin:0 0 14px}
+.v218-topo h2{margin:0;font-size:22px;font-weight:700;letter-spacing:-.01em}
+.v218-topo .v218-dia{color:var(--text-muted);font-size:13px;margin-top:2px}
+.v218-topo .v218-sp{flex:1}
+.v218-chips{display:flex;gap:6px;flex-wrap:wrap;margin:0 0 12px}
+.v218-chip{all:unset;box-sizing:border-box;cursor:pointer;display:inline-flex;align-items:center;gap:6px;height:30px;padding:0 12px;border:1px solid var(--border-strong,#DADADA);border-radius:999px;background:var(--surface,#fff);font-size:13px;font-weight:500;color:var(--text2,#4F4F4F)}
+.v218-chip:hover{border-color:#BDBDBD;color:var(--text,#262626)}
+.v218-chip[aria-pressed="true"]{background:#353434;border-color:#353434;color:#fff}
+.v218-chip b{font-weight:700}
+.v218-chip:focus-visible{outline:2px solid #EE7625;outline-offset:1px}
+.v218-grade{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:18px;align-items:start}
+@media(max-width:1100px){.v218-grade{grid-template-columns:1fr}}
+.v218-card{background:var(--surface,#fff);border:1px solid var(--border,#E6E6E6);border-radius:12px;padding:12px 14px;margin:0 0 10px;box-shadow:0 1px 2px rgba(0,0,0,.04)}
+.v218-card.saindo{opacity:.45;transition:opacity .25s}
+.v218-cab{display:flex;align-items:center;gap:8px;font-size:11.5px;color:var(--text-muted,#6B6B6B);margin:0 0 3px;flex-wrap:wrap}
+.v218-tp{font-weight:700;text-transform:uppercase;letter-spacing:.04em;font-size:10.5px;padding:2px 7px;border-radius:5px;background:#F2F2F2;color:#4F4F4F}
+.v218-tp.ch{background:#FDF1E7;color:#9A4A0C}.v218-tp.dec{background:#EEF2FF;color:#3730A3}.v218-tp.ag{background:#F3EEFF;color:#5B21B6}
+.v218-tp.cal{background:#ECFDF5;color:#065F46}.v218-tp.pc{background:#FEF2F2;color:#991B1B}.v218-tp.par{background:#FFF7E6;color:#8A5A00}
+.v218-tit{font-size:15px;font-weight:600;color:var(--text,#262626);margin:0 0 2px}
+.v218-sub{font-size:12.5px;color:var(--text2,#4F4F4F)}
+.v218-acoes{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-top:9px}
+.v218-form{margin-top:9px;padding:10px;border:1px dashed var(--border-strong,#DADADA);border-radius:9px;background:#FAFAFA;display:grid;gap:8px}
+.v218-form label{font-size:12px;font-weight:600;color:var(--text2,#4F4F4F);display:block;margin:0 0 3px}
+.v218-form input,.v218-form textarea{box-sizing:border-box;width:100%;padding:7px 9px;border:1px solid var(--border-strong,#DADADA);border-radius:7px;font:inherit;font-size:13px;background:#fff}
+.v218-form .v218-lin{display:grid;grid-template-columns:170px 1fr;gap:8px}
+@media(max-width:640px){.v218-form .v218-lin{grid-template-columns:1fr}}
+.v218-aviso{border-radius:9px;padding:9px 12px;font-size:13px;margin:0 0 12px;border:1px solid}
+.v218-aviso.amar{background:#FFF8E6;border-color:#F4C46A;color:#6B4700}.v218-aviso.verm{background:#FDF0EF;border-color:#F2B8B5;color:#8A1C12}
+.v218-aviso.azul{background:#F0F6FF;border-color:#BFD6FB;color:#1E3A6B}
+.v218-vazio{padding:28px 16px;text-align:center;color:var(--text-muted,#6B6B6B);font-size:14px;background:var(--surface,#fff);border:1px dashed var(--border-strong,#DADADA);border-radius:12px}
+.v218-lado h3{font-size:13px;font-weight:700;margin:0 0 8px;color:var(--text,#262626)}
+.v218-caixa{background:var(--surface,#fff);border:1px solid var(--border,#E6E6E6);border-radius:12px;padding:12px 14px;margin:0 0 14px}
+.v218-hoje{display:flex;gap:10px;padding:7px 0;border-top:1px solid #F2F2F2;font-size:13px}
+.v218-hoje:first-child{border-top:0}
+.v218-hoje .h{width:44px;flex-shrink:0;font-weight:600;color:var(--text,#262626)}
+.v218-hoje .q{color:var(--text-muted,#6B6B6B);font-size:12px}
+.v218-pulso{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.v218-pulso button,.v218-pulso .v218-pulso-it{all:unset;box-sizing:border-box;cursor:pointer;border:1px solid var(--border,#E6E6E6);border-radius:10px;padding:9px 10px;background:#fff}
+.v218-pulso .v218-pulso-it{cursor:default}
+.v218-pulso button:hover{border-color:#BDBDBD}
+.v218-pulso b{display:block;font-size:22px;font-weight:700;line-height:1.1;color:var(--text,#262626)}
+.v218-pulso b.ruim{color:#B42318}
+.v218-pulso span{font-size:12px;color:var(--text-muted,#6B6B6B)}
+.v218-rodape{font-size:11.5px;color:var(--text-muted,#6B6B6B);margin-top:6px}
+/* 4.2 · chip de estoque na proposta, selo fiscal, painel */
+.v218-est{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:600;padding:1px 7px;border-radius:999px;border:1px solid;margin-left:6px;white-space:nowrap;vertical-align:1px}
+.v218-est.tem{background:#EEF7F1;border-color:#A6D8B8;color:#1E7B45}
+.v218-est.similar{background:#F0F6FF;border-color:#BFD6FB;color:#1E3A6B}
+.v218-est.comprar{background:#FFF7E6;border-color:#F4C46A;color:#8A5A00}
+.v218-est.inativo,.v218-est.ambiguo,.v218-est.sem_par{background:#F5F5F5;border-color:#DADADA;color:#6B6B6B}
+.v218-est.velha{border-style:dashed;opacity:.8}
+.v218-selo{display:inline-flex;align-items:center;gap:6px;margin-top:6px;font-size:12px;padding:3px 9px;border-radius:7px;border:1px solid}
+.v218-selo.ok{background:#EEF7F1;border-color:#A6D8B8;color:#1E7B45}
+.v218-selo.nao_encontrado,.v218-selo.inativo{background:#FFF8E6;border-color:#F4C46A;color:#6B4700}
+.v214-om .v218-loc{display:flex;gap:8px;flex-wrap:wrap}
+.v214-om .v218-loc label{display:inline-flex!important;align-items:center;gap:6px;border:1px solid var(--border-strong);border-radius:8px;padding:5px 10px!important;margin:0!important;font-size:12.5px!important;background:#fff;cursor:pointer}
+.v214-om .v218-loc input{width:auto!important;margin:0}
+.v214-om textarea.v218-cola{width:100%;min-height:96px;box-sizing:border-box;font-family:inherit;font-size:12px;padding:7px;border:1px solid var(--border-strong);border-radius:7px}
+.v214-om .v218-cand{display:flex;gap:6px;flex-wrap:wrap;margin-top:4px}
+</style>
+<script>
+/* ═════════════════════════════════════════════════════════════════════════════════════════════════
+   PCM V218 · 30/09/2026 — R1 DO REDESENHO (o Início) + ETAPA 4.2 DO OMIE
+   Pedido do Fernando (30/09, 06h39): "continue o plano de criação do CRM, integração e propostas, siga
+   também para o R1 do design de frontend … lembrando também do processo de migração supabase". 4.2 e
+   "PCM é o CRM oficial" escolhidos na conversa.
+   · INÍCIO — a caixa de entrada: chamados do portal, decisões e tarefas do Adm, demandas esperando o SEU
+     ciente, sugestões de calibração, peças marcadas como urgentes e tarefas paradas sem ninguém — cada uma
+     RESOLVIDA ALI (aprovar/recusar com data e resposta, decidir, concluir, confirmar/recusar com motivo,
+     aplicar/descartar o fator, "em proposta", designar). Ao lado: hoje na equipe e o pulso da operação.
+     Uma chamada ao Postgres (pc_inicio, SQL R1_INICIO) monta a caixa; Tarefas do Adm e Calibração vêm pelo
+     motor de leitura (Postgres) como nas telas deles. Sem o SQL, a caixa cai para o caminho antigo e diz.
+   · CHAMADOS DECIDIDOS NO BANCO (pc_chamado_decidir): também na tela Chamados do portal. Sem o SQL, GAS.
+   · 4.2 · ⚙ → 🔌 Integração Omie ganha: locais vendáveis (G4), a CONFERÊNCIA com a Posição de Estoque
+     colada do Excel (G5 — o chip só liga com ela aprovada), a CONCILIAÇÃO (casar/ignorar/reabrir), e o
+     chip de estoque/preço do Omie nas linhas e na busca da proposta; selo fiscal no cadastro do cliente.
+   100% ADITIVO: nenhuma função existente renomeada. Embrulha: showView (lista/rota da tela nova),
+   _v214CarregarOmie · _v214PintarOmie · _v204Pintar · _v204PintarRes · _cpConfirmarDecisao · openModalClient.
+   ═════════════════════════════════════════════════════════════════════════════════════════════════ */
+var V218 = { dados: null, em: 0, carregando: false, erro: '', errCod: '', filtro: 'tudo', aberto: {}, tadm: null, calib: null,
+             dem: null, ger: 0, ocupado: false, chip: {}, chipEm: {}, chipLigado: null, chipMotivo: '', inativos: {}, selos: null, selosEm: 0,
+             orig: {}, val: {}, segurando: false, pendente: false };
+
+function _v218E(v) { return escHtml(v == null ? '' : String(v)); }
+function _v218A(v) { return escAttrJs(v == null ? '' : String(v)); }
+function _v218Erro(msg, cod) { var e = new Error(msg); e.v218 = cod || 'erro'; return e; }
+function _v218Pode(view) {
+  var b = document.querySelector('.nav-groups .nav-item[data-view="' + view + '"]');
+  return !!(b && !b.hidden && !(b.style && b.style.display === 'none'));
+}
+// "hoje" de Brasília (o banco decide "data passada" por Brasília — um PC com outro fuso não pode propor ontem)
+function _v218Hoje() {
+  try { var x = new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Sao_Paulo', year: 'numeric', month: '2-digit', day: '2-digit' }).format(new Date()); if (/^\d{4}-\d{2}-\d{2}$/.test(x)) return x; } catch (e) {}
+  var d = new Date(); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+}
+// o que foi digitado num formulário do Início mora em V218.val (sobrevive a qualquer repintura) — A1 da auditoria
+function _v218V(id, padrao) { return Object.prototype.hasOwnProperty.call(V218.val, id) ? V218.val[id] : (padrao == null ? '' : padrao); }
+function _v218IdsDoCard(k) {
+  var p = String(k || '').split(':'), t = p.shift(), r = p.join(':');
+  if (t === 'ch') { var c = r.replace(/[^a-z0-9-]/gi, ''); return ['v218d' + c, 'v218r' + c]; }
+  if (t === 'ta') return ['v218o' + r.replace(':', '_').replace(/[^a-z0-9_-]/gi, '')];
+  if (t === 'dm') return ['v218m' + r.replace(/[^a-z0-9_-]/gi, '')];
+  return [];
+}
+function _v218Esquecer(k) { _v218IdsDoCard(k).forEach(function (id) { delete V218.val[id]; }); }
+function _v218DiaBr(iso) { var m = /^(\d{4})-(\d{2})-(\d{2})/.exec(String(iso || '')); return m ? m[3] + '/' + m[2] : ''; }
+function _v218Quando(iso) {
+  if (!iso) return '';
+  var t = new Date(iso).getTime(); if (isNaN(t)) return '';
+  var min = Math.round((Date.now() - t) / 60000);
+  if (min < 1) return 'agora'; if (min < 60) return 'há ' + min + ' min';
+  var h = Math.round(min / 60); if (h < 24) return 'há ' + h + ' h';
+  var d = Math.round(h / 24); return d === 1 ? 'ontem' : 'há ' + d + ' dias';
+}
+
+// ── o banco, com o crachá do login com PIN (o mesmo das peças a trocar e da TURBO) ─────────────────
+async function _v218Rpc(fn, args, escrita) {
+  var tok = null;
+  try { tok = await _pcTokenTurbo(); } catch (e) { tok = null; }
+  if (!tok) throw _v218Erro('Para ver a caixa de entrada, saia e entre de novo pelo ProperHub (login com PIN).', 'sem_token');
+  var r = null, ult = null, tent = escrita ? 1 : 2;
+  for (var i = 0; i < tent; i++) {
+    r = null;
+    try {
+      r = await fetch(SUPA_URL + '/rest/v1/rpc/' + fn, { method: 'POST', signal: _pcmSinalTimeout_(!!escrita),
+        headers: { apikey: SUPA_ANON, Authorization: 'Bearer ' + tok, 'Content-Type': 'application/json' }, body: JSON.stringify(args || {}) });
+    } catch (e) { ult = e; continue; }
+    if (!escrita && r.status >= 500 && i + 1 < tent) continue;
+    break;
+  }
+  if (!r) throw _v218Erro(escrita ? 'Sem conexão com o banco — NÃO dá para saber se foi gravado. Atualize antes de repetir.'
+                                  : (_pcmEhTimeout_(ult) ? 'O banco demorou demais para responder.' : 'Sem conexão com o banco.'), 'rede');
+  var txt = ''; try { txt = await r.text(); } catch (e) {}
+  var j = null; try { j = txt ? JSON.parse(txt) : null; } catch (e) {}
+  if (r.ok) return j;
+  var cod = (j && j.code) || '';
+  // PGRST202 = a função não existe; 42883 só conta se for ELA (uma dependência interna faltando é outro problema)
+  if (cod === 'PGRST202' || (cod === '42883' && txt.indexOf(fn) >= 0) || (r.status === 404 && /function|rpc/i.test(txt))) throw _v218Erro('sem o SQL', 'sem_sql');
+  var msg = String((j && (j.message || j.hint)) || ('HTTP ' + r.status));
+  if (r.status === 401 || /jwt/i.test(msg)) throw _v218Erro('A sua chave de acesso ao banco venceu — saia e entre de novo pelo ProperHub.' + (escrita ? ' Nada foi gravado.' : ''), 'token');
+  throw _v218Erro((escrita && !/^(Para|Este|A data|Decisão|Falta)/.test(msg) ? 'NÃO foi gravado: ' : '') + msg, cod || 'erro');
+}
+
+// ═════════════════════════════════════════════════════════════════════════════════════════════════
+// 1 · O INÍCIO
+// ═════════════════════════════════════════════════════════════════════════════════════════════════
+async function _v218Inicio() {
+  var el = document.getElementById('viewInicio'); if (!el) return;
+  _v218Pintar();                                       // o que já está em memória pinta ANTES da rede
+  if (!V218.dados || Date.now() - V218.em > 20000) await _v218Carregar();
+}
+async function _v218Carregar(forcar) {   // forcar: pinta no fim mesmo com o foco num formulário (depois de gravar, ↻)
+  var ger = ++V218.ger;
+  V218.carregando = true; _v218Pintar();
+  var podeTadm = _v218Pode('tarefasAdm'), podeCal = _v218Pode('calibracao');
+  var pInicio = _v218Rpc('pc_inicio', {}).then(function (x) { return { ok: x }; }, function (e) { return { erro: e }; });
+  var pTadm = podeTadm ? gsGet('getTarefasAdm', { incluir_futuras: 'false' }).catch(function (e) { return { status: 'error', error: e.message }; }) : Promise.resolve(null);
+  var pCal = podeCal ? gsGet('getHorimetroPendencias', {}, { tolerante: true }).catch(function () { return null; }) : Promise.resolve(null);
+  var res = await Promise.all([pInicio, pTadm, pCal]);
+  if (ger !== V218.ger) return;
+  var pi = res[0];
+  V218.erro = ''; V218.errCod = '';
+  if (pi.ok) { V218.dados = pi.ok; V218.dem = null; }
+  else {
+    V218.dados = null; V218.erro = pi.erro.message; V218.errCod = pi.erro.v218 || 'erro';
+    // caminho antigo para o que é de TODOS: as demandas esperando o meu ciente (a mesma regra do V156)
+    try {
+      var ag = await gsGet('getAgendaDemandas');
+      V218.dem = ((ag && (ag.demandas || ag.data)) || []).filter(function (d) { try { return _v156PedeCiente(d); } catch (e) { return false; } });
+    } catch (e) { V218.dem = null; }
+  }
+  V218.tadm = (res[1] && res[1].status !== 'error') ? res[1] : (res[1] ? { erro: res[1].error } : null);
+  V218.calib = (res[2] && res[2].status === 'ok') ? res[2] : null;
+  V218.em = Date.now(); V218.carregando = false;
+  _v218Pintar(!!forcar);
+}
+
+function _v218Cards() {
+  var d = V218.dados, out = [];
+  // chamados (só o administrador vê o texto — o banco decide)
+  if (d && d.chamados) (d.chamados.itens || []).forEach(function (c) {
+    out.push({ k: 'ch:' + c.id, g: 'ch', ordem: 1, t: c.criado_em, html: _v218CardChamado(c) });
+  });
+  // decisões e tarefas do Adm
+  var ta = V218.tadm && !V218.tadm.erro ? (V218.tadm.tarefas || []) : [];
+  var doAdm = {}; ta.forEach(function (t) { doAdm[t.os_id + ':' + t.tarefa_id] = true; });   // B2: a tarefa do Adm não repete como "Parada"
+  ta.forEach(function (t) {
+    var trav = ['bloqueado', 'condicional'].indexOf(String(t.status || '')) >= 0;
+    if (trav) return;
+    out.push({ k: 'ta:' + t.os_id + ':' + t.tarefa_id, g: 'dec', ordem: String(t.tipo) === 'decisao' ? 2 : 3,
+               t: -(Number(t.dias_parada) || 0), html: _v218CardTarefa(t) });
+  });
+  // demandas esperando o MEU ciente
+  var dems = d && d.demandas ? (d.demandas.itens || []) : (V218.dem || []).map(function (x) {
+    return { id: x.demanda_id, titulo: x.titulo, cliente: x.cliente, dia: x.dia, hora: x.sem_hora ? null : String(x.inicio_previsto || '').slice(11, 16),
+             criado_por: x.created_by || '', com: Math.max(0, (x.responsaveis || []).length - 1), atrasada: !!x.atrasada };
+  });
+  dems.forEach(function (m) { out.push({ k: 'dm:' + m.id, g: 'ag', ordem: 2, t: m.dia || '9', html: _v218CardDemanda(m) }); });
+  // calibração
+  var cal = V218.calib ? (V218.calib.pendentes || []) : [];
+  cal.forEach(function (p) { out.push({ k: 'ca:' + p.machine_id, g: 'cal', ordem: 4, t: 0, html: _v218CardCalib(p) }); });
+  // peças urgentes
+  if (d && d.pecas && _v218PodePecas()) (d.pecas.itens || []).forEach(function (p) {
+    out.push({ k: 'pc:' + p.id, g: 'pc', ordem: 3, t: p.criado_em, html: _v218CardPeca(p) });
+  });
+  // paradas sem ninguém (quem vê a Agenda da equipe)
+  if (d && d.paradas && _v218Pode('saturacao')) (d.paradas.itens || []).forEach(function (p) {
+    if (doAdm[p.os_id + ':' + p.tarefa_id]) return;
+    out.push({ k: 'pa:' + p.os_id + ':' + p.tarefa_id, g: 'par', ordem: 5, t: -(Number(p.dias) || 0), html: _v218CardParada(p) });
+  });
+  out.sort(function (a, b) { return a.ordem - b.ordem || (a.t < b.t ? -1 : a.t > b.t ? 1 : 0); });
+  return out;
+}
+function _v218PodePecas() { try { return typeof _v208Pode === 'function' ? _v208Pode() : _v218Pode('pecasTrocar'); } catch (e) { return false; } }
+
+var V218_GRUPOS = [['tudo', 'Tudo'], ['dec', 'Decisões'], ['ch', 'Chamados'], ['ag', 'Agenda'], ['cal', 'Calibração'], ['pc', 'Peças'], ['par', 'Paradas']];
+function _v218Pintar(forcar) {
+  var el = document.getElementById('viewInicio'); if (!el || el.style.display === 'none') return;
+  // A1: a recarga que chega no meio do trabalho NÃO troca a tela por baixo do usuário — nem com ele escrevendo num
+  // campo, nem com o botão apertado (entre apertar e soltar), nem com uma gravação em andamento. Fica pendente e
+  // pinta quando ele solta/sai. Os valores digitados moram em V218.val (a repintura os devolve).
+  var f = document.activeElement;
+  var noForm = f && el.contains(f) && (/^(INPUT|TEXTAREA|SELECT)$/.test(f.tagName) || (f.tagName === 'BUTTON' && f.closest && f.closest('.v218-form')));
+  if (!forcar && V218._pintouUmaVez && (V218.segurando || V218.ocupado || noForm)) { V218.pendente = true; return; }
+  V218._pintouUmaVez = true; V218.pendente = false;
+  var d = V218.dados, s = window.PROPER_SESSION || {};
+  var nome = String((s.tecnico && s.tecnico.nome) || s.nome_tecnico || '').split(/\s+/)[0] || '';
+  var dia = new Date().toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long' });
+  var cards = _v218Cards(), cont = { tudo: cards.length };
+  // formulário aberto de um cartão que já saiu da caixa (decidido em outro lugar) não pode travar a atualização automática
+  Object.keys(V218.aberto).forEach(function (k) { if (!cards.some(function (c) { return c.k === k; })) { delete V218.aberto[k]; _v218Esquecer(k); } });
+  cards.forEach(function (c) { cont[c.g] = (cont[c.g] || 0) + 1; });
+  var hr = new Date().getHours(), saud = hr < 12 ? 'Bom dia' : (hr < 18 ? 'Boa tarde' : 'Boa noite');
+  var h = '<div class="v218">';
+  h += '<div class="v218-topo"><div><h2>' + (nome ? saud + ', ' + _v218E(nome) : 'Início') + '</h2><div class="v218-dia">' + _v218E(dia) + '</div></div><span class="v218-sp"></span>' +
+    '<button type="button" class="btn btn-secondary btn-sm" data-v218="novaDemanda">＋ Nova demanda</button>' +
+    (_v218Pode('os') ? '<button type="button" class="btn btn-primary btn-sm" data-v218="novaOS">＋ Nova OS</button>' : '') +
+    '<button type="button" class="btn btn-secondary btn-sm" data-v218="recarregar" title="Atualizar agora">' + (V218.carregando ? '⏳' : '↻') + '</button></div>';
+  if (V218.errCod === 'sem_sql') h += '<div class="v218-aviso amar">O SQL <b>R1_INICIO</b> ainda não rodou no Supabase: esta caixa mostra só o que vem pelo caminho antigo (tarefas do Adm, calibração e as suas demandas). Rode o SQL (LEIA-ME da entrega de 30/09) e atualize.</div>';
+  else if (V218.errCod === 'sem_token' || V218.errCod === 'token') h += '<div class="v218-aviso amar">' + _v218E(V218.erro) + '</div>';
+  else if (V218.erro) h += '<div class="v218-aviso verm">Não consegui ler a caixa de entrada: ' + _v218E(V218.erro) + ' <button type="button" class="btn btn-secondary btn-sm" data-v218="recarregar">Tentar de novo</button></div>';
+  if (V218.tadm && V218.tadm.erro) h += '<div class="v218-aviso verm">Tarefas do Adm não carregaram: ' + _v218E(V218.tadm.erro) + '</div>';
+  h += '<div class="v218-chips" role="toolbar" aria-label="Filtrar a caixa">' + V218_GRUPOS.filter(function (g) { return g[0] === 'tudo' || cont[g[0]]; }).map(function (g) {
+    return '<button type="button" class="v218-chip" data-v218="filtro" data-k="' + g[0] + '" aria-pressed="' + (V218.filtro === g[0]) + '">' + g[1] + ' <b>' + (cont[g[0]] || 0) + '</b></button>';
+  }).join('') + '</div>';
+  var vis = cards.filter(function (c) { return V218.filtro === 'tudo' || c.g === V218.filtro; });
+  h += '<div class="v218-grade"><div>';
+  if (V218.carregando && !d && !V218.tadm && !V218.dem) h += '<div class="v218-vazio">⏳ Lendo a caixa de entrada…</div>';
+  else if (!vis.length) h += '<div class="v218-vazio">✅ Nada esperando você' + (V218.filtro !== 'tudo' ? ' neste filtro' : '') + '.</div>';
+  else h += vis.map(function (c) { return '<div class="v218-card" data-v218k="' + _v218E(c.k) + '">' + c.html + '</div>'; }).join('');
+  h += '</div><div class="v218-lado">' + _v218LadoHtml() + '</div></div>';
+  h += '<div class="v218-rodape">' + (V218.em ? 'Atualizado ' + _v218E(new Date(V218.em).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })) : '') +
+    (d ? ' · lido do banco (Postgres) numa chamada' : '') + '</div></div>';
+  el.innerHTML = h;
+}
+
+function _v218LadoHtml() {
+  var d = V218.dados; if (!d) return '';
+  var h = '<div class="v218-caixa"><h3>Hoje na equipe</h3>';
+  var hj = d.hoje_equipe || [];
+  h += hj.length ? hj.map(function (x) {
+    return '<div class="v218-hoje"><span class="h">' + _v218E(x.hora || '—') + '</span><span><div>' + _v218E(x.titulo || '') + '</div><div class="q">' +
+      _v218E([x.quem, x.cliente].filter(Boolean).join(' · ')) + '</div></span></div>';
+  }).join('') : '<div class="v218-sub">Nada marcado para hoje.</div>';
+  h += '</div>';
+  var p = d.pulso || {};
+  var bt = function (k, n, rot, alvo, ruim) {   // B5: só vira botão se a tela estiver no perfil de quem vê
+    var miolo = '<b class="' + (ruim && n ? 'ruim' : '') + '">' + _v218E(n == null ? '—' : n) + '</b><span>' + rot + '</span>';
+    return _v218Pode(alvo) ? '<button type="button" data-v218="ir" data-k="' + alvo + '">' + miolo + '</button>' : '<div class="v218-pulso-it">' + miolo + '</div>';
+  };
+  h += '<div class="v218-caixa"><h3>Pulso da operação</h3><div class="v218-pulso">' +
+    bt('atr', p.os_atrasadas, 'OS atrasadas de ' + _v218E(p.os_abertas || 0) + ' em aberto', 'os', true) +
+    bt('sem', p.tarefas_sem_ninguem, 'tarefas sem ninguém', 'saturacao', true) +
+    (_v218Pode('comercial') ? bt('neg', p.negocios_abertos, 'negócios em andamento', 'comercial') + bt('cob', p.a_cobrar, 'a cobrar (Faturamento)', 'comercial', true) : '') +
+    bt('pre', p.presas_os_encerrada, 'tarefas presas em OS encerrada', 'saturacao', true) +
+    (d.pecas ? bt('pc', d.pecas.pendentes, 'peças a trocar (' + _v218E(d.pecas.urgentes || 0) + ' urgentes)', 'pecasTrocar', d.pecas.urgentes > 0) : '') +
+    '</div></div>';
+  if (d.chamados && !d.eu.admin && d.chamados.fila) h += '<div class="v218-caixa"><h3>Chamados do portal</h3><div class="v218-sub">' + _v218E(d.chamados.fila) + ' na fila — quem decide é o administrador.</div></div>';
+  if (d.chamados && d.chamados.relatos_abertos) h += '<div class="v218-caixa"><h3>Relatos pela placa</h3><div class="v218-sub">' + _v218E(d.chamados.relatos_abertos) + ' esperando triagem.' + (_v218Pode('chamadosPortal') ? ' <button type="button" class="btn btn-secondary btn-sm" data-v218="ir" data-k="chamadosPortal">Abrir</button>' : '') + '</div></div>';
+  return h;
+}
+
+// ── os cartões ────────────────────────────────────────────────────────────────────────────────────
+function _v218CardChamado(c) {
+  var k = 'ch:' + c.id, ab = V218.aberto[k] || '';
+  var h = '<div class="v218-cab"><span class="v218-tp ch">Chamado do portal</span><span>' + _v218E(c.cliente) + ' · ' + _v218E(_v218Quando(c.criado_em)) + '</span>' +
+    (c.midias ? '<span>📷 ' + _v218E(c.midias) + '</span>' : '') + '</div>' +
+    '<div class="v218-tit">' + _v218E(c.descricao) + '</div>' +
+    '<div class="v218-sub">' + _v218E(c.maquina || 'sem máquina escolhida') + (c.origem && c.origem !== 'portal' ? ' · ' + _v218E(c.origem) : '') + '</div>';
+  if (!ab) return h + '<div class="v218-acoes"><button type="button" class="btn btn-primary btn-sm" data-v218="abrir" data-k="' + _v218E(k) + '" data-m="aprovar">Aprovar com data</button>' +
+    '<button type="button" class="btn btn-secondary btn-sm" data-v218="abrir" data-k="' + _v218E(k) + '" data-m="recusar">Recusar</button>' +
+    (_v218Pode('os') ? '<button type="button" class="btn btn-secondary btn-sm" data-v218="chOS" data-id="' + _v218E(c.id) + '">Abrir OS com este chamado</button>' : '') +
+    (c.midias && _v218Pode('chamadosPortal') ? '<button type="button" class="btn btn-secondary btn-sm" data-v218="ir" data-k="chamadosPortal">Ver fotos</button>' : '') + '</div>';
+  var id = String(c.id).replace(/[^a-z0-9-]/gi, '');
+  if (ab === 'aprovar') return h + '<div class="v218-form"><div class="v218-lin"><div><label for="v218d' + id + '">Data prevista *</label><input type="date" id="v218d' + id + '" min="' + _v218Hoje() + '" value="' + _v218E(_v218V('v218d' + id, _v218Hoje())) + '"></div>' +
+    '<div><label for="v218r' + id + '">Resposta ao cliente <small>(ele lê)</small></label><input id="v218r' + id + '" maxlength="500" autocomplete="off" name="v218_r_nofill" data-lpignore="true" data-1p-ignore placeholder="Ex.: o técnico passa na quinta de manhã" value="' + _v218E(_v218V('v218r' + id)) + '"></div></div>' +
+    '<div class="v218-acoes" style="margin:0"><button type="button" class="btn btn-primary btn-sm" data-v218="chDecidir" data-id="' + _v218E(c.id) + '" data-dec="aprovado">✓ Aprovar</button><button type="button" class="btn btn-secondary btn-sm" data-v218="fechar" data-k="' + _v218E(k) + '">Cancelar</button></div></div>';
+  return h + '<div class="v218-form"><div><label for="v218r' + id + '">Resposta ao cliente * <small>(ele lê o motivo)</small></label><textarea id="v218r' + id + '" maxlength="500" rows="2" name="v218_rr_nofill" data-lpignore="true" data-1p-ignore>' + _v218E(_v218V('v218r' + id)) + '</textarea></div>' +
+    '<div class="v218-acoes" style="margin:0"><button type="button" class="btn btn-danger btn-sm" data-v218="chDecidir" data-id="' + _v218E(c.id) + '" data-dec="recusado">Recusar o chamado</button><button type="button" class="btn btn-secondary btn-sm" data-v218="fechar" data-k="' + _v218E(k) + '">Cancelar</button></div></div>';
+}
+function _v218CardTarefa(t) {
+  var k = 'ta:' + t.os_id + ':' + t.tarefa_id, dec = String(t.tipo) === 'decisao';
+  var form = String(t.form_url == null ? '' : t.form_url).trim(), temForm = /^https?:\/\//i.test(form);
+  var dias = (typeof t.dias_parada === 'number') ? t.dias_parada : null;
+  var h = '<div class="v218-cab"><span class="v218-tp dec">' + (dec ? 'Decidir' : 'Tarefa do Adm') + '</span><span>' + _v218E(t.numero_os) + ' · ' + _v218E(t.cliente) + (t.tipo_os ? ' · ' + _v218E(t.tipo_os) : '') + '</span>' +
+    (dias != null ? '<span>esperando há ' + dias + (dias === 1 ? ' dia' : ' dias') + '</span>' : '') + '</div>' +
+    '<div class="v218-tit">' + _v218E(t.nome) + '</div>' + (t.fase ? '<div class="v218-sub">Etapa: ' + _v218E(t.fase) + '</div>' : '');
+  if (dec) {
+    var opts = []; try { opts = JSON.parse(t.opcoes_json || '[]') || []; } catch (e) { opts = []; }
+    return h + '<div class="v218-acoes">' + (opts.length ? opts.map(function (o) {
+      return '<button type="button" class="btn btn-secondary btn-sm" data-v218="decidir" data-os="' + _v218E(t.os_id) + '" data-tar="' + _v218E(t.tarefa_id) + '" data-valor="' + _v218E(o.valor) + '" data-rot="' + _v218E(o.label || o.valor) + '">' + _v218E(o.label || o.valor) + '</button>';
+    }).join('') : '<span class="v218-sub">Sem opções no roteiro — abra a OS.</span>') +
+      '<button type="button" class="btn btn-secondary btn-sm" data-v218="os" data-os="' + _v218E(t.os_id) + '">Ver a OS</button></div>';
+  }
+  var ab = V218.aberto[k];
+  var bts = '<div class="v218-acoes">' + (temForm ? '<button type="button" class="btn btn-primary btn-sm" data-v218="form" data-os="' + _v218E(t.os_id) + '" data-tar="' + _v218E(t.tarefa_id) + '" data-num="' + _v218E(t.numero_os) + '" data-cli="' + _v218E(t.cliente) + '" data-url="' + _v218E(form) + '">📄 Abrir formulário</button>' : '') +
+    (!ab ? '<button type="button" class="btn ' + (temForm ? 'btn-secondary' : 'btn-primary') + ' btn-sm" data-v218="abrir" data-k="' + _v218E(k) + '" data-m="concluir">✓ Concluir</button>' : '') +
+    '<button type="button" class="btn btn-secondary btn-sm" data-v218="os" data-os="' + _v218E(t.os_id) + '">Ver a OS</button></div>';
+  if (!ab) return h + bts;
+  var id = (String(t.os_id) + '_' + String(t.tarefa_id)).replace(/[^a-z0-9_-]/gi, '');
+  return h + '<div class="v218-form">' + (temForm ? '<div class="v218-aviso amar" style="margin:0">Esta tarefa tem um <b>formulário</b>. Concluir sem ele fecha a tarefa sem termo/laudo em PDF na OS.</div>' : '') +
+    '<div><label for="v218o' + id + '">Observação (opcional)</label><input id="v218o' + id + '" maxlength="500" autocomplete="off" name="v218_o_nofill" data-lpignore="true" data-1p-ignore value="' + _v218E(_v218V('v218o' + id)) + '"></div>' +
+    '<div class="v218-acoes" style="margin:0"><button type="button" class="btn btn-primary btn-sm" data-v218="concluir" data-os="' + _v218E(t.os_id) + '" data-tar="' + _v218E(t.tarefa_id) + '" data-nome="' + _v218E(t.nome) + '" data-in="v218o' + id + '">' + (temForm ? 'Concluir mesmo sem o formulário' : '✓ Concluir') + '</button>' +
+    '<button type="button" class="btn btn-secondary btn-sm" data-v218="fechar" data-k="' + _v218E(k) + '">Cancelar</button></div></div>';
+}
+function _v218CardDemanda(m) {
+  var k = 'dm:' + m.id, ab = V218.aberto[k];
+  var quando = (m.dia ? (m.dia === _v218Hoje() ? 'hoje' : _v218DiaBr(m.dia)) : 'sem data') + (m.hora ? ' às ' + m.hora : ' · dia inteiro');
+  var h = '<div class="v218-cab"><span class="v218-tp ag">Agenda · pedido de confirmação</span><span>' + _v218E(quando) + '</span>' +
+    (m.atrasada ? '<span style="color:#B42318;font-weight:600">já passou</span>' : '') + '</div>' +
+    '<div class="v218-tit">' + _v218E(m.titulo || 'Demanda') + '</div>' +
+    '<div class="v218-sub">' + _v218E([m.cliente, m.criado_por ? 'agendada por ' + m.criado_por : '', m.com ? 'com mais ' + m.com + ' pessoa(s)' : ''].filter(Boolean).join(' · ')) + '</div>';
+  if (!ab) return h + '<div class="v218-acoes"><button type="button" class="btn btn-primary btn-sm" data-v218="demOk" data-id="' + _v218E(m.id) + '">✓ Confirmo</button>' +
+    '<button type="button" class="btn btn-secondary btn-sm" data-v218="abrir" data-k="' + _v218E(k) + '" data-m="nao">✗ Não consigo</button></div>';
+  var id = String(m.id).replace(/[^a-z0-9_-]/gi, '');
+  return h + '<div class="v218-form"><div><label for="v218m' + id + '">Por que não consegue? * <small>(quem agendou lê e remarca — recusar não cancela)</small></label><input id="v218m' + id + '" maxlength="300" autocomplete="off" name="v218_m_nofill" data-lpignore="true" data-1p-ignore value="' + _v218E(_v218V('v218m' + id)) + '"></div>' +
+    '<div class="v218-acoes" style="margin:0"><button type="button" class="btn btn-danger btn-sm" data-v218="demNao" data-id="' + _v218E(m.id) + '" data-in="v218m' + id + '">Enviar a recusa</button><button type="button" class="btn btn-secondary btn-sm" data-v218="fechar" data-k="' + _v218E(k) + '">Cancelar</button></div></div>';
+}
+function _v218CardCalib(p) {
+  var limite = String(p.motivo || '') === 'limite';
+  var bruto = (p.fator_bruto !== '' && p.fator_bruto != null && isFinite(Number(p.fator_bruto))) ? Number(p.fator_bruto) : null;
+  var fator = (bruto != null && !limite) ? bruto : Number(p.fator_sugerido);
+  var n = function (x) { return (x !== '' && x != null && isFinite(Number(x))) ? Math.round(Number(x)).toLocaleString('pt-BR') : '—'; };
+  return '<div class="v218-cab"><span class="v218-tp cal">Calibração</span><span>' + _v218E(p.cliente || '—') + '</span></div>' +
+    '<div class="v218-tit">' + _v218E(p.maquina || '') + (p.serie ? ' · S/N ' + _v218E(p.serie) : '') + '</div>' +
+    '<div class="v218-sub">Horímetro real ' + n(p.real) + ' h, estimado ' + n(p.estimado) + ' h · fator sugerido <b>' + _v218E(Number(fator).toFixed(3)) + '</b> (hoje ' + _v218E(Number(p.fator_atual).toFixed(3)) + ')' +
+    (limite ? ' · <span style="color:#8A5A00">no limite de segurança</span>' : '') + ' · ' + _v218E(p.n_amostras || 0) + ' amostra(s)</div>' +
+    '<div class="v218-acoes"><button type="button" class="btn btn-primary btn-sm" data-v218="calAplicar" data-mid="' + _v218E(p.machine_id) + '" data-fator="' + _v218E(fator) + '">Aplicar ' + _v218E(Number(fator).toFixed(3)) + '</button>' +
+    '<button type="button" class="btn btn-secondary btn-sm" data-v218="calDescartar" data-mid="' + _v218E(p.machine_id) + '">Descartar</button>' +
+    '<button type="button" class="btn btn-secondary btn-sm" data-v218="maq" data-mid="' + _v218E(p.machine_id) + '">Ver a máquina</button></div>';
+}
+function _v218CardPeca(p) {
+  return '<div class="v218-cab"><span class="v218-tp pc">Peça a trocar · urgente</span><span>marcada ' + _v218E(_v218Quando(p.criado_em)) + (p.tecnico ? ' por ' + _v218E(p.tecnico) : '') + '</span></div>' +
+    '<div class="v218-tit">' + _v218E(p.peca || '—') + (p.ref ? ' <span class="v218-sub">Ref. ' + _v218E(p.ref) + '</span>' : '') + '</div>' +
+    '<div class="v218-sub">' + _v218E([p.maquina, p.tag ? 'Tag ' + p.tag : '', p.cliente].filter(Boolean).join(' · ')) + (p.obs ? ' · “' + _v218E(p.obs) + '”' : '') + '</div>' +
+    '<div class="v218-acoes"><button type="button" class="btn btn-primary btn-sm" data-v218="pecaProp" data-id="' + _v218E(p.id) + '" title="Marca como em proposta (o comercial está orçando)">📝 Em proposta</button>' +
+    '<button type="button" class="btn btn-secondary btn-sm" data-v218="ir" data-k="pecasTrocar">Ver em Peças a trocar</button></div>';
+}
+function _v218CardParada(p) {
+  return '<div class="v218-cab"><span class="v218-tp par">Parada · ninguém designado</span><span>' + _v218E(p.numero_os || p.os_id) + ' · ' + _v218E(p.cliente || '') + (p.tipo_os ? ' · ' + _v218E(p.tipo_os) : '') + '</span></div>' +
+    '<div class="v218-tit">' + _v218E(p.tarefa) + '</div>' +
+    '<div class="v218-sub">Parada há ' + _v218E(p.dias) + ' dias' + (p.prazo_vencido ? ' · <b style="color:#B42318">o prazo da OS venceu em ' + _v218E(_v218DiaBr(p.prazo_os)) + '</b>' : '') + '</div>' +
+    '<div class="v218-acoes"><button type="button" class="btn btn-primary btn-sm" data-v218="designar" data-os="' + _v218E(p.os_id) + '" data-tar="' + _v218E(p.tarefa_id) + '">Designar</button>' +
+    '<button type="button" class="btn btn-secondary btn-sm" data-v218="os" data-os="' + _v218E(p.os_id) + '">Ver a OS</button></div>';
+}
+
+// ── as ações (um ouvinte; escrita com trava de duplo clique) ─────────────────────────────────────
+var V218_ESCRITAS = ['chDecidir', 'decidir', 'concluir', 'demOk', 'demNao', 'calAplicar', 'calDescartar', 'pecaProp'];
+function _v218Sair(btn, msg) {
+  var card = btn && btn.closest && btn.closest('.v218-card');
+  if (card) { card.classList.add('saindo'); }
+  if (msg) toast(msg, 'success');
+}
+async function _v218Acao(ev) {
+  var b = ev.target.closest && ev.target.closest('[data-v218]'); if (!b) return;
+  var a = b.getAttribute('data-v218'), g = function (k) { return b.getAttribute('data-' + k) || ''; };
+  if (a === 'recarregar') return _v218Carregar(true);
+  if (a === 'filtro') { V218.filtro = g('k'); return _v218Pintar(true); }
+  if (a === 'abrir') { V218.aberto[g('k')] = g('m'); _v218Pintar(true); var campo = document.querySelector('.v218-card[data-v218k="' + g('k').replace(/"/g, '') + '"] .v218-form input, .v218-card[data-v218k="' + g('k').replace(/"/g, '') + '"] .v218-form textarea'); if (campo) try { campo.focus(); } catch (e) {} return; }
+  if (a === 'fechar') { delete V218.aberto[g('k')]; _v218Esquecer(g('k')); return _v218Pintar(true); }
+  if (a === 'novaDemanda') { try { _v139NovaDemanda(); } catch (e) { toast('Não consegui abrir a nova demanda: ' + e.message, 'error'); } return; }
+  if (a === 'novaOS') { try { await openModalOS(); } catch (e) { toast('Não consegui abrir a nova OS: ' + e.message, 'error'); } return; }
+  if (a === 'ir') { if (!_v218Pode(g('k'))) { toast('Esta tela não está no seu perfil.', 'warning'); return; } showView(g('k')); return; }
+  if (a === 'os') { showView('os'); try { openOSDetail(g('os')); } catch (e) {} return; }
+  if (a === 'maq') { try { openMachineDetail(g('mid')); } catch (e) {} return; }
+  if (a === 'form') { try { _tadmAbrirForm(g('os'), g('tar'), g('num'), g('cli'), g('url')); } catch (e) { toast(e.message, 'error'); } return; }
+  if (a === 'designar') {
+    try { await _satAbrirDesignar(g('os'), g('tar'), { origem: 'inicio' }); } catch (e) { toast(e.message, 'error'); return; }
+    // quando a janela de designar fechar, a caixa se atualiza sozinha
+    var t0 = Date.now(), iv = setInterval(function () {
+      if (!document.getElementById('satModalOverlay') || Date.now() - t0 > 600000) { clearInterval(iv); if (currentView === 'inicio') _v218Carregar(); }
+    }, 900);
+    return;
+  }
+  if (a === 'chOS') {
+    var c = ((V218.dados && V218.dados.chamados && V218.dados.chamados.itens) || []).find(function (x) { return String(x.id) === g('id'); });
+    if (!c) return;
+    try {
+      var item = { id: c.id, id_cliente: c.id_cliente, cliente_nome: c.cliente, maquina_id: c.maquina_id || '', maquina_orfa: !!c.maquina_orfa, descricao: c.descricao, data_prevista: '' };
+      if (!_cpLista.some(function (x) { return String(x.id) === String(c.id); })) _cpLista.push(item);
+      await _cpAbrirOSCom(c.id);
+    } catch (e) { toast('Não consegui abrir a OS: ' + e.message, 'error'); }
+    return;
+  }
+  if (V218_ESCRITAS.indexOf(a) < 0) return;
+  if (V218.ocupado) { ev.preventDefault(); return; }
+  V218.ocupado = true;
+  var txt = b.textContent; b.disabled = true; b.classList.add('is-busy'); b.setAttribute('data-pcm-enviando', '1'); b.textContent = '⏳ ' + txt;
+  var ok = false;
+  try { ok = await _v218Escrever(a, b, g); }
+  catch (e) { toast((e && e.message) || 'Não consegui.', 'error'); }
+  finally {
+    V218.ocupado = false;
+    if (b.isConnected && !ok) { b.disabled = false; b.classList.remove('is-busy'); b.removeAttribute('data-pcm-enviando'); b.textContent = txt; }
+  }
+  if (ok) { await _v218Carregar(true); }
+  else if (V218.pendente) _v218Pintar(true);
+}
+async function _v218Escrever(a, b, g) {
+  var eu = (window.PROPER_SESSION && ((PROPER_SESSION.tecnico && PROPER_SESSION.tecnico.nome) || PROPER_SESSION.nome_tecnico)) || 'adm';
+  if (a === 'chDecidir') {
+    var id = g('id'), dec = g('dec'), sid = id.replace(/[^a-z0-9-]/gi, '');
+    var data = String((document.getElementById('v218d' + sid) || {}).value || '').trim();
+    var resp = String((document.getElementById('v218r' + sid) || {}).value || '').trim();
+    if (dec === 'aprovado' && !data) { toast('Informe a data prevista — é o que o cliente vai ver.', 'error'); return false; }
+    if (dec === 'recusado' && !resp) { toast('Escreva a resposta ao cliente antes de recusar.', 'error'); return false; }
+    await _v218DecidirChamado(id, dec, data, resp);
+    delete V218.aberto['ch:' + id]; _v218Esquecer('ch:' + id);
+    _v218Sair(b, dec === 'aprovado' ? 'Chamado aprovado — o cliente já vê a data.' : 'Chamado recusado com a resposta.');
+    try { _cpAtualizarContador(); } catch (e) {}
+    return true;
+  }
+  if (a === 'decidir') {
+    await syncToGS('resolverDecisao', { os_id: g('os'), tarefa_id: g('tar'), valor: g('valor'), usuario: eu, is_admin: true });
+    try { _invalidarCachePipeline(g('os')); _tadmTirarDoCache(g('os'), g('tar')); _tadmDiarioDaTarefa(g('os'), g('tar'), 'Decisão registrada', g('rot')); } catch (e) {}
+    _v218Sair(b, 'Decisão registrada: ' + g('rot')); return true;
+  }
+  if (a === 'concluir') {
+    var obs = String((document.getElementById(g('in')) || {}).value || '').trim();
+    var r = await syncToGS('updateTarefaStatus', { os_id: g('os'), tarefa_id: g('tar'), status: 'completo', usuario: eu, observacao: obs, is_admin: true });
+    try { _invalidarCachePipeline(g('os')); _tadmTirarDoCache(g('os'), g('tar')); _tadmDiarioDaTarefa(g('os'), g('tar'), 'Tarefa concluída', g('nome')); } catch (e) {}
+    delete V218.aberto['ta:' + g('os') + ':' + g('tar')]; _v218Esquecer('ta:' + g('os') + ':' + g('tar'));
+    _v218Sair(b, r && r.os_fechada === true ? 'Concluída — OS encerrada.' : (r && r.os_fechada === false && (r.os_pendentes || []).length ? 'Concluída. A OS NÃO fechou: faltam ' + r.os_pendentes.length + ' tarefa(s).' : 'Tarefa concluída.'));
+    return true;
+  }
+  if (a === 'demOk' || a === 'demNao') {
+    var mot = a === 'demNao' ? String((document.getElementById(g('in')) || {}).value || '').trim() : '';
+    if (a === 'demNao' && !mot) { toast('Escreva por que não consegue — quem agendou precisa saber para remarcar.', 'error'); return false; }
+    var rr = await gsPost({ action: 'responderDemanda', demanda_id: g('id'), resposta: a === 'demOk' ? 'confirmada' : 'recusada', motivo: mot, usuario: (typeof _v156MeuNome === 'function' && _v156MeuNome()) || eu });
+    if (rr && rr.status === 'error') throw new Error(rr.error || 'falha ao responder');
+    delete V218.aberto['dm:' + g('id')]; _v218Esquecer('dm:' + g('id'));
+    try { _saturacaoCacheHtml = null; _v156AtualizarContador(); } catch (e) {}
+    _v218Sair(b, a === 'demOk' ? 'Confirmado. Quem agendou foi avisado.' : 'Recusa registrada. Quem agendou foi avisado.'); return true;
+  }
+  if (a === 'calAplicar') {
+    var rc = await gsPost({ action: 'aplicarHorimetroFatores', itens: [{ machine_id: g('mid'), fator: Number(g('fator')) }], usuario: eu });
+    if (!rc || rc.status !== 'ok' || (rc.falhas && !rc.aplicados)) throw new Error((rc && (rc.error || (rc.erros && JSON.stringify(rc.erros)))) || 'o fator não foi aplicado');
+    _v218Sair(b, 'Fator aplicado.'); return true;
+  }
+  if (a === 'calDescartar') {
+    var rd = await gsPost({ action: 'descartarHorimetroSugestao', machine_ids: [g('mid')], usuario: eu });
+    if (!rd || rd.status !== 'ok') throw new Error((rd && rd.error) || 'não consegui descartar');
+    _v218Sair(b, 'Sugestão descartada. O fator vigente não mudou.'); return true;
+  }
+  if (a === 'pecaProp') {
+    await _v208Rpc('pc_subst_status', { p_id: g('id'), p_status: 'em_proposta', p_obs: 'pelo Início' }, true);
+    try { _v208AtualizarBadge(true); } catch (e) {}
+    _v218Sair(b, 'Marcada como em proposta.'); return true;
+  }
+  return false;
+}
+
+// chamado: o banco decide (SQL R1); sem o SQL, o caminho de sempre (GAS, com o PIN de administrador)
+async function _v218DecidirChamado(id, dec, data, resp) {
+  try {
+    return await _v218Rpc('pc_chamado_decidir', { p_id: id, p_decisao: dec, p_data: data || null, p_resposta: resp || null }, true);
+  } catch (e) {
+    if (e && e.v218 !== 'sem_sql') throw e;
+    return await _paPost({ action: 'portalChamadoDecidir', chamado_id: id, decisao: dec, data_prevista: data, resposta: resp });
+  }
+}
+
+// ═════════════════════════════════════════════════════════════════════════════════════════════════
+// 2 · ETAPA 4.2 — painel do Omie (G4 · G5 · conciliação), chip na proposta, selo no cliente
+// ═════════════════════════════════════════════════════════════════════════════════════════════════
+var V218_EST = { tem: '✓ tenho', similar: '≈ similar', comprar: '🛒 comprar', inativo: 'inativo no Omie', ambiguo: '? 2+ no Omie', sem_par: 'sem par no Omie' };
+var V218_CONC = { sem_par: 'sem par no Omie', ambiguo: 'mais de um no Omie', inativo_omie: 'inativo no Omie', negativo: 'saldo negativo',
+                  cnpj_nao_encontrado: 'CNPJ não está no Omie', preco_diferente: 'preço diferente', casado: 'casado', ignorado: 'ignorado' };
+
+async function _v218Carregar42(M) {
+  try { M.p42 = await _v214Rpc('erp_painel_42', {}, false, 'OMIE_42_CONCILIACAO'); M.e42 = ''; } catch (e) { M.p42 = null; M.e42 = e.v200 === 'sem_sql' ? 'sem_sql' : (e.message || String(e)); }
+  if (M.concAberta) {
+    try { M.conc = await _v214Rpc('erp_conciliacao', { p_tipo: M.concTipo || 'todos' }, false, 'OMIE_42_CONCILIACAO'); M.eConc = ''; } catch (e) { M.conc = null; M.eConc = e.message || String(e); }
+  }
+}
+function _v218Painel42Html(M) {
+  if (M.e42 === 'sem_sql') return '<h4>📦 Estoque na proposta · 🔗 Conciliação</h4><div class="v200-aviso amar">O SQL <b>OMIE_42_CONCILIACAO</b> ainda não rodou no Supabase (LEIA-ME da entrega de 30/09).</div>';
+  if (M.e42) return '<h4>📦 Estoque na proposta</h4><div class="v200-aviso verm">' + _v214E(M.e42) + '</div>';
+  var p = M.p42; if (!p) return '';
+  var adm = p.papel === 'admin', vend = p.locais_vendaveis || [], c = p.conferencia;
+  var hora = function (v) { return v ? _v214E(_v200Data(v, true)) : '—'; };
+  var h = '<h4>📦 Estoque na proposta (G4 · G5)</h4>';
+  var g5 = p.g5 || {}, susp = p.chip_estoque && g5.ok === false;
+  h += '<div class="v214-st"><div><b>Chip na proposta</b>' + (susp ? '<span class="v214-err">SUSPENSO</span>' : p.chip_estoque ? '<span class="v214-ok">LIGADO</span>' : 'desligado') +
+    (adm ? ' <button type="button" class="btn btn-sm ' + (p.chip_estoque ? 'btn-secondary' : 'btn-primary') + '" data-v218o="chip" data-k="' + (p.chip_estoque ? 'off' : 'on') + '">' + (p.chip_estoque ? 'Desligar' : 'Ligar') + '</button>' : '') +
+    (susp ? '<br><small style="color:#8A1C12">' + _v214E(g5.motivo || '') + ' A proposta não mostra número até isso ser resolvido.</small>' : '') +
+    '<br><small>Liga com a conferência de cada local vendável aprovada há menos de 7 dias. Depois, se suspende sozinho se uma conferência nova não bater, se entrar local vendável nunca conferido, ou se a conferência passar de ' + _v214E(g5.validade_dias || 30) + ' dias.</small></div>' +
+    '<div><b>Última conferência</b>' + (c ? (c.aprovada ? '<span class="v214-ok">bateu</span>' : '<span class="v214-err">não bateu</span>') + ' · ' + hora(c.feita_em) +
+      '<br><small>' + _v214E(c.linhas) + ' linhas · ' + _v214E(c.iguais) + ' iguais · ' + _v214E(c.diferentes) + ' diferentes · ' + _v214E(c.so_na_exportacao) + ' só na exportação · ' + _v214E(c.so_na_leitura) + ' só na leitura' + (c.local == null ? ' · soma de todos os locais' : ' · local ' + _v214E(c.local === '' ? 'padrão do Omie' : c.local)) + '</small>' : 'nenhuma ainda') + '</div>' +
+    '<div><b>Estoque lido</b>' + hora(p.estoque_lido_em) + '<br><small>CRM oficial: ' + (p.crm_oficial === 'pcm' ? 'o do PCM (decisão de 30/09)' : _v214E(p.crm_oficial || '—')) + '</small></div></div>';
+  var locais = p.locais || [];
+  h += '<div class="v200-sub" style="margin:4px 0">Locais que SOMAM no "tenho" da proposta (G4). A van do técnico e a sucata ficam de fora.</div>';
+  h += locais.length ? '<div class="v218-loc">' + locais.map(function (l) {
+    var marcado = M.locSel ? M.locSel.indexOf(l.codigo) >= 0 : vend.indexOf(l.codigo) >= 0;
+    return '<label><input type="checkbox" data-v218loc="' + _v214E(l.codigo) + '"' + (marcado ? ' checked' : '') + (adm ? '' : ' disabled') + '> ' + _v214E(l.descricao || l.codigo) + ' <small>(' + _v214E(l.itens) + ' itens)</small></label>';
+  }).join('') + '</div>' + (adm ? '<div style="margin:6px 0 10px"><button type="button" class="btn btn-sm btn-secondary" data-v218o="locais">Salvar os locais vendáveis</button></div>' : '')
+    : '<div class="v200-sub">Nenhum local lido ainda — aperte "Ler agora" em <b>Locais de estoque</b> e em <b>Estoque</b>.</div>';
+  if (adm) {
+    h += '<div class="v214-ens"><b>Conferir com a Posição de Estoque do Omie (G5)</b> <small style="color:var(--text-muted)">No Omie: Estoque → Posição de Estoque → exportar para Excel. Selecione as colunas <b>Código</b> e <b>Saldo</b> (com o título) e cole aqui. Faça logo depois de um "Ler agora" do estoque.</small>' +
+      '<textarea class="v218-cola" id="v218Cola" placeholder="Código&#9;Descrição&#9;Saldo…" name="v218_cola_nofill" data-lpignore="true" data-1p-ignore>' + _v214E(M.cola || '') + '</textarea>' +
+      '<div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:6px"><label style="font-size:12.5px">Comparar com <select id="v218ConfLocal"><option value="*">a soma de todos os locais</option>' +
+      locais.map(function (l) { return '<option value="' + _v214E(l.codigo) + '"' + (M.colaLocal != null && M.colaLocal !== '*' && M.colaLocal === l.codigo ? ' selected' : '') + '>só ' + _v214E(l.descricao || l.codigo || 'padrão do Omie') + '</option>'; }).join('') + '</select></label>' +
+      '<button type="button" class="btn btn-sm btn-primary" data-v218o="conferir">Conferir</button><span id="v218ConfMsg" class="v200-sub"></span></div>' +
+      (c && !c.aprovada && (c.detalhe || []).length ? '<details><summary style="cursor:pointer;font-size:12px">ver as ' + _v214E((c.detalhe || []).length) + ' diferenças</summary><table class="v200-tab" data-cfx-off="1"><thead><tr><th>Código</th><th>Exportação</th><th>Leitura</th><th></th></tr></thead><tbody>' +
+        (c.detalhe || []).map(function (x) { return '<tr style="cursor:default"><td>' + _v214E(x.codigo) + '</td><td>' + _v214E(x.exportacao == null ? '—' : x.exportacao) + '</td><td>' + _v214E(x.leitura == null ? '—' : x.leitura) + '</td><td>' + _v214E(({ diferente: 'diferente', so_na_exportacao: 'só na exportação', so_na_leitura: 'só na leitura' })[x.r] || x.r) + '</td></tr>'; }).join('') +
+        '</tbody></table></details>' : '') + '</div>';
+  }
+  // conciliação
+  h += '<h4>🔗 Conciliação — o que não casa entre o PCM e o Omie</h4>';
+  if (!M.concAberta) return h + '<div><button type="button" class="btn btn-sm btn-secondary" data-v218o="concAbrir">Abrir a conciliação</button> <small style="color:var(--text-muted)">peças do catálogo sem par (ou com dois) no Omie, inativos, saldo negativo, CNPJ que não está no Omie, preço de serviço diferente</small></div>';
+  if (M.eConc) return h + '<div class="v200-aviso verm">' + _v214E(M.eConc) + '</div>';
+  var cj = M.conc || {}, ct = cj.contagens || {}, its = cj.itens || [];
+  h += '<div class="v214-st"><div><b>Peças do PCM</b>' + _v214E(ct.produto_ok || 0) + ' casam sozinhas · ' + _v214E(ct.produto_sem_par || 0) + ' sem par · ' + _v214E(ct.produto_ambiguo || 0) + ' com 2+ · ' + _v214E(ct.produto_inativo || 0) + ' inativas · ' + _v214E(ct.produto_decidido || 0) + ' decididas</div>' +
+    '<div><b>Outros</b>' + _v214E(ct.negativo || 0) + ' negativos · ' + (ct.clientes_lidos ? _v214E(ct.cliente || 0) + ' clientes' : 'clientes ainda não lidos') + ' · ' + (ct.servicos_lidos ? _v214E(ct.servico || 0) + ' serviços' : 'serviços ainda não lidos') +
+    '<br><small>' + _v214E(ct.omie_sem_par_no_pcm || 0) + ' produtos do Omie sem peça no PCM (balcão — não entram na fila)</small></div></div>';
+  h += '<div class="v218-loc" style="margin-bottom:8px">' + [['todos', 'Tudo'], ['produto', 'Peças'], ['negativo', 'Negativos'], ['cliente', 'Clientes'], ['servico', 'Serviços']].map(function (x) {
+    return '<button type="button" class="btn btn-sm ' + ((M.concTipo || 'todos') === x[0] ? 'btn-primary' : 'btn-secondary') + '" data-v218o="concTipo" data-k="' + x[0] + '">' + x[1] + '</button>';
+  }).join('') + '</div>';
+  if (!its.length) return h + '<div class="v200-sub">Nada a conciliar neste filtro. ✅</div>';
+  h += '<table class="v200-tab" data-cfx-off="1"><thead><tr><th>Item</th><th>Situação</th><th>Ação</th></tr></thead><tbody>' + its.slice(0, 200).map(function (x) {
+    var dec = x.situacao;
+    var acoes = dec ? '<button type="button" class="btn btn-sm btn-secondary" data-v218o="conc" data-a="reabrir" data-t="' + _v214E(x.tipo) + '" data-c="' + _v214E(x.chave) + '">Reabrir</button>'
+      : ((x.tipo === 'produto' && (x.candidatos || []).length ? '<div class="v218-cand">' + x.candidatos.slice(0, 5).map(function (cd) {
+          return '<button type="button" class="btn btn-sm btn-secondary" data-v218o="conc" data-a="casar" data-t="produto" data-c="' + _v214E(x.chave) + '" data-cod="' + _v214E(cd.codigo) + '" title="' + _v214E(cd.descricao) + '">Casar com ' + _v214E(cd.codigo) + (cd.inativo ? ' (inativo)' : '') + '</button>';
+        }).join('') + '</div>' : '') +
+        (x.tipo === 'produto' ? '<div class="v218-cand"><input data-v218cod="' + _v214E(x.chave) + '" value="' + _v214E((M.cod || {})[x.chave] || '') + '" placeholder="código do Omie" style="width:130px" autocomplete="off" name="v218_cod_nofill" data-lpignore="true" data-1p-ignore><button type="button" class="btn btn-sm btn-secondary" data-v218o="conc" data-a="casarDigitado" data-t="produto" data-c="' + _v214E(x.chave) + '">Casar</button></div>' : '') +
+        '<button type="button" class="btn btn-sm btn-secondary" data-v218o="conc" data-a="ignorar" data-t="' + _v214E(x.tipo) + '" data-c="' + _v214E(x.chave) + '">Ignorar</button>');
+    return '<tr style="cursor:default"><td><b>' + _v214E(x.titulo) + '</b><br><small>' + _v214E(x.sub || '') + (x.usos ? ' · usada ' + _v214E(x.usos) + '× (' + _v214E((x.onde || []).join(', ')) + ')' : '') + '</small></td>' +
+      '<td>' + _v214E(V218_CONC[x.estado] || x.estado) + (dec && x.erp_codigo ? ' → ' + _v214E(x.erp_codigo) : '') + (x.por ? '<br><small>' + _v214E(x.por) + ' · ' + hora(x.em) + '</small>' : '') + '</td><td>' + acoes + '</td></tr>';
+  }).join('') + '</tbody></table>' + (its.length > 200 ? '<div class="v200-sub">Mostrando 200 de ' + its.length + '. Use os filtros.</div>' : '');
+  return h;
+}
+async function _v218OmieAcao(ev) {
+  var b = ev.target.closest && ev.target.closest('[data-v218o]'); if (!b) return;
+  var M = _v200.modal; if (!M || M.tipo !== 'omie') return;
+  var a = b.getAttribute('data-v218o');
+  if (a === 'concAbrir') { M.concAberta = true; await _v218Carregar42(M); return _v214PintarOmie(M); }
+  if (a === 'concTipo') { M.concTipo = b.getAttribute('data-k'); await _v218Carregar42(M); return _v214PintarOmie(M); }
+  if (V218.ocupado) return;
+  V218.ocupado = true; var txt = b.textContent; b.disabled = true; b.textContent = '⏳ ' + txt;
+  try {
+    if (a === 'chip') {
+      var lig = b.getAttribute('data-k') === 'on';
+      if (lig && !confirm('LIGAR o chip de estoque na proposta?\n\nO vendedor passa a ver "tenho N · lido HH:MM", "similar" ou "comprar" em cada peça, somando só os locais vendáveis.')) return;
+      await _v214Rpc('erp_chip_ligar', { p_ligar: lig }, true, 'OMIE_42_CONCILIACAO');
+      V218.chip = {}; V218.chipEm = {}; V218.chipLigado = null;
+      toast(lig ? 'Chip de estoque LIGADO na proposta.' : 'Chip de estoque desligado.', 'success');
+    } else if (a === 'locais') {
+      var l = Array.prototype.slice.call(document.querySelectorAll('[data-v218loc]')).filter(function (x) { return x.checked; }).map(function (x) { return x.getAttribute('data-v218loc'); });
+      await _v214Rpc('erp_config_salvar', { p_chave: 'locais_vendaveis', p_valor: l }, true, 'OMIE_41_LEITURA');
+      M.locSel = null;
+      toast(l.length ? 'Locais vendáveis: ' + l.length + '.' : 'Nenhum local vendável — o chip não liga assim.', l.length ? 'success' : 'warning');
+    } else if (a === 'conferir') {
+      var lin = _v218LerColado(String((document.getElementById('v218Cola') || {}).value || ''));
+      var msg = document.getElementById('v218ConfMsg');
+      if (lin.erro) { if (msg) msg.textContent = lin.erro; toast(lin.erro, 'error'); return; }
+      var selL = document.getElementById('v218ConfLocal'), loc = selL ? String(selL.value) : '*';   // "*" = soma · "" = o local padrão do Omie
+      var r = await _v214Rpc('erp_conferencia_registrar', { p_linhas: lin.linhas, p_local: loc === '*' ? null : loc }, true, 'OMIE_42_CONCILIACAO');
+      if (r && r.aprovada) M.cola = '';
+      toast(r && r.aprovada ? 'Conferência BATEU (' + r.iguais + ' itens). Pode ligar o chip.' : 'Conferência NÃO bateu: ' + (r ? r.diferentes + ' diferentes, ' + r.so_na_exportacao + ' só na exportação, ' + r.so_na_leitura + ' só na leitura' : ''), r && r.aprovada ? 'success' : 'warning');
+    } else if (a === 'conc') {
+      var ac = b.getAttribute('data-a'), cod = b.getAttribute('data-cod') || null;
+      if (ac === 'casarDigitado') { var inp = document.querySelector('[data-v218cod="' + b.getAttribute('data-c').replace(/"/g, '') + '"]'); cod = String((inp && inp.value) || '').trim(); ac = 'casar'; if (!cod) { toast('Digite o código do produto no Omie.', 'error'); return; } }
+      await _v214Rpc('erp_conciliar', { p_tipo: b.getAttribute('data-t'), p_chave: b.getAttribute('data-c'), p_acao: ac, p_codigo: cod, p_obs: null }, true, 'OMIE_42_CONCILIACAO');
+      V218.chip = {}; V218.chipEm = {};
+      toast(ac === 'casar' ? 'Casado com ' + cod + '.' : ac === 'ignorar' ? 'Ignorado.' : 'Reaberto.', 'success');
+    }
+  } catch (e) { toast(e.message || 'Não consegui.', 'error'); }
+  finally { V218.ocupado = false; if (b.isConnected) { b.disabled = false; b.textContent = txt; } if (V218.pendente) try { _v218Pintar(); } catch (e) {} }
+  await _v218Carregar42(M); _v214PintarOmie(M);
+}
+// o que foi colado do Excel → [{codigo, saldo}]. Acha as colunas pelo título (Código · Saldo/Quantidade/Estoque).
+function _v218LerColado(txt) {
+  var linhas = String(txt || '').replace(/\r/g, '').split('\n').filter(function (l) { return l.trim(); });
+  if (linhas.length < 2) return { erro: 'Cole as colunas COM a linha de título (Código … Saldo).' };
+  var sep = linhas[0].indexOf('\t') >= 0 ? '\t' : (linhas[0].indexOf(';') >= 0 ? ';' : null);
+  if (!sep) return { erro: 'Não reconheci as colunas: copie direto do Excel (as colunas vêm separadas por tabulação).' };
+  var norm = function (s) { return String(s || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').trim(); };
+  var cab = linhas[0].split(sep).map(norm);
+  var iCod = cab.findIndex(function (c) { return /^(cod|codigo|cod\.? produto|codigo do produto)/.test(c) && !/barra|ncm|ean/.test(c); });
+  var iSal = cab.findIndex(function (c) { return /^(saldo|quantidade|qtde|qtd|estoque atual|estoque)/.test(c); });
+  if (iCod < 0 || iSal < 0) return { erro: 'Não achei as colunas "Código" e "Saldo" no título. Títulos lidos: ' + cab.join(' | ') };
+  var out = [], ruins = 0;
+  linhas.slice(1).forEach(function (l) {
+    var c = l.split(sep), cod = String(c[iCod] || '').trim(), s = String(c[iSal] || '').trim();
+    if (!cod) return;
+    var n = typeof _v204Num === 'function' ? _v204Num(s) : Number(s.replace(/\./g, '').replace(',', '.'));
+    if (n === null || n === undefined || isNaN(n)) { ruins++; return; }
+    out.push({ codigo: cod, saldo: String(n) });
+  });
+  if (!out.length) return { erro: 'Nenhuma linha com código e saldo numérico.' };
+  if (ruins) toast(ruins + ' linha(s) sem saldo numérico ficaram de fora.', 'warning');
+  return { linhas: out };
+}
+
+// ── o chip na proposta (linhas e busca) ─────────────────────────────────────────────────────────────
+var _v218ChipT = null;
+function _v218ChipAgendar() { clearTimeout(_v218ChipT); _v218ChipT = setTimeout(_v218ChipCarregar, 250); }
+function _v218ChipRefs() {
+  var ED = (typeof V204 !== 'undefined' && V204.ed) || null, refs = [];
+  if (!ED) return refs;
+  (ED.linhas || []).forEach(function (l) { if (l && l.natureza === 'peca' && l.codigo) refs.push(String(l.codigo)); });
+  ((ED.busca && ED.busca.aberta && ED.busca.itens) || []).forEach(function (it) { if (it && it.codigo && it.natureza !== 'servico' && it.fonte !== 'kit') refs.push(String(it.codigo)); });
+  return refs.filter(function (r, i, a) { return a.indexOf(r) === i; });
+}
+async function _v218ChipCarregar() {
+  var refs = _v218ChipRefs(); if (!refs.length) return _v218ChipDecorar();
+  var agora = Date.now(), faltam = refs.filter(function (r) { return !(r in V218.chip) || agora - (V218.chipEm[r] || 0) > 60000; });
+  if (faltam.length) {
+    try {
+      var r = await _v214Rpc('crm_estoque_refs', { p_refs: faltam.slice(0, 80) }, false, 'OMIE_42_CONCILIACAO');
+      V218.chipLigado = !!(r && r.ligado); V218.chipMotivo = (r && r.motivo) || ''; V218.chipLido = r && r.lido_em;
+      V218.chipSuspenso = !!(r && r.suspenso);
+      faltam.forEach(function (x) { V218.chip[x] = (r && r.itens && r.itens[x]) || null; V218.chipEm[x] = agora; });
+      ((r && r.inativos) || []).forEach(function (x) { V218.inativos[x] = true; });
+      if (r && r.itens) Object.keys(r.itens).forEach(function (x) { if (r.itens[x] && r.itens[x].estado === 'inativo') V218.inativos[x] = true; });
+    } catch (e) { if (e && e.v200 !== 'sem_sql') console.warn('[V218] chip de estoque:', e.message); return; }
+  }
+  _v218ChipDecorar();
+}
+function _v218ChipHtml(ref) {
+  var c = V218.chip[ref]; if (!c || !V218.chipLigado || c.estado === 'sem_ref' || c.estado === 'ignorado') return '';
+  // M4: a leitura de hoje mostra a hora; a de outro dia mostra DATA e hora; a velha (> 24 h, erp_config) sai marcada
+  var dl = c.lido_em ? new Date(c.lido_em) : null, hora = '';
+  if (dl && !isNaN(dl.getTime())) {
+    var hh = dl.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit', timeZone: 'America/Sao_Paulo' });
+    var dd = dl.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', timeZone: 'America/Sao_Paulo' });
+    var hj = new Date().toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', timeZone: 'America/Sao_Paulo' });
+    hora = dd === hj ? hh : dd + ' ' + hh;
+  }
+  var t = V218_EST[c.estado] || c.estado, tit = [];
+  if (c.estado === 'tem') t = '✓ tenho ' + (Number(c.saldo) || 0).toLocaleString('pt-BR') + (hora ? ' · ' + hora : '');
+  if (c.velha) t += ' ⚠';
+  if (c.estado === 'similar' && c.similar) { t = '≈ similar ' + c.similar.ref + ' (' + (Number(c.similar.saldo) || 0).toLocaleString('pt-BR') + ')'; tit.push('A peça pedida está sem saldo; a similar do catálogo tem.'); }
+  if (c.omie_diz != null) tit.push('O Omie diz ' + c.omie_diz + ' (saldo negativo — conferir no Omie).');
+  if (c.codigo) tit.push('Omie ' + c.codigo + ' — ' + (c.descricao || '') + (c.preco != null ? ' · preço ' + _v204R(c.preco) + (c.preco_lido_em ? ' lido ' + new Date(c.preco_lido_em).toLocaleString('pt-BR') : '') : ''));
+  if (c.estado === 'tem' && Number(c.saldo) <= 2) tit.push('Perto de zero: confirmar no Omie.');
+  if (c.velha) tit.push('LEITURA VELHA (' + hora + '): o saldo pode ter mudado. Confirme no Omie ou peça um "Ler agora" do estoque (⚙ → Integração Omie).');
+  else if (hora) tit.push('Saldo lido ' + (/\//.test(hora) ? 'em ' : 'às ') + hora + ' — não é o saldo agora.');
+  return '<span class="v218-est ' + _v214E(c.estado) + (c.velha ? ' velha' : '') + '" data-v218chip="1" title="' + _v214E(tit.join(' ')) + '">' + _v214E(t) + '</span>';
+}
+function _v218ChipDecorar() {
+  var ED = (typeof V204 !== 'undefined' && V204.ed) || null; if (!ED) return;
+  (ED.linhas || []).forEach(function (l, i) {
+    var inp = document.getElementById('v204d' + i); if (!inp || !inp.parentNode) return;
+    var velho = inp.parentNode.querySelector('[data-v218chip]'); if (velho) velho.remove();
+    if (l && l.natureza === 'peca' && l.codigo) { var h = _v218ChipHtml(String(l.codigo)); if (h) inp.insertAdjacentHTML('afterend', h); }
+  });
+  var res = document.getElementById('v204Res');
+  if (res && ED.busca) {
+    var ocultos = 0;
+    Array.prototype.slice.call(res.querySelectorAll('[data-v204="res"]')).forEach(function (btn) {
+      var it = ED.busca.itens[Number(btn.getAttribute('data-n'))]; if (!it || !it.codigo) return;
+      var sm = btn.querySelector('small'); if (!sm) return;
+      var velho = sm.querySelector('[data-v218chip]'); if (velho) velho.remove();
+      // G7: produto de balcão INATIVO no Omie sai da busca (a peça do catálogo fica, com o aviso no chip)
+      if (it.fonte === 'produto_erp' && V218.inativos[String(it.codigo)]) { btn.style.display = 'none'; ocultos++; return; }
+      var h = _v218ChipHtml(String(it.codigo)); if (h) sm.insertAdjacentHTML('beforeend', h);
+    });
+    var av = res.querySelector('[data-v218ocultos]'); if (av) av.remove();
+    var avs = [];
+    if (ocultos) avs.push(ocultos + ' produto(s) inativo(s) no Omie fora da busca (G7).');
+    if (V218.chipSuspenso) avs.push('Estoque do Omie fora da proposta: ' + (V218.chipMotivo || 'chip suspenso') + '');
+    if (avs.length) res.insertAdjacentHTML('afterbegin', '<div class="v200-sub" data-v218ocultos="1" style="padding:4px 8px">' + _v214E(avs.join(' · ')) + '</div>');
+  }
+}
+
+// ── o selo fiscal no cadastro do cliente (G8: só informa) ─────────────────────────────────────────
+async function _v218Selo(id) {
+  var box = document.getElementById('v218Selo'); if (box) box.remove();       // B1: o selo do cliente anterior nunca fica
+  var alvo = document.getElementById('clCnpj'); if (!alvo || !id) return;
+  try {
+    if (!V218.selos || Date.now() - V218.selosEm > 600000) { V218.selos = await _v214Rpc('erp_cliente_selos', {}, false, 'OMIE_42_CONCILIACAO'); V218.selosEm = Date.now(); }
+  } catch (e) { return; }
+  if (!V218.selos || !V218.selos.lido || editClientId !== id) return;
+  var s = (V218.selos.itens || []).find(function (x) { return String(x.cliente_id) === String(id); });
+  if (!s) return;
+  var txt = s.estado === 'ok' ? '✓ fiscal conferido no Omie — ' + (s.razao || '') : s.estado === 'inativo' ? '⚠ este CNPJ está INATIVO no Omie (' + (s.razao || '') + ')'
+          : s.estado === 'ignorado' ? '' : '⚠ CNPJ não encontrado no Omie — conferir antes de faturar';
+  if (!txt) return;
+  var grupo = alvo.closest('.form-group') || alvo.parentNode;
+  grupo.insertAdjacentHTML('beforeend', '<div id="v218Selo" class="v218-selo ' + _v214E(s.estado) + '" title="Lido do Omie ' + _v214E(s.lido_em ? new Date(s.lido_em).toLocaleString('pt-BR') : '') + '. O PCM não muda o cadastro sozinho (G8).">' + _v214E(txt) + '</div>');
+}
+
+// ═════════════════════════════════════════════════════════════════════════════════════════════════
+// 3 · LIGAR (embrulhos)
+// ═════════════════════════════════════════════════════════════════════════════════════════════════
+(function () {
+  try {
+    var el = document.getElementById('viewInicio');
+    if (el) {
+      el.addEventListener('click', function (ev) { _v218Acao(ev); });
+      // A1: o que é digitado vai para V218.val na hora
+      var guarda = function (ev) { var t = ev.target; if (t && t.id && /^v218[drom]/.test(t.id)) V218.val[t.id] = t.value; };
+      el.addEventListener('input', guarda); el.addEventListener('change', guarda);
+      // A1: entre apertar e soltar o botão a tela não muda (o clique chega no botão que o usuário viu)
+      el.addEventListener('pointerdown', function () { V218.segurando = true; }, true);
+      var solta = function () {
+        if (!V218.segurando) return; V218.segurando = false;
+        setTimeout(function () { if (V218.pendente) _v218Pintar(); }, 250);   // depois do click (que pode começar uma gravação)
+      };
+      document.addEventListener('pointerup', solta, true); document.addEventListener('pointercancel', solta, true);
+      // saiu do campo: se o foco foi para um botão do próprio Início (Tab, ou o clique no "Enviar"), espera a ação
+      el.addEventListener('focusout', function (ev) {
+        var para = ev.relatedTarget;
+        if (para && el.contains(para) && para.tagName === 'BUTTON') return;
+        setTimeout(function () { if (V218.pendente) _v218Pintar(); }, 0);
+      });
+    }
+    // a caixa se atualiza sozinha a cada 3 min enquanto está na tela (e nunca por cima de um formulário aberto)
+    setInterval(function () { try { if (currentView === 'inicio' && !document.hidden && !Object.keys(V218.aberto).length) _v218Carregar(); } catch (e) {} }, 180000);
+  } catch (e) { console.warn('[V218] Início:', e); }
+  try {
+    V218.orig.carregarOmie = _v214CarregarOmie;
+    _v214CarregarOmie = async function (M) {
+      var doRelogio = !!(M && M.doRelogio);          // a volta de 4 s do V214 não repinta com o usuário ocupado
+      var p = V218.orig.carregarOmie.apply(this, arguments);
+      if (M && !doRelogio) { await _v218Carregar42(M); }
+      var r = await p;
+      if (_v200.modal === M && M && !doRelogio) { try { _v214PintarOmie(M); } catch (e) {} }
+      return r;
+    };
+    V218.orig.pintarOmie = _v214PintarOmie;
+    _v214PintarOmie = function (M) {
+      V218.orig.pintarOmie.apply(this, arguments);
+      if (!M || M.erro || (!M.p42 && !M.e42)) return;
+      var om = document.querySelector('#v200Modal .v214-om'); if (!om) return;
+      var velho = document.getElementById('v218Om'); if (velho) velho.remove();
+      var ult = om.lastElementChild;
+      om.insertAdjacentHTML('beforeend', '<div id="v218Om">' + _v218Painel42Html(M) + '</div>');
+      if (ult && /Atualizar/.test(ult.textContent || '')) om.appendChild(ult);   // o ↻ Atualizar continua no fim
+    };
+    var m = document.getElementById('v200Modal');
+    if (m) {
+      m.addEventListener('click', _v218OmieAcao);
+      // o que foi colado/digitado/marcado no painel sobrevive a qualquer repintura (a volta de 4 s, o resultado de outra ação)
+      var guardar = function (ev) {
+        var t = ev.target, M = _v200.modal; if (!t || !M || M.tipo !== 'omie') return;
+        if (t.id === 'v218Cola') M.cola = t.value;
+        else if (t.id === 'v218ConfLocal') M.colaLocal = t.value;
+        else if (t.getAttribute && t.getAttribute('data-v218cod')) { M.cod = M.cod || {}; M.cod[t.getAttribute('data-v218cod')] = t.value; }
+        else if (t.getAttribute && t.getAttribute('data-v218loc') !== null) {
+          M.locSel = Array.prototype.slice.call(document.querySelectorAll('[data-v218loc]')).filter(function (x) { return x.checked; }).map(function (x) { return x.getAttribute('data-v218loc'); });
+        }
+      };
+      m.addEventListener('input', guardar); m.addEventListener('change', guardar);
+    }
+  } catch (e) { console.warn('[V218] painel do Omie:', e); }
+  try {
+    V218.orig.pintar204 = _v204Pintar;
+    _v204Pintar = function () { var r = V218.orig.pintar204.apply(this, arguments); try { _v218ChipAgendar(); } catch (e) {} return r; };
+    V218.orig.res204 = _v204PintarRes;
+    _v204PintarRes = function () { var r = V218.orig.res204.apply(this, arguments); try { _v218ChipAgendar(); } catch (e) {} return r; };
+  } catch (e) { console.warn('[V218] chip da proposta:', e); }
+  try {
+    V218.orig.decidirCp = _cpConfirmarDecisao;
+    _cpConfirmarDecisao = async function (id, decisao) {
+      var data = String((document.getElementById('cpData') || {}).value || '').trim();
+      var resposta = String((document.getElementById('cpResposta') || {}).value || '').trim();
+      if (decisao === 'aprovado' && !data) { toast('Informe a data prevista — é o que o cliente vai ver.', 'error'); return; }
+      if (decisao === 'recusado' && !resposta) { toast('Escreva a resposta ao cliente antes de recusar.', 'error'); return; }
+      try {
+        await _v218Rpc('pc_chamado_decidir', { p_id: id, p_decisao: decisao, p_data: data || null, p_resposta: resposta || null }, true);
+      } catch (e) {
+        if (e && (e.v218 === 'sem_sql' || e.v218 === 'sem_token')) return V218.orig.decidirCp.apply(this, arguments);
+        if (/já não estava na fila/.test(e.message || '')) { toast('Alguém decidiu este chamado antes de você. Atualizei a lista.', 'warn'); _cpAberto = ''; _cpModo = ''; await _cpCarregar(); return; }
+        toast(e.message || 'Não consegui gravar a decisão.', 'error'); return;
+      }
+      toast(decisao === 'aprovado' ? 'Chamado aprovado — o cliente já vê a data.' : 'Chamado recusado com resposta.', 'success');
+      _cpAberto = ''; _cpModo = ''; V218.em = 0;
+      await _cpCarregar();
+    };
+  } catch (e) { console.warn('[V218] chamados:', e); }
+  try {
+    V218.orig.abrirCli = openModalClient;
+    openModalClient = function (id) { var r = V218.orig.abrirCli.apply(this, arguments); try { _v218Selo(id); } catch (e) {} return r; };
+  } catch (e) { console.warn('[V218] selo fiscal:', e); }
+  // a tela de entrada: com o menu novo, o PCM abre no Início (a caixa de entrada substitui o sino)
+  try {
+    var menuNovo = document.documentElement.classList.contains('m1-on');
+    var modoApp = typeof window._pcmModoApp === 'function' && window._pcmModoApp();
+    if (menuNovo && !modoApp && currentView === 'preventivas' && _v218Pode('inicio')) showView('inicio');
+  } catch (e) { console.warn('[V218] abrir no Início:', e); }
+})();
+</script>
+<!-- ████ FIM PCM V218 ████ -->
 </body>
 </html>
