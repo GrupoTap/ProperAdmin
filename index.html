@@ -4821,8 +4821,17 @@ v50 — Resiliência de rede: retry/backoff em gsGet e syncToGS
   escolher um abre o "＋ Cliente novo" já preenchido com os dados do Omie — confere e "Criar cliente e continuar".
   ZERO SQL próprio (usa erp_clientes_omie/erp_cliente_omie do V228; o SQL CRM_EXCLUIR_CARD do V233 roda ANTES). ZERO Apps Script (vale o v168).
 -->
-<title>ProperCare Manager · Gestão PGP v4.03 (PCM V234)</title>
-<meta name="app-build" content="PCM_V234" data-date="2026-10-02">
+<!--
+  PCM V235 — 03/10/2026 — FICHA DE FATURAMENTO + RETORNO DA NOTA (bloco FAT, sobre o PCM V234). Etapa 5 do CRM.
+  🧾 Ficha por card (proposta aceita + complementares): "OS do Omie (serviços)" e "Pedido de venda (peças)" com o código do
+  Omie, Copiar em cada campo e a MARCA para as Observações do Omie; "Achar no Omie aqui" na linha sem código. Abre pelo card
+  (Faturamento e janela do card), pela demanda "💵 Cobrar a OS" e pelo painel da OS. O Omie lido de volta: faturada sozinha
+  pela marca, "provável" com 1 clique, à mão com o nº da nota, "Faturar só esta OS", desfazer (admin). Cobrança da OS ganha
+  "Contrato — cobrar só peças" (ficha só de peças trocadas) e o padrão do cliente (ficha do cliente). Selos no quadro.
+  Par: SQL FATURAMENTO_OMIE_2026-10-03 (roda ANTES). Zero Apps Script (vale o v168).
+-->
+<title>ProperCare Manager · Gestão PGP v4.03 (PCM V235)</title>
+<meta name="app-build" content="PCM_V235" data-date="2026-10-03">
 <link rel="icon" type="image/jpeg" href="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/4gHYSUNDX1BST0ZJTEUAAQEAAAHIAAAAAAQwAABtbnRyUkdCIFhZWiAH4AABAAEAAAAAAABhY3NwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlkZXNjAAAA8AAAACRyWFlaAAABFAAAABRnWFlaAAABKAAAABRiWFlaAAABPAAAABR3dHB0AAABUAAAABRyVFJDAAABZAAAAChnVFJDAAABZAAAAChiVFJDAAABZAAAAChjcHJ0AAABjAAAADxtbHVjAAAAAAAAAAEAAAAMZW5VUwAAAAgAAAAcAHMAUgBHAEJYWVogAAAAAAAAb6IAADj1AAADkFhZWiAAAAAAAABimQAAt4UAABjaWFlaIAAAAAAAACSgAAAPhAAAts9YWVogAAAAAAAA9tYAAQAAAADTLXBhcmEAAAAAAAQAAAACZmYAAPKnAAANWQAAE9AAAApbAAAAAAAAAABtbHVjAAAAAAAAAAEAAAAMZW5VUwAAACAAAAAcAEcAbwBvAGcAbABlACAASQBuAGMALgAgADIAMAAxADb/2wBDAAUDBAQEAwUEBAQFBQUGBwwIBwcHBw8LCwkMEQ8SEhEPERETFhwXExQaFRERGCEYGh0dHx8fExciJCIeJBweHx7/2wBDAQUFBQcGBw4ICA4eFBEUHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh7/wAARCAGGAc0DASIAAhEBAxEB/8QAHAABAAIDAQEBAAAAAAAAAAAAAAYHBAUIAwIB/8QATBAAAQMCAgMJCBAFBAMBAAAAAAECAwQFBhEHIUESFjFRVnSBk7EIFyJVYZHR0hMUIzI0NTY3QmJxc6GissEVM4KU8FJ1krNypMKE/8QAHAEBAAIDAQEBAAAAAAAAAAAAAAYHAQMEBQII/8QAOhEAAQMBAwgHCAMAAwEBAAAAAAECAwQFETEGFCFBU3GRsRMVUVJh0eESIjI0NXKSwTOB8CRC8SOh/9oADAMBAAIRAxEAPwAACqj9AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA+JpY4YXzTSNjjY1XPe5ckaicKqvEZxMKqIl6iaWOGF800jY42NVz3uXJGonCqrxFFaRtJ1fcLj7Uw5VzUdDA5fd413L514+NG8SdK8SeGlbSDJiCZ9ptMjo7Ux3hOTUtSqbV+rxJ0rsRK7JjZFjJEnTTp72pOzf48itMo8pnTuWnpHXNTFya93hz3Y7/fri3lDcevUb9cW8obj16mgB72bQ9xOCERz2p2juKm/wB+uLeUNx69Rv1xbyhuPXqaADNoe4nBBntTtHcVN/v1xbyhuPXqN+uLeUNx69TQAZtD3E4IM9qdo7ipv9+uLeUNx69Rv1xbyhuPXqaADNoe4nBBntTtHcVN/v1xbyhuPXqN+uLeUNx69TQAZtD3E4IM9qdo7ipv9+uLeUNx69Rv1xbyhuPXqaADNoe4nBBntTtHcVN/v1xbyhuPXqN+uLeUNx69TQAZtD3E4IM9qdo7ipv9+uLeUNx69TY4ZxRjW4YgoKKkvldLNLO1rWySK5q69e6RdmWar5CHlxdz5hzVUYmqY+OClzT/AJuT9P8AyOOvWClp3SKxPDQmJ6dkNq6+sZC2R3auldCJj/u0uEAFdlzgAAAAAAqTTXjivttwisVkrHU0rGeyVcseW6RV1tYi7NWtftQszEV1p7JZKu61S+5U0avyzy3S7Gp5VXJOk5UutdUXO5VNwq37ueokdI9fKq7PISGwKFJpFlel7W8/TyIblfazqWFtPE65ztK3YonqvJTbb9cW8obj16jfri3lDcevU0AJfm0PcTghW+e1O0dxU3+/XFvKG49eo364t5Q3Hr1NABm0PcTggz2p2juKm/364t5Q3Hr1G/XFvKG49epoAM2h7icEGe1O0dxU3+/XFvKG49eo364t5Q3Hr1NABm0PcTggz2p2juKm/wB+uLeUNx69Rv1xbyhuPXqaADNoe4nBBntTtHcVN/v1xbyhuPXqN+uLeUNx69TQAZtD3E4IM9qdo7ipv9+uLeUNx69T0p8dYugnZM2/1zlYue5kk3TV+1F1KRwBaaFf+icEMpXVKLekjuKnTGjnGlFiy3fRguMLU9sU+f5m8bV/DgXYqys5HtFxrbTcYbhb53QVMLt0x7exeNF4jo3RzjSixZbvowXGFqe2KfP8zeNq/hwLsVYda9kLTL0sXwcvQsrJzKNK5Ep6hbpEwXvev/qErAB4BLwAAAAAAAAAAAAAAAAfMj2Rxukke1jGornOcuSIicKqoCrcJHsjjdJI9rGNRXOc5ckRE4VVSg9LWP5L9UPtFplVtqjdk96alqXJt/8AFNibeHiy9NLGkJ98kks1mlcy2NXKWVNS1Cp/8eTaVsTKxrH6K6eZPe1J2evLeVnlLlJnF9LSr7mte3wTw57sQAJKQgAAAAAAAAAAAAAAAAAAAAAzLHbai73eltlI3OapkSNvkz4VXyIma9B1XZLdT2i00tspG7mGmjSNvGuXCq+VV19JVXc+Yc1VGJqmPjgpc0/5uT9P/IuEhOUFZ0syQtwbz9PMtHI6zM3plqXp7z8Pt9V08AACPEyAAAABrsS3ansViq7rUr7nTxq7c55bp3A1qeVVyTpPpjHPcjW4qfEkjYmK963ImlSqO6CxH7LU0+GqaTNsWU9Vkv0lTwGr9ia+lOIqQyLnW1FxuFRX1b93PUSOkkdxqq5+YxyyqKlbSwNiTVjv1lH2pXur6p87teHgmoAA6zzwAAAAAAAAAAAAAAAAAAZdouNbabjDcLfO6CphdumPb2LxovEYgMOajkuXAy1yscjmrcqHTGjnGlFiy3fRguMLU9sU+f5m8bV/DgXYqys5HtFxrbTcYbhb53QVMLt0x7exeNF4jo3RzjSixZbvowXGFqe2KfP8zeNq/hwLsVYRa9kLTL0sXwcvQtPJzKNK5Ep6hbpEwXvev/qErAB4BLwAAAAAAAAAAfMj2Rxukke1jGornOcuSIicKqoCrcJHsjjdJI9rGNRXOc5ckRE4VVSh9LGkJ98kks1mlcy2NXKWVNS1Cp/8eTaNLGkJ98kks1mlcy2NXKWVNS1Cp/8AHk2lbEysex+iunnT3tSdnry3lZ5S5S5xfS0q+5rXt8E8Oe7EACSkIAAAAAAAAAAAAAAAAAAAAABmWO21F3u9LbKRuc1TIkbfJnwqvkRM16DDLj7n3Daok+JqqP3yLBSZ/ncn6f8AkcdfVJSwOkXHVvPSsmz3WhVsgTBcfBEx/wB2lqWS3U9otNLbKRu5hpo0jbxrlwqvlVdfSZgBWznK5VcuKl3sY2NqNalyJoAAPk+gAAAUr3QWI/Zq2nw3TSeBBlNVZLwvVPBb0Iuf9ScRbOJbtT2KxVd1qV9zp41duc8t07ga1PKq5J0nKtzrai43Cor6t+7nqJHSSO41Vc/MSPJ6j6SVZ3YNw3+hCss7T6GBKVi6X6V3J5ryUxwATQrEAAAAAAAAAAAAAAAAAAAAAAAAGXaLjW2m4w3C3zugqYXbpj29i8aLxGIDDmo5LlwMtcrHI5q3Kh0xo5xpRYst30YLjC1PbFPn+ZvG1fw4F2KsrOR7Rca203GG4W+d0FTC7dMe3sXjReI6N0c40osWW76MFxhantinz/M3jav4cC7FWEWvZC0y9LF8HL0LTycyjSuRKeoW6RMF73r/AOoSsAHgEvAAAAB+Pc1jVe9yNa1M1VVyREAD3NY1XvcjWtTNVVckRCitLekNbw6Sx2SVUtzVynnbw1CpsT6nb9nC0taRHXd0tjscyttzV3M87VyWoXiT6nb9nDWRMbHsfo7p5006k7PFfHlvK1ylyl6e+lpV93Wvb4J4dvbuxAAkxBgAAAAAAAAAAAAAAAAAAAAAAADOsFsqLzeaS10iZzVMiMRctTU2uXyIma9B1XaKCntVrprdSN3MFPGkbE25InCvlXhKr7nzDm4iqMTVMet+cFLmmxPfuTp8HocW8QjKCs6WboW4N5+nmWlkdZmb0y1L095+H2+uPAAAj5MQAAAAa7Et2p7FYqu61K+508au3OeW6dwNanlVck6T6Yxz3I1uKnxJI2JivetyJpUqbugsR+zVtPhumk8CDKaqyXheqeC3oRc/6k4ipjIudbUXG4VFfVv3c9RI6SR3Gqrn5jHLKoqVtLA2JNXPWUdale6vqnzu14eCakAAOs4AAAAAAAAAAAAAAAAAAAAAAAAAAAAZdouNbabjDcLfO6CphdumPb2LxovEYgMOajkuXAy1yscjmrcqHTGjnGlFiy3fRguMLU9sU+f5m8bV/DgXYqys5HtFxrbTcYbhb53QVMLt0x7exeNF4jo3RzjSixZbvowXGFqe2KfP8zeNq/hwLsVYRa9kLTL0sXwcvQtPJzKNK5Ep6hbpEwXvev8A6hKwAeAS8EC071M9PgJ6QTPj9mqWRyblct01UcqtXyakJ6V7p/8AkI3nkfY477LS+sjv7TyLeVUs2ZU7qnPwALIKTAAAAAAAAAABIcC4TuGK7qlLSosdPHktRUKngxt/dy7E/Y1yysiYr3rciG2CCSokSONL3LggwLhO4YruqUtKix08eS1FQqeDG393LsT9i5qfRNg6JqJJT1c6omSq+oVM14/ByJXh2y2+wWqK222FI4Y+FV98921zl2qpsSD19tzzyf8AyVWtTD1LVsnJalpYf+Q1HvXG/SieCf7SQjvV4L8XTf3MnpHerwX4um/uZPSTcHD1jV7ReKnq9SWdsG8EIR3q8F+Lpv7mT0jvV4L8XTf3MnpJuB1jV7ReKjqSztg3ghCO9XgvxdN/cyekd6vBfi6b+5k9JNwOsavaLxUdSWdsG8EIR3q8F+Lpv7mT0n6mivBSL8WzL/8Apk9JNgOsavaLxUz1LZ2wbwQ8KGkpqGjio6OBkFPE3cxxsTJGoe4Bxqqqt6npNajURES5EAAMGQAAAUn3QGJFqK+HDdNJ7lT5S1OS8Mip4LehFz6fIWzim8QWGwVl2qMlbTxqrW5+/dwNb0rkhytcKuevrp62qesk88jpJHLtcq5qSTJ6j6SRZ3Jobhv9CE5Z2n0MCUjF0v0ru9V5HgACZlZAAAAAAAAl2ifDm+LFsDJo91RUvu9RmmpURdTelcujM1TTNhjWR2CG+lpn1MzYY8XLcWJgDRfY34bpqvEFFJU1tSxJVY6Z7EiautG5NVNeWWee0kHexwP4k/8Aam9cmIK8ltOqkerukVL9SKtxc1PYdBDE2PomrcmKtRVXxUh3exwP4k/9qb1z6j0aYIjdum2Nqr9aolcnmVxLwa8/qto7ipu6poNgz8U8iK97vBfiGDrH+sO93gvxDB1j/WJUDGfVO0dxUz1VQ7Fn4p5FZ440U2mrtr5sOU6UVdGmbY/ZFVkyf6darkvEvBx8aUZVQTUtRJT1ET4po3K17HpkrVThRUOvyBaU8Aw4lp3XG3NZFd426l4EqET6LvLxL0Lq4Pbsm2nRu6KoW9F1rq3+HIi2UOS7JWdPRtucmLUwXcnbz3488g9KqCalqJKeoifFNG5WvY9MlaqcKKh5kxRbytFRUW5QADIAAAAAABsMN19Xbb7R1tFM6KaOZuTmrwpnrReNFTUqGvPe3/D6f71vah8vRHNVFPuNytejmrcqHXgAKqP0ACvdP/yEbzyPscWEV7p/+QjeeR9jjvsv5yPeeRb/ANNm+1Tn4AFkFJgAAAAAAA3OC7BPibEVPaYZWwpJm6SRUz3DETNVy2rxeVT4ke2NqvctyIbIonzSJGxL1Vbk3qZGBcJ3DFd1SlpUWOnjyWoqFTwY2/u5difsdI4dstvsFqittthSOGPhVffPdtc5dqqMO2W32C1RW22wpHDHwqvvnu2ucu1VNiQG1LUfWvuTQxME/alu2BYMdmR+07TIuK9ngn+0gAHkkiAAAAAAAAAAAAAAAAAAABrMU3iCw2Csu1RkraeNVa3P37uBrelckPpjHPcjW4qa5ZWxMWR63IiXqVL3QOI/bNxgw5TSZxU2UtTkvDIqeC3oRc/6vIVSe9wq56+unrap6yTzyOkkcu1yrmp4Fl0VM2lgbEmrnrKPtOudX1T53a10eCakAAOo4AAAAAAAdH6HsOfwDCUT549zW12U8+aa2oqeA3oT8VUp7RPhzfFi2Bk0e6oqX3eozTUqIupvSuXRmdKkVyjrLkSnbvX9J++BYGRVmXq6teng39r+uIABEiwwAAAAAAAACBaU8Aw4lp3XG3NZFd426l4EqET6LvLxL0Lq4OfaqCalqJKeoifFNG5WvY9MlaqcKKh1+V9pdwPTX23TXmia2K500SvcqJqna1M9yv1sk1L0L5JJY1rrEqQTL7upez05EIymycSoRaumS56aVTt8d/Pfjz6ACZlZgAAAAAA97f8AD6f71vah4Hvb/h9P963tQwuBluKHXgAKpP0ECvdP/wAhG88j7HFhFe6f/kI3nkfY477L+cj3nkW/9Nm+1Tn4AFkFJgAAAAAAnugb5wIubS9iECJ7oG+cCLm0vYhxWj8pJuXkenYv1CD7m8zoYAFal4AAAAAAAAAAAAAAAAAAAAAApLugcR+2bjBhymkzipspanJeGRU8FvQi5/1eQtrFN4gsNgrLtUZK2njVWtz9+7ga3pXJDla4Vc9fXT1tU9ZJ55HSSOXa5VzUkmTtH0kizuwbhv8AQhOWdp9DAlIxdL9K7vVeR4AAmZWQAAAAAAAJjoiw5vgxbCs0e6o6LKefNNS5L4LelfwRTTPM2CN0jsEOilpn1UzYY8XLcW/ogw2uHsJxuqI9xW1uU8+aa2pl4LehPxVSZgFaVE7p5XSOxUvKjpWUkDYI8Gpd/t+IABpOkAAAAAAAAAGHe/iWu5vJ+lTMMO9/EtdzeT9KmyL427zVUfxO3KckAAtMoEAAAAAAHvb/AIfT/et7UPA97f8AD6f71vahhcDLcUOvAAVSfoIFe6f/AJCN55H2OLCK90//ACEbzyPscd9l/OR7zyLf+mzfapz8ACyCkwAAAAAAT3QN84EXNpexCBE90DfOBFzaXsQ4rR+Uk3LyPTsX6hB9zeZ0MACtS8AAAAAAAAAAAAAAAAAAAAazFV3jsOHa27yt3SU0Sua3/U5dTU6XKiH0xivcjW4qfEsjYmLI9bkRL13IVFp/xItVdIsOU0nuFJlJUZL76VU1J0Ivnd5CrD2rametrJqypkWSeeR0kj14XOVc1U8Sy6OmbSwtibq56yjbSrn19U+d2tdHgmpAADqOEAAAAAAHSeiPDm97CUKTR7msrMp6jNNaZp4LehPxVSndEWHN8GLYVmj3VHRZTz5pqXJfBb0r+CKdJEUyjrMKdu9f0n74Fg5FWZpdWvTwb+1/XEAAiZYQAAAAAAAAAAAAMO9/EtdzeT9KmYYd7+Ja7m8n6VNkXxt3mqo/iduU5IABaZQIAAAAAAPe3/D6f71vah4Hvb/h9P8Aet7UMLgZbih14ACqT9BArLuiZHtwnQxtcqNfWpuk48mOyLNK07olrVwbRPy8JLgxEXyLHJ6EPRshf+bHvPFyiRVsya7s/aFDgAsYpYAAAAAAE90DfOBFzaXsQgRPdA3zgRc2l7EOK0flJNy8j07F+oQfc3mdDAArUvAAAAAAAAAAAAAAAAAAAHjW0tNW0ktJVwsnglbuZI3pmjkPYGUVUW9DDmo5FRU0EV73eC/EMHWP9Yd7vBfiGDrH+sSoHTn1TtHcVOHqqh2LPxTyIr3u8F+IYOsf6w73eC/EMHWP9YlQGfVO0dxUdVUOxZ+KeRFe93gvxDB1j/WHe7wX4hg6x/rEqAz6p2juKjqqh2LPxTyIr3u8F+IYOsf6w73eC/EMHWP9YlQGfVO0dxUdVUOxZ+KeRr7JZbVZKZ1NaqGGkjcubkYmty8arwr0mwAOd73PX2nLep2RxsjajGJciak0IAAfJ9gAAAAAAAAAAAAw738S13N5P0qZhh3v4lrubyfpU2RfG3eaqj+J25TkgAFplAgAAAAAA97f8Pp/vW9qHge9v+H0/wB63tQwuBluKHXgAKpP0ECtu6I+RVH/ALiz/rlLJK27oj5FUf8AuLP+uU9CyvnI9542UH02bcUKACxylQAAAAAAT3QN84EXNpexCBE90DfOBFzaXsQ4rR+Uk3LyPTsX6hB9zeZ0MACtS8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAYd7+Ja7m8n6VMww738S13N5P0qbIvjbvNVR/E7cpyQAC0ygQAAAAAAe9v+H0/3re1DwPe3/D6f71vahhcDLcUOvAAVSfoIFbd0R8iqP/cWf9cpZJW3dEfIqj/3Fn/XKehZXzke88bKD6bNuKFABY5SoAAAAAAJ7oG+cCLm0vYhAie6BvnAi5tL2IcVo/KSbl5Hp2L9Qg+5vM6GABWpeAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMO9/EtdzeT9KmYYd7+Ja7m8n6VNkXxt3mqo/iduU5IABaZQIAAAAAAPe3/D6f71vah4Hvb/AIfT/et7UMLgZbih14ACqT9BArzugGtXAsaqiKra2NU8i7l6fuWGV7p/+QjeeR9jjvsv5yPeeRb/ANNm+1Tn4AFkFJgAAAAAAnugb5wIubS9iECJ7oG+cCLm0vYhxWj8pJuXkenYv1CD7m8zoYAFal4AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAw738S13N5P0qZhh3v4lrubyfpU2RfG3eaqj+J25TkgAFplAgAAAAAA97f8Pp/vW9qHge9v+H0/wB63tQwuBluKHXgAKpP0ECvdP8A8hG88j7HFhFe6f8A5CN55H2OO+y/nI955Fv/AE2b7VOfgAWQUmAAAAAACe6BvnAi5tL2IQInugb5wIubS9iHFaPykm5eR6di/UIPubzOhgAVqXgAAAAAAAAAAAAAAAfMj2RxukkcjWNRVc5VyRETac8Ys0lYirr5UyWu5zUdA16tp440RM2Iupy6s814fIWNp0xH/CcMpaqeTKquWbFyXW2JPfr06m9K8Rz+S2wLPasazyNvvwv5ldZYWxI2ZtLA5U9nS65btK4J/Saf7JLv9xhygrPOnoG/3GHKCs86egjQJFmsHcTghDM/qtq7ivmSXf7jDlBWedPQN/uMOUFZ509BGgM1g7icEGf1W1dxXzJLv9xhygrPOnoG/wBxhygrPOnoI0BmsHcTggz+q2ruK+ZJd/uMOUFZ509BtMJYvxtccTW6ihvFTO6WoaixvyVqtzzdnq4Ms1Ugxcvc+Yc3EVRiapj1vzgpc02J79ydPg9DjitDN6WndIrE8NCYnp2MtbXVjIWyuuvvXSuhEx/3aW8ACvS5QAAAAAAAAAAAAAAAAAAYd7+Ja7m8n6VMww738S13N5P0qbIvjbvNVR/E7cpyQAC0ygQAAAAAAe9v+H0/3re1DwPe3/D6f71vahhcDLcUOvAAVSfoIFe6f/kI3nkfY4sIr3T/APIRvPI+xx32X85HvPIt/wCmzfapz8ACyCkwAAAAAAT3QN84EXNpexCBE90DfOBFzaXsQ4rR+Uk3LyPTsX6hB9zeZ0MACtS8AAAAAAAAAAAAAfMj2RxukkcjWNRVc5VyRETafRXmnPEaWnDX8Jp5Mqu45sXJdbYk98vT73pXiOilp3VMzYm6zjtCtZRUz534NTiupP7Up/SFiB+JcVVVxRV9rovsVM1dkbeDz61+1VI+AWXFG2JiMbghRs8z55HSvW9VW9QADYagAAAAADPw7aqi93uktVKnutTIjEXLNGpwq5fIiZr0HVVooKe1Wumt1I3cwU8aRsTbkicK+VeEq7ufMOexU1RiWpj8KXOClzT6KL4bulUy6F4y2yEZQVvTTdC3BvP08y08j7MzemWpenvPw+3Vxx4AAEfJgAAAAAAAAAAAAAAAAAADDvfxLXc3k/SpmGHe/iWu5vJ+lTZF8bd5qqP4nblOSAAWmUCAAAAAAD3t/wAPp/vW9qHge9v+H0/3re1DC4GW4odeAAqk/QQK90//ACEbzyPscWEV7p/+QjeeR9jjvsv5yPeeRb/02b7VOfgAWQUmAAAAAACb6EKqnpdIFL7YlbGk0UkTFcuSK5U1J05echAaqtVHNVUVNaKmw01EKTROjVbr0VDpo6haWoZMiX+yqLwOwwVbok0iJckisV9mRK1Mm09Q9f5/E1y/6/Lt+3htIrirpJKWRY5E9S7LOtGG0IUmhXRrTWi9igAHKdwAAAAAAAAB8yyMiifLI9GMY1XOcq5IiJwqcuY+v78SYpq7mqr7CrvY6dq/Rib73z61Xyqpb+nbEf8AC8NttFPJlVXHNrsl1thT33n1N+zMoImOTtH7DFqHYroTd/uRWuWlp9JK2jYuhuld+pP6TmAASYgwAAAAAAM/DtqqL3e6S1Uqe61MiMzyz3KcKuXyIma9BgF0dz5hz2KmqMS1MfhS5wUuafRRfDd0qmXQvGcVoVaUlO6TXq3np2PZ62hVshTDFdyY+W8tK1UNPbLbT2+kZuIKeNsbE8iJlr8pkgFbOcrlvXEu5jUY1GtS5EAAMH0AAAAAAAAAAAAAAAAAADV4sraa34auNVVytiiZTvRVcvCqtVERONVXUiGTd7jRWm3TXC4TsgpoW7p73dicarsTac56Rsa1uLLjkm7gtsLl9r0+f53cbl/DgTaq+rZdnSVciLg1MV/RH7ftqKzoFaul7k0J+18OZEwAWEU4AAAAAAD3t/w+n+9b2oeB72/4fT/et7UMLgZbih14ACqT9BAr3T/8hG88j7HFhFe6f/kI3nkfY477L+cj3nkW/wDTZvtU5+ABZBSYAAAAAAAAAaqtVHNVUVNaKmwvHRJpES5JFYr7MiVqZNp6h6/z+Jrl/wBfl2/bw0cGqrVRzVVFTWipsOKuoY6yP2H/ANL2HpWVas1mz9LFhrTUqf7BTsMFW6JNIiXJIrFfZkStTJtPUPX+fxNcv+vy7ft4bSK/q6SSlkWORPUuOzrRhtCFJoV0a01ovYoAByncAAAD5lkZFE+WR6MYxquc5VyREThU+iudO2I/4Xhttop5Mqq45tdkutsKe+8+pv2ZnTSU7qmZsTdZxWjWsoaZ87/+qcV1J/alQY+v78SYpq7mqr7CrvY6dq/Rib73z61XyqpoQCy442xsRjcEKNmmfPI6R63qq3qAAfZrAAAAAAM/DtqqL3e6S1Uqe61MiMzyz3KcKuXyIma9B1XaqGntltp7fSM3EFPG2NieREy1+Uq3ufMOexU1RiWpj8KXOClzT6KL4bulUy6F4y2yEZQVnTTdC3BvP08y08j7MzelWoenvPw+3Vxx4AAEfJgAAAAAAAAAAAAAAAAAADEu9xorTbprhcJ2QU0Ld097uxONV2JtF3uNFabdNcLhOyCmhbunvd2JxquxNpznpGxrW4suOSbuC2wuX2vT5/ndxuX8OBNqr6lmWY+tf2NTFf0nieDbluRWXF2vXBP2vhzGkbGtbiy45Ju4LbC5fa9Pn+d3G5fw4E2qsTAJ9DCyFiMYlyIVDU1MtVKssq3uUAA2mgAAAAAAHvb/AIfT/et7UPA97f8AD6f71vahhcDLcUOvAAVSfoIGlxrh6nxPh6e1VEixK9UfFKiZ7h6cC5bU2KnEqm6B9xyOjej2rcqGqaFk8bo5EvaqXKcm4jstwsF2lttyhWOaPWipra9uxzV2ov8Ams1x1FjrClvxXalpapEjqI81p6hEzdE792rtT98lObsR2W4WC7S225QrHNHrRU1te3Y5q7UX/NZPrLtRlay5dD0xT9oVDb1gyWZJ7TdMa4L+l8eZrgAesR8AAAAAAAAANVWqjmqqKmtFTYSOLHWL442xtxBXblqZJun7pfOutSOA1viZJ8aIu82xTyw39G5Uv7FuJLv9xhygrPOnoG/3GHKCs86egjQNeawdxOCG7P6rau4r5kl3+4w5QVnnT0Df7jDlBWedPQRoDNYO4nBBn9VtXcV8yS7/AHGHKCs86eg0l0uNddKx1ZcauWqqHalkkdmuXF9nkMUH2yGNi3taif0a5aqaVPZkeqp4qqgAG00AAAAAAA2OGbRUX2/Ulppv5lRIjVdlnuG8LndCIq9Bri6+59w57BQ1GJKmP3Sozhpc04GIvhO6VTL+leM4bQq0pKd0mvVvPUsazltCsZDqxXcmPkWhbKKnt1vp6CkjSOCnjSONqbERO0yACt1VXLepdrWoxEa1LkQAAwfQAAAKG0j6Rr1JiWopLHcX0tDSuWJqxImcrk1Ocq5cGeaJsyTMszSviPe7hKeSGTc1lV7hTZLrRVTW7oTNftyOaSU5P0DXos8iXpgl/wD+r/vEgOWNsPic2khcqLi65btyfvgSXf7jDlBWedPQN/uMOUFZ509BGgSbNYO4nBCC5/VbV3FfMku/3GHKCs86egb/AHGHKCs86egjQGawdxOCDP6rau4r5kl3+4w5QVnnT0Df7jDlBWedPQRoDNYO4nBBn9VtXcV8yS7/AHGHKCs86egb/cYcoKzzp6CNAZrB3E4IM/qtq7ivmbS9Yivl6jZHdLpU1cbF3TWPf4KLx5cGflNWAbmsaxLmpchzySPkd7T1VV8QAD6PgAAAAAAAAAFi6JMAzXyqivVzY6K2QvR0bVTJahyLwJ9XPhXbwJty/NFOj6TEEzLtdo3R2pjvBaupalU2J9XjXoTaqX5DFHDCyGGNscbGo1jGpkjUTgRE4iN2xbHQ3wQr72tez15E2yaybWpVKqpT3NSdvivhz3Y/YAIYWaAAACPY6wpb8V2paWqRI6iPNaeoRM3RO/dq7U/fJSQg2RSviej2LcqGmop46iNYpUvauKHJuI7LcLBdpbbcoVjmj1oqa2vbsc1dqL/ms1x1FjrClvxXalpapEjqI81p6hEzdE792rtT98lObsR2W4WC7S225QrHNHrRU1te3Y5q7UX/ADWT2y7UZWsuXQ9MU/aFRW9YMlmSe03TGuC/pfHma4AHrEfAAAAAAAAAAAAAAAAAAAAAAAAAAANjhm0VF9v1Jaab+ZUSI1XZZ7hvC53QiKvQdVW2jp7db6ehpWbiCnjbHG3iREyQq/ufcOewUNRiSpj90qM4aXNOBiL4TulUy/pXjLYIPb9Z00/RNwbz9MC1Mj7Mzalzh6e8/lq448AADwCXgAAAAiOljEaYdwlO+GTc1tVnBTZLrRVTW7oTX9uXGboIXTyNjbipz1dSylgdNJg1LyntMWI/4/i2WOCTdUdBnBDkupyovhu6V1fYiELALLghbBG2NuCFGVdS+qndNJi5bwADcc4AAAAAAAAAAAAAAAAAAAAALE0U6PpMQTMu12jdHamO8Fq6lqVTYn1eNehNqo0U6PpMQTMu12jdHamO8Fq6lqVTYn1eNehNqpfkMUcMLIYY2xxsajWMamSNROBETiI3bFsdDfDCvva17PXkTbJrJpalUqqpPc1J2+K+HPdihijhhZDDG2ONjUaxjUyRqJwIicR9gENXSWYiIiXIAAYMgAAAAAAj2OsKW/FdqWlqkSOojzWnqETN0Tv3au1P3yUkINkUr4no9i3KhpqKeOojWKVL2rihybiOy3CwXaW23KFY5o9aKmtr27HNXai/5rNcdRY6wpb8V2paWqRI6iPNaeoRM3RO/dq7U/fJTm7EdluFgu0ttuUKxzR60VNbXt2Oau1F/wA1k9su1GVrLl0PTFP2hUVvWDJZkntN0xrgv6Xx5muAB6xHwAAAAAAAAAAAAAAAAAAAAAbHDNoqL7fqS0038yokRquyz3DeFzuhEVeg1xdnc/4bWnoZ8SVUeUlSixUuacEaL4TulUy6F4zhtGrSkp3Sa9W89SxrOW0KxkOrFdyY+X9ln22jp7db6ehpWbiCnjbHG3iREyQyACt1VXLepdrWo1Ea1NCAAGD6AAABzbpdxHvgxbMkMm6o6LOCDJdS5L4TulfwRC4tLmI972Eplhk3NZWZwU+S60zTwndCfiqHNhLMnKPGoduT9r+uJXuWtp6W0TF8XfpP3wAAJWV8AAAAAAAAAAAAAAAAAAAAACxNFOj6TEEzLtdo3R2pjvBaupalU2J9XjXoTaqNFOj6TEEzLtdo3R2pjvBaupalU2J9XjXoTaqX5DFHDCyGGNscbGo1jGpkjUTgRE4iN2xbHQ3wwr72tez15E2yayaWpVKqqT3NSdvivhz3YoYo4YWQwxtjjY1GsY1MkaicCInEfYBDV0lmIiIlyAAGDIAAAAAAAAAAAAI9jrClvxXalpapEjqI81p6hEzdE792rtT98lJCDZFK+J6PYtyoaainjqI1ilS9q4ocm4jstwsF2lttyhWOaPWipra9uxzV2ov+azXHUWOsKW/FdqWlqkSOojzWnqETN0Tv3au1P3yU5uxHZbhYLtLbblCsc0etFTW17djmrtRf81k9su1GVrLl0PTFP2hUVvWDJZkntN0xrgv6Xx5muAB6xHwAAAAAAAAAAAAAAAAADZ4Vs89/xBR2mnzR08iI5yJ7xia3O6EzOqaCkgoaGCipY0jggjbHG1NjUTJCse5/w57Wts+IqmPKWqzip804I0Xwl6VTL+nylqkGt+s6afom4N56/ItXJCzM2pM4envP5auOPAAA8ElwAAAAIfpcxCuH8ITugeraurX2vAqcLVVPCd0Jn05G6CF08jY24qc1XVMpIHTSYNS//byndLuI98GLZkhk3VHRZwQZLqXJfCd0r+CIQ4AsuCFsEbY24IUbVVL6qZ00mLlvAANxzgAAAAAAAAAAAAAAAAAAsTRTo+kxBMy7XaN0dqY7wWrqWpVNifV416E2qjRTo+kxBMy7XaN0dqY7wWrqWpVNifV416E2ql+QxRwwshhjbHGxqNYxqZI1E4EROIjdsWx0N8MK+9rXs9eRNsmsmlqVSqqk9zUnb4r4c92KGKOGFkMMbY42NRrGNTJGonAiJxH2AQ1dJZiIiJcgABgyAAAAAAAAAAAAAAAAAADWX6wWa+xxsu1vhq0jVdwr01tz4clTWhswfTHuY72mrcp8SRMlarJERUXUulCK97vBfiGDrH+sO93gvxDB1j/WJUDoz6p2juKnH1VQ7Fn4p5EV73eC/EMHWP8AWHe7wX4hg6x/rEqAz6p2juKjqqh2LPxTyIr3u8F+IYOsf6w73eC/EMHWP9YlQGfVO0dxUdVUOxZ+KeRFe93gvxDB1j/WHe7wX4hg6x/rEqAz6p2juKjqqh2LPxTyIr3u8F+IYOsf6w73eC/EMHWP9YlQGfVO0dxUdVUOxZ+KeRFe93gvxDB1j/WHe7wX4hg6x/rEqAz6p2juKjqqh2LPxTyIr3u8F+IYOsf6x+po8wYi5/wGD/m/1iUgZ9U7R3FR1VQ7Fn4p5HnTww08DIKeJkUUbUaxjGo1rUTgRETgQ9ADmVb9KnciIiXIAAYMgAAAwL5Z7Ze6NKS60cdVCj0ejX56nJtRU1pwqZ4Ppr3MX2mrcp8SRskarHpei6lIr3u8F+IYOsf6w73eC/EMHWP9YlQOjPqnaO4qcfVVDsWfinkRXvd4L8QwdY/1h3u8F+IYOsf6xKgM+qdo7io6qodiz8U8iK97vBfiGDrH+sO93gvxDB1j/WJUBn1TtHcVHVVDsWfinkRXvd4L8QwdY/1h3u8F+IYOsf6xKgM+qdo7io6qodiz8U8iK97vBfiGDrH+sO93gvxDB1j/AFiVAZ9U7R3FR1VQ7Fn4p5EV73eC/EMHWP8AWHe7wX4hg6x/rEqAz6p2juKjqqh2LPxTyIr3u8F+IYOsf6w73eC/EMHWP9YlQGfVO0dxUdVUOxZ+KeRFe93gvxDB1j/WP1ujzBiORUsNPmi563vX9yUgZ9U7R3FR1VQ7Fn4p5HxDFHDCyGGNscbGo1jGpkjUTgRE4j7AOZdJ3IiIlyAAGDIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB//2Q==">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -70645,6 +70654,917 @@ _v214UsarConta = function (id, nome, novo) {
 };
 </script>
 <!-- ████ FIM PCM V234 ████ -->
+<!-- ████ INICIO PCM V235 · FAT — FICHA DE FATURAMENTO + RETORNO DA NOTA + "CONTRATO — COBRAR SÓ PEÇAS" ████ -->
+<style>
+/* PCM V235 · FAT */
+.v235-ov{position:fixed;inset:0;z-index:10040;background:rgba(20,20,20,.38);display:flex;align-items:flex-start;justify-content:center;padding:28px 16px;overflow-y:auto}
+.v235-ov[hidden]{display:none}
+.v235-jan{background:#fff;border-radius:14px;box-shadow:0 18px 50px rgba(0,0,0,.25);width:min(1040px,100%);padding:16px 18px 18px;font-size:13px;color:#262626;position:relative}
+.v235-cab{display:flex;gap:10px;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;margin:0 0 6px}
+.v235-cab h3{margin:0;font-size:17px;font-weight:700}
+.v235-cab .v235-sub{font-size:12.5px;color:#6B6B6B;margin-top:2px}
+.v235-x{all:unset;cursor:pointer;font-size:20px;line-height:1;padding:2px 8px;border-radius:8px;color:#475467}
+.v235-x:hover,.v235-x:focus-visible{background:#F2F4F7;outline:2px solid #98A2B3}
+.v235-pill{display:inline-block;font-size:11.5px;font-weight:700;padding:2px 9px;border-radius:999px;margin-left:6px;vertical-align:2px}
+.v235-pill.ag{background:#F2F4F7;color:#475467}.v235-pill.ok{background:#ECFDF3;color:#027A48}.v235-pill.pr{background:#FFF4E0;color:#9A5B00}
+.v235-pill.can{background:#FEF3F2;color:#B42318}
+.v235-aviso{margin:8px 0;padding:8px 11px;border-radius:9px;font-size:12.5px;line-height:1.45}
+.v235-aviso.am{background:#FFF4E0;border:1px solid #F3D9A6;color:#7A4A00}.v235-aviso.az{background:#EFF4FF;border:1px solid #B2CCFF;color:#1D3A6E}
+.v235-aviso.vm{background:#FEF3F2;border:1px solid #FECDCA;color:#B42318}.v235-aviso.vd{background:#ECFDF3;border:1px solid #ABEFC6;color:#05603A}
+.v235-cli{display:flex;gap:8px 18px;flex-wrap:wrap;align-items:center;margin:8px 0;padding:8px 11px;border:1px solid #EAECF0;border-radius:9px;background:#FCFCFD}
+.v235-cli b{font-weight:600}
+.v235-marca{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:8px 0;padding:10px 12px;border:2px dashed #EE7625;border-radius:10px;background:#FFF9F4}
+.v235-marca code{font-size:14px;font-weight:700;color:#262626;background:none;user-select:all}
+.v235-marca small{color:#6B6B6B;flex-basis:100%}
+.v235-cp{all:unset;box-sizing:border-box;cursor:pointer;font-size:11.5px;font-weight:600;color:#175CD3;padding:2px 8px;border:1px solid #B2CCFF;border-radius:999px;background:#EFF4FF;line-height:1.4;white-space:nowrap}
+.v235-cp:hover,.v235-cp:focus-visible{background:#DCE7FF;outline:2px solid #175CD3;outline-offset:1px}
+.v235-cp.ok{color:#027A48;border-color:#ABEFC6;background:#ECFDF3}
+.v235-bl{margin:12px 0 4px;border:1px solid #EAECF0;border-radius:10px;overflow:hidden}
+.v235-bl h4{margin:0;padding:8px 11px;background:#F9FAFB;font-size:13px;font-weight:700;display:flex;gap:8px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.v235-bl h4 small{font-weight:400;color:#6B6B6B}
+.v235-tab{width:100%;border-collapse:collapse;font-size:12.5px}
+.v235-tab th,.v235-tab td{padding:6px 9px;border-top:1px solid #F2F4F7;text-align:left;vertical-align:top}
+.v235-tab th{font-size:10.5px;text-transform:uppercase;letter-spacing:.04em;color:#6B6B6B;background:#fff}
+.v235-tab td.n{text-align:right;white-space:nowrap}
+.v235-tab tr.sem td{background:#FFFAEB}
+.v235-tab tr.fora td{color:#98A2B3;text-decoration:line-through}
+.v235-tab tr.inc td{color:#6B6B6B}
+.v235-tab small{display:block;color:#6B6B6B;font-size:11px}
+.v235-mini{all:unset;box-sizing:border-box;cursor:pointer;font-size:11.5px;font-weight:600;color:#9A5B00;padding:2px 8px;border:1px solid #F3C9A6;border-radius:999px;background:#FFF7ED;line-height:1.4;white-space:nowrap}
+.v235-mini:hover,.v235-mini:focus-visible{background:#FDE8D3;outline:2px solid #EE7625;outline-offset:1px}
+.v235-mini.az{color:#175CD3;border-color:#B2CCFF;background:#EFF4FF}
+.v235-mini.cz{color:#344054;border-color:#D0D5DD;background:#fff}
+.v235-mini[disabled]{opacity:.55;cursor:progress}
+.v235-linha-form{background:#F9FAFB}
+.v235-form{display:flex;gap:8px;flex-wrap:wrap;align-items:flex-end;padding:8px 0}
+.v235-form label{display:flex;flex-direction:column;gap:2px;font-size:11.5px;font-weight:600;color:#475467}
+.v235-form input,.v235-form textarea{font:inherit;font-size:12.5px;padding:5px 8px;border:1px solid #D0D5DD;border-radius:7px;background:#fff;min-width:0}
+.v235-form textarea{min-height:40px;width:100%;box-sizing:border-box;resize:vertical}
+.v235-res{list-style:none;margin:4px 0 0;padding:0;max-height:200px;overflow:auto;border:1px solid #EAECF0;border-radius:8px;background:#fff}
+.v235-res li button{all:unset;box-sizing:border-box;display:block;width:100%;cursor:pointer;padding:6px 9px;font-size:12.5px;border-top:1px solid #F2F4F7}
+.v235-res li:first-child button{border-top:0}
+.v235-res li button:hover,.v235-res li button:focus-visible{background:#EFF4FF;outline:none}
+.v235-res small{color:#6B6B6B}
+.v235-tot{display:flex;justify-content:flex-end;gap:18px;padding:7px 11px;font-size:13px;border-top:1px solid #EAECF0;background:#FCFCFD}
+.v235-info{display:flex;gap:6px 18px;flex-wrap:wrap;margin:10px 0;font-size:12.5px}
+.v235-info span b{font-weight:600}
+.v235-docs{margin:10px 0;padding:8px 11px;border:1px solid #EAECF0;border-radius:9px}
+.v235-docs h5{margin:0 0 4px;font-size:12.5px;font-weight:700}
+.v235-docs .d{display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:4px 0;border-top:1px solid #F2F4F7;font-size:12.5px}
+.v235-docs .d:first-of-type{border-top:0}
+.v235-acoes{display:flex;gap:6px;flex-wrap:wrap;margin:12px 0 0;padding-top:10px;border-top:1px solid #EAECF0}
+.v235-btn{all:unset;box-sizing:border-box;cursor:pointer;display:inline-flex;align-items:center;gap:5px;height:32px;padding:0 12px;border:1px solid #D0D5DD;border-radius:8px;background:#fff;font-size:12.5px;font-weight:600;color:#344054}
+.v235-btn:hover,.v235-btn:focus-visible{background:#F9FAFB;outline:2px solid #98A2B3;outline-offset:1px}
+.v235-btn.pri{background:#EE7625;border-color:#EE7625;color:#fff}.v235-btn.pri:hover,.v235-btn.pri:focus-visible{background:#D9661B}
+.v235-btn.per{color:#B42318;border-color:#FECDCA}
+.v235-btn[disabled]{opacity:.55;cursor:progress}
+.v235-caixa{margin:10px 0 0;padding:10px 12px;border:1px solid #D0D5DD;border-radius:10px;background:#F9FAFB}
+.v235-caixa h5{margin:0 0 4px;font-size:13px}
+.v235-outras{display:flex;gap:6px;flex-wrap:wrap;margin:6px 0 0}
+.v235-trilha{margin:12px 0 0;font-size:12px;color:#475467}
+.v235-trilha summary{cursor:pointer;font-weight:600}
+.v235-trilha li{margin:3px 0}
+.v235-msg{margin:8px 0 0}
+.v235-vazio{padding:18px 6px;color:#6B6B6B;text-align:center}
+.v235-selo{display:inline-block;font-size:9.5px;font-weight:700;letter-spacing:.03em;padding:1px 6px;border-radius:999px;margin:2px 3px 0 0;text-transform:uppercase;border:1px solid #ABEFC6;color:#027A48;background:#ECFDF3}
+.v235-selo.ag{border-color:#D0D5DD;color:#475467;background:#F9FAFB}.v235-selo.pr{border-color:#F3C9A6;color:#9A5B00;background:#FFF7ED}
+.v235-av{display:flex;flex-direction:column;gap:3px;margin-bottom:6px}
+.v235-av>.v200-card,.v235-av>.v232-av{margin-bottom:0}
+.v235-av>.v235-mini{align-self:flex-end}
+.v235-linhaos{margin:6px 0 2px;padding:7px 10px;border-radius:8px;border:1px solid #EAECF0;background:#FCFCFD;font-size:13px;display:flex;gap:8px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.v235-linhaos small{color:#6B6B6B}
+.v235-dem{margin:8px 0;padding:8px 10px;border-radius:9px;border:1px solid #F3C9A6;background:#FFF9F4;font-size:12.5px;display:flex;gap:8px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.v235-cli-regra{margin:10px 0;padding:9px 11px;border:1px solid #EAECF0;border-radius:9px;background:#FCFCFD;font-size:12.5px}
+.v235-cli-regra h4{margin:0 0 4px;font-size:12.5px}
+.v235-cli-regra label{display:flex;gap:7px;align-items:flex-start;margin:4px 0;font-weight:400}
+.v235-cli-regra label input{width:auto;margin-top:2px}
+@media (max-width:700px){.v235-ov{padding:0}.v235-jan{border-radius:0;min-height:100vh;padding:12px}.v235-tab th:nth-child(4),.v235-tab td:nth-child(4){display:none}}
+@media print{.v235-ov{position:static;background:none;padding:0}.v235-acoes,.v235-x,.v235-cp,.v235-mini{display:none!important}}
+</style>
+<script>
+/* ══════════════════════════════════════════════════════════════════════════════════════════════════════════
+   PCM V235 · FAT (03/10/2026) — sobre o PCM V234 (no ar, md5 9a9ac773). Par: SQL FATURAMENTO_OMIE_2026-10-03 (roda ANTES).
+   Zero Apps Script (vale o GAS v168). Decisões do Fernando (03/10): FA1–FA8 "ok"; FA6 = Vinícius (financeiro/adm).
+   O QUE A TELA FAZ:
+   A. 🧾 FICHA DE FATURAMENTO — uma sobreposição (um nível só, o fundo continua) com o que o cliente aceitou, separado como o
+      Omie pede: "OS do Omie (serviços)" e "Pedido de venda (peças)", código do Omie em cada linha, Copiar em cada campo e
+      "Copiar tudo" por bloco; a MARCA para colar nas Observações do Omie; cliente do Omie (CNPJ/código) com Copiar.
+      Linha sem código: amarela, com "Achar no Omie aqui" (busca na própria linha; a escolha vira de-para no banco).
+      Abre: pelo card (coluna Faturamento e janela do card), pela demanda "💵 Cobrar a OS" (agenda e celular) e pela
+      linha 🧾 no painel da OS. Quem vê: Financeiro, administrador e o dono do card (o banco decide de novo).
+   B. RETORNO — o que o Omie devolveu (OS/pedido com a marca, faturado ou não), "provável" com "É esta"/"Não é esta",
+      "Marcar faturada à mão…" (com o nº da nota), "Faturar só esta OS", "Ler o Omie agora", "Desfazer" (admin).
+   C. CONTRATO — COBRAR SÓ PEÇAS — a opção nova na cobrança da OS (balão "Mudar" do painel e Abrir OS); ficha só de peças
+      (as trocadas nos formulários) com "＋ Peça", ajuste/tirar linha com motivo e "Nada a faturar"; o PADRÃO DO CLIENTE
+      (ficha do cliente › Resumo, só o admin marca).
+   D. SELOS — no card do quadro ("🧾 faturada · OS Omie 2701", "🧾 aguardando o Omie", "🧾 provável").
+   Sem o SQL: nada disso aparece (a tela fica como no V234) e a página não quebra.
+   ══════════════════════════════════════════════════════════════════════════════════════════════════════════ */
+var V235 = { semSql: false, resumoOk: false, resumo: { cards: {}, os: {} }, resumoEm: {}, resumoVoo: null, pedidos: {}, ov: null, cli: {}, cliVoo: {}, regraUi: null,
+             demAtual: null, demMob: null, pend: false, ger: 0 };
+function _v235E(v) { return escHtml(v == null ? '' : String(v)); }
+function _v235T(v) { return String(v == null ? '' : v).trim(); }
+function _v235Sessao() { try { return window.PROPER_SESSION || JSON.parse(localStorage.getItem('proper_session') || 'null') || {}; } catch (e) { return {}; } }
+// a régua da tela (o banco confere de novo a cada chamada — _fat_papel): administrador, perfil Financeiro ou módulo pcm_financeiro
+function _v235Financeiro() {
+  var s = _v235Sessao(), m = Array.isArray(s.modulos) ? s.modulos : [];
+  return s.is_admin === true || m.indexOf('pcm_financeiro') >= 0 || /financ/i.test(String(s.nome_perfil || ''));
+}
+function _v235Eu() { try { if (typeof _v200UsuarioId === 'function') return _v200UsuarioId(); } catch (e) {} var s = _v235Sessao(); return _v235T(s.id_tecnico || (s.tecnico && s.tecnico.id) || s.id); }
+function _v235Brl(v) { var n = Number(v || 0); return n.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }); }
+function _v235Qtd(v) { var n = Number(v || 0); return n.toLocaleString('pt-BR', { maximumFractionDigits: 3 }); }
+function _v235Data(v, hora) {
+  if (!v) return ''; var d = new Date(v); if (isNaN(d)) { var m = /^(\d{4})-(\d{2})-(\d{2})/.exec(String(v)); return m ? m[3] + '/' + m[2] + '/' + m[1] : String(v); }
+  return d.toLocaleDateString('pt-BR', { timeZone: 'America/Sao_Paulo' }) + (hora ? ' ' + d.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit', timeZone: 'America/Sao_Paulo' }) : '');
+}
+function _v235Nome(id) { try { if (typeof _v200NomeUsu === 'function') return _v200NomeUsu(id); } catch (e) {} return String(id || ''); }
+
+// ── transporte (o mesmo crachá do quadro comercial; a mensagem do banco chega inteira) ──────────────────────────
+async function _v235Rpc(fn, args, escrita, _ja) {
+  var tok = await _v200Token(false), r;
+  try {
+    r = await fetch(SUPA_URL + '/rest/v1/rpc/' + fn, { method: 'POST', signal: _pcmSinalTimeout_(!!escrita),
+      headers: { apikey: SUPA_ANON, Authorization: 'Bearer ' + tok, 'Content-Type': 'application/json' }, body: JSON.stringify(args || {}) });
+  } catch (e) {
+    var er = new Error(escrita ? 'Sem conexão com o banco — NADA foi gravado. Tente de novo.' : 'Sem conexão com o banco.'); er.v235 = 'rede'; throw er;
+  }
+  var txt = ''; try { txt = await r.text(); } catch (e) {}
+  var j = null; try { j = txt ? JSON.parse(txt) : null; } catch (e) {}
+  if (r.ok) return j;
+  if (r.status === 401 && !_ja) { try { _v200Tok = null; } catch (e) {} return _v235Rpc(fn, args, escrita, true); }
+  var cod = (j && j.code) || '';
+  if (cod === 'PGRST202' || cod === '42883' || (r.status === 404 && /function|rpc/i.test(txt))) {
+    V235.semSql = true; var e1 = new Error('O SQL FATURAMENTO_OMIE ainda não rodou no Supabase.'); e1.v235 = 'sem_sql'; throw e1;
+  }
+  var msg = String((j && (j.message || j.hint)) || ('HTTP ' + r.status)).replace(/^(Faturamento|Cobrança|CRM):\s*/, '');
+  var e2 = new Error((escrita ? 'NÃO foi gravado: ' : '') + msg); e2.v235 = cod || 'erro'; throw e2;
+}
+
+// ════════════════════════════════════════════════════════════════════════════════════════════════════════════
+// SELOS (fat_resumo): estado da ficha por card e por OS — quem vê o quadro vê o selo; valores só na ficha
+// ════════════════════════════════════════════════════════════════════════════════════════════════════════════
+function _v235PedirResumo(cards, oses) {
+  if (V235.semSql) return Promise.resolve(null);
+  var agora = Date.now();
+  (cards || []).forEach(function (c) { c = _v235T(c); if (c && !(agora - (V235.resumoEm['c:' + c] || 0) < 45000)) V235.pedidos['c:' + c] = 1; });
+  (oses || []).forEach(function (o) { o = _v235T(o); if (o && !(agora - (V235.resumoEm['o:' + o] || 0) < 45000)) V235.pedidos['o:' + o] = 1; });
+  if (V235.resumoVoo) return V235.resumoVoo;
+  var ks = Object.keys(V235.pedidos); if (!ks.length) return Promise.resolve(null);
+  V235.resumoVoo = new Promise(function (ok) { setTimeout(ok, 60); }).then(function () {
+    var ks2 = Object.keys(V235.pedidos).slice(0, 400); ks2.forEach(function (k) { delete V235.pedidos[k]; });
+    var cs = ks2.filter(function (k) { return k[0] === 'c'; }).map(function (k) { return k.slice(2); });
+    var os = ks2.filter(function (k) { return k[0] === 'o'; }).map(function (k) { return k.slice(2); });
+    return _v235Rpc('fat_resumo', { p_cards: cs, p_os: os }).then(function (r) {
+      var t = Date.now(); V235.resumoOk = true; V235.resumoErro = 0;
+      cs.forEach(function (c) { V235.resumo.cards[c] = (r && r.cards && r.cards[c]) || []; V235.resumoEm['c:' + c] = t; });
+      os.forEach(function (o) { V235.resumo.os[o] = (r && r.os && r.os[o]) || null; V235.resumoEm['o:' + o] = t; });
+      return r || {};
+    }, function (e) {
+      // falhou (rede, 503…): cache NEGATIVO — os mesmos não são pedidos de novo por 45 s (nada de martelar o banco)
+      var t = Date.now(); V235.resumoErro = t;
+      cs.forEach(function (c) { V235.resumoEm['c:' + c] = t; }); os.forEach(function (o) { V235.resumoEm['o:' + o] = t; });
+      if (!V235.resumoDeNovo) V235.resumoDeNovo = setTimeout(function () { V235.resumoDeNovo = 0; _v235Agendar(); }, 46000);   // UMA nova tentativa
+      throw e;
+    });
+  }).catch(function (e) { if (e && e.v235 !== 'sem_sql') console.warn('[V235] selos:', e.message); else _v235Agendar(); return null; })
+    .finally(function () { V235.resumoVoo = null; });
+  return V235.resumoVoo;
+}
+function _v235Esquecer(card, oses) {
+  if (card) delete V235.resumoEm['c:' + card];
+  (oses || []).forEach(function (o) { delete V235.resumoEm['o:' + o]; });
+}
+function _v235SeloHtml(f) {
+  if (!f || f.estado === 'cancelada') return '';
+  if (f.estado === 'faturada') return '<span class="v235-selo" title="Ficha ' + _v235E(f.id) + '">🧾 faturada' + (f.nf ? ' · ' + _v235E(String(f.nf).slice(0, 34)) : '') + '</span>';
+  if (f.estado === 'dispensada') return '<span class="v235-selo ag" title="Ficha ' + _v235E(f.id) + '">🧾 nada a faturar</span>';
+  if (f.provavel) return '<span class="v235-selo pr" title="O Omie tem um documento que parece desta ficha — confira">🧾 provável no Omie</span>';
+  return '<span class="v235-selo ag" title="Ficha ' + _v235E(f.id) + '">🧾 aguardando o Omie</span>';
+}
+function _v235SelosCard(id) {
+  var l = V235.resumo.cards[id]; if (!Array.isArray(l) || !l.length) return '';
+  return l.filter(function (f) { return f.estado !== 'cancelada'; }).map(_v235SeloHtml).join('');
+}
+// quem pode abrir a ficha do card: Financeiro/admin, ou o dono do card
+function _v235PodeCard(c) { return !V235.semSql && (_v235Financeiro() || (c && _v235T(c.dono_id) && _v235T(c.dono_id) === _v235Eu())); }
+
+// ── o card do quadro: selo dentro do card + "🧾 Ficha" (coluna Faturamento ou já com ficha) ─────────────────────
+(function () {
+  if (typeof _v200CardHtml !== 'function') return;
+  var o = _v200CardHtml;
+  _v200CardHtml = function (c) {
+    var h = o.apply(this, arguments);
+    try {
+      if (V235.semSql || !c || !c.id) return h;
+      var selos = _v235SelosCard(c.id);
+      if (selos && h.slice(-9) === '</button>') h = h.slice(0, -9) + '<div>' + selos + '</div></button>';
+      var tem = Array.isArray(V235.resumo.cards[c.id]) && V235.resumo.cards[c.id].length;
+      if (V235.resumoOk && (c.coluna === 8 || tem) && _v235PodeCard(c)) {
+        h = '<div class="v235-av">' + h + '<button type="button" class="v235-mini" data-v235="abrirCard" data-card="' + _v235E(c.id) + '" data-pw-off="1" title="Ficha de faturamento: o que lançar no Omie, com a marca">🧾 Ficha</button></div>';
+      }
+    } catch (e) { console.warn('[V235] card:', e); }
+    return h;
+  };
+})();
+// ── a OS avulsa do Faturamento ──────────────────────────────────────────────────────────────────────────────
+(function () {
+  if (typeof _v200AvulsaHtml !== 'function') return;
+  var o = _v200AvulsaHtml;
+  _v200AvulsaHtml = function (a) {
+    var h = o.apply(this, arguments);
+    try {
+      if (V235.semSql || !a || !a.id_os) return h;
+      var f = V235.resumo.os[a.id_os], selo = _v235SeloHtml(f);
+      if (selo) h = h.replace(/<\/button>/, '<div>' + selo + '</div></button>');
+      if (V235.resumoOk && _v235Financeiro()) h = '<div class="v235-av">' + h + '<button type="button" class="v235-mini" data-v235="abrirOS" data-os="' + _v235E(a.id_os) + '" data-pw-off="1" title="Ficha de faturamento desta OS">🧾 Ficha</button></div>';
+    } catch (e) { console.warn('[V235] avulsa:', e); }
+    return h;
+  };
+})();
+// ── carregar o quadro: os selos vêm junto (uma chamada só, até 400) ─────────────────────────────────────────────
+(function () {
+  if (typeof _v200Carregar !== 'function') return;
+  var o = _v200Carregar;
+  _v200Carregar = async function () {
+    var r = await o.apply(this, arguments);
+    try {
+      if (!V235.semSql && typeof _v200 !== 'undefined' && _v200.q) {
+        var cs = (_v200.q.cards || []).filter(function (c) { return c.coluna >= 6; }).map(function (c) { return c.id; });
+        var os = (_v200.q.avulsas || []).map(function (a) { return a.id_os; });
+        cs.forEach(function (c) { delete V235.resumoEm['c:' + c]; }); os.forEach(function (x) { delete V235.resumoEm['o:' + x]; });
+        var res = await _v235PedirResumo(cs, os);
+        if ((res || V235.semSql) && typeof currentView !== 'undefined' && currentView === 'comercial') _v200Pintar();
+      }
+    } catch (e) { console.warn('[V235] selos do quadro:', e); }
+    return r;
+  };
+})();
+// ── a janela do card: o bloco 🧾 (a ficha abre NO LUGAR da janela — nunca janela sobre janela — e volta para ela ao fechar) ──
+(function () {
+  if (typeof _v200PintarCard !== 'function') return;
+  var o = _v200PintarCard;
+  _v200PintarCard = function () {
+    var r = o.apply(this, arguments);
+    try { _v235DecorarCard(); } catch (e) { console.warn('[V235] janela do card:', e); }
+    return r;
+  };
+})();
+function _v235DecorarCard() {
+  if (V235.semSql || typeof _v200 === 'undefined') return;
+  var M = _v200.modal; if (!M || M.tipo !== 'card' || !M.d || !M.d.card) return;
+  var c = M.d.card, e = M.d.estado || {}, corpo = document.getElementById('v200ModalBody'); if (!corpo) return;
+  var l = V235.resumo.cards[c.id];
+  if (l === undefined) { _v235PedirResumo([c.id], []).then(function (r) { if (r && _v200.modal === M) _v235DecorarCard(); }); }
+  var tem = Array.isArray(l) && l.length, col = e.coluna || 0;
+  if (!V235.resumoOk) return;
+  if (!tem && !(col >= 6 && col <= 10)) return;
+  if (!_v235PodeCard(c)) return;
+  var ja = corpo.querySelector('#v235Card');
+  var h = '<div class="v235-linhaos" id="v235Card"><span>🧾 <b>Faturamento</b> ' + (tem ? _v235SelosCard(c.id) : '<small>' + (col === 8 ? 'a ficha sai com o que o cliente aceitou' : 'sem ficha ainda') + '</small>') + '</span>' +
+    '<button type="button" class="v235-mini" data-v235="abrirCard" data-card="' + _v235E(c.id) + '" data-volta="card" data-pw-off="1">Abrir a ficha de faturamento</button></div>';
+  if (ja && ja.__v235 === h) return;
+  if (ja) ja.remove();
+  var ancora = corpo.querySelector('.v200-falta') || corpo.querySelector('.v200-grid');
+  if (!ancora) return;
+  ancora.insertAdjacentHTML('afterend', h);
+  var novo = corpo.querySelector('#v235Card'); if (novo) novo.__v235 = h;
+}
+
+// ════════════════════════════════════════════════════════════════════════════════════════════════════════════
+// A FICHA (sobreposição)
+// ════════════════════════════════════════════════════════════════════════════════════════════════════════════
+function _v235Raiz() {
+  var el = document.getElementById('v235Ov');
+  if (!el) {
+    el = document.createElement('div'); el.id = 'v235Ov'; el.className = 'v235-ov mob-keep'; el.hidden = true;   // mob-keep: no modo celular o body esconde o resto
+    el.setAttribute('role', 'dialog'); el.setAttribute('aria-modal', 'true'); el.setAttribute('aria-label', 'Ficha de faturamento');
+    el.innerHTML = '<div class="v235-jan" id="v235Jan" tabindex="-1"></div>';
+    document.body.appendChild(el);
+    el.addEventListener('click', _v235Clique);
+    el.addEventListener('input', _v235Digitou);
+    el.addEventListener('keydown', function (ev) {
+      if (ev.key === 'Escape') { ev.preventDefault(); ev.stopPropagation(); _v235Fechar(false); }
+      if (ev.key === 'Enter' && ev.target && ev.target.matches && ev.target.matches('input[data-v235-enter]')) { ev.preventDefault(); var b = document.getElementById(ev.target.getAttribute('data-v235-enter')); if (b) b.click(); }
+    });
+  }
+  return el;
+}
+// abre a ficha. op = { card, os, id, volta: 'card' | 'dem:<id>' | 'mob:<id>' (folha do celular) | '' }
+async function _v235Abrir(op) {
+  if (V235.semSql) { toast('O SQL FATURAMENTO_OMIE ainda não rodou no Supabase.', 'error'); return; }
+  op = op || {};
+  // nunca janela sobre janela: a janela do card / da demanda fecha e volta quando a ficha fecha
+  var volta = op.volta || '';
+  try { if (volta === 'card') { if (typeof _v200Fechar === 'function') _v200Fechar(); else closeModal('v200Modal'); } } catch (e) {}
+  try { if (/^dem:/.test(volta) && typeof closeModal === 'function') closeModal('modalDemandaDesk'); } catch (e) {}
+  try { if (/^mob:/.test(volta) && typeof window._mobFechaSheet === 'function') window._mobFechaSheet(); } catch (e) {}
+  var raiz = _v235Raiz(), g = ++V235.ger;
+  V235.ov = { op: op, volta: volta, d: null, ui: {}, carregando: true, erro: '', ger: g, foco: document.activeElement };
+  raiz.hidden = false; document.body.style.overflow = 'hidden';
+  _v235Pintar();
+  try {
+    var d = op.id ? await _v235Rpc('fat_ficha_ler', { p_id: op.id })
+                  : await _v235Rpc('fat_ficha_abrir', { p_card: op.card || null, p_os: op.os || null }, true);
+    if (!V235.ov || V235.ov.ger !== g) return;
+    V235.ov.d = d; V235.ov.carregando = false;
+    if (d && d.ficha) _v235Esquecer(d.ficha.oportunidade_id, (d.ficha.cabecalho && d.ficha.cabecalho.os || []).map(function (x) { return x.id; }));
+  } catch (e) {
+    if (!V235.ov || V235.ov.ger !== g) return;
+    V235.ov.carregando = false; V235.ov.erro = (e && e.message) || String(e);
+  }
+  _v235Pintar();
+  try { document.getElementById('v235Jan').focus({ preventScroll: true }); } catch (e) {}
+}
+function _v235Sujo() {
+  var u = V235.ov && V235.ov.ui; if (!u) return false;
+  var jan = document.getElementById('v235Jan'); if (!jan) return false;
+  return !!Array.prototype.some.call(jan.querySelectorAll('.v235-caixa input,.v235-caixa textarea,.v235-linha-form input,.v235-linha-form textarea'), function (x) {
+    return x.type !== 'search' && x.name !== 'v235_busca_nofill' && _v235T(x.value) !== _v235T(x.getAttribute('data-ini') || '');
+  });
+}
+function _v235Fechar(forcar) {
+  var O = V235.ov; if (!O) return;
+  var u = O.ui || {};
+  if (!forcar && (u.mao || u.desfazer || u.dispensar || u.separar || u.editar || u.novo || u.achar)) {
+    if (_v235Sujo() && !u.confirmaFechar) { u.confirmaFechar = true; _v235Pintar(); return; }
+    // fecha primeiro o que está aberto dentro da ficha (Esc em dois tempos)
+    if (!u.confirmaFechar) { O.ui = {}; _v235Pintar(); return; }
+  }
+  var volta = O.volta, card = O.d && O.d.ficha && O.d.ficha.oportunidade_id;
+  V235.ov = null; V235.ger++;
+  var raiz = document.getElementById('v235Ov'); if (raiz) { raiz.hidden = true; raiz.querySelector('#v235Jan').innerHTML = ''; }
+  document.body.style.overflow = '';
+  try { if (typeof _v200 !== 'undefined' && _v200.q && typeof currentView !== 'undefined' && currentView === 'comercial') _v200Carregar(); } catch (e) {}
+  try {
+    if (volta === 'card' && (card || O.op.card) && typeof _v200AbrirCard === 'function') _v200AbrirCard(card || O.op.card);
+    else if (/^dem:/.test(volta) && typeof _v135AbrirDemanda === 'function') _v135AbrirDemanda(volta.slice(4));
+    else if (/^mob:/.test(volta) && typeof window._mobAbrirDemanda === 'function') window._mobAbrirDemanda(volta.slice(4));
+    else if (O.foco && document.body.contains(O.foco)) O.foco.focus({ preventScroll: true });
+  } catch (e) {}
+  _v235Agendar();
+}
+function _v235Msg(tipo, txt) { if (!V235.ov) return; V235.ov.ui.msg = { tipo: tipo, txt: txt }; }
+function _v235EstadoPill(f, d) {
+  if (f.estado === 'faturada') return '<span class="v235-pill ok">✅ Faturada' + (f.faturada_como === 'mao' ? ' à mão' : f.faturada_como === 'confirmado' ? ' (confirmada)' : '') + '</span>';
+  if (f.estado === 'dispensada') return '<span class="v235-pill ag">Nada a faturar</span>';
+  if (f.estado === 'cancelada') return '<span class="v235-pill can">Cancelada</span>';
+  var cand = (d.docs || []).some(function (x) { return x.como === 'candidato'; });
+  return cand ? '<span class="v235-pill pr">⚠ Provável no Omie — confira</span>' : '<span class="v235-pill ag">⏳ Aguardando o Omie</span>';
+}
+function _v235Cp(txt, rot, tit) {
+  return '<button type="button" class="v235-cp" data-v235="copiar" data-txt="' + _v235E(txt) + '" title="' + _v235E(tit || 'Copiar') + '" data-pw-off="1">' + _v235E(rot || 'Copiar') + '</button>';
+}
+function _v235Pintar() {
+  var O = V235.ov, jan = document.getElementById('v235Jan'); if (!O || !jan) return;
+  var h = '';
+  if (O.carregando) { jan.innerHTML = '<div class="v235-cab"><h3>🧾 Ficha de faturamento</h3><button type="button" class="v235-x" data-v235="fechar" aria-label="Fechar">×</button></div><div class="v235-vazio">⏳ Montando a ficha…</div>'; return; }
+  if (O.erro) {
+    jan.innerHTML = '<div class="v235-cab"><h3>🧾 Ficha de faturamento</h3><button type="button" class="v235-x" data-v235="fechar" aria-label="Fechar">×</button></div>' +
+      '<div class="v235-aviso vm">' + _v235E(O.erro) + '</div><div class="v235-acoes"><button type="button" class="v235-btn" data-v235="recarregar">Tentar de novo</button><button type="button" class="v235-btn" data-v235="fechar">Fechar</button></div>';
+    return;
+  }
+  var d = O.d || {};
+  if (d.sem_ficha) {
+    jan.innerHTML = '<div class="v235-cab"><h3>🧾 Ficha de faturamento</h3><button type="button" class="v235-x" data-v235="fechar" aria-label="Fechar">×</button></div>' +
+      '<div class="v235-aviso az">Sem ficha: ' + _v235E(d.motivo || '') + '</div><div class="v235-acoes"><button type="button" class="v235-btn" data-v235="fechar">Fechar</button></div>';
+    return;
+  }
+  var f = d.ficha || {}, cab = f.cabecalho || {}, cli = cab.cliente || {}, prop = cab.proposta || null, P = d.pode || {}, u = O.ui || {};
+  var oses = cab.os || [], linhas = d.linhas || [];
+  h += '<div class="v235-cab"><div><h3>🧾 Ficha de faturamento · ' + _v235E(f.id) + _v235EstadoPill(f, d) + '</h3><div class="v235-sub">' +
+    _v235E(cli.nome || f.cliente_id || '') + (prop && prop.rotulo ? ' · ' + _v235E(prop.rotulo) + (prop.aceita_em ? ' (aceita em ' + _v235E(_v235Data(prop.aceita_em)) + ')' : '') : '') +
+    (cab.card ? ' · card ' + _v235E(cab.card.id) : (f.tipo === 'cabecalho' ? ' · OS avulsa' : '')) +
+    (f.tipo === 'pecas' ? ' · <b>contrato — cobrar só peças</b>' : f.tipo === 'os' ? ' · só esta OS' : f.tipo === 'complementar' ? ' · complementar' : '') + '</div>' +
+    '<div class="v235-sub">OS: ' + (oses.length ? oses.map(function (o) { return _v235E(o.numero || o.id) + (o.maquinas && o.maquinas.length ? ' <small>(' + _v235E(o.maquinas.join(', ')) + ')</small>' : ''); }).join(' · ') : '—') + '</div></div>' +
+    '<button type="button" class="v235-x" data-v235="fechar" aria-label="Fechar a ficha">×</button></div>';
+  if (u.confirmaFechar) h += '<div class="v235-aviso am">O que você digitou ainda não foi gravado. <button type="button" class="v235-mini" data-v235="fecharMesmo">Fechar mesmo assim</button> <button type="button" class="v235-mini az" data-v235="naoFechar">Continuar aqui</button></div>';
+  if (u.msg) h += '<div class="v235-aviso ' + (u.msg.tipo === 'ok' ? 'vd' : u.msg.tipo === 'erro' ? 'vm' : 'am') + ' v235-msg" role="status">' + _v235E(u.msg.txt) + '</div>';
+  // estado
+  if (f.estado === 'faturada') h += '<div class="v235-aviso vd">✅ Faturada em ' + _v235E(_v235Data(f.faturada_em, true)) + (f.nf_numero ? ' — <b>' + _v235E(f.nf_numero) + '</b>' : '') +
+    (f.faturada_por && f.faturada_por !== 'omie' ? ' · por ' + _v235E(_v235Nome(f.faturada_por)) : ' · reconhecida na leitura do Omie') +
+    ((f.demandas_concluidas || []).length ? ' · cobrança concluída (' + _v235E(f.demandas_concluidas.join(', ')) + ')' : '') + '</div>';
+  if (f.estado === 'dispensada') h += '<div class="v235-aviso az">Nada a faturar — ' + _v235E(f.encerrada_motivo || '') + ' (' + _v235E(_v235Nome(f.faturada_por)) + ', ' + _v235E(_v235Data(f.faturada_em, true)) + ')</div>';
+  if (f.estado === 'cancelada') h += '<div class="v235-aviso vm">Ficha cancelada: ' + _v235E(f.encerrada_motivo || '') + '</div>';
+  if (f.aviso) h += '<div class="v235-aviso am">⚠ ' + _v235E(f.aviso) + '</div>';
+  if (f.desatualizada) h += '<div class="v235-aviso az">' + (f.tipo === 'cabecalho' ? 'O card ganhou proposta aceita depois que esta ficha nasceu (só cabeçalho): refaça para trazer os itens da proposta.'
+                                                                : 'A proposta (ou as peças trocadas) mudou depois que esta ficha foi montada.') +
+    (P.refazer ? ' <button type="button" class="v235-mini az" data-v235="refazer">Refazer a ficha</button>' : '') + '</div>';
+  // cliente no Omie
+  var sit = cli.situacao;
+  h += '<div class="v235-cli"><span>Cliente no Omie: ' + (sit === 'casado' || sit === 'varios'
+      ? '<b>' + _v235E(cli.razao || cli.fantasia || '') + '</b>' + (sit === 'varios' ? ' <small>(' + _v235E(cli.n) + ' cadastros com este CNPJ — confira)</small>' : '') + (cli.inativo ? ' <small style="color:#B42318">inativo no Omie</small>' : '')
+      : '<b style="color:#B42318">' + (sit === 'nao_achado' ? 'não encontrado pelo CNPJ' : sit === 'sem_cnpj' ? 'o cadastro do PCM não tem CNPJ' : 'a lista de clientes do Omie ainda não foi lida') + '</b>') + '</span>' +
+    (cli.cnpj ? '<span>CNPJ <b>' + _v235E(cli.cnpj) + '</b> ' + _v235Cp(cli.cnpj, 'Copiar') + '</span>' : '') +
+    (cli.codigo_omie ? '<span>Cód. Omie <b>' + _v235E(cli.codigo_omie) + '</b> ' + _v235Cp(String(cli.codigo_omie), 'Copiar') + '</span>' : '') + '</div>';
+  // a marca
+  h += '<div class="v235-marca"><span>Marca para as <b>Observações</b> do Omie:</span><code>' + _v235E(f.marca) + '</code>' + _v235Cp(f.marca, 'Copiar a marca', 'Cole nas Observações da OS e do pedido de venda do Omie') +
+    '<small>É ela que faz o PCM reconhecer a nota sozinho. Cole nas Observações da OS do Omie <b>e</b> do pedido de venda.</small></div>';
+  // blocos
+  var serv = linhas.filter(function (l) { return l.bloco === 'servicos'; }), pec = linhas.filter(function (l) { return l.bloco === 'pecas'; });
+  if (f.tipo === 'cabecalho') {
+    h += '<div class="v235-aviso az">OS sem proposta no PCM: os itens são lançados no Omie como hoje. Use a marca acima — é ela que faz a nota voltar sozinha.</div>';
+  } else {
+    if (f.tipo !== 'pecas' || serv.length) h += _v235BlocoHtml('servicos', '1 · OS do Omie — serviços', serv, f.total_servicos, P, u);
+    h += _v235BlocoHtml('pecas', (f.tipo === 'pecas' ? '' : '2 · ') + 'Pedido de venda do Omie — peças', pec, f.total_pecas, P, u);
+    if (f.tipo === 'pecas' && P.editar_linhas && !u.novo) h += '<div style="margin:4px 0 0"><button type="button" class="v235-mini az" data-v235="novo">＋ Peça que não está na lista (óleo a granel, consumível…)</button></div>';
+    if (u.novo) h += _v235NovoHtml(u);
+    if (f.tipo === 'pecas' && !pec.length) h += '<div class="v235-aviso az">Nenhuma peça foi marcada como TROCADA nos formulários desta OS.' + (P.dispensar ? ' Se nada foi usado mesmo, "Nada a faturar" conclui a cobrança.' : '') + '</div>';
+    h += '<div class="v235-tot"><span>Serviços <b>' + _v235Brl(f.total_servicos) + '</b></span><span>Peças <b>' + _v235Brl(f.total_pecas) + '</b></span><span>Total <b>' + _v235Brl(f.total) + '</b></span></div>';
+  }
+  // condições
+  if (prop && (prop.pagamento || prop.pedido_cliente || prop.prazo || prop.obs)) {
+    h += '<div class="v235-info">' + (prop.pagamento ? '<span>Pagamento: <b>' + _v235E(prop.pagamento) + '</b> ' + _v235Cp(prop.pagamento) + '</span>' : '') +
+      (prop.pedido_cliente ? '<span>Pedido do cliente: <b>' + _v235E(prop.pedido_cliente) + '</b> ' + _v235Cp(prop.pedido_cliente) + '</span>' : '') +
+      (prop.prazo ? '<span>Prazo: <b>' + _v235E(prop.prazo) + '</b></span>' : '') + (prop.obs ? '<span>Obs.: <b>' + _v235E(prop.obs) + '</b></span>' : '') + '</div>';
+  }
+  // o que o Omie devolveu
+  var docs = (d.docs || []).filter(function (x) { return x.como !== 'candidato'; }), cand = (d.docs || []).filter(function (x) { return x.como === 'candidato'; });
+  if (docs.length || cand.length) {
+    h += '<div class="v235-docs"><h5>No Omie</h5>' + docs.map(function (x) {
+      return '<div class="d"><span>' + (x.tipo === 'os' ? 'OS' : 'Pedido') + ' <b>' + _v235E(x.numero || x.codigo) + '</b> · ' + _v235Brl(x.valor) + ' · ' +
+        (x.cancelado ? '<b style="color:#B42318">cancelado</b>' : x.faturado ? 'faturado ' + _v235E(_v235Data(x.data_fat)) : 'ainda não faturado') +
+        ' <small>(' + (x.como === 'confirmado' ? 'confirmado por ' + _v235E(_v235Nome(x.por)) : 'pela marca') + ')</small></span></div>';
+    }).join('') + cand.map(function (x) {
+      return '<div class="d"><span>⚠ Provável: ' + (x.tipo === 'os' ? 'OS' : 'pedido') + ' <b>' + _v235E(x.numero || x.codigo) + '</b> · ' + _v235Brl(x.valor) + ' · faturado ' + _v235E(_v235Data(x.data_fat)) +
+        (x.aviso ? ' <small style="color:#B42318">' + _v235E(x.aviso) + '</small>' : ' <small>(mesmo CNPJ e valor, sem a marca)</small>') + '</span>' +
+        (P.agir && f.estado === 'aguardando' ? '<button type="button" class="v235-mini" data-v235="confirmar" data-tipo="' + _v235E(x.tipo) + '" data-cod="' + _v235E(x.codigo) + '">É esta</button>' +
+          '<button type="button" class="v235-mini cz" data-v235="descartar" data-tipo="' + _v235E(x.tipo) + '" data-cod="' + _v235E(x.codigo) + '">Não é esta</button>' : '') + '</div>';
+    }).join('') + '</div>';
+  }
+  // caixas de ação (dentro da ficha — uma tela só)
+  if (u.mao) h += '<div class="v235-caixa"><h5>Marcar faturada à mão</h5><div class="v235-form"><label>Nº da nota (ou da OS/pedido do Omie)<input type="text" id="v235Nf" name="v235_nf_nofill" autocomplete="off" data-lpignore="true" data-1p-ignore maxlength="60" data-v235-enter="v235MaoOk"></label>' +
+    '<label style="flex:1;min-width:220px">Observação (opcional)<input type="text" id="v235MaoObs" name="v235_obs_nofill" autocomplete="off" data-lpignore="true" data-1p-ignore maxlength="300"></label></div>' +
+    '<div style="display:flex;gap:6px;justify-content:flex-end"><button type="button" class="v235-btn" data-v235="cancelarCaixa">Cancelar</button><button type="button" class="v235-btn pri" id="v235MaoOk" data-v235="maoOk">Marcar faturada</button></div></div>';
+  if (u.desfazer) h += '<div class="v235-caixa"><h5>Desfazer "' + (f.estado === 'dispensada' ? 'nada a faturar' : 'faturada') + '" (administrador)</h5><div style="font-size:12.5px;color:#475467">A ficha volta a esperar o Omie e a cobrança que ela concluiu reabre. O documento do Omie ligado a ela não volta a faturá-la sozinho.</div>' +
+    '<div class="v235-form"><label style="flex:1;min-width:260px">Motivo (fica na trilha)<textarea id="v235DesMot" name="v235_mot_nofill" maxlength="300"></textarea></label></div>' +
+    '<div style="display:flex;gap:6px;justify-content:flex-end"><button type="button" class="v235-btn" data-v235="cancelarCaixa">Cancelar</button><button type="button" class="v235-btn per" data-v235="desfazerOk">Desfazer</button></div></div>';
+  if (u.dispensar) h += '<div class="v235-caixa"><h5>Nada a faturar</h5><div style="font-size:12.5px;color:#475467">A ficha fica "nada a faturar" e a cobrança desta OS é concluída.</div>' +
+    '<div class="v235-form"><label style="flex:1;min-width:260px">Motivo (fica na trilha)<textarea id="v235DisMot" name="v235_mot_nofill" maxlength="300"></textarea></label></div>' +
+    '<div style="display:flex;gap:6px;justify-content:flex-end"><button type="button" class="v235-btn" data-v235="cancelarCaixa">Cancelar</button><button type="button" class="v235-btn pri" data-v235="dispensarOk">Confirmar: nada a faturar</button></div></div>';
+  if (u.separar) h += '<div class="v235-caixa"><h5>Faturar só esta OS</h5><div style="font-size:12.5px;color:#475467">A OS escolhida ganha ficha e marca próprias, com as linhas da máquina dela; esta ficha fica com as outras.</div><div class="v235-outras">' +
+    oses.map(function (o) { return '<button type="button" class="v235-btn" data-v235="separarOk" data-os="' + _v235E(o.id) + '">' + _v235E(o.numero || o.id) + (o.maquinas && o.maquinas.length ? ' · ' + _v235E(o.maquinas[0]) : '') + '</button>'; }).join('') +
+    '<button type="button" class="v235-btn" data-v235="cancelarCaixa">Cancelar</button></div></div>';
+  // outras fichas do mesmo card / da mesma OS
+  if ((d.outras || []).length) h += '<div class="v235-outras"><span style="font-size:12px;color:#6B6B6B;align-self:center">Outras fichas:</span>' + d.outras.map(function (g) {
+    return '<button type="button" class="v235-mini cz" data-v235="outra" data-id="' + _v235E(g.id) + '">' + _v235E(g.id) + ' · ' + _v235E(g.tipo === 'os' ? 'só uma OS' : g.tipo === 'complementar' ? 'complementar' : g.tipo === 'pecas' ? 'peças' : 'proposta') +
+      ' · ' + _v235E(g.estado === 'faturada' ? 'faturada' : g.estado === 'dispensada' ? 'nada a faturar' : 'aguardando') + '</button>';
+  }).join('') + '</div>';
+  // ações
+  var A = '';
+  if (P.marcar && !u.mao) A += '<button type="button" class="v235-btn" data-v235="mao">Marcar faturada à mão…</button>';
+  if (P.separar && !u.separar) A += '<button type="button" class="v235-btn" data-v235="separar">Faturar só esta OS…</button>';
+  if (P.dispensar && !u.dispensar) A += '<button type="button" class="v235-btn" data-v235="dispensar">Nada a faturar…</button>';
+  if (P.agir && f.estado === 'aguardando') A += '<button type="button" class="v235-btn" data-v235="lerOmie" title="Pede ao Omie as OS e os pedidos alterados desde a última leitura">↻ Ler o Omie agora</button>';
+  if (P.desfazer && (f.estado === 'faturada' || f.estado === 'dispensada') && !u.desfazer) A += '<button type="button" class="v235-btn per" data-v235="desfazer">Desfazer…</button>';
+  if (prop && prop.versao_id) A += '<span style="flex:1"></span>';
+  A += '<button type="button" class="v235-btn" data-v235="imprimir" title="Imprimir / salvar em PDF">🖨 Imprimir</button><button type="button" class="v235-btn" data-v235="fechar">Fechar</button>';
+  h += '<div class="v235-acoes">' + A + '</div>';
+  var ret = d.retorno || {};
+  h += '<div style="margin-top:8px;font-size:11.5px;color:#6B6B6B">' + (ret.ligado ? 'O PCM lê o Omie a cada 30 min (7h–19h).' : 'A leitura automática do Omie está desligada (o administrador liga) — "Ler o Omie agora" ou "Marcar faturada à mão".') +
+    (ret.ultima_ok ? ' Última leitura: ' + _v235E(_v235Data(ret.ultima_ok, true)) + '.' : '') + (ret.ultimo_erro ? ' <span style="color:#B42318">Última tentativa falhou: ' + _v235E(String(ret.ultimo_erro).slice(0, 160)) + '</span>' : '') + '</div>';
+  if ((d.trilha || []).length) h += '<details class="v235-trilha"><summary>Trilha da ficha (' + d.trilha.length + ')</summary><ul>' + d.trilha.map(function (t) {
+    return '<li><b>' + _v235E(t.tipo) + '</b> · ' + _v235E(_v235Data(t.em, true)) + ' · ' + _v235E(_v235Nome(t.autor)) + (t.dados && t.dados.motivo ? ' — “' + _v235E(t.dados.motivo) + '”' : '') + '</li>';
+  }).join('') + '</ul></details>';
+  // preserva foco e o que estava digitado em campos que não mudam
+  var ativo = document.activeElement, idAtivo = ativo && jan.contains(ativo) ? ativo.id : '', vals = {};
+  jan.querySelectorAll('input[id],textarea[id]').forEach(function (x) { vals[x.id] = x.value; });
+  jan.innerHTML = h;
+  // o que a pessoa digitou volta para o campo (o repintar não pode perder a quantidade que ela trocou); exceção: o que a tela
+  //   acabou de preencher de propósito (a peça escolhida do Omie)
+  var pula = (u && u.semRestaurar) || []; if (u) u.semRestaurar = null;
+  Object.keys(vals).forEach(function (k) { var x = document.getElementById(k); if (x && pula.indexOf(k) < 0 && x.value !== vals[k]) x.value = vals[k]; });
+  if (idAtivo) { var a2 = document.getElementById(idAtivo); if (a2) try { a2.focus({ preventScroll: true }); } catch (e) {} }
+}
+function _v235BlocoHtml(bloco, titulo, ls, total, P, u) {
+  var ativas = ls.filter(function (l) { return l.ativo && !l.incluso; });
+  var tsv = ['Código\tDescrição\tQtd\tUnitário\tTotal'].concat(ativas.map(function (l) {
+    return [l.codigo_omie || '', l.descricao_omie || l.descricao, _v235Qtd(l.qtd), Number(l.preco_unit || 0).toFixed(2).replace('.', ','), Number(l.total || 0).toFixed(2).replace('.', ',')].join('\t');
+  })).join('\n');
+  var semCod = ativas.filter(function (l) { return !l.codigo_omie; }).length;
+  var h = '<div class="v235-bl" data-bloco="' + bloco + '"><h4><span>' + _v235E(titulo) + ' · total ' + _v235Brl(total) +
+    (semCod ? ' <small style="color:#9A5B00">· ' + semCod + ' sem código do Omie</small>' : '') + '</span>' +
+    (ativas.length ? _v235Cp(tsv, 'Copiar tudo', 'Copia as linhas (código, descrição, qtd, unitário, total) separadas por tabulação') : '') + '</h4>';
+  if (!ls.length) return h + '<div class="v235-vazio" style="padding:10px">Nenhuma linha.</div></div>';
+  h += '<table class="v235-tab"><thead><tr><th>Cód. Omie</th><th>' + (bloco === 'servicos' ? 'Serviço' : 'Produto') + '</th><th class="n">Qtd</th><th class="n">Unit.</th><th class="n">Total</th><th></th></tr></thead><tbody>';
+  ls.forEach(function (l) {
+    var cls = !l.ativo ? 'fora' : l.incluso ? 'inc' : !l.codigo_omie ? 'sem' : '';
+    h += '<tr class="' + cls + '" data-linha="' + _v235E(l.id) + '"><td>' + (l.codigo_omie ? '<b>' + _v235E(l.codigo_omie) + '</b> ' + _v235Cp(l.codigo_omie, '⧉', 'Copiar o código') : '<small>— sem código</small>') +
+      (P.agir && u && u.achar !== l.id && l.ativo && !l.incluso && (P.marcar || P.editar_linhas) ? '<div><button type="button" class="v235-mini" data-v235="achar" data-linha="' + _v235E(l.id) + '">' + (l.codigo_omie ? 'Trocar' : 'Achar no Omie aqui') + '</button></div>' : '') + '</td>' +
+      '<td>' + _v235E(l.descricao) + (l.descricao_omie && l.descricao_omie !== l.descricao ? '<small>Omie: ' + _v235E(l.descricao_omie) + '</small>' : '') +
+      (l.codigo_ref ? '<small>ref. ' + _v235E(l.codigo_ref) + '</small>' : '') + (l.maquina ? '<small>' + _v235E(l.maquina) + '</small>' : '') +
+      (l.incluso ? '<small>incluso (sem valor)</small>' : '') + (!l.ativo ? '<small>fora: ' + _v235E(l.motivo || '') + '</small>' : (l.origem === 'adm' ? '<small>lançada na ficha: ' + _v235E(l.motivo || '') + '</small>' : '')) +
+      (l.versao && /complementar/.test(l.versao) ? '<small>' + _v235E(l.versao) + '</small>' : '') + '</td>' +
+      '<td class="n">' + _v235E(_v235Qtd(l.qtd)) + ' ' + _v235E(l.unidade || '') + '</td><td class="n">' + (l.preco_unit == null ? '<small style="color:#9A5B00">sem preço</small>' : _v235Brl(l.preco_unit)) + '</td>' +
+      '<td class="n">' + _v235Brl(l.total) + '</td><td class="n">' +
+      (P.editar_linhas && u && u.editar !== l.id ? '<button type="button" class="v235-mini cz" data-v235="editar" data-linha="' + _v235E(l.id) + '" title="Mudar a quantidade/preço ou tirar a linha">✎</button>' : '') + '</td></tr>';
+    if (u && u.achar === l.id) h += '<tr class="v235-linha-form"><td colspan="6">' + _v235AcharHtml(l, u) + '</td></tr>';
+    if (u && u.editar === l.id) h += '<tr class="v235-linha-form"><td colspan="6">' + _v235EditarHtml(l, u) + '</td></tr>';
+  });
+  return h + '</tbody></table></div>';
+}
+function _v235AcharHtml(l, u) {
+  var res = u.acharRes, q = u.acharQ != null ? u.acharQ : (l.codigo_ref || l.descricao || '');
+  return '<div class="v235-form"><label style="flex:1;min-width:260px">Procurar na lista do Omie (' + (l.bloco === 'pecas' ? 'produtos' : 'serviços') + ')' +
+    '<input type="search" id="v235Busca" name="v235_busca_nofill" autocomplete="off" data-lpignore="true" data-1p-ignore readonly onfocus="this.removeAttribute(\'readonly\')" value="' + _v235E(q) + '" placeholder="código, referência ou descrição"></label>' +
+    '<button type="button" class="v235-btn" data-v235="acharNao">Cancelar</button></div>' +
+    (u.acharErro ? '<div class="v235-aviso vm">' + _v235E(u.acharErro) + '</div>' : '') +
+    (res == null ? '<small style="color:#6B6B6B">' + (u.acharLendo ? 'procurando…' : 'digite para procurar') + '</small>'
+      : (res.length ? '<ul class="v235-res">' + res.map(function (x) {
+          return '<li><button type="button" data-v235="acharOk" data-linha="' + _v235E(l.id) + '" data-cod="' + _v235E(x.codigo) + '"><b>' + _v235E(x.codigo) + '</b> · ' + _v235E(x.descricao) +
+            (x.preco != null ? ' <small>' + _v235Brl(x.preco) + '</small>' : '') + (x.inativo ? ' <small style="color:#B42318">inativo</small>' : '') + '</button></li>';
+        }).join('') + '</ul><small style="color:#6B6B6B">A escolha vale para esta linha e fica guardada: as próximas fichas e propostas com esta ' + (l.bloco === 'pecas' ? 'peça' : 'serviço') + ' já chegam com o código.</small>'
+        : '<small style="color:#6B6B6B">Nada na lista lida do Omie com esse texto.</small>'));
+}
+function _v235EditarHtml(l, u) {
+  return '<div class="v235-form"><label>Qtd<input type="text" inputmode="decimal" id="v235EdQtd" data-ini="' + _v235E(_v235Qtd(l.qtd)) + '" value="' + _v235E(_v235Qtd(l.qtd)) + '" style="width:80px" autocomplete="off"></label>' +
+    '<label>Unitário (R$)<input type="text" inputmode="decimal" id="v235EdPreco" data-ini="' + _v235E(l.preco_unit == null ? '' : String(l.preco_unit).replace('.', ',')) + '" value="' + _v235E(l.preco_unit == null ? '' : String(l.preco_unit).replace('.', ',')) + '" style="width:110px" autocomplete="off"></label>' +
+    '<label style="flex:1;min-width:220px">Motivo (obrigatório — fica na trilha)<input type="text" id="v235EdMot" name="v235_mot_nofill" autocomplete="off" data-lpignore="true" data-1p-ignore maxlength="300" data-v235-enter="v235EdOk"></label></div>' +
+    '<div style="display:flex;gap:6px;justify-content:flex-end;flex-wrap:wrap"><button type="button" class="v235-btn" data-v235="editarNao">Cancelar</button>' +
+    (l.ativo ? '<button type="button" class="v235-btn per" data-v235="tirar" data-linha="' + _v235E(l.id) + '">Tirar esta linha</button>' : '<button type="button" class="v235-btn" data-v235="devolver" data-linha="' + _v235E(l.id) + '">Pôr a linha de volta</button>') +
+    '<button type="button" class="v235-btn pri" id="v235EdOk" data-v235="editarOk" data-linha="' + _v235E(l.id) + '">Salvar</button></div>';
+}
+function _v235NovoHtml(u) {
+  var sel = u.novoSel;
+  return '<div class="v235-caixa"><h5>＋ Peça na ficha</h5><div class="v235-form"><label style="flex:1;min-width:240px">Do Omie (opcional)' +
+    '<input type="search" id="v235NovoBusca" name="v235_busca_nofill" autocomplete="off" data-lpignore="true" data-1p-ignore readonly onfocus="this.removeAttribute(\'readonly\')" placeholder="procure pelo código ou descrição"></label>' +
+    '<label style="flex:1;min-width:220px">Descrição<input type="text" id="v235NovoDesc" name="v235_desc_nofill" autocomplete="off" data-lpignore="true" data-1p-ignore maxlength="200" value="' + _v235E(sel ? sel.descricao : '') + '"></label>' +
+    '<label>Qtd<input type="text" inputmode="decimal" id="v235NovoQtd" value="1" style="width:70px" autocomplete="off"></label>' +
+    '<label>Unitário (R$)<input type="text" inputmode="decimal" id="v235NovoPreco" value="' + _v235E(sel && sel.preco != null ? String(sel.preco).replace('.', ',') : '') + '" style="width:110px" autocomplete="off"></label></div>' +
+    (sel ? '<div style="font-size:12px">Código do Omie: <b>' + _v235E(sel.codigo) + '</b> <button type="button" class="v235-mini cz" data-v235="novoSemCod">tirar</button></div>' : '') +
+    (u.novoRes && u.novoRes.length ? '<ul class="v235-res">' + u.novoRes.map(function (x) {
+      return '<li><button type="button" data-v235="novoEscolhe" data-cod="' + _v235E(x.codigo) + '"><b>' + _v235E(x.codigo) + '</b> · ' + _v235E(x.descricao) + (x.preco != null ? ' <small>' + _v235Brl(x.preco) + '</small>' : '') + '</button></li>'; }).join('') + '</ul>' : '') +
+    '<div class="v235-form"><label style="flex:1;min-width:260px">Motivo (obrigatório — fica na trilha)<input type="text" id="v235NovoMot" name="v235_mot_nofill" autocomplete="off" data-lpignore="true" data-1p-ignore maxlength="300" placeholder="ex.: consumível que o técnico não marcou"></label></div>' +
+    '<div style="display:flex;gap:6px;justify-content:flex-end"><button type="button" class="v235-btn" data-v235="novoNao">Cancelar</button><button type="button" class="v235-btn pri" data-v235="novoOk">Acrescentar</button></div></div>';
+}
+function _v235Dec(s) { s = _v235T(s); if (!s) return null; if (/^\d{1,3}(\.\d{3})+(,\d+)?$/.test(s)) s = s.replace(/\./g, ''); s = s.replace(',', '.'); var n = Number(s); return isFinite(n) ? n : NaN; }
+async function _v235Copiar(txt, btn) {
+  var ok = false;
+  try { if (navigator.clipboard && window.isSecureContext !== false) { await navigator.clipboard.writeText(txt); ok = true; } } catch (e) { ok = false; }
+  if (!ok) {
+    try { var t = document.createElement('textarea'); t.value = txt; t.setAttribute('readonly', ''); t.style.position = 'fixed'; t.style.opacity = '0'; document.body.appendChild(t); t.select(); ok = document.execCommand('copy'); t.remove(); } catch (e) { ok = false; }
+  }
+  window.__v235Copiado = txt;
+  if (btn) { var r0 = btn.textContent; btn.textContent = ok ? '✓ copiado' : 'copie à mão'; btn.classList.add('ok'); setTimeout(function () { if (document.body.contains(btn)) { btn.textContent = r0; btn.classList.remove('ok'); } }, 1400); }
+}
+// uma ação de escrita: trava o botão, chama, repinta com a resposta (a ficha devolvida é a verdade)
+async function _v235Acao(btn, fn, args, sucesso) {
+  var O = V235.ov; if (!O || O.ocupado) return;
+  O.ocupado = true; var g = O.ger, r0 = btn ? btn.textContent : '';
+  if (btn) { btn.disabled = true; btn.textContent = '⏳ ' + r0; }
+  try {
+    var r = await _v235Rpc(fn, args, true);
+    if (!V235.ov || V235.ov.ger !== g) return;
+    if (r && r.ficha) { V235.ov.d = r; }
+    V235.ov.ui = {}; if (sucesso) _v235Msg('ok', typeof sucesso === 'function' ? sucesso(r) : sucesso);
+    var fz = r && r.ficha; if (fz) _v235Esquecer(fz.oportunidade_id, (fz.cabecalho && fz.cabecalho.os || []).map(function (x) { return x.id; }));
+    return r;
+  } catch (e) {
+    if (!V235.ov || V235.ov.ger !== g) return;
+    V235.ov.ui.msg = { tipo: 'erro', txt: (e && e.message) || String(e) };
+  } finally {
+    if (V235.ov && V235.ov.ger === g) { V235.ov.ocupado = false; _v235Pintar(); }
+  }
+}
+function _v235Ficha() { return V235.ov && V235.ov.d && V235.ov.d.ficha; }
+function _v235Clique(ev) {
+  var t = ev.target.closest('[data-v235]'); if (!t || !V235.ov) return;
+  var k = t.getAttribute('data-v235'), O = V235.ov, u = O.ui || (O.ui = {}), f = _v235Ficha(), val = function (id) { var x = document.getElementById(id); return x ? x.value : ''; };
+  if (k === 'fechar') return _v235Fechar(false);
+  if (k === 'fecharMesmo') return _v235Fechar(true);
+  if (k === 'naoFechar') { u.confirmaFechar = false; return _v235Pintar(); }
+  if (k === 'copiar') return _v235Copiar(t.getAttribute('data-txt') || '', t);
+  if (k === 'imprimir') { try { window.print(); } catch (e) {} return; }
+  if (k === 'recarregar') return _v235Abrir(O.op);
+  if (k === 'outra') return _v235Abrir({ id: t.getAttribute('data-id'), volta: O.volta });
+  if (!f) return;
+  if (k === 'cancelarCaixa' || k === 'acharNao' || k === 'editarNao' || k === 'novoNao') { O.ui = {}; return _v235Pintar(); }
+  if (k === 'mao' || k === 'desfazer' || k === 'dispensar' || k === 'separar') {
+    O.ui = {}; O.ui[k] = true; _v235Pintar();
+    var foco = document.getElementById(k === 'mao' ? 'v235Nf' : k === 'desfazer' ? 'v235DesMot' : k === 'dispensar' ? 'v235DisMot' : '');
+    if (foco) try { foco.focus(); } catch (e) {}
+    return;
+  }
+  if (k === 'maoOk') {
+    var nf = _v235T(val('v235Nf')); if (!nf) { _v235Msg('erro', 'Informe o número da nota (ou da OS/pedido do Omie).'); return _v235Pintar(); }
+    return _v235Acao(t, 'fat_marcar_faturada', { p_id: f.id, p_nf: nf, p_obs: _v235T(val('v235MaoObs')) || null }, function (r) {
+      var c = r && r.cobrancas || {}; return 'Ficha marcada como faturada (' + nf + ').' + ((c.concluidas || []).length ? ' Cobrança concluída: ' + c.concluidas.join(', ') + '.' : '') + ((c.avisos || []).length ? ' ' + c.avisos.join(' ') : '');
+    });
+  }
+  if (k === 'desfazerOk') {
+    var mot = _v235T(val('v235DesMot')); if (mot.length < 3) { _v235Msg('erro', 'Diga o motivo (fica na trilha).'); return _v235Pintar(); }
+    return _v235Acao(t, 'fat_desfazer', { p_id: f.id, p_motivo: mot }, function (r) { return 'Desfeito — a ficha volta a esperar o Omie.' + ((r && r.reabertas || []).length ? ' Cobrança reaberta: ' + r.reabertas.join(', ') + '.' : '') + ((r && r.avisos || []).length ? ' ' + r.avisos.join(' ') : ''); });
+  }
+  if (k === 'dispensarOk') {
+    var m2 = _v235T(val('v235DisMot')); if (m2.length < 3) { _v235Msg('erro', 'Diga o motivo (fica na trilha).'); return _v235Pintar(); }
+    return _v235Acao(t, 'fat_dispensar', { p_id: f.id, p_motivo: m2 }, 'Nada a faturar — a cobrança da OS foi concluída.');
+  }
+  if (k === 'separarOk') {
+    return _v235Acao(t, 'fat_ficha_separar', { p_id: f.id, p_os: t.getAttribute('data-os') }, function (r) { return 'Pronto: esta é a ficha só da OS, com marca própria. A ficha ' + f.id + ' ficou com as outras OS (veja em "Outras fichas").'; });
+  }
+  if (k === 'refazer') return _v235Acao(t, 'fat_ficha_refazer', { p_id: f.id, p_motivo: 'a proposta mudou depois da cópia' }, 'Ficha refeita com a proposta de agora (os códigos achados e as linhas tiradas ficaram).');
+  if (k === 'lerOmie') return _v235Acao(t, 'fat_ler_agora', {}, function (r) { return r && r.ja_estava_na_fila ? 'A leitura do Omie já estava na fila — reabra a ficha em 1 ou 2 minutos.' : 'Pedido ao Omie — reabra a ficha em 1 ou 2 minutos para ver o resultado.'; });
+  if (k === 'confirmar') return _v235Acao(t, 'fat_confirmar', { p_id: f.id, p_doc_tipo: t.getAttribute('data-tipo'), p_doc_codigo: Number(t.getAttribute('data-cod')) }, function (r) {
+    return r && r.ficha && r.ficha.estado === 'faturada' ? 'Confirmado: a ficha está faturada e a cobrança foi concluída.' : 'Confirmado. Falta o outro documento (OS ou pedido) para a ficha ficar faturada.'; });
+  if (k === 'descartar') return _v235Acao(t, 'fat_descartar', { p_id: f.id, p_doc_tipo: t.getAttribute('data-tipo'), p_doc_codigo: Number(t.getAttribute('data-cod')) }, 'Descartado — esse documento não volta a ser sugerido para esta ficha.');
+  if (k === 'achar') {
+    O.ui = { achar: t.getAttribute('data-linha') }; _v235Pintar();
+    var bx = document.getElementById('v235Busca'); if (bx) { try { bx.removeAttribute('readonly'); bx.focus(); bx.select(); } catch (e) {} _v235Buscar('linha', bx.value); }
+    return;
+  }
+  if (k === 'acharOk') return _v235Acao(t, 'fat_linha_codigo', { p_linha: t.getAttribute('data-linha'), p_codigo: t.getAttribute('data-cod') }, 'Código do Omie gravado na linha (e no de-para).');
+  if (k === 'editar') { O.ui = { editar: t.getAttribute('data-linha') }; _v235Pintar(); var q1 = document.getElementById('v235EdMot'); if (q1) try { q1.focus(); } catch (e) {} return; }
+  if (k === 'editarOk' || k === 'tirar' || k === 'devolver') {
+    var mot3 = _v235T(val('v235EdMot')); if (mot3.length < 3) { _v235Msg('erro', 'Diga o motivo (fica na trilha).'); return _v235Pintar(); }
+    var dados = {};
+    if (k === 'tirar') dados.ativo = false; else if (k === 'devolver') dados.ativo = true;
+    else {
+      var q = _v235Dec(val('v235EdQtd')), p = _v235Dec(val('v235EdPreco'));
+      if (q == null || isNaN(q) || q <= 0) { _v235Msg('erro', 'Quantidade inválida.'); return _v235Pintar(); }
+      if (isNaN(p)) { _v235Msg('erro', 'Preço inválido.'); return _v235Pintar(); }
+      dados.qtd = q; if (p != null) dados.preco_unit = p;
+    }
+    return _v235Acao(t, 'fat_linha_salvar', { p_ficha: f.id, p_linha: t.getAttribute('data-linha'), p_dados: dados, p_motivo: mot3 }, k === 'tirar' ? 'Linha tirada (fica riscada, com o motivo).' : 'Linha salva.');
+  }
+  if (k === 'novo') { O.ui = { novo: true }; _v235Pintar(); var nb = document.getElementById('v235NovoBusca'); if (nb) try { nb.removeAttribute('readonly'); nb.focus(); } catch (e) {} return; }
+  if (k === 'novoEscolhe') { var x = (u.novoRes || []).find(function (y) { return String(y.codigo) === t.getAttribute('data-cod'); }); u.novoSel = x || null; u.novoRes = null; u.semRestaurar = ['v235NovoDesc', 'v235NovoPreco']; return _v235Pintar(); }
+  if (k === 'novoSemCod') { u.novoSel = null; return _v235Pintar(); }
+  if (k === 'novoOk') {
+    var mot4 = _v235T(val('v235NovoMot')), q4 = _v235Dec(val('v235NovoQtd')), p4 = _v235Dec(val('v235NovoPreco')), ds = _v235T(val('v235NovoDesc'));
+    if (!ds && !(u.novoSel)) { _v235Msg('erro', 'Diga o que é a peça (ou escolha do Omie).'); return _v235Pintar(); }
+    if (q4 == null || isNaN(q4) || q4 <= 0) { _v235Msg('erro', 'Quantidade inválida.'); return _v235Pintar(); }
+    if (isNaN(p4)) { _v235Msg('erro', 'Preço inválido.'); return _v235Pintar(); }
+    if (mot4.length < 3) { _v235Msg('erro', 'Diga o motivo (fica na trilha).'); return _v235Pintar(); }
+    var dd = { descricao: ds || null, qtd: q4 }; if (p4 != null) dd.preco_unit = p4; if (u.novoSel) dd.codigo_omie = u.novoSel.codigo;
+    return _v235Acao(t, 'fat_linha_salvar', { p_ficha: f.id, p_linha: null, p_dados: dd, p_motivo: mot4 }, 'Peça acrescentada na ficha.');
+  }
+}
+var _v235BuscaT = null;
+function _v235Digitou(ev) {
+  var t = ev.target; if (!V235.ov) return;
+  if (t.id === 'v235Busca') { V235.ov.ui.acharQ = t.value; clearTimeout(_v235BuscaT); _v235BuscaT = setTimeout(function () { _v235Buscar('linha', t.value); }, 350); }
+  if (t.id === 'v235NovoBusca') { clearTimeout(_v235BuscaT); _v235BuscaT = setTimeout(function () { _v235Buscar('novo', t.value); }, 350); }
+  if (V235.ov.ui && V235.ov.ui.msg && V235.ov.ui.msg.tipo === 'erro') { V235.ov.ui.msg = null; var m = document.querySelector('#v235Jan .v235-msg'); if (m) m.remove(); }
+}
+async function _v235Buscar(onde, q) {
+  var O = V235.ov; if (!O) return; var u = O.ui, g = O.ger;
+  q = _v235T(q);
+  var linha = onde === 'linha' ? ((O.d && O.d.linhas) || []).find(function (l) { return l.id === u.achar; }) : null;
+  var tipo = onde === 'linha' ? (linha && linha.bloco === 'servicos' ? 'servicos' : 'pecas') : 'pecas';
+  if (q.length < 2) { if (onde === 'linha') { u.acharRes = null; } else { u.novoRes = null; } return _v235PintarBusca(onde); }
+  var chave = tipo + '|' + q; u.ultBusca = chave;
+  if (onde === 'linha') u.acharLendo = true;
+  try {
+    var r = await _v235Rpc('fat_buscar_omie', { p_tipo: tipo, p_q: q });
+    if (!V235.ov || V235.ov.ger !== g || u.ultBusca !== chave) return;
+    if (onde === 'linha') { u.acharRes = (r && r.itens) || []; u.acharErro = ''; } else { u.novoRes = (r && r.itens) || []; }
+  } catch (e) { if (onde === 'linha') { u.acharErro = (e && e.message) || String(e); u.acharRes = null; } }
+  finally { if (onde === 'linha') u.acharLendo = false; }
+  _v235PintarBusca(onde);
+}
+// repinta SÓ a lista de resultados (o campo de busca não perde o foco nem o cursor)
+function _v235PintarBusca(onde) {
+  var O = V235.ov; if (!O) return; var u = O.ui;
+  var campo = document.getElementById(onde === 'linha' ? 'v235Busca' : 'v235NovoBusca'); if (!campo) return _v235Pintar();
+  var caixa = campo.closest(onde === 'linha' ? 'td' : '.v235-caixa'); if (!caixa) return _v235Pintar();
+  var pos = campo.selectionStart, ativo = document.activeElement === campo;
+  if (onde === 'linha') {
+    var l = ((O.d && O.d.linhas) || []).find(function (x) { return x.id === u.achar; }); if (!l) return;
+    caixa.innerHTML = _v235AcharHtml(l, u);
+  } else {
+    var tmp = document.createElement('div'); tmp.innerHTML = _v235NovoHtml(u);
+    var nova = tmp.firstChild, valores = {};
+    caixa.querySelectorAll('input[id]').forEach(function (x) { valores[x.id] = x.value; });
+    caixa.replaceWith(nova); caixa = nova;
+    Object.keys(valores).forEach(function (k) { var x = document.getElementById(k); if (x && valores[k] !== undefined && k !== 'v235NovoDesc' && k !== 'v235NovoPreco') x.value = valores[k]; });
+  }
+  var c2 = document.getElementById(onde === 'linha' ? 'v235Busca' : 'v235NovoBusca');
+  if (c2 && ativo) { try { c2.removeAttribute('readonly'); c2.focus({ preventScroll: true }); if (pos != null) c2.setSelectionRange(pos, pos); } catch (e) {} }
+}
+
+// ════════════════════════════════════════════════════════════════════════════════════════════════════════════
+// ONDE A FICHA ABRE: card (botão do quadro), OS (painel), demanda "💵 Cobrar a OS" (agenda, janela antiga, celular)
+// ════════════════════════════════════════════════════════════════════════════════════════════════════════════
+document.addEventListener('click', function (ev) {
+  var t = ev.target.closest && ev.target.closest('[data-v235]'); if (!t || t.closest('#v235Ov')) return;
+  var k = t.getAttribute('data-v235');
+  if (k === 'abrirCard') { ev.preventDefault(); ev.stopPropagation(); _v235Abrir({ card: t.getAttribute('data-card'), volta: t.getAttribute('data-volta') || '' }); }
+  else if (k === 'abrirOS') { ev.preventDefault(); ev.stopPropagation(); _v235Abrir({ os: t.getAttribute('data-os'), volta: t.getAttribute('data-volta') || '' }); }
+  else if (k === 'regraMudar' || k === 'regraSalvar' || k === 'regraNao') { ev.preventDefault(); _v235RegraClique(t, k); }
+}, true);
+
+// ── painel da OS: a linha 🧾 logo abaixo da 💰 Cobrança ─────────────────────────────────────────────────────────
+function _v235PintarPainelOS() {
+  var P = window.R2A && R2A.painel; if (!P || P.tipo !== 'os' || !P.id || V235.semSql) return;
+  var painel = document.getElementById('r2aPainel'); if (!painel || painel.hidden) return;
+  var ancora = painel.querySelector('#v232Cob') || painel.querySelector('.r2a-dados'); if (!ancora) return;
+  var id = _v235T(P.id), f = V235.resumo.os[id];
+  if (f === undefined) { _v235PedirResumo([], [id]).then(function (r) { if (r) _v235Agendar(); }); }
+  var pode = _v235Financeiro();
+  if ((!f && !pode) || !V235.resumoOk) { var j0 = painel.querySelector('#v235Os'); if (j0) j0.remove(); return; }
+  var h = '<div class="v235-linhaos" id="v235Os"><span>🧾 Faturamento: ' + (f ? _v235SeloHtml(f) + ' <small>' + _v235E(f.id) + '</small>' : '<small>' + (f === undefined ? (V235.resumoErro ? 'sem resposta do banco agora — tento de novo em 1 minuto' : 'lendo…') : 'sem ficha ainda') + '</small>') + '</span>' +
+    (pode || f ? '<button type="button" class="v235-mini" data-v235="abrirOS" data-os="' + _v235E(id) + '" data-pw-off="1">' + (f ? 'Abrir a ficha' : 'Ficha de faturamento') + '</button>' : '') + '</div>';
+  var ja = painel.querySelector('#v235Os');
+  if (ja && ja.__v235 === h && ja.previousElementSibling === ancora) return;
+  if (ja) ja.remove();
+  ancora.insertAdjacentHTML('afterend', h);
+  var novo = painel.querySelector('#v235Os'); if (novo) novo.__v235 = h;
+}
+// ── a demanda "💵 Cobrar a OS" ───────────────────────────────────────────────────────────────────────────────────
+function _v235EhCobranca(dm) {
+  if (!dm) return false;
+  var t = _v235T(dm.tipo).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
+  return t === 'cobranca' && !!_v235T(dm.os_id);
+}
+function _v235DemHtml(dm, volta) {
+  var f = V235.resumo.os[_v235T(dm.os_id)];
+  if (f === undefined) _v235PedirResumo([], [_v235T(dm.os_id)]).then(function (r) { if (r) _v235Agendar(); });
+  return '<div class="v235-dem" data-v235-dem="' + _v235E(dm.demanda_id) + '"><span>🧾 <b>Ficha de faturamento</b> da OS ' + _v235E(dm.os_numero || dm.os_id) + (f ? ' ' + _v235SeloHtml(f) : '') +
+    '<br><small>o que lançar no Omie e a marca — a cobrança conclui sozinha quando o Omie faturar</small></span>' +
+    '<button type="button" class="v235-mini" data-v235="abrirOS" data-os="' + _v235E(dm.os_id) + '" data-volta="' + _v235E(volta || '') + '" data-pw-off="1">Abrir a ficha</button></div>';
+}
+function _v235DecorarR3A() {
+  if (V235.semSql || !window.R3A || !R3A.st) return;
+  var p = R3A.st.painel, pn = document.getElementById('r3aPainel');
+  if (!pn || !p || p.tipo !== 'dem') return;
+  var env = (R3A.dados && R3A.dados.env) || {}, dm = (env.demandas || []).find(function (x) { return _v235T(x.demanda_id) === _v235T(p.id); });
+  var ja = pn.querySelector('.v235-dem');
+  if (!_v235EhCobranca(dm) || !(_v235Financeiro() || V235.resumo.os[_v235T(dm.os_id)])) { if (ja) ja.remove(); return; }
+  if (!V235.resumoOk) { _v235PedirResumo([], [_v235T(dm.os_id)]).then(function (r) { if (r) _v235Agendar(); }); return; }
+  var h = _v235DemHtml(dm, '');
+  if (ja && ja.__v235 === h) return;
+  if (ja) ja.remove();
+  var anc = pn.querySelector('.r3a-dados'); if (!anc) return;
+  anc.insertAdjacentHTML('beforebegin', h);
+  var n = pn.querySelector('.v235-dem'); if (n) n.__v235 = h;
+}
+(function () {
+  if (typeof _v135AbrirDemanda !== 'function') return;
+  var o = _v135AbrirDemanda;
+  _v135AbrirDemanda = function (id) {
+    var r = o.apply(this, arguments);
+    try { V235.demAtual = String(id); _v235DecorarDesk(); } catch (e) {}
+    return r;
+  };
+  try { window._v135AbrirDemanda = _v135AbrirDemanda; } catch (e) {}
+})();
+function _v235DecorarDesk() {
+  if (V235.semSql || !V235.demAtual) return;
+  var md = document.getElementById('modalDemandaDesk'), corpo = document.getElementById('mdemCorpo');
+  if (!md || !md.classList.contains('open') || !corpo) return;
+  var dm = ((window._satPayload && _satPayload.demandas) || []).find(function (x) { return String(x.demanda_id) === V235.demAtual; });
+  if (!_v235EhCobranca(dm) || !(_v235Financeiro() || V235.resumo.os[_v235T(dm.os_id)])) return;
+  if (!V235.resumoOk) { _v235PedirResumo([], [_v235T(dm.os_id)]).then(function (r) { if (r) _v235Agendar(); }); return; }
+  var ja = corpo.querySelector('.v235-dem');
+  if (ja && ja.getAttribute('data-v235-dem') === String(dm.demanda_id)) return;
+  if (ja) ja.remove();
+  corpo.insertAdjacentHTML('afterbegin', _v235DemHtml(dm, 'dem:' + dm.demanda_id));
+}
+(function () {
+  var o = window._mobAbrirDemanda; if (typeof o !== 'function') return;
+  window._mobAbrirDemanda = function (id) {
+    var r = o.apply(this, arguments);
+    try {
+      var dm = ((window._mobEstado && _mobEstado.dados || {}).demandas || []).find(function (x) { return x.demanda_id === id; });
+      var b = document.getElementById('mobSheetB');
+      if (b && _v235EhCobranca(dm) && _v235Financeiro() && !V235.semSql && !b.querySelector('.v235-dem')) b.insertAdjacentHTML('afterbegin', _v235DemHtml(dm, 'mob:' + id));
+    } catch (e) {}
+    return r;
+  };
+})();
+
+// ════════════════════════════════════════════════════════════════════════════════════════════════════════════
+// C · "CONTRATO — COBRAR SÓ PEÇAS" na cobrança da OS (V232) e o PADRÃO DO CLIENTE
+// ════════════════════════════════════════════════════════════════════════════════════════════════════════════
+(function () {
+  if (typeof V232_OPC === 'undefined' || !Array.isArray(V232_OPC)) return;
+  if (!V232_OPC.some(function (o) { return o[0] === 'contrato_pecas'; })) {
+    var i = V232_OPC.findIndex(function (o) { return o[0] === 'contrato'; });
+    V232_OPC.splice(i >= 0 ? i + 1 : V232_OPC.length, 0, ['contrato_pecas', '🔩 Contrato — cobrar só peças', 'contrato só de mão de obra: as peças usadas são cobradas a cada OS (ficha de peças)']);
+  }
+  // "contrato — só peças" COBRA: não entra no balão "Não cobrar" (o das OS que saem do Faturamento)
+  if (typeof _v232AbrirBalao === 'function') {
+    var ab = _v232AbrirBalao;
+    _v232AbrirBalao = function (ancora, op) {
+      if (op && op.incluiCobrar) return ab.apply(this, arguments);
+      var guard = V232_OPC.slice(), r;
+      try { for (var k = V232_OPC.length - 1; k >= 0; k--) if (V232_OPC[k][0] === 'contrato_pecas') V232_OPC.splice(k, 1); r = ab.apply(this, arguments); }
+      finally { V232_OPC.length = 0; Array.prototype.push.apply(V232_OPC, guard); }
+      return r;
+    };
+  }
+  if (typeof _v232Fonte === 'function') {
+    var fo = _v232Fonte;
+    _v232Fonte = function (f) { return f === 'cliente' ? 'padrão do cliente (contrato só de mão de obra)' : fo.apply(this, arguments); };
+  }
+  if (typeof _v232DepoisDecidir === 'function') {
+    var dd = _v232DepoisDecidir;
+    _v232DepoisDecidir = function (os, r, silencioso) {
+      if (!r || r.decisao !== 'contrato_pecas') { _v235Esquecer(null, [os]); return dd.apply(this, arguments); }
+      try { delete V232.dec[os]; delete V232.decEm[os]; } catch (e) {}
+      _v235Esquecer(null, [os]);
+      var reab = (r.reabertas || []).length;
+      if (!silencioso) toast(r.igual ? 'Nada mudou: a OS já era "contrato — cobrar só peças".'
+        : 'OS ' + (r.os || '') + ': contrato — cobrar só peças. A ficha de faturamento terá só as peças trocadas' + (reab ? ' (a cobrança foi reaberta).' : r.criada ? ' (demanda de cobrança criada).' : '.'), 'success');
+      try { if (typeof _v200 !== 'undefined' && _v200.q && typeof currentView !== 'undefined' && currentView === 'comercial') _v200Carregar(); } catch (e) {}
+      try { _v232Agendar(); } catch (e) {}
+    };
+  }
+  if (typeof _v232PintarPainelOS === 'function') {
+    var pp = _v232PintarPainelOS;
+    _v232PintarPainelOS = function () {
+      var r = pp.apply(this, arguments);
+      try {
+        var P = window.R2A && R2A.painel, d = P && V232.dec[_v235T(P.id)], el = document.getElementById('v232Cob');
+        if (el && d && d.decisao === 'contrato_pecas' && el.classList.contains('sem')) {
+          el.classList.remove('sem');
+          var s = el.querySelector('span'); if (s && s.firstChild && s.firstChild.nodeType === 3) s.firstChild.nodeValue = s.firstChild.nodeValue.replace('Sem cobrança: ', 'Cobrança: ');
+        }
+      } catch (e) {}
+      return r;
+    };
+  }
+})();
+// o padrão de cobrança do CLIENTE — ficha do cliente › Resumo (o administrador marca; os outros só veem)
+function _v235CliRegra(cid) {
+  cid = _v235T(cid); if (!cid || V235.semSql) return null;
+  var c = V235.cli[cid];
+  if (!c && !V235.cliVoo[cid]) {
+    V235.cliVoo[cid] = _v235Rpc('fat_cliente_regra_ler', { p_cliente: cid }).then(function (r) { V235.cli[cid] = r || { regra: null }; },
+      function (e) { V235.cli[cid] = { erro: (e && e.message) || String(e) }; })
+      .finally(function () { delete V235.cliVoo[cid]; try { if (typeof _v222Pintar === 'function') _v222Pintar(); } catch (e) {} });
+  }
+  return c || null;
+}
+function _v235CliRegraHtml(c) {
+  if (V235.semSql || !c || !c.id) return '';
+  var r = _v235CliRegra(c.id), ui = V235.regraUi && V235.regraUi.cli === c.id ? V235.regraUi : null;
+  if (!r) return '<div class="v235-cli-regra"><h4>💰 Cobrança das OS deste cliente</h4><small>lendo…</small></div>';
+  if (r.erro) return '<div class="v235-cli-regra"><h4>💰 Cobrança das OS deste cliente</h4><small>não consegui ler (' + _v235E(r.erro) + ')</small></div>';
+  var pecas = r.regra && r.regra.cobranca_padrao === 'contrato_pecas';
+  var h = '<div class="v235-cli-regra" id="v235CliRegra"><h4>💰 Cobrança das OS deste cliente</h4>' +
+    (pecas ? '<div><b>Contrato — cobrar só peças</b> <small>(contrato só de mão de obra: cada OS que usar peça gera a ficha só das peças) · desde ' + _v235E(_v235Data(r.regra.desde)) +
+             (r.regra.obs ? ' · “' + _v235E(r.regra.obs) + '”' : '') + '</small></div>' : '<div>Cobrar do cliente <small>(o padrão — cada OS segue a regra dela e a do tipo)</small></div>');
+  if (ui && ui.resultado) h += '<div class="v235-aviso ' + (ui.resultado.erro ? 'vm' : 'vd') + '">' + _v235E(ui.resultado.txt) + '</div>';
+  if (r.pode && !ui) h += '<button type="button" class="v235-mini" data-v235="regraMudar" data-cli="' + _v235E(c.id) + '" style="margin-top:6px">Mudar</button>';
+  if (r.pode && ui && !ui.resultado) {
+    h += '<label><input type="radio" name="v235regra" value=""' + (!pecas ? ' checked' : '') + '> <span>Cobrar do cliente (padrão)</span></label>' +
+      '<label><input type="radio" name="v235regra" value="contrato_pecas"' + (pecas ? ' checked' : '') + '> <span>Contrato — cobrar só peças <small>(vale para as OS abertas DAQUI EM DIANTE; as que já existem continuam como estão)</small></span></label>' +
+      '<input type="text" id="v235RegraObs" name="v235_obs_nofill" autocomplete="off" data-lpignore="true" data-1p-ignore maxlength="300" placeholder="Observação (ex.: Proper 360 Start, até 12/2027)" style="width:100%;box-sizing:border-box;margin:4px 0;padding:5px 8px;border:1px solid #D0D5DD;border-radius:7px" value="' + _v235E((r.regra && r.regra.obs) || '') + '">' +
+      '<div style="display:flex;gap:6px;justify-content:flex-end"><button type="button" class="v235-mini cz" data-v235="regraNao">Cancelar</button><button type="button" class="v235-mini" data-v235="regraSalvar" data-cli="' + _v235E(c.id) + '">Salvar</button></div>';
+  }
+  return h + '</div>';
+}
+async function _v235RegraClique(t, k) {
+  var cid = t.getAttribute('data-cli') || (V235.regraUi && V235.regraUi.cli);
+  if (k === 'regraMudar') { V235.regraUi = { cli: cid }; try { _v222Pintar(); } catch (e) {} return; }
+  if (k === 'regraNao') { V235.regraUi = null; try { _v222Pintar(); } catch (e) {} return; }
+  if (k === 'regraSalvar') {
+    var esc = document.querySelector('#v235CliRegra input[name=v235regra]:checked'), obs = document.getElementById('v235RegraObs');
+    t.disabled = true; t.textContent = '⏳ Salvando';
+    try {
+      var r = await _v235Rpc('fat_cliente_regra_definir', { p_cliente: cid, p_padrao: esc ? esc.value : '', p_obs: obs ? _v235T(obs.value) || null : null }, true);
+      delete V235.cli[cid];
+      var ex = (r && r.os_existentes) || [];
+      V235.regraUi = { cli: cid, resultado: { txt: 'Gravado.' + (r && r.padrao === 'contrato_pecas' && ex.length ? ' As ' + ex.length + ' OS em aberto deste cliente (' + ex.slice(0, 6).map(function (x) { return x.numero || x.id; }).join(', ') + (ex.length > 6 ? '…' : '') + ') continuam como estão — mude nelas pelo "Mudar" da cobrança, se for o caso.' : '') } };
+    } catch (e) {
+      V235.regraUi = { cli: cid, resultado: { erro: true, txt: (e && e.message) || String(e) } };
+    }
+    try { _v222Pintar(); } catch (e) {}
+  }
+}
+(function () {
+  if (typeof _v222ResumoHtml !== 'function') return;
+  var o = _v222ResumoHtml;
+  _v222ResumoHtml = function (c, ativo) {
+    var h = o.apply(this, arguments);
+    try { if (c && c.id && !V235.semSql) h += _v235CliRegraHtml(c); } catch (e) { console.warn('[V235] cliente:', e); }
+    return h;
+  };
+})();
+// o módulo "Financeiro" na lista de módulos do perfil (o banco também aceita o perfil chamado "Financeiro")
+try { if (typeof MODULOS_DISPONIVEIS !== 'undefined' && !MODULOS_DISPONIVEIS.some(function (m) { return m.id === 'pcm_financeiro'; }))
+  MODULOS_DISPONIVEIS.push({ id: 'pcm_financeiro', label: 'PCM – Financeiro (ficha de faturamento)' }); } catch (e) {}
+
+// ── a decoração acompanha a tela (painéis e janelas são repintados por inteiro) ──────────────────────────────────
+function _v235Agendar() {
+  if (V235.pend) return; V235.pend = true;
+  setTimeout(function () {
+    V235.pend = false;
+    if (V235.semSql) { document.querySelectorAll('#v235Os,.v235-dem,#v235Card,#v235CliRegra').forEach(function (x) { x.remove(); }); return; }
+    try { _v235PintarPainelOS(); } catch (e) { console.warn('[V235] painel da OS:', e); }
+    try { _v235DecorarR3A(); } catch (e) { console.warn('[V235] agenda:', e); }
+    try { _v235DecorarDesk(); } catch (e) { console.warn('[V235] demanda:', e); }
+    try { _v235DecorarCard(); } catch (e) { console.warn('[V235] card:', e); }
+  }, 140);
+}
+(function () {
+  if (!window.MutationObserver) return;
+  new MutationObserver(function (muts) {
+    for (var i = 0; i < muts.length; i++) { var t = muts[i].target; if (t && t.closest && (t.closest('#v235Ov') || t.closest('.v232-balao'))) continue; _v235Agendar(); return; }
+  }).observe(document.body, { childList: true, subtree: true });
+})();
+</script>
+<!-- ████ FIM PCM V235 ████ -->
 
 </body>
 </html>
