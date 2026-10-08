@@ -4929,8 +4929,25 @@ v50 — Resiliência de rede: retry/backoff em gsGet e syncToGS
   só o hash sobe, como antes. O Firefox mascara desde a versão 114 (o aviso do V128 envelheceu).
   Par: ProperHub v31 (o mesmo conserto no login por PIN e no "Ativar leitura de placas").
 -->
-<title>ProperCare Manager · Gestão PGP v4.03 (PCM V252)</title>
-<meta name="app-build" content="PCM_V252" data-date="2026-10-07">
+<!--
+  PCM V253 — 07/10/2026 — O BOTÃO "BUSCAR NA RECEITA" VOLTA AO CADASTRO DE CLIENTE (sobre o PCM V252 no ar).
+  Zero SQL, zero Apps Script. Pedido do Fernando: "Onde está o botão de buscar cnpj?" — a tela nova de Clientes
+  (V222) nasceu sem o botão que o cadastro antigo tinha desde o V128. Volta ao lado do CNPJ no Cadastrar
+  cliente (inclusive o trazido do Omie) e na aba Dados da ficha editável. Preenche SÓ campo vazio (pelo mesmo
+  caminho da digitação, então o Salvar/Criar grava); nome diferente vira sugestão (razão social / nome
+  fantasia); situação que não é ATIVA vira aviso. Bloco PCM V253 no fim do body, 100% aditivo.
+-->
+<!--
+  PCM V254 — 07/10/2026 — BUSCA ÚNICA DE CLIENTE: onde se ESCOLHE um cliente, o Omie aparece junto. Zero SQL, zero Apps Script.
+  Pedido do Fernando (prints da PLASGURT, que só aparecia no chip "Só no Omie"): Abrir OS, Nova demanda (computador e celular),
+  Abrir OS no celular, a busca da tela Clientes e o Transferir dono mostram, depois dos clientes do PCM, o grupo
+  "🔶 No Omie — ainda não está no PCM"; tocar abre a ficha do Omie e "Trazer para o PCM e usar" cadastra (crm_cliente_criar,
+  com parecidos e client_uid) e já escolhe o cliente. O "cadastrar cliente novo" espera o Omie responder. Celular: a busca de
+  "Qual cliente?" fica sem acento, por cidade e por CNPJ. Quem não usa o CRM não vê o Omie (régua do banco).
+  Chave de volta: localStorage pcm_v254 = off.
+-->
+<title>ProperCare Manager · Gestão PGP v4.03 (PCM V254)</title>
+<meta name="app-build" content="PCM_V254" data-date="2026-10-07">
 <link rel="icon" type="image/jpeg" href="data:image/jpeg;base64,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">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -79346,5 +79363,716 @@ function _v247Ordem() {
 })();
 </script>
 <!-- ████ FIM PCM V247 ████ -->
+<!-- ████ INICIO PCM V253 ████ -->
+<style id="v253Css">
+.v253-acao{margin-top:5px}
+.v253-btn{all:unset;box-sizing:border-box;cursor:pointer;white-space:nowrap;padding:0 10px;border-radius:7px;font-size:12.5px;font-weight:600;
+  color:#7A3E00;background:#FFF4E5;border:1px solid #F0B76A;display:inline-flex;align-items:center;gap:4px;min-height:30px}
+.v253-btn:hover{background:#FFE9CC}
+.v253-btn:active{transform:translateY(1px);background:#FFDDB0}
+.v253-btn:focus-visible{outline:2px solid #E06A00;outline-offset:1px}
+.v253-btn[disabled]{cursor:progress;opacity:.75}
+.v253-msg{font-size:12px;margin-top:5px;border-radius:7px;padding:6px 8px;line-height:1.4}
+.v253-msg.ok{background:#EEF8F1;border:1px solid #B9E0C6;color:#1E5A33}
+.v253-msg.amar{background:#FFF8E6;border:1px solid #F4C46A;color:#6B4700}
+.v253-msg .v253-us{all:unset;cursor:pointer;color:#0B57D0;text-decoration:underline;font-weight:600;margin-left:4px}
+.v253-msg .v253-us:hover{color:#0842A0}
+.v222-form input.v253-veio{background:#F1FAF4;border-color:#8CCB9F}
+</style>
+<script>
+/* ═══════════════════════════════════════════════════════════════════════════
+   PCM V253 · 07/10/2026 — 🔎 BUSCAR NA RECEITA VOLTA AO CADASTRO DE CLIENTE
+   Pedido do Fernando (07/10, print do "Cadastrar cliente" com dados vindos do Omie): "Onde está o botão de
+   buscar cnpj?". O botão existia no cadastro antigo desde o V128 (22/08) e o invariante do CLAUDE.md (4.3)
+   manda o cadastro de cliente consultar a BrasilAPI; a tela nova de Clientes (V222, 30/09) nasceu sem ele.
+   · Botão "🔎 Buscar na Receita" ao lado do CNPJ no "Cadastrar cliente" (inclusive o trazido do Omie) e na
+     aba Dados da ficha (só quando a ficha é editável: perfil que grava e cliente ativo).
+   · REGRA DE OURO (a mesma do V128 e do painel da OS): preenche SÓ CAMPO VAZIO. O que já está na tela
+     (digitado, vindo do Omie ou do cadastro) é soberano. O preenchimento passa pelo mesmo caminho da
+     digitação (evento input → V222.rasc), então aparece o ponto na aba Dados e o Salvar/Criar grava.
+   · Nome diferente do da Receita NÃO é trocado: vira sugestão com "Usar razão social" / "Usar nome
+     fantasia". Situação cadastral que não é ATIVA vira aviso amarelo.
+   · A resposta que chega depois de a pessoa trocar de ficha ou de CNPJ é descartada (V222.ctx + CNPJ).
+   · O que a Receita manda passa pela MESMA validação do Salvar (telefone com DDD, e-mail, CEP de 8 dígitos,
+     UF de 2 letras): o que não passa fica de fora e é dito abaixo do CNPJ (senão o Salvar travaria num campo
+     que a pessoa não digitou). Ficha existente: só busca depois que a ficha do banco chegou, e "vazio" é
+     vazio na tela E no cadastro (auditoria 1, A1/A2).
+   · Sem SQL, sem Apps Script: a consulta vai do navegador direto à BrasilAPI (base pública da Receita,
+     sem chave, CORS aberto — a mesma fonte do V128). Prazo de 15 s.
+   100% ADITIVO. Embrulha _v222FormCliHtml (só acrescenta o botão e a linha da resposta) e _v222Novo.
+   ═══════════════════════════════════════════════════════════════════════════ */
+var V253 = { res: {}, busy: '', doCadastro: [], orig: {}, ligado: false, PRAZO_MS: 15000 };
+function _v253E(v) { try { return _v222E(v); } catch (e) { return String(v == null ? '' : v).replace(/[&<>"']/g, function (ch) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch]; }); } }
+function _v253Dig(s) { return String(s == null ? '' : s).replace(/\D/g, ''); }
+function _v253T(s) { return String(s == null ? '' : s).replace(/\s+/g, ' ').trim(); }
+function _v253Tc(s) { try { return _v253T(_v128TitleCase(_v253T(s))); } catch (e) { return _v253T(s); } }
+function _v253Norm(s) { try { return _v222Norm(s); } catch (e) { return _v253T(s).toLowerCase(); } }
+function _v253Chave() { return V222.novo ? '__novo' : String(V222.sel || ''); }
+var V253_TXT_BTN = '🔎 Buscar na Receita';
+// a linha da resposta (sugestão de nome / situação / o que não foi usado) — só vale para o CNPJ que foi consultado.
+// A sugestão de nome é calculada na hora com o nome que está na tela (digitar o nome igual à Receita a tira).
+function _v253MsgHtml(chave, cnpjAtual, nomeAtual) {
+  var r = V253.res[chave];
+  if (!r || r.cnpj !== _v253Dig(cnpjAtual)) return '';
+  var h = '', cls = 'ok', nomeN = _v253Norm(nomeAtual);
+  var sugerir = !!(nomeN && r.razao && nomeN !== _v253Norm(r.razao) && (!r.fantasia || nomeN !== _v253Norm(r.fantasia)));
+  if (r.situacao && r.situacao !== 'ATIVA') { cls = 'amar'; h += '⚠ Na Receita este CNPJ está <b>' + _v253E(r.situacao) + '</b>.<br>'; }
+  if (sugerir) {
+    cls = 'amar';
+    h += 'Na Receita: razão social <b>' + _v253E(r.razao) + '</b>' + (r.fantasia ? ' · nome fantasia <b>' + _v253E(r.fantasia) + '</b>' : '') + '.' +
+         '<button type="button" class="v253-us" data-v253="usar" data-q="razao">Usar razão social</button>' +
+         (r.fantasia ? '<button type="button" class="v253-us" data-v253="usar" data-q="fantasia">Usar nome fantasia</button>' : '');
+  } else if (r.razao) {
+    h += '✓ Receita: <b>' + _v253E(r.razao) + '</b>' + (r.fantasia ? ' (' + _v253E(r.fantasia) + ')' : '') + '.';
+  }
+  if ((r.apagados || []).length) { cls = 'amar'; h += '<br>Não preenchi ' + r.apagados.map(_v253E).join(', ') + ': está vazio na tela, mas o cadastro tem valor (se foi apagado de propósito, o Salvar grava vazio).'; }
+  if ((r.fora || []).length) { cls = 'amar'; h += '<br>Não usei da Receita (o Salvar recusaria): ' + r.fora.map(_v253E).join(' · ') + '.'; }
+  return h ? '<div class="v253-msg ' + cls + '" id="v253Msg" role="status">' + h + '</div>' : '';
+}
+function _v253Embrulhar() {
+  if (typeof _v222FormCliHtml !== 'function' || V253.orig.form) return;
+  V253.orig.form = _v222FormCliHtml;
+  _v222FormCliHtml = function (c, desab) {
+    var h = V253.orig.form.apply(this, arguments);
+    try {
+      if (desab) return h;
+      var m = /<input type="text" id="v222f_cnpj"[^>]*>/.exec(h);
+      if (!m || m[0].indexOf(' disabled') >= 0) return h;
+      var chave = (c && c.id) ? String(c.id) : '__novo';
+      var vm = /value="([^"]*)"/.exec(m[0]), cnpjTela = vm ? vm[1].replace(/&[a-z#0-9]+;/gi, '') : '';
+      var nomeTela = ''; try { nomeTela = _v222Val(c || {}, 'nome'); } catch (e) {}
+      var ocupado = V253.busy === chave;   // a tela repintou no meio da consulta: o botão novo nasce "consultando"
+      var novo = m[0] + '<div class="v253-acao">' +
+        '<button type="button" class="v253-btn" data-v253="receita"' + (ocupado ? ' disabled data-v253-ocupado="1" data-pcm-enviando="1"' : '') +
+        ' title="Consulta pública da Receita (BrasilAPI): preenche só o que estiver vazio">' + (ocupado ? '⏳ Consultando…' : V253_TXT_BTN) + '</button></div>' +
+        _v253MsgHtml(chave, cnpjTela, nomeTela);
+      return h.slice(0, m.index) + novo + h.slice(m.index + m[0].length);
+    } catch (e) { console.warn('[V253] form:', e); return h; }
+  };
+  if (typeof _v222Novo === 'function') {
+    V253.orig.novo = _v222Novo;
+    _v222Novo = function () { delete V253.res.__novo; return V253.orig.novo.apply(this, arguments); };
+  }
+}
+// põe o valor no campo pelo MESMO caminho da digitação (o ouvinte de input do V222 grava no rascunho).
+// "Vazio" = vazio na TELA e no CADASTRO (cli): a ficha do banco pode ter chegado depois de a tela ser pintada.
+function _v253Por(campo, valor, cli) {
+  var el = document.getElementById('v222f_' + campo);
+  if (!el || el.disabled || _v253T(el.value) || !_v253T(valor)) return false;
+  if (cli && _v253T(cli[campo])) { V253.doCadastro.push(campo); return false; }
+  el.value = _v253T(valor);
+  el.dispatchEvent(new Event('input', { bubbles: true }));
+  el.classList.add('v253-veio');
+  return true;
+}
+// o que a Receita manda tem de passar na MESMA validação do Salvar (_v222ValidarCli), senão não entra
+function _v253TelOk(dig) { try { return !!_v126TelValido(dig); } catch (e) { return dig.length === 10 || dig.length === 11; } }
+function _v253EmailOk(v) { return /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(v); }
+function _v253BtnVolta(chave) {   // o botão que está na tela agora (pode ter sido repintado durante a consulta)
+  var b = document.querySelector('#v222Cli [data-v253="receita"]'); if (!b) return;
+  if (b.hasAttribute('data-v253-ocupado')) { b.disabled = false; b.removeAttribute('data-v253-ocupado'); b.removeAttribute('data-pcm-enviando'); b.classList.remove('is-busy'); b.textContent = V253_TXT_BTN; }
+  var a = document.activeElement; if (_v253Chave() === chave && (!a || a === document.body)) { try { b.focus({ preventScroll: true }); } catch (e) {} }
+}
+async function _v253Receita(btn) {
+  if (V253.busy) { toast('Aguarde: consultando a Receita…', ''); return; }
+  var inp = document.getElementById('v222f_cnpj'); if (!inp) return;
+  var dig = _v253Dig(inp.value);
+  if (dig.length !== 14) { toast('Digite o CNPJ completo (14 dígitos) antes de buscar.', 'warning'); try { inp.focus(); } catch (e) {} return; }
+  var valido = true; try { valido = _v126CnpjValido(dig); } catch (e) {}
+  if (!valido) { toast('CNPJ inválido (o dígito verificador não confere) — confira antes de buscar.', 'error'); try { inp.focus(); } catch (e) {} return; }
+  // a ficha do banco ainda não chegou: a tela mostra a cópia deste computador, e "vazio" aqui pode não ser vazio lá
+  if (!V222.novo && V222.fichaCarregando && !V222.ficha) { toast('Aguarde a ficha do cliente terminar de carregar e clique de novo.', 'warning'); return; }
+  var ctx0 = V222.ctx, chave = _v253Chave();
+  V253.busy = chave;
+  var solta = function () {}; try { solta = _v222Ocupar(btn, 'Consultando…'); } catch (e) {}
+  var ctl = typeof AbortController === 'function' ? new AbortController() : null;
+  var tm = setTimeout(function () { try { ctl && ctl.abort(); } catch (e) {} }, V253.PRAZO_MS);
+  var d = null, falha = '';
+  try {
+    var r = await fetch('https://brasilapi.com.br/api/cnpj/v1/' + dig, ctl ? { signal: ctl.signal } : undefined);
+    if (r.status === 404) falha = 'CNPJ não encontrado na base pública da Receita.';
+    else if (!r.ok) falha = 'A consulta pública de CNPJ não respondeu agora (HTTP ' + r.status + '). Tente de novo em instantes.';
+    else d = await r.json();
+  } catch (e) {
+    falha = (e && e.name === 'AbortError') ? 'A Receita não respondeu em ' + Math.round(V253.PRAZO_MS / 1000) + ' s. Tente de novo ou preencha à mão.'
+          : 'Sem acesso à consulta pública agora (' + ((e && e.message) || e) + '). Preencha à mão ou tente de novo.';
+  } finally { clearTimeout(tm); V253.busy = ''; try { solta(); } catch (e) {} try { _v253BtnVolta(chave); } catch (e) {} }
+  // a pessoa mudou de ficha ou de CNPJ enquanto esperava: a resposta não serve mais
+  var inp2 = document.getElementById('v222f_cnpj');
+  if (V222.ctx !== ctx0 || _v253Chave() !== chave || (inp2 && _v253Dig(inp2.value) !== dig)) {
+    if (!falha) toast('A consulta da Receita chegou depois que a ficha ou o CNPJ mudou — nada foi preenchido.', '');
+    return;
+  }
+  if (!inp2) { if (!falha) toast('A resposta da Receita chegou com a aba Dados fechada — nada foi preenchido. Abra Dados e busque de novo.', ''); return; }
+  if (falha) { toast(falha, 'warning'); return; }
+  if (!d || typeof d !== 'object' || Array.isArray(d)) { toast('A Receita respondeu num formato inesperado — nada foi preenchido.', 'warning'); return; }
+  var rua = _v253T([d.descricao_tipo_de_logradouro, d.logradouro].filter(function (x) { return _v253T(x); }).join(' '));
+  var razao = _v253Tc(d.razao_social), fantasia = _v253Tc(d.nome_fantasia);
+  if (!razao && !rua && !_v253T(d.municipio)) { toast('A Receita não trouxe dados para este CNPJ — nada foi preenchido.', 'warning'); return; }
+  var cli = null; try { cli = V222.novo ? null : _v222Cli(); } catch (e) {}
+  var n = 0, fora = []; V253.doCadastro = [];
+  if (_v253Por('nome', razao, cli)) n++;
+  if (_v253Por('endereco', _v253Tc(rua), cli)) n++;
+  if (_v253Por('numero', _v253T(d.numero), cli)) n++;
+  if (_v253Por('complemento', _v253Tc(d.complemento), cli)) n++;
+  if (_v253Por('bairro', _v253Tc(d.bairro), cli)) n++;
+  var cep = _v253Dig(d.cep); if (cep.length === 7) cep = '0' + cep;   // CEP que veio como número perde o zero da frente
+  if (cep.length === 8) { if (_v253Por('cep', cep.replace(/^(\d{5})(\d{3})$/, '$1-$2'), cli)) n++; }
+  else if (cep) fora.push('CEP "' + _v253T(d.cep) + '"');
+  if (_v253Por('cidade', _v253Tc(d.municipio), cli)) n++;
+  var uf = _v253T(d.uf).toUpperCase();
+  if (/^[A-Z]{2}$/.test(uf)) { if (_v253Por('uf', uf, cli)) n++; } else if (uf) fora.push('UF "' + uf + '"');
+  var tel = _v253Dig(d.ddd_telefone_1);
+  if (tel && _v253TelOk(tel)) { var telF = tel; try { telF = _v126TelFmt(tel); } catch (e) {} if (_v253Por('telefone', telF, cli)) n++; }
+  else if (tel) fora.push('telefone "' + _v253T(d.ddd_telefone_1) + '" (sem DDD ou incompleto)');
+  var em = _v253T(d.email).toLowerCase();
+  if (em && _v253EmailOk(em)) { if (_v253Por('email', em, cli)) n++; } else if (em) fora.push('e-mail "' + em + '"');
+  var sit = _v253T(d.descricao_situacao_cadastral).toUpperCase();
+  var V253_ROT = { nome: 'nome', endereco: 'rua', numero: 'número', complemento: 'complemento', bairro: 'bairro', cep: 'CEP', cidade: 'cidade', uf: 'UF', telefone: 'telefone', email: 'e-mail' };
+  var apagados = V253.doCadastro.map(function (k) { return V253_ROT[k] || k; });
+  V253.res[chave] = { cnpj: dig, razao: razao, fantasia: (fantasia && _v253Norm(fantasia) !== _v253Norm(razao)) ? fantasia : '', situacao: sit, fora: fora, apagados: apagados };
+  var velho = document.getElementById('v253Msg'); if (velho) velho.remove();
+  var nomeEl = document.getElementById('v222f_nome');
+  var ac = inp2.parentNode && inp2.parentNode.querySelector('.v253-acao'); if (ac) ac.insertAdjacentHTML('afterend', _v253MsgHtml(chave, inp2.value, nomeEl ? nomeEl.value : ''));
+  var cola = fora.length ? ' ' + fora.length + ' dado(s) da Receita não serviam e ficaram de fora (veja abaixo do CNPJ).' : '';
+  if (sit && sit !== 'ATIVA') toast('⚠ Situação cadastral na Receita: ' + sit + '. Preenchi ' + n + ' campo(s) vazio(s) mesmo assim.' + cola, 'warning');
+  else toast((n ? ('Receita: ' + n + ' campo(s) vazio(s) preenchido(s). O que já estava na tela foi preservado. Confira e clique em ' + (V222.novo ? 'Criar cliente' : 'Salvar') + '.')
+               : 'A Receita respondeu, mas os campos que ela traz já estavam preenchidos — nada foi alterado.') + cola, n || !fora.length ? 'success' : 'warning');
+}
+function _v253Usar(q) {
+  var r = V253.res[_v253Chave()], el = document.getElementById('v222f_nome'); if (!r || !el || el.disabled) return;
+  var v = q === 'fantasia' ? r.fantasia : r.razao; if (!_v253T(v)) return;
+  el.value = v; el.dispatchEvent(new Event('input', { bubbles: true })); el.classList.add('v253-veio');
+  toast('Nome trocado para "' + v + '". Clique em ' + (V222.novo ? 'Criar cliente' : 'Salvar') + ' para gravar.', 'success');
+}
+function _v253Ligar() {
+  if (V253.ligado) return; V253.ligado = true;
+  document.addEventListener('click', function (ev) {
+    var t = ev.target && ev.target.closest && ev.target.closest('[data-v253]'); if (!t || !t.closest('#v222Cli')) return;
+    ev.preventDefault();
+    var a = t.getAttribute('data-v253');
+    if (a === 'receita') _v253Receita(t).catch(function (e) { V253.busy = ''; console.error('[V253]', e); toast(e.message || String(e), 'error'); });
+    else if (a === 'usar') _v253Usar(t.getAttribute('data-q'));
+  });
+  document.addEventListener('input', function (ev) {
+    var t = ev.target; if (!t) return;
+    var m = document.getElementById('v253Msg'); if (!m) return;
+    if (t.id === 'v222f_cnpj') { m.remove(); return; }   // trocar o CNPJ apaga a resposta velha (ela era de outro número)
+    if (t.id === 'v222f_nome') {                          // o nome mudou: a sugestão se refaz com o nome novo
+      var cn = document.getElementById('v222f_cnpj'), html = _v253MsgHtml(_v253Chave(), cn ? cn.value : '', t.value);
+      if (html) m.outerHTML = html; else m.remove();
+    }
+  });
+}
+(function () {
+  try { _v253Embrulhar(); _v253Ligar(); }
+  catch (e) { console.warn('[V253] embrulho:', e); }
+})();
+</script>
+<!-- ████ FIM PCM V253 ████ -->
+<!-- ████ INICIO PCM V254 · BUSCA ÚNICA DE CLIENTE (PCM + OMIE) ████ -->
+<style>
+/* PCM V254 · busca única de cliente: o grupo "🔶 No Omie" logo abaixo dos clientes do PCM */
+.v254-box{margin:6px 0 2px;padding:7px 9px;border:1px solid #F1D3B3;background:#FFF9F3;border-radius:8px;font-size:12.5px;line-height:1.35;color:#3D2A16;max-width:100%;box-sizing:border-box}
+.v254-box.v254-mob{font-size:14px;padding:9px 10px;margin:8px 0}
+.v254-tit{font-weight:700;color:#9A4A0F;margin:0 0 4px}
+.v254-tit2{font-weight:700;color:#1E7B45;margin:8px 0 4px}
+.v254-lin{color:#5B4630}
+.v254-err{color:#B42318}
+.v254-it{border-top:1px solid #F4E1CC;padding:3px 0}
+.v254-it:first-of-type{border-top:0}
+.v254-itb{display:block;width:100%;text-align:left;background:transparent;border:0;border-radius:6px;padding:5px 6px;cursor:pointer;color:inherit;font:inherit;min-height:36px}
+.v254-mob .v254-itb{min-height:52px}
+.v254-itb:hover,.v254-itb:focus-visible{background:#FCEBD8;outline:none}
+.v254-itb:active{background:#F8DDBF}
+.v254-itb b{font-weight:700}
+.v254-itb small{display:block;color:#6B5A48;font-size:11.5px;margin-top:1px;overflow-wrap:anywhere}
+.v254-par{display:inline-block;margin-left:4px;padding:0 6px;border-radius:9px;background:#FFF1C2;color:#7A5A00;font-size:11px;font-weight:600}
+.v254-det{padding:4px 6px 6px;color:#3D2A16}
+.v254-det div{margin:2px 0;overflow-wrap:anywhere}
+.v254-av{color:#8A5300;font-size:11.5px}
+.v254-acoes{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px;align-items:center}
+.v254-btn{border:1px solid #D9B48C;background:#fff;color:#5B3510;border-radius:6px;padding:5px 10px;font:inherit;font-size:12.5px;cursor:pointer;min-height:32px}
+.v254-btn.pri{background:#C2410C;border-color:#C2410C;color:#fff;font-weight:600}
+.v254-mob .v254-btn{min-height:44px;font-size:14px}
+.v254-btn:hover{filter:brightness(.96)}.v254-btn:active{filter:brightness(.9)}
+.v254-btn[disabled]{opacity:.65;cursor:progress}
+.v254-igual{display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:3px 0}
+.v254-igual span{flex:1;min-width:0;overflow-wrap:anywhere}
+.v254-rod{color:#8A7764;font-size:11px;margin-top:5px}
+.v254-mais{color:#6B5A48;font-size:11.5px;padding:3px 6px}
+/* enquanto o Omie não respondeu, o "cadastrar cliente novo" espera (é o que evita a duplicata) — some só o botão, a tela fica */
+#r2aNSug[data-v254-espera] [data-r2a="cadastrarCli"],
+#crmdBox[data-v254-espera] [data-crmd="criar"],
+#crmdBox[data-v254-espera] [data-crmd="criarMesmo"],
+[data-v254-espera] > [data-v236-tnovo],
+.v254-box.v254-espera ~ .v222-vazio [data-v222="novo"]{display:none !important}
+</style>
+<script>
+// ═══════════════════════════════════════════════════════════════════════════════════════════════════
+// PCM V254 · BUSCA ÚNICA DE CLIENTE — onde se ESCOLHE um cliente, o Omie aparece junto (07/10/2026)
+// ───────────────────────────────────────────────────────────────────────────────────────────────────
+// Pedido do Fernando (07/10, prints): "onde eu for buscar clientes deveria aparecer também a lista do OMIE" — a
+// PLASGURT só apareceu no chip "Só no Omie"; a Nova OS dizia "Nenhum cliente com esse nome" e oferecia cadastrar.
+// Escolha dele: computador E celular numa rodada só (a regra fica uma só).
+//
+// O QUE FAZ: uma regra (V254) e cinco lugares que a usam —
+//   · Abrir OS (painel do computador, R2-A) ............ debaixo das sugestões do PCM
+//   · Nova demanda (computador e celular, com a caixa do CRMD) .. debaixo do campo Cliente
+//   · Abrir OS no celular (etapa "Qual cliente?") ........ debaixo da lista (+ busca sem acento, por cidade e CNPJ)
+//   · Clientes (busca da lista, fora do chip "Só no Omie") ..... debaixo da tabela (abre a ficha do Omie → Trazer)
+//   · Parque › Transferir dono ............................. debaixo da lista de clientes
+// Ordem: 1º o que está no PCM; 2º "🔶 No Omie — ainda não está no PCM"; o "cadastrar cliente novo" só aparece
+// depois de o Omie responder (ou de ele falhar/demorar, com o aviso "confira antes de cadastrar").
+// Trazer = lê a ficha no Omie (erp_cliente_omie) e cadastra no PCM pelo MESMO caminho de sempre (crm_cliente_criar:
+// parecidos antes de gravar, client_uid contra o POST repetido, régua de papel no banco). NADA é escrito no Omie.
+// Quem vê: a régua do banco (erp_clientes_omie → _crm_exigir). Quem não passa recebe 42501 e não vê grupo nenhum.
+// Fora: fornecedor e inativo no Omie; a + Oportunidade (V234 já faz isto); os filtros de LISTA (OS, peças, máquinas).
+// ZERO SQL novo, ZERO Apps Script. Chave de volta: localStorage pcm_v254 = off (tudo como no V253).
+// ═══════════════════════════════════════════════════════════════════════════════════════════════════
+(function () {
+  'use strict';
+  if (window.V254) return;
+  var V254 = window.V254 = {
+    versao: 'V254 · 07/10/2026',
+    q: {}, voo: {}, det: {}, detVoo: {}, uid: {}, par: {}, erroIt: {}, trazidos: {}, enviando: {},
+    aberto: '', semAcesso: false, semSql: false, TTL: 60000, TTL_ERRO: 120000, esperaEl: {}, LENTO: 8000, espera: {},
+    escritas: 0, escritasDesde: 0, disjuntorAte: 0, marcado: false, _t: {}
+  };
+  function off() { try { return localStorage.getItem('pcm_v254') === 'off'; } catch (e) { return false; } }
+  V254.off = off;
+  function S(x) { return String(x ?? ''); }
+  function esc(x) { return S(x).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+  function norm(x) { return S(x).normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/\s+/g, ' ').trim(); }
+  function termoDe(x) { return S(x).trim().replace(/\s+/g, ' '); }
+  function valido(t) { t = termoDe(t); var d = t.replace(/\D/g, ''); return norm(t).replace(/[^a-z0-9]/g, '').length >= 3 || d.length >= 4; }
+  function cnpjFmt(v) { try { return _v222CnpjFmt(v); } catch (e) { return S(v); } }
+  function telFmt(v) { try { return _v222TelFmt(v); } catch (e) { return S(v); } }
+  function cidadeLimpa(c) { return S(c).replace(/\s*\([A-Z]{2}\)\s*$/, '').trim(); }   // o Omie grava "DIVINOPOLIS (MG)"
+  function hora(v) { if (!v) return ''; var d = new Date(v); return isNaN(d) ? '' : d.toLocaleString('pt-BR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' }); }
+  function aviso(msg, tipo) { try { if (typeof toast === 'function') return toast(msg, tipo || ''); } catch (e) {} try { if (typeof _mobToast === 'function') _mobToast(msg, tipo || ''); } catch (e) {} }
+  function clientes() { try { return (typeof db === 'object' && db && Array.isArray(db.clients)) ? db.clients : []; } catch (e) { return []; } }
+  function uid(cod) { if (!V254.uid[cod]) { var r = ''; try { r = crypto.randomUUID(); } catch (e) { r = Date.now().toString(36) + Math.random().toString(36).slice(2); } V254.uid[cod] = 'v254-' + cod + '-' + r; } return V254.uid[cod]; }
+
+  // ── 1 · a consulta ao Omie (uma por termo; o resultado OK vale 60 s; erro/"não lido" só se refazem a pedido ou com termo novo) ──
+  // auditoria A4: três leituras FILTRADAS no banco (so_omie · parecido · no_pcm), cada uma com o seu limite — com 'todos' + limite,
+  //   o corte por nome podia deixar de fora justamente quem só está no Omie (e a tela diria "nada no Omie" sem saber).
+  var PARTES = [['so_omie', 8], ['parecido', 4], ['no_pcm', 3]];
+  function pedir(termo) {
+    if (V254.voo[termo]) return;
+    if (typeof _v200Rpc !== 'function') { V254.semSql = true; return; }
+    V254.espera[termo] = V254.espera[termo] || Date.now();
+    V254.voo[termo] = Promise.all(PARTES.map(function (pt) { return _v200Rpc('erp_clientes_omie', { p_texto: termo, p_filtro: pt[0], p_limite: pt[1] }); }))
+      .then(function (rs) {
+        var r = { lido: true, lido_em: null, partes: {} };
+        rs.forEach(function (x, i) { x = x || { itens: [] }; if (x.lido === false) { r.lido = false; r.mensagem = x.mensagem; } if (x.lido_em) r.lido_em = x.lido_em; r.partes[PARTES[i][0]] = x; });
+        V254.q[termo] = { em: Date.now(), r: r };
+      })
+      .catch(function (e) {
+        var cod = (e && e.v200) || '';
+        if (cod === 'acesso') V254.semAcesso = true;          // a régua do banco: recusou ⇒ nenhum dado do Omie chega, grupo nenhum
+        if (cod === 'sem_sql') V254.semSql = true;
+        var velho = V254.q[termo];
+        if (velho && velho.r && velho.r.lido !== false && cod !== 'acesso') { velho.em = Date.now() - V254.TTL + 30000; return; }   // auditoria B6: a releitura de fundo que falha não troca o certo por erro
+        V254.q[termo] = { em: Date.now(), erro: (e && e.message) || 'falha na consulta', cod: cod };
+      })
+      .then(function () { delete V254.voo[termo]; delete V254.espera[termo]; repintarDonos(termo); });
+  }
+  // auditoria A6: um relógio por LUGAR (digitar "plasgurt" faz UMA consulta, não seis)
+  function garantir(termo, lugar) {
+    termo = termoDe(termo); lugar = lugar || 'geral';
+    if (off() || V254.semAcesso || V254.semSql || !valido(termo)) return;
+    var c = V254.q[termo];
+    if (c && (c.erro || c.r.lido === false) && Date.now() - c.em < V254.TTL_ERRO) return;   // A12/B5: erro não se refaz debaixo do cursor; vale 2 min (a tela continua mostrando o erro enquanto relê)
+    if (c && Date.now() - c.em < V254.TTL) return;
+    if (V254.voo[termo]) return;
+    var t0 = V254._t[lugar];
+    if (t0 && t0.termo === termo) return;
+    if (t0) { clearTimeout(t0.id); if (!V254.voo[t0.termo]) delete V254.espera[t0.termo]; }
+    if (!c) V254.espera[termo] = V254.espera[termo] || Date.now();
+    V254._t[lugar] = { termo: termo, id: setTimeout(function () { delete V254._t[lugar]; pedir(termo); }, c ? 0 : 320) };
+    // "lento" precisa aparecer mesmo sem nenhum evento novo na tela (auditoria A3: também na tela Clientes)
+    if (!c) setTimeout(function () { if (V254.espera[termo]) repintarDonos(termo); }, V254.LENTO + 50);
+  }
+  V254.garantir = garantir;
+  function fase(termo) {
+    termo = termoDe(termo);
+    if (off() || V254.semAcesso || V254.semSql) return { f: 'off' };
+    if (!valido(termo)) return { f: 'curto' };
+    var c = V254.q[termo];
+    if (!c) {
+      var desde = V254.espera[termo] || Date.now();
+      return { f: Date.now() - desde >= V254.LENTO ? 'lento' : 'espera' };
+    }
+    if (c.erro) return { f: 'erro', erro: c.erro };
+    if (c.r && c.r.lido === false) return { f: 'nao_lido', msg: c.r.mensagem };
+    return estadoOk(termo, c);                                   // relendo em 2º plano depois de 60 s: mostra o que tem
+  }
+  function cnpjsDoPcm() {   // auditoria A10: o que já está no cadastro local (por CNPJ) não é "ainda não está no PCM", venha de onde vier
+    var m = {}; clientes().forEach(function (c) { var d = S(c.cnpj).replace(/\D/g, ''); if (d.length === 14) m[d] = 1; }); return m;
+  }
+  function estadoOk(termo, c) {
+    var P = (c.r && c.r.partes) || {}, ja = cnpjsDoPcm();
+    function lista(k) { return ((P[k] && P[k].itens) || []).filter(function (x) { return x && !x.inativo; }); }
+    function fora(x) { return V254.trazidos[S(x.codigo_omie)] || (S(x.cnpj).length === 14 && ja[S(x.cnpj)]); }
+    var so = lista('so_omie'), pa = lista('parecido');
+    var novos = so.concat(pa).filter(function (x) { return !fora(x); });
+    var iguais = lista('no_pcm').filter(function (x) { return (x.no_pcm || []).length; });   // A8/B7: o inativo aparece como inativo (sem ação), nunca some
+    var falta = function (k, l) { return Math.max(0, (Number(P[k] && P[k].achados) || 0) - l.length); };
+    return { f: 'ok', novos: novos.slice(0, 6), iguais: iguais.slice(0, 3), mais: falta('so_omie', so) + falta('parecido', pa) + Math.max(0, novos.length - 6),
+             lido_em: c.r.lido_em };
+  }
+  V254.fase = fase;
+  function lerFicha(cod) {
+    if (V254.det[cod] && !V254.det[cod].erro) return;
+    if (V254.detVoo[cod]) return;
+    V254.detVoo[cod] = _v200Rpc('erp_cliente_omie', { p_codigo: Number(cod) })
+      .then(function (d) { V254.det[cod] = d || { erro: 'o Omie não devolveu a ficha' }; })
+      .catch(function (e) { V254.det[cod] = { erro: (e && e.message) || 'falha ao ler a ficha' }; })
+      .then(function () { delete V254.detVoo[cod]; sync(); });
+  }
+
+  // ── 2 · os lugares que escolhem cliente (cada um diz: está aberto? qual o termo? onde fica o grupo? usar = ?) ──
+  function aVista(el) { try { return !!(el && el.isConnected && el.getClientRects().length); } catch (e) { return false; } }   // tela escondida não é lugar aberto
+  function folhaFechada(el) { var f = el && el.closest && el.closest('#mobSheet'); return !!(f && !f.classList.contains('is-open')); }   // auditoria A11
+  function botaoSintetico(pai, attrs) {   // o DONO da tela faz a escolha pelo caminho dele (o clique delegado que ele já ouve)
+    var b = document.createElement('button'); b.type = 'button'; b.hidden = true;
+    Object.keys(attrs).forEach(function (k) { b.setAttribute(k, attrs[k]); });
+    pai.appendChild(b); try { b.click(); } finally { if (b.parentNode) b.parentNode.removeChild(b); }
+  }
+  function noDb(id, nome, d) {   // o cliente escolhido precisa estar no cadastro local (as telas escolhem por ele)
+    var l = clientes(); if (!id) return;
+    if (l.some(function (c) { return S(c.id) === S(id); })) return;
+    d = d || {}; var agora = new Date().toISOString();
+    l.push({ id: S(id), nome: S(nome), cnpj: S(d.cnpj), cidade: S(d.cidade), uf: S(d.uf), telefone: S(d.telefone), email: S(d.email), contact: S(d.contato),
+             observacoes: '', antecedencia_alerta_dias: 30, tipoRegistro: 'PRODUCAO', createdAt: agora, updatedAt: agora });
+    try { if (typeof save === 'function') save(); } catch (e) {}
+  }
+  var SITES = {
+    r2a: {
+      abrir: function () {
+        var inp = document.getElementById('r2aNCli'), sug = document.getElementById('r2aNSug');
+        if (!inp || !sug || !aVista(inp)) return null;
+        try { var N = window.R2A && R2A.nova; if (!N || N.cli || N.nc) return null; } catch (e) { return null; }
+        return { termo: inp.value, vazio: !sug.querySelector('[role="option"][data-r2a="escolherCli"]'), espera: sug,
+                 por: function (box) { var cad = sug.querySelector('[data-r2a="cadastrarCli"]'); if (cad) { if (box.nextElementSibling !== cad || box.parentNode !== sug) sug.insertBefore(box, cad); } else if (box.parentNode !== sug || sug.lastElementChild !== box) sug.appendChild(box); } };
+      },
+      ctx: function () { try { var i = document.getElementById('r2aNCli'); return window.R2A && R2A.nova && !R2A.nova.cli && !R2A.nova.nc && aVista(i) ? R2A.nova : null; } catch (e) { return null; } },
+      usar: function (id) { var sug = document.getElementById('r2aNSug'); if (sug) botaoSintetico(sug, { 'data-r2a': 'escolherCli', 'data-id': S(id) }); }
+    },
+    dem: {
+      abrir: function () {
+        var J = null; try { J = window.CRMD && CRMD.janela ? CRMD.janela() : null; } catch (e) { J = null; }
+        if (!J || !J.inp || !J.ancora || !J.ancora.parentNode || !aVista(J.inp) || folhaFechada(J.inp)) return null;
+        var t = termoDe(J.inp.value), nt = norm(t), l = clientes();
+        var tl = t.toLowerCase();   // auditoria B1: a MESMA régua do formulário (_mobDemCliente/_v139DemLer): nome igual, sem trocar acento
+        if (tl && l.some(function (c) { return S(c.nome).trim().toLowerCase() === tl; })) return null;   // já é um cliente do PCM: nada a sugerir
+        var pai = J.ancora.parentNode, crmd = pai.querySelector('#crmdBox');
+        return { termo: t, mob: J.tipo === 'mob', vazio: l.length > 0 && !l.some(function (c) { return nt && norm(c.nome).indexOf(nt) >= 0; }), espera: crmd,
+                 por: function (box) {
+                   var c2 = pai.querySelector('#crmdBox');
+                   if (c2) { if (box.nextElementSibling !== c2) pai.insertBefore(box, c2); }
+                   else if (J.ancora.nextElementSibling !== box) J.ancora.insertAdjacentElement('afterend', box);
+                 } };
+      },
+      ctx: function () { try { var J = CRMD.janela(); return J && J.inp && !folhaFechada(J.inp) ? J.tipo + '|' + CRMD.form.seq + '|' + S(J.inp.value).trim().toLowerCase() : null; } catch (e) { return null; } },   // B2: escolher outro no campo muda o selo
+      usar: function (id, nome) { var b = document.querySelector('[data-v254-box="dem"]') || document.body; botaoSintetico(b, { 'data-crmd': 'usar', 'data-id': S(id), 'data-nome': S(nome) }); }
+    },
+    mobos: {
+      abrir: function () {
+        var inp = document.getElementById('mobOsCli'), lista = document.getElementById('mobCliLista');
+        if (!inp || !lista || !aVista(inp) || folhaFechada(inp)) return null;
+        return { termo: inp.value, mob: true, vazio: clientes().length > 0 && !lista.querySelector('.mob-pick'), espera: null,
+                 por: function (box) { if (box.parentNode !== lista || lista.lastElementChild !== box) lista.appendChild(box); } };
+      },
+      ctx: function () { try { var E = window._mobEstado, i = document.getElementById('mobOsCli'); return E && E.step === 0 && i && !folhaFechada(i) ? E.novaOS : null; } catch (e) { return null; } },   // B3
+      usar: function (id) { try { if (typeof window._mobEscolheCli === 'function') window._mobEscolheCli(S(id)); } catch (e) { console.warn('[V254] mobos usar:', e); } }
+    },
+    v236: {
+      abrir: function () {
+        var inp = document.getElementById('v236TBusca'); if (!inp || !aVista(inp)) return null;
+        var sel = document.getElementById('v236TCli'), novo = document.querySelector('[data-v236-tnovo]');
+        var ref = novo && novo.parentNode; if (!ref || !ref.parentNode) return null;
+        return { termo: inp.value, vazio: !(sel && sel.options && sel.options.length), espera: ref,   // auditoria A2: o "＋ Cadastrar cliente novo aqui" também espera
+                 por: function (box) { if (box.nextElementSibling !== ref) ref.parentNode.insertBefore(box, ref); } };
+      },
+      ctx: function () { var i = document.getElementById('v236TBusca'), sl = document.getElementById('v236TCli'), t = document.querySelector('#v236Painel h3, .v236-nm'); return i && aVista(i) ? 'v236|' + S(i.value) + '|' + S(sl && sl.value) + '|' + S(t && t.textContent) : null; },   // B2
+      usar: function (id, nome) {
+        try { if (window.V236 && Array.isArray(V236.cli) && !V236.cli.some(function (c) { return S(c.id) === S(id); })) V236.cli.push({ id: S(id), nome: S(nome), cidade: '' }); } catch (e) {}
+        var inp = document.getElementById('v236TBusca');
+        if (inp) { inp.value = S(nome); try { inp.dispatchEvent(new Event('input', { bubbles: true })); } catch (e) {} }
+        var n = 0, iv = setInterval(function () {   // a lista do Transferir repinta em ~140 ms: escolhe o cliente nela, pelo ID
+          var sel = document.getElementById('v236TCli');
+          if (sel && Array.prototype.some.call(sel.options, function (o) { return o.value === S(id); })) {
+            clearInterval(iv); sel.value = S(id); try { sel.dispatchEvent(new Event('change', { bubbles: true })); } catch (e) {}
+          } else if (++n > 15) { clearInterval(iv); aviso('«' + nome + '» não está na lista do novo dono (pode ser o dono atual) — escolha o novo dono na lista.', 'warning'); }   // auditoria A9/B8
+        }, 200);
+      }
+    }
+  };
+  V254.SITES = SITES;
+
+  // ── 3 · o desenho do grupo (o mesmo para todos; "v222" abre a ficha do Omie da tela Clientes) ─────────────
+  function itemHtml(site, x, mob) {
+    var cod = S(x.codigo_omie), nome = x.fantasia || x.razao || ('código ' + cod), aberto = V254.aberto === site + '|' + cod && site !== 'v222';
+    var sub = [x.fantasia && x.razao && x.fantasia !== x.razao ? x.razao : '', x.cnpj ? cnpjFmt(x.cnpj) : 'sem CNPJ no Omie', [cidadeLimpa(x.cidade), x.uf].filter(Boolean).join('/')].filter(Boolean).join(' · ');
+    var par = x.estado === 'parecido' && (x.parecidos || []).length ? '<span class="v254-par">parecido com «' + esc(x.parecidos[0].nome) + '»' + (x.parecidos.length > 1 ? ' +' + (x.parecidos.length - 1) : '') + '</span>' : '';
+    var h = '<div class="v254-it' + (aberto ? ' aberto' : '') + '"><button type="button" class="v254-itb" data-v254="' + (site === 'v222' ? 'cros' : 'it') + '" data-cod="' + esc(cod) + '" aria-expanded="' + aberto + '">' +
+            '<b>' + esc(nome) + '</b>' + par + '<small>' + esc(sub) + '</small></button>';
+    if (aberto) h += detalheHtml(site, cod, x);
+    return h + '</div>';
+  }
+  function detalheHtml(site, cod, x) {
+    var d = V254.det[cod];
+    if (!d) return '<div class="v254-det">⏳ lendo a ficha no Omie…</div>';
+    if (d.erro) return '<div class="v254-det v254-err">⚠ Não consegui ler a ficha no Omie: ' + esc(d.erro) + ' <button type="button" class="v254-btn" data-v254="relerFicha" data-cod="' + esc(cod) + '">Tentar de novo</button></div>';
+    var dd = d.dados || {}, h = '<div class="v254-det">';
+    h += '<div>Razão social: <b>' + esc(d.razao || '—') + '</b>' + (dd.cnpj ? ' · CNPJ ' + esc(cnpjFmt(dd.cnpj)) : '') + '</div>';
+    var end = [dd.endereco, dd.numero, dd.complemento, dd.bairro].filter(Boolean).join(', ');
+    var lug = [dd.cidade, dd.uf].filter(Boolean).join('/');
+    if (end || lug) h += '<div>' + esc([end, lug, dd.cep ? 'CEP ' + dd.cep : ''].filter(Boolean).join(' · ')) + '</div>';
+    var ct = [dd.telefone ? telFmt(dd.telefone) : '', dd.email, dd.contato ? 'contato: ' + dd.contato : ''].filter(Boolean).join(' · ');
+    if (ct) h += '<div>' + esc(ct) + '</div>';
+    if ((d.avisos || []).length) h += '<div class="v254-av">⚠ ' + d.avisos.map(esc).join('<br>⚠ ') + '</div>';
+    var parSrv = V254.par[cod];
+    if (parSrv && parSrv.length) {
+      h += '<div style="margin-top:6px"><b>Já existe parecido no PCM</b> — é algum destes?</div>' + parSrv.map(function (p) { return parLinha(p); }).join('') +
+           '<div class="v254-acoes"><button type="button" class="v254-btn" data-v254="trazer" data-conf="1" data-cod="' + esc(cod) + '"' + (V254.enviando[cod] ? ' disabled data-pcm-enviando="1"' : '') + '>É outro — trazer mesmo assim</button></div>';
+    } else {
+      if ((x && x.parecidos || []).length) h += '<div style="margin-top:6px">Parecido no PCM:</div>' + x.parecidos.map(function (p) { return parLinha(p); }).join('');
+      var ocup = V254.enviando[cod] ? ' disabled data-pcm-enviando="1"' : '';   // auditoria A13: repintar durante o envio não "destrava" o botão
+      h += '<div class="v254-acoes"><button type="button" class="v254-btn pri" data-v254="trazer" data-cod="' + esc(cod) + '"' + ocup + '>' + (ocup ? '⏳ Trazendo…' : '＋ Trazer para o PCM e usar') + '</button>' +
+           '<button type="button" class="v254-btn" data-v254="fechar">Fechar</button></div>';
+    }
+    if (V254.erroIt[cod]) h += '<div class="v254-err" style="margin-top:4px">⚠ ' + esc(V254.erroIt[cod]) + '</div>';
+    h += '<div class="v254-rod">Cadastra no PCM com estes dados (o endereço completa-se na ficha do cliente). Nada é escrito no Omie.</div>';
+    return h + '</div>';
+  }
+  function parLinha(p) {
+    var inativo = p.ativo === false || S(p.ativo).toUpperCase() === 'NÃO';
+    return '<div class="v254-igual"><span><b>' + esc(p.nome) + '</b>' + (p.cidade || p.uf ? ' <small>' + esc([p.cidade, p.uf].filter(Boolean).join('/')) + '</small>' : '') +
+           (p.motivo ? ' <small>· ' + esc(p.motivo) + '</small>' : '') + '</span>' +
+           (inativo ? '<small>inativo — reative em Clientes</small>' : '<button type="button" class="v254-btn" data-v254="usar" data-id="' + esc(p.id) + '" data-nome="' + esc(p.nome) + '">É este — usar</button>') + '</div>';
+  }
+  function boxHtml(site, termo, o) {
+    o = o || {};
+    var F = fase(termo), t = termoDe(termo);
+    if (F.f === 'off' || F.f === 'curto') return '';
+    if (F.f === 'espera') return '<div class="v254-lin">⏳ procurando também nos clientes do Omie…</div>';
+    if (F.f === 'lento') return '<div class="v254-lin">⏳ O Omie está demorando a responder — confira antes de cadastrar um cliente novo.</div>';
+    if (F.f === 'erro') return '<div class="v254-lin v254-err">⚠ Não consegui consultar os clientes do Omie (' + esc(F.erro) + ') — confira antes de cadastrar. <button type="button" class="v254-btn" data-v254="reler" data-q="' + esc(t) + '">Tentar de novo</button></div>';
+    if (F.f === 'nao_lido') return '<div class="v254-lin">🔶 ' + esc(F.msg || 'Os clientes do Omie ainda não foram lidos.') + ' Confira antes de cadastrar. <button type="button" class="v254-btn" data-v254="reler" data-q="' + esc(t) + '">Tentar de novo</button></div>';
+    var h = '';
+    if (F.novos.length) h += '<div class="v254-tit">🔶 No Omie — ainda não está no PCM</div>' + F.novos.map(function (x) { return itemHtml(site, x, o.mob); }).join('');
+    if (F.iguais.length && o.vazio) {
+      h += '<div class="v254-tit2">Mesmo CNPJ já cadastrado no PCM com outro nome:</div>' + F.iguais.map(function (x) {
+        return x.no_pcm.slice(0, 2).map(function (p) {
+          if (p.ativo === false) return '<div class="v254-igual"><span>«' + esc(x.fantasia || x.razao) + '» no Omie = <b>' + esc(p.nome) + '</b> no PCM</span><small>inativo — reative em Clientes</small></div>';
+          var acao = site === 'v222' ? '<button type="button" class="v254-btn" data-v222="abrir" data-id="' + esc(p.id) + '">Abrir a ficha</button>'
+                                      : '<button type="button" class="v254-btn" data-v254="usar" data-id="' + esc(p.id) + '" data-nome="' + esc(p.nome) + '">Usar este</button>';
+          return '<div class="v254-igual"><span>«' + esc(x.fantasia || x.razao) + '» no Omie = <b>' + esc(p.nome) + '</b> no PCM</span>' + acao + '</div>';
+        }).join('');
+      }).join('');
+    }
+    if (!h) return o.vazio ? '<div class="v254-lin">🔶 Nada no Omie com “' + esc(t) + '” também.</div>' : '';
+    if (F.mais > 0) h += '<div class="v254-mais">… mais ' + F.mais + ' no Omie — refine a busca</div>';
+    h += '<div class="v254-rod">Omie lido em ' + esc(hora(F.lido_em) || '—') + ' · só leitura</div>';
+    return h;
+  }
+  V254.boxHtml = boxHtml;
+
+  // ── 4 · pintura (um observador só; escreve SÓ quando o que ELE gravou mudou; disjuntor conta ESCRITAS) ─────
+  // auditoria A5: o disjuntor conta só as NOSSAS reescritas de conteúdo (innerHTML); dispara por 5 s e religa sozinho
+  function escreveu(conteudo) {
+    if (!conteudo) return;
+    var agora = Date.now();
+    if (agora - V254.escritasDesde > 2000) { V254.escritasDesde = agora; V254.escritas = 0; }
+    if (++V254.escritas > 40) { V254.disjuntorAte = agora + 5000; V254.escritas = 0; console.warn('[V254] disjuntor: reescritas demais em 2 s — 5 s sem repintar sozinho (digitar repinta).'); }
+  }
+  function limparTudo() {   // pcm_v254 = off: tira o que o V254 pôs (nada dele fica na tela)
+    Array.prototype.forEach.call(document.querySelectorAll('[data-v254-box]'), function (b) { if (b.parentNode) b.parentNode.removeChild(b); });
+    Array.prototype.forEach.call(document.querySelectorAll('[data-v254-espera]'), function (e) { e.removeAttribute('data-v254-espera'); });
+  }
+  function sync() {
+    if (off()) { if (document.querySelector('[data-v254-box],[data-v254-espera]')) limparTudo(); return; }
+    // o modo app cria (ou recria) o _mobBuscaCli depois do load: confere a cada passada se o embrulho ainda é o nosso
+    if ((typeof window._mobBuscaCli === 'function' && !window._mobBuscaCli.__v254) || (typeof _v222TabelaHtml === 'function' && !_v222TabelaHtml.__v254)) ligar();
+    Object.keys(SITES).forEach(function (k) {
+      var s = SITES[k], a = null;
+      try { a = s.abrir(); } catch (e) { a = null; }
+      var box = document.querySelector('[data-v254-box="' + k + '"]');
+      var ant = V254.esperaEl[k];   // auditoria B1: o "cadastrar" nunca fica escondido por um lugar que fechou ou mudou de contêiner
+      if (ant && (!a || ant !== a.espera) && ant.hasAttribute && ant.hasAttribute('data-v254-espera')) ant.removeAttribute('data-v254-espera');
+      V254.esperaEl[k] = a ? a.espera : null;
+      if (!a) { if (box && box.parentNode) { box.parentNode.removeChild(box); escreveu(); } return; }
+      var t = termoDe(a.termo);
+      garantir(t, k);
+      var h = boxHtml(k, t, { mob: !!a.mob, vazio: !!a.vazio }), F = fase(t);
+      var esperando = F.f === 'espera';
+      if (a.espera) {
+        if (esperando && !a.espera.hasAttribute('data-v254-espera')) { a.espera.setAttribute('data-v254-espera', '1'); escreveu(); }
+        if (!esperando && a.espera.hasAttribute('data-v254-espera')) { a.espera.removeAttribute('data-v254-espera'); escreveu(); }
+      }
+      if (!h) { if (box && box.parentNode) { box.parentNode.removeChild(box); escreveu(); } return; }
+      if (!box) { box = document.createElement('div'); box.setAttribute('data-v254-box', k); box.setAttribute('role', 'group'); box.setAttribute('aria-label', 'Clientes do Omie'); }
+      var cls = 'v254-box' + (a.mob ? ' v254-mob' : '') + (esperando ? ' v254-espera' : '');
+      if (box.className !== cls) box.className = cls;
+      if (box.getAttribute('data-h') !== h) { box.setAttribute('data-h', h); box.innerHTML = h; escreveu(true); }
+      var antesPai = box.parentNode, antesProx = box.nextElementSibling;
+      a.por(box);
+      if (box.parentNode !== antesPai || box.nextElementSibling !== antesProx) escreveu();
+    });
+  }
+  V254.sync = sync;
+  function repintarDonos(termo) {
+    sync();
+    try {   // a tela Clientes se pinta por texto (o grupo mora dentro do _v222TabelaHtml): repinta se a busca dela é este termo
+      var vc = document.getElementById('viewClients');
+      if (vc && vc.classList.contains('v222-on') && window.V222 && termoDe(V222.busca) === termo && !(window.CROS && CROS.omie && CROS.omie.on)) _v222Pintar();
+    } catch (e) {}
+  }
+  try {
+    new MutationObserver(function () {
+      if (V254.marcado || Date.now() < (V254.disjuntorAte || 0)) return;
+      V254.marcado = true;
+      requestAnimationFrame(function () { V254.marcado = false; try { sync(); } catch (e) { console.warn('[V254] sync:', e); } });
+    }).observe(document.body, { childList: true, subtree: true });
+  } catch (e) {}
+  document.addEventListener('input', function (ev) {
+    var t = ev.target; if (!t || !t.matches || off()) return;
+    if (t.matches('#r2aNCli, #mobOsCli, #v236TBusca, #v139DemCli, #mobSheetB input[list="mobDemCli"]')) setTimeout(sync, 0);
+  }, true);
+
+  // ── 5 · Trazer do Omie: a ficha do Omie → crm_cliente_criar (parecidos, uid) → o lugar usa o cliente pelo ID ──
+  async function trazer(site, cod, confirmar, btn) {
+    if (V254.enviando[cod]) return;
+    var d = V254.det[cod];
+    if (!d || d.erro || !d.dados) { lerFicha(cod); return; }
+    var dd = d.dados, s0 = SITES[site], ctx0 = s0 && s0.ctx ? s0.ctx() : null;   // auditoria A1: a tela em que o Trazer começou
+    if (S(dd.nome).trim().length < 3) { V254.erroIt[cod] = 'O Omie não tem um nome utilizável para este cliente.'; sync(); return; }
+    V254.enviando[cod] = true; delete V254.erroIt[cod];
+    var txt = btn ? btn.textContent : '';
+    if (btn) { btn.disabled = true; btn.classList.add('is-busy'); btn.setAttribute('data-pcm-enviando', '1'); btn.textContent = '⏳ Trazendo…'; }
+    var r = null, erro = '';
+    try {
+      if (typeof _v214Rpc !== 'function') throw new Error('Este PCM não tem o cadastro rápido do CRM.');
+      r = await _v214Rpc('crm_cliente_criar', {
+        p_nome: S(dd.nome), p_cnpj: dd.cnpj || null, p_cidade: dd.cidade || null, p_uf: dd.uf || null, p_telefone: dd.telefone || null,
+        p_email: dd.email || null, p_contato: dd.contato || null, p_obs: 'Cadastro trazido do Omie (código ' + cod + ').',
+        p_confirmar: !!confirmar, p_client_uid: uid(cod) }, true);
+    } catch (e) { erro = (e && e.message) || 'Não consegui cadastrar o cliente.'; }
+    finally {
+      V254.enviando[cod] = false;
+      if (btn && btn.isConnected) { btn.disabled = false; btn.classList.remove('is-busy'); btn.removeAttribute('data-pcm-enviando'); btn.textContent = txt; }
+    }
+    if (erro) { V254.erroIt[cod] = erro; sync(); return; }
+    if (r && r.ok === false && r.motivo === 'parecidos') { V254.par[cod] = r.parecidos || []; sync(); return; }
+    if (!(r && r.ok && r.id)) { V254.erroIt[cod] = 'O banco não confirmou o cliente novo — nada foi cadastrado.'; sync(); return; }
+    var nome = S(r.nome || dd.nome);
+    noDb(r.id, nome, dd);
+    try { if (typeof _v214LevarParaPlanilha === 'function') _v214LevarParaPlanilha(r.id, { nome: nome, cnpj: dd.cnpj || '', cidade: dd.cidade || '', uf: dd.uf || '', telefone: dd.telefone || '', email: dd.email || '', contato: dd.contato || '' }); } catch (e) {}
+    try { if (typeof _pcmMarcarEscritaCadastro === 'function') _pcmMarcarEscritaCadastro(); } catch (e) {}
+    V254.trazidos[cod] = { id: S(r.id), nome: nome }; delete V254.par[cod]; V254.aberto = ''; V254.q = {};
+    try { if (window.CROS && CROS.omie) { CROS.omie.r = null; CROS.omie.contEm = 0; } } catch (e) {}
+    if (s0 && s0.ctx && (ctx0 === null || s0.ctx() !== ctx0)) {   // a tela mudou durante o envio: cadastra, mas NÃO escolhe por cima do que a pessoa fez depois
+      aviso('«' + nome + '» foi cadastrado no PCM. A tela mudou durante o envio — escolha-o na lista quando precisar.', 'success'); sync(); return;
+    }
+    aviso('«' + nome + '» ' + (r.ja_existia ? 'já tinha sido trazido' : 'trazido do Omie') + ' para o PCM. Endereço e contatos completam-se na ficha do cliente.', 'success');   // B4: não promete "escolhido" antes de o lugar escolher
+    usar(site, r.id, nome);
+  }
+  function usar(site, id, nome) {
+    noDb(id, nome);
+    var s = SITES[site]; if (!s) return;
+    try { s.usar(S(id), S(nome)); } catch (e) { console.warn('[V254] usar:', e); }
+    setTimeout(sync, 0);
+  }
+  V254.trazer = trazer;
+
+  // ── 6 · cliques (captura: o grupo é nosso; o que é do dono da tela vai com o atributo dele) ──────────────────
+  document.addEventListener('click', function (ev) {
+    var b = ev.target && ev.target.closest && ev.target.closest('[data-v254]'); if (!b) return;
+    var box = b.closest('[data-v254-box]'), a = b.getAttribute('data-v254');
+    if (a === 'mobcli') { ev.preventDefault(); ev.stopPropagation(); try { window._mobEscolheCli(b.getAttribute('data-id')); } catch (e) {} return; }
+    if (!box) return;
+    ev.preventDefault(); ev.stopPropagation();
+    var site = box.getAttribute('data-v254-box'), cod = b.getAttribute('data-cod');
+    if (a === 'it') { var k = site + '|' + cod; V254.aberto = V254.aberto === k ? '' : k; if (V254.aberto) lerFicha(cod); sync(); return; }
+    if (a === 'cros') { try { _crosOmieAbrir(cod); } catch (e) { aviso('Não consegui abrir a ficha do Omie: ' + ((e && e.message) || e), 'error'); } return; }
+    if (a === 'fechar') { V254.aberto = ''; sync(); return; }
+    if (a === 'relerFicha') { delete V254.det[cod]; lerFicha(cod); sync(); return; }
+    if (a === 'reler') { var q = termoDe(b.getAttribute('data-q')); delete V254.q[q]; garantir(q, site); repintarDonos(q); return; }
+    if (a === 'trazer') { trazer(site, cod, b.getAttribute('data-conf') === '1', b); return; }
+    if (a === 'usar') { usar(site, b.getAttribute('data-id'), b.getAttribute('data-nome')); return; }
+  }, true);
+  document.addEventListener('keydown', function (ev) {   // Esc dentro do grupo fecha só a ficha aberta (não a janela)
+    if (ev.key !== 'Escape' || !V254.aberto) return;
+    var box = ev.target && ev.target.closest && ev.target.closest('[data-v254-box]'); if (!box) return;
+    ev.preventDefault(); ev.stopPropagation(); V254.aberto = ''; sync();
+  }, true);
+
+  // ── 7 · Clientes: o grupo entra no texto da tabela (a tela se pinta por innerHTML) ────────────────────────
+  function ligarClientes() {
+    if (typeof _v222TabelaHtml !== 'function') return;
+    if (_v222TabelaHtml.__v254) { V254.ligadoCli = true; return; }
+    var orig = _v222TabelaHtml;
+    var novo = function () {
+      var h = orig.apply(this, arguments);
+      try {
+        if (off() || (window.CROS && CROS.omie && CROS.omie.on) || !window.V222 || !V222.lista) return h;
+        var t = termoDe(V222.busca); if (!valido(t)) return h;
+        garantir(t, 'v222');
+        var vazio = h.indexOf('class="v222-vazio"') >= 0;
+        var g = boxHtml('v222', t, { vazio: vazio }); if (!g) return h;
+        var F = fase(t);
+        var box = '<div class="v254-box' + (F.f === 'espera' ? ' v254-espera' : '') + '" data-v254-box="v222" role="group" aria-label="Clientes do Omie">' + g + '</div>';
+        var k = h.indexOf('<div class="v222-vazio">');
+        return k >= 0 ? h.slice(0, k) + box + h.slice(k) : h + box;
+      } catch (e) { console.warn('[V254] Clientes:', e); return h; }
+    };
+    novo.__v254 = true;
+    _v222TabelaHtml = novo;
+    V254.ligadoCli = true;
+  }
+
+  // ── 8 · celular, "Qual cliente?": busca sem acento, por cidade e por CNPJ, sem o teto escondido ────────────
+  function ligarCelular() {
+    if (typeof window._mobBuscaCli !== 'function') return;
+    if (window._mobBuscaCli.__v254) { V254.ligadoCel = true; return; }
+    var orig = window._mobBuscaCli;
+    var novo = function (termo) {
+      if (off()) return orig.apply(this, arguments);
+      var todos = clientes();
+      var el0 = document.getElementById('mobCliLista');
+      if (!todos.length) {   // cadastro ainda chegando: NUNCA "nenhum cliente" (C4) — a espera honesta, e o Omie segue abaixo
+        if (el0) el0.innerHTML = '<div class="mob-load" style="padding:14px 6px"><div class="mob-spin"></div>Carregando o cadastro de clientes do PCM…' +
+          (typeof window._mobCliTentar === 'function' ? '<div style="margin-top:8px"><button type="button" class="v254-btn" onclick="_mobCliTentar()">Tentar de novo</button></div>' : '') + '</div>';
+        sync(); return;
+      }
+      var ts = norm(termo).split(' ').filter(Boolean);
+      var lista = todos.filter(function (c) {
+        if (!ts.length) return true;
+        var h = norm([c.nome, c.cidade, c.uf].join(' ')), dig = S(c.cnpj).replace(/\D/g, '');
+        return ts.every(function (t) { var td = t.replace(/\D/g, ''); return h.indexOf(t) >= 0 || (td.length >= 4 && td.length === t.replace(/[.\/\-]/g, '').length && dig.indexOf(td) >= 0); });
+      });
+      var el = document.getElementById('mobCliLista'); if (!el) return;
+      var mostra = lista.slice(0, 25), h = '';
+      if (!mostra.length) h = '<div class="mob-vazio" style="padding:14px 6px;text-align:center;color:#6B6B6B">🔍 Nenhum cliente no PCM com “' + esc(termoDe(termo)) + '”.</div>';
+      else h = mostra.map(function (c) {
+        return '<button class="mob-pick" type="button" data-v254="mobcli" data-id="' + esc(c.id) + '"><span class="p-c"></span><span><span class="p-t">' + esc(c.nome || '') + '</span>' +
+               '<span class="p-s">' + esc([c.cidade, c.uf].filter(Boolean).join('/') || (c.cnpj ? cnpjFmt(c.cnpj) : '')) + '</span></span></button>';
+      }).join('') + (lista.length > mostra.length ? '<div class="v254-mais" style="padding:8px 6px">… mais ' + (lista.length - mostra.length) + ' no PCM — continue digitando</div>' : '');
+      el.innerHTML = h;
+      sync();
+    };
+    novo.__v254 = true;
+    window._mobBuscaCli = novo;
+    V254.ligadoCel = true;
+  }
+  function ligar() { try { ligarClientes(); } catch (e) { console.warn('[V254] ligar Clientes:', e); } try { ligarCelular(); } catch (e) { console.warn('[V254] ligar celular:', e); } }
+  ligar();
+  window.addEventListener('load', function () { setTimeout(ligar, 0); setTimeout(ligar, 3500); });
+})();
+</script>
+<!-- ████ FIM PCM V254 ████ -->
 </body>
 </html>
