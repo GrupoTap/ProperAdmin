@@ -4987,8 +4987,36 @@ v50 — Resiliência de rede: retry/backoff em gsGet e syncToGS
   (o faturada à mão sem par trava no banco); proposta: o banco exige CNPJ/CPF ao emitir e a tela abre a faixa para preencher;
   cliente trazido do Omie fica atrelado ao código; CPF aceito. Zero Apps Script. Chave de volta: localStorage pcm_v261 = off.
 -->
-<title>ProperCare Manager · Gestão PGP v4.03 (PCM V261)</title>
-<meta name="app-build" content="PCM_V261" data-date="2026-10-09">
+<!--
+  PCM V262 — 09/10/2026 — R6b: REVISAR E EMITIR (rodada 2026-10-09_r6b_revisar_emitir, sobre o PCM V261 no ar).
+  "Revisar e emitir" vira tela de conferência dentro do editor: à esquerda a prévia do PDF (o mesmo gerador do "Pré-visualizar",
+  refeita quando muda o "Mostrar ao cliente"); à direita a conferência com "Corrigir" que leva à linha/campo exato (condições,
+  sem preço, sem descrição, sem máquina, desconto acima do teto, deslocamento) e as mesmas escolhas e o mesmo "Emitir" de hoje.
+  Só tela. Zero SQL, zero Apps Script. Bloco PCM V262 no fim do body. Chave de volta: localStorage pcm_v262 = off.
+-->
+<!--
+  PCM V264 — 09/10/2026 — AJUDANTES NA OS (rodada 2026-10-09_ajudantes_os, sobre o PCM V261 no ar).
+  Par: SQL AJUDANTES_OS (RODA ANTES) e GAS v171 (DEPOIS do SQL, ANTES deste). A OS ganha "Ajudantes" (vários); cada ajudante
+  ocupa o mesmo horário das tarefas de campo na Agenda (bloco 🤝), nova e antiga; o Designar (Agenda e painel da OS) mostra os
+  da OS marcados e deixa desmarcar/acrescentar só na tarefa; Nova OS e formulário completo com o campo; quadro da Oficina,
+  vistas e PCM celular mostram "Vitor + 2". Contador do mês conta tarefa distinta. Chave de volta: localStorage pcm_v264 = off.
+-->
+<!--
+  PCM V265 — 09/10/2026 — CARD DO CRM SÓ DE PEÇAS (SEM MÁQUINA) + "＋ CADASTRAR MÁQUINA" SEM FECHAR A ＋ OPORTUNIDADE
+  (rodada 2026-10-09_oportunidade_pecas_e_maquina, sobre o PCM V261 no ar). Par: SQL OPORTUNIDADE_PECAS_2026-10-09 (RODA ANTES).
+  ＋ Oportunidade: só Peça cria sem máquina e sem modelo (venda de peças avulsas; aceita, vai direto ao Faturamento, sem OS);
+  máquinas da conta lidas do banco; "＋ Cadastrar máquina deste cliente" abre a janela de máquina por cima e a máquina volta
+  marcada; o formulário sobrevive à repintura. O mesmo "＋ Cadastrar máquina" no painel 🛠 Máquinas do card (V246).
+  Zero Apps Script. Bloco PCM V265 no fim do body. Chave de volta: localStorage pcm_v265 = off.
+-->
+<!--
+  PCM V266 — 09/10/2026 — JUNÇÃO (rodada 2026-10-09_juncao_pcm_v266, sobre o PCM V261 no ar): V262 (R6b revisar e emitir) +
+  V264 (ajudantes na OS) + V265 (card só de peças + ＋ Cadastrar máquina) num arquivo só — as três nasceram do V261 em paralelo.
+  Nenhum código novo: só a junção (git merge-file 3 vias) e o carimbo. SQL/GAS de cada uma: os delas (AJUDANTES_OS + GAS v171,
+  OPORTUNIDADE_PECAS), que rodam ANTES deste PCM. Chaves de volta: pcm_v262 / pcm_v264 / pcm_v265 = off.
+-->
+<title>ProperCare Manager · Gestão PGP v4.03 (PCM V266)</title>
+<meta name="app-build" content="PCM_V266" data-date="2026-10-09">
 <link rel="icon" type="image/jpeg" href="data:image/jpeg;base64,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">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -22183,7 +22211,7 @@ function gosRenderFila(){
         <span class="g8-d ${id.semData?'g8-semdata':''}" style="${id.semData?'':'color:'+cbar}"
               title="${id.semData?'Sem data de abertura na planilha':''}">${escHtml(id.txt)}</span></div>
       <div class="g8-sit">${_g8Rank(o)>=3?'<span class="g8-chip urg">URGENTE</span>':''}
-        ${quem.length?quem.map(t=>_g8QuemChip(t)).join(''):'<span class="g8-chip free">livre</span>'}</div>
+        ${quem.length?quem.map(t=>_g8QuemChip(t)).join(''):'<span class="g8-chip free">livre</span>'}${window._v264AjChip?_v264AjChip(o):''}</div>
     </div>`;
   };
   cont.innerHTML=`<div class="g8-wrap">
@@ -23592,6 +23620,7 @@ function _gosOficinaCard(c){
     ${c._v128FaseLbl ? `<div class="gos-kcard-fase" title="Fase real do pipeline — a coluna é o grupo.">📍 ${escHtml(c._v128FaseLbl)}</div>` : ''}
     ${_gosLinhaMaquinas(c.maquinas)}
     ${_gosChipTarefaAtual(c)}
+    ${window._v264AjKanban ? _v264AjKanban(c) : ''}
     <div class="gos-kcard-meta">
       ${chips.join('')}
     </div>
@@ -24926,6 +24955,7 @@ async function openModalOS(id, _v150Preset) {
       return;
     }
   }
+  try { window.__v264OsModal = os || null; } catch (e264) {}   // V264: a OS que o formulário abriu (inclusive a buscada no servidor)
   document.getElementById('modalOSTitle').textContent = id ? 'Editar OS' : 'Nova OS';
 
   const loadingEl = document.getElementById('modalOSLoading');
@@ -33232,6 +33262,7 @@ function _v151ItensOS(hojeKey){
       sem_duracao: !j.dur,
       atrasada: dia < hojeKey
     });
+    try { if (window._v264AjItensOSAntiga) window._v264AjItensOSAntiga(out, o); } catch (e264) {}   // V264 — a OS agendada também para os ajudantes
   });
   return out;
 }
@@ -33320,7 +33351,7 @@ function _v171OrdenarAtras(lista) {
   });
 }
 
-function _v171Selecionavel(it) { return !!(it && !it._os); }
+function _v171Selecionavel(it) { return !!(it && !it._os && !it.ajudante); }   // V264: o bloco 🤝 é cópia — troca-se pelo painel
 
 function _v171Toggle(ev, uid) {
   if (ev) { ev.preventDefault(); ev.stopPropagation(); }
@@ -33507,7 +33538,8 @@ async function _v171Soltar(ev, usuario, diaKey) {
 }
 
 function _satRenderAgenda(result) {
-  const agenda = result.agenda || [];
+  // V264 — os blocos 🤝 dos ajudantes entram na grade (cada um na linha do ajudante)
+  const agenda = (result.agenda || []).concat((!(window.V264 && V264.off()) && Array.isArray(result.agenda_ajudantes)) ? result.agenda_ajudantes : []);
   const pt = result.parametros_turno || {};
   const tIni = _satHmmToMin(pt.turno_inicio) ?? 480;
   const tFim = Math.max(_satHmmToMin(pt.turno_fim) ?? 1080, tIni + 60);
@@ -33737,7 +33769,7 @@ function _satRenderAgenda(result) {
       (conflito ? ' · ⚠ CHOQUE DE HORÁRIO' : '');
     return `<div onclick="openOSDetail('${escJs(it.os_id)}')" title="${escHtml(tip)}"
       style="position:absolute;left:${left}%;width:${width}%;${_v135Vert(_v135Uid(it), fx)}background:${cor};opacity:.95;border-radius:3px;cursor:pointer;overflow:hidden;white-space:nowrap;color:#fff;font-size:9px;line-height:1.1;padding:1px 3px;border:1px solid rgba(255,255,255,.7);${conflito ? 'outline:2px solid var(--red);outline-offset:-1px;' : ''}">
-      ${conflito ? '⚠' : '🔧'}${escHtml(String(rot).slice(0, 15))}</div>`;
+      ${conflito ? '⚠' : (it._aj ? '🤝' : '🔧')}${escHtml(String(rot).slice(0, 15))}</div>`;
   }
 
   function bloco(t, usuario, marcados, fx) {
@@ -33753,19 +33785,19 @@ function _satRenderAgenda(result) {
     const b = fimIso ? Math.max(_satMinDoDia(new Date(fimIso).toString() === 'Invalid Date' ? ini : fimIso), a + 20) : a + 60;
     const left = pct(a), width = Math.max(pct(b) - left, 4);
     const cor = t.em_execucao ? '#16a34a' : (t.atrasada ? 'var(--red)' : 'var(--accent)');
-    const tip = `${t.nome} · OS ${t.os_numero || t.os_id}${t.cliente ? ' · ' + t.cliente : ''} · ${_satHHMM(ini)}${fimIso ? '–' + _satHHMM(fimIso) : ''}${t.sem_estimativa ? ' (sem estimativa: 60min)' : ''}${t.em_execucao ? ' · EM EXECUÇÃO' : ''}${conflito ? ' · ⚠ CONFLITO' : ''}`;
-    return `<div onclick="_satAbrirDesignar('${escJs(t.os_id)}','${escJs(t.tarefa_id)}',{usuario:'${escJs(usuario)}',origem:'agenda'})"
+    const tip = `${t.ajudante ? '🤝 AJUDANTE (principal: ' + (t.principal || '—') + ') · ' : ''}${t.nome} · OS ${t.os_numero || t.os_id}${t.cliente ? ' · ' + t.cliente : ''} · ${_satHHMM(ini)}${fimIso ? '–' + _satHHMM(fimIso) : ''}${t.sem_estimativa ? ' (sem estimativa: 60min)' : ''}${t.em_execucao ? ' · EM EXECUÇÃO' : ''}${conflito ? ' · ⚠ CONFLITO' : ''}`;
+    return `<div onclick="_satAbrirDesignar('${escJs(t.os_id)}','${escJs(t.tarefa_id)}',{usuario:'${escJs(t.ajudante ? (t.principal || usuario) : usuario)}',origem:'agenda'})"
       title="${escHtml(tip)}"
       style="position:absolute;left:${left}%;width:${width}%;${_v135Vert('T:' + t.tarefa_id, fx)}background:${cor};opacity:.92;border-radius:3px;cursor:pointer;overflow:hidden;white-space:nowrap;color:#fff;font-size:9px;line-height:1.1;padding:1px 3px;${conflito ? 'outline:2px solid var(--red);outline-offset:-1px;' : ''}">
-      ${conflito ? '⚠' : ''}${escHtml(String(t.nome || '').slice(0, 16))}</div>`;
+      ${conflito ? '⚠' : ''}${t.ajudante ? '🤝' : ''}${escHtml(String(t.nome || '').slice(0, 16))}</div>`;
   }
 
   function chipSemHora(t, usuario) {
     const conflito = false;
     const tip = `${t.nome} · OS ${t.os_numero || t.os_id}${t.cliente ? ' · ' + t.cliente : ''} · dia inteiro (sem hora)`;
-    return `<div onclick="_satAbrirDesignar('${escJs(t.os_id)}','${escJs(t.tarefa_id)}',{usuario:'${escJs(usuario)}',origem:'agenda'})"
+    return `<div onclick="_satAbrirDesignar('${escJs(t.os_id)}','${escJs(t.tarefa_id)}',{usuario:'${escJs(t.ajudante ? (t.principal || usuario) : usuario)}',origem:'agenda'})"
       title="${escHtml(tip)}"
-      style="display:inline-block;background:var(--bg);border:1px dashed var(--border);border-radius:4px;padding:1px 5px;margin:1px 2px 0 0;font-size:9px;color:var(--text2);cursor:pointer;white-space:nowrap;max-width:100%;overflow:hidden;text-overflow:ellipsis">${escHtml(String(t.nome || '').slice(0, 18))}${t.atrasada ? '' : ''}</div>`;
+      style="display:inline-block;background:var(--bg);border:1px dashed var(--border);border-radius:4px;padding:1px 5px;margin:1px 2px 0 0;font-size:9px;color:var(--text2);cursor:pointer;white-space:nowrap;max-width:100%;overflow:hidden;text-overflow:ellipsis">${t.ajudante ? '🤝' : ''}${escHtml(String(t.nome || '').slice(0, 18))}${t.atrasada ? '' : ''}</div>`;
   }
 
   const _v169Fim = colunas[colunas.length - 1];
@@ -33829,11 +33861,11 @@ function _satRenderAgenda(result) {
     //    dois e recolher a célula fazia o 5º sumir da gravação EM SILÊNCIO: a
     //    tela dizia "2 selecionados" e a rede levava 1. Índice tem de conhecer
     //    a lista INTEIRA; o teto é do desenho, não do que existe.
-    _v171Atras.forEach(it => { _v171Idx.set(_v171Uid(it), { it: it, usuario: usuario }); });
+    _v171Atras.forEach(it => { if (!it.ajudante) _v171Idx.set(_v171Uid(it), { it: it, usuario: usuario }); });   // V264: a cópia do ajudante não toma o lugar da tarefa
 
     const _v171Chip = it => {
       const uid = _v171Uid(it);
-      _v171Idx.set(uid, { it: it, usuario: usuario });
+      if (!it.ajudante) _v171Idx.set(uid, { it: it, usuario: usuario });   // V264
       const sel = _v171Sel.has(uid);
       const idade = _v171Idade(it);
       const quando = idade != null ? ('há ' + idade + (idade > 1 ? ' dias' : ' dia')) : 'sem data';
@@ -33854,10 +33886,10 @@ function _satRenderAgenda(result) {
       } else {
         cor = it.dia ? 'var(--red)' : 'var(--border)'; bg = it.dia ? 'rgba(220,38,38,.12)' : 'var(--bg)';
         ico = it.dia ? '🔴 ' : '';
-        rot = String(it.nome || '').slice(0, 16);
-        tip = (it.nome || '') + ' · OS ' + (it.os_numero || it.os_id) + (it.dia ? ' · previsto ' + _v171DiaBR(it.dia) + ' (' + quando + ')' : ' · sem data');
+        rot = (it.ajudante ? '🤝' : '') + String(it.nome || '').slice(0, 16);
+        tip = (it.ajudante ? '🤝 AJUDANTE (principal: ' + (it.principal || '—') + ') · ' : '') + (it.nome || '') + ' · OS ' + (it.os_numero || it.os_id) + (it.dia ? ' · previsto ' + _v171DiaBR(it.dia) + ' (' + quando + ')' : ' · sem data');
         clique = "_satAbrirDesignar('" + escJs(String(it.os_id || '')) + "','" + escJs(String(it.tarefa_id || '')) +
-                 "',{usuario:'" + escJs(usuario) + "',origem:'agenda'})";
+                 "',{usuario:'" + escJs(it.ajudante ? (it.principal || usuario) : usuario) + "',origem:'agenda'})";
       }
       const acao = podeSel ? ('_v171Toggle(event,\'' + escJs(uid) + '\')') : clique;
       return '<div onclick="' + acao + '" title="' + escHtml(tip + (podeSel ? ' · clique para selecionar' : '')) + '"' +
@@ -34468,7 +34500,7 @@ function _satChecarConflito() {
     if (tIni != null && tFim != null && (minIni < tIni || minIni + dur > tFim)) {
       avisos.push(`<span style="color:#d97706">⚠ Fora do turno (${escHtml(pt.turno_inicio)}–${escHtml(pt.turno_fim)}).</span>`);
     }
-    pay.agenda.filter(t => t.usuario === usuario && t.dia === dia &&
+    (window._v264Ag ? _v264Ag(pay, usuario) : pay.agenda).filter(t => t.usuario === usuario && t.dia === dia &&
         !(t.os_id === _satModalCtx.osId && t.tarefa_id === _satModalCtx.tarefaId)).forEach(t => {
       if (t.inicio_previsto && t.fim_previsto) {
         const a = new Date(t.inicio_previsto).getTime(), b = new Date(t.fim_previsto).getTime();
@@ -36092,10 +36124,10 @@ body.mob-forced #mobApp{max-width:430px;margin:0 auto;box-shadow:0 0 60px rgba(0
   function _mobItens() {
     var d = _mobEstado.dados || {};
     var out = [];
-    (d.agenda || []).forEach(function (t) {
+    (d.agenda || []).concat((!(window.V264 && V264.off()) && Array.isArray(d.agenda_ajudantes)) ? d.agenda_ajudantes : []).forEach(function (t) {   // V264
       out.push({
-        kind: 'tarefa', id: t.tarefa_id, os_id: t.os_id,
-        titulo: t.nome || 'Tarefa sem nome',
+        kind: 'tarefa', id: t.tarefa_id, os_id: t.os_id, aj: !!t.ajudante,
+        titulo: (t.ajudante ? '🤝 ' : '') + (t.nome || 'Tarefa sem nome'),
         sub: (t.os_numero ? t.os_numero + ' · ' : '') + (t.usuario || 'sem responsável'),
         usuario: t.usuario || '', dia: t.dia || '', inicio: t.inicio_previsto || '',
         fim: t.fim_previsto || '', sem_hora: !!t.sem_hora, atrasada: !!t.atrasada,
@@ -36125,7 +36157,7 @@ body.mob-forced #mobApp{max-width:430px;margin:0 auto;box-shadow:0 0 60px rgba(0
   // pode ser "Marcelo; Jonathan" desde o V149. Um `===` aqui esconde a demanda
   // das DUAS pessoas — e a barra de carga do dia some junto.
   function _mobEhDe(it, pessoa) {
-    if (!pessoa) return true;
+    if (!pessoa) return !(it && it.aj);   // V264: na lista de TODOS, a tarefa aparece uma vez (o bloco 🤝 é da pessoa)
     if (it && it.kind === 'demanda') {
       var l = (window.PROPER_DEM_RESPS ? window.PROPER_DEM_RESPS(it.usuario) : [it.usuario]);
       return l.indexOf(pessoa) >= 0;
@@ -36204,7 +36236,7 @@ body.mob-forced #mobApp{max-width:430px;margin:0 auto;box-shadow:0 0 60px rgba(0
   }
 
   function _mobTelaHoje() {
-    var itens = _mobItens();
+    var itens = _mobItens().filter(function (i) { return !i.aj; });   // V264: no Hoje (todos) a tarefa conta UMA vez — o bloco 🤝 é da agenda da pessoa
     var hoje = _mobDiaKey(_mobHoje());
     var doDia = itens.filter(function (i) { return i.dia === hoje; });
     var exec = itens.filter(function (i) { return i.exec; });
@@ -36576,7 +36608,7 @@ body.mob-forced #mobApp{max-width:430px;margin:0 auto;box-shadow:0 0 60px rgba(0
         //   que precisa de ação, não uma linha em branco a menos.
         '<span class="mob-tags"><span class="mob-tag">' + esc(o.status || '—') + '</span>' +
         (String(o.responsavel_nome || '').trim()
-          ? '<span class="mob-tag">👤 ' + esc(o.responsavel_nome) + '</span>'
+          ? '<span class="mob-tag">👤 ' + esc(o.responsavel_nome) + esc(window._v264AjMais ? window._v264AjMais(o) : '') + '</span>'
           : '<span class="mob-tag t-late">sem responsável</span>') +
         (o.prioridade && o.prioridade !== 'normal' ? '<span class="mob-tag t-alta">' + esc(o.prioridade) + '</span>' : '') +
         '</span></span></button>';
@@ -37130,7 +37162,7 @@ body.mob-forced #mobApp{max-width:430px;margin:0 auto;box-shadow:0 0 60px rgba(0
   function _mobItensDoDia(resp, dia, ignorarDemandaId) {
     var dd = _mobEstado.dados || {};
     var out = [];
-    (dd.agenda || []).forEach(function (t) {
+    (window._v264Ag ? _v264Ag(dd, resp) : (dd.agenda || [])).forEach(function (t) {   // V264
       if (String(t.usuario || '') !== resp || String(t.dia || '') !== dia) return;
       out.push({ titulo: t.nome || 'Tarefa', ini: _mobMinDoIso(t.inicio_previsto), min: (parseInt(t.tempo_estimado_min, 10) || 60), semHora: !!t.sem_hora });
     });
@@ -37512,7 +37544,7 @@ body.mob-forced #mobApp{max-width:430px;margin:0 auto;box-shadow:0 0 60px rgba(0
       '<div class="mob-card-s"><b>Prioridade:</b> ' + esc(o.prioridade || 'normal') + '</div>' +
       (o.data_prevista ? '<div class="mob-card-s"><b>Prazo:</b> ' + esc(_mobDiaCurto(o.data_prevista)) + '</div>' : '') +
       '<div class="mob-card-s"><b>Máquinas:</b> ' + esc(String(o.total_maquinas || 0)) + '</div>' +
-      '<div class="mob-card-s"><b>Responsável:</b> ' + esc(resp || 'sem responsável') + '</div>' +
+      '<div class="mob-card-s"><b>Responsável:</b> ' + esc(resp || 'sem responsável') + '</div>' + (window._v264AjMobHtml ? window._v264AjMobHtml(o) : '') +
       (o.descricao ? '<div class="mob-card-s" style="margin-top:8px">' + esc(o.descricao) + '</div>' : '') +
       '</div>' +
       '<div class="mob-f" style="margin-top:14px"><label>Quem assume esta OS</label><div class="mob-opts">' +
@@ -37550,6 +37582,7 @@ body.mob-forced #mobApp{max-width:430px;margin:0 auto;box-shadow:0 0 60px rgba(0
       if (o) {
         o.usuario_atual = val;
         o.usuarios_vinculados = val ? [val] : [];
+        try { if (r && r.os && r.os.ajudantes !== undefined) { o.ajudantes = r.os.ajudantes; o.usuarios_vinculados = JSON.parse(r.os.usuarios_vinculados || '[]'); } } catch (e264) {}   // V264: o servidor repôs os ajudantes
         o.responsavel_nome = nome || '';
         o.designados_nomes = nome ? [nome] : [];
       }
@@ -39767,7 +39800,7 @@ function _v139MinHmm(min) { const p = n => String(n).padStart(2, '0'); return p(
 function _v139Compromissos(pessoa, diaKey, ignorarDemandaId) {
   const pay = window._satPayload || {};
   const out = [];
-  (pay.agenda || []).forEach(t => {
+  (window._v264Ag ? _v264Ag(pay, pessoa) : (pay.agenda || [])).forEach(t => {   // V264: com a pessoa, os blocos 🤝 dela contam
     if (String(t.dia || '') !== diaKey) return;
     if (pessoa && String(t.usuario || '') !== pessoa) return;
     out.push({ kind: 'tarefa', titulo: t.nome || 'Tarefa', usuario: t.usuario || '',
@@ -59795,7 +59828,7 @@ table.r2a-tab col.c-os{width:25%}table.r2a-tab col.c-cli{width:25%}table.r2a-tab
       '<div class="r2a-tags"><span class="r2a-tag">' + E(tipoNome(o)) + '</span>' + (loc ? '<span class="r2a-tag">' + E(loc) + '</span>' : '<span class="r2a-tag" style="color:#9A5B00">local não definido</span>') +
       (T(o.prioridade) && T(o.prioridade).toLowerCase() !== 'normal' ? '<span class="r2a-tag" style="color:#B42318">' + E(T(o.prioridade)) + '</span>' : '') + '</div>' +
       '<div class="r2a-dados"><div><small>Prazo</small><b class="' + (atr ? 'ruim' : '') + '">' + (prz ? E(dm(prz)) + ' · ' + E(emAberto(o) ? relTxt(prz) : dmy(prz)) : 'sem prazo') + '</b></div>' +
-      '<div><small>Local</small><b>' + E(loc || '—') + '</b></div><div><small>Responsável</small><b title="' + E(resp) + '">' + E(resp || 'ninguém') + '</b></div></div>';
+      '<div><small>Local</small><b>' + E(loc || '—') + '</b></div><div><small>Responsável</small><b title="' + E(resp) + '">' + E(resp || 'ninguém') + '</b></div>' + (window._v264AjR2APainel ? window._v264AjR2APainel(o) : '') + '</div>';
     // andamento
     var tar = R2A.tar[id];
     if (!tar) {
@@ -60052,7 +60085,7 @@ table.r2a-tab col.c-os{width:25%}table.r2a-tab col.c-cli{width:25%}table.r2a-tab
         h += '<div class="r2a-pessoa" role="radio" tabindex="0" data-r2a-p="' + E(u.id) + '" aria-checked="' + (T(B.pessoa) === T(u.id) ? 'true' : 'false') + '">' +
           '<span class="av">' + E(iniciais(u.nome)) + '</span><span style="min-width:0"><b>' + E(u.nome) + '</b><small>' + E(perfilNome(u)) + '</small></span><span class="livre' + cl + '">' + E(txt) + '</span></div>';
       });
-      h += '</div><div class="r2a-dh"><div><label for="r2aBDia">Dia</label><input type="date" id="r2aBDia" value="' + E(dia) + '"></div>' +
+      h += '</div>' + (window._v264BalHtml ? window._v264BalHtml(B, ps.map(function (x) { return { nome: T(x.nome) }; }), 'r2a', (ps.find(function (x) { return T(x.id) === T(B.pessoa); }) || {}).nome || '') : '') + '<div class="r2a-dh"><div><label for="r2aBDia">Dia</label><input type="date" id="r2aBDia" value="' + E(dia) + '"></div>' +
         '<div><label for="r2aBHora">Hora</label><input type="time" id="r2aBHora" value="' + E(B.hora || '') + '"></div></div>' +
         '<div class="r2a-bal-aviso" id="r2aBAviso">' + (B.erro ? '<span style="color:#B42318">' + E(B.erro) + '</span>' : (dia ? 'Os minutos livres são do dia escolhido (turno − o que já está na agenda).' : 'Sem dia: a data da tarefa não muda. Os minutos livres mostrados são os de hoje.')) + '</div>' +
         '<div class="r2a-bal-pe">' + (B.atual ? '<button type="button" class="r2a-btn sm" data-r2a-b="tirar" title="Tirar a designação atual">Tirar</button>' : '') +
@@ -60089,8 +60122,10 @@ table.r2a-tab col.c-os{width:25%}table.r2a-tab col.c-cli{width:25%}table.r2a-tab
   }
   async function aoClicarBalao(ev) {
     var B = R2A.balao; if (!B) return;
+    var aj264 = ev.target.closest && ev.target.closest('[data-v264-aj],[data-v264-ajherda]');   // V264 — os chips de Ajudantes
+    if (aj264 && B.tipo === 'designar') { if (aj264.hasAttribute('data-v264-ajherda')) { if (window._v264BalHerdar) window._v264BalHerdar(B); } else if (window._v264BalToggle) window._v264BalToggle(B, aj264.getAttribute('data-v264-aj')); B.mexeu = true; pintarBalaoPreservando(); return; }
     var p = ev.target.closest && ev.target.closest('[data-r2a-p]');
-    if (p) { B.pessoa = p.getAttribute('data-r2a-p'); B.mexeu = true; document.querySelectorAll('#r2aBalao .r2a-pessoa').forEach(function (x) { x.setAttribute('aria-checked', x === p ? 'true' : 'false'); }); return; }
+    if (p) { B.pessoa = p.getAttribute('data-r2a-p'); B.mexeu = true; if (Array.isArray(B.aj) && window.V264) { var pn264 = V264.nomeDe(B.pessoa); B.aj = B.aj.filter(function (x) { return String(x).toLowerCase() !== String(pn264).toLowerCase(); }); pintarBalaoPreservando(); } document.querySelectorAll('#r2aBalao .r2a-pessoa').forEach(function (x) { x.setAttribute('aria-checked', x === p ? 'true' : 'false'); }); return; }
     var bt = ev.target.closest && ev.target.closest('[data-r2a-b]'); if (!bt) return;
     var a = bt.getAttribute('data-r2a-b');
     if (a === 'cancelar') { fecharBalao(); return; }
@@ -60108,10 +60143,12 @@ table.r2a-tab col.c-os{width:25%}table.r2a-tab col.c-cli{width:25%}table.r2a-tab
       var tempo = parseInt(t.Tempo_Estimado_Min, 10);
       var corpo = { os_id: B.os, tarefa_id: B.tarefa, usuario_designado: u ? T(u.nome) : '', usuario: eu().nome || '', tempo_estimado_min: isNaN(tempo) ? null : tempo };
       if (mudouData) corpo.data_prevista = dia ? (hora ? dia + 'T' + hora : dia) : '';
+      if (a === 'designar' && window._v264BalValor) { var aj264v = window._v264BalValor(B); if (aj264v !== undefined) corpo.ajudantes = aj264v; }   // V264
       await ocupar(function () {
         return _semDuploEnvio_(bt, async function () {
           try {
-            await syncToGS('designarUsuarioTarefa', corpo);
+            var r264 = await syncToGS('designarUsuarioTarefa', corpo);
+            try { if (corpo.ajudantes !== undefined && window._v264DepoisDesignar) window._v264DepoisDesignar(r264); } catch (e264) {}   // V264
             var os = B.os; fecharBalao(true);
             aviso(u ? 'Designada para ' + T(u.nome) + (mudouData ? (dia ? ' em ' + dm(dia) + (hora ? ' às ' + hora : '') : ' (data prevista apagada)') : '') + '.' : 'Designação removida (a data da tarefa não mudou).', 'success');
             await depoisDeEscrever(os, false);
@@ -60192,6 +60229,7 @@ table.r2a-tab col.c-os{width:25%}table.r2a-tab col.c-cli{width:25%}table.r2a-tab
     var atual = T(t.Usuario_Designado), u = pessoasAtivas().find(function (x) { return T(x.nome).toUpperCase() === atual.toUpperCase() || T(x.id) === atual; });
     var dia0 = isoDe(t.Data_Prevista), hora0 = dia0 ? horaDe(t.Data_Prevista) : '';     // M1: vazio quando a tarefa não tem data
     abrirBalao('designar', btn, { os: id, tarefa: tid, nomeTarefa: T(t.Nome), atual: atual, pessoa: u ? T(u.id) : '', dia: dia0, hora: hora0, dia0: dia0, hora0: hora0 });
+    try { if (window._v264BalIniR2A && R2A.balao) { window._v264BalIniR2A(R2A.balao, t, osPorId(id)); pintarBalao(); } } catch (e264) {}   // V264
     var falta = [];
     if (!pessoasAtivas().length) falta.push(carregarEquipe());                             // M3: falha vira aviso com "Tentar de novo"
     falta.push(lerSat());
@@ -60454,6 +60492,7 @@ table.r2a-tab col.c-os{width:25%}table.r2a-tab col.c-cli{width:25%}table.r2a-tab
       '<div><label for="r2aNPrio">Prioridade</label><select id="r2aNPrio" data-r2a-n="prio">' + [['normal', 'Normal'], ['alta', 'Alta'], ['urgente', 'Urgente']].map(function (x) { return '<option value="' + x[0] + '"' + (N.prio === x[0] ? ' selected' : '') + '>' + x[1] + '</option>'; }).join('') + '</select></div>' +
       '<div id="r2aNRespBox" style="display:contents">' + respHtml(N) + '</div></div>';
     h += '<div id="r2aNEquipeBox" style="display:contents">' + equipeAvisoHtml() + '</div>';
+    h += '<div id="r2aNAjBox" style="display:contents">' + (window._v264AjNovaHtml ? window._v264AjNovaHtml(N) : '') + '</div>';   // V264 — Ajudantes
     h += '<div><label for="r2aNDesc">O que o cliente relatou</label><textarea id="r2aNDesc" data-r2a-n="desc" placeholder="Ex.: compressor desarmando por temperatura alta após 2 h de uso.">' + v('desc') + '</textarea></div>';
     if (N.erro) h += '<div class="r2a-aviso verm" style="margin:0">' + E(N.erro) + '</div>';
     h += '<div class="r2a-rasc" id="r2aRasc">' + (N.salvoEm ? 'Rascunho salvo neste aparelho · ' + E(new Date(N.salvoEm).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })) : 'O que você digitar fica salvo neste aparelho até abrir a OS.') + '</div>' +
@@ -60615,6 +60654,7 @@ table.r2a-tab col.c-os{width:25%}table.r2a-tab col.c-cli{width:25%}table.r2a-tab
     vigiarModal();
     var set = function (id, val) { var el = document.getElementById(id); if (el && val != null && val !== '') { el.value = val; try { el.dispatchEvent(new Event('change', { bubbles: true })); } catch (e) {} } };
     set('osTipoOS', N.tipo); set('osLocalAtendimento', N.local); set('osDataPrevista', N.prazo); set('osPrioridade', N.prio); set('osUsuario', N.resp); set('osDescricao', N.desc);
+    try { if (window._v264ModalDe) window._v264ModalDe(N.aj); } catch (e264) {}   // V264 — os Ajudantes vão junto
     try { if (N.maqs.length && typeof _renderOSMachineSelector === 'function') { _osMachineSelection = new Set(N.maqs); _renderOSMachineSelector(N.maqs.slice()); } } catch (e) {}
     try { var cb = document.getElementById('v178Cobranca'); if (cb && N.cobranca) cb.value = N.cobranca; } catch (e) {}
     Ent.pronto = true;
@@ -60630,6 +60670,7 @@ table.r2a-tab col.c-os{width:25%}table.r2a-tab col.c-cli{width:25%}table.r2a-tab
     if (Ent.pronto) {                                           // o que a pessoa mudou no formulário volta junto
       var tp = lido('osTipoOS'), lc = lido('osLocalAtendimento'), pz = lido('osDataPrevista'), pr = lido('osPrioridade'), us = lido('osUsuario'), ds = lido('osDescricao');
       if (tp) N.tipo = tp; if (lc === 'interno' || lc === 'externo') N.local = lc; if (pz) N.prazo = pz; if (pr) N.prio = pr; if (us) N.resp = us; if (ds) N.desc = ds;
+      try { var m264 = window.V264 && (V264.modal || V264.modalFechado); if (m264 && m264.daNova) N.aj = m264.ids.slice(); } catch (e264) {}   // V264
     }
     N.passou = false; N.gravando = false; N.erro = ''; N.devolvido = true; N.uid = Ent.uid;
     if (R2A.nova && R2A.nova !== N) return;                     // outra Nova OS já está no painel: não troca debaixo da pessoa
@@ -60708,11 +60749,13 @@ table.r2a-tab col.c-os{width:25%}table.r2a-tab col.c-cli{width:25%}table.r2a-tab
           var payload = { action: 'saveOS', numero_os: '', cliente: N.cli.nome, id_cliente: N.cli.id, tipo_os: N.tipo, descricao: T(N.desc), status: 'ABERTA',
             usuario_atual: me, usuarios_vinculados: me ? [me] : [], prioridade: N.prio || 'normal', local_atendimento: N.local,
             hora_prevista: '', duracao_prevista_min: '', maquinas_vinculadas: N.maqs.slice(), data_abertura: hojeISO(), data_prevista: T(N.prazo), client_uid: N.uid };
+          if (Array.isArray(N.aj) && N.aj.length && !(window.V264 && V264.off())) payload.ajudantes = N.aj.filter(function (x) { return T(x) && T(x) !== me; });   // V264
           var tpl = tipoObj ? T(tipoObj.Template_ID_Padrao) : '';
           if (tpl) payload.instanciar_template_id = tpl;            // V211: OS nova numa ida só (GAS v158+)
           if (comFrota) payload.cobranca = T(N.cobranca);           // M2: o mesmo campo/valor do modal (_v178AntesDeSalvarOS)
           var r = await gsPost(payload);
           if (r && r.status === 'error') throw new Error(r.error || 'o servidor recusou');
+          try { if (window._v264DepoisSaveOS) window._v264DepoisSaveOS(r, payload); } catch (e264) {}   // V264
           var novoId = (r && (r.id_os || (r.data && r.data.id_os))) || '';
           if (N.card && typeof R2A.depoisDeAbrir === 'function') { try { await R2A.depoisDeAbrir(N, novoId, r); } catch (eC) { console.warn('[CROS]', eC); } }   // V228
           var p = r && r.pipeline;
@@ -65784,6 +65827,7 @@ table.r3a-tab col.c-ck{width:44px}table.r3a-tab col.c-os{width:13%}table.r3a-tab
         dia: dia, ini: dia + 'T' + j.ini + ':00', fim: (j.fim && !j.viraDia) ? (dia + 'T' + j.fim + ':00') : '', semHora: false,
         min: j.dur || 60, semDur: !j.dur, atrasada: dia < hoje, setores: setorDeLocal(o.local_atendimento) ? [setorDeLocal(o.local_atendimento)] : ['oficina', 'campo'],
         titulo: (S(o.numero_os) || 'OS') + (o.cliente ? ' · ' + S(o.cliente) : '') });
+      try { if (window._v264AjItensOS) window._v264AjItensOS(out, o, env, nomeResp, SEM_RESP); } catch (e264) {}   // V264 — a OS agendada também para os ajudantes
     });
     return out;
   }
@@ -65842,6 +65886,8 @@ table.r3a-tab col.c-ck{width:44px}table.r3a-tab col.c-os{width:13%}table.r3a-tab
     if (!eq.length) ((env.usuarios || [])).forEach(function (u) { if (S(u.usuario)) pessoa(S(u.usuario), false); });   // GAS ≤ v119
     var itens = [];
     (env.agenda || []).forEach(function (t) { itens.push(itemTarefa(t)); });
+    // V264 — o bloco de cada AJUDANTE (mesmo uid da tarefa: o contador do mês e a seleção tratam como UMA)
+    if (!(window.V264 && V264.off())) (env.agenda_ajudantes || []).forEach(function (t) { var it = itemTarefa(t); it.aj = true; it.principal = S(t.principal); itens.push(it); });
     (env.demandas || []).forEach(function (dm) { respsDem(dm).forEach(function (q) { itens.push(itemDemanda(dm, q)); }); });
     itensOS(d.os, hoje, env).forEach(function (o) { itens.push(o); });
     var semResp = null;
@@ -65931,7 +65977,7 @@ table.r3a-tab col.c-ck{width:44px}table.r3a-tab col.c-os{width:13%}table.r3a-tab
   function htmlTela() {
     var st = R3A.st, d = R3A.dados;
     var nPool = d ? poolFiltrado({ semFiltro: true }).prontas : null;
-    var h = '<div class="r3a" id="r3aRaiz">';
+    var h = '<div class="r3a" id="r3aRaiz">' + (window._v264AvisoFonte ? window._v264AvisoFonte(d) : '');   // V264
     h += '<div class="r3a-topo"><h2>Agenda</h2><span class="r3a-sp"></span><div class="r3a-seg" role="group" aria-label="Vista">' +
       VISTAS.map(function (v) {
         var extra = v === 'sem' ? ' <small>' + (nPool === null ? '…' : nPool) + '</small>' : '';
@@ -66008,7 +66054,8 @@ table.r3a-tab col.c-ck{width:44px}table.r3a-tab col.c-os{width:13%}table.r3a-tab
     var hora = it.semHora ? 'dia inteiro' : hhmm(it.ini);
     if (it.k === 't' && it.emExec) hora += ' · em execução';
     if (it.pede) hora += ' · ⏳ ciente';
-    var tip = (it.k === 'd' ? 'DEMANDA · ' : (it.k === 'o' ? 'OS agendada · ' : '')) + it.titulo + (it.t && it.t.cliente ? ' · ' + S(it.t.cliente) : '') +
+    if (it.aj) { cls += ' aj'; hora = '🤝 ' + hora; }   // V264 — bloco de ajudante
+    var tip = (it.aj ? '🤝 AJUDANTE — o principal é ' + (it.principal || '—') + ' · ' : '') + (it.k === 'd' ? 'DEMANDA · ' : (it.k === 'o' ? 'OS agendada · ' : '')) + it.titulo + (it.t && it.t.cliente ? ' · ' + S(it.t.cliente) : '') +
       ' · ' + (it.semHora ? 'sem hora' : hhmm(it.ini) + (it.fim ? '–' + hhmm(it.fim) : '')) + ' · ' + it.min + ' min' + (it.semEst ? ' (sem estimativa: 60)' : '') + (it.semDur ? ' (sem duração: 60)' : '') +
       (it.atrasada ? ' · ATRASADA' : '') + (marc && marc[it.uid] ? ' · ⚠ CHOQUE DE HORÁRIO' : '');
     var dados = it.k === 'd' ? 'data-tp="d" data-id="' + E(it.id) + '"' : (it.k === 'o' ? 'data-tp="o" data-id="' + E(it.id) + '"' : 'data-tp="t" data-os="' + E(it.os) + '" data-tar="' + E(it.tar) + '"');
@@ -66121,7 +66168,7 @@ table.r3a-tab col.c-ck{width:44px}table.r3a-tab col.c-os{width:13%}table.r3a-tab
       for (var c = 0; c < 7; c++) {
         var k = somaDias(ini, s * 7 + c), dd = dataDe(k), its = (porDia[k] || []).filter(filtroSetor);
         // A8 (auditoria): o dia conta demandas DISTINTAS (uma demanda com 2 responsáveis = 1); a ocupação segue por pessoa
-        var nt = its.filter(function (x) { return x.k === 't'; }).length, nd = Object.keys(its.reduce(function (o, x) { if (x.k === 'd') o[x.id] = 1; return o; }, {})).length, no = its.filter(function (x) { return x.k === 'o'; }).length;
+        var nt = Object.keys(its.reduce(function (o, x) { if (x.k === 't') o[x.uid] = 1; return o; }, {})).length, nd = Object.keys(its.reduce(function (o, x) { if (x.k === 'd') o[x.id] = 1; return o; }, {})).length, no = Object.keys(its.reduce(function (o, x) { if (x.k === 'o') o[x.id] = 1; return o; }, {})).length;   // V264: tarefa/OS com ajudante = 1 (a ocupação segue por pessoa)
         var min = minutosDe(porDia[k] || []), cap = M.cap * nCap;
         var cls = (dd.getMonth() !== mes ? ' fora' : '') + (k < hoje ? ' passado' : '') + (k === hoje ? ' hoje' : '');
         h += '<td><button type="button" class="r3a-mdia' + cls + '" data-r3a="mesdia" data-dia="' + k + '" data-r3a-min="' + min + '"><span class="dn">' + dd.getDate() + '</span>' +
@@ -66451,7 +66498,7 @@ table.r3a-tab col.c-ck{width:44px}table.r3a-tab col.c-os{width:13%}table.r3a-tab
       '<div><small>Máquina</small><b title="' + E(mq.title) + '">' + E(mq.txt) + '</b></div><div><small>Etapa</small><b id="r3aEtapa">' + E(etapaDe(t.os_id, t.tarefa_id)) + '</b></div>' +
       '<div><small>Setor · tipo de OS</small><b>' + E(rotSetores(setoresTarefa(t))) + (o && tipoNome(o) ? ' · ' + E(tipoNome(o)) : '') + '</b></div><div><small>Situação</small><b>' + E(rotStatus(t.status)) + '</b></div>' +
       '<div><small>Estimado</small><b>' + ((Number(t.tempo_estimado_min) || 0) ? E(t.tempo_estimado_min) + ' min' : 'sem estimativa (conta 60)') + '</b></div><div><small>Designado</small><b>' + E(onde === 'pool' ? '— ninguém —' : (S(t.usuario) + (t.origem === 'execucao' ? ' (assumiu no celular)' : ''))) + '</b></div>' +
-      '<div style="grid-column:1/-1"><small>Data / hora</small><b>' + E(quando) + '</b></div></div>';
+      '<div style="grid-column:1/-1"><small>Data / hora</small><b>' + E(quando) + '</b></div>' + (window._v264AjPainel ? window._v264AjPainel(t, (R3A.dados || {}).env, osPorId(t.os_id)) : '') + '</div>';
     h += '<div class="r3a-pe"><button type="button" class="r3a-btn sm pri" data-r3a="designar" data-os="' + E(t.os_id) + '" data-tar="' + E(t.tarefa_id) + '" id="r3aDesignar">👤 Designar / mudar data</button><span class="r3a-sp"></span>' +
       '<button type="button" class="r3a-btn sm" data-r3a="abriros" data-id="' + E(t.os_id) + '" title="Vai para Ordens de serviço">Abrir a OS ↗ (sai da agenda)</button></div>';
     return h;
@@ -66461,7 +66508,7 @@ table.r3a-tab col.c-ck{width:44px}table.r3a-tab col.c-os{width:13%}table.r3a-tab
     var h = '<div class="r3a-p-tp">OS agendada</div><div class="r3a-p-tt">' + E(S(o.numero_os) || S(o.id_os)) + (o.cliente ? ' · ' + E(o.cliente) : '') + '</div><div class="r3a-tags"><span class="r3a-tag">' + E(S(o.status) || '—') + '</span>' + (it && it.atrasada ? '<span class="r3a-tag x">atrasada</span>' : '') + '</div>';
     h += '<div class="r3a-dados"><div><small>Quando</small><b>' + (it ? E(diaLongo(it.dia) + ' · ' + hhmm(it.ini) + (it.fim ? '–' + hhmm(it.fim) : '')) : E(S(o.data_prevista) || '—')) + '</b></div>' +
       '<div><small>Duração</small><b>' + (it && !it.semDur ? it.min + ' min' : 'não informada (conta 60)') + '</b></div><div><small>Responsável</small><b>' + E(it ? (it.dono === SEM_RESP ? '— não reconhecido' + (it.donoCru ? ' (gravado: ' + it.donoCru + ')' : '') + ' —' : it.dono) : '—') + '</b></div>' +
-      '<div><small>Tipo</small><b>' + E(tipoNome(o) || '—') + '</b></div><div style="grid-column:1/-1"><small>Máquina</small><b title="' + E(mq.title) + '">' + E(mq.txt) + '</b></div></div>' +
+      '<div><small>Tipo</small><b>' + E(tipoNome(o) || '—') + '</b></div>' + (window._v264AjPainelOS ? window._v264AjPainelOS(o, (R3A.dados || {}).env) : '') + '<div style="grid-column:1/-1"><small>Máquina</small><b title="' + E(mq.title) + '">' + E(mq.txt) + '</b></div></div>' +
       '<div class="r3a-oculto">A data e a hora da OS se mudam na própria OS (é o prazo combinado com o cliente).</div>';
     h += '<div class="r3a-pe"><span class="r3a-sp"></span><button type="button" class="r3a-btn sm pri" data-r3a="abriros" data-id="' + E(o.id_os) + '">Abrir a OS ↗ (sai da agenda)</button></div>';
     return h;
@@ -66521,6 +66568,7 @@ table.r3a-tab col.c-ck{width:44px}table.r3a-tab col.c-os{width:13%}table.r3a-tab
     var hora = vivo ? (jp ? jp.hora : '') : ((!t.sem_hora && t.inicio_previsto) ? hhmm(t.inicio_previsto) : (jp ? jp.hora : ''));
     R3A.bal = { tipo: 'designar', os: S(osId), tar: S(tarId), t: t, p: S(t.usuario), dia: dia, hora: hora, dia0: dia, hora0: hora, est: (Number(t.tempo_estimado_min) || '') + '', ancora: ancora,
       ancoraSel: '[data-r3a$="designar"][data-os="' + cssq(osId) + '"][data-tar="' + cssq(tarId) + '"]' };
+    try { if (window._v264BalIni) window._v264BalIni(R3A.bal, env, osPorId(osId)); } catch (e264) {}   // V264 — os Ajudantes do Designar
     pintarBalao();
   }
   function pessoasComLivre(dia) {
@@ -66539,7 +66587,7 @@ table.r3a-tab col.c-ck{width:44px}table.r3a-tab col.c-os{width:13%}table.r3a-tab
           (x.livre === null ? 'fora da equipe' : (x.livre <= 0 ? 'lotado' : x.livre + ' min livres')) + '</span></button>';
       }).join('') + '</div><div class="r3a-dh"><div><label for="r3aBDia">Dia</label><input type="date" id="r3aBDia" data-r3a-bal="dia" value="' + E(B.dia) + '"></div>' +
         '<div><label for="r3aBHora">Hora</label><input type="time" id="r3aBHora" data-r3a-bal="hora" value="' + E(B.hora) + '"></div><div><label for="r3aBEst">Min</label><input type="number" min="0" step="15" id="r3aBEst" data-r3a-bal="est" value="' + E(B.est) + '"></div></div>' +
-        '<div class="r3a-bal-av" id="r3aBAv">' + E(avisoBalao(B)) + '</div><div class="r3a-bal-pe">' + (S(B.t.usuario) ? '<button type="button" class="r3a-btn sm" data-r3a="bremover"' + tv('des:' + B.os + '|' + B.tar) + '>Tirar a designação</button>' : '') +
+        (window._v264BalHtml ? window._v264BalHtml(B, ps, 'r3a', B.p) : '') + '<div class="r3a-bal-av" id="r3aBAv">' + E(avisoBalao(B)) + '</div><div class="r3a-bal-pe">' + (S(B.t.usuario) ? '<button type="button" class="r3a-btn sm" data-r3a="bremover"' + tv('des:' + B.os + '|' + B.tar) + '>Tirar a designação</button>' : '') +
         '<button type="button" class="r3a-btn sm" data-r3a="bcancelar">Cancelar</button><button type="button" class="r3a-btn sm pri" data-r3a="bsalvar" id="r3aBSalvar"' + tv('des:' + B.os + '|' + B.tar) + '>Salvar</button></div>';
     } else if (B.tipo === 'excluir') {
       h += '<h5>Excluir esta demanda?</h5><div class="r3a-bal-av">Ela sai da agenda de todos, mas fica no histórico. Quem é responsável deixa de vê-la.</div>' +
@@ -66602,10 +66650,13 @@ table.r3a-tab col.c-ck{width:44px}table.r3a-tab col.c-os{width:13%}table.r3a-tab
   }
   // A1/A9 (auditoria) — a data só vai quando o usuário MEXEU nela (tocarData). Sem isso data_prevista fica FORA do corpo
   //    (undefined ⇒ o GAS não toca a Data_Prevista). '' (apagar a data) só sai de um "tirar a data" explícito e avisado.
-  async function designarTarefa(os, tar, pessoa, dia, hora, est, tocarData) {
+  async function designarTarefa(os, tar, pessoa, dia, hora, est, tocarData, ajv) {
     var corpo = { os_id: S(os), tarefa_id: S(tar), usuario_designado: S(pessoa), usuario: eu().nome || '',
       data_prevista: tocarData ? (dia ? (hora ? dia + 'T' + hora : dia) : '') : undefined, tempo_estimado_min: (est === '' || est === null || est === undefined) ? null : parseInt(est, 10) };
-    return syncToGS('designarUsuarioTarefa', corpo);
+    if (ajv !== undefined) corpo.ajudantes = ajv;   // V264 — só quando a pessoa MEXEU nos Ajudantes ('' herda · [] nenhum · [nomes])
+    var r264 = await syncToGS('designarUsuarioTarefa', corpo);
+    try { if (ajv !== undefined && window._v264DepoisDesignar) window._v264DepoisDesignar(r264); } catch (e264) {}
+    return r264;
   }
   // a Data_Prevista crua da planilha (Date ⇒ ISO com Z; texto local "AAAA-MM-DDTHH:MM"; data pura) ⇒ {dia, hora}
   function janelaPrevista(v) {
@@ -66993,6 +67044,8 @@ table.r3a-tab col.c-ck{width:44px}table.r3a-tab col.c-os{width:13%}table.r3a-tab
         else aviso('A tela de OS não está disponível.', 'error');
         break;
       }
+      case 'v264aj': if (R3A.bal && window._v264BalToggle) { window._v264BalToggle(R3A.bal, el.getAttribute('data-p')); R3A.bal.mexeu = true; pintarBalao(); } break;   // V264
+      case 'v264ajherda': if (R3A.bal && window._v264BalHerdar) { window._v264BalHerdar(R3A.bal); R3A.bal.mexeu = true; pintarBalao(); } break;   // V264
       case 'bpessoa': if (R3A.bal) { R3A.bal.p = el.getAttribute('data-p'); R3A.bal.mexeu = true; pintarBalao(); } break;
       case 'bcancelar': fecharBalao(); break;
       case 'bhoje': if (R3A.bal) { R3A.bal.dia = hojeKey(); R3A.bal.mexeu = true; pintarBalao(); } break;
@@ -67002,7 +67055,7 @@ table.r3a-tab col.c-ck{width:44px}table.r3a-tab col.c-os{width:13%}table.r3a-tab
         await enviar(el, async function () {
           // (b) hora sem dia: a hora é ignorada e a tela DIZ (como o lote); a data só é tocada se o dia mudou
           var horaIgn = !!(Bd.hora && !Bd.dia), horaB = horaIgn ? '' : Bd.hora;
-          try { await designarTarefa(Bd.os, Bd.tar, pessoa, Bd.dia, horaB, Bd.est, Bd.dia !== Bd.dia0 || (!horaIgn && Bd.hora !== Bd.hora0)); }
+          try { await designarTarefa(Bd.os, Bd.tar, pessoa, Bd.dia, horaB, Bd.est, Bd.dia !== Bd.dia0 || (!horaIgn && Bd.hora !== Bd.hora0), (a === 'bremover' || !window._v264BalValor) ? undefined : window._v264BalValor(Bd)); }
           catch (e) { erroGravar(e, 'A designação', true); return; }
           fecharBalao();
           if (horaIgn) aviso((pessoa ? 'Designação salva' : 'Designação removida') + ' · a HORA foi ignorada: sem dia, não há onde marcá-la (escolha o dia para marcar a hora).', 'warn');
@@ -81995,6 +82048,1343 @@ var V260 = { orig: {}, abertas: {}, ultFiltro: '', escritas: 0 };
 })();
 </script>
 <!-- ████ FIM PCM V261 ████ -->
+<!-- ████ INICIO PCM V262 · R6b · REVISAR E EMITIR (prévia do PDF + conferência com "Corrigir") ████
+  09/10/2026 · rodada 2026-10-09_r6b_revisar_emitir · especificação DOCS Redesenho_Editor_Proposta_R6_2026-10-05 (tela M3, linha R6b).
+  Sobre o PCM V261 no ar. Casca por cima do painel de emitir de hoje (V204 + V237 teto + V250 escolhas + V256 envio + V261 CNPJ):
+  o "Revisar e emitir" deixa de abrir um painel estreito ao lado e vira uma TELA DE CONFERÊNCIA dentro do editor — à esquerda a prévia
+  do PDF (o MESMO gerador do "Pré-visualizar", desenhado na própria página, refeito quando a escolha "Mostrar ao cliente" muda); à
+  direita a conferência (✓ / ⚠ / ✖) com "Corrigir" que leva ao ponto exato (a linha pisca, o campo recebe o cursor; condições abrem
+  na aba Documento; deslocamento vai para a busca) e, embaixo, as mesmas escolhas e o mesmo botão "Emitir" de hoje (o nó do painel é
+  MOVIDO, não copiado: ids, RPCs, travas do teto e a faixa do CNPJ do V261 continuam iguais). Esc ou "‹ Voltar a editar" volta à tabela.
+  Chave de volta: localStorage pcm_v262 = off (o painel de emitir ao lado, como no V261). Zero SQL, zero Apps Script.
+-->
+<style id="v262Css">
+#v204Ed.v262 #v243Grid,#v204Ed.v262 #v243Ctx,#v204Ed.v262 #v243Rod{display:none!important}
+#v204Ed.v262 #v243Cab [data-k="emitir"],#v204Ed.v262 #v243Cab [data-v204="ver"]{display:none}
+#v262Rev{display:none}
+#v204Ed.v262 #v262Rev{display:grid;flex:1;min-height:0;grid-template-columns:minmax(0,1fr) minmax(330px,420px);grid-template-rows:auto minmax(0,1fr);background:#F4F5F7}
+#v262Topo{grid-column:1 / -1;display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:8px 16px;background:#fff;border-bottom:1px solid var(--border,#E4E7EC)}
+#v262Topo .v262-volta{border:0;background:none;color:var(--text-muted,#475467);font-size:12.5px;font-weight:600;cursor:pointer;padding:6px 8px;border-radius:6px;white-space:nowrap}
+#v262Topo .v262-volta:hover{background:var(--surface,#F2F4F7)}
+#v262Topo .v262-tit{flex:1 1 220px;min-width:0}
+#v262Topo .v262-tit b{display:block;font-size:15px;color:var(--text,#101828)}
+#v262Topo .v262-tit small{display:block;color:var(--text-muted,#667085);font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#v262Topo .v262-bt{border:1px solid #D0D5DD;background:#fff;color:#344054;border-radius:8px;padding:6px 12px;font-size:12.5px;font-weight:600;cursor:pointer;white-space:nowrap}
+#v262Topo .v262-bt:hover{background:#F9FAFB}#v262Topo .v262-bt:active{background:#F2F4F7}
+#v262Topo .v262-bt[disabled]{opacity:.55;cursor:progress}
+#v262Pdf{min-width:0;min-height:0;display:flex;flex-direction:column;padding:12px 12px 12px 16px}
+#v262PdfEst{font-size:12px;color:var(--text-muted,#667085);margin:0 0 6px;min-height:16px}
+#v262PdfEst.erro{color:#B42318}
+#v262PdfCx{flex:1;min-height:0;border:1px solid #D0D5DD;border-radius:8px;background:#fff;box-shadow:0 2px 10px rgba(16,24,40,.06);overflow:hidden;position:relative}
+#v262Frame{width:100%;height:100%;border:0;display:block;background:#fff}
+#v262PdfMsg{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:24px;text-align:center;color:#475467;font-size:13px;background:#fff}
+#v262PdfMsg[hidden]{display:none}
+#v262PdfMsg .v262-esq{width:min(420px,80%);height:12px;border-radius:6px;background:linear-gradient(90deg,#F2F4F7 25%,#E4E7EC 50%,#F2F4F7 75%);background-size:200% 100%;animation:v262esq 1.2s linear infinite}
+@keyframes v262esq{to{background-position:-200% 0}}
+#v262Lado{min-width:0;min-height:0;overflow:auto;background:#fff;border-left:1px solid var(--border,#E4E7EC);padding:12px 16px 16px}
+#v262Lado h4{margin:0 0 6px;font-size:13px;text-transform:uppercase;letter-spacing:.04em;color:#475467}
+#v262Res{border-radius:8px;padding:7px 10px;font-size:13px;font-weight:600;margin-bottom:8px}
+#v262Res.ok{background:#ECFDF3;color:#067647}#v262Res.at{background:#FFFAEB;color:#B54708}#v262Res.x{background:#FEF3F2;color:#B42318}
+#v262Painel .v204-painel{border:0!important;padding:0!important;margin:0!important;background:none!important}
+#v262Painel .v204-painel>b:first-child{display:none}
+#v262Painel ul.v204-chk{list-style:none;margin:0 0 10px;padding:0}
+#v262Painel ul.v204-chk li{display:flex;align-items:flex-start;gap:8px;padding:7px 0;border-top:1px solid #F2F4F7;font-size:13px;line-height:1.35}
+#v262Painel ul.v204-chk li:first-child{border-top:0}
+#v262Painel ul.v204-chk li .v262-txt{flex:1;min-width:0;overflow-wrap:anywhere}
+#v262Painel ul.v204-chk li.v262-x{color:#B42318}
+#v262Painel ul.v204-chk li.v262-at{color:#93370D}
+.v262-cor{flex:none;all:unset;box-sizing:border-box;cursor:pointer;font-size:12px;font-weight:700;color:#B93815;border:1px solid #F7B27A;background:#FFF6ED;border-radius:6px;padding:3px 9px;white-space:nowrap}
+.v262-cor:hover{background:#FFEAD5}.v262-cor:active{background:#FDDCAB}.v262-cor:focus-visible{outline:2px solid #EE7625;outline-offset:1px}
+#v262Painel label{margin-top:8px}
+#v262Painel [data-v204="emitirOk"]{font-size:14px;padding:9px 18px;background:#353434;border-color:#353434;color:#fff}
+#v262Painel [data-v204="emitirOk"][disabled]{opacity:.5}
+#v204Ed.v243 #v204Linhas tr.v262-pisca td{animation:v262pisca 1s ease-in-out 3}
+@keyframes v262pisca{50%{background:#FFE7D1}}
+@media (max-width:900px){
+  #v204Ed.v262 #v262Rev{display:block;overflow:auto}
+  #v262Topo{position:sticky;top:0;z-index:2}
+  #v262Pdf{height:62vh;padding:10px 12px}
+  #v262Lado{border-left:0;border-top:1px solid var(--border,#E4E7EC);overflow:visible}
+  #v262Topo .v262-bt,#v262Topo .v262-volta{min-height:40px}
+  .v262-cor{padding:8px 12px}
+}
+@media print{#v262Rev{display:none!important}}
+</style>
+<script>
+/* PCM V262 · R6b · 09/10/2026 — REVISAR E EMITIR. Prefixos _v262 / V262 / v262-. Ver o comentário de abertura do bloco.
+   Regras que esta casca segue (as mesmas da R6a, lições do H10 › 🖥 R6a):
+   1 · o painel de emitir é MOVIDO, nunca copiado — um só #v204EmModo / #v204EmOS / #v204EmPortal / "Emitir" no documento;
+       antes de cada pintura a casca devolve o lugar vazio (as camadas que acham o próprio campo pelo id não acham a cópia velha)
+       e guarda as escolhas pelo caminho do V250 (_v250GuardarEmitir), que as devolve na pintura seguinte;
+   2 · embrulho do _v204Pintar POR FORA de todas as camadas, na hora de usar (depois do V243 e do V246);
+   3 · a prévia é o MESMO objeto do "Pré-visualizar PDF" (_v204VerPrevia), com o "Mostrar ao cliente" escolhido na tela, e só
+       é refeita quando o conteúdo muda (assinatura); a geração mais nova vence (uma pintura velha nunca troca a nova);
+   4 · "Corrigir" sai da conferência pelo caminho do "Cancelar" (as escolhas ficam guardadas) e leva ao ponto exato. */
+var V262 = { url: null, assin: '', gen: 0, geradas: 0, t: null, erro: '', em: null, ult: null, depth: 0, foco: null, prevEd: null, edPainel: null, voo: '', velha: false, focoId: '' };
+function _v262Ocupado() { return !!((typeof V204 !== 'undefined' && V204.gravando) || document.querySelector('#v262Painel [data-pcm-enviando]')); }
+function _v262Off() { try { return localStorage.getItem('pcm_v262') === 'off'; } catch (e) { return false; } }
+function _v262Ov() { return document.getElementById('v204Ed'); }
+function _v262Ligado() { var o = _v262Ov(); return !_v262Off() && !!(o && o.classList.contains('v243') && o.classList.contains('open')); }
+function _v262E(v) { return String(v == null ? '' : v).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+function _v262Ativo(ED) { return !!(ED && ED.rasc && !ED.carregando && ED.painel === 'emitir' && _v262Ligado()); }
 
+// ── a casca: montar / sair ───────────────────────────────────────────────────────────────────────────────────────────
+function _v262Montar(ov) {
+  var rev = document.getElementById('v262Rev');
+  if (rev) return rev;
+  var modal = ov.querySelector('.modal'), grid = document.getElementById('v243Grid');
+  if (!modal || !grid) return null;
+  rev = document.createElement('div'); rev.id = 'v262Rev';
+  rev.innerHTML = '<div id="v262Topo">' +
+      '<button type="button" class="v262-volta" data-v262="voltar" data-pw-off="1" title="Voltar à tabela da proposta (as escolhas ficam guardadas) · Esc">‹ Voltar a editar</button>' +
+      '<div class="v262-tit"><b id="v262Tit">Revisar e emitir</b><small id="v262Sub"></small></div>' +
+      '<button type="button" class="v262-bt" data-v262="abrir" data-pw-off="1" title="Abre o PDF numa aba nova, em tamanho real">Abrir o PDF em tamanho real</button>' +
+    '</div>' +
+    '<div id="v262Pdf"><div id="v262PdfEst" role="status" aria-live="polite"></div><div id="v262PdfCx">' +
+      '<iframe id="v262Frame" title="Prévia do PDF da proposta"></iframe>' +
+      '<div id="v262PdfMsg"><div class="v262-esq"></div><div class="v262-esq" style="width:min(300px,60%)"></div><div>Montando a prévia do PDF…</div></div>' +
+    '</div></div>' +
+    '<div id="v262Lado"><h4>Conferência</h4><div id="v262Res" role="status"></div><div id="v262Painel"></div></div>';
+  grid.parentNode.insertBefore(rev, grid.nextSibling);
+  return rev;
+}
+function _v262Sair() {
+  var ov = _v262Ov(); if (!ov) return;
+  if (ov.classList.contains('v262')) ov.classList.remove('v262');
+  var p = document.getElementById('v262Painel'); if (p && p.firstChild) p.innerHTML = '';
+  clearTimeout(V262.t); V262.t = null; V262.foco = null; V262.edPainel = null;
+  _v262Esquecer();
+}
+// a prévia é de UM conteúdo: ao sair da tela (Voltar, Corrigir, outra proposta) ela é descartada — nunca fica um PDF velho no quadro
+function _v262Esquecer() {
+  if (!V262.url && !V262.assin) return;
+  V262.gen++; V262.voo = ''; V262.assin = ''; V262.velha = false;
+  var u = V262.url; V262.url = null;
+  if (u) setTimeout(function () { try { URL.revokeObjectURL(u); } catch (e) {} }, 120000);
+  var f = document.getElementById('v262Frame'); if (f) f.removeAttribute('src');
+  _v262Msg('<div class="v262-esq"></div><div class="v262-esq" style="width:min(300px,60%)"></div><div>Montando a prévia do PDF…</div>');
+  _v262Est('');
+}
+// antes da pintura interna: devolver o lugar (sem cópia do painel no documento) e guardar as escolhas
+function _v262AntesDePintar() {
+  var p = document.getElementById('v262Painel');
+  if (!p || !p.querySelector('.v204-painel')) return;
+  var ED = (typeof V204 !== 'undefined') ? V204.ed : null;
+  // as escolhas (modo, anexar na OS, portal) vão para o rascunho pelo caminho do V250 — só se o painel é DESTE editor
+  // (recarregar a proposta troca o V204.ed: o painel velho não pode sobrescrever o que veio do banco)
+  try { if (ED && ED === V262.edPainel && typeof _v250GuardarEmitir === 'function') _v250GuardarEmitir(ED); } catch (e) {}
+  var a = document.activeElement; V262.focoId = (a && a.id && p.contains(a)) ? a.id : '';
+  p.innerHTML = '';
+}
+
+// ── depois de cada pintura ───────────────────────────────────────────────────────────────────────────────────────────
+function _v262Arrumar() {
+  var ov = _v262Ov(); if (!ov) return;
+  var ED = (typeof V204 !== 'undefined') ? V204.ed : null;
+  if (!_v262Ativo(ED)) { _v262Sair(); return; }
+  var rev = _v262Montar(ov); if (!rev) { _v262Sair(); return; }
+  var acao = document.getElementById('v243Acao'), painel = acao && acao.querySelector('.v204-painel');
+  var cx = document.getElementById('v262Painel');
+  if (!painel || !cx) { _v262Sair(); return; }
+  ov.classList.add('v262');
+  if (V262.prevEd !== ED) { V262.prevEd = ED; _v262Esquecer(); }
+  cx.innerHTML = ''; cx.appendChild(painel); V262.edPainel = ED;
+  var lado = document.getElementById('v243Lado'); if (lado) lado.classList.remove('v243-ac');
+  var r = ED.rasc, c = ED.card || {};
+  var tit = document.getElementById('v262Tit'), sub = document.getElementById('v262Sub');
+  if (tit) tit.textContent = 'Revisar e emitir a v' + r.versao;
+  if (sub) sub.textContent = [(ED.prop && ED.prop.id) || '', c.cliente || c.cliente_id || '', ED.op ? 'card ' + ED.op : ''].filter(Boolean).join(' · ');
+  _v262Decorar(painel, ED);
+  _v262Agendar(ED, 0);
+  if (V262.focoId) { var fx = document.getElementById(V262.focoId); V262.focoId = ''; if (fx && cx.contains(fx)) { try { fx.focus({ preventScroll: true }); } catch (e) {} V262.foco = 'feito'; } }
+  if (V262.foco !== 'feito') { V262.foco = 'feito'; setTimeout(function () { try { var b = document.querySelector('#v262Painel .v262-cor') || document.querySelector('#v262Painel [data-v204="emitirOk"]:not([disabled])'); if (b && _v262Ativo(V204.ed)) b.focus({ preventScroll: true }); } catch (e) {} }, 30); }
+}
+
+// ── a conferência: cada item ganha o "Corrigir" que leva ao ponto exato ─────────────────────────────────────────────
+// o texto de cada item vem das camadas de hoje (V204, V231, V237) — a casca só reconhece e decora; item desconhecido fica como está
+var V262_ITENS = [
+  { k: 'pesq',    re: /a pesquisar/i,                         rot: 'Corrigir', dica: 'leva à primeira linha sem preço' },
+  { k: 'inval',   re: /sem descrição|quantidade zero/i,       rot: 'Corrigir', dica: 'leva à primeira linha sem descrição ou com quantidade zero' },
+  { k: 'semmaq',  re: /sem máquina/i,                         rot: 'Corrigir', dica: 'leva à primeira linha sem máquina (use ÷ para dividir)' },
+  { k: 'teto',    re: /passa do teto/i,                       rot: 'Corrigir', dica: 'leva à linha com o maior desconto' },
+  { k: 'revisar', re: /marcado\(s\) "revisar"/i,              rot: 'Ver',      dica: 'leva ao primeiro serviço marcado "revisar"' },
+  { k: 'desloc',  re: /nenhuma linha de deslocamento/i,       rot: 'Adicionar', dica: 'volta à tabela com a busca em "deslocamento"' },
+  { k: 'cond',    re: /Sem texto de/i,                        rot: 'Corrigir', dica: 'abre as condições (aba Documento)' }
+];
+function _v262Marca(li) {
+  var t = String(li.textContent || '').trim();
+  return t.charAt(0) === '✖' ? 'x' : t.charAt(0) === '⚠' ? 'at' : t.charAt(0) === '✓' ? 'ok' : '';
+}
+function _v262Decorar(painel, ED) {
+  var ul = painel.querySelector('ul.v204-chk'); if (!ul) return;
+  // V261: cliente sem CNPJ/CPF — o banco não deixa emitir; a faixa do V261 pede ali mesmo (a tela só avisa antes)
+  try {
+    var c = ED.card || {};
+    if (window.V261 && !(function () { try { return localStorage.getItem('pcm_v261') === 'off'; } catch (e) { return false; } })() && c.cliente_id &&
+        !String(c.cnpj || '').replace(/\D/g, '') && !ul.querySelector('[data-v262i="cnpj"]')) {
+      var li0 = document.createElement('li'); li0.setAttribute('data-v262i', 'cnpj');
+      li0.textContent = '⚠ Cliente sem CNPJ/CPF no cadastro — ao emitir, a tela pede o documento aqui mesmo e emite em seguida';
+      ul.appendChild(li0);
+    }
+  } catch (e) {}
+  var nx = 0, nat = 0;
+  Array.prototype.forEach.call(ul.children, function (li) {
+    if (li.tagName !== 'LI' || li.getAttribute('data-v262d')) { var m0 = _v262Marca(li); if (m0 === 'x') nx++; else if (m0 === 'at') nat++; return; }
+    li.setAttribute('data-v262d', '1');
+    // o V250 acrescenta "— ou ⇥ …" ao fim do item sem máquina: o "Corrigir" no fim do item esconderia o fim que ele procura
+    try {
+      if (typeof _v250Ligado === 'function' && _v250Ligado() && !li.hasAttribute('data-v250li') && /use ÷ na linha para dividir\)\s*$/.test(li.textContent)) {
+        li.setAttribute('data-v250li', '1'); li.appendChild(document.createTextNode(' — ou ⇥ para cobrar integral numa OS'));
+      }
+    } catch (e) {}
+    var marca = _v262Marca(li); if (marca === 'x') nx++; else if (marca === 'at') nat++;
+    var txt = document.createElement('span'); txt.className = 'v262-txt';
+    while (li.firstChild) txt.appendChild(li.firstChild);
+    li.appendChild(txt);
+    if (marca === 'x') li.classList.add('v262-x'); else if (marca === 'at') li.classList.add('v262-at');
+    if (marca === 'ok' || !marca) return;
+    var t = txt.textContent || '', it = null;
+    for (var i = 0; i < V262_ITENS.length && !it; i++) if (V262_ITENS[i].re.test(t)) it = V262_ITENS[i];
+    if (!it || !_v262Alvo(ED, it.k).ok) return;
+    var b = document.createElement('button'); b.type = 'button'; b.className = 'v262-cor'; b.setAttribute('data-v262', 'cor'); b.setAttribute('data-k', it.k);
+    b.setAttribute('data-pw-off', '1'); b.title = it.dica; b.textContent = it.rot;
+    li.appendChild(b);
+  });
+  var res = document.getElementById('v262Res');
+  if (res) {
+    res.className = nx ? 'x' : nat ? 'at' : 'ok';
+    res.textContent = nx ? '✖ ' + nx + (nx > 1 ? ' bloqueios' : ' bloqueio') + ' — corrija antes de emitir' + (nat ? ' · ⚠ ' + nat + (nat > 1 ? ' avisos' : ' aviso') : '')
+                    : nat ? '⚠ ' + nat + (nat > 1 ? ' avisos' : ' aviso') + ' — dá para emitir assim' : '✓ pronta para emitir';
+  }
+  var cancel = painel.querySelector('[data-v204="painel"][data-k=""]');
+  if (cancel) { cancel.textContent = 'Voltar a editar'; cancel.setAttribute('data-pw-off', '1'); }
+}
+// o ponto exato de cada item: { ok, i (linha), campo (id do input) | painel | busca }
+function _v262Alvo(ED, k) {
+  var L = (ED && ED.linhas) || [], i, viva = function (l) { return l && l.incluida !== false; };
+  if (k === 'pesq') { for (i = 0; i < L.length; i++) if (viva(L[i]) && typeof _v204SemPreco === 'function' && _v204SemPreco(L[i])) return { ok: true, i: i, campo: 'v204p' + i }; return { ok: false }; }
+  if (k === 'inval') {
+    for (i = 0; i < L.length; i++) {
+      var l = L[i]; if (!viva(l)) continue;
+      var dOk = String(l.descricao || '').trim() && (typeof _v239DescOk !== 'function' || _v239DescOk(l));
+      if (!dOk) return { ok: true, i: i, campo: 'v204d' + i };
+      if (!(l.qtd > 0)) return { ok: true, i: i, campo: 'v204q' + i };
+    }
+    return { ok: false };
+  }
+  if (k === 'semmaq') { for (i = 0; i < L.length; i++) if (viva(L[i]) && typeof _v231LinhaSemMaq === 'function' && _v231LinhaSemMaq(L[i])) return { ok: true, i: i }; return { ok: false }; }
+  if (k === 'revisar') { for (i = 0; i < L.length; i++) if (viva(L[i]) && L[i].veio_ref && L[i].veio_ref.revisar) return { ok: true, i: i }; return { ok: false }; }
+  if (k === 'teto') {
+    var m = -1, mv = 0;
+    for (i = 0; i < L.length; i++) { if (!viva(L[i]) || L[i].incluso) continue; var d = typeof _v237Desc === 'function' ? Number(_v237Desc(L[i])) || 0 : 0; if (d > mv) { mv = d; m = i; } }
+    return m >= 0 ? { ok: true, i: m } : { ok: false };
+  }
+  if (k === 'cond') return { ok: true, painel: 'cond' };
+  if (k === 'desloc') return { ok: true, busca: 'deslocamento' };
+  return { ok: false };
+}
+// sai da conferência pelo caminho do "Cancelar" (escolhas guardadas) — sem pintar: quem chama pinta
+function _v262Largar(ED) {
+  try { if (typeof _v250GuardarEmitir === 'function') _v250GuardarEmitir(ED); } catch (e) {}
+  ED.painel = '';
+}
+function _v262Corrigir(k) {
+  var ED = (typeof V204 !== 'undefined') ? V204.ed : null; if (!ED || !ED.rasc) return;
+  var a = _v262Alvo(ED, k);
+  if (!a.ok) { toast('Esse item já foi resolvido — a conferência se atualiza.', ''); _v204Pintar(); return; }
+  _v262Largar(ED);
+  if (a.painel === 'cond') {
+    ED.painel = 'cond';
+    if (typeof _v243SetAba === 'function') _v243SetAba('documento');
+    _v204Pintar();
+    var cond = ED.cab.condicoes || {}, alvo = !String(cond.pagamento || '').trim() ? 'v204CondPag' : !String(cond.prazo || '').trim() ? 'v204CondPrazo' : 'v204CondGar';
+    setTimeout(function () { var e = document.getElementById(alvo); if (e) { e.focus(); try { e.scrollIntoView({ block: 'center' }); } catch (x) {} } }, 30);
+    return;
+  }
+  if (a.busca) {
+    _v204Pintar();
+    setTimeout(function () {
+      var b = document.getElementById('v204Busca'); if (!b) return;
+      b.removeAttribute('readonly'); b.focus(); b.value = a.busca;
+      try { b.dispatchEvent(new Event('input', { bubbles: true })); } catch (e) {}
+    }, 30);
+    return;
+  }
+  // linha: seleciona (aba Linha), rola até ela, pisca e põe o cursor no campo
+  if (typeof _v243Sel === 'function') _v243Sel(a.i); else _v204Pintar();
+  setTimeout(function () {
+    var tr = document.querySelector('#v204Linhas tr[data-i="' + a.i + '"]'); if (!tr) return;
+    try { tr.scrollIntoView({ block: 'center' }); } catch (e) {}
+    tr.classList.remove('v262-pisca'); void tr.offsetWidth; tr.classList.add('v262-pisca');
+    setTimeout(function () { try { tr.classList.remove('v262-pisca'); } catch (e) {} }, 3200);
+    var f = a.campo && document.getElementById(a.campo);
+    if (f) { f.removeAttribute('readonly'); f.focus({ preventScroll: true }); try { f.select(); } catch (e) {} }
+  }, 40);
+}
+function _v262Voltar() {
+  var ED = (typeof V204 !== 'undefined') ? V204.ed : null; if (!ED) return;
+  _v262Largar(ED); _v204Pintar();
+}
+
+// ── a prévia do PDF ──────────────────────────────────────────────────────────────────────────────────────────────────
+// o MESMO objeto do _v204VerPrevia (cópia literal do corpo dele, V204 + V237), com o "Mostrar ao cliente" que está na tela
+function _v262Objeto(ED) {
+  var t = _v204Totais(ED.linhas), c = ED.card, hoje = new Date(), ate = new Date(); ate.setDate(ate.getDate() + (Number(ED.cab.validade_dias) || 15));
+  var linhas = ED.linhas.filter(function (l) { return l.incluida !== false; }).map(function (l, n) {
+    var p = l.incluso ? 0 : (Number(l.preco_unit) || 0);
+    return Object.assign({ ordem: n + 1, maquina_id: l.maquina_id, bloco: l.bloco, natureza: l.natureza, descricao: l.descricao, codigo: l.codigo, qtd: l.qtd, unidade: l.unidade,
+      preco_unit: p, incluso: l.incluso, total: _v204Val(l.qtd, p) }, typeof _v237PreviaLinha === 'function' ? _v237PreviaLinha(l, p) : {});
+  });
+  var sel = document.getElementById('v204EmModo'), modo = (sel && sel.value) || ED.cab.modo;
+  return { id: ED.rasc.id, conteudo: { proposta: ED.prop.id, versao: ED.rasc.versao, emitida_em: hoje.toISOString(), emitida_por: _v200UsuarioId(),
+    validade_ate: ate.toISOString().slice(0, 10), validade_dias: Number(ED.cab.validade_dias) || 15, modo: modo, condicoes: ED.cab.condicoes,
+    cliente: { nome: c.cliente, cnpj: c.cnpj, cidade: c.cidade, uf: c.uf }, os: c.os_id ? { id: c.os_id, numero: c.numero_os } : null,
+    maquinas: (c.maquinas || []).filter(function (m) { return !ED.cab.maquinas.length || ED.cab.maquinas.indexOf(m.id) >= 0; }),
+    linhas: linhas, totais: Object.assign({ pecas: t.pecas, servicos: t.servicos, total: t.total }, typeof _v237PreviaTot === 'function' ? _v237PreviaTot(t) : {}) } };
+}
+function _v262Assin(v) {
+  try { var c = Object.assign({}, v.conteudo); delete c.emitida_em; return JSON.stringify(c) + '|' + ((V204.ed && V204.ed.card && V204.ed.card.titulo) || ''); }
+  catch (e) { return String(Date.now()); }
+}
+function _v262Agendar(ED, ms) {
+  clearTimeout(V262.t);
+  V262.t = setTimeout(function () { _v262Gerar(ED); }, ms == null ? 350 : ms);
+}
+function _v262EstOk() {
+  var h = V262.em || new Date();
+  _v262Est('Prévia de ' + ('0' + h.getHours()).slice(-2) + ':' + ('0' + h.getMinutes()).slice(-2) + ' — é o PDF que sai ao emitir (o carimbo "PRÉVIA" some na versão emitida).');
+}
+function _v262Est(txt, erro) { var e = document.getElementById('v262PdfEst'); if (e) { e.textContent = txt; e.classList.toggle('erro', !!erro); } }
+function _v262Msg(html) {
+  var m = document.getElementById('v262PdfMsg'); if (!m) return;
+  if (html === null) { m.hidden = true; return; }
+  m.hidden = false; m.innerHTML = html;
+}
+function _v262Mostrar() {
+  var f = document.getElementById('v262Frame'); if (!f || !V262.url) return;
+  var vePdf = navigator.pdfViewerEnabled !== false;
+  if (vePdf) { if (f.getAttribute('src') !== V262.url) f.setAttribute('src', V262.url); _v262Msg(null); }
+  else {
+    f.removeAttribute('src');
+    _v262Msg('<div style="font-size:28px">📄</div><div>Este navegador não mostra PDF dentro da página.</div>' +
+      '<button type="button" class="btn btn-secondary btn-sm" data-v262="abrir" data-pw-off="1">Abrir o PDF</button>');
+  }
+}
+async function _v262Gerar(ED) {
+  if (!_v262Ativo(ED) || V204.ed !== ED) return;
+  var v;
+  try { v = _v262Objeto(ED); } catch (e) { _v262Est('Não consegui montar a prévia: ' + (e.message || e), true); return; }
+  var as = _v262Assin(v);
+  if (as === V262.assin && V262.url) { if (V262.voo) { V262.gen++; V262.voo = ''; } V262.velha = false; _v262Mostrar(); _v262EstOk(); return; }
+  if (as === V262.voo) return;                                   // a mesma prévia já está sendo montada
+  var g = ++V262.gen; V262.voo = as; V262.velha = !!V262.url;
+  if (!V262.url) _v262Msg('<div class="v262-esq"></div><div class="v262-esq" style="width:min(300px,60%)"></div><div>Montando a prévia do PDF…</div>');
+  _v262Est(V262.url ? 'Atualizando a prévia com a mudança…' : 'Montando a prévia…');
+  try {
+    var doc = await _v204GerarPdf(v, true);
+    if (g !== V262.gen || !_v262Ativo(V204.ed) || V204.ed !== ED) return;   // uma geração mais nova (ou a saída da tela) venceu
+    V262.voo = ''; V262.velha = false;
+    var blob = doc.output('blob');
+    var velho = V262.url;
+    V262.url = URL.createObjectURL(blob); V262.assin = as; V262.geradas++; V262.erro = '';
+    V262.ult = { linhas: v.conteudo.linhas.length, total: v.conteudo.totais.total, modo: v.conteudo.modo, bytes: blob.size, em: Date.now() };
+    if (velho) setTimeout(function () { try { URL.revokeObjectURL(velho); } catch (e) {} }, 120000);
+    _v262Mostrar();
+    V262.em = new Date(); _v262EstOk();
+  } catch (e) {
+    if (g !== V262.gen) return;
+    V262.voo = '';
+    V262.erro = (e && e.message) || String(e);
+    _v262Est('Não consegui montar a prévia: ' + V262.erro + ' — dá para emitir mesmo assim; o PDF é gerado de novo na emissão.', true);
+    if (!V262.url) _v262Msg('<div style="font-size:28px">⚠</div><div>A prévia não foi montada.</div>' +
+      '<button type="button" class="btn btn-secondary btn-sm" data-v262="refazer" data-pw-off="1">Tentar de novo</button>');
+  }
+}
+function _v262Abrir() {
+  if (!V262.url || V262.velha) { toast('A prévia ainda está sendo ' + (V262.url ? 'atualizada' : 'montada') + ' — tente de novo em instantes.', ''); return; }
+  var w = window.open(V262.url, '_blank');
+  if (!w) toast('O navegador bloqueou a janela do PDF — permita pop-ups para este site.', 'error');
+}
+
+// ── eventos ──────────────────────────────────────────────────────────────────────────────────────────────────────────
+function _v262Clique(ev) {
+  var t = ev.target; if (!t || !t.closest) return;
+  var b = t.closest('[data-v262]'); if (!b || !document.getElementById('v204Ed').contains(b)) return;
+  ev.preventDefault(); ev.stopImmediatePropagation();
+  var k = b.getAttribute('data-v262');
+  if ((k === 'voltar' || k === 'cor') && _v262Ocupado()) { toast('Aguarde terminar a emissão antes de voltar à tabela.', 'warning'); return; }
+  if (k === 'voltar') return _v262Voltar();
+  if (k === 'abrir') return _v262Abrir();
+  if (k === 'refazer') { V262.assin = ''; var ED = V204.ed; if (_v262Ativo(ED)) _v262Agendar(ED, 0); return; }
+  if (k === 'cor') return _v262Corrigir(b.getAttribute('data-k'));
+}
+function _v262Mudou(ev) {
+  var t = ev.target; if (!t || t.id !== 'v204EmModo') return;
+  var ED = (typeof V204 !== 'undefined') ? V204.ed : null;
+  if (_v262Ativo(ED)) _v262Agendar(ED, 150);
+}
+function _v262Tecla(ev) {
+  if (ev.key !== 'Escape') return;
+  var ED = (typeof V204 !== 'undefined') ? V204.ed : null; if (!_v262Ativo(ED)) return;
+  var ov = _v262Ov(); if (!ov || !ov.classList.contains('v262')) return;
+  if (document.querySelector('.overlay.open:not(#v204Ed)')) return;
+  if (typeof V243 !== 'undefined' && V243.menu) return;
+  // a faixa do CNPJ (V261) fecha com o Esc dela quando o cursor está nela; com o cursor fora, o Esc não fecha nada
+  // (nem a conferência, nem — pelo Esc geral das janelas — o editor inteiro)
+  var d = document.getElementById('v261Doc');
+  if (d && !d.hidden) { if (!d.contains(ev.target)) { ev.preventDefault(); ev.stopImmediatePropagation(); } return; }
+  if (_v262Ocupado()) { ev.preventDefault(); ev.stopImmediatePropagation(); return; }   // emitindo: o Esc não sai nem fecha
+  ev.preventDefault(); ev.stopImmediatePropagation();
+  _v262Voltar();
+}
+
+// ── costuras (na hora de usar, POR FORA do V243 e do V246) ──────────────────────────────────────────────────────────
+function _v262Embrulhar() {
+  try { if (typeof _v246Embrulhar === 'function') _v246Embrulhar(); else if (typeof _v243Embrulhar === 'function') _v243Embrulhar(); } catch (e) {}
+  if (typeof _v204Pintar !== 'function' || _v204Pintar.__v262) return;
+  var inner = _v204Pintar;
+  _v204Pintar = function () {
+    V262.depth++;
+    if (V262.depth === 1) { try { _v262AntesDePintar(); } catch (e) {} }
+    try { return inner.apply(this, arguments); }
+    finally {
+      V262.depth--;
+      if (V262.depth === 0) { try { _v262Arrumar(); } catch (e) { console.warn('[V262] arrumar', e); } }
+    }
+  };
+  _v204Pintar.__v262 = true;
+  if (inner.__v243) _v204Pintar.__v243 = true;
+  if (inner.__v246) _v204Pintar.__v246 = true;
+}
+(function () {
+  try {
+    if (typeof _v204AbrirEditor !== 'function') { console.warn('[V262] editor da proposta ausente'); return; }
+    V262.orig = { abrir: _v204AbrirEditor };
+    _v204AbrirEditor = async function () {
+      _v262Embrulhar(); V262.foco = null; V262.assin = '';
+      return V262.orig.abrir.apply(this, arguments);
+    };
+    var ov = document.getElementById('v204Ed');
+    if (ov) {
+      ov.addEventListener('click', _v262Clique, true);
+      ov.addEventListener('change', _v262Mudou, false);
+      new MutationObserver(function () { if (!ov.classList.contains('open')) { _v262Sair(); V262.foco = null; } }).observe(ov, { attributes: true, attributeFilter: ['class'] });
+    }
+    document.addEventListener('keydown', _v262Tecla, true);
+    // a casca R6a abre a conferência pelo rodapé ("✓ pronta" / "✖ pendências") — o mesmo botão: nada a costurar aqui
+  } catch (err) { console.warn('[V262] ligar', err); }
+})();
+</script>
+<!-- ████ FIM PCM V262 ████ -->
+
+<!-- ████ INICIO PCM V264 ████ -->
+<style id="v264Css">
+/* PCM V264 — AJUDANTES NA OS (rodada 2026-10-09_ajudantes_os). Chips de seleção múltipla + marca 🤝 do bloco de ajudante. */
+.v264-aj{margin:8px 0 6px}
+.v264-aj-cab{font-size:12px;font-weight:600;color:var(--text,#1F1F1F);display:flex;gap:6px;align-items:baseline;flex-wrap:wrap}
+.v264-aj-cab small{font-weight:400;color:var(--text-muted,#6B6B6B)}
+.v264-chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:5px}
+.v264-chip{border:1px solid var(--border,#D9D9D9);background:var(--surface,#fff);color:var(--text,#1F1F1F);border-radius:999px;padding:5px 11px;font:inherit;font-size:12.5px;line-height:1.2;cursor:pointer;min-height:32px;transition:background-color .12s,border-color .12s}
+.v264-chip:hover{border-color:#353434}
+.v264-chip:active{transform:translateY(1px)}
+.v264-chip:focus-visible{outline:2px solid #2563EB;outline-offset:1px}
+.v264-chip[aria-pressed="true"]{background:#1F2937;border-color:#1F2937;color:#fff}
+.v264-chip[aria-pressed="true"]::before{content:"✓ "}
+.v264-chip.fora{border-style:dashed}
+.v264-aj-nota{font-size:11.5px;color:var(--text-muted,#6B6B6B);margin-top:4px;line-height:1.4}
+.v264-aj-nota.av{color:#9A5B00}
+.v264-lnk{background:none;border:0;padding:0;color:#2563EB;text-decoration:underline;cursor:pointer;font:inherit;font-size:11.5px}
+.r3a-it.aj{border-style:dashed !important;background-image:repeating-linear-gradient(135deg,transparent 0 6px,rgba(255,255,255,.28) 6px 9px)}
+.gos-kcard-aj{font-size:11.5px;color:var(--text2,#4F4F4F);margin-top:4px}
+.v264-aviso{margin:6px 0;padding:8px 10px;border-radius:8px;background:#FEF3C7;border:1px solid #FCD34D;color:#92400E;font-size:12.5px;line-height:1.4}
+</style>
+<script id="v264Js">
+/* PCM V264 — 09/10/2026 — AJUDANTES NA OS (rodada 2026-10-09_ajudantes_os, sobre o PCM V261 no ar).
+   Pedido do Fernando (09/10): "consigo designar duas pessoas na mesma OS pra saturação ficar mais coerente? … um campo
+   Ajudantes no plural e eu marco todos que estarão envolvidos naquela OS".
+   Par: SQL AJUDANTES_OS (ANTES — colunas + a agenda do banco) e GAS v171 (ANTES — grava e calcula). Este bloco é a TELA:
+     · Agenda nova (R3A): o bloco 🤝 de cada ajudante no mesmo horário (agenda_ajudantes do envelope), a OS agendada também
+       para os ajudantes, o painel diz quem ajuda, e o Designar ganha "Ajudantes" (os da OS já marcados; desmarcar/acrescentar).
+       O contador do mês conta tarefas DISTINTAS (como a demanda com 2 responsáveis, A8); a ocupação é por pessoa.
+     · Agenda antiga: os blocos 🤝 entram na grade; o bloco de ajudante não é selecionável no "Distribuir" (troque pelo painel).
+     · Gestão de OS (R2A): Nova OS com "Ajudantes"; o painel diz quem ajuda; o Designar da tarefa com "Ajudantes".
+     · Formulário completo (modal) da OS: campo "Ajudantes" (nova e edição).
+     · Quadro da Oficina, Fila/Painel das vistas, PCM celular: "Vitor + 2" (os nomes no title).
+   🔑 Gravação: OS → saveOS { ajudantes: [IDs] } (AUSENTE = o servidor preserva); tarefa → designarUsuarioTarefa
+      { ajudantes: '' (herda da OS) | [] (nenhum) | [nomes] }, mandado só quando a pessoa MEXEU nos chips.
+   🔑 A ocupação é calculada no SERVIDOR (GAS v171 / pc_agenda): a tela não inventa carga — sem a chave
+      `agenda_ajudantes` no envelope (servidor antigo, caminho de reserva), a Agenda AVISA que os ajudantes não vieram.
+   Chave de volta: localStorage pcm_v264 = off (as costuras viram no-op; a tela volta a ser a do V261). */
+(function () {
+  'use strict';
+  var V264 = window.V264 = { versao: 'PCM_V264', modal: null };
+  function off() { try { return localStorage.getItem('pcm_v264') === 'off'; } catch (e) { return false; } }
+  V264.off = off;
+  function S(v) { return String(v === null || v === undefined ? '' : v); }
+  function T(v) { return S(v).trim(); }
+  function nk(v) { return T(v).toLowerCase(); }
+  function E(v) { return S(v).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;'); }
+  function avisar(msg, tipo) { try { if (typeof toast === 'function') toast(msg, tipo); else console.warn('[V264]', msg); } catch (e) {} }
+
+  // a lista de uma célula: JSON array ou "A; B" — a MESMA regra do _v171Lista_ (GAS) e do _r3_aj_lista (SQL)
+  function lista(raw) {
+    if (Array.isArray(raw)) return raw.map(T).filter(Boolean);
+    var s = T(raw); if (!s) return [];
+    try { var p = JSON.parse(s); if (Array.isArray(p)) return p.filter(function (x) { return typeof x === 'string' || typeof x === 'number'; }).map(T).filter(Boolean); } catch (e) {}
+    return s.split(/[;,]/).map(T).filter(Boolean);
+  }
+  V264.lista = lista;
+  // quem é quem: o cadastro (_usuList) quando a tela o carregou; senão a EQUIPE que veio no envelope da agenda
+  //   (Agenda nova, grade antiga, PCM celular, painel da OS) — a Agenda e o celular não carregam _usuList
+  function usuarios() {
+    var out = [];
+    try { if (typeof _usuList !== 'undefined' && Array.isArray(_usuList)) out = out.concat(_usuList); } catch (e) {}
+    try { if (window.R3A && R3A.dados && R3A.dados.env && Array.isArray(R3A.dados.env.equipe)) out = out.concat(R3A.dados.env.equipe); } catch (e) {}
+    try { if (window._satPayload && Array.isArray(window._satPayload.equipe)) out = out.concat(window._satPayload.equipe); } catch (e) {}
+    try { if (window._mobEstado && _mobEstado.dados && Array.isArray(_mobEstado.dados.equipe)) out = out.concat(_mobEstado.dados.equipe); } catch (e) {}
+    try { if (window.R2A && R2A.sat && Array.isArray(R2A.sat.equipe)) out = out.concat(R2A.sat.equipe); } catch (e) {}
+    return out.filter(function (u) { return u && (u.id || u.id_usuario || u.nome); });
+  }
+  function ativos() {
+    var vistos = {}, out = [];
+    usuarios().forEach(function (u) {
+      if (!u || !T(u.nome) || T(u.ativo || 'SIM').toUpperCase() === 'NÃO') return;
+      var k = T(u.id || u.id_usuario) || nk(u.nome); if (vistos[k]) return; vistos[k] = 1; out.push(u);
+    });
+    return out;
+  }
+  function nomeDe(x) {
+    var v = T(x); if (!v) return '';
+    var us = usuarios();
+    for (var i = 0; i < us.length; i++) if (T(us[i].id || us[i].id_usuario) === v) return T(us[i].nome) || v;
+    for (var k = 0; k < us.length; k++) if (nk(us[k].nome) === nk(v)) return T(us[k].nome);
+    return v;
+  }
+  function idDe(x) {
+    var v = T(x); if (!v) return '';
+    var us = usuarios();
+    for (var i = 0; i < us.length; i++) if (T(us[i].id || us[i].id_usuario) === v) return v;
+    for (var k = 0; k < us.length; k++) if (nk(us[k].nome) === nk(v)) return T(us[k].id || us[k].id_usuario) || v;
+    return v;
+  }
+  V264.nomeDe = nomeDe; V264.idDe = idDe;
+  function semRepetir(arr, tirar) {
+    var vistos = {}, out = [];
+    (tirar || []).forEach(function (x) { if (nk(x)) vistos[nk(x)] = 1; });
+    arr.forEach(function (x) { var k = nk(x); if (!k || vistos[k]) return; vistos[k] = 1; out.push(T(x)); });
+    return out;
+  }
+  // ajudantes de uma OS (objeto da lista): NOMES, sem o responsável
+  function ajNomesOS(o) {
+    if (!o) return [];
+    var resp = nomeDe(o.usuario_atual || o.responsavel_id || '');
+    return semRepetir(lista(o.ajudantes).map(nomeDe), resp ? [resp] : []);
+  }
+  V264.ajNomesOS = ajNomesOS;
+  function osDaLista(id) {
+    var k = T(id); if (!k) return null;
+    try { if (typeof _osList !== 'undefined' && Array.isArray(_osList)) { var o = _osList.find(function (x) { return T(x.id_os) === k; }); if (o) return o; } } catch (e) {}
+    try { if (window.R2A && typeof R2A.osPorId === 'function') return R2A.osPorId(k) || null; } catch (e2) {}
+    return null;
+  }
+  function rotulo(resp, ajs) {   // "Vitor + 2"
+    var r = T(resp) || '— sem responsável —';
+    return ajs.length ? r + ' + ' + ajs.length : r;
+  }
+  function titulo(resp, ajs) { return 'Responsável: ' + (T(resp) || '—') + (ajs.length ? ' · Ajudantes: ' + ajs.join(', ') : ''); }
+
+  // ══ 1 · AGENDA NOVA (R3A) ══════════════════════════════════════════════════════════════════════
+  // OS agendada: o mesmo bloco para cada ajudante (mesmo dia, hora e duração), marcado 🤝
+  window._v264AjItensOS = function (out, o, env, nomeResp, SEM) {
+    if (off() || !out.length) return;
+    var base = out[out.length - 1]; if (!base || T(base.id) !== T(o && o.id_os)) return;
+    if (base.dono === SEM) return;   // sem responsável reconhecido a OS não ocupa ninguém — nem os ajudantes (regra 4)
+    var ajs = lista(o.ajudantes);
+    if (!ajs.length) return;
+    var vistos = {}; vistos[nk(base.dono)] = 1;
+    ajs.forEach(function (id) {
+      var nm = ''; try { nm = nomeResp(id, env) || ''; } catch (e) { nm = ''; }
+      if (!nm || nm === SEM || vistos[nk(nm)]) return;
+      vistos[nk(nm)] = 1;
+      var c = {}; for (var k in base) if (Object.prototype.hasOwnProperty.call(base, k)) c[k] = base[k];
+      c.dono = nm; c.aj = true; c.principal = base.dono === SEM ? '' : base.dono;
+      out.push(c);
+    });
+  };
+  // os ajudantes EFETIVOS de uma tarefa da agenda (nomes): a lista da tarefa · a da OS (não p/ adm) · nenhuma
+  function ajTarefa(t, env, o) {
+    env = env || {};
+    var key = T(t.os_id) + '|' + T(t.tarefa_id);
+    var tm = env.ajudantes_tarefas, om = env.ajudantes_os;
+    if (tm && Object.prototype.hasOwnProperty.call(tm, key)) return { nomes: (tm[key] || []).map(T).filter(Boolean), fonte: 'tarefa' };
+    if (T(t.executor) === 'adm') return { nomes: [], fonte: 'adm' };
+    if (om && Object.prototype.hasOwnProperty.call(om, T(t.os_id))) return { nomes: (om[T(t.os_id)] || []).map(T).filter(Boolean), fonte: 'os' };
+    if (om) return { nomes: [], fonte: 'os' };
+    return { nomes: ajNomesOS(o), fonte: 'os', semServidor: true };
+  }
+  V264.ajTarefa = ajTarefa;
+  window._v264AjPainel = function (t, env, o) {
+    if (off() || !t) return '';
+    var a = ajTarefa(t, env, o), dono = T(t.usuario);
+    var ns = semRepetir(a.nomes, dono ? [dono] : []);
+    if (!ns.length && a.fonte !== 'tarefa') return '';
+    var nota = a.fonte === 'tarefa' ? 'só desta tarefa' : 'da OS';
+    if (!dono && ns.length) nota += ' — só ocupam a agenda quando a tarefa tiver um designado';
+    return '<div style="grid-column:1/-1" data-v264="painel"><small>Ajudantes 🤝</small><b>' + (ns.length ? E(ns.join(', ')) : '— nenhum nesta tarefa —') +
+      ' <span style="font-weight:400;color:var(--text-muted,#6B6B6B)">(' + E(nota) + ')</span></b></div>';
+  };
+  window._v264AjPainelOS = function (o, env) {
+    if (off() || !o) return '';
+    var om = env && env.ajudantes_os, ns = (om && Object.prototype.hasOwnProperty.call(om, T(o.id_os))) ? om[T(o.id_os)].map(T).filter(Boolean) : ajNomesOS(o);
+    return ns.length ? '<div style="grid-column:1/-1" data-v264="painelos"><small>Ajudantes 🤝</small><b>' + E(ns.join(', ')) + '</b></div>' : '';
+  };
+  window._v264AvisoFonte = function (d) {
+    if (off() || !d || !d.env) return '';
+    if (Array.isArray(d.env.agenda_ajudantes)) return '';
+    var temAj = (Array.isArray(d.os) ? d.os : []).some(function (o) { return lista(o && o.ajudantes).length > 0; });
+    if (!temAj) return '';
+    return '<div class="v264-aviso" id="v264AvisoFonte" role="status">⚠ Esta leitura da agenda não trouxe os <b>ajudantes</b> (servidor anterior ao GAS v171 / SQL AJUDANTES_OS, ou caminho de reserva). ' +
+      'Quem ajuda numa OS pode aparecer <b>livre</b> aqui — confira antes de distribuir.</div>';
+  };
+
+  // ── o Designar (R3A e R2A): os chips de Ajudantes ──
+  // B.aj = nomes marcados · B.ajOS = os da OS · B.ajFonte = 'tarefa'|'os'|'adm' · B.ajMexeu · B.ajHerda
+  window._v264BalIni = function (B, env, o) {
+    if (off() || !B) return;
+    var a = ajTarefa(B.t || { os_id: B.os, tarefa_id: B.tar }, env, o);
+    B.ajSemServidor = !(env && env.ajudantes_os);
+    B.ajFonte = a.fonte;
+    B.ajOS = (env && env.ajudantes_os && env.ajudantes_os[T(B.os)]) ? env.ajudantes_os[T(B.os)].map(T) : ajNomesOS(o);
+    B.aj = semRepetir(a.nomes, B.p ? [B.p] : []);
+    B.aj0 = B.aj.slice(); B.ajMexeu = false; B.ajHerda = false; B.ajExec = T(B.t && B.t.executor);
+  };
+  // o executor EFETIVO (a regra do servidor, _executorEfetivo_: o PERFIL vivo manda; sem perfil, o carimbo) — achado 8 da
+  //   auditoria: decidir só pelo carimbo Executor mostrava "herdados da OS" numa tarefa que o servidor trata como de escritório
+  function execEfetivo(t, os, tar) {
+    try {   // 1º: a linha que o servidor calculou (envelope da agenda do painel)
+      var sat = window.R2A && R2A.sat, f = function (x) { return T(x.os_id) === T(os) && T(x.tarefa_id) === T(tar); };
+      var l = sat && ((sat.agenda || []).find(f) || (sat.nao_designadas || []).find(f));
+      if (l && T(l.executor)) return nk(l.executor);
+    } catch (e) {}
+    try {   // 2º: o perfil vivo (CAT_PERFIS.executa_em, por id ou nome)
+      var pf = T(t.Perfil_Responsavel);
+      if (pf && typeof _perfilList !== 'undefined' && Array.isArray(_perfilList)) {
+        var p = _perfilList.filter(function (x) { return T(x.id_perfil) === pf || nk(x.nome_perfil) === nk(pf); })
+          .sort(function (a, b) { return (T(b.ativo || 'SIM').toUpperCase() !== 'NÃO') - (T(a.ativo || 'SIM').toUpperCase() !== 'NÃO'); })[0];
+        var ee = p ? nk(p.executa_em) : '';
+        if (ee === 'adm' || ee === 'ambos' || ee === 'campo') return ee;
+      }
+    } catch (e2) {}
+    var c = nk(t.Executor); return (c === 'adm' || c === 'ambos') ? c : 'campo';
+  }
+  V264.execEfetivo = execEfetivo;
+  // R2A: a linha crua da tarefa (getPipelineByOS) e a OS da lista
+  window._v264BalIniR2A = function (B, t, o) {
+    if (off() || !B) return;
+    t = t || {};
+    var cel = t.Ajudantes, temCol = Object.prototype.hasOwnProperty.call(t, 'Ajudantes');
+    var exec = execEfetivo(t, B.os, B.tarefa) === 'adm' ? 'adm' : '';
+    var principal = nomeDe(B.pessoa || B.atual || '');
+    B.ajOS = ajNomesOS(o);
+    if (T(cel)) { B.aj = semRepetir(lista(cel).map(nomeDe), principal ? [principal] : []); B.ajFonte = 'tarefa'; }
+    else if (exec === 'adm') { B.aj = []; B.ajFonte = 'adm'; }
+    else { B.aj = semRepetir(B.ajOS, principal ? [principal] : []); B.ajFonte = 'os'; }
+    B.ajSemServidor = !temCol && !(o && Object.prototype.hasOwnProperty.call(o, 'ajudantes'));
+    B.aj0 = B.aj.slice(); B.ajMexeu = false; B.ajHerda = false; B.ajExec = exec; B.ajR2A = true;
+  };
+  window._v264BalHtml = function (B, cands, estilo, principal) {
+    if (off() || !B || !Array.isArray(B.aj)) return '';
+    var prin = T(principal !== undefined ? principal : B.p);
+    var nomes = [], vistos = {};
+    (cands || []).forEach(function (c) { var n = T(c && (c.nome || c)); if (!n || vistos[nk(n)] || nk(n) === nk(prin)) return; vistos[nk(n)] = 1; nomes.push(n); });
+    var fora = B.aj.filter(function (n) { return !vistos[nk(n)] && nk(n) !== nk(prin); });
+    var marc = {}; B.aj.forEach(function (n) { marc[nk(n)] = 1; });
+    var chip = function (n, cls) {
+      var on = !!marc[nk(n)];
+      return '<button type="button" class="v264-chip' + (cls || '') + '" data-r3a="v264aj" data-p="' + E(n) + '" data-v264-aj="' + E(n) + '" aria-pressed="' + on + '"' +
+        (cls ? ' title="Fora da equipe ativa"' : '') + '>' + E(n) + '</button>';
+    };
+    var h = '<div class="v264-aj" id="v264Aj" data-v264-estilo="' + E(estilo || '') + '"><div class="v264-aj-cab">Ajudantes 🤝 <small>ocupam o mesmo horário na agenda</small></div>';
+    if (B.ajSemServidor) h += '<div class="v264-aj-nota av">⚠ O servidor desta leitura ainda não conhece ajudantes (GAS anterior ao v171): o que for marcado aqui pode NÃO ser gravado.</div>';
+    h += '<div class="v264-chips" role="group" aria-label="Ajudantes">' + nomes.map(function (n) { return chip(n, ''); }).join('') + fora.map(function (n) { return chip(n, ' fora'); }).join('') +
+      (!nomes.length && !fora.length ? '<span class="v264-aj-nota">Ninguém mais na equipe para marcar.</span>' : '') + '</div>';
+    var nota = '';
+    if (B.ajHerda || (!B.ajMexeu && B.ajFonte === 'os')) nota = B.ajOS && B.ajOS.length ? 'Herdados da OS (' + B.ajOS.length + '). Mexer aqui vale só para esta tarefa.' : 'A OS não tem ajudantes. Marcar aqui vale só para esta tarefa.';
+    else if (!B.ajMexeu && B.ajFonte === 'adm') nota = 'Tarefa de escritório: não herda os ajudantes da OS.';
+    else if (B.ajFonte === 'tarefa' || B.ajMexeu) nota = 'Lista própria desta tarefa.';
+    var podeHerdar = B.ajExec !== 'adm' && (B.ajFonte === 'tarefa' || B.ajMexeu) && !B.ajHerda;
+    h += '<div class="v264-aj-nota">' + E(nota) + (podeHerdar ? ' <button type="button" class="v264-lnk" data-r3a="v264ajherda" data-v264-ajherda="1">Voltar a herdar da OS</button>' : '') + '</div>';
+    if (!prin) h += '<div class="v264-aj-nota">Sem designado, a tarefa não ocupa a agenda de ninguém — nem a dos ajudantes.</div>';
+    return h + '</div>';
+  };
+  window._v264BalToggle = function (B, nome) {
+    if (!B || !Array.isArray(B.aj)) return;
+    var n = T(nome); if (!n) return;
+    var i = B.aj.findIndex(function (x) { return nk(x) === nk(n); });
+    if (i >= 0) B.aj.splice(i, 1); else B.aj.push(n);
+    B.ajMexeu = true; B.ajHerda = false;
+  };
+  window._v264BalHerdar = function (B) {
+    if (!B) return;
+    var prin = B.ajR2A ? nomeDe(B.pessoa || '') : T(B.p);
+    B.aj = semRepetir((B.ajOS || []).slice(), prin ? [prin] : []);
+    B.ajMexeu = true; B.ajHerda = true;
+  };
+  // o valor que vai ao servidor: undefined (não mexeu) · '' (herda da OS) · [] (nenhum) · [nomes]
+  window._v264BalValor = function (B) {
+    if (off() || !B || !B.ajMexeu || !Array.isArray(B.aj)) return undefined;
+    var prin = B.ajR2A ? nomeDe(B.pessoa || '') : T(B.p);
+    var fin = semRepetir(B.aj, prin ? [prin] : []);
+    if (B.ajHerda) return '';
+    if (B.ajExec !== 'adm') {
+      var os = semRepetir(B.ajOS || [], prin ? [prin] : []);
+      var igual = os.length === fin.length && os.every(function (n) { return fin.some(function (m) { return nk(m) === nk(n); }); });
+      if (igual) return '';
+    }
+    return fin;
+  };
+  window._v264DepoisDesignar = function (r) {
+    if (!r) return;
+    setTimeout(function () {
+      if (r.ajudantes_erro) avisar(String(r.ajudantes_erro), 'error');
+      else if (!Object.prototype.hasOwnProperty.call(r, 'ajudantes')) avisar('A designação foi salva, mas os AJUDANTES NÃO: o servidor ainda é anterior ao GAS v171 (publique o GAS e marque de novo).', 'warn');
+    }, 450);
+  };
+  window._v264DepoisSaveOS = function (r, payload) {
+    if (!r || !payload || !Object.prototype.hasOwnProperty.call(payload, 'ajudantes')) return;
+    setTimeout(function () {
+      if (r.ajudantes_erro) avisar(String(r.ajudantes_erro), 'error');
+      else if (r.status !== 'error' && !Object.prototype.hasOwnProperty.call(r, 'ajudantes') && !r.duplicate) avisar('A OS foi salva, mas os AJUDANTES NÃO: o servidor ainda é anterior ao GAS v171.', 'warn');
+    }, 450);
+  };
+
+  // ══ 2 · AGENDA ANTIGA ═══════════════════════════════════════════════════════════════════════════
+  window._v264AjItensOSAntiga = function (out, o) {
+    if (off() || !out.length) return;
+    var base = out[out.length - 1]; if (!base || T(base.os_id) !== T(o && o.id_os)) return;
+    if (!T(base.responsavel_nome)) return;   // regra 4: sem responsável reconhecido, ninguém é ocupado pelos ajudantes
+    var ajs = lista(o.ajudantes); if (!ajs.length) return;
+    var vistos = {}; vistos[nk(base.responsavel_nome)] = 1;
+    ajs.forEach(function (id) {
+      var nm = ''; try { nm = typeof _v151NomeDoResponsavel === 'function' ? T(_v151NomeDoResponsavel(id)) : nomeDe(id); } catch (e) { nm = nomeDe(id); }
+      if (!nm || vistos[nk(nm)]) return; vistos[nk(nm)] = 1;
+      var c = {}; for (var k in base) if (Object.prototype.hasOwnProperty.call(base, k)) c[k] = base[k];
+      c.responsavel_nome = nm; c._aj = true; c.ajudante = true; c.principal = base.responsavel_nome || '';
+      out.push(c);
+    });
+  };
+  // as linhas de ajudante, só quando a pergunta é sobre UMA pessoa (o total do dia não conta a tarefa duas vezes)
+  window._v264Ag = function (pay, pessoa) {
+    var a = (pay && Array.isArray(pay.agenda)) ? pay.agenda : [];
+    if (off() || !pessoa || !pay || !Array.isArray(pay.agenda_ajudantes) || !pay.agenda_ajudantes.length) return a;
+    return a.concat(pay.agenda_ajudantes);
+  };
+
+  // ══ 3 · ONDE A OS APARECE: "Vitor + 2" ═══════════════════════════════════════════════════════════
+  window._v264AjChip = function (o) {   // Fila das vistas: o chip a mais ao lado do responsável
+    if (off()) return '';
+    var ns = ajNomesOS(o); if (!ns.length) return '';
+    return '<span class="g8-chip who" title="Ajudantes: ' + E(ns.join(', ')) + '">🤝 + ' + ns.length + '</span>';
+  };
+  window._v264AjSufixo = function (o) {
+    if (off()) return '';
+    var ns = ajNomesOS(o); if (!ns.length) return '';
+    return ' <span class="v264-mais" title="Ajudantes: ' + E(ns.join(', ')) + '">+ ' + ns.length + ' 🤝</span>';
+  };
+  window._v264AjKanban = function (c) {
+    if (off() || !c) return '';
+    var ns = Array.isArray(c.ajudantes_nomes) ? c.ajudantes_nomes.map(T).filter(Boolean) : null, resp = T(c.responsavel_nome);
+    if (ns === null) { var o = osDaLista(c.id_os); ns = ajNomesOS(o); resp = resp || (o ? nomeDe(o.usuario_atual) : ''); }
+    if (!ns.length) return '';
+    return '<div class="gos-kcard-aj" data-v264="kanban" title="' + E(titulo(resp, ns)) + '">👥 ' + E(rotulo(resp, ns)) + '</div>';
+  };
+  window._v264AjMais = function (o) {   // celular: o selo da lista
+    if (off()) return '';
+    var ns = ajNomesOS(o); return ns.length ? ' + ' + ns.length : '';
+  };
+  window._v264AjMobHtml = function (o) {   // celular: a ficha da OS
+    if (off()) return '';
+    var ns = ajNomesOS(o);
+    return ns.length ? '<div class="mob-card-s"><b>Ajudantes:</b> ' + E(ns.join(', ')) + '</div>' : '';
+  };
+  window._v264AjR2APainel = function (o) {
+    if (off()) return '';
+    var ns = ajNomesOS(o);
+    return ns.length ? '<div style="grid-column:1/-1" data-v264="r2apainel"><small>Ajudantes 🤝</small><b title="' + E(ns.join(', ')) + '">' + E(ns.join(', ')) + '</b></div>' : '';
+  };
+  // _g8QuemTexto (Painel das vistas): o responsável + "+ N"
+  try {
+    if (typeof _g8QuemTexto === 'function' && !V264.qt0) {
+      V264.qt0 = _g8QuemTexto;
+      _g8QuemTexto = function (o) { var h = V264.qt0.apply(this, arguments); try { return h + window._v264AjSufixo(o); } catch (e) { return h; } };
+    }
+  } catch (e) {}
+
+  // ══ 4 · NOVA OS (painel R2A) ══════════════════════════════════════════════════════════════════════
+  window._v264AjNovaHtml = function (N) {
+    if (off() || !N) return '';
+    if (!Array.isArray(N.aj)) N.aj = [];
+    var resp = T(N.resp), us = ativos().filter(function (u) { return T(u.id) !== resp; });
+    N.aj = N.aj.filter(function (id) { return T(id) && T(id) !== resp; });
+    var marc = {}; N.aj.forEach(function (id) { marc[T(id)] = 1; });
+    var fora = N.aj.filter(function (id) { return !us.some(function (u) { return T(u.id) === T(id); }); });
+    return '<div class="v264-aj" data-v264="nova"><div class="v264-aj-cab">Ajudantes 🤝 <small>opcional — quem trabalha junto nesta OS ocupa a agenda pelo mesmo horário</small></div>' +
+      '<div class="v264-chips" role="group" aria-label="Ajudantes">' +
+      us.map(function (u) { return '<button type="button" class="v264-chip" data-v264-ajn="' + E(u.id) + '" aria-pressed="' + !!marc[T(u.id)] + '">' + E(u.nome) + '</button>'; }).join('') +
+      fora.map(function (id) { return '<button type="button" class="v264-chip fora" data-v264-ajn="' + E(id) + '" aria-pressed="true">' + E(nomeDe(id)) + '</button>'; }).join('') +
+      (us.length ? '' : '<span class="v264-aj-nota">A equipe ainda não carregou.</span>') + '</div></div>';
+  };
+  function repintarNova() {
+    var box = document.getElementById('r2aNAjBox'), N = window.R2A && R2A.nova;
+    if (box && N) box.innerHTML = window._v264AjNovaHtml(N);
+  }
+  document.addEventListener('click', function (ev) {
+    var b = ev.target && ev.target.closest && ev.target.closest('[data-v264-ajn]'); if (!b || off()) return;
+    var N = window.R2A && R2A.nova; if (!N) return;
+    ev.preventDefault();
+    if (!Array.isArray(N.aj)) N.aj = [];
+    var id = T(b.getAttribute('data-v264-ajn')), i = N.aj.indexOf(id);
+    if (i >= 0) N.aj.splice(i, 1); else N.aj.push(id);
+    repintarNova();
+    try { var bt = document.querySelector('#r2aNAjBox [data-v264-ajn="' + (window.CSS && CSS.escape ? CSS.escape(id) : id) + '"]'); if (bt) bt.focus({ preventScroll: true }); } catch (e) {}
+  });
+  document.addEventListener('change', function (ev) {
+    if (off() || !ev.target || ev.target.id !== 'r2aNResp') return;
+    setTimeout(repintarNova, 0);   // o responsável sai da lista de ajudantes
+  });
+
+  // ══ 5 · FORMULÁRIO COMPLETO (modal da OS) ════════════════════════════════════════════════════════
+  function modalRow() {
+    var sel = document.getElementById('osUsuario'); if (!sel) return null;
+    var row = document.getElementById('v264AjModalRow');
+    if (!row) {
+      var pai = sel.closest('.form-row') || sel.parentNode; if (!pai || !pai.parentNode) return null;
+      row = document.createElement('div'); row.className = 'form-row'; row.id = 'v264AjModalRow';
+      pai.parentNode.insertBefore(row, pai.nextSibling);
+    }
+    return row;
+  }
+  function pintarModal() {
+    var M = V264.modal, row = modalRow(); if (!M || !row) return;
+    if (M.ilegivel) {
+      row.innerHTML = '<label class="form-label">Ajudantes 🤝</label><div class="v264-aj-nota av">⚠ Não consegui ler os ajudantes desta OS aqui — eles NÃO serão alterados. Para mudar, abra a OS pela Gestão de OS.</div>';
+      return;
+    }
+    var resp = T((document.getElementById('osUsuario') || {}).value);
+    var us = ativos().filter(function (u) { return T(u.id) !== resp && nk(u.nome) !== nk(resp); });
+    var marc = {}; M.ids.forEach(function (id) { marc[T(id)] = 1; });
+    var fora = M.ids.filter(function (id) { return T(id) !== resp && !us.some(function (u) { return T(u.id) === T(id); }); });
+    row.innerHTML = '<label class="form-label">Ajudantes 🤝 <span style="font-weight:400;color:var(--text-muted)">— opcional; ocupam a agenda pelo mesmo horário das tarefas de campo</span></label>' +
+      '<div class="v264-chips" role="group" aria-label="Ajudantes">' +
+      us.map(function (u) { return '<button type="button" class="v264-chip" data-v264-ajm="' + E(u.id) + '" aria-pressed="' + !!marc[T(u.id)] + '">' + E(u.nome) + '</button>'; }).join('') +
+      fora.map(function (id) { return '<button type="button" class="v264-chip fora" data-v264-ajm="' + E(id) + '" aria-pressed="true" title="Fora da equipe ativa">' + E(nomeDe(id)) + '</button>'; }).join('') +
+      (us.length || fora.length ? '' : '<span class="v264-aj-nota">A equipe ainda não carregou.</span>') + '</div>' +
+      (M.semColuna ? '<div class="v264-aj-nota av">⚠ A lista desta OS veio sem o campo de ajudantes (servidor anterior ao GAS v171): marque só depois de publicar o GAS.</div>' : '');
+  }
+  // o modal fechou (Salvar, Cancelar, Esc — a JANELA_V1 tira a classe `open`): o estado dos chips morre junto
+  //   (observa a CLASSE do modal, nunca embrulha closeModal — lição do V258); o observador só LÊ
+  function vigiarModal() {
+    if (V264.obsModal) return;
+    var m = document.getElementById('modalOS'); if (!m || typeof MutationObserver !== 'function') return;
+    V264.obsModal = new MutationObserver(function () {
+      var aberto = m.classList.contains('open');
+      if (!aberto && V264.modal) { V264.modalFechado = V264.modal; V264.modal = null; }   // (a Nova OS do painel lê o fechado ao voltar)
+    });
+    V264.obsModal.observe(m, { attributes: true, attributeFilter: ['class', 'style'] });
+  }
+  function iniciarModal() {
+    vigiarModal();
+    var id = T((document.getElementById('osId') || {}).value);
+    var M = V264.modal;
+    if (M && M.osId === id && (M.mexeu || M.daNova)) { pintarModal(); return; }
+    var o = id ? osDaLista(id) : null;
+    // OS fora da lista carregada (ex.: Tarefas do Adm → 🏁 Encerrar OS): o openModalOS a buscou no servidor e a deixou em
+    //   window.__v264OsModal (costura). Sem ela, os chips NÃO aparecem: o primeiro clique apagaria os ajudantes que
+    //   existem e a tela não sabe (achado 3 da auditoria)
+    if (id && !o && window.__v264OsModal && T(window.__v264OsModal.id_os) === id) o = window.__v264OsModal;
+    V264.modal = { osId: id, ids: o ? lista(o.ajudantes).map(idDe) : [], mexeu: false, daNova: false, ilegivel: !!(id && !o),
+                   semColuna: !!(o && !Object.prototype.hasOwnProperty.call(o, 'ajudantes')) };
+    pintarModal();
+  }
+  window._v264ModalDe = function (ids) {   // a Nova OS do painel seguiu para o formulário completo
+    if (off()) return;
+    if (!V264.modal) iniciarModal();
+    if (!V264.modal) return;
+    V264.modal.ids = (Array.isArray(ids) ? ids : []).map(T).filter(Boolean);
+    V264.modal.daNova = true; V264.modal.mexeu = V264.modal.ids.length > 0;
+    pintarModal();
+  };
+  try {
+    if (typeof _populateOSUsuarioSelect === 'function' && !V264.pop0) {
+      V264.pop0 = _populateOSUsuarioSelect;
+      _populateOSUsuarioSelect = function () {
+        var r = V264.pop0.apply(this, arguments);
+        if (!off()) { try { iniciarModal(); } catch (e) { try { console.warn('[V264] modal:', e); } catch (x) {} } }
+        return r;
+      };
+    }
+  } catch (e) {}
+  document.addEventListener('click', function (ev) {
+    var b = ev.target && ev.target.closest && ev.target.closest('[data-v264-ajm]'); if (!b || off() || !V264.modal) return;
+    ev.preventDefault();
+    var id = T(b.getAttribute('data-v264-ajm')), M = V264.modal, i = M.ids.indexOf(id);
+    if (i >= 0) M.ids.splice(i, 1); else M.ids.push(id);
+    M.mexeu = true; pintarModal();
+  });
+  document.addEventListener('change', function (ev) { if (!off() && ev.target && ev.target.id === 'osUsuario' && V264.modal) pintarModal(); });
+  // o Salvar do modal passa por _v178AntesDeSalvarOS(payload, id): os ajudantes entram no payload (edição: só se mexeu)
+  try {
+    if (typeof _v178AntesDeSalvarOS === 'function' && !V264.antes0) {
+      V264.antes0 = _v178AntesDeSalvarOS;
+      _v178AntesDeSalvarOS = async function (payload, id) {
+        var ok = await V264.antes0.apply(this, arguments);
+        if (!ok || off()) return ok;
+        try {
+          var M = V264.modal, resp = T(payload && payload.usuario_atual);
+          if (M && payload && !M.ilegivel && (M.mexeu || (!id && M.ids.length))) {
+            payload.ajudantes = M.ids.filter(function (x) { return T(x) && T(x) !== resp; });
+            V264.ultimoPayload = payload;
+          }
+        } catch (e) { try { console.warn('[V264] payload:', e); } catch (x) {} }
+        return ok;
+      };
+    }
+  } catch (e) {}
+})();
+</script>
+<!-- ████ FIM PCM V264 ████ -->
+
+<!-- ████ INICIO PCM V265 ████ -->
+<style id="v265Css">
+/* PCM V265 — card do CRM só de peças (sem máquina) + "＋ Cadastrar máquina" na ＋ Oportunidade e no painel 🛠 Máquinas do card.
+   Chave de volta: localStorage pcm_v265 = off (a tela volta a ser a do V261). */
+#modalMachine.v265-acima{z-index:330}
+.v265-maqs{margin-top:2px}
+.v265-maqs .v200-maqs{max-height:190px;overflow:auto}
+.v265-st{font-size:12px;color:var(--text-muted,#6B6B6B);margin:4px 0 2px;display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.v265-st.verm{color:#B42318}
+.v265-acoes{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:6px}
+.v265-dica{font-size:12px;color:var(--text2,#4F4F4F);background:#F6F6F6;border:1px dashed #D6D6D6;border-radius:8px;padding:6px 9px;margin-top:6px}
+.v265-dica.on{background:#EEF6EE;border-color:#9BC59B;color:#245524}
+.v265-nova{font-weight:700}
+.v265-nova::after{content:' · nova';font-weight:600;color:#1F7A1F;font-size:11px}
+.v265-lnk{all:unset;cursor:pointer;color:var(--accent,#C2410C);text-decoration:underline;font-size:12px}
+.v265-lnk:hover{color:#9A3412}
+.v265-lnk:focus-visible{outline:2px solid var(--accent,#EE7625);outline-offset:1px}
+.v265-chip{display:inline-block;font-size:10.5px;font-weight:700;line-height:1;padding:3px 6px;border-radius:999px;background:#EEF6EE;color:#245524;border:1px solid #9BC59B;margin-left:4px;vertical-align:middle}
+.v265-vp{border-left:3px solid #4C9A4C}
+.v265-est{color:#245524!important}
+</style>
+<script>
+/* PCM V265 — 09/10/2026 — rodada 2026-10-09_oportunidade_pecas_e_maquina (sobre o PCM V261 no ar). Par: SQL OPORTUNIDADE_PECAS_2026-10-09 (RODA ANTES).
+   Pedido do Fernando (09/10, Localiza): "consigo montar uma oportunidade só de peças, sem ter máquina atrelada? ... caso tenha uma máquina pra
+   atrelar, mas ela ainda não estiver cadastrada ... pode até abrir telas novas, mas não gostaria de ter que fechar essa tela de oportunidades".
+   O QUE MUDA NA TELA
+   1 · ＋ Oportunidade: com natureza só "Peça", o card nasce SEM máquina e sem modelo (venda de peças avulsas). Com "Serviço" marcado, continua
+       exigindo máquina ou modelo, com a frase dizendo como resolver. (O banco confere igual — gatilho tg_crm_sem_maquina.)
+   2 · ＋ Oportunidade: a lista de máquinas passa a ser lida do BANCO (crm_conta_maquinas — a mesma regra do painel 🛠 do V246), somada à cópia
+       deste computador; "＋ Cadastrar máquina deste cliente" abre a janela de máquina POR CIMA (a oportunidade fica aberta embaixo), com o
+       cliente preenchido; gravou ⇒ a máquina volta MARCADA. O formulário (título, máquinas, modelo, OS, dono) sobrevive a toda repintura
+       (antes, a chegada da lista de OS apagava o título digitado).
+   3 · Painel "🛠 Máquinas do card" (V246): "＋ Cadastrar máquina deste cliente" — gravou ⇒ o painel relê e a máquina nova vem marcada para incluir.
+   4 · Card de VENDA DE PEÇAS (só Peça, sem máquina, sem modelo, sem OS): selo 🧩 no quadro; a caixa da OS do card explica que aceito ele vai direto
+       ao Faturamento (sem OS); o editor da proposta mostra "🧩 Peças avulsas" no lugar de "sem máquina no card".
+   NADA de Apps Script. Não muda o cadastro de máquina em si (é o mesmo openModalMachine/saveMachine de sempre).
+   Embrulha (sempre por fora, pelo nome global): _v200PintarNova · _v200CriarOportunidade · _v200PintarCard · _crosCardHtml · _v200CardHtml · _v204Pintar. */
+(function () {
+  'use strict';
+  if (window.V265) return;
+  var V265 = window.V265 = { versao: 'PCM_V265', orig: {}, cad: null, ger: 0 };
+  function off() { try { return localStorage.getItem('pcm_v265') === 'off'; } catch (e) { return false; } }
+  function T(x) { return String(x == null ? '' : x).trim(); }
+  function E(x) { return String(x == null ? '' : x).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+  function N(x) { try { return T(x).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, ''); } catch (e) { return T(x).toLowerCase(); } }
+  function hora(iso) { try { var d = new Date(iso); return isNaN(d) ? '' : d.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }); } catch (e) { return ''; } }
+  function semSql(e) { return !!(e && (e.v200 === 'sem_sql' || /PGRST202|42883|ainda não rodou/i.test(String(e.message || '')))); }
+  function nomeCli(id, nome) {
+    try { var c = (db.clients || []).find(function (x) { return T(x.id) === T(id); }); if (c && T(c.nome)) return T(c.nome); } catch (e) {}
+    try { var k = (_v200.contas || []).find(function (x) { return T(x.cliente_id) === T(id); }); if (k && T(k.cliente)) return T(k.cliente); } catch (e) {}
+    return T(nome);
+  }
+  function maqsLocais(cliId, nome) {
+    var ck = ''; try { ck = clientKey(nome || ''); } catch (e) {}
+    try { return (db.machines || []).filter(function (m) { return (cliId && T(m.clientId || m.clienteId || m.client_id || m.cliente_id || m.Cliente_ID) === T(cliId)) || (ck && clientKey(m.client || '') === ck); }); } catch (e) { return []; }
+  }
+  function rotLocal(m) { try { return _osMachineLabel(m); } catch (e) { return T([m.brand, m.model, m.serial ? 'série ' + m.serial : ''].filter(Boolean).join(' ')) || T(m.id); } }
+  function podeCadMaq() {
+    if (typeof openModalMachine !== 'function') return false;
+    try { if (typeof _v222Pode === 'function' && !_v222Pode()) return false; } catch (e) { return false; }
+    return true;
+  }
+  // a venda de peças (a MESMA regra do banco: _crm_venda_pecas) — para pintar; quem decide é o banco
+  function ehVendaPecas(o, vinculos) {
+    if (!o) return false;
+    var n = Array.isArray(o.naturezas) ? o.naturezas : (o.natureza ? [o.natureza] : []);
+    return n.length === 1 && n[0] === 'peca' && !(o.maquina_ids || []).length && !T(o.modelo_id) && !T(o.os_id) &&
+           !(vinculos || []).some(function (v) { return v && v.tipo === 'os'; });
+  }
+  V265.ehVendaPecas = ehVendaPecas;
+
+  // ═══ 1 · A JANELA DE MÁQUINA POR CIMA (compartilhada pela ＋ Oportunidade e pelo painel do card) ═══════════════════════════
+  // abre o cadastro de sempre com o cliente preenchido; ao FECHAR (gravou ou não), devolve as máquinas novas deste cliente
+  function cadastrarMaquina(cliId, nome, volta) {
+    if (!podeCadMaq()) { toast('Seu perfil não cadastra máquinas — peça ao escritório (menu Máquinas).', 'warning'); return false; }
+    if (V265.cad) { toast('A janela de máquina já está aberta.', 'warning'); return false; }
+    var nm = nomeCli(cliId, nome);
+    var temCli = false; try { temCli = (db.clients || []).some(function (c) { return T(c.id) === T(cliId); }); } catch (e) {}
+    if (!temCli) { toast('O cliente "' + nm + '" ainda está indo para a planilha deste computador — espere alguns segundos e clique de novo.', 'warning'); return false; }
+    var antes = {}; try { (db.machines || []).forEach(function (m) { antes[T(m.id)] = 1; }); } catch (e) {}
+    var ov = document.getElementById('modalMachine'); if (!ov) return false;
+    var C = V265.cad = { cli: T(cliId), nome: nm, antes: antes, volta: volta, ov: ov };
+    try { openModalMachine(); } catch (e) { V265.cad = null; toast('Não consegui abrir o cadastro de máquina: ' + ((e && e.message) || e), 'error'); return false; }
+    ov.classList.add('v265-acima');
+    var f = document.getElementById('mcClient');
+    if (f) { f.value = nm; try { f.dispatchEvent(new Event('input', { bubbles: true })); f.dispatchEvent(new Event('change', { bubbles: true })); } catch (e) {} }
+    try { if (typeof _v126PreencherUnidades === 'function') _v126PreencherUnidades(nm, ''); } catch (e) {}
+    try { if (typeof _captureFormSnapshot === 'function') _captureFormSnapshot('modalMachine'); } catch (e) {}
+    setTimeout(function () { try { document.getElementById('mcBrand').focus(); } catch (e) {} }, 60);
+    // o fechamento passa por muitos caminhos (Salvar, ×, Esc, fundo, JANELA_V1): observa a classe "open" (só LÊ o DOM do cadastro)
+    try {
+      C.obs = new MutationObserver(function () { if (!ov.classList.contains('open')) fechou(C); });
+      C.obs.observe(ov, { attributes: true, attributeFilter: ['class'] });
+    } catch (e) {}
+    C.vigia = setInterval(function () { if (!ov.classList.contains('open')) fechou(C); }, 700);   // reserva, se o observador falhar
+    return true;
+  }
+  // auditoria 1, nº 15: o saveMachine FUNDE com a máquina de mesma série (não nasce id novo) — guarda a série do que foi GRAVADO
+  (function () {
+    var o = window.saveMachine; if (typeof o !== 'function' || o.__v265) return;
+    var f = function () {
+      var C = V265.cad, ser = C ? T((document.getElementById('mcSerial') || {}).value) : '';
+      var r = o.apply(this, arguments);
+      try { var ov = document.getElementById('modalMachine'); if (C && V265.cad === C && ser && !(ov && ov.classList.contains('open'))) C.serieGravada = ser; } catch (e) {}
+      return r;
+    };
+    f.__v265 = true; try { Object.keys(o).forEach(function (k) { f[k] = o[k]; }); } catch (e) {}
+    window.saveMachine = f;
+  })();
+  function fechou(C) {
+    if (V265.cad !== C) return;
+    V265.cad = null;
+    try { C.obs && C.obs.disconnect(); } catch (e) {}
+    clearInterval(C.vigia);
+    try { C.ov.classList.remove('v265-acima'); } catch (e) {}
+    var novas = [];
+    try {
+      maqsLocais(C.cli, C.nome).forEach(function (m) { if (!C.antes[T(m.id)]) novas.push({ id: T(m.id), rotulo: rotLocal(m) }); });
+      if (!novas.length && C.serieGravada) {
+        var sn = N(C.serieGravada).replace(/[^a-z0-9]/g, '');
+        maqsLocais(C.cli, C.nome).forEach(function (m) { if (sn && N(m.serial).replace(/[^a-z0-9]/g, '') === sn) novas.push({ id: T(m.id), rotulo: rotLocal(m) }); });
+      }
+    } catch (e) {}
+    try { C.volta(novas); } catch (e) { try { console.warn('[V265] volta do cadastro:', e); } catch (x) {} }
+  }
+  // Esc com a janela de máquina por cima fecha SÓ ela (o ESC global fecha a última .overlay do DOM — que seria a oportunidade embaixo)
+  window.addEventListener('keydown', function (ev) {
+    if (!V265.cad || (ev.key !== 'Escape' && ev.key !== 'Esc')) return;
+    var ov = document.getElementById('modalMachine'); if (!ov || !ov.classList.contains('open')) return;
+    ev.preventDefault(); ev.stopImmediatePropagation();
+    try { closeModalSafe('modalMachine'); } catch (e) { ov.classList.remove('open'); }
+  }, true);
+  V265.cadastrarMaquina = cadastrarMaquina;
+
+  // ═══ 2 · ＋ OPORTUNIDADE ══════════════════════════════════════════════════════════════════════════════════════════
+  function lerForm(M) {
+    var b = document.getElementById('v200ModalBody'); if (!b || !M || M.tipo !== 'nova' || !document.getElementById('v200NvTit')) return;
+    var S = M.v265 = M.v265 || {};
+    S.tit = _v200Val('v200NvTit');                          // o título vale para qualquer conta
+    if (S.cliForm !== M.cli) return;                       // a conta mudou: máquinas/OS/dono na tela eram da conta anterior
+    S.maqs = Array.prototype.slice.call(b.querySelectorAll('input[name="v200NvMaq"]:checked')).map(function (x) { return x.value; });
+    S.mod = _v200Val('v200NvMod'); S.os = _v200Val('v200NvOs'); S.dono = _v200Val('v200NvDono'); S.temForm = true;
+  }
+  function porForm(M) {
+    var S = M.v265 || {};
+    var set = function (id, v) { var el = document.getElementById(id); if (!el || v == null) return; if (el.tagName === 'SELECT' && v && !Array.prototype.some.call(el.options, function (o) { return o.value === v; })) return; el.value = v; };
+    if (S.tit) set('v200NvTit', S.tit);
+    if (!S.temForm || S.cliForm !== M.cli) return;
+    set('v200NvMod', S.mod); set('v200NvOs', S.os); set('v200NvDono', S.dono);
+  }
+  function lerBanco(M) {
+    var S = M.v265, cli = M.cli, g = ++V265.ger;
+    S.b = { cli: cli, g: g, lendo: true, erro: '', semSql: false, lista: S.b && S.b.cli === cli ? S.b.lista : null, em: S.b && S.b.cli === cli ? S.b.em : null };
+    return _v200Rpc('crm_conta_maquinas', { p_cliente: cli }).then(function (r) {
+      if (_v200.modal !== M || M.cli !== cli || !S.b || S.b.cli !== cli || S.b.g !== g) return;   // auditoria 1, nº 14: só a leitura MAIS NOVA vale
+      S.b.lendo = false; S.b.lista = (r && r.maquinas) || []; S.b.em = (r && r.lido_em) || new Date().toISOString();
+      try { (S.b.lista || []).forEach(function (m) { if (window.V246 && V246.rot) V246.rot[T(m.id)] = m.rotulo; }); } catch (e) {}
+    }, function (e) {
+      if (_v200.modal !== M || M.cli !== cli || !S.b || S.b.cli !== cli || S.b.g !== g) return;
+      S.b.lendo = false; S.b.semSql = semSql(e); S.b.erro = S.b.semSql ? '' : ((e && e.message) || String(e));
+    }).then(function () { if (_v200.modal === M && M.tipo === 'nova' && M.cli === cli && g === V265.ger) _v200PintarNova(); });
+  }
+  function listaDaConta(M, conta) {
+    var S = M.v265, ids = {}, out = [];
+    ((S.b && S.b.cli === M.cli && S.b.lista) || []).forEach(function (m) { if (!ids[m.id]) { ids[m.id] = 1; out.push({ id: T(m.id), rotulo: T(m.rotulo) || T(m.id), banco: true }); } });
+    maqsLocais(M.cli, conta.cliente).forEach(function (m) { var id = T(m.id); if (!ids[id]) { ids[id] = 1; out.push({ id: id, rotulo: rotLocal(m), banco: false }); } });
+    return out;
+  }
+  function blocoMaqs(M, conta) {
+    var S = M.v265, B = S.b || {}, L = listaDaConta(M, conta), marcadas = S.maqs || [], novas = S.novas || {};
+    var h = '<div class="v265-maqs" id="v265Maqs">';
+    if (L.length) h += '<div class="v200-maqs">' + L.map(function (m) {
+      return '<label' + (novas[m.id] ? ' class="v265-nova"' : '') + '><input type="checkbox" name="v200NvMaq" value="' + E(m.id) + '"' + (marcadas.indexOf(m.id) >= 0 ? ' checked' : '') + '> ' + E(m.rotulo) + '</label>';
+    }).join('') + '</div>';
+    var st;
+    if (B.lendo && !B.lista) st = '⏳ lendo as máquinas da conta no banco…' + (L.length ? ' (por enquanto, as deste computador)' : '');
+    else if (B.semSql) st = 'Lista deste computador (o SQL OPORTUNIDADE_PECAS ainda não rodou no banco).';
+    else if (B.erro) st = '<span>Não consegui ler as máquinas da conta no banco (' + E(B.erro) + ') — mostrando as deste computador.</span> <button type="button" class="v265-lnk" data-v265="releia">Tentar de novo</button>';
+    else if (B.lista) st = (L.length ? L.length + ' máquina(s) da conta' : 'Nenhuma máquina desta conta no cadastro') + ' · lida(s) do banco às ' + E(hora(B.em)) + ' <button type="button" class="v265-lnk" data-v265="releia">reler</button>';
+    else st = L.length ? '' : 'Nenhuma máquina desta conta neste computador.';
+    if (st) h += '<div class="v265-st' + (B.erro ? ' verm' : '') + '">' + st + '</div>';
+    var pode = podeCadMaq();
+    h += '<div class="v265-acoes"><button type="button" class="btn btn-secondary btn-sm" data-v265="cadMaq" data-pw-off="1"' + (pode ? '' : ' disabled title="seu perfil não cadastra máquinas — peça ao escritório"') +
+         '>＋ Cadastrar máquina deste cliente</button><small style="color:var(--text-muted)">abre a janela de máquina por cima — esta oportunidade continua aberta</small></div>';
+    var nats = M.nats || [], soPeca = nats.length === 1 && nats[0] === 'peca';
+    h += '<div class="v265-dica' + (soPeca ? ' on' : '') + '" id="v265Dica">' + (soPeca
+      ? '🧩 <b>Venda de peças avulsas</b>: pode criar sem máquina (e sem modelo). Aceita, a proposta vai direto ao Faturamento — sem OS.'
+      : 'Venda de peças avulsas, sem máquina? Marque só <b>Peça</b> na natureza. Com <b>Serviço</b>, a máquina (ou o modelo) é obrigatória.') + '</div>';
+    return h + '</div>';
+  }
+  function decorarNova() {
+    var M = _v200.modal; if (!M || M.tipo !== 'nova' || !M.cli) return;
+    var body = document.getElementById('v200ModalBody'); if (!body) return;
+    var S = M.v265 = M.v265 || {};
+    if (S.cliForm !== M.cli) { S.cliForm = M.cli; S.temForm = false; S.maqs = []; S.novas = {}; S.b = null; }
+    if (!S.b || S.b.cli !== M.cli) lerBanco(M);
+    var conta = (_v200.contas || []).find(function (c) { return c.cliente_id === M.cli; }) || {};
+    // o rótulo e a lista de máquinas: troca o bloco que o V200 pintou (a cópia deste computador) pelo bloco lido do banco
+    var lab = Array.prototype.find.call(body.querySelectorAll('.v200-form > label'), function (l) { return /^Máquina\(s\)/.test(T(l.textContent)); });
+    if (!lab) return;
+    lab.innerHTML = 'Máquina(s) <small>(com Serviço: a máquina ou o modelo, abaixo · só Peça pode ficar sem)</small>';
+    var prox = lab.nextElementSibling;
+    if (prox && (prox.classList.contains('v200-maqs') || prox.classList.contains('v200-sub'))) prox.outerHTML = blocoMaqs(M, conta);
+    else lab.insertAdjacentHTML('afterend', blocoMaqs(M, conta));
+    porForm(M);
+  }
+  V265.orig.pintarNova = _v200PintarNova;
+  _v200PintarNova = function () {
+    if (off()) return V265.orig.pintarNova.apply(this, arguments);
+    var M = _v200.modal, a = document.activeElement, focoId = a && a.id && /^v200Nv(Tit|Mod|Os|Dono)$/.test(a.id) ? a.id : '', p = null;
+    try { if (focoId === 'v200NvTit') p = a.selectionStart; } catch (e) {}
+    try { if (M && M.v265 && M.v265.naoLer) M.v265.naoLer = false; else lerForm(M); } catch (e) {}   // naoLer: quem chamou já pôs o estado (a máquina nova marcada)
+    var r = V265.orig.pintarNova.apply(this, arguments);
+    try { decorarNova(); } catch (e) { try { console.warn('[V265] ＋ Oportunidade:', e); } catch (x) {} }
+    if (focoId) { var n = document.getElementById(focoId); if (n) { try { n.focus({ preventScroll: true }); if (p != null) n.setSelectionRange(p, p); } catch (e) {} } }
+    return r;
+  };
+  // a natureza muda ⇒ a dica muda (sem repintar o formulário)
+  document.addEventListener('change', function (ev) {
+    var t = ev.target; if (off() || !t || t.getAttribute('data-v214nat') !== 'v214NvNat') return;
+    var M = _v200.modal; if (!M || M.tipo !== 'nova') return;
+    setTimeout(function () {
+      var d = document.getElementById('v265Dica'); if (!d || _v200.modal !== M) return;
+      var nats = (typeof _v214NatsCanon === 'function') ? _v214NatsCanon(_v214NatsLidas('v214NvNat')) : (M.nats || []);
+      var so = nats.length === 1 && nats[0] === 'peca';
+      d.className = 'v265-dica' + (so ? ' on' : '');
+      d.innerHTML = so ? '🧩 <b>Venda de peças avulsas</b>: pode criar sem máquina (e sem modelo). Aceita, a proposta vai direto ao Faturamento — sem OS.'
+                       : 'Venda de peças avulsas, sem máquina? Marque só <b>Peça</b> na natureza. Com <b>Serviço</b>, a máquina (ou o modelo) é obrigatória.';
+    }, 0);
+  });
+  function cadNaNova() {
+    var M = _v200.modal; if (!M || M.tipo !== 'nova' || !M.cli) return;
+    lerForm(M);
+    var conta = (_v200.contas || []).find(function (c) { return c.cliente_id === M.cli; }) || {};
+    cadastrarMaquina(M.cli, conta.cliente, function (novas) {
+      if (_v200.modal !== M || M.tipo !== 'nova') return;
+      try { lerForm(M); } catch (e) {}
+      var S = M.v265 = M.v265 || {}; S.maqs = S.maqs || []; S.novas = S.novas || {};
+      novas.forEach(function (m) { if (S.maqs.indexOf(m.id) < 0) S.maqs.push(m.id); S.novas[m.id] = 1; });
+      S.naoLer = true;
+      if (novas.length) toast('Máquina cadastrada e marcada nesta oportunidade: ' + novas.map(function (m) { return m.rotulo; }).join(', ') + '.', 'success');
+      _v200PintarNova();
+      // o banco recebe em 2º plano: relê a lista (a máquina passa de "deste computador" a "do banco")
+      if (novas.length) [2500, 7000].forEach(function (ms) { setTimeout(function () { if (_v200.modal === M && M.cli === S.cliForm) { S.b = null; _v200PintarNova(); } }, ms); });
+    });
+  }
+
+  // criar: só Peça sem máquina e sem modelo = venda de peças (o banco confere igual)
+  V265.orig.criar = _v200CriarOportunidade;
+  _v200CriarOportunidade = async function () {
+    if (off()) return V265.orig.criar.apply(this, arguments);
+    var M = _v200.modal; if (!M || !M.cli) return;
+    if (!document.querySelector('input[data-v214nat="v214NvNat"]')) return V265.orig.criar.apply(this, arguments);   // banco sem o 1c: como antes
+    var maqs = Array.prototype.slice.call(document.querySelectorAll('#v200ModalBody input[name="v200NvMaq"]:checked')).map(function (x) { return x.value; });
+    var mod = _v200Val('v200NvMod');
+    var nats = _v214NatsCanon(_v214NatsLidas('v214NvNat'));
+    var S = M.v265 || {};
+    // máquina marcada que o banco não tem: relê antes de criar (o card não nasce apontando para máquina que o banco não conhece).
+    //   Auditoria 1, nº 6: a conferência valia só com a lista na mão — durante uma releitura (lista zerada) ela era PULADA. Agora: sem a
+    //   lista, lê na hora; leitura falhou ⇒ não cria. Nº 7: a frase distingue a máquina recém-cadastrada (espere) da que nunca vai chegar.
+    if (maqs.length && S.b && !S.b.semSql) {
+      var doBanco = function () { var x = {}; (S.b.lista || []).forEach(function (m) { x[T(m.id)] = 1; }); return x; };
+      var faltam = maqs.filter(function (id) { return !doBanco()[id]; });
+      if (faltam.length || !S.b.lista) {
+        try {
+          var r0 = await _v200Rpc('crm_conta_maquinas', { p_cliente: M.cli }); if (_v200.modal !== M) return;
+          S.b.lista = (r0 && r0.maquinas) || []; S.b.em = (r0 && r0.lido_em) || S.b.em; S.b.lendo = false; S.b.erro = ''; S.b.g = ++V265.ger;
+        } catch (e) {
+          if (_v200.modal !== M) return;
+          if (semSql(e)) S.b.semSql = true;
+          else { toast('Não consegui conferir as máquinas da conta no banco (' + ((e && e.message) || e) + ') — nada foi criado. Tente de novo.', 'error'); return; }
+        }
+        faltam = S.b.semSql ? [] : maqs.filter(function (id) { return !doBanco()[id]; });
+        if (faltam.length) {
+          var rotDe = function (id) { var m = listaDaConta(M, {}).find(function (x) { return x.id === id; }); return m ? m.rotulo : id; };
+          var recem = faltam.filter(function (id) { return S.novas && S.novas[id]; }), velhas = faltam.filter(function (id) { return !(S.novas && S.novas[id]); });
+          if (velhas.length) toast('A máquina "' + velhas.map(rotDe).join(', ') + '" não está no cadastro desta conta no banco (inativa, apagada ou de outra conta) — desmarque-a ou confira o cadastro em Máquinas.', 'warning');
+          else toast('A máquina "' + recem.map(rotDe).join(', ') + '" acabou de ser cadastrada e ainda não chegou ao banco (vai em 2º plano). Espere alguns segundos e clique de novo.', 'warning');
+          try { _v200PintarNova(); } catch (e) {}
+          return;
+        }
+      }
+    }
+    if (maqs.length || mod) return V265.orig.criar.apply(this, arguments);
+    if (!nats.length) { toast('Marque a natureza: serviço, peça ou os dois.', 'error'); return; }
+    if (!(nats.length === 1 && nats[0] === 'peca')) {
+      toast('Com "Serviço" marcado, escolha a máquina (ou ＋ Cadastrar máquina deste cliente) ou o modelo. Só "Peça" — venda de peças avulsas — pode ficar sem máquina.', 'error');
+      return;
+    }
+    var tit = _v200Val('v200NvTit'); if (tit.length < 3) { toast('Escreva o título (3 letras ou mais).', 'error'); return; }
+    var bt = document.querySelector('#v200ModalBody [data-v200="criar"]');
+    if (M.v265criando) return;
+    M.v265criando = true;
+    var txt = bt ? bt.textContent : '';
+    if (bt) { bt.disabled = true; bt.setAttribute('data-pcm-enviando', '1'); bt.classList.add('is-busy'); bt.textContent = '⏳ Criando…'; }
+    try {
+      var r = await _v200Rpc('crm_oportunidade_criar', { p_cliente: M.cli, p_titulo: tit, p_maquinas: [], p_modelo: null, p_natureza: 'peca', p_naturezas: ['peca'],
+        p_os: _v200Val('v200NvOs') || null, p_dono: _v200Val('v200NvDono') || null }, true);
+      toast('Oportunidade ' + ((r && r.id) || '') + ' criada — venda de peças, sem máquina.', 'success');
+      _v200Fechar(); await _v200Carregar();
+      if (r && r.id) _v200AbrirCard(r.id);
+    } catch (e) {
+      var msg = (e && e.message) || 'Não consegui criar.';
+      if (/ck_crm_manual_maquina/.test(msg)) msg = 'O banco ainda não aceita card sem máquina: o SQL OPORTUNIDADE_PECAS não rodou no Supabase (LEIA-ME da entrega de 09/10). Nada foi gravado.';
+      toast(msg, 'error');
+    }
+    finally {
+      M.v265criando = false;
+      if (bt && bt.isConnected) { bt.disabled = false; bt.removeAttribute('data-pcm-enviando'); bt.classList.remove('is-busy'); bt.textContent = txt; }
+    }
+  };
+
+  // ═══ 3 · PAINEL "🛠 Máquinas do card" (V246): ＋ Cadastrar máquina ═════════════════════════════════════════════════════
+  function decorarPainel() {
+    var M = _v200.modal; if (!M || M.tipo !== 'card' || !M.d || !M.d.card) return;
+    var p = document.getElementById('v246Painel'); if (!p || p.querySelector('[data-v265="cadMaqCard"]')) return;
+    var G = (window.V246 && V246.g) || {}; if (!G.d || !G.d.pode) return;
+    var pode = podeCadMaq();
+    var h = '<div class="v265-acoes" id="v265CardCad"><button type="button" class="btn btn-secondary btn-sm" data-v265="cadMaqCard" data-pw-off="1"' + (pode ? '' : ' disabled title="seu perfil não cadastra máquinas — peça ao escritório"') +
+            '>＋ Cadastrar máquina deste cliente</button><small style="color:var(--text-muted)">máquina que não aparece aqui? cadastre — ela volta marcada para incluir</small></div>';
+    var ac = p.querySelector('.v246-acoes'); if (ac) ac.insertAdjacentHTML('afterend', h); else p.insertAdjacentHTML('beforeend', h);
+    // a máquina que acabou de ser cadastrada vem marcada
+    // auditoria 1, nº 8: marca UMA vez (a pessoa pode desmarcar); o destaque "nova" fica
+    var marcar = (M.v265 && M.v265.marcar) || {}, novas = (M.v265 && M.v265.destaque) || {};
+    Array.prototype.forEach.call(p.querySelectorAll('input[name="v246GMaq"]'), function (x) {
+      if (marcar[x.value]) { x.checked = true; delete marcar[x.value]; }
+      if (novas[x.value]) { var l = x.closest('label'); if (l) l.classList.add('v265-nova'); }
+    });
+    var v = p.querySelector('.v200-sub');
+    if (v && /Máquina que não aparece aqui\?/.test(v.textContent || '')) v.textContent = 'Todas as máquinas ativas desta conta já estão no card. Máquina que não aparece? Cadastre aqui embaixo (ou confira a conta e se está ativa).';
+  }
+  function cadNoCard() {
+    var M = _v200.modal; if (!M || M.tipo !== 'card' || !M.d || !M.d.card) return;
+    var o = M.d.card;
+    cadastrarMaquina(o.cliente_id, '', function (novas) {
+      if (_v200.modal !== M) return;
+      M.v265 = M.v265 || {}; M.v265.marcar = M.v265.marcar || {}; M.v265.destaque = M.v265.destaque || {};
+      novas.forEach(function (m) { M.v265.marcar[m.id] = 1; M.v265.destaque[m.id] = 1; });
+      if (!novas.length) return;
+      toast('Máquina cadastrada: ' + novas.map(function (m) { return m.rotulo; }).join(', ') + ' — marcada no painel; clique "＋ Incluir no card".', 'success');
+      // o painel relê do banco (a máquina chega em 2º plano: relê de novo se ainda não veio)
+      var reler = function () {
+        if (_v200.modal !== M || !window.V246 || !V246.g || V246.g.id !== o.id) return;
+        // as marcações que a pessoa já fez no painel voltam depois da releitura
+        Array.prototype.forEach.call(document.querySelectorAll('#v246Painel input[name="v246GMaq"]:checked'), function (x) { M.v265.marcar[x.value] = 1; });
+        V246.g.d = null; V246.g.erro = ''; V246.g.aberto = true; _v200PintarCard();
+      };
+      reler();
+      [2500, 7000].forEach(function (ms) { setTimeout(function () {
+        try { var G = V246.g; if (_v200.modal !== M || !G || G.id !== o.id || !G.d) return;
+              var tem = (G.d.disponiveis || []).some(function (m) { return M.v265.destaque[T(m.id)]; }) || (G.d.no_card || []).some(function (m) { return M.v265.destaque[T(m.id)]; });
+              if (!tem) reler(); } catch (e) {}
+      }, ms); });
+    });
+  }
+
+  // ═══ 4 · CARD DE VENDA DE PEÇAS: selo no quadro, caixa da OS, editor da proposta ═══════════════════════════════════════
+  function cardDoQuadro(id) { try { return ((_v200.q && _v200.q.cards) || []).find(function (c) { return c.id === id; }) || null; } catch (e) { return null; } }
+  if (typeof _v200CardHtml === 'function') {
+    V265.orig.cardHtml = _v200CardHtml;
+    _v200CardHtml = function (c) {
+      var h = V265.orig.cardHtml.apply(this, arguments);
+      try {
+        if (off() || !c || !ehVendaPecas(c, null) || h.indexOf('v265-chip') >= 0) return h;
+        var i = h.indexOf('<div class="v200-cli">'), j = i >= 0 ? h.indexOf('</div>', i) : -1;
+        if (j > 0) h = h.slice(0, j) + '<span class="v265-chip" title="venda de peças avulsas: sem máquina e sem OS — aceita, vai direto ao Faturamento">🧩 peças</span>' + h.slice(j);
+      } catch (e) {}
+      return h;
+    };
+  }
+  if (typeof _crosCardHtml === 'function') {
+    V265.orig.crosHtml = _crosCardHtml;
+    _crosCardHtml = function (o, c, col) {
+      var h = V265.orig.crosHtml.apply(this, arguments);
+      try {
+        if (off()) return h;
+        var M = _v200.modal, doCard = M && M.d && M.d.card && M.d.card.id === (o && o.id), vinc = doCard ? M.d.vinculos : null;
+        // a regra do banco manda: "faturar a venda de peças" na frase do card também conta (auditoria 2, nº 8)
+        var pelaFrase = doCard && M.d.estado && /^faturar a venda de peças/.test(T(M.d.estado.falta));
+        if (!(ehVendaPecas(o, vinc) || pelaFrase) || !c || c.erro || (!pelaFrase && c.card && T(c.card.os_id))) return h;
+        // auditoria 1, nº 13: só o "🛠 Criar a OS" sai; os outros avisos da caixa (aceite em versão substituída, OS pendente, cliente inativo) ficam
+        var c2 = {}; Object.keys(c).forEach(function (k) { c2[k] = c[k]; }); c2.pode_criar_os = false; c2.pode_criar_por_maquina = false; c2.multi = false;
+        var resto = V265.orig.crosHtml.call(this, o, c2, col);
+        return '<div class="cros-linha azul v265-vp"><b>🧩 Venda de peças</b> — sem máquina e sem OS. ' +
+          (col >= 9 ? 'Faturada (ou sem cobrança) — falta registrar o desfecho do pós-venda.'
+           : col === 8 ? 'Aceita: fature pelo <b>🧾 Abrir a ficha de faturamento</b> (pedido de venda — peças).'
+                    : 'Quando o cliente aceitar a proposta, o card vai direto ao <b>Faturamento</b> (pedido de venda — peças), sem OS.') +
+          (c.card && c.card.cliente_ativo === false ? '<span class="cros-sub" style="color:#B42318">O cliente deste card está INATIVO — reative em Clientes antes de faturar.</span>' : '') +
+          '<span class="cros-sub">Vai ter serviço? Inclua a máquina (<b>＋ Máquina</b> nas Máquinas do card): o card volta a pedir a OS, como sempre.</span></div>' + resto;
+      } catch (e) { return h; }
+    };
+  }
+  if (typeof _v204Pintar === 'function') {
+    V265.orig.edPintar = _v204Pintar;
+    _v204Pintar = function () {
+      var r = V265.orig.edPintar.apply(this, arguments);
+      try {
+        if (off()) return r;
+        var ED = (typeof V204 !== 'undefined') ? V204.ed : null; if (!ED) return r;
+        var c = cardDoQuadro(ED.op), ehVp = c ? ehVendaPecas(c, null) : false;
+        if (!ehVp) return r;
+        // a casca do R6a (V243) tira o selo da barra de cima e o põe no contexto (classe v243-sem = vermelho): procura em todo o editor
+        Array.prototype.forEach.call(document.querySelectorAll('span.v204-est'), function (s) {
+          if (T(s.textContent) === 'sem máquina no card') { s.textContent = '🧩 Peças avulsas — venda sem máquina (as linhas não têm máquina)'; s.classList.add('v265-est'); s.classList.remove('v243-sem'); s.removeAttribute('style'); }
+        });
+      } catch (e) {}
+      return r;
+    };
+  }
+
+  // ═══ 5 · cliques ════════════════════════════════════════════════════════════════════════════════════════════════════
+  document.addEventListener('click', function (ev) {
+    var b = ev.target && ev.target.closest && ev.target.closest('[data-v265]'); if (!b || off()) return;
+    var a = b.getAttribute('data-v265');
+    if (b.disabled) return;
+    ev.preventDefault(); ev.stopPropagation();
+    if (a === 'cadMaq') return cadNaNova();
+    if (a === 'cadMaqCard') return cadNoCard();
+    if (a === 'releia') { var M = _v200.modal; if (M && M.v265) { lerForm(M); M.v265.b = null; _v200PintarNova(); } return; }
+  }, true);
+  // o painel do V246 é pintado pelo _v200PintarCard (V246 embrulhou antes): decoramos depois de tudo
+  if (typeof _v200PintarCard === 'function') {
+    V265.orig.pintarCard = _v200PintarCard;
+    _v200PintarCard = function () {
+      var r = V265.orig.pintarCard.apply(this, arguments);
+      try { if (!off()) decorarPainel(); } catch (e) { try { console.warn('[V265] painel do card:', e); } catch (x) {} }
+      return r;
+    };
+  }
+})();
+</script>
+<!-- ████ FIM PCM V265 ████ -->
 </body>
 </html>
