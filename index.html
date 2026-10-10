@@ -5042,8 +5042,16 @@ v50 — Resiliência de rede: retry/backoff em gsGet e syncToGS
   referência do Omie inteira na peça da máquina) é a base, e as 4 trocas da V269 (proposta sem código da peça) entram pelo
   MESMO builder da V269. Nenhum código novo. Zero SQL, zero Apps Script.
 -->
-<title>ProperCare Manager · Gestão PGP v4.03 (PCM V270)</title>
-<meta name="app-build" content="PCM_V270" data-date="2026-10-09">
+<!--
+  PCM V271 — 09/10/2026 — ESCOLHER O PRODUTO DO OMIE NA PEÇA LIGA A REFERÊNCIA (rodada 2026-10-09_omie_par_na_peca, sobre o PCM V270 no ar).
+  Janela da peça (Catálogo e Biblioteca) e aba Peças da máquina: escolher um produto do Omie na lista mostra "Ao salvar: 5020 →
+  Omie 005020" debaixo da Referência (com "não ligar"), e o Salvar da peça grava a ligação pela mesma função do "Lembrar para as
+  próximas" da proposta (crm_erp_escolher, já no ar): administrador/Suprimentos casam; os outros sugerem à conciliação. Antes a
+  escolha só escrevia o texto, e referência que o Omie não tem (005020, 010310) ficava "sem par" e sem preço. Bloco PCM V271 no
+  fim do body + 3 chamadas dentro do bloco PCM V258. Zero SQL, zero Apps Script, zero PCF. Chave de volta: localStorage pcm_v271 = off.
+-->
+<title>ProperCare Manager · Gestão PGP v4.03 (PCM V271)</title>
+<meta name="app-build" content="PCM_V271" data-date="2026-10-09">
 <link rel="icon" type="image/jpeg" href="data:image/jpeg;base64,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">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -81315,6 +81323,7 @@ function _v257Pintar() { try { _v257PintarPainel(); } catch (e) {} try { _v257Pi
         if (ins[3] && x.ref) ins[3].value = x.ref;
         var f = nova.querySelector('input.v258-fab'); if (f && x.fab) f.value = x.fab;
         pintarLinha(eqAtual(), nova);
+        try { if (typeof window._v271Escolheu === 'function') window._v271Escolheu(x, ins[3], 'nova'); } catch (e) {}   /* PCM V271 */
         try { (ins[1] || ins[0]).focus(); } catch (e) {}
       }
       return;
@@ -81334,6 +81343,7 @@ function _v257Pintar() { try { _v257PintarPainel(); } catch (e) {} try { _v257Pi
     if (x.nome && campo === 'nome' && !padrao && x.fonte === 'omie' && !T(ins2[0].value)) ins2[0].value = x.nome;
     if (x.intervalo && !T(ins2[2].value)) ins2[2].value = x.intervalo;
     fechar(); pintarLinha(eqAtual(), tr);
+    try { if (typeof window._v271Escolheu === 'function') window._v271Escolheu(x, ins2[3], campo); } catch (e) {}   /* PCM V271 */
     try { (fab || ins2[3]).focus(); } catch (e) {}
   }
 
@@ -81350,6 +81360,7 @@ function _v257Pintar() { try { _v257PintarPainel(); } catch (e) {} try { _v257Pi
     else { set('pName', x.nome, x.fonte === 'omie'); set('pRef', x.ref, true); }
     set('pPartBrand', x.fab, true); set('pInterval', x.intervalo, true);
     fechar();
+    try { if (typeof window._v271Escolheu === 'function') window._v271Escolheu(x, document.getElementById('pRef'), campo); } catch (e) {}   /* PCM V271 */
     try { checkPartRefDuplicate(document.getElementById('pRef').value); } catch (e) {}
   }
 
@@ -84348,5 +84359,444 @@ function _v267PosSeparar(P, op, nv, traz) {
 })();
 </script>
 <!-- ████ FIM PCM V267 ████ -->
+<!-- ████ INICIO PCM V271 · ESCOLHER O PRODUTO DO OMIE NA PEÇA LIGA A REFERÊNCIA (AO SALVAR) ████ -->
+<style>
+/* PCM V271 · o aviso "🔗 ao salvar, liga a referência ao produto do Omie" debaixo da caixa Referência */
+.v271-an{margin-top:5px;padding:5px 8px;border-radius:7px;font-size:11.5px;line-height:1.4;background:#eef4ff;border:1px solid #c7d7fb;color:#1e3a8a}
+.v271-an.sug{background:#fff7ed;border-color:#fed7aa;color:#7c2d12}
+.v271-an.ok{background:#ecfdf3;border-color:#bbf7d0;color:#166534}
+.v271-an b{font-weight:700}
+.v271-an small{color:inherit;opacity:.85}
+.v271-an .v271-nao{border:0;background:transparent;color:inherit;text-decoration:underline;cursor:pointer;font:inherit;font-weight:600;padding:0 2px;margin-left:4px}
+.v271-an .v271-nao:hover{opacity:.75}
+.v271-an .v271-nao:active{opacity:.55}
+td .v271-an{font-size:10.5px;padding:3px 6px;max-width:260px}
+.v271-an .v271-forcar{border:1px solid currentColor;background:#fff;color:inherit;border-radius:6px;cursor:pointer;font:inherit;font-weight:700;padding:1px 7px;margin-left:4px}
+.v271-an .v271-forcar:hover{background:#fff3e0}.v271-an .v271-forcar:active{background:#ffe0b2}
+/* auditoria V271 A3: o resultado não some com o "Peça adicionada" (o toast antigo não cancela o temporizador anterior) */
+#v271Res{position:fixed;left:16px;bottom:16px;z-index:10085;max-width:min(560px,calc(100vw - 32px));display:flex;gap:8px;align-items:flex-start;
+  padding:10px 12px;border-radius:10px;font-size:12.5px;line-height:1.45;box-shadow:0 10px 28px rgba(15,23,42,.22);background:#ecfdf3;border:1px solid #bbf7d0;color:#14532d}
+#v271Res.warn{background:#fff7ed;border-color:#fed7aa;color:#7c2d12}
+#v271Res.error{background:#fef2f2;border-color:#fecaca;color:#7f1d1d}
+#v271Res .v271-res-x{border:0;background:transparent;color:inherit;font-size:18px;line-height:1;cursor:pointer;padding:0 2px;min-width:28px;min-height:28px}
+#v271Res .v271-res-x:hover{opacity:.7}#v271Res .v271-res-x:active{opacity:.5}
+#v271Res.espera{background:#eef4ff;border-color:#c7d7fb;color:#1e3a8a}
+#v271Res .v271-res-l + .v271-res-l{margin-top:4px;padding-top:4px;border-top:1px solid rgba(0,0,0,.08)}
+</style>
+<script>
+// ════════════════════════════════════════════════════════════════════════════════════════════════════════
+// PCM V271 · ESCOLHER O PRODUTO DO OMIE NA PEÇA LIGA A REFERÊNCIA — AO SALVAR  (09/10/2026, rodada 2026-10-09_omie_par_na_peca)
+// ────────────────────────────────────────────────────────────────────────────────────────────────────────
+// Pedido do Fernando (09/10 23h13, "Editar peça" do Filtro de Ar Primário, ref 5020 → Omie 005020; e a proposta com
+// "sem par no Omie" no Filtro de Ar e no Óleo VG 68 5L): "não consigo vincular à peça do Omie no catálogo. Dessa forma ela vem com
+// preço zerado e não atrelada à referência que já existe no Omie". 23h39: "Sim" para esta rodada.
+// 🕳 A causa: a lista do Omie na janela da peça (e na aba Peças da máquina, bloco V258) só escrevia TEXTO na caixa Referência. O
+//    par sai de _erp_prod_da_ref(referência) — e o 005020 e o 010310 não têm referência no Omie, o código "005020" ≠ "5020" e o
+//    leitor da descrição não lê "VG 68". Nada gravava a decisão; a escolha era esquecida.
+// O que muda: escolher um produto do Omie na lista (caixa Referência, ou um item do Omie que traz referência) mostra debaixo da
+//   caixa "🔗 Ao salvar: 5020 → Omie 005020" (com "não ligar"). No SALVAR da peça (catálogo, Biblioteca e aba Peças da máquina) a
+//   ligação vai ao banco pela MESMA função que o "Lembrar para as próximas" da proposta usa — crm_erp_escolher(ref, código,
+//   lembrar=true) — e o BANCO decide pelo papel: administrador/Suprimentos casam; os outros mandam SUGESTÃO à conciliação; a
+//   referência que já aponta para OUTRO produto (ou marcada "ignorar") vira sugestão até para o administrador; o código de um
+//   produto do Omie nunca vira casamento. Nenhuma função SQL nova; nada é escrito no Omie.
+// Por que só no Salvar: a referência que fica ligada é a que a peça GRAVOU (fechar sem salvar não liga nada; mudar a caixa depois
+//   de escolher desfaz o aviso). A ligação é um fato da referência (vale para catálogo, máquinas, propostas, chip de estoque e
+//   ficha de faturamento) — por isso é gravada mesmo que o envio da peça à planilha falhe depois.
+// Costuras no corpo antigo (marcadas "PCM V271"): 3 chamadas a window._v271Escolheu dentro do bloco PCM V258 (escolher: linha
+//   nova e linha da tabela; escolherCatalogo). Embrulhos: savePart e saveMachineParts (por FORA do V258).
+// Chave de volta: localStorage pcm_v271 = off (a lista volta a só escrever o texto).
+// ════════════════════════════════════════════════════════════════════════════════════════════════════════
+(function () {
+  'use strict';
+  var DESL = false; try { DESL = localStorage.getItem('pcm_v271') === 'off'; } catch (e) {}
+  if (DESL) { console.info('[V271] desligado (localStorage pcm_v271 = off)'); return; }
+  var V271 = window.V271 = { ger: 0, ultimo: null, enviando: 0 };
+
+  function T(v) { return String(v == null ? '' : v).trim(); }
+  // mesma normalização do servidor (_crm_ref_norm: só letras/dígitos, maiúsculas) — o acento cai, como lá
+  function N(s) { return String(s == null ? '' : s).normalize('NFD').replace(/[̀-ͯ]/g, '').toUpperCase().replace(/[^A-Z0-9]/g, ''); }
+  function E(v) { try { return escHtml(v == null ? '' : String(v)); } catch (e) { return String(v == null ? '' : v).replace(/[&<>"']/g, function (c) { return '&#' + c.charCodeAt(0) + ';'; }); } }
+  function avisar(m, t) { try { toast(m, t); } catch (e) {} }
+  // o resultado da ligação: painel próprio (sucesso some em 10 s; aviso e erro ficam até o ×) — auditoria V271 A3
+  // auditoria V271 B6: um resultado não apaga o outro — as linhas se ACUMULAM (a de mesma chave é trocada), a cor é a da mais
+  // grave, e o painel só some sozinho quando todas são de sucesso. B5: fica à direita da barra lateral (não cobre o "Sair").
+  var GRAV = { success: 0, espera: 1, warn: 2, error: 3 };
+  V271.linhas = [];
+  function fecharPainel() { var d = document.getElementById('v271Res'); if (d) d.style.display = 'none'; V271.linhas = []; clearTimeout(V271.tRes); }
+  function mostrar(html, tipo, chave) {
+    var d = document.getElementById('v271Res');
+    if (!d) { d = document.createElement('div'); d.id = 'v271Res'; d.setAttribute('role', 'status'); d.setAttribute('aria-live', 'polite'); document.body.appendChild(d); }
+    if (d.style.display === 'none') V271.linhas = [];
+    var i = chave ? V271.linhas.findIndex(function (x) { return x.chave === chave; }) : -1;
+    var lin = { html: html, tipo: tipo, chave: chave || '' };
+    if (i >= 0) V271.linhas[i] = lin; else V271.linhas.push(lin);
+    if (V271.linhas.length > 6) V271.linhas = V271.linhas.slice(-6);
+    var pior = 'success'; V271.linhas.forEach(function (x) { if ((GRAV[x.tipo] || 0) > GRAV[pior]) pior = x.tipo; });
+    d.className = pior === 'success' ? '' : pior;
+    d.innerHTML = '<div>' + V271.linhas.map(function (x) { return '<div class="v271-res-l">' + x.html + '</div>'; }).join('') + '</div>' +
+                  '<button type="button" class="v271-res-x" data-v271="fechar" data-pw-off="1" aria-label="Fechar" title="Fechar">×</button>';
+    try {
+      var sb = document.querySelector('aside.nav-sidebar') || document.querySelector('aside.sidebar'), esq = 16;
+      if (sb) { var rr = sb.getBoundingClientRect(); if (rr.width > 0 && rr.right < window.innerWidth * 0.5) esq = Math.round(rr.right) + 16; }
+      d.style.left = esq + 'px';
+    } catch (e) {}
+    d.style.display = ''; clearTimeout(V271.tRes);
+    if (pior === 'success') V271.tRes = setTimeout(fecharPainel, 10000);
+  }
+  V271.mostrar = mostrar;
+  function ctxCatalogo() {   // qual peça a janela está editando (a caixa #pRef é a MESMA em todas as aberturas)
+    try { return JSON.stringify(editPartTarget || addPartTarget || null); } catch (e) { return ''; }
+  }
+  function rpc(fn, args, escrita) {
+    if (typeof _v240Rpc === 'function') return _v240Rpc(fn, args, escrita);
+    return Promise.reject(new Error('transporte do banco indisponível nesta versão'));
+  }
+
+  // ── outros produtos do Omie que TAMBÉM têm esta referência (auditoria V271 A2: "VG 68 20L" está no mineral E no sintético) ──
+  // na descrição, só como palavras inteiras ("150 - 20LTS" não contém 5020); no código, igualdade. Inativos não contam.
+  function palavras(t) { return String(t == null ? '' : t).normalize('NFD').replace(/[\u0300-\u036f]/g, '').toUpperCase().split(/[^A-Z0-9]+/).filter(Boolean); }
+  function temNasPalavras(desc, n) {
+    var tk = palavras(desc);
+    for (var i = 0; i < tk.length; i++) { var acc = ''; for (var j = i; j < tk.length && acc.length < n.length; j++) { acc += tk[j]; if (acc === n) return true; } }
+    return false;
+  }
+  function outrosComARef(n, cod) {
+    var its = (window.V258 && V258.omie && V258.omie.itens) || [], out = [];
+    for (var i = 0; i < its.length && out.length < 4; i++) {
+      var o = its[i]; if (!o || String(o.codigo) === String(cod) || o.inativo) continue;
+      if (N(o.codigo) === n || (o.refs || []).map(String).indexOf(n) >= 0 || temNasPalavras(o.descricao, n)) out.push({ cod: T(o.codigo), desc: T(o.descricao) });
+    }
+    return out;
+  }
+  V271.outrosComARef = outrosComARef;
+  // auditoria V271 B7: produto INATIVO no Omie não é ligado sozinho (todas as propostas passariam a apontar para ele)
+  function inativoNoOmie(cod) {
+    var its = (window.V258 && V258.omie && V258.omie.itens) || [];
+    for (var i = 0; i < its.length; i++) if (its[i] && String(its[i].codigo) === String(cod)) return !!its[i].inativo;
+    return false;
+  }
+  function travado(p) { return !!p && !p.forcado && p.estado !== 'ja' && ((p.ambiguo && p.ambiguo.length) || p.inativo); }
+
+  // ── o aviso debaixo da caixa ───────────────────────────────────────────────────────────────────────
+  function lugarDoAviso(box) {
+    if (!box) return null;
+    if (box.id === 'pRef') return box.closest('.form-group') || box.parentNode;
+    return box.closest('td') || box.parentNode;
+  }
+  function tirarAviso(box) {
+    var l = lugarDoAviso(box); if (!l) return;
+    var a = l.querySelector(':scope > .v271-an'); if (a) a.remove();
+  }
+  function limpar(box) {
+    if (!box) return;
+    box.__v271 = null; box.removeAttribute('data-v271-cod'); box.removeAttribute('data-v271-ref');
+    tirarAviso(box);
+  }
+  function pintarAviso(box) {
+    var p = box && box.__v271, l = lugarDoAviso(box); if (!p || !l) return;
+    var a = l.querySelector(':scope > .v271-an');
+    if (!a) { a = document.createElement('div'); a.className = 'v271-an'; a.setAttribute('role', 'status'); l.appendChild(a); }
+    var linha = box.id !== 'pRef', ref = '<b>' + E(p.ref) + '</b>', cod = '<b>' + E(p.cod) + '</b>', cls = 'v271-an', h;
+    var tit = p.ref + ' → Omie ' + p.cod + (p.desc ? ' — ' + p.desc : '');
+    var nao = ' <button type="button" class="v271-nao" data-v271="nao" data-pw-off="1" title="Salvar a peça sem ligar a referência ao Omie">não ligar</button>';
+    if (travado(p) && p.inativo && !(p.ambiguo && p.ambiguo.length)) {
+      cls += ' sug';
+      h = '⚠ O produto ' + cod + ' está <b>INATIVO no Omie</b>. Para não ligar ' + ref + ' a um produto parado, <b>não ligo sozinho</b>.';
+      nao = ' <button type="button" class="v271-forcar" data-v271="forcar" data-pw-off="1" title="Ligar ' + E(p.ref) + ' ao Omie ' + E(p.cod) + ' mesmo inativo">ligar ao ' + E(p.cod) + ' mesmo assim</button>';
+      a.className = cls; a.title = tit + ' · inativo no Omie'; a.innerHTML = h + nao; return;
+    }
+    if (p.estado !== 'ja' && p.ambiguo && p.ambiguo.length && !p.forcado) {
+      cls += ' sug'; var o1 = p.ambiguo[0];
+      h = '⚠ ' + ref + ' também está no Omie ' + (linha ? '<b>' + E(o1.cod) + '</b>' : 'em <b>' + E(o1.cod) + '</b> (' + E(o1.desc) + ')') + (p.ambiguo.length > 1 ? ' e mais ' + (p.ambiguo.length - 1) : '') +
+          '. Para não ligar o produto errado, <b>não ligo sozinho</b>' + (linha ? '' : ' — deixe a referência mais específica ou confirme') + '.';
+      nao = ' <button type="button" class="v271-forcar" data-v271="forcar" data-pw-off="1" title="Ligar ' + E(p.ref) + ' ao Omie ' + E(p.cod) + ' mesmo assim">ligar ao ' + E(p.cod) + ' mesmo assim</button>';
+      tit += ' · também: ' + p.ambiguo.map(function (x) { return x.cod + ' ' + x.desc; }).join(' | ');
+      a.className = cls; a.title = tit; a.innerHTML = h + nao; return;
+    }
+    if (p.estado === 'ja') { cls += ' ok'; h = '✓ ' + ref + ' já está ligada ao Omie ' + cod + (linha ? '' : (p.desc ? ' — ' + E(p.desc) : '')); nao = ''; }
+    else if (p.estado === 'outro') { cls += ' sug'; h = '⚠ ' + ref + ' hoje aponta para o Omie <b>' + E(p.atual) + '</b>. Ao salvar, a troca para ' + cod + ' vai como <b>sugestão</b> à conciliação (não muda calada).'; }
+    else if (p.estado === 'ignorado') { cls += ' sug'; h = '⚠ ' + ref + ' está marcada "ignorar" na conciliação. Ao salvar, ' + cod + ' vai como <b>sugestão</b> para decidir lá.'; }
+    else if (p.estado === 'sugere' && linha) { cls += ' sug'; h = '🔗 ao salvar → sugestão Omie ' + cod; }
+    else if (p.estado === 'sugere') { cls += ' sug'; h = '🔗 Ao salvar: ' + ref + ' → Omie ' + cod + ' vai como <b>sugestão</b> à conciliação (o administrador/Suprimentos confirma).'; }
+    else if (p.estado === 'casa' && linha) { h = '🔗 ao salvar → Omie ' + cod + (p.semRef ? ' <span title="o Omie não tem esta referência escrita: confira">⚠</span>' : ''); }
+    else if (p.estado === 'casa') { h = '🔗 Ao salvar a peça: ' + ref + ' fica ligada ao Omie ' + cod + (linha ? '' : (p.desc ? ' — ' + E(p.desc) : '')) + (linha ? '' : ' <small>(vale para catálogo, máquinas e propostas)</small>'); }
+    else { h = '🔗 Ao salvar: ' + ref + ' → Omie ' + cod + (linha ? '' : (p.desc ? ' — ' + E(p.desc) : '')) + ' <small>(' + (p.estado === 'casa?' ? 'liga ou sugere, conforme o seu perfil' : 'conferindo…') + ')</small>'; }
+    // o produto não traz a referência escrita (o V268 já avisou "ficou como você digitou"): a ligação segue o que a peça GRAVAR
+    if (p.semRef && p.estado !== 'ja') h += linha ? '' : ' <small>· o Omie não tem "' + E(p.ref) + '" escrito: confira que esta é a referência da peça</small>';
+    a.className = cls; a.title = tit + (p.semRef ? ' · o Omie não tem esta referência escrita' : ''); a.innerHTML = h + nao;
+  }
+
+  // ── o que o banco já sabe da referência (para o aviso dizer a verdade ANTES do Salvar) ────────────────
+  function conferir(box) {
+    var p = box && box.__v271; if (!p) return;
+    var g = p.g;
+    // papel: erp_ref_estado (devolve papel nulo e itens vazios para quem não concilia); resolução: crm_erp_refs, a mesma leitura da
+    // proposta, que serve a qualquer usuário do CRM (auditoria V271 A5: o vendedor via "sugestão" com a referência já ligada)
+    Promise.all([rpc('erp_ref_estado', { p_refs: [p.ref] }, false).catch(function () { return { papel: undefined }; }),
+                 rpc('crm_erp_refs', { p_refs: [p.ref] }, false)]).then(function (rs) {
+      if (!box.__v271 || box.__v271.g !== g) return;   // a pessoa já escolheu outro / mudou a caixa
+      var r = rs[1], it = (r && r.itens && (r.itens[p.ref] || r.itens[T(p.ref)])) || {}, papel = rs[0] ? rs[0].papel : undefined;
+      var resolve = it.como === 'casado' || it.como === 'auto' || it.como === 'auto_desc';
+      // a referência já resolve para um produto: o banco nunca casa calado por cima (vira "já ligada" ou SUGESTÃO) — a trava de
+      // ambiguidade não precisa segurar, e o aviso certo é o do estado ("já está ligada" / "hoje aponta para")
+      if (resolve && it.codigo) p.ambiguo = [];
+      // auditoria V271 B1: o banco diz que a referência é de VÁRIOS produtos (cadastro do Omie) — não liga sozinho
+      if (it.como === 'ambiguo' && !(p.ambiguo && p.ambiguo.length)) p.ambiguo = [{ cod: (Number(it.candidatos) || 2) + ' produtos', desc: 'com esta referência no cadastro do Omie' }];
+      if (resolve && String(it.codigo) === String(p.cod)) p.estado = 'ja';
+      else if (papel === undefined && !(resolve && it.codigo) && it.como !== 'ignorado') p.estado = 'casa?';
+      else if (resolve && it.codigo) { p.estado = 'outro'; p.atual = String(it.codigo); }
+      else if (it.como === 'ignorado') p.estado = 'ignorado';
+      else p.estado = (papel === 'admin' || papel === 'suprimentos') ? 'casa' : 'sugere';
+      pintarAviso(box);
+    }, function () {
+      if (!box.__v271 || box.__v271.g !== g) return;
+      p.estado = 'casa?'; pintarAviso(box);   // sem resposta: o aviso fica genérico; o banco decide no Salvar
+    });
+  }
+
+  // ── a escolha na lista (chamada pelas 3 costuras do bloco V258) ─────────────────────────────────────────
+  window._v271Escolheu = function (x, box, campo) {
+    if (!box) return;
+    var ehOmie = x && x.fonte === 'omie' && T(x.omie);
+    var caixaRef = campo === 'ref' || campo === 'cat-ref';
+    var ref = T(box.value);
+    // só liga quando a caixa de referência foi a usada OU o item do Omie trouxe a referência (escolher pelo NOME sem referência
+    // não diz nada sobre a referência que ficou na caixa)
+    // auditoria V271 A1: fora da caixa de referência, só quando a caixa ficou com a referência QUE O ITEM TROUXE (o V258 não troca
+    // a referência que já existia ao escolher pelo nome — e ela seria ligada ao produto escolhido)
+    var elegivel = ehOmie && N(ref).length >= 3 && (caixaRef || (T(x.ref) && N(x.ref) === N(ref)));
+    if (!elegivel) {
+      // auditoria V271 A9: escolher pelo nome o MESMO produto não desfaz a escolha feita na Referência
+      if (ehOmie && box.__v271 && box.__v271.cod === T(x.omie) && N(ref) === box.__v271.n) return;
+      limpar(box); return;
+    }
+    box.__v271 = { ref: ref, n: N(ref), cod: T(x.omie), desc: T(x.nome), g: ++V271.ger, estado: '', semRef: !T(x.ref),
+                   ambiguo: outrosComARef(N(ref), T(x.omie)), forcado: false, inativo: inativoNoOmie(T(x.omie)), ctx: box.id === 'pRef' ? ctxCatalogo() : '' };
+    box.setAttribute('data-v271-cod', T(x.omie)); box.setAttribute('data-v271-ref', ref);
+    pintarAviso(box); conferir(box);
+  };
+
+  // mudou a caixa depois de escolher ⇒ o aviso some (a ligação é da referência ESCOLHIDA, não de outra)
+  document.addEventListener('input', function (ev) {
+    var t = ev.target; if (!t || !t.__v271) return;
+    if (N(t.value) !== t.__v271.n) limpar(t);
+  }, true);
+  document.addEventListener('click', function (ev) {
+    var x = ev.target && ev.target.closest ? ev.target.closest('#v271Res [data-v271="fechar"]') : null;
+    if (x) { ev.preventDefault(); fecharPainel(); return; }
+    var fz = ev.target && ev.target.closest ? ev.target.closest('.v271-an [data-v271="forcar"]') : null;
+    if (fz) {
+      ev.preventDefault(); ev.stopPropagation();
+      var lz = fz.closest('.v271-an').parentNode, bz = lz.querySelector('#pRef') || lz.querySelector('input[data-v271-cod]');
+      if (bz && bz.__v271) { bz.__v271.forcado = true; pintarAviso(bz); }
+      return;
+    }
+    var b = ev.target && ev.target.closest ? ev.target.closest('.v271-an [data-v271="nao"]') : null; if (!b) return;
+    ev.preventDefault(); ev.stopPropagation();
+    var l = b.closest('.v271-an').parentNode;
+    var box = l.querySelector('#pRef') || l.querySelector('input[data-v271-cod]');
+    if (box) limpar(box); else b.closest('.v271-an').remove();
+    avisar('Ok — a referência NÃO será ligada ao Omie quando você salvar.', 'info');
+  }, true);
+  // a janela da peça reabre para OUTRA peça com a mesma caixa #pRef: tudo o que era da peça anterior sai
+  (function () {
+    var m = document.getElementById('modalPart'), aberta = false; if (!m || typeof MutationObserver !== 'function') return;
+    aberta = m.classList.contains('open');
+    new MutationObserver(function () {
+      var agora = m.classList.contains('open');
+      if (agora && !aberta) limpar(document.getElementById('pRef'));
+      aberta = agora;
+    }).observe(m, { attributes: true, attributeFilter: ['class'] });
+  })();
+
+  // ── gravar as ligações (depois que a peça foi salva) ───────────────────────────────────────────────────
+  function frase(r, it) {
+    var ref = it.ref, cod = it.cod;
+    if (!r) return { t: 'warn', m: ref + ' → Omie ' + cod + ': o banco não respondeu o que fez' };
+    if (r.acao === 'casou') return { t: 'success', m: '🔗 ' + ref + ' ligada ao Omie ' + cod };
+    if (r.acao === 'ja_casava') return { t: 'success', m: '✓ ' + ref + ' já estava ligada ao Omie ' + cod };
+    if (r.acao === 'sugeriu' && r.antes) return { t: 'warn', m: ref + ' já apontava para o Omie ' + r.antes + ' — ' + cod + ' ficou como SUGESTÃO na conciliação' };
+    if (r.acao === 'sugeriu' && r.motivo === 'ignorado') return { t: 'warn', m: ref + ' está marcada "ignorar" — ' + cod + ' ficou como SUGESTÃO na conciliação' };
+    if (r.acao === 'sugeriu') return { t: 'success', m: 'sugestão enviada à conciliação: ' + ref + ' → Omie ' + cod + ' (o administrador/Suprimentos confirma)' };
+    if (r.acao === 'so_linha' && r.motivo === 'codigo_omie') return { t: 'warn', m: 'não liguei ' + ref + ': é o código de um produto do Omie (ligá-lo a outro estragaria o estoque dele)' };
+    return { t: 'warn', m: ref + ' → Omie ' + cod + ': não liguei (' + (r.motivo || r.acao || 'sem motivo') + ')' };
+  }
+  async function ligar(lista, origem, chave) {
+    var vistos = {}, itens = [];
+    lista.forEach(function (it) { var k = it.n + '|' + it.cod; if (!vistos[k]) { vistos[k] = 1; itens.push(it); } });
+    if (!itens.length) return [];
+    V271.enviando++;
+    var msgs = [], pior = 'success', res = [];
+    try {
+      for (var i = 0; i < itens.length; i++) {
+        var it = itens[i], r = null;
+        try {
+          r = await rpc('crm_erp_escolher', { p_ref: it.ref, p_codigo: it.cod, p_lembrar: true,
+                                              p_origem: { maquina: it.maquina || '', linha: String(origem + ': ' + (it.nome || '')).slice(0, 200) } }, true);
+          var f = frase(r, it); msgs.push(f.m); res.push({ ref: it.ref, cod: it.cod, acao: r && r.acao, motivo: r && r.motivo });
+          if (f.t === 'warn' && pior === 'success') pior = 'warn';
+        } catch (e) {
+          pior = 'error'; res.push({ ref: it.ref, cod: it.cod, erro: (e && e.message) || String(e) });
+          // auditoria V271 A6: sem resposta não dá para saber; e o caminho é o do menu (o link da janela já fechou / não existe na aba da máquina)
+          msgs.push(e && e.v240 === 'rede'
+            ? '⚠ ' + it.ref + ' → Omie ' + it.cod + ': sem resposta do banco — não dá para saber se ligou. Confira em Catálogo › 🔗 Conciliação Omie'
+            : '⚠ ' + it.ref + ' → Omie ' + it.cod + ' NÃO foi ligada (' + ((e && e.message) || e) + '). A peça foi salva; a ligação se faz em Catálogo › 🔗 Conciliação Omie');
+        }
+      }
+      try { if (typeof _v239EsqueceRes === 'function') _v239EsqueceRes(itens.map(function (x) { return x.ref; }).concat(itens.map(function (x) { return x.cod; }))); } catch (e) {}
+      try { itens.forEach(function (x) { delete V218.chip[x.ref]; delete V218.chipEm[x.ref]; delete V218.chip[x.cod]; delete V218.chipEm[x.cod]; }); if (typeof _v218ChipAgendar === 'function') _v218ChipAgendar(); } catch (e) {}
+      mostrar('<b>Omie:</b> ' + msgs.map(E).join(' · ') + '.', pior, chave || '');
+      V271.ultimo = { origem: origem, res: res, em: Date.now() };
+      return res;
+    } finally { V271.enviando--; }
+  }
+  V271.ligar = ligar;
+
+  // auditoria V271 B2: o syncFullModelCatalogToGS engole o erro e manda as peças DEPOIS de awaits — então a confirmação vem de um
+  // vigia permanente no syncToGS (o V271 é o último bloco: fica por FORA de todos os embrulhos da carga). Cada espera casa UM envio
+  // (ação + peça) e decide: servidor confirmou ⇒ liga; recusou/caiu ⇒ não liga e diz; não veio em 3 min ⇒ não liga e diz.
+  V271.esperas = [];
+  function esperar(w) {
+    V271.esperas.push(w); V271.enviando++;
+    w.t = setTimeout(function () { acabar(w, false, 'não deu para confirmar que a peça chegou ao servidor (sem resposta em 3 min)'); }, 180000);
+  }
+  function acabar(w, ok, msg) {
+    if (w.feito) return; w.feito = true; clearTimeout(w.t);
+    V271.esperas = V271.esperas.filter(function (x) { return x !== w; });
+    var fim = function () { V271.enviando--; };
+    try {
+      if (ok) Promise.resolve(w.ok()).then(fim, fim);
+      else { w.falhou(msg); fim(); }
+    } catch (e) { fim(); }
+  }
+  (function () {
+    var s0 = window.syncToGS; if (typeof s0 !== 'function' || s0.__v271) return;
+    var f = function (action, payload) {
+      var pr = s0.apply(this, arguments);
+      try {
+        V271.esperas.slice().forEach(function (w) {
+          // o envio do catálogo manda o MODELO inteiro, peça por peça, e PARA no 1º erro: erro de outra peça do mesmo modelo
+          // antes da nossa = a nossa não vai sair (sem isto, a espera só acabava nos 3 min)
+          if (!w.feito && !w.casou && w.modelo && (action === 'saveModel' || action === 'savePartMaster')) {
+            var mod = action === 'saveModel' ? ((payload || {}).model || {}).id : ((payload || {}).part || {}).modelId;
+            if (String(mod) === String(w.modelo) && !(action === w.acao && w.casa(payload || {}))) {
+              Promise.resolve(pr).then(function (res) {
+                if (res && (res.status === 'error' || res.ok === false)) acabar(w, false, (res.error || res.mensagem || 'o servidor recusou o catálogo do modelo'));
+              }, function (e) { acabar(w, false, (e && e.message) || String(e)); });
+            }
+          }
+          if (w.feito || w.casou || w.acao !== action || !w.casa(payload || {})) return;
+          w.casou = true;
+          Promise.resolve(pr).then(function (res) {
+            if (res && (res.status === 'error' || res.ok === false)) acabar(w, false, (res.error || res.mensagem || 'o servidor recusou'));
+            else acabar(w, true);
+          }, function (e) { acabar(w, false, (e && e.message) || String(e)); });
+        });
+      } catch (e) {}
+      return pr;
+    };
+    f.__v271 = true; window.syncToGS = f;
+  })();
+
+  // a janela da peça (catálogo e Biblioteca: o savePart encaminha a da Biblioteca ao saveSubLibPartFromModal)
+  function pegarCatalogo() {
+    var box = document.getElementById('pRef'), p = box && box.__v271;
+    if (!p || p.estado === 'ja' || travado(p)) return null;
+    if (N(box.value) !== p.n || p.ctx !== ctxCatalogo()) return null;
+    return { ref: T(box.value), n: N(box.value), cod: p.cod, nome: T((document.getElementById('pName') || {}).value) };
+  }
+  (function () {
+    var o = window.savePart; if (typeof o !== 'function' || o.__v271) { if (typeof o !== 'function') console.warn('[V271] sem savePart'); return; }
+    var f = function () {
+      var it = null, w = null;
+      try {
+        it = pegarCatalogo();
+        if (it) {
+          var alvo = (typeof editPartTarget !== 'undefined' && editPartTarget) || (typeof addPartTarget !== 'undefined' && addPartTarget) || {};
+          var lib = alvo.type === 'lib', chave = 'cat|' + it.n + '|' + it.cod;
+          // a espera nasce ANTES: a Biblioteca chama o syncToGS('saveSubLibPart') dentro do próprio savePart
+          w = { acao: lib ? 'saveSubLibPart' : 'savePartMaster', modelo: lib ? '' : String(alvo.modelId || ''),
+                casa: lib ? function (pl) { var d = pl.data || {}; return N(d.ref) === it.n && String(d.subLibId) === String(alvo.modelId); }
+                          : function (pl) { var d = pl.part || {}; return N(d.ref) === it.n && String(d.modelId) === String(alvo.modelId) && T(d.name) === it.nome; },
+                ok: function () { return ligar([it], lib ? 'biblioteca' : 'catálogo', chave); },
+                falhou: function (msg) { if (!msg) return; mostrar('⚠ <b>Omie:</b> a peça NÃO chegou ao servidor (' + E(msg) + ') — por isso ' + E(it.ref) + ' também NÃO foi ligada ao ' + E(it.cod) + '. Salve a peça de novo escolhendo o produto do Omie.', 'error', chave); } };
+          esperar(w);
+        }
+      } catch (e) { it = null; }
+      var r = o.apply(this, arguments);
+      try {
+        var m = document.getElementById('modalPart');
+        // salvou = a janela FECHOU (o savePart só fecha depois de gravar no computador; nome vazio etc. deixam aberta)
+        if (w && m && m.classList.contains('open')) { acabar(w, false, ''); w = null; }
+        else if (w) {
+          limpar(document.getElementById('pRef'));
+          if (!w.feito && typeof gsConnected !== 'undefined' && !gsConnected) acabar(w, false, 'sem conexão com o servidor: a peça ficou só neste computador');
+          else if (!w.feito) mostrar('⏳ <b>Omie:</b> ' + E(it.ref) + ' → ' + E(it.cod) + ' será ligada quando a peça chegar ao servidor…', 'espera', 'cat|' + it.n + '|' + it.cod);
+        }
+      } catch (e) { console.warn('[V271] savePart', e); }
+      return r;
+    };
+    f.__v271 = true; window.savePart = f;
+  })();
+  // a aba Peças da máquina (embrulho por FORA do V258, que confere se a máquina ainda está no computador)
+  function pegarLinhas() {
+    var tb = document.getElementById('peTableBody'), out = []; if (!tb) return out;
+    tb.querySelectorAll('tr').forEach(function (tr) {
+      var ins = tr.querySelectorAll('input.pe-input'), box = ins[3], p = box && box.__v271;
+      if (!p || p.estado === 'ja' || travado(p) || !T(ins[0] && ins[0].value)) return;   // linha sem nome não é gravada pelo saveMachineParts
+      if (N(box.value) !== p.n) return;
+      out.push({ ref: T(box.value), n: p.n, cod: p.cod, nome: T(ins[0].value), pid: String(tr.dataset.pid || '') });
+    });
+    return out;
+  }
+  (function () {
+    var o = window.saveMachineParts; if (typeof o !== 'function' || o.__v271) { if (typeof o !== 'function') console.warn('[V271] sem saveMachineParts'); return; }
+    var f = function () {
+      var lst = [], mid = '', maq = '';
+      try {
+        mid = String(typeof _mdetMachineId !== 'undefined' ? _mdetMachineId : '');
+        var eq = (db.machines || []).find(function (m) { return String(m.id) === mid; });
+        if (eq) { lst = pegarLinhas(); maq = T([eq.brand, eq.model, eq.serial ? 'série ' + eq.serial : ''].filter(Boolean).join(' ')); }
+      } catch (e) { lst = []; }
+      if (!lst.length) return o.apply(this, arguments);
+      lst.forEach(function (x) { x.maquina = maq; });
+      // auditoria V271 A4: a ligação espera a RESPOSTA do envio das peças (o banco pode recusar: perfil só de consulta, máquina fora do
+      // banco, conflito). O syncToGS é embrulhado só durante esta chamada (síncrona até o envio sair), por FORA de quem já o embrulha.
+      var s0 = window.syncToGS, capt = null, meu = null, r;
+      if (typeof s0 === 'function') {
+        meu = function (action, payload) {
+          var pr = s0.apply(this, arguments);
+          try { if (!capt && action === 'updateMachineParts' && payload && String(payload.machine_id) === mid) capt = { pr: pr }; } catch (e) {}
+          return pr;
+        };
+        window.syncToGS = meu;
+      }
+      try { r = o.apply(this, arguments); }
+      finally { if (meu && window.syncToGS === meu) window.syncToGS = s0; }
+      try {
+        if (!capt) { mostrar('⚠ <b>Omie:</b> não deu para acompanhar o envio das peças — a ligação NÃO foi feita. Confira em Catálogo › 🔗 Conciliação Omie.', 'warn'); return r; }
+        V271.enviando++;
+        var naoGravou = function (msg) {
+          // auditoria V271 B4: sem resposta não dá para afirmar "não gravou"
+          var rede = /conex|rede|demorou|confirmar|offline/i.test(String(msg || ''));
+          mostrar('⚠ <b>Omie:</b> ' + (rede ? 'não deu para confirmar se as peças gravaram (' + E(msg) + ')' : 'as peças NÃO foram gravadas (' + E(msg) + ')') +
+                  ' — por isso ' + lst.map(function (x) { return E(x.ref); }).join(', ') + ' NÃO foi ligada ao Omie. Confira as peças e, se precisar, escolha o produto de novo e salve.', 'error');
+        };
+        Promise.resolve(capt.pr).then(function (res) {
+          if (res && (res.status === 'error' || res.ok === false)) { naoGravou((res.error || res.mensagem) || 'o servidor recusou'); return; }
+          // auditoria V271 B3: conflito na referência ("ficou o valor do campo") ⇒ a referência gravada NÃO é a escolhida
+          var conf = {}; ((res && res.conflitos) || []).forEach(function (c) { if (c && (c.campos || []).indexOf('ref') >= 0) conf[String(c.part_id)] = 1; });
+          var vale = lst.filter(function (x) { return !(x.pid && conf[x.pid]); }), fora = lst.filter(function (x) { return x.pid && conf[x.pid]; });
+          if (fora.length) mostrar('⚠ <b>Omie:</b> não liguei ' + fora.map(function (x) { return E(x.ref); }).join(', ') + ': o campo mudou a referência desta peça enquanto você editava (ficou a do campo).', 'warn');
+          return vale.length ? ligar(vale, 'peças da máquina') : null;
+        }, function (e) { naoGravou((e && e.message) || e); }).then(function () { V271.enviando--; }, function () { V271.enviando--; });
+      } catch (e) { console.warn('[V271] saveMachineParts', e); }
+      return r;
+    };
+    f.__v271 = true; window.saveMachineParts = f;
+  })();
+})();
+</script>
+<!-- ████ FIM PCM V271 ████ -->
 </body>
 </html>
