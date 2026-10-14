@@ -5057,8 +5057,15 @@ v50 — Resiliência de rede: retry/backoff em gsGet e syncToGS
   sem OS: o administrador guarda o PDF nos internos do card; PDF e texto com "Referência: Card OPO-..." (nunca o nome do cliente).
   Card com OS: sem mudança. Bloco PCM V273 no fim do body. Chave de volta: localStorage pcm_v273 = off.
 -->
-<title>ProperCare Manager · Gestão PGP v4.03 (PCM V273)</title>
-<meta name="app-build" content="PCM_V273" data-date="2026-10-13">
+<!--
+  PCM V274 — 13/10/2026 — A NF DO FORNECEDOR DÁ BAIXA NO PEDIDO DE COMPRA (rodada 2026-10-13_compras_nf_entrada, sobre o PCM V273).
+  Par: SQL COMPRAS_NF_ENTRADA (ANTES deste PCM; precisa do OMIE_43 + Edge erp-omie 4.3). O banco casa a NF de entrada do Omie com
+  o pedido de compra: "a caminho" (etapa 40), "recebido" sozinho (etapa 60 cobrindo tudo), "recebido parcial", "provável" com
+  "É deste pedido" / "Não é". Selos no pedido (card e aba), filtro "a caminho", painel "NF do fornecedor" na aba Compras, cartão na
+  Caixa de entrada, linha do xPed no PDF e no texto do pedido. Bloco PCM V274 no fim do body. Chave de volta: localStorage pcm_v274 = off.
+-->
+<title>ProperCare Manager · Gestão PGP v4.03 (PCM V274)</title>
+<meta name="app-build" content="PCM_V274" data-date="2026-10-13">
 <link rel="icon" type="image/jpeg" href="data:image/jpeg;base64,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">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -85259,5 +85266,534 @@ async function _v273GerarPdf(p) {   // V273: cópia literal do _v238GerarPdf (V2
 })();
 </script>
 <!-- ████ FIM PCM V273 ████ -->
+<!-- ████ INICIO PCM V274 ████ -->
+<style id="v274css">
+.v274-selo{display:inline-block;font-size:11px;font-weight:600;padding:1px 7px;border-radius:999px;margin:2px 4px 0 0;white-space:nowrap;border:1px solid transparent}
+.v274-selo.a_caminho{background:#EFF8FF;color:#175CD3;border-color:#B2DDFF}
+.v274-selo.parcial{background:#FFFAEB;color:#B54708;border-color:#FEDF89}
+.v274-selo.provavel{background:#FFF7ED;color:#9A3412;border-color:#FED7AA}
+.v274-selo.recebido_nf{background:#ECFDF3;color:#027A48;border-color:#ABEFC6}
+.v274-selo.conferir{background:#F4F3FF;color:#5925DC;border-color:#D9D6FE}
+.v274-nf{margin:8px 0 4px;border:1px solid #D0D5DD;border-radius:9px;padding:7px 10px;background:#FCFCFD}
+.v274-nf h5{margin:0 0 4px;font-size:12.5px;font-weight:700;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.v274-nf h5 small{font-weight:400;color:var(--text-muted,#667085)}
+.v274-n{display:flex;gap:6px 10px;align-items:center;flex-wrap:wrap;padding:5px 0;border-top:1px dashed #EAECF0;font-size:12.5px}
+.v274-n:first-of-type{border-top:0}
+.v274-sub{font-size:11.5px;color:var(--text-muted,#667085);line-height:1.45}
+.v274-mini{all:unset;box-sizing:border-box;cursor:pointer;font-size:11.5px;font-weight:600;color:#9A5B00;padding:2px 9px;border:1px solid #F3C9A6;border-radius:999px;background:#FFF7ED;line-height:1.4;white-space:nowrap}
+.v274-mini:hover,.v274-mini:focus-visible{background:#FDE8D3;outline:2px solid #EE7625;outline-offset:1px}
+.v274-mini.az{color:#175CD3;border-color:#B2CCFF;background:#EFF4FF}
+.v274-mini.vd{color:#027A48;border-color:#ABEFC6;background:#ECFDF3}
+.v274-mini.cz{color:#475467;border-color:#D0D5DD;background:#F9FAFB}
+.v274-mini[disabled]{opacity:.55;cursor:wait}
+.v274-painel{margin:12px 0 6px;border:1px solid #D0D5DD;border-radius:10px;padding:9px 12px;background:#fff}
+.v274-painel h4{margin:0 0 6px;font-size:14px;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.v274-painel h4 small{font-weight:400;color:var(--text-muted,#667085);font-size:12px}
+.v274-painel table{width:100%;border-collapse:collapse;font-size:12.5px}
+.v274-painel td,.v274-painel th{padding:5px 6px;border-top:1px solid #EAECF0;text-align:left;vertical-align:top}
+.v274-painel th{font-size:11.5px;color:#475467;font-weight:600;border-top:0}
+.v274-leit{font-size:12px;color:#475467;display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:2px 0 8px}
+.v274-leit .vm{color:#B42318}
+.v274-msg{font-size:12.5px;border-radius:8px;padding:6px 9px;margin:6px 0;background:#ECFDF3;color:#065F46}
+.v274-msg.vm{background:#FEF2F2;color:#991B1B}
+.v218-tp.nfp{background:#FFF7ED;color:#9A3412}
+@media (max-width:640px){.v274-painel .v274-hide{display:none}}
+</style>
+<script>
+/* ════════════════════════════════════════════════════════════════════════════════════════════════════════════
+   PCM V274 — 13/10/2026 — A NF DO FORNECEDOR DÁ BAIXA NO PEDIDO DE COMPRA (rodada 2026-10-13_compras_nf_entrada, Pedido 2).
+   Sobre o PCM V273 (que contém o V271 no ar). Par: SQL COMPRAS_NF_ENTRADA (roda ANTES; precisa do OMIE_43 + Edge erp-omie 4.3).
+   Zero Apps Script. Nada é escrito no Omie. Prefixo _v274 / V274 / v274- / data-v274.
+   Pedido do Fernando: "…identificasse que um pedido pode estar a caminho, e quando o adm der entrada na nota fiscal no Omie o
+   sistema percebe e já marca que as peças chegaram." (teste: PC-2026-0001 Megamicron, itens 4430/4431).
+   · O casamento NF ↔ pedido mora no BANCO (_com_nf_casar, sozinho depois de cada leitura de notas e a cada 10 min). A tela só
+     mostra e pergunta. Selos no pedido (cabeçalho, no card e na aba 📦 Compras — paridade: o mesmo _v238PedidoCorpo):
+     "📬 NF nº X de dd/mm — a caminho" · "📦 recebido parcial (N de M itens)" · "❓ NF nº X — é deste pedido?" ·
+     "✅ recebido pela NF nº X" · "📦 NF concluída — confira os itens e marque ✅".
+   · Dentro do pedido: a seção "📬 NF do fornecedor (Omie)" com cada nota (nº, data, etapa, força, itens casados, valor quando o
+     banco deixa), "É deste pedido" / "Não é" (provável; "Não é" numa certa: só o administrador) e "🔎 Ver a nota" (admin e
+     Suprimentos → Catálogo › Notas de entrada). A trilha do pedido ganha nomes legíveis para os eventos da NF.
+   · Aba 📦 Compras: filtro "📬 a caminho", selos na coluna Situação e o painel "📬 NF do fornecedor": leitura (de quanto em quanto
+     tempo, última leitura, "↻ Ler as NFs agora"), as prováveis a confirmar e "NF de fornecedor sem pedido".
+   · Início › Caixa de entrada: grupo "NF a confirmar" com um cartão por provável (É deste pedido / Não é / abrir as compras do card).
+   · PDF e texto do pedido: "Favor informar o nº PC-AAAA-NNNN no pedido (xPed) da NF-e." (_v274GerarPdf = CÓPIA LITERAL do
+     _v273GerarPdf montada pelo builder + essa linha).
+   · Sem o SQL (função não existe): nada aparece e nada quebra (o PCM V273 segue igual). Chave de volta: localStorage pcm_v274=off.
+   Embrulha: _v238PedidoHtml · _v238PedidoCorpo · _v238PedTexto · _v238GerarPdf · _v238TabCarregar · _v238TabPintar · _v238SecCard ·
+   _v238OvCarregar · _v238TabAbrirPed · _v218Cards · _v218Carregar. Nada renomeado.
+   ════════════════════════════════════════════════════════════════════════════════════════════════════════════ */
+var V274 = { orig: {}, nf: {}, em: {}, voo: null, fila: {}, painel: null, painelEm: 0, painelVoo: null, sql: null, detalhe: false,
+             filtro: false, msg: null, conf: {}, gravando: false };
+function _v274Ligado() { try { return localStorage.getItem('pcm_v274') !== 'off'; } catch (e) { return true; } }
+function _v274E(v) { return _v238E(v); }
+// as funções com_nf_* vão pelo _v200Rpc DIRETO: o _v238Rpc marca "falta o SQL de Compras" (V238.sql = false) quando a função não existe —
+// sem o SQL desta rodada, isso travaria o 📦 Compras inteiro (achado pela sabotagem do controle negativo)
+function _v274Rpc(fn, args, escrita) { return _v200Rpc(fn, args || {}, escrita); }
+function _v274Data(iso) { var m = /^(\d{4})-(\d{2})-(\d{2})/.exec(String(iso || '')); return m ? m[3] + '/' + m[2] + '/' + m[1] : ''; }
+function _v274Hora(iso) { var d = new Date(iso || ''); return isNaN(d.getTime()) ? '' : d.toLocaleString('pt-BR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' }); }
+function _v274SemSql(e) { return _v238SemSql(e) || /com_nf_/.test(String((e && e.message) || '')) && /does not exist|não existe|PGRST202/i.test(String((e && e.message) || '')); }
+
+// ── leitura: o resumo das NFs dos pedidos (lote, cache de 20 s) e o painel ─────────────────────────────────────
+function _v274Carregar(ids, forcar) {
+  if (V274.sql === false) return Promise.resolve(false);
+  var agora = Date.now(), espera = [];
+  var falta = (ids || []).filter(function (id) {
+    if (!id) return false;
+    if (V274.fila[id]) { espera.push(V274.fila[id]); return false; }      // já está sendo lido: espera a MESMA leitura
+    return forcar || !V274.nf[id] || agora - (V274.em[id] || 0) > 20000;
+  });
+  if (!falta.length) return espera.length ? Promise.all(espera).then(function (x) { return x.some(Boolean); }) : Promise.resolve(false);
+  var voo = _v274Rpc('com_nf_pedidos', { p_ids: falta.slice(0, 1000) }).then(function (r) {
+    V274.sql = true; V274.detalhe = !!(r && r.detalhe);
+    var ps = (r && r.pedidos) || {};
+    falta.forEach(function (id) { delete V274.fila[id]; V274.nf[id] = ps[id] || { id: id, selos: [], notas: [] }; V274.em[id] = Date.now(); });
+    return true;
+  }, function (e) {
+    falta.forEach(function (id) { delete V274.fila[id]; });
+    if (_v274SemSql(e)) V274.sql = false; else console.info('[V274] NFs dos pedidos: ' + ((e && e.message) || e));
+    return false;
+  });
+  falta.forEach(function (id) { V274.fila[id] = voo; });
+  return espera.length ? Promise.all(espera.concat([voo])).then(function (x) { return x.some(Boolean); }) : voo;
+}
+function _v274Painel(forcar) {
+  if (V274.sql === false) return Promise.resolve(null);
+  if (!forcar && V274.painelVoo) return V274.painelVoo;
+  if (!forcar && V274.painel && Date.now() - V274.painelEm < 20000) return Promise.resolve(V274.painel);
+  V274.painelVoo = _v274Rpc('com_nf_painel', {}).then(function (r) {
+    V274.sql = true; V274.painel = r; V274.painelEm = Date.now(); V274.painelVoo = null; V274.detalhe = !!(r && r.detalhe); return r;
+  }, function (e) {
+    V274.painelVoo = null;
+    if (_v274SemSql(e)) V274.sql = false;
+    V274.painel = V274.painel && !_v274SemSql(e) ? V274.painel : null; V274.painelEm = Date.now();
+    return null;
+  });
+  return V274.painelVoo;
+}
+
+// ── os selos e a seção do pedido ─────────────────────────────────────────────────────────────────────────────
+function _v274SelosHtml(pid) {
+  var x = V274.nf[pid]; if (!x || !(x.selos || []).length) return '';
+  return x.selos.map(function (s) { return '<span class="v274-selo ' + _v274E(s.tipo) + '" data-v274-selo="' + _v274E(s.tipo) + '">' + _v274E(s.texto) + '</span>'; }).join('');
+}
+var V274_FORCA = { certo: 'certa', provavel: 'provável', confirmado: 'confirmada' };
+var V274_MOTIVO = { xped: 'a NF cita o nº do pedido', itens: 'todos os itens casam pelo código', parcial: 'parte dos itens casa pelo código',
+                    descricao: 'o código do pedido aparece na descrição do item da NF', valor: 'nenhum item casa — só o valor da NF fica perto do total do pedido',
+                    ambiguo: 'os itens casam, mas outro pedido deste fornecedor também tem o mesmo item — confirme de qual é',
+                    unidade: 'o código casa, mas a unidade é outra (ex.: CX × UN) — confira a quantidade' };
+function _v274NotaHtml(n, pid, adm) {
+  var conc = n.concluida ? 'concluída no Omie (entrada dada)' : 'capturada — entrada ainda não concluída';
+  var h = '<div class="v274-n" data-v274-nota="' + _v274E(n.nota_id) + '"><b>NF nº ' + _v274E(n.numero || '?') + (n.serie ? '/' + _v274E(n.serie) : '') + '</b>' +
+    '<span>' + _v274E(_v274Data(n.emissao)) + '</span>' +
+    '<span class="v274-selo ' + (n.concluida ? 'recebido_nf' : 'a_caminho') + '">' + _v274E(n.etapa_rotulo || conc) + '</span>' +
+    '<span class="v274-selo ' + (n.forca === 'provavel' ? 'provavel' : 'conferir') + '">' + _v274E(V274_FORCA[n.forca] || n.forca) + '</span>' +
+    (n.itens_total ? '<span>' + _v274E(n.itens_casados) + ' de ' + _v274E(n.itens_total) + ' itens</span>' : '') +
+    (n.valor !== undefined && n.valor !== null ? '<span>' + _v274E(_v238R(n.valor)) + '</span>' : '');
+  var b = '';
+  if (n.forca === 'provavel') b += '<button type="button" class="v274-mini vd" data-v274="sim" data-link="' + _v274E(n.link) + '" data-id="' + _v274E(pid) + '">É deste pedido</button>' +
+    '<button type="button" class="v274-mini cz" data-v274="nao" data-link="' + _v274E(n.link) + '" data-id="' + _v274E(pid) + '">' + (V274.conf[n.link] ? 'Confirmar: não é' : 'Não é') + '</button>';
+  else if (adm) b += '<button type="button" class="v274-mini cz" data-v274="nao" data-link="' + _v274E(n.link) + '" data-id="' + _v274E(pid) + '" title="Só o administrador desliga uma NF que casou certo">' +
+    (V274.conf[n.link] ? 'Confirmar: não é deste pedido' : 'Não é deste pedido') + '</button>';
+  if (V274.detalhe) b += '<button type="button" class="v274-mini az" data-v274="verNota" data-nota="' + _v274E(n.nota_id) + '">🔎 Ver a nota</button>';
+  h += (b ? '<span style="display:flex;gap:6px;flex-wrap:wrap;margin-left:auto">' + b + '</span>' : '') + '</div>';
+  var motivo = V274_MOTIVO[n.motivo] || n.motivo;
+  h += '<div class="v274-sub">' + _v274E(motivo) + (n.confirmado_por ? ' · confirmada por ' + _v274E(_v200NomeUsu(n.confirmado_por)) + ' ' + _v274E(_v274Hora(n.confirmado_em)) : '') +
+    (n.recebeu_em ? ' · deu o recebido automático ' + _v274E(_v274Hora(n.recebeu_em)) : '') +
+    ((n.itens || []).length ? ' · ' + n.itens.map(function (i) { return _v274E((i.codigo || 'item ' + i.ordem) + ' ×' + _v204Qtd(i.qtd)) + (i.via === 'descricao' ? ' (pela descrição)' : ''); }).join(', ') : '') + '</div>';
+  return h;
+}
+function _v274SecaoHtml(p) {
+  var x = V274.nf[p.id]; if (!x || p.estado === 'cancelado' && !(x.notas || []).length) return '';
+  var adm = _v200EhAdmin(), ns = x.notas || [];
+  if (!ns.length && p.estado !== 'enviado' && p.estado !== 'rascunho') return '';
+  var h = '<div class="v274-nf" data-v274-sec="' + _v274E(p.id) + '"><h5>📬 NF do fornecedor (Omie) <small>só leitura · nada é gravado no Omie</small></h5>';
+  if (!ns.length) h += '<div class="v274-sub">Nenhuma NF de entrada casou com este pedido ainda. Quando a nota do fornecedor for capturada no Omie, este pedido mostra "📬 a caminho"; ' +
+    'quando a entrada for concluída cobrindo todos os itens, ele vira "recebido" sozinho. Peça ao fornecedor o nº <b>' + _v274E(p.id) + '</b> no pedido (xPed) da NF-e.</div>';
+  else h += ns.map(function (n) { return _v274NotaHtml(n, p.id, adm); }).join('');
+  if (x.auto_bloqueado) h += '<div class="v274-sub" style="color:#B54708">O administrador desfez um recebimento deste pedido: ele não é recebido sozinho de novo — marque ✅ quando chegar.</div>';
+  else if (x.sem_auto) h += '<div class="v274-sub" style="color:#B54708">A NF já estava concluída no Omie quando o casamento foi instalado: o recebido automático não vale para ela — confira e marque ✅.</div>';
+  return h + '</div>';
+}
+// a trilha do pedido: nomes legíveis para os eventos da NF (o banco grava o tipo técnico)
+var V274_EV = { nf_ligada: '📬 NF do fornecedor ligada', nf_provavel: '❓ NF provável (a confirmar)', nf_confirmada: '✔ NF confirmada', nf_recusada: '✕ "Não é deste pedido"',
+                nf_concluida: '📦 NF concluída no Omie', nf_desfeita: '↩ NF desligada', recebido_pela_nf: '✅ recebido pela NF do fornecedor' };
+function _v274EvTraduz(p) {
+  if (!p || !Array.isArray(p.eventos) || !p.eventos.some(function (e) { return V274_EV[e.tipo]; })) return p;
+  var q = Object.assign({}, p);
+  q.eventos = p.eventos.map(function (e) {
+    if (!V274_EV[e.tipo]) return e;
+    var d = e.dados || {}, txt = [d.nf ? 'NF ' + d.nf : '', d.itens ? d.itens + ' itens' : '', d.motivo ? (V274_MOTIVO[d.motivo] || d.motivo) : '', d.aviso || ''].filter(Boolean).join(' · ');
+    return Object.assign({}, e, { tipo: V274_EV[e.tipo], dados: { motivo: txt } });
+  });
+  return q;
+}
+
+// ── o painel da aba 📦 Compras (leitura · prováveis · NF sem pedido) ──────────────────────────────────────────
+function _v274PainelHtml() {
+  var P = V274.painel; if (!P || !P.ok) return '';
+  var L = P.leitura || {}, adm = _v200EhAdmin();
+  var h = '<div class="v274-painel" id="v274Painel"><h4>📬 NF do fornecedor <small>notas de entrada do Omie (só leitura) — o banco casa com os pedidos sozinho</small></h4>';
+  if (V274.msg) h += '<div class="v274-msg' + (V274.msg.erro ? ' vm' : '') + '">' + V274.msg.txt + '</div>';
+  var dias = (L.dias || []).map(function (d) { return ['dom', 'seg', 'ter', 'qua', 'qui', 'sex', 'sáb'][d]; }).join(', ');
+  h += '<div class="v274-leit">' + (L.ligada ? '⏱ Leitura das NFs a cada <b>' + _v274E(L.cada_min) + ' min</b> (' + _v274E(dias) + ', ' + _v274E(L.de) + '–' + _v274E(L.ate) + ', só com pedido em aberto)' : '<span class="vm">⏸ Leitura automática das NFs DESLIGADA</span>' + (adm ? ' (ligue aqui depois de publicar a Edge erp-omie 4.3 — LEIA-ME)' : ' (o administrador liga aqui)')) +
+    ' · última leitura: <b>' + (L.ultima_ok ? _v274E(_v274Hora(L.ultima_ok)) : 'nenhuma ainda') + '</b>' +
+    (L.na_fila ? ' · ⏳ lendo agora' : '') +
+    (L.edge_ok === false ? ' · <span class="vm">⚠ a Edge erp-omie no ar ("' + _v274E(L.edge || 'nenhuma') + '") não lê notas — falta publicar a 4.3</span>' : '') +
+    (L.fila_erro ? ' · <span class="vm">' + _v274E(L.fila_erro) + '</span>' : '') +
+    (L.relogio === false ? ' · <span class="vm">⚠ o relógio com-nf-relogio não está no pg_cron</span>' : '') +
+    ' <button type="button" class="v274-mini az" data-v274="lerAgora">↻ Ler as NFs agora</button>' +
+    (adm ? ' <button type="button" class="v274-mini cz" data-v274="ligar" data-on="' + (L.ligada ? '0' : '1') + '">' + (L.ligada ? '⏸ Desligar a leitura automática' : '▶ Ligar a leitura automática') + '</button>' : '') + '</div>';
+  var pv = P.provaveis || [];
+  var pvt = Number(P.provaveis_total) || pv.length;
+  h += '<div style="font-weight:700;font-size:12.5px;margin:6px 0 2px">❓ Prováveis a confirmar <small style="font-weight:400;color:#667085">(' + pv.length + (pvt > pv.length ? ' de ' + pvt + ' — as mais novas' : '') + ')</small></div>';
+  h += pv.length ? '<table><thead><tr><th>NF</th><th>Pedido</th><th class="v274-hide">Fornecedor</th><th class="v274-hide">Card</th><th>Por quê</th><th></th></tr></thead><tbody>' + pv.map(function (x) {
+    return '<tr><td><b>nº ' + _v274E(x.numero || '?') + '</b><div class="v274-sub">' + _v274E(_v274Data(x.emissao)) + ' · ' + _v274E(x.concluida ? 'concluída' : 'capturada') + (x.valor != null ? ' · ' + _v274E(_v238R(x.valor)) : '') + '</div></td>' +
+      '<td><b>' + _v274E(x.pedido_id) + '</b>' + (x.total_pedido != null ? '<div class="v274-sub">' + _v274E(_v238R(x.total_pedido)) + '</div>' : '') + '</td>' +
+      '<td class="v274-hide">' + _v274E(x.fornecedor) + '</td><td class="v274-hide">' + _v274E(x.oportunidade_id) + '<div class="v274-sub">' + _v274E(x.cliente || '') + '</div></td>' +
+      '<td class="v274-sub">' + _v274E(V274_MOTIVO[x.motivo] || x.motivo) + (x.itens_total ? ' (' + _v274E(x.itens_casados) + ' de ' + _v274E(x.itens_total) + ')' : '') + '</td>' +
+      '<td style="white-space:nowrap"><button type="button" class="v274-mini vd" data-v274="sim" data-link="' + _v274E(x.link) + '" data-id="' + _v274E(x.pedido_id) + '">É deste pedido</button> ' +
+      '<button type="button" class="v274-mini cz" data-v274="nao" data-link="' + _v274E(x.link) + '" data-id="' + _v274E(x.pedido_id) + '">' + (V274.conf[x.link] ? 'Confirmar: não é' : 'Não é') + '</button></td></tr>';
+  }).join('') + '</tbody></table>' : '<div class="v274-sub">Nenhuma.</div>';
+  var sp = P.sem_pedido || [];
+  h += '<div style="font-weight:700;font-size:12.5px;margin:10px 0 2px">📭 NF de fornecedor sem pedido <small style="font-weight:400;color:#667085">(últimos 60 dias, de fornecedores com pedido em aberto, que não casaram — ' + sp.length + ')</small></div>';
+  h += sp.length ? '<table><thead><tr><th>NF</th><th>Fornecedor</th><th>Etapa</th><th class="v274-hide">Pedidos em aberto dele</th><th></th></tr></thead><tbody>' + sp.map(function (x) {
+    return '<tr><td><b>nº ' + _v274E(x.numero || '?') + '</b><div class="v274-sub">' + _v274E(_v274Data(x.emissao)) + (x.valor != null ? ' · ' + _v274E(_v238R(x.valor)) : '') + '</div></td>' +
+      '<td>' + _v274E(x.fornecedor || '') + '</td><td>' + _v274E(x.etapa_rotulo || (x.etapa ? 'etapa ' + x.etapa : '')) + '</td>' +
+      '<td class="v274-hide">' + _v274E((x.pedidos_abertos || []).join(', ')) + ((x.recusada_em || []).length ? '<div class="v274-sub">"Não é" de: ' + _v274E(x.recusada_em.join(', ')) + '</div>' : '') + '</td>' +
+      '<td>' + (V274.detalhe ? '<button type="button" class="v274-mini az" data-v274="verNota" data-nota="' + _v274E(x.nota_id) + '">🔎 Ver a nota</button>' : '') + '</td></tr>';
+  }).join('') + '</tbody></table>' : '<div class="v274-sub">Nenhuma.</div>';
+  return h + '</div>';
+}
+// depois da pintura da aba: filtro "a caminho", selos na coluna Situação, o painel no fim
+function _v274TabDepois() {
+  var el = document.getElementById('viewComercial'); if (!el || !_v238NaAba() || V274.sql === false) return;
+  var fil = el.querySelector('.v238-filtros');
+  if (fil && !fil.querySelector('[data-v274="filtro"]')) {
+    var n = V274.painel && V274.painel.a_caminho ? V274.painel.a_caminho.length : null;
+    fil.insertAdjacentHTML('afterbegin', '<button type="button" class="btn btn-sm ' + (V274.filtro ? 'btn-primary' : 'btn-secondary') + '" data-v274="filtro" data-pw-off="1" title="Pedidos com NF do fornecedor capturada no Omie (entrada ainda não concluída)">📬 a caminho' + (n !== null ? ' (' + n + ')' : '') + '</button>');
+  }
+  var ac = {}; ((V274.painel && V274.painel.a_caminho) || []).forEach(function (id) { ac[id] = 1; });
+  var vistos = 0, total = 0;
+  el.querySelectorAll('#v238Lista tr[data-v238="tabPed"]').forEach(function (tr) {
+    var id = tr.getAttribute('data-id'); total++;
+    var td = tr.children[1];
+    if (td && !td.querySelector('[data-v274-selo]')) td.insertAdjacentHTML('beforeend', _v274SelosHtml(id));
+    var esconde = V274.filtro && !ac[id];
+    tr.hidden = esconde; var det = tr.nextElementSibling; if (det && det.classList.contains('v238-det')) det.hidden = esconde;
+    if (!esconde) vistos++;
+  });
+  if (V274.filtro) {
+    var lista = el.querySelector('#v238Lista');
+    var aviso = '<div class="v274-sub" id="v274FiltroAviso" style="margin:4px 0">📬 a caminho: ' + vistos + ' pedido(s) nesta lista' +
+      (V274.painel && V274.painel.a_caminho && V274.painel.a_caminho.length > vistos ? ' de ' + V274.painel.a_caminho.length + ' — marque "Enviado"/"Rascunho" e limpe a busca para ver todos' : '') + '.</div>';
+    if (lista && !el.querySelector('#v274FiltroAviso')) lista.parentNode.insertAdjacentHTML('beforebegin', aviso);
+  }
+  if (!el.querySelector('#v274Painel')) { var hp = _v274PainelHtml(); if (hp) el.insertAdjacentHTML('beforeend', hp); }
+}
+
+// ── a Caixa de entrada: as prováveis viram cartões ───────────────────────────────────────────────────────────
+function _v274CardProvavel(x) {
+  return '<div class="v218-cab"><span class="v218-tp nfp">NF do fornecedor a confirmar</span><span>' + _v274E(x.pedido_id) + ' · ' + _v274E(x.fornecedor || '') + '</span>' +
+    '<span>' + _v274E(_v274Data(x.emissao)) + '</span></div>' +
+    '<div class="v218-tit">A NF nº ' + _v274E(x.numero || '?') + ' é do pedido ' + _v274E(x.pedido_id) + '?</div>' +
+    '<div class="v218-sub">' + _v274E(V274_MOTIVO[x.motivo] || x.motivo) + (x.itens_total ? ' (' + _v274E(x.itens_casados) + ' de ' + _v274E(x.itens_total) + ' itens)' : '') +
+    ' · ' + _v274E(x.concluida ? 'entrada concluída no Omie' : 'capturada no Omie (a caminho)') + ' · card ' + _v274E(x.oportunidade_id) + (x.cliente ? ' · ' + _v274E(x.cliente) : '') +
+    (x.valor != null ? ' · NF ' + _v274E(_v238R(x.valor)) + (x.total_pedido != null ? ' × pedido ' + _v274E(_v238R(x.total_pedido)) : '') : '') + '</div>' +
+    '<div class="v218-acoes"><button type="button" class="btn btn-primary btn-sm" data-v274="sim" data-link="' + _v274E(x.link) + '" data-id="' + _v274E(x.pedido_id) + '">É deste pedido</button>' +
+    '<button type="button" class="btn btn-secondary btn-sm" data-v274="nao" data-link="' + _v274E(x.link) + '" data-id="' + _v274E(x.pedido_id) + '">' + (V274.conf[x.link] ? 'Confirmar: não é' : 'Não é') + '</button>' +
+    '<button type="button" class="btn btn-secondary btn-sm" data-v274="compras" data-card="' + _v274E(x.oportunidade_id) + '">📦 Abrir as compras do card</button></div>';
+}
+
+// ── as ações ─────────────────────────────────────────────────────────────────────────────────────────────────
+function _v274Repintar() {
+  try { if (V238.ov) _v238OvPintar(); else if (_v238NaAba()) _v238TabPintar(); } catch (e) {}
+  try { if (typeof V218 !== 'undefined' && document.getElementById('viewInicio') && document.getElementById('viewInicio').style.display !== 'none') _v218Pintar(); } catch (e) {}
+}
+async function _v274Decidir(link, pid, sim) {
+  var r = await _v274Rpc('com_nf_confirmar', { p_link: Number(link), p_sim: !!sim, p_motivo: null }, true);
+  delete V274.conf[link];
+  if (r && r.pedido) { V274.nf[pid] = r.pedido; V274.em[pid] = Date.now(); }
+  var msg = { erro: false, txt: sim ? '✔ NF confirmada no ' + _v274E(pid) + (r && r.pedido && r.pedido.estado === 'recebido' ? ' — todos os itens chegaram: o pedido foi recebido.' : '.') : '✕ Anotado: a NF não é do ' + _v274E(pid) + ' (não volta a ser sugerida para ele).' };
+  // o pedido pode ter mudado de estado (recebido sozinho): relê o painel e o que está aberto ANTES de mostrar a mensagem
+  await _v274Painel(true);
+  try { if (V238.ov) await _v238OvCarregar(); else if (_v238NaAba()) { var T = V238.tab; if (T.aberto === pid) { T.det = await _v238Rpc('com_pedido_ler', { p_id: pid }); } V274.msg = msg; await _v238TabCarregar(); } } catch (e) {}
+  V274.msg = msg;
+  _v274Repintar();
+  try { toast(V274.msg.txt.replace(/<[^>]+>/g, ''), 'success'); } catch (e) {}
+}
+async function _v274Clique(t, a) {
+  if (a === 'filtro') { V274.filtro = !V274.filtro; if (V274.filtro) await _v274Painel(true); return _v238TabPintar(); }
+  if (a === 'sim' || a === 'nao') {
+    var link = t.getAttribute('data-link'), pid = t.getAttribute('data-id');
+    if (a === 'nao' && !V274.conf[link]) { V274.conf[link] = 1; setTimeout(function () { if (V274.conf[link]) { delete V274.conf[link]; _v274Repintar(); } }, 6000); return _v274Repintar(); }
+    return _v274Decidir(link, pid, a === 'sim');
+  }
+  if (a === 'lerAgora') {
+    var r = await _v274Rpc('com_nf_ler_agora', {}, true);
+    var m2 = r && r.leu === false ? { erro: false, txt: '🔁 Casamento refeito com as notas que já estão no banco. Pedir uma leitura nova ao Omie é com o administrador ou o Suprimentos.' } :
+      { erro: r && r.edge_ok === false, txt: r && r.edge_ok === false ? '⚠ Pedido feito, mas a Edge erp-omie no ar não lê notas (falta publicar a 4.3 — LEIA-ME).' :
+      (r && r.ja_na_fila ? '⏳ Já tem uma leitura das NFs na fila — o banco casa assim que ela terminar.' : '↻ Leitura das NFs pedida ao Omie — em 1 a 2 minutos os pedidos se atualizam (o banco casa sozinho).') };
+    V274.nf = {}; V274.em = {};
+    await _v274Painel(true); V274.msg = m2; if (_v238NaAba()) return _v238TabCarregar(); return _v274Repintar();
+  }
+  if (a === 'ligar') {
+    await _v274Rpc('com_nf_config_salvar', { p_leitura: { ligada: t.getAttribute('data-on') === '1' } }, true);
+    await _v274Painel(true);
+    V274.msg = { erro: false, txt: t.getAttribute('data-on') === '1' ? '▶ Leitura automática das NFs ligada.' : '⏸ Leitura automática das NFs desligada (o "Ler agora" continua).' };
+    return _v274Repintar();
+  }
+  if (a === 'verNota') {
+    var nid = t.getAttribute('data-nota');
+    // auditoria 2 (#6): saindo do pedido aberto pelo card, o _v238Fechar reabriria o CARD por cima da nota — a volta é zerada antes
+    try { if (V238.ov) { if (!_v238Sujo()) V238.ov.volta = ''; _v238Fechar(false); } } catch (e) {}
+    if (V238.ov) return;   // edição pendente: o pedido pediu "Fechar mesmo assim"
+    try { if (_v200.modal) _v200Fechar(); } catch (e) {}
+    try { location.hash = 'notas/' + nid; } catch (e) {}
+    try { showView('notasEntrada'); } catch (e) {}
+    return;
+  }
+  if (a === 'compras') return _v238Abrir(t.getAttribute('data-card'), '');
+}
+
+// ── os embrulhos (uma vez; desligáveis por localStorage pcm_v274 = off) ─────────────────────────────────────────
+// ── o PDF do pedido de compra (cópia literal do _v273GerarPdf montada pelo builder; só a linha do xPed entra) ──
+async function _v274GerarPdf(p) {   // V274: cópia literal do _v273GerarPdf (V273) + a linha do xPed   // V273: cópia literal do _v238GerarPdf (V238) + a Referência do card
+  var lib = await pcmEnsureJsPDF(), jsPDF = lib.jsPDF;
+  var doc = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
+  var W = 210, M = 14, y = 14, AZUL = [26, 58, 107], CINZA = [90, 90, 90], LIN = [205, 210, 218];
+  var T = function (s, x, yy, o) { doc.text(_v238PdfTxt(s), x, yy, o || {}); };
+  var Q = function (s, w) { return doc.splitTextToSize(_v238PdfTxt(s), w); };
+  var f = p.fornecedor || {};
+  doc.setFont('helvetica', 'bold'); doc.setFontSize(15); doc.setTextColor(AZUL[0], AZUL[1], AZUL[2]); T('PROPER COMPRESSORES', M, y);
+  doc.setFont('helvetica', 'normal'); doc.setFontSize(8.5); doc.setTextColor(CINZA[0], CINZA[1], CINZA[2]); T('Manutenção, venda e locação de compressores · Divinópolis/MG', M, y + 5);
+  doc.setFont('helvetica', 'bold'); doc.setFontSize(12); doc.setTextColor(0, 0, 0); T('PEDIDO DE COMPRA ' + p.id, W - M, y, { align: 'right' });
+  doc.setFont('helvetica', 'normal'); doc.setFontSize(9);
+  T(new Date(p.enviado_em || p.criado_em || Date.now()).toLocaleDateString('pt-BR', { timeZone: 'America/Sao_Paulo' }) + (p.estado === 'rascunho' ? ' · RASCUNHO' : ''), W - M, y + 5, { align: 'right' });
+  y += 13; doc.setDrawColor(LIN[0], LIN[1], LIN[2]); doc.setLineWidth(0.4); doc.line(M, y, W - M, y); y += 5;
+  doc.setFontSize(8); doc.setTextColor(CINZA[0], CINZA[1], CINZA[2]); T('Fornecedor', M, y); T('Referência', W / 2 + 2, y);
+  doc.setFontSize(9.5); doc.setTextColor(0, 0, 0); y += 4.5;
+  var l1 = Q((f.nome || '') + (f.cnpj ? ' · CNPJ ' + f.cnpj : ''), W / 2 - M - 4);
+  [f.contato ? 'A/C ' + f.contato : '', f.email, f.telefone].filter(Boolean).forEach(function (x) { l1 = l1.concat(Q(x, W / 2 - M - 4)); });
+  // V273: sem OS, a referência do pedido é o CARD (OPO-…) — NUNCA o nome do cliente (o fornecedor não precisa saber quem é)
+  var l2 = [].concat(p.numero_os ? Q('OS ' + p.numero_os, W / 2 - M - 4) : (p.oportunidade_id ? Q('Card ' + p.oportunidade_id, W / 2 - M - 4) : [])).concat(p.maquina ? Q('Equipamento: ' + p.maquina, W / 2 - M - 4) : []);
+  if (!l2.length) l2 = ['—'];
+  doc.text(l1, M, y); doc.text(l2, W / 2 + 2, y);
+  y += Math.max(l1.length, l2.length) * 4.3 + 4;
+  var X = { cod: M + 2, desc: M + 34, qtd: 132, un: 136, pu: 172, tot: W - M - 2 };
+  var cab = function () {
+    doc.setFillColor(238, 242, 248); doc.rect(M, y - 4, W - 2 * M, 6.5, 'F');
+    doc.setFont('helvetica', 'bold'); doc.setFontSize(8.5); doc.setTextColor(40, 40, 40);
+    T('Código', X.cod, y); T('Descrição', X.desc, y); T('Qtd', X.qtd, y, { align: 'right' }); T('Un', X.un, y); T('Preço un.', X.pu, y, { align: 'right' }); T('Total', X.tot, y, { align: 'right' });
+    doc.setFont('helvetica', 'normal'); doc.setTextColor(0, 0, 0); y += 6;
+  };
+  cab();
+  var tot = 0, cotar = 0;
+  (p.itens || []).forEach(function (it) {
+    var d = Q(it.descricao, X.qtd - X.desc - 12), alt = Math.max(1, d.length) * 4.2 + 1.5;
+    if (y + alt > 297 - 40) { doc.addPage(); y = 18; cab(); }
+    doc.setFontSize(8.8);
+    T(it.codigo || '', X.cod, y); doc.text(d, X.desc, y); T(_v204Qtd(it.qtd), X.qtd, y, { align: 'right' }); T(it.unidade || '', X.un, y);
+    if (it.custo_unit === null || it.custo_unit === undefined) { T('a cotar', X.pu, y, { align: 'right' }); T('-', X.tot, y, { align: 'right' }); cotar++; }
+    else { var t = _v204Val(it.qtd, it.custo_unit); tot += t; T(_v204N2(it.custo_unit), X.pu, y, { align: 'right' }); T(_v204N2(t), X.tot, y, { align: 'right' }); }
+    y += alt; doc.setDrawColor(240, 242, 246); doc.line(M, y - 3, W - M, y - 3);
+  });
+  y += 2; doc.setFont('helvetica', 'bold'); doc.setFontSize(10); T('Total do pedido' + (cotar ? ' (' + cotar + ' item(ns) a cotar)' : ''), X.pu - 2, y, { align: 'right' }); T(_v204R(tot), X.tot, y, { align: 'right' });
+  y += 8; doc.setFont('helvetica', 'normal'); doc.setFontSize(9);
+  [['Prazo de entrega', p.prazo_entrega], ['Pagamento', p.pagamento], ['Observações', p.obs]].forEach(function (c) {
+    if (!_v238T(c[1])) return;
+    var t2 = Q(c[0] + ': ' + c[1], W - 2 * M); if (y + t2.length * 4.3 > 297 - 20) { doc.addPage(); y = 18; }
+    doc.text(t2, M, y); y += t2.length * 4.3 + 1.5;
+  });
+  // V274: o nº do pedido na NF-e (xPed) — é o que torna CERTO o casamento da NF do fornecedor com o pedido (SQL COMPRAS_NF_ENTRADA)
+  var xp = Q('Favor informar o nº ' + p.id + ' no pedido (xPed) da NF-e.', W - 2 * M); if (y + xp.length * 4.6 + 2 > 297 - 14) { doc.addPage(); y = 18; }
+  y += 2; doc.setFont('helvetica', 'bold'); doc.setFontSize(9.5); doc.setTextColor(AZUL[0], AZUL[1], AZUL[2]); doc.text(xp, M, y); y += xp.length * 4.6;
+  doc.setFont('helvetica', 'normal'); doc.setTextColor(0, 0, 0);
+  doc.setFontSize(7.5); doc.setTextColor(CINZA[0], CINZA[1], CINZA[2]);
+  T('Pedido ' + p.id + ' · emitido por ' + _v200NomeUsu(p.enviado_por || p.criado_por) + ' · Proper Compressores', M, 290);
+  return doc;
+}
+
+// ── o mesmo, sobre o _v238GerarPdf original (quando o V273 está desligado por pcm_v273 = off) ──
+async function _v274GerarPdf238(p) {   // V274: cópia literal do _v238GerarPdf (V238) + a linha do xPed (V273 desligado)
+  var lib = await pcmEnsureJsPDF(), jsPDF = lib.jsPDF;
+  var doc = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
+  var W = 210, M = 14, y = 14, AZUL = [26, 58, 107], CINZA = [90, 90, 90], LIN = [205, 210, 218];
+  var T = function (s, x, yy, o) { doc.text(_v238PdfTxt(s), x, yy, o || {}); };
+  var Q = function (s, w) { return doc.splitTextToSize(_v238PdfTxt(s), w); };
+  var f = p.fornecedor || {};
+  doc.setFont('helvetica', 'bold'); doc.setFontSize(15); doc.setTextColor(AZUL[0], AZUL[1], AZUL[2]); T('PROPER COMPRESSORES', M, y);
+  doc.setFont('helvetica', 'normal'); doc.setFontSize(8.5); doc.setTextColor(CINZA[0], CINZA[1], CINZA[2]); T('Manutenção, venda e locação de compressores · Divinópolis/MG', M, y + 5);
+  doc.setFont('helvetica', 'bold'); doc.setFontSize(12); doc.setTextColor(0, 0, 0); T('PEDIDO DE COMPRA ' + p.id, W - M, y, { align: 'right' });
+  doc.setFont('helvetica', 'normal'); doc.setFontSize(9);
+  T(new Date(p.enviado_em || p.criado_em || Date.now()).toLocaleDateString('pt-BR', { timeZone: 'America/Sao_Paulo' }) + (p.estado === 'rascunho' ? ' · RASCUNHO' : ''), W - M, y + 5, { align: 'right' });
+  y += 13; doc.setDrawColor(LIN[0], LIN[1], LIN[2]); doc.setLineWidth(0.4); doc.line(M, y, W - M, y); y += 5;
+  doc.setFontSize(8); doc.setTextColor(CINZA[0], CINZA[1], CINZA[2]); T('Fornecedor', M, y); T('Referência', W / 2 + 2, y);
+  doc.setFontSize(9.5); doc.setTextColor(0, 0, 0); y += 4.5;
+  var l1 = Q((f.nome || '') + (f.cnpj ? ' · CNPJ ' + f.cnpj : ''), W / 2 - M - 4);
+  [f.contato ? 'A/C ' + f.contato : '', f.email, f.telefone].filter(Boolean).forEach(function (x) { l1 = l1.concat(Q(x, W / 2 - M - 4)); });
+  var l2 = [].concat(p.numero_os ? Q('OS ' + p.numero_os, W / 2 - M - 4) : []).concat(p.maquina ? Q('Equipamento: ' + p.maquina, W / 2 - M - 4) : []);
+  if (!l2.length) l2 = ['—'];
+  doc.text(l1, M, y); doc.text(l2, W / 2 + 2, y);
+  y += Math.max(l1.length, l2.length) * 4.3 + 4;
+  var X = { cod: M + 2, desc: M + 34, qtd: 132, un: 136, pu: 172, tot: W - M - 2 };
+  var cab = function () {
+    doc.setFillColor(238, 242, 248); doc.rect(M, y - 4, W - 2 * M, 6.5, 'F');
+    doc.setFont('helvetica', 'bold'); doc.setFontSize(8.5); doc.setTextColor(40, 40, 40);
+    T('Código', X.cod, y); T('Descrição', X.desc, y); T('Qtd', X.qtd, y, { align: 'right' }); T('Un', X.un, y); T('Preço un.', X.pu, y, { align: 'right' }); T('Total', X.tot, y, { align: 'right' });
+    doc.setFont('helvetica', 'normal'); doc.setTextColor(0, 0, 0); y += 6;
+  };
+  cab();
+  var tot = 0, cotar = 0;
+  (p.itens || []).forEach(function (it) {
+    var d = Q(it.descricao, X.qtd - X.desc - 12), alt = Math.max(1, d.length) * 4.2 + 1.5;
+    if (y + alt > 297 - 40) { doc.addPage(); y = 18; cab(); }
+    doc.setFontSize(8.8);
+    T(it.codigo || '', X.cod, y); doc.text(d, X.desc, y); T(_v204Qtd(it.qtd), X.qtd, y, { align: 'right' }); T(it.unidade || '', X.un, y);
+    if (it.custo_unit === null || it.custo_unit === undefined) { T('a cotar', X.pu, y, { align: 'right' }); T('-', X.tot, y, { align: 'right' }); cotar++; }
+    else { var t = _v204Val(it.qtd, it.custo_unit); tot += t; T(_v204N2(it.custo_unit), X.pu, y, { align: 'right' }); T(_v204N2(t), X.tot, y, { align: 'right' }); }
+    y += alt; doc.setDrawColor(240, 242, 246); doc.line(M, y - 3, W - M, y - 3);
+  });
+  y += 2; doc.setFont('helvetica', 'bold'); doc.setFontSize(10); T('Total do pedido' + (cotar ? ' (' + cotar + ' item(ns) a cotar)' : ''), X.pu - 2, y, { align: 'right' }); T(_v204R(tot), X.tot, y, { align: 'right' });
+  y += 8; doc.setFont('helvetica', 'normal'); doc.setFontSize(9);
+  [['Prazo de entrega', p.prazo_entrega], ['Pagamento', p.pagamento], ['Observações', p.obs]].forEach(function (c) {
+    if (!_v238T(c[1])) return;
+    var t2 = Q(c[0] + ': ' + c[1], W - 2 * M); if (y + t2.length * 4.3 > 297 - 20) { doc.addPage(); y = 18; }
+    doc.text(t2, M, y); y += t2.length * 4.3 + 1.5;
+  });
+  // V274: o nº do pedido na NF-e (xPed) — é o que torna CERTO o casamento da NF do fornecedor com o pedido (SQL COMPRAS_NF_ENTRADA)
+  var xp = Q('Favor informar o nº ' + p.id + ' no pedido (xPed) da NF-e.', W - 2 * M); if (y + xp.length * 4.6 + 2 > 297 - 14) { doc.addPage(); y = 18; }
+  y += 2; doc.setFont('helvetica', 'bold'); doc.setFontSize(9.5); doc.setTextColor(AZUL[0], AZUL[1], AZUL[2]); doc.text(xp, M, y); y += xp.length * 4.6;
+  doc.setFont('helvetica', 'normal'); doc.setTextColor(0, 0, 0);
+  doc.setFontSize(7.5); doc.setTextColor(CINZA[0], CINZA[1], CINZA[2]);
+  T('Pedido ' + p.id + ' · emitido por ' + _v200NomeUsu(p.enviado_por || p.criado_por) + ' · Proper Compressores', M, 290);
+  return doc;
+}
+
+(function () {
+  if (!_v274Ligado()) { console.info('[V274] desligado (localStorage pcm_v274 = off)'); return; }
+  try {
+    // o cabeçalho do pedido (sobreposição do card): os selos; se ainda não leu, lê e repinta
+    V274.orig.pedHtml = _v238PedidoHtml;
+    _v238PedidoHtml = function (p) {
+      var h = V274.orig.pedHtml.apply(this, arguments);
+      try {
+        if (!p || !p.id) return h;
+        if (!V274.nf[p.id]) { if (!V274.segurar) _v274Carregar([p.id]).then(function (mudou) { if (mudou) _v274Repintar(); }); return h; }
+        var s = _v274SelosHtml(p.id);
+        var k = h.indexOf('<span style="margin-left:auto">');
+        return s && k > 0 ? h.slice(0, k) + s + h.slice(k) : h;
+      } catch (e) { return h; }
+    };
+    // o corpo (card e aba — o MESMO): a trilha com nomes legíveis e a seção "📬 NF do fornecedor"
+    V274.orig.pedCorpo = _v238PedidoCorpo;
+    _v238PedidoCorpo = function (p) {
+      var p2 = p; try { p2 = _v274EvTraduz(p); } catch (e) {}
+      var h = V274.orig.pedCorpo.call(this, p2);
+      try {
+        if (!p || !p.id || V274.sql === false) return h;
+        if (!V274.nf[p.id]) { if (!V274.segurar) _v274Carregar([p.id]).then(function (mudou) { if (mudou) _v274Repintar(); }); return h; }
+        var sec = _v274SecaoHtml(p); if (!sec) return h;
+        var k = h.lastIndexOf('<ul class="v238-trilha">');
+        return k > 0 ? h.slice(0, k) + sec + h.slice(k) : h + sec;
+      } catch (e) { console.warn('[V274] pedido:', e); return h; }
+    };
+    // o texto do pedido (copiar para o e-mail/WhatsApp do fornecedor): o pedido do xPed
+    V274.orig.pedTexto = _v238PedTexto;
+    _v238PedTexto = function (p) {
+      var t = V274.orig.pedTexto.apply(this, arguments);
+      try { if (p && p.id && t.indexOf('(xPed)') < 0) t += '\nFavor informar o nº ' + p.id + ' no pedido (xPed) da NF-e.'; } catch (e) {}
+      return t;
+    };
+    // o PDF: com o V273 ligado, a cópia dele + xPed; com o V273 desligado (pcm_v273=off), a cópia do V238 original + xPed
+    //  (auditoria 2 #8: a chave de volta do V273 continua valendo para o PDF)
+    V274.orig.gerarPdf = _v238GerarPdf;
+    if (typeof _v273GerarPdf === 'function' && _v238GerarPdf === _v273GerarPdf && typeof _v274GerarPdf === 'function') _v238GerarPdf = _v274GerarPdf;
+    else if (typeof _v274GerarPdf238 === 'function') _v238GerarPdf = _v274GerarPdf238;
+    // a sobreposição do card e o pedido aberto pela aba: relê as NFs junto (força — o pedido pode ter mudado)
+    // auditoria 1 (B5): enquanto a sobreposição carrega, o cabeçalho/corpo NÃO pede as NFs pedido a pedido — sai UM lote no fim
+    V274.orig.ovCarregar = _v238OvCarregar;
+    _v238OvCarregar = async function () {
+      V274.segurar = true; var r;
+      try { r = await V274.orig.ovCarregar.apply(this, arguments); } finally { V274.segurar = false; }
+      try { var O = V238.ov; var ids = ((O && O.d && O.d.pedidos) || []).map(function (p) { return p.id; }); if (ids.length && await _v274Carregar(ids, true)) _v274Repintar(); } catch (e) {}
+      return r;
+    };
+    V274.orig.tabAbrir = _v238TabAbrirPed;
+    _v238TabAbrirPed = async function (id) {
+      var r = await V274.orig.tabAbrir.apply(this, arguments);
+      try { if (V238.tab.aberto === id && await _v274Carregar([id], true)) _v274Repintar(); } catch (e) {}
+      return r;
+    };
+    // a aba: lê as NFs da lista e o painel; pinta selos, filtro e painel depois da pintura do V238
+    V274.orig.tabCarregar = _v238TabCarregar;
+    _v238TabCarregar = async function () {
+      var r = await V274.orig.tabCarregar.apply(this, arguments);
+      try {
+        var its = (V238.tab.dados && V238.tab.dados.itens) || [];
+        var a = _v274Carregar(its.map(function (x) { return x.id; }), true), b = _v274Painel(false);   // o painel não depende da busca: cache de 20 s
+        await Promise.all([a, b]);
+        if (_v238NaAba()) _v238TabPintar();
+      } catch (e) {}
+      return r;
+    };
+    V274.orig.tabPintar = _v238TabPintar;
+    _v238TabPintar = function () {
+      var r = V274.orig.tabPintar.apply(this, arguments);
+      try { _v274TabDepois(); } catch (e) { console.warn('[V274] aba:', e); }
+      return r;
+    };
+    // o card (seção 📦 Compras): os selos ao lado dos pedidos
+    V274.orig.secCard = _v238SecCard;
+    _v238SecCard = function (trocar) {
+      var r = V274.orig.secCard.apply(this, arguments);
+      try {
+        var M = _v200.modal; if (!M || M.tipo !== 'card' || !M.d || !M.d.card) return r;
+        var res = V238.res[M.d.card.id]; var ps = (res && res.pedidos) || []; if (!ps.length) return r;
+        var falta = ps.filter(function (p) { return !V274.nf[p.id]; }).map(function (p) { return p.id; });
+        if (falta.length) { _v274Carregar(falta).then(function (mudou) { if (mudou && _v200.modal === M) _v238SecCard(true); }); return r; }
+        var sec = document.querySelector('#v200ModalBody #v238Sec'); if (!sec || sec.querySelector('[data-v274-selo]')) return r;
+        var s = ps.map(function (p) { var x = _v274SelosHtml(p.id); return x ? '<div class="v274-sub"><b>' + _v274E(p.id) + '</b> ' + x + '</div>' : ''; }).join('');
+        if (s) { var lin = sec.querySelector('.v238-lin'); if (lin) lin.insertAdjacentHTML('beforebegin', s); }
+      } catch (e) { console.warn('[V274] card:', e); }
+      return r;
+    };
+  } catch (e) { console.warn('[V274] compras (embrulho):', e); }
+  // a Caixa de entrada
+  try {
+    if (Array.isArray(V218_GRUPOS) && !V218_GRUPOS.some(function (g) { return g[0] === 'nfp'; })) V218_GRUPOS.splice(2, 0, ['nfp', 'NF a confirmar']);
+    V274.orig.cards = _v218Cards;
+    _v218Cards = function () {
+      var out = V274.orig.cards.apply(this, arguments);
+      try {
+        ((V274.painel && V274.painel.provaveis) || []).forEach(function (x) { out.push({ k: 'nfp:' + x.link, g: 'nfp', ordem: 2, t: String(x.emissao || ''), html: _v274CardProvavel(x) }); });
+        out.sort(function (a, b) { return a.ordem - b.ordem || (a.t < b.t ? -1 : a.t > b.t ? 1 : 0); });
+      } catch (e) {}
+      return out;
+    };
+    V274.orig.carregar = _v218Carregar;
+    _v218Carregar = async function () {
+      var p = _v274Painel(true);                 // em paralelo com o pc_inicio; repinta quando chegar (não segura a caixa)
+      var r = await V274.orig.carregar.apply(this, arguments);
+      try { p.then(function (x) { if (x) try { _v218Pintar(); } catch (e) {} }); } catch (e) {}
+      return r;
+    };
+    if (typeof V218 !== 'undefined' && (V218.em || V218.carregando || V218.dados)) _v274Painel(true).then(function (x) { if (x) try { _v218Pintar(); } catch (e) {} });
+  } catch (e) { console.warn('[V274] caixa (embrulho):', e); }
+  // os cliques (um ouvinte em captura; escrita com trava de duplo clique)
+  var ESCR = ['sim', 'lerAgora', 'ligar'];
+  document.addEventListener('click', async function (ev) {
+    var t = ev.target && ev.target.closest && ev.target.closest('[data-v274]'); if (!t) return;
+    var a = t.getAttribute('data-v274');
+    ev.preventDefault(); ev.stopPropagation();
+    if (t.disabled) return;
+    var escrita = ESCR.indexOf(a) >= 0 || (a === 'nao' && V274.conf[t.getAttribute('data-link')]);
+    if (escrita) { if (V274.gravando) return; V274.gravando = true; t.disabled = true; t.setAttribute('data-pcm-enviando', '1'); }
+    try { await _v274Clique(t, a); }
+    catch (e) { console.warn('[V274] clique', a, e); V274.msg = { erro: true, txt: _v274E((e && e.message) || String(e)) }; try { toast((e && e.message) || String(e), 'error'); } catch (x) {} _v274Repintar(); }
+    finally { if (escrita) { V274.gravando = false; if (t.isConnected) { t.disabled = false; t.removeAttribute('data-pcm-enviando'); } } }
+  }, true);
+})();
+</script>
+<!-- ████ FIM PCM V274 ████ -->
 </body>
 </html>
