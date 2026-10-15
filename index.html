@@ -5119,8 +5119,18 @@ v50 — Resiliência de rede: retry/backoff em gsGet e syncToGS
   modal da máquina e a caixa Calibração do Início usam a MESMA análise. Um bloco só (PCM V281 · H281), no fim do body.
   SQL que roda ANTES: HORIM_CALIBRACAO_2026-10-14. GAS v173 (aceite automático pela mesma regra). Sem o SQL: a tela antiga, com aviso.
 -->
-<title>ProperCare Manager · Gestão PGP v4.03 (PCM V281)</title>
-<meta name="app-build" content="PCM_V281" data-date="2026-10-14">
+<!--
+  PCM V282 — 15/10/2026 — TAREFA COM PENDÊNCIA GANHA SAÍDA (rodada 2026-10-15_retirar_pendencia, sobre o PCM V281 no ar).
+  Chamado da PGP-2026-0069: a decisão "Requer desmontagem?" estava "com pendência" (o técnico apertou "Não consigo fazer"
+  no PCF em 11/09) e nenhuma tela tirava a tarefa desse estado. O painel novo oferecia Sim/Não e o GAS recusava.
+  · Painel da OS e detalhe antigo: tarefa com pendência mostra o MOTIVO do técnico e, para o adm, "Retirar pendência"
+    (linha que se abre com o motivo e Cancelar/Retirar). Grava pela action que já existe (updateTarefaStatus → pendente,
+    is_admin), depois de RELER a tarefa: se ela já mudou, nada é gravado e a tela diz o estado de agora.
+  · Decisão com pendência não oferece mais Sim/Não (o servidor recusaria): primeiro retira a pendência, depois decide.
+  ZERO GAS, ZERO SQL, ZERO PCF. Bloco V282 no fim do body + 9 costuras contadas no R2A e no renderPipeline.
+-->
+<title>ProperCare Manager · Gestão PGP v4.03 (PCM V282)</title>
+<meta name="app-build" content="PCM_V282" data-date="2026-10-15">
 <link rel="icon" type="image/jpeg" href="data:image/jpeg;base64,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">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -26563,6 +26573,7 @@ async function _loadPipelineTab(osId, _v186Ger) {
           ? `<div style="font-size:11px;color:var(--text-muted);margin-top:4px">Aguardando decisão para definir se será executada.</div>`
           : '');
 
+      const _v282PendAntigo = (st === 'com_pendencia' && typeof _v282PendHtml === 'function') ? _v282PendHtml(osId, t, isDecisao) : '';   // V282
       html += `<div class="pipeline-card status-${st}" id="pcard-${tid}" ${st==='bloqueado'?'style="pointer-events:none"':''}>
         <div class="pipeline-card-header">
           <span>${icon} <span class="pipeline-card-name">${t.Nome||'—'}</span>${camadaBadge}</span>
@@ -26580,6 +26591,7 @@ async function _loadPipelineTab(osId, _v186Ger) {
         ${dataPrevistaLine}
         ${btnCompletar}
         ${decisaoUI}
+        ${_v282PendAntigo}
         <div id="pconfirm-${tid}" style="display:none;margin-top:10px">
           <textarea id="pobs-${tid}" placeholder="Observação (opcional)" rows="2"
             style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-sm);padding:6px 8px;font-size:12px;color:var(--text);font-family:var(--font-sans);resize:vertical"></textarea>
@@ -59841,6 +59853,34 @@ table.r2a-tab col.c-os{width:25%}table.r2a-tab col.c-cli{width:25%}table.r2a-tab
     if (d.charAt(0) === '[') { try { return JSON.parse(d).map(T).filter(Boolean); } catch (e) {} }
     return d.split(',').map(T).filter(Boolean);
   }
+  // V282 — tarefa COM PENDÊNCIA (o "Não consigo fazer" do PCF) ganha saída: o motivo aparece e o adm retira a pendência.
+  //   O servidor (resolverDecisao, assumirTarefa, Concluir) só aceita pendente/em_andamento; o painel oferecia Sim/Não
+  //   numa decisão com pendência e o GAS recusava ("Decisão indisponível (status: com_pendencia)") — PGP-2026-0069, 15/10.
+  function v282Motivo(t) {
+    var o = T(t.Observacao).replace(/^\s*\u{1F6A7}\s*/u, '');
+    return '<div class="v282-mot">\u{1F6A7} ' + (o ? 'Motivo do técnico: ' + E(o) : 'O técnico marcou que não consegue fazer (sem motivo escrito).') + '</div>';
+  }
+  // Auditoria 1 (achado 2): com uma dependência ainda aberta, a tarefa volta como 'bloqueado' (é o que o motor do GAS usa
+  //   para "espera a etapa anterior"), nunca 'pendente' — senão o PCF poderia concluí-la sem a trava de dependência.
+  //   Mesma regra do _reconciliarPipeline_: dependência ausente, completa ou dispensada está satisfeita.
+  function v282Destino(tarefas, t) {
+    var m = {}; (tarefas || []).forEach(function (x) { m[S(x.Tarefa_ID)] = T(x.Status).toLowerCase(); });
+    return deps(t).every(function (d) { return !m[d] || m[d] === 'completo' || m[d] === 'dispensado'; }) ? 'pendente' : 'bloqueado';
+  }
+  function v282Btn(tid, chave) {
+    return '<button type="button" class="r2a-btn sm pri" data-r2a="v282abrir" data-t="' + E(tid) + '" aria-expanded="' + (R2A.abre[chave] === 'v282' ? 'true' : 'false') + '">\u21A9 Retirar pendência</button>';
+  }
+  function v282Caixa(t, tid, chave, st, isDec) {
+    var o = T(t.Observacao).replace(/^\s*\u{1F6A7}\s*/u, ''), ainda = st === 'com_pendencia';
+    return '<div class="r2a-abre" data-r2a-abre="' + E(tid) + '" data-v282-caixa="1"><label style="font-size:11.5px;font-weight:600">Retirar a pendência de \u201c' + E(T(t.Nome) || tid) + '\u201d</label>' +
+      (R2A.val['aviso|' + chave] ? '<div class="r2a-aviso amar" style="margin:0" role="alert">' + E(R2A.val['aviso|' + chave]) + '</div>' : '') +
+      (ainda ? '<div style="font-size:12px;line-height:1.45">O técnico marcou que não conseguia fazer' + (o ? ': <b>' + E(o) + '</b>' : ' (sem motivo escrito)') + '. ' +
+      'Retirar a pendência devolve a tarefa para <b>pendente</b>' + (isDec ? ' e libera os botões da decisão.' : ' e ela pode ser concluída.') +
+      ' Se ainda houver etapa anterior aberta, ela fica esperando essa etapa. O registro do técnico continua guardado na tarefa.</div>'
+        : '<div style="font-size:12px;line-height:1.45">Esta tarefa já não está com pendência (agora: “' + E(stRot(st)) + '”). Nada a fazer aqui.</div>') +
+      '<div style="display:flex;gap:6px;justify-content:flex-end"><button type="button" class="r2a-btn sm" data-r2a="v282nao" data-t="' + E(tid) + '">' + (ainda ? 'Cancelar' : 'Fechar') + '</button>' +
+      (ainda ? '<button type="button" class="r2a-btn sm pri" data-r2a="v282sim" data-t="' + E(tid) + '">Retirar pendência</button>' : '') + '</div></div>';
+  }
   function tarefaHtml(os, t, mapa, admin) {
     var st = T(t.Status || 'pendente').toLowerCase().replace(/\s/g, '_'), tid = S(t.Tarefa_ID), chave = S(os.id_os) + '|' + tid;
     var isAuto = /^auto:/.test(T(t.Tipo)), isDec = T(t.Tipo) === 'decisao';
@@ -59869,17 +59909,20 @@ table.r2a-tab col.c-os{width:25%}table.r2a-tab col.c-cli{width:25%}table.r2a-tab
       if (st === 'condicional') sub.push('aguarda uma decisão');
     }
     var h = '<div class="r2a-tar ' + cls + '" data-r2a-tar="' + E(tid) + '"><span class="ic" aria-hidden="true">' + ic + '</span><span class="nm">' + E(T(t.Nome) || tid) + '</span>' +
-      '<span class="sb">' + sub.filter(Boolean).join(' · ') + '</span>';
-    if (admin && vez) {
+      '<span class="sb">' + sub.filter(Boolean).join(' · ') + '</span>' + (st === 'com_pendencia' ? v282Motivo(t) : '');   // V282
+    if (admin && (vez || st === 'com_pendencia')) {   // V282: com pendência sempre tem saída
       h += '<div class="r2a-acoes">';
-      if (isDec) {
+      if (isDec && st === 'com_pendencia') {
+        h += v282Btn(tid, chave);   // V282: o servidor recusa decidir com pendência — antes, retirar
+      } else if (isDec) {
         var ops = []; try { ops = JSON.parse(t.Opcoes_JSON || '[]'); } catch (e) { ops = []; }
         ops.forEach(function (o) { var v = typeof o === 'object' ? (o.valor != null ? o.valor : o.label) : o, l = typeof o === 'object' ? (o.label || o.valor) : o; h += '<button type="button" class="r2a-btn sm pri" data-r2a="decidir" data-t="' + E(tid) + '" data-v="' + E(v) + '">' + E(l) + '</button>'; });
       } else {
         h += '<button type="button" class="r2a-btn sm" data-r2a="designar" data-t="' + E(tid) + '" aria-haspopup="dialog">Designar</button>' +
           '<button type="button" class="r2a-btn sm" data-r2a="data" data-t="' + E(tid) + '" aria-haspopup="dialog">Definir data</button>' +
           (isAuto ? '<span class="r2a-l2" style="align-self:center;display:inline">fecha pelo formulário</span>'
-            : (st === 'pendente' || st === 'em_andamento') ? '<button type="button" class="r2a-btn sm" data-r2a="concluir" data-t="' + E(tid) + '" aria-expanded="' + (R2A.abre[chave] === 'concluir' ? 'true' : 'false') + '">Concluir</button>' : '');
+            : (st === 'pendente' || st === 'em_andamento') ? '<button type="button" class="r2a-btn sm" data-r2a="concluir" data-t="' + E(tid) + '" aria-expanded="' + (R2A.abre[chave] === 'concluir' ? 'true' : 'false') + '">Concluir</button>' : '') +
+          (st === 'com_pendencia' ? v282Btn(tid, chave) : '');   // V282
       }
       h += '</div>';
     }
@@ -59893,6 +59936,7 @@ table.r2a-tab col.c-os{width:25%}table.r2a-tab col.c-cli{width:25%}table.r2a-tab
           '<div style="display:flex;gap:6px;justify-content:flex-end"><button type="button" class="r2a-btn sm" data-r2a="concluirNao" data-t="' + E(tid) + '">' + (podeConcluir ? 'Cancelar' : 'Fechar') + '</button>' +
           (podeConcluir ? '<button type="button" class="r2a-btn sm pri" data-r2a="concluirSim" data-t="' + E(tid) + '">Confirmar conclusão</button>' : '') + '</div></div>';
     }
+    if (admin && R2A.abre[chave] === 'v282') h += v282Caixa(t, tid, chave, st, isDec);   // V282
     return h + '</div>';
   }
   function logLinhas(os, id) {
@@ -60103,6 +60147,40 @@ table.r2a-tab col.c-os{width:25%}table.r2a-tab col.c-cli{width:25%}table.r2a-tab
         } catch (e) {
           if (e && e.message && e.message.indexOf('AUTH_GOOGLE') >= 0) { try { hubLogout(); } catch (e2) {} return; }
           aviso('A tarefa NÃO foi concluída: ' + ((e && e.message) || e), 'error');
+        }
+      });
+    });
+    if (mudou) pedirPainel(true);
+  }
+  // V282 — retirar a pendência: relê a tarefa no servidor; só grava se ela AINDA está com pendência (o técnico pode ter
+  //   mudado nesse meio-tempo); grava pela action que já existe (updateTarefaStatus → pendente, is_admin) — zero GAS.
+  async function v282Retirar(btn, id, tid) {
+    var chave = id + '|' + tid, mudou = false;
+    await ocupar(function () {
+      return _semDuploEnvio_(btn, async function () {
+        var rr, atual;
+        try {
+          rr = await syncToGS('getPipelineByOS', { os_id: id });
+          atual = ((rr && rr.tarefas) || []).find(function (x) { return S(x.Tarefa_ID) === S(tid); });
+        } catch (e) { R2A.val['aviso|' + chave] = 'Não consegui reler a tarefa antes de gravar (' + msgDe(e) + ') — nada foi gravado. Tente de novo.'; mudou = true; return; }
+        if (!atual) { R2A.val['aviso|' + chave] = 'Esta tarefa não existe mais nesta OS — nada foi gravado.'; mudou = true; return; }
+        var stA = T(atual.Status || 'pendente').toLowerCase();
+        if (stA !== 'com_pendencia') {
+          R2A.tar[id] = rr.tarefas; R2A.tar[id]._copia = 0; guardarFresco(id, rr); mudou = true;
+          delete R2A.abre[chave]; delete R2A.val['aviso|' + chave];
+          aviso('Esta tarefa já não está com pendência (agora: "' + stRot(stA) + '"). Nada foi gravado.', 'warning');
+          return;
+        }
+        try {
+          var dest = v282Destino(rr.tarefas, atual);
+          await syncToGS('updateTarefaStatus', { os_id: id, tarefa_id: tid, status: dest, usuario: eu().nome || eu().id, is_admin: true });
+          delete R2A.abre[chave]; delete R2A.val['aviso|' + chave];
+          aviso(dest === 'bloqueado' ? 'Pendência retirada — a tarefa espera a etapa anterior ser concluída.'
+            : 'Pendência retirada — a tarefa voltou para pendente.' + (T(atual.Tipo) === 'decisao' ? ' Agora é só decidir.' : ''), 'success');
+          await depoisDeEscrever(id, true);
+        } catch (e) {
+          if (e && e.message && e.message.indexOf('AUTH_GOOGLE') >= 0) { try { hubLogout(); } catch (e2) {} return; }
+          aviso('A pendência NÃO foi retirada: ' + ((e && e.message) || e), 'error');
         }
       });
     });
@@ -60916,6 +60994,9 @@ table.r2a-tab col.c-os{width:25%}table.r2a-tab col.c-cli{width:25%}table.r2a-tab
       case 'concluirNao': if (id) { delete R2A.abre[id + '|' + tid]; delete R2A.val['aviso|' + id + '|' + tid]; delete R2A.visto[id + '|' + tid]; pintarPainel(); } break;
       case 'concluirSim': if (id) await concluir(el, id, tid); break;
       case 'decidir': if (id) await decidir(el, id, tid, el.getAttribute('data-v')); break;
+      case 'v282abrir': if (id) { var k282 = id + '|' + tid; R2A.abre[k282] = R2A.abre[k282] === 'v282' ? '' : 'v282'; delete R2A.val['aviso|' + k282]; pintarPainel(); } break;   // V282
+      case 'v282nao': if (id) { var k282n = id + '|' + tid; delete R2A.abre[k282n]; delete R2A.val['aviso|' + k282n]; pintarPainel(); } break;   // V282
+      case 'v282sim': if (id) await v282Retirar(el, id, tid); break;   // V282
       case 'relerTar': if (id) { delete R2A.tarErro[id]; pintarPainel(); lerTarefas(id); } break;
       case 'relerLog': if (id) { delete R2A.log[id]; pintarPainel(); lerLog(id); } break;
       case 'logTudo': if (id) { R2A.logTudo[id] = !R2A.logTudo[id]; pintarPainel(); } break;
@@ -88604,5 +88685,94 @@ function _h281CardInicio(m) {
 })();
 </script>
 <!-- ████ FIM PCM V281 ████ -->
+<!-- ████ PCM V282 · TAREFA COM PENDÊNCIA GANHA SAÍDA (15/10/2026) ████ -->
+<style>
+/* V282 — o motivo do técnico debaixo da tarefa com pendência (painel novo e detalhe antigo) */
+.r2a-tar .v282-mot{grid-column:2}
+.v282-mot{margin-top:5px;padding:4px 8px;border-left:3px solid #B42318;border-radius:4px;background:rgba(180,35,24,.06);font-size:11.5px;line-height:1.45;color:var(--text,#262626);overflow-wrap:anywhere}
+.v282-acoes{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.v282-caixa{margin-top:8px;padding:9px;border:1px dashed var(--border,#DADADA);border-radius:8px;font-size:12px;line-height:1.45;display:grid;gap:7px}
+.v282-caixa[hidden],.v282-acoes[hidden]{display:none}
+</style>
+<script>
+/* PCM V282 — 15/10/2026 — TAREFA COM PENDÊNCIA GANHA SAÍDA. Detalhe ANTIGO da OS (renderPipeline).
+   O painel novo (R2A) tem as mesmas regras dentro do próprio bloco (v282Motivo / v282Caixa / v282Retirar).
+   · O cartão da tarefa com pendência mostra o motivo do técnico; o adm ganha "↩ Retirar pendência", que abre a
+     confirmação NO PRÓPRIO cartão (sem confirm()/prompt()).
+   · Gravar = reler a tarefa no servidor; só grava se ela AINDA está com pendência; action que já existe
+     (updateTarefaStatus → 'pendente', is_admin: true — declaração de origem PCM, como o _resolverDecisao).
+   ZERO GAS. */
+function _v282Motivo(t) {
+  return String(t && t.Observacao != null ? t.Observacao : '').trim().replace(/^\s*\u{1F6A7}\s*/u, '');
+}
+function _v282PendHtml(osId, t, isDec) {
+  var o = _v282Motivo(t);
+  var adm = !!(window.PROPER_SESSION && window.PROPER_SESSION.is_admin === true);
+  var h = '<div class="v282-mot">\u{1F6A7} ' + (o ? 'Motivo do técnico: ' + escHtml(o) : 'O técnico marcou que não consegue fazer (sem motivo escrito).') + '</div>';
+  if (!adm) return h;
+  var dat = ' data-os="' + escHtml(osId) + '" data-t="' + escHtml(t.Tarefa_ID) + '"';
+  return h +
+    '<div class="v282-acoes"><button type="button" class="btn btn-primary btn-sm" data-v282="abrir"' + dat + '>↩ Retirar pendência</button></div>' +
+    '<div class="v282-caixa" hidden>' +
+      '<div><b>Retirar a pendência?</b> A tarefa volta para <b>pendente</b>' + (isDec ? ' e os botões da decisão aparecem.' : ' e pode ser concluída.') +
+      ' Se ainda houver etapa anterior aberta, ela fica esperando essa etapa. O registro do técnico continua guardado na tarefa.</div>' +
+      '<div style="display:flex;gap:6px;justify-content:flex-end"><button type="button" class="btn btn-secondary btn-sm" data-v282="nao"' + dat + '>Cancelar</button>' +
+      '<button type="button" class="btn btn-primary btn-sm" data-v282="sim"' + dat + '>Retirar pendência</button></div>' +
+    '</div>';
+}
+/* Auditoria 1 (achado 2): dependência ainda aberta ⇒ 'bloqueado' (mesma regra do _reconciliarPipeline_ do GAS:
+   dependência ausente, completa ou dispensada está satisfeita); senão 'pendente'. */
+function _v282Destino(tarefas, t) {
+  var m = {};
+  (tarefas || []).forEach(function (x) { m[String(x.Tarefa_ID == null ? '' : x.Tarefa_ID).trim()] = String(x.Status == null ? '' : x.Status).trim().toLowerCase(); });
+  var d = String(t && t.Depende_de != null ? t.Depende_de : '').trim(), ds = [];
+  if (d.charAt(0) === '[') { try { ds = JSON.parse(d).map(function (x) { return String(x).trim(); }); } catch (e) { ds = []; } }
+  else ds = d.split(',').map(function (x) { return x.trim(); });
+  return ds.filter(Boolean).every(function (k) { return !m[k] || m[k] === 'completo' || m[k] === 'dispensado'; }) ? 'pendente' : 'bloqueado';
+}
+/* Auditoria 1 (achado 1): a releitura vai para a memória curta do V186 — sem isso o _loadPipelineTab repintava a cópia
+   de até 20 s (ainda "com pendência") e a tela dizia "foi atualizada" mostrando o estado velho. */
+function _v282Fresco(osId, r) {
+  try { if (r && r.tarefas && typeof _v186Memo !== 'undefined' && _v186Memo.set) _v186Memo.set('pipe:' + osId, { at: Date.now(), dados: r }); } catch (e) {}
+}
+async function _v282RetirarAntigo(btn, osId, tid) {
+  if (typeof gsConnected !== 'undefined' && !gsConnected) { toast('Sem conexão com o servidor — nada foi gravado.', 'error'); return; }
+  await _semDuploEnvio_(btn, async function () {
+    var r, atual;
+    try {
+      r = await syncToGS('getPipelineByOS', { os_id: osId });
+      atual = ((r && r.tarefas) || []).find(function (x) { return String(x.Tarefa_ID) === String(tid); });
+    } catch (e) { toast('Não consegui reler a tarefa antes de gravar (' + ((e && e.message) || e) + ') — nada foi gravado. Tente de novo.', 'error'); return; }
+    if (!atual) { toast('Esta tarefa não existe mais nesta OS — nada foi gravado.', 'error'); _v282Fresco(osId, r); try { _loadPipelineTab(osId); } catch (e) {} return; }
+    if (String(atual.Status == null ? '' : atual.Status).trim().toLowerCase() !== 'com_pendencia') {
+      toast('Esta tarefa já não está com pendência — nada foi gravado. A tela foi atualizada.', 'warning');
+      _v282Fresco(osId, r);
+      try { _loadPipelineTab(osId); } catch (e) {}
+      return;
+    }
+    try {
+      var s = window.PROPER_SESSION || {};
+      var quem = (s.tecnico && (s.tecnico.nome || s.tecnico.id)) || s.nome_tecnico || s.id_tecnico || '';
+      var dest = _v282Destino(r.tarefas, atual);
+      await syncToGS('updateTarefaStatus', { os_id: osId, tarefa_id: tid, status: dest, usuario: quem, is_admin: true });
+      toast(dest === 'bloqueado' ? 'Pendência retirada — a tarefa espera a etapa anterior ser concluída.' : 'Pendência retirada — a tarefa voltou para pendente.', 'success');
+      try { _loadPipelineTab(osId); } catch (e) {}
+    } catch (e) {
+      if (e && e.message && e.message.indexOf('AUTH_GOOGLE') >= 0) { try { hubLogout(); } catch (e2) {} return; }
+      toast('A pendência NÃO foi retirada: ' + ((e && e.message) || e), 'error');
+    }
+  });
+}
+document.addEventListener('click', function (ev) {
+  var b = ev.target && ev.target.closest ? ev.target.closest('[data-v282]') : null;
+  if (!b) return;
+  var card = b.closest('.pipeline-card'); if (!card) return;
+  var a = b.getAttribute('data-v282'), box = card.querySelector('.v282-caixa'), acoes = card.querySelector('.v282-acoes');
+  if (a === 'abrir') { if (box) box.hidden = false; if (acoes) acoes.hidden = true; return; }
+  if (a === 'nao') { if (box) box.hidden = true; if (acoes) acoes.hidden = false; return; }
+  if (a === 'sim') _v282RetirarAntigo(b, b.getAttribute('data-os'), b.getAttribute('data-t'));
+});
+</script>
+<!-- ████ FIM PCM V282 ████ -->
 </body>
 </html>
