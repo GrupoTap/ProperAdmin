@@ -5112,8 +5112,15 @@ v50 — Resiliência de rede: retry/backoff em gsGet e syncToGS
   mudança DEPOIS do bloco V279. Nenhuma linha das três rodadas foi alterada; só este comentário, o título e o app-build.
   SQL que rodam ANTES: CADASTRO_FABRICANTES_2026-10-09 → QUEM_VENDE_2026-10-14 → CRM_MAQ_A_IDENTIFICAR_2026-10-14 (ordem livre entre eles).
 -->
-<title>ProperCare Manager · Gestão PGP v4.03 (PCM V280)</title>
-<meta name="app-build" content="PCM_V280" data-date="2026-10-14">
+<!--
+  PCM V281 — 14/10/2026 — CALIBRAÇÃO DO HORÍMETRO PELO RITMO MEDIDO (rodada 2026-10-14_calibracao_horimetro, sobre o PCM V280 no ar).
+  A tela Calibração vira lista + painel lateral (#calib/id) com o ritmo medido nas leituras x o que o sistema conta (regime x fator),
+  gráfico, impacto nas preventivas (dias para 1.000 h), marcar leitura errada/certa, manter o fator e aplicar em lote. O cartão do
+  modal da máquina e a caixa Calibração do Início usam a MESMA análise. Um bloco só (PCM V281 · H281), no fim do body.
+  SQL que roda ANTES: HORIM_CALIBRACAO_2026-10-14. GAS v173 (aceite automático pela mesma regra). Sem o SQL: a tela antiga, com aviso.
+-->
+<title>ProperCare Manager · Gestão PGP v4.03 (PCM V281)</title>
+<meta name="app-build" content="PCM_V281" data-date="2026-10-14">
 <link rel="icon" type="image/jpeg" href="data:image/jpeg;base64,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">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -87797,5 +87804,805 @@ async function _v274GerarPdf238(p) {   // V274: cópia literal do _v238GerarPdf 
 })();
 </script>
 <!-- ████ FIM PCM V278 ████ -->
+<!-- ████ INICIO PCM V281 · H281 — CALIBRAÇÃO PELO RITMO MEDIDO ████ -->
+<style id="h281css">
+/* H281 · 14/10/2026 — tela Calibração do horímetro (lista + painel lateral #calib/<id>), cartão do modal da máquina, Início */
+#viewCalibracao.h281-on > :not(#h281Tela){display:none!important}
+.h281{max-width:1500px;font-size:13px;color:var(--text,#262626)}
+.h281-topo{display:flex;align-items:flex-end;gap:10px;flex-wrap:wrap;margin:0 0 6px}
+.h281-topo h2{margin:0;font-size:22px;font-weight:700;letter-spacing:-.01em}
+.h281-sub{color:var(--text-muted,#6B6B6B);font-size:13px;margin:2px 0 12px;max-width:980px;line-height:1.5}
+.h281-sp{flex:1}
+.h281-link{all:unset;cursor:pointer;font-size:12px;color:var(--text-muted,#6B6B6B);text-decoration:underline;text-underline-offset:2px}
+.h281-link:hover{color:var(--text,#262626)}
+.h281-como{border:1px solid #E6E6E6;border-left:3px solid #EE7625;border-radius:9px;background:#FFFBF7;padding:10px 14px;margin:0 0 12px;line-height:1.55;font-size:12.5px;color:#4F4F4F;max-width:980px}
+.h281-como b{color:#262626}
+.h281-kpis{display:grid;grid-template-columns:repeat(6,minmax(120px,1fr));gap:8px;margin:0 0 12px}
+@media(max-width:1100px){.h281-kpis{grid-template-columns:repeat(3,1fr)}}
+.h281-kpi{all:unset;box-sizing:border-box;cursor:pointer;border:1px solid var(--border,#E6E6E6);border-radius:10px;padding:9px 11px;background:#fff;transition:border-color .12s,box-shadow .12s}
+.h281-kpi:hover{border-color:#BDBDBD;box-shadow:0 1px 4px rgba(0,0,0,.06)}
+.h281-kpi[aria-pressed="true"]{border-color:#353434;box-shadow:inset 0 0 0 1px #353434}
+.h281-kpi b{display:block;font-size:22px;font-weight:700;line-height:1.1;font-variant-numeric:tabular-nums}
+.h281-kpi span{font-size:12px;color:var(--text-muted,#6B6B6B)}
+.h281-kpi.dec b{color:#B54708}.h281-kpi.ok b{color:#1E7B45}
+.h281-barra{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:0 0 10px}
+.h281-barra input[type=text]{box-sizing:border-box;height:34px;min-width:240px;flex:1;max-width:380px;padding:0 11px;border:1px solid var(--border-strong,#DADADA);border-radius:8px;font:inherit;font-size:13.5px;background:#fff}
+.h281-barra .h281-info{font-size:12px;color:var(--text-muted,#6B6B6B)}
+.h281-aviso{border-radius:9px;padding:9px 12px;font-size:13px;margin:0 0 10px;border:1px solid;line-height:1.5}
+.h281-aviso.amar{background:#FFF8E6;border-color:#F4C46A;color:#6B4700}.h281-aviso.verm{background:#FDF0EF;border-color:#F2B8B5;color:#8A1C12}
+.h281-aviso.azul{background:#F0F6FF;border-color:#BFD6FB;color:#1E3A6B}.h281-aviso.verde{background:#EEF7F1;border-color:#A6D8B8;color:#1E7B45}
+.h281-conf{display:flex;gap:8px;align-items:center;flex-wrap:wrap;background:#FFF8E6;border:1px solid #F4C46A;border-radius:9px;padding:8px 12px;margin:0 0 10px;font-size:13px;color:#6B4700}
+.h281-grade{display:grid;grid-template-columns:minmax(0,1fr);gap:16px;align-items:start}
+.h281-grade.com-painel{grid-template-columns:minmax(0,1fr) 520px}
+@media(max-width:1250px){.h281-grade.com-painel{grid-template-columns:1fr}.h281-grade.com-painel .h281-lista{display:none}}
+.h281-lista{background:#fff;border:1px solid var(--border,#E6E6E6);border-radius:12px;overflow:auto;max-height:calc(100vh - 290px)}
+table.h281-tab{width:100%;border-collapse:collapse;font-size:12.5px}
+.h281-tab th{position:sticky;top:0;background:#FAFAFA;text-align:left;font-size:11px;font-weight:700;color:var(--text-muted,#6B6B6B);text-transform:uppercase;letter-spacing:.03em;padding:8px 9px;border-bottom:1px solid var(--border,#E6E6E6);z-index:1;white-space:nowrap}
+.h281-tab td{padding:7px 9px;border-bottom:1px solid #F2F2F2;vertical-align:middle}
+.h281-tab tbody tr{cursor:pointer}
+.h281-tab tbody tr:hover td{background:#FAFAFA}
+.h281-tab tbody tr.sel td{background:#FDF1E7}
+.h281-tab td.n,.h281-tab th.n{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.h281-tab .nm{font-weight:600;color:var(--text,#262626)}
+.h281-tab .mq{font-size:11.5px;color:var(--text-muted,#6B6B6B)}
+.h281-tab td.chk{width:26px;text-align:center}
+.h281-pill{display:inline-flex;align-items:center;gap:4px;font-size:10.5px;font-weight:700;letter-spacing:.02em;text-transform:uppercase;padding:2px 7px;border-radius:5px;white-space:nowrap}
+.h281-pill.ok{background:#EEF7F1;color:#1E7B45}.h281-pill.ajustar{background:#FDF1E7;color:#9A4A0C}.h281-pill.regime{background:#FDF0EF;color:#8A1C12}
+.h281-pill.conferir{background:#FFF8E6;color:#6B4700}.h281-pill.sem_regime{background:#F0F6FF;color:#1E3A6B}.h281-pill.mantido{background:#F2F2F2;color:#4F4F4F}
+.h281-pill.parada,.h281-pill.uma_leitura,.h281-pill.sem_leitura{background:#F5F5F5;color:#6B6B6B}
+.h281-cf{display:inline-block;width:7px;height:7px;border-radius:50%;margin-left:5px;vertical-align:1px}
+.h281-cf.alta{background:#1E7B45}.h281-cf.media{background:#E0A11B}.h281-cf.baixa{background:#D0D0D0}
+.h281-seta{color:#9A4A0C;font-weight:700}
+.h281-neg{color:#1E3A6B}.h281-pos{color:#9A4A0C}
+.h281-velha{color:#B42318;font-weight:600}
+.h281-vazio{padding:28px 16px;text-align:center;color:var(--text-muted,#6B6B6B);font-size:14px;line-height:1.6}
+.h281-esq td{color:transparent!important}
+.h281-esq td span.h281-osso{display:block;height:11px;border-radius:4px;background:linear-gradient(90deg,#F2F2F2,#E9E9E9,#F2F2F2);background-size:200% 100%;animation:h281osso 1.2s infinite}
+@keyframes h281osso{0%{background-position:200% 0}100%{background-position:-200% 0}}
+.h281-painel{position:relative;background:#fff;border:1px solid var(--border,#E6E6E6);border-radius:12px;box-shadow:0 2px 10px rgba(0,0,0,.05);max-height:calc(100vh - 170px);overflow:auto}
+.h281-pcab{padding:13px 16px 10px;border-bottom:1px solid #F2F2F2;position:sticky;top:0;background:#fff;z-index:2}
+.h281-pcab .l1{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text-muted,#6B6B6B)}
+.h281-pcab h3{margin:4px 0 2px;font-size:18px;font-weight:700;line-height:1.2}
+.h281-pcab .doc{font-size:12.5px;color:var(--text2,#4F4F4F)}
+.h281-x{all:unset;cursor:pointer;margin-left:auto;width:28px;height:28px;display:inline-flex;align-items:center;justify-content:center;border-radius:7px;font-size:16px;color:#6B6B6B}
+.h281-x:hover{background:#F2F2F2;color:#262626}
+.h281-pcorpo{padding:12px 16px 18px}
+.h281-veredito{border-radius:10px;padding:10px 12px;font-size:13.5px;line-height:1.5;margin:0 0 12px;border:1px solid}
+.h281-veredito.ok{background:#EEF7F1;border-color:#A6D8B8;color:#14532D}.h281-veredito.ajustar{background:#FDF1E7;border-color:#F3C49B;color:#7A3A06}
+.h281-veredito.regime{background:#FDF0EF;border-color:#F2B8B5;color:#7A1A10}.h281-veredito.conferir{background:#FFF8E6;border-color:#F4C46A;color:#5C3D00}
+.h281-veredito.cinza{background:#F7F7F7;border-color:#E6E6E6;color:#404040}
+.h281-grafico{border:1px solid #F0F0F0;border-radius:10px;padding:6px 6px 2px;margin:0 0 6px;background:#fff}
+.h281-grafico svg{display:block;width:100%;height:auto}
+.h281-leg{display:flex;gap:14px;flex-wrap:wrap;font-size:11.5px;color:var(--text-muted,#6B6B6B);margin:0 0 12px}
+.h281-leg i{display:inline-block;width:16px;height:0;border-top:2px solid;vertical-align:3px;margin-right:4px}
+.h281-nums{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:0 0 12px}
+.h281-num{border:1px solid #EFEFEF;border-radius:9px;padding:8px 10px}
+.h281-num span{display:block;font-size:11px;color:var(--text-muted,#6B6B6B);text-transform:uppercase;letter-spacing:.03em;font-weight:600}
+.h281-num b{display:block;font-size:17px;font-weight:700;font-variant-numeric:tabular-nums;margin-top:2px}
+.h281-num small{font-size:11.5px;color:var(--text-muted,#6B6B6B)}
+.h281-impacto{border:1px dashed #DADADA;border-radius:10px;padding:9px 12px;margin:0 0 12px;font-size:12.5px;line-height:1.6;color:#404040}
+.h281-acoes{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:0 0 14px}
+.h281-acoes .h281-outro{display:inline-flex;gap:6px;align-items:center;font-size:12px;color:var(--text-muted,#6B6B6B)}
+.h281-acoes input{width:80px;height:30px;box-sizing:border-box;padding:0 8px;border:1px solid var(--border-strong,#DADADA);border-radius:7px;font:inherit;font-size:13px}
+.h281-sec{margin:0 0 14px}
+.h281-sec h4{font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--text-muted,#6B6B6B);margin:0 0 6px}
+table.h281-lei{width:100%;border-collapse:collapse;font-size:12.5px}
+.h281-lei th{text-align:left;font-size:11px;color:var(--text-muted,#6B6B6B);font-weight:600;padding:5px 6px;border-bottom:1px solid #EFEFEF}
+.h281-lei td{padding:5px 6px;border-bottom:1px solid #F5F5F5;vertical-align:middle}
+.h281-lei td.n{text-align:right;font-variant-numeric:tabular-nums}
+.h281-lei tr.fora td{color:#9A9A9A}
+.h281-lei tr.ruim td{background:#FFFBF0}
+.h281-est{font-size:11px;font-weight:600;white-space:nowrap}
+.h281-est.ok{color:#1E7B45}.h281-est.invalida,.h281-est.regressao{color:#B42318}.h281-est.repetida,.h281-est.suspeita{color:#8A5A00}
+.h281-mini{all:unset;box-sizing:border-box;cursor:pointer;padding:3px 8px;border-radius:6px;font-size:12px;color:var(--text2,#4F4F4F);border:1px solid #E6E6E6;background:#fff;white-space:nowrap}
+.h281-mini:hover{border-color:#BDBDBD;background:#FAFAFA;color:#262626}
+.h281-mini.perigo:hover{border-color:#F2B8B5;color:#8A1C12;background:#FDF0EF}
+.h281-mini[disabled]{opacity:.55;cursor:wait}
+.h281-motivos{margin:0 0 12px;padding-left:18px;color:#4F4F4F;font-size:12.5px;line-height:1.55}
+.h281-dec{font-size:12.5px;color:#404040;background:#F7F7F7;border-radius:9px;padding:8px 11px;margin:0 0 12px;line-height:1.5}
+.h281-card .h281-nums{grid-template-columns:repeat(4,1fr)}
+.h281-card .h281-num b{font-size:15px}
+.h281-tag-hint{font-size:11.5px;color:var(--text-muted,#6B6B6B)}
+</style>
+<script>
+// ═════════════════════════════════════════════════════════════════════════════════════════════════
+// PCM V281 · H281 — CALIBRAÇÃO DO HORÍMETRO PELO RITMO MEDIDO · 14/10/2026 · par: SQL HORIM_CALIBRACAO (roda ANTES) · GAS v173
+//
+// O QUE ERA: a fila comparava UMA leitura com a anterior e propunha fator × (andou ÷ previsto). Uma leitura errada virava
+//   duas sugestões erradas (a que ela fecha e a que ela abre) — a Techto 3062 da Fundição Realeza recebeu 0,587 em 08/09 e
+//   1,638 em 08/10 com o fator 1,174 CERTO o tempo todo; e 6 das 10 pendências de 14/10 estavam "no limite" sem saída.
+// O QUE É: o banco mede o RITMO de cada máquina (a reta das leituras dos últimos 120 dias) e compara com o que o sistema conta
+//   (regime × fator). Leitura repetida, menor que a anterior ou fora da curva sai da conta e aparece marcada; a pessoa pode
+//   marcar "leitura errada / certa" e "manter o fator". Tudo numa tela só: lista, painel lateral com o gráfico (#calib/<id>),
+//   aplicar um ou vários fatores, abrir o cadastro para corrigir o regime.
+// ONDE MAIS: o cartão "Calibração do horímetro" do modal da máquina e a caixa Calibração do Início usam a MESMA análise.
+// SEM O SQL (ou sem o crachá): tudo cai na tela antiga, com um aviso — nada some.
+// Aplicar fator continua sendo o Apps Script de sempre (aplicarHorimetroFatores → setHorimetroFator, trilha 'override').
+// ═════════════════════════════════════════════════════════════════════════════════════════════════
+var H281 = { dados: null, em: 0, carregando: false, erro: '', cod: '', filtro: '', busca: '', sel: null, ger: 0, ocupado: false,
+             marcados: {}, confirmar: null, como: false, orig: {}, aplicadoLocal: {}, timer: null, um: {} };
+var H281_GRUPOS = [
+  ['decidir', 'Para decidir', ['ajustar', 'regime', 'conferir'], 'dec'],
+  ['ok', 'Calibradas', ['ok'], 'ok'],
+  ['sem_regime', 'Sem regime', ['sem_regime'], ''],
+  ['aguardando', 'Aguardando leitura', ['uma_leitura', 'sem_leitura', 'parada'], ''],
+  ['mantido', 'Mantidas', ['mantido'], ''],
+  ['todas', 'Todas', null, '']];
+var H281_ROT = { ok: 'Calibrada', ajustar: 'Ajustar fator', regime: 'Regime errado', conferir: 'Conferir leitura', sem_regime: 'Sem regime',
+                 parada: 'Parada', mantido: 'Mantida', uma_leitura: '1 leitura', sem_leitura: 'Sem leitura' };
+var H281_EST = { ok: 'conta', invalida: 'errada', regressao: 'menor que a anterior', repetida: 'repetida', suspeita: 'fora da curva' };
+
+function _h281E(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+function _h281N(x, casas) {
+  if (x === null || x === undefined || x === '' || !isFinite(Number(x))) return '—';
+  return Number(x).toLocaleString('pt-BR', { minimumFractionDigits: casas || 0, maximumFractionDigits: casas || 0 });
+}
+function _h281F(x) { return (x === null || x === undefined || x === '' || !isFinite(Number(x))) ? '—' : Number(x).toFixed(3).replace('.', ','); }
+function _h281Dia(s, curto) {
+  var m = /^(\d{4})-(\d{2})-(\d{2})/.exec(String(s || '')); if (!m) return '—';
+  return m[3] + '/' + m[2] + (curto ? '/' + m[1].slice(2) : '/' + m[1]);
+}
+function _h281Norm(s) { return String(s == null ? '' : s).normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase(); }
+function _h281Eu() {
+  try { var s = window.PROPER_SESSION || {}; return (s.tecnico && s.tecnico.nome) || s.nome_tecnico || (window._usuarioAtual && (_usuarioAtual.nome || _usuarioAtual.id)) || 'adm'; }
+  catch (e) { return 'adm'; }
+}
+// (auditoria 1, A2) a calibração só aparece para quem tem o lugar "Calibração" no perfil (a mesma régua do Início)
+function _h281PodeVer() { try { return typeof _v218Pode === 'function' ? !!_v218Pode('calibracao') : true; } catch (e) { return false; } }
+function _h281Grupo(st) { for (var i = 0; i < H281_GRUPOS.length; i++) { var g = H281_GRUPOS[i]; if (g[2] && g[2].indexOf(st) >= 0) return g[0]; } return 'todas'; }
+async function _h281Rpc(fn, p, escrita) {
+  if (typeof _v222Rpc !== 'function') { var e = new Error('PCM sem o transporte do banco'); e.v222 = 'sem_sql'; throw e; }
+  return _v222Rpc(fn, { p: p || {} }, !!escrita);
+}
+
+// ── carregar ────────────────────────────────────────────────────────────────────────────────────────
+async function _h281Carregar(forcar) {
+  if (!forcar && H281.dados && Date.now() - H281.em < 60000) return H281.dados;
+  if (H281._voo) return H281._voo;
+  var ger = ++H281.ger;
+  H281.carregando = true;
+  H281._voo = (async function () {
+    try {
+      var r = await _h281Rpc('pc_horim_calibracao', {}, false);
+      if (ger !== H281.ger) return H281.dados;
+      if (!r || r.ok !== true || !Array.isArray(r.maquinas)) throw Object.assign(new Error('resposta sem a lista'), { v222: 'erro' });
+      _h281AplicarLocais(r.maquinas);
+      H281.dados = r; H281.em = Date.now(); H281.erro = ''; H281.cod = '';
+    } catch (e) {
+      if (ger !== H281.ger) return H281.dados;
+      H281.erro = (e && e.message) || 'falha'; H281.cod = (e && e.v222) || 'erro';
+      if (H281.cod === 'sem_sql' || H281.cod === 'sem_token' || H281.cod === 'token' || H281.cod === 'permissao') H281.dados = null;
+    } finally { H281.carregando = false; H281._voo = null; }
+    return H281.dados;
+  })();
+  return H281._voo;
+}
+async function _h281CarregarUma(mid) {
+  var r = await _h281Rpc('pc_horim_calibracao', { machine_id: mid }, false);
+  var m = r && Array.isArray(r.maquinas) ? r.maquinas[0] : null;
+  if (r && r.ok) H281._dCard = { pode_escrever: !!r.pode_escrever, cfg: r.cfg || {}, hoje: r.hoje };
+  if (m) { _h281AplicarLocais([m]); H281.um[m.machine_id] = m; _h281Trocar(m); }
+  return m;
+}
+function _h281Trocar(m) {
+  if (!m || !H281.dados || !Array.isArray(H281.dados.maquinas)) return;
+  var l = H281.dados.maquinas, i = l.findIndex(function (x) { return x.machine_id === m.machine_id; });
+  if (i >= 0) l[i] = m; else l.push(m);   // (auditoria 1, A7) troca INTEIRA: campo que sumiu da resposta não fica velho na tela
+  _h281Resumo();
+}
+function _h281Resumo() {
+  if (!H281.dados) return;
+  var r = {}; (H281.dados.maquinas || []).forEach(function (m) { r[m.status] = (r[m.status] || 0) + 1; });
+  H281.dados.resumo = r;
+}
+// O fator aplicado agora passa pelo Apps Script e chega ao banco pelo espelho (segundos). Até lá a tela usa o que foi
+// aplicado AQUI (com a hora), em vez de mostrar "ajustar" de novo — e nunca por mais de 10 min.
+function _h281AplicarLocais(lista) {
+  var tol = (H281.dados && H281.dados.cfg && Number(H281.dados.cfg.tolerancia)) || 0.10;
+  (lista || []).forEach(function (m) {
+    var a = H281.aplicadoLocal[m.machine_id];
+    if (!a) return;
+    if (Date.now() - a.em > 600000 || Math.abs(Number(m.fator_atual) - a.fator) < 0.0005) { delete H281.aplicadoLocal[m.machine_id]; return; }
+    m.fator_atual = a.fator; m.modelo_sem = Math.round(Number(m.hpw || 0) * a.fator * 10) / 10; m._aplicadoAgora = true;
+    if (m.fator_ideal != null && ['ajustar', 'regime', 'mantido'].indexOf(m.status) >= 0) {
+      var dv = Number(m.fator_ideal) / a.fator - 1; m.desvio = dv;
+      if (Math.abs(dv) <= tol) { m.status_original = m.status; m.status = 'ok'; }
+    }
+  });
+}
+
+// ── a tela ──────────────────────────────────────────────────────────────────────────────────────────
+function _h281Ligar() {
+  var v = document.getElementById('viewCalibracao'); if (!v) return null;
+  var t = document.getElementById('h281Tela');
+  if (!t) { t = document.createElement('div'); t.id = 'h281Tela'; t.className = 'h281'; v.appendChild(t); }
+  v.classList.add('h281-on');
+  return t;
+}
+function _h281Desligar() { var v = document.getElementById('viewCalibracao'); if (v) v.classList.remove('h281-on'); var t = document.getElementById('h281Tela'); if (t) t.remove(); }
+async function _h281Entrar() {
+  var t = _h281Ligar(); if (!t) return;
+  var hid = _h281HashId(); if (hid) H281.sel = hid;
+  _h281Pintar();
+  await _h281Carregar(false);
+  if (!H281.dados) return _h281Antiga();   // (auditoria 1, A6) sem a análise — por qualquer motivo — a tela antiga continua de pé
+  if (!H281.filtro) H281.filtro = (H281.dados && (H281.dados.maquinas || []).some(function (m) { return _h281Grupo(m.status) === 'decidir'; })) ? 'decidir' : 'todas';
+  _h281Pintar();
+  _h281AtualizarContador();
+}
+async function _h281Antiga() {
+  _h281Desligar();
+  var msg = H281.cod === 'sem_sql' ? 'O SQL <b>HORIM_CALIBRACAO</b> ainda não rodou no Supabase — esta é a fila antiga (uma leitura contra a anterior). Rode o SQL (LEIA-ME da entrega de 14/10) e atualize.'
+          : (H281.cod === 'permissao' ? _h281E(H281.erro) : 'A calibração nova não respondeu agora (' + _h281E(H281.erro) + '). Mostrando a fila antiga — tente ↻ daqui a pouco.');
+  try { await H281.orig.renderCalibracao(); } catch (e) { console.warn('[H281] tela antiga', e); }
+  var v = document.getElementById('viewCalibracao');
+  if (v && !document.getElementById('h281AvisoAntiga')) {
+    var d = document.createElement('div'); d.id = 'h281AvisoAntiga'; d.className = 'h281-aviso amar'; d.style.maxWidth = '980px'; d.innerHTML = '⚠ ' + msg;
+    v.insertBefore(d, v.firstChild);
+  }
+}
+function _h281Visiveis() {
+  var l = (H281.dados && H281.dados.maquinas) || [], g = H281_GRUPOS.find(function (x) { return x[0] === H281.filtro; }) || H281_GRUPOS[5];
+  var b = _h281Norm(H281.busca).trim();
+  var out = l.filter(function (m) {
+    if (g[2] && g[2].indexOf(m.status) < 0) return false;
+    if (b && _h281Norm([m.cliente, m.maquina, m.serie, m.tag, H281_ROT[m.status]].join(' ')).indexOf(b) < 0) return false;
+    return true;
+  });
+  if (H281.filtro === 'decidir') out.sort(function (a, c) { return Math.abs(Number((c.impacto || {}).erro_30d) || 0) - Math.abs(Number((a.impacto || {}).erro_30d) || 0); });
+  return out;
+}
+function _h281Aplicaveis(lista) {
+  return (lista || []).filter(function (m) {
+    return ['ajustar', 'regime'].indexOf(m.status) >= 0 && m.fator_recomendado != null && m.confianca !== 'baixa' && !m._aplicadoAgora;
+  });
+}
+function _h281Pintar() {
+  var t = document.getElementById('h281Tela'); if (!t) return;
+  var lr = t.querySelector('.h281-lista'), rolL = lr ? lr.scrollTop : 0, pr = t.querySelector('.h281-painel'), rolP = pr ? pr.scrollTop : 0;
+  var d = H281.dados, l = (d && d.maquinas) || [], cont = { todas: l.length };
+  l.forEach(function (m) { var g = _h281Grupo(m.status); cont[g] = (cont[g] || 0) + 1; });
+  var med = l.filter(function (m) { return ['ok', 'ajustar', 'regime', 'mantido', 'conferir'].indexOf(m.status) >= 0; }).length;
+  var h = '<div class="h281-topo"><h2>Calibração do horímetro</h2><span class="h281-sp"></span>' +
+    (d ? '<span class="h281-tag-hint">medido às ' + _h281E(new Date(d.gerado_em || Date.now()).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })) + '</span>' : '') +
+    '<button type="button" class="h281-link" data-h281="como">' + (H281.como ? 'esconder como funciona' : 'como funciona') + '</button>' +
+    '<button type="button" class="btn btn-secondary btn-sm" data-h281="recarregar">↻ Atualizar</button></div>' +
+    '<div class="h281-sub">O sistema projeta o horímetro de cada máquina por <b>regime × fator</b> — e é dessa projeção que saem as datas das preventivas. ' +
+    'Aqui o <b>ritmo real</b>, medido nas leituras das visitas, diz se a projeção está certa.' +
+    (med ? ' Hoje <b>' + (cont.ok || 0) + ' de ' + med + '</b> máquinas com ritmo medido estão calibradas (±' + Math.round(((d.cfg || {}).tolerancia || 0.1) * 100) + '%).' : '') + '</div>';
+  if (H281.como) h += _h281Como(d);
+  if (H281.erro && d) h += '<div class="h281-aviso amar">⚠ Não consegui atualizar agora (' + _h281E(H281.erro) + '). Mostrando a medição das ' + _h281E(new Date(H281.em).toLocaleTimeString('pt-BR')) + '.</div>';
+  if (H281.erro && !d && !H281.carregando) h += '<div class="h281-aviso verm">⚠ ' + _h281E(H281.erro) + ' <button type="button" class="h281-link" data-h281="recarregar">tentar de novo</button></div>';
+  h += '<div class="h281-kpis">' + H281_GRUPOS.map(function (g) {
+    return '<button type="button" class="h281-kpi ' + g[3] + '" data-h281="filtro" data-k="' + g[0] + '" aria-pressed="' + (H281.filtro === g[0]) + '"><b>' +
+      (d ? (cont[g[0]] || 0) : '…') + '</b><span>' + _h281E(g[1]) + '</span></button>';
+  }).join('') + '</div>';
+  var vis = _h281Visiveis(), apl = H281.filtro === 'decidir' ? _h281Aplicaveis(vis) : [];
+  var marc = apl.filter(function (m) { return H281.marcados[m.machine_id] !== false; });
+  h += '<div class="h281-barra"><input type="text" id="h281Busca" name="h281busca_nofill" placeholder="Buscar cliente, máquina, série, TAG…" autocomplete="off" ' +
+    'readonly onfocus="this.removeAttribute(\'readonly\')" data-lpignore="true" data-1p-ignore="true" value="' + _h281E(H281.busca) + '">' +
+    '<span class="h281-info">' + vis.length + ' máquina(s)</span><span class="h281-sp"></span>' +
+    (apl.length ? '<button type="button" class="btn btn-primary btn-sm" data-h281="lote" ' + (marc.length ? '' : 'disabled') + '>✓ Aplicar ' + marc.length + ' fator(es) recomendado(s)</button>' : '') + '</div>';
+  if (H281.confirmar) {
+    h += '<div class="h281-conf">Aplicar o fator recomendado em <b>' + H281.confirmar.length + '</b> máquina(s)? As datas das preventivas delas passam a seguir o ritmo medido. ' +
+      '<button type="button" class="btn btn-primary btn-sm" data-h281="loteSim">Aplicar</button><button type="button" class="btn btn-secondary btn-sm" data-h281="loteNao">Cancelar</button></div>';
+  }
+  var sel = H281.sel ? l.find(function (m) { return m.machine_id === H281.sel; }) : null;
+  h += '<div class="h281-grade' + (H281.sel ? ' com-painel' : '') + '"><div class="h281-lista">' + _h281Tabela(vis, apl, d) + '</div>' +
+       (H281.sel ? '<aside class="h281-painel" aria-label="Calibração da máquina">' + _h281Painel(sel, d) + '</aside>' : '') + '</div>';
+  t.innerHTML = h;
+  var nl = t.querySelector('.h281-lista'); if (nl) nl.scrollTop = rolL;
+  var np = t.querySelector('.h281-painel'); if (np) np.scrollTop = rolP;
+  var bu = document.getElementById('h281Busca');
+  if (bu && H281._buscaFoco) { bu.removeAttribute('readonly'); bu.focus(); try { bu.setSelectionRange(bu.value.length, bu.value.length); } catch (e) {} }
+}
+function _h281Como(d) {
+  var c = (d && d.cfg) || {};
+  return '<div class="h281-como"><b>Como a calibração funciona.</b> A projeção do horímetro é <b>última leitura + dias × (regime ÷ 7) × fator</b>. ' +
+    'O <b>ritmo medido</b> é a reta que passa pelas leituras das visitas dos últimos ' + (c.janela_dias || 120) + ' dias (se houver pouca leitura, ela volta no tempo até ter 2 leituras e ' + (c.span_min || 28) + ' dias). ' +
+    'O <b>fator ideal</b> é ritmo medido ÷ regime cadastrado: 1,000 = roda o regime; 0,400 = roda 40% dele (máquina de apoio, rodízio). ' +
+    'Diferença de até ±' + Math.round((c.tolerancia || 0.1) * 100) + '% = <b>calibrada</b>. Roda mais de ' + Math.round((c.regime_alto || 1.5) * 100) + '% ou menos de ' + Math.round((c.regime_baixo || 0.3) * 100) + '% do regime = o <b>regime</b> do cadastro está errado, não o fator.<br>' +
+    'Saem da conta, e aparecem marcadas: leitura <b>repetida</b> depois de ' + (c.repetida_dias || 7) + '+ dias (quase sempre copiada da visita anterior), leitura <b>menor</b> que uma anterior, e leitura <b>fora da curva</b> (o trecho até ela anda rápido demais e o seguinte devagar demais, ou o contrário). ' +
+    'Você pode marcar qualquer leitura como <b>errada</b> ou <b>certa</b>. <b>Confiança</b>: alta = 3+ leituras cobrindo ' + (c.span_alta || 45) + '+ dias; média = 2+ leituras e ' + (c.span_min || 28) + '+ dias; baixa = menos que isso (não entra no "aplicar recomendados").<br>' +
+    '<b>Por que é diferente da conta "104 h ÷ 5.981 h = 1,7%":</b> o fator corrige o RITMO (h por semana), então o erro é medido sobre o que a máquina andou no período, nunca sobre o horímetro acumulado.</div>';
+}
+function _h281Spark(m) {
+  var p = (m.pontos || []).filter(function (x) { return x.estado === 'ok'; });
+  if (p.length < 2) return '';
+  var t0 = Date.parse(p[0].dia), t1 = Date.parse(p[p.length - 1].dia), v0 = Number(p[0].valor), v1 = Number(p[p.length - 1].valor);
+  if (!(t1 > t0) || !(v1 > v0)) return '';
+  var W = 64, H = 18, xs = function (d) { return 1 + (Date.parse(d) - t0) / (t1 - t0) * (W - 2); }, ys = function (v) { return H - 1 - (Number(v) - v0) / (v1 - v0) * (H - 2); };
+  var pts = p.map(function (x) { return xs(x.dia).toFixed(1) + ',' + ys(x.valor).toFixed(1); }).join(' ');
+  var mod = Number(m.modelo_sem) || 0, dias = (t1 - t0) / 86400000, vm = v0 + dias * mod / 7;
+  var ym = ys(Math.min(Math.max(vm, v0 - (v1 - v0)), v1 + (v1 - v0)));
+  return '<svg width="' + W + '" height="' + H + '" viewBox="0 0 ' + W + ' ' + H + '" aria-hidden="true" style="vertical-align:middle;margin-left:6px;overflow:visible">' +
+    (mod > 0 ? '<line x1="1" y1="' + (H - 1) + '" x2="' + (W - 1) + '" y2="' + ym.toFixed(1) + '" stroke="#B8B8B8" stroke-width="1" stroke-dasharray="2 2"/>' : '') +
+    '<polyline points="' + pts + '" fill="none" stroke="#EE7625" stroke-width="1.6"/></svg>';
+}
+function _h281Tabela(vis, apl, d) {
+  if (!d) {
+    var o = ''; for (var i = 0; i < 8; i++) o += '<tr class="h281-esq">' + '<td><span class="h281-osso"></span></td>'.repeat(9) + '</tr>';
+    return '<table class="h281-tab" data-cfx-off="esqueleto enquanto carrega (14/10)"><thead><tr><th>Cliente / máquina</th><th>Situação</th><th class="n">Regime</th><th class="n">Sistema conta</th>' +
+      '<th class="n">Medido</th><th class="n">Fator</th><th class="n">Erro/mês</th><th class="n">1.000 h duram</th><th>Leituras</th></tr></thead><tbody>' + o + '</tbody></table>';
+  }
+  if (!vis.length) {
+    var vz = { decidir: '✅ Nenhuma máquina esperando decisão. As que estão calibradas seguem sozinhas; as que mudarem de ritmo voltam para cá na próxima leitura.',
+               ok: 'Nenhuma máquina calibrada ainda — falta leitura (veja "Aguardando leitura").', sem_regime: 'Todas as máquinas com leitura têm regime cadastrado.',
+               aguardando: 'Nenhuma máquina esperando leitura.', mantido: 'Nenhuma decisão de "manter o fator" em aberto.' }[H281.filtro] || 'Nada encontrado.';
+    if (H281.busca) vz = 'Nada encontrado para "' + _h281E(H281.busca) + '".';
+    return '<div class="h281-vazio">' + vz + '</div>';
+  }
+  var comChk = H281.filtro === 'decidir' && apl.length;
+  var aplSet = {}; apl.forEach(function (m) { aplSet[m.machine_id] = true; });
+  var h = '<table class="h281-tab"><thead><tr>' + (comChk ? '<th class="chk"></th>' : '') +
+    '<th>Cliente / máquina</th><th>Situação</th><th class="n" title="h/semana do cadastro (regime de trabalho)">Regime</th>' +
+    '<th class="n" title="regime × fator: o que a projeção usa hoje (h/semana)">Sistema conta</th><th class="n" title="ritmo medido nas leituras (h/semana)">Medido</th>' +
+    '<th class="n" title="fator atual → recomendado">Fator</th><th class="n" title="quanto a projeção erra em 30 dias (+ = adianta as preventivas)">Erro/mês</th>' +
+    '<th class="n" title="quantos dias a máquina leva para rodar 1.000 h: pelo sistema → pelo ritmo medido">1.000 h duram</th><th>Leituras</th><th class="n">Última</th></tr></thead><tbody>';
+  vis.forEach(function (m) {
+    var imp = m.impacto || {}, e30 = imp.erro_30d;
+    var fat = _h281F(m.fator_atual) + (m.fator_recomendado != null && ['ajustar', 'regime'].indexOf(m.status) >= 0 ? ' <span class="h281-seta">→ ' + _h281F(m.fator_recomendado) + '</span>' : '');
+    var velha = Number(m.dias_sem_leitura) > (((d.cfg || {}).velha_dias) || 60);
+    h += '<tr data-h281="abrir" data-mid="' + _h281E(m.machine_id) + '"' + (H281.sel === m.machine_id ? ' class="sel"' : '') + '>' +
+      (comChk ? '<td class="chk">' + (aplSet[m.machine_id] ? '<input type="checkbox" data-h281="marca" data-mid="' + _h281E(m.machine_id) + '"' + (H281.marcados[m.machine_id] !== false ? ' checked' : '') + ' title="incluir no aplicar em lote">' : '') + '</td>' : '') +
+      '<td><div class="nm">' + _h281E(m.cliente || '—') + '</div><div class="mq">' + _h281E(m.maquina || '') + (m.serie ? ' · S/N ' + _h281E(m.serie) : '') + (m.tag ? ' · ' + _h281E(m.tag) : '') + '</div></td>' +
+      '<td data-cfx-val="' + _h281E(H281_ROT[m.status] || m.status) + '"><span class="h281-pill ' + _h281E(m.status) + '">' + _h281E(H281_ROT[m.status] || m.status) + '</span>' +
+        (m.confianca ? '<span class="h281-cf ' + _h281E(m.confianca) + '" title="confiança ' + _h281E(m.confianca) + '"></span>' : '') + (m._aplicadoAgora ? ' <span class="h281-tag-hint">aplicado agora</span>' : '') + '</td>' +
+      '<td class="n" data-cfx-val="' + _h281E(m.hpw || 0) + '">' + (Number(m.hpw) > 0 ? _h281N(m.hpw) : '<span class="h281-velha">—</span>') + '</td>' +
+      '<td class="n" data-cfx-val="' + _h281E(m.modelo_sem || 0) + '">' + (Number(m.modelo_sem) > 0 ? _h281N(m.modelo_sem, 1) : '—') + '</td>' +
+      '<td class="n" data-cfx-val="' + _h281E(m.taxa_sem == null ? '' : m.taxa_sem) + '"><b>' + (m.taxa_sem != null ? _h281N(m.taxa_sem, 1) : '—') + '</b></td>' +
+      '<td class="n" data-cfx-val="' + _h281E(m.fator_atual || '') + '">' + fat + '</td>' +
+      '<td class="n" data-cfx-val="' + _h281E(e30 == null ? '' : e30) + '">' + (e30 == null ? '—' : '<span class="' + (e30 > 0 ? 'h281-pos' : 'h281-neg') + '">' + (e30 > 0 ? '+' : '') + _h281N(e30) + ' h</span>') + '</td>' +
+      '<td class="n" data-cfx-val="' + _h281E(imp.dias_1000_real == null ? '' : imp.dias_1000_real) + '">' + (imp.dias_1000_modelo != null ? _h281N(imp.dias_1000_modelo) + ' d → <b>' + _h281N(imp.dias_1000_real) + ' d</b>' : '—') + '</td>' +
+      '<td data-cfx-val="' + _h281E(m.n_leituras || 0) + '">' + _h281E(m.n_leituras || 0) + (m.dias_conta != null ? ' · ' + _h281E(m.dias_conta) + ' d' : '') + _h281Spark(m) + '</td>' +
+      '<td class="n" data-cfx-val="' + _h281E(m.ult_dia || '') + '">' + (m.ult_dia ? '<span' + (velha ? ' class="h281-velha" title="há ' + _h281E(m.dias_sem_leitura) + ' dias"' : '') + '>' + _h281Dia(m.ult_dia, true) + '</span>' : '—') + '</td></tr>';
+  });
+  return h + '</tbody></table>';
+}
+function _h281Veredito(m, d) {
+  var c = (d && d.cfg) || {}, imp = m.impacto || {}, st = m.status, conta = (m.n_conta || 0) + ' leitura(s) em ' + (m.dias_conta || 0) + ' dias';
+  var med = '<b>' + _h281N(m.taxa_sem, 1) + ' h/sem</b>', sis = '<b>' + _h281N(m.modelo_sem, 1) + ' h/sem</b>';
+  if (st === 'ok') return ['ok', '✅ <b>Calibrada.</b> O sistema conta ' + sis + ' e a máquina roda ' + med + ' (' + conta + '). As preventivas dela estão sendo previstas no ritmo certo.'];
+  if (st === 'ajustar') return ['ajustar', '⚙ <b>Ajustar o fator para ' + _h281F(m.fator_recomendado) + '.</b> O sistema conta ' + sis + ', a máquina roda ' + med + ' (' + conta + ', confiança ' + _h281E(m.confianca) + '). ' +
+    (imp.dias_1000_modelo != null ? 'Hoje o sistema acha que ela leva <b>' + _h281N(imp.dias_1000_modelo) + ' dias</b> para rodar 1.000 h; leva <b>' + _h281N(imp.dias_1000_real) + '</b> — as preventivas estão ' + (imp.dias_1000_modelo < imp.dias_1000_real ? 'saindo <b>cedo</b> demais.' : 'saindo <b>tarde</b> demais.') : '')];
+  if (st === 'regime') return ['regime', '🏭 <b>O regime cadastrado está errado.</b> Cadastro: <b>' + _h281N(m.hpw) + ' h/sem</b>; a máquina roda ' + med + ' (' + conta + '). ' +
+    'Corrija o regime no cadastro (≈ ' + _h281N(m.regime_sugerido) + ' h/sem) — o fator volta a perto de 1. ' + (m.fator_recomendado != null ? 'Se preferir não mexer no cadastro agora, o fator ' + _h281F(m.fator_recomendado) + ' resolve a projeção.' : '')];
+  if (st === 'conferir') return ['conferir', '🔎 <b>Confira a leitura marcada como "fora da curva"</b> antes de mexer no fator. Sem ela, o ritmo medido é ' + med + ' contra ' + sis + ' do sistema. Se ela está certa (a máquina mudou de ritmo), marque "é certa".'];
+  if (st === 'sem_regime') return ['cinza', '📝 <b>Sem regime cadastrado</b> (h/semana = 0): o sistema não projeta o horímetro desta máquina e as preventivas dela não têm data. ' +
+    (m.taxa_sem != null ? 'Pelas leituras ela roda ' + med + ' — cadastre o regime (≈ ' + _h281N(m.regime_sugerido) + ' h/sem).' : 'Cadastre o regime.')];
+  if (st === 'mantido') { var dc = m.decisao || {};
+    return ['cinza', '⏸ <b>Fator mantido</b> ' + (dc.tipo === 'manual' ? '(salvo à mão' : dc.tipo === 'descarte' ? '(sugestão descartada' : '(decisão') + (dc.por_nome || dc.por ? ' por ' + _h281E(dc.por_nome || dc.por) : '') + (dc.em ? ' em ' + _h281E(new Date(dc.em).toLocaleDateString('pt-BR')) : '') + '). ' +
+      'A recomendação (' + _h281E(H281_ROT[m.status_original] || '') + (m.fator_recomendado != null ? ': ' + _h281F(m.fator_recomendado) : '') + ') volta sozinha quando chegar leitura nova.'];
+  }
+  if (st === 'parada') return ['cinza', '⏹ <b>Sem horas no período</b> — a máquina parece parada. Não há o que calibrar até ela voltar a rodar.'];
+  if (st === 'uma_leitura' && Number(m.n_conta) >= 2) return ['cinza', '⏳ <b>Medida curta demais</b>: as leituras que contam cobrem só ' + _h281E(m.dias_conta || 0) + ' dia(s). O ritmo precisa de pelo menos uma semana; a próxima visita já mede.'];
+  if (st === 'uma_leitura') return ['cinza', '⏳ <b>Só uma leitura válida.</b> O ritmo precisa de pelo menos duas; a próxima visita com horímetro já mede.'];
+  return ['cinza', '⏳ <b>Nenhuma leitura de horímetro</b> nas visitas desta máquina.'];
+}
+function _h281Grafico(m, W, H) {
+  var p = (m.pontos || []).filter(function (x) { return x.valor != null && x.dia; });
+  if (!p.length) return '';
+  var hoje = (H281.dados && H281.dados.hoje) || new Date().toISOString().slice(0, 10);
+  var ts = function (s) { return Date.parse(String(s).slice(0, 10) + 'T12:00:00Z'); };
+  var t0 = ts(p[0].dia), t1 = Math.max(ts(p[p.length - 1].dia), ts(hoje));
+  var ok = p.filter(function (x) { return x.estado === 'ok' && x.janela; });
+  var lin = null;   // a reta medida (mínimos quadrados nas leituras da conta)
+  if (ok.length >= 2) {
+    var n = ok.length, sx = 0, sy = 0, sxx = 0, sxy = 0;
+    ok.forEach(function (x) { var d = (ts(x.dia) - t0) / 864e5, v = Number(x.valor); sx += d; sy += v; sxx += d * d; sxy += d * v; });
+    var den = n * sxx - sx * sx; if (den) { var b = (n * sxy - sx * sy) / den; lin = { b: b, a: (sy - b * sx) / n, de: ts(ok[0].dia) }; }
+  }
+  var ult = p[p.length - 1], ultV = Number(m.ult_valor || ult.valor), ultT = m.ult_dia ? ts(m.ult_dia) : ts(ult.dia);
+  var mod = Number(m.modelo_sem) || 0, aMod = ok.length ? { t: ts(ok[0].dia), v: Number(ok[0].valor) } : { t: ts(p[0].dia), v: Number(p[0].valor) };
+  var vals = p.map(function (x) { return Number(x.valor); });
+  if (lin) vals.push(lin.a + lin.b * (t1 - t0) / 864e5);
+  if (mod > 0) vals.push(aMod.v + (t1 - aMod.t) / 864e5 * mod / 7);
+  var vmin = Math.min.apply(null, vals), vmax = Math.max.apply(null, vals); if (vmax - vmin < 10) { vmax += 5; vmin -= 5; }
+  var pad = (vmax - vmin) * 0.08; vmin -= pad; vmax += pad;
+  var L = 54, R = 12, T = 10, B = 24, w = W - L - R, h = H - T - B, span = Math.max(t1 - t0, 864e5);
+  var X = function (t) { return L + (t - t0) / span * w; }, Y = function (v) { return T + h - (v - vmin) / (vmax - vmin) * h; };
+  var s = '<svg viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="Leituras do horímetro, ritmo medido e o que o sistema conta" font-family="Inter,system-ui,sans-serif">';
+  for (var g = 0; g <= 3; g++) { var vv = vmin + (vmax - vmin) * g / 3, yy = Y(vv);
+    s += '<line x1="' + L + '" x2="' + (W - R) + '" y1="' + yy.toFixed(1) + '" y2="' + yy.toFixed(1) + '" stroke="#F0F0F0"/><text x="' + (L - 6) + '" y="' + (yy + 3.5).toFixed(1) + '" font-size="10" fill="#8F8F8F" text-anchor="end">' + Math.round(vv).toLocaleString('pt-BR') + '</text>'; }
+  s += '<text x="' + L + '" y="' + (H - 6) + '" font-size="10" fill="#8F8F8F">' + _h281Dia(p[0].dia, true) + '</text><text x="' + (W - R) + '" y="' + (H - 6) + '" font-size="10" fill="#8F8F8F" text-anchor="end">hoje ' + _h281Dia(hoje, true) + '</text>';
+  var xh = X(ts(hoje)); s += '<line x1="' + xh.toFixed(1) + '" x2="' + xh.toFixed(1) + '" y1="' + T + '" y2="' + (T + h) + '" stroke="#E6E6E6" stroke-dasharray="3 3"/>';
+  if (mod > 0) s += '<line x1="' + X(aMod.t).toFixed(1) + '" y1="' + Y(aMod.v).toFixed(1) + '" x2="' + X(t1).toFixed(1) + '" y2="' + Y(aMod.v + (t1 - aMod.t) / 864e5 * mod / 7).toFixed(1) + '" stroke="#9CA3AF" stroke-width="1.6" stroke-dasharray="5 4"><title>o que o sistema conta: ' + _h281N(mod, 1) + ' h/sem</title></line>';
+  if (lin) {
+    var ya = lin.a + lin.b * (lin.de - t0) / 864e5, yb = lin.a + lin.b * (ultT - t0) / 864e5, yc = lin.a + lin.b * (t1 - t0) / 864e5;
+    s += '<line x1="' + X(lin.de).toFixed(1) + '" y1="' + Y(ya).toFixed(1) + '" x2="' + X(ultT).toFixed(1) + '" y2="' + Y(yb).toFixed(1) + '" stroke="#EE7625" stroke-width="2.2"><title>ritmo medido: ' + _h281N(m.taxa_sem, 1) + ' h/sem</title></line>';
+    if (t1 > ultT) s += '<line x1="' + X(ultT).toFixed(1) + '" y1="' + Y(yb).toFixed(1) + '" x2="' + X(t1).toFixed(1) + '" y2="' + Y(yc).toFixed(1) + '" stroke="#EE7625" stroke-width="2" stroke-dasharray="4 3" opacity=".7"/>';
+  }
+  p.forEach(function (x) {
+    var cx = X(ts(x.dia)).toFixed(1), cy = Y(Number(x.valor)).toFixed(1), tt = _h281Dia(x.dia) + ' · ' + _h281N(x.valor) + ' h · ' + (H281_EST[x.estado] || x.estado) + (x.janela === false && x.estado === 'ok' ? ' (antes da janela)' : '');
+    if (x.estado === 'ok') s += '<circle cx="' + cx + '" cy="' + cy + '" r="4" fill="' + (x.janela ? '#262626' : '#BDBDBD') + '"><title>' + _h281E(tt) + '</title></circle>';
+    else s += '<g><circle cx="' + cx + '" cy="' + cy + '" r="5" fill="#fff" stroke="#B42318" stroke-width="1.8"/><path d="M' + (cx - 2.6) + ' ' + (cy - 2.6) + 'L' + (+cx + 2.6) + ' ' + (+cy + 2.6) + 'M' + (+cx + 2.6) + ' ' + (cy - 2.6) + 'L' + (cx - 2.6) + ' ' + (+cy + 2.6) + '" stroke="#B42318" stroke-width="1.5"/><title>' + _h281E(tt) + '</title></g>';
+  });
+  return s + '</svg>';
+}
+function _h281Acoes(m, d, compacto) {
+  var pode = !!(d && d.pode_escrever), mid = _h281E(m.machine_id), h = '';
+  if (!pode) return '<div class="h281-tag-hint" style="margin:0 0 12px">O seu perfil só consulta a calibração.</div>';
+  if (m.fator_recomendado != null && ['ajustar', 'regime', 'mantido'].indexOf(m.status) >= 0 && !m._aplicadoAgora)
+    h += '<button type="button" class="btn btn-primary btn-sm" data-h281="aplicar" data-mid="' + mid + '" data-fator="' + _h281E(m.fator_recomendado) + '">Aplicar ' + _h281F(m.fator_recomendado) + '</button>';
+  if (['ajustar', 'regime', 'conferir', 'parada'].indexOf(m.status) >= 0)
+    h += '<button type="button" class="btn btn-secondary btn-sm" data-h281="manter" data-mid="' + mid + '" title="Registra que você olhou e decidiu manter o fator de hoje; a recomendação volta com a próxima leitura">Manter ' + _h281F(m.fator_atual) + '</button>';
+  if (m.status === 'mantido') h += '<button type="button" class="btn btn-secondary btn-sm" data-h281="reabrir" data-mid="' + mid + '">Reabrir a recomendação</button>';
+  if (['regime', 'sem_regime'].indexOf(m.status) >= 0 || compacto !== true)
+    h += '<button type="button" class="btn btn-secondary btn-sm" data-h281="regime" data-mid="' + mid + '" title="Abre o cadastro da máquina (turnos e h/semana)">✎ Regime no cadastro</button>';
+  if (!compacto) {
+    h += '<button type="button" class="btn btn-secondary btn-sm" data-h281="ficha" data-mid="' + mid + '">Ficha da máquina</button>';
+    if (m.status !== 'sem_regime' && Number(m.hpw) > 0)
+      h += '<span class="h281-outro">outro fator <input type="text" inputmode="decimal" id="h281Outro" name="h281fator_nofill" autocomplete="off" data-lpignore="true" data-1p-ignore="true" placeholder="' + _h281F(m.fator_atual) + '">' +
+           '<button type="button" class="h281-mini" data-h281="outro" data-mid="' + mid + '">Salvar</button></span>';
+  }
+  return '<div class="h281-acoes">' + h + '</div>';
+}
+function _h281Leituras(m, d) {
+  var pode = !!(d && d.pode_escrever), p = (m.pontos || []).slice().reverse();
+  if (!p.length) return '';
+  var h = '<div class="h281-sec"><h4>Leituras (' + _h281E(m.n_leituras) + (Number(m.n_leituras) > p.length ? ', as ' + p.length + ' últimas' : '') + ')</h4><table class="h281-lei" data-cfx-off="lista curta do painel, com botões por linha (14/10)"><thead><tr>' +
+    '<th>Dia</th><th class="n">Horímetro</th><th class="n" title="ritmo do trecho desde a leitura anterior que conta">h/sem</th><th>Situação</th>' + (pode ? '<th></th>' : '') + '</tr></thead><tbody>';
+  p.forEach(function (x) {
+    var ruim = x.estado !== 'ok', mid = _h281E(m.machine_id), a = 'data-mid="' + mid + '" data-dia="' + _h281E(x.dia) + '" data-valor="' + _h281E(x.valor) + '"', bt = '';
+    if (pode) {
+      if (x.marca) bt = '<button type="button" class="h281-mini" data-h281="lei" data-tipo="limpar" ' + a + ' title="volta ao automático">Desfazer</button>';
+      else if (x.estado === 'ok') bt = '<button type="button" class="h281-mini perigo" data-h281="lei" data-tipo="invalida" ' + a + ' title="tira esta leitura da conta">É errada</button>';
+      else if (x.estado === 'suspeita') bt = '<button type="button" class="h281-mini perigo" data-h281="lei" data-tipo="invalida" ' + a + '>É errada</button> <button type="button" class="h281-mini" data-h281="lei" data-tipo="valida" ' + a + ' title="a máquina mudou de ritmo de verdade">É certa</button>';
+      else if (x.estado === 'repetida') bt = '<button type="button" class="h281-mini" data-h281="lei" data-tipo="valida" ' + a + ' title="a máquina ficou mesmo parada: conta">Estava parada</button>';
+    }
+    h += '<tr class="' + (ruim ? 'ruim' : (x.janela ? '' : 'fora')) + '"><td>' + _h281Dia(x.dia) + (x.origem === 'historico' ? ' <span class="h281-tag-hint" title="veio do histórico do horímetro">h</span>' : '') + '</td>' +
+      '<td class="n">' + _h281N(x.valor) + '</td><td class="n">' + (x.seg_sem != null ? _h281N(x.seg_sem, 1) : '—') + '</td>' +
+      '<td><span class="h281-est ' + _h281E(x.estado) + '">' + _h281E(H281_EST[x.estado] || x.estado) + (x.marca ? ' (marcada)' : '') + (x.estado === 'ok' && !x.janela ? ' · antes da janela' : '') + '</span></td>' +
+      (pode ? '<td style="text-align:right;white-space:nowrap">' + bt + '</td>' : '') + '</tr>';
+  });
+  return h + '</tbody></table></div>';
+}
+function _h281Numeros(m) {
+  return '<div class="h281-nums">' +
+    '<div class="h281-num"><span>Regime cadastrado</span><b>' + (Number(m.hpw) > 0 ? _h281N(m.hpw) + ' h/sem' : '—') + '</b><small>' + (m.turnos ? 'pelos turnos' : 'h/semana do cadastro') + '</small></div>' +
+    '<div class="h281-num"><span>Sistema conta</span><b>' + (Number(m.modelo_sem) > 0 ? _h281N(m.modelo_sem, 1) + ' h/sem' : '—') + '</b><small>regime × fator ' + _h281F(m.fator_atual) + '</small></div>' +
+    '<div class="h281-num"><span>Medido</span><b>' + (m.taxa_sem != null ? _h281N(m.taxa_sem, 1) + ' h/sem' : '—') + '</b><small>' + (m.conta_de ? _h281Dia(m.conta_de, true) + ' a ' + _h281Dia(m.conta_ate, true) : 'sem medida') + '</small></div>' +
+    '<div class="h281-num"><span>Fator ideal</span><b>' + _h281F(m.fator_ideal) + '</b><small>' + (m.desvio != null ? (m.desvio > 0 ? '+' : '') + _h281N(m.desvio * 100) + '% do atual' : '—') + '</small></div>' +
+    '<div class="h281-num"><span>Confiança</span><b style="text-transform:capitalize">' + _h281E(m.confianca || '—') + '</b><small>' + _h281E(m.n_conta || 0) + ' leitura(s) · ' + _h281E(m.dias_conta || 0) + ' dias</small></div>' +
+    '<div class="h281-num"><span>Última leitura</span><b>' + (m.ult_valor != null ? _h281N(m.ult_valor) + ' h' : '—') + '</b><small>' + (m.ult_dia ? _h281Dia(m.ult_dia) + ' · há ' + _h281E(m.dias_sem_leitura) + ' d' : '—') + '</small></div></div>';
+}
+function _h281Impacto(m) {
+  var i = m.impacto; if (!i) return '';
+  var dif = Number(i.hoje_modelo) - Number(i.hoje_medido);
+  return '<div class="h281-impacto"><b>Nas preventivas:</b> 1.000 h de serviço levam <b>' + _h281N(i.dias_1000_real) + ' dias</b> no ritmo medido; o sistema conta <b>' + _h281N(i.dias_1000_modelo) + '</b>. ' +
+    'Hoje o sistema estima <b>' + _h281N(i.hoje_modelo) + ' h</b>; pelo ritmo medido, <b>' + _h281N(i.hoje_medido) + ' h</b>' + (Math.abs(dif) >= 1 ? ' (' + (dif > 0 ? '+' : '') + _h281N(dif) + ' h)' : '') + '. ' +
+    'Em 30 dias a diferença é de ' + (i.erro_30d > 0 ? '+' : '') + _h281N(i.erro_30d) + ' h.</div>';
+}
+function _h281Painel(m, d) {
+  if (!m) return '<div class="h281-pcab"><div class="l1">Calibração<button type="button" class="h281-x" data-h281="fechar" title="Fechar">✕</button></div></div>' +
+    '<div class="h281-pcorpo"><div class="h281-vazio">' + (H281.carregando ? 'Carregando…' : 'Esta máquina não está na lista (inativa ou fora do cadastro).') + '</div></div>';
+  var v = _h281Veredito(m, d);
+  return '<div class="h281-pcab"><div class="l1"><span class="h281-pill ' + _h281E(m.status) + '">' + _h281E(H281_ROT[m.status] || m.status) + '</span>' +
+      (m.confianca ? '<span>confiança ' + _h281E(m.confianca) + '</span>' : '') + '<button type="button" class="h281-x" data-h281="fechar" title="Fechar (Esc)">✕</button></div>' +
+      '<h3>' + _h281E(m.cliente || '—') + '</h3><div class="doc">' + _h281E(m.maquina || '') + (m.serie ? ' · S/N ' + _h281E(m.serie) : '') + (m.tag ? ' · TAG ' + _h281E(m.tag) : '') + '</div></div>' +
+    '<div class="h281-pcorpo"><div class="h281-veredito ' + v[0] + '">' + v[1] + '</div>' +
+    ((m.motivos || []).length ? '<ul class="h281-motivos">' + m.motivos.map(function (x) { return '<li>' + _h281E(x) + '</li>'; }).join('') + '</ul>' : '') +
+    _h281Acoes(m, d, false) +
+    ((m.pontos || []).length ? '<div class="h281-grafico">' + _h281Grafico(m, 488, 210) + '</div><div class="h281-leg"><span><i style="border-color:#EE7625"></i>ritmo medido</span>' +
+      (Number(m.modelo_sem) > 0 ? '<span><i style="border-color:#9CA3AF;border-top-style:dashed"></i>o que o sistema conta</span>' : '') + '<span>● leitura que conta · ⊗ fora da conta</span></div>' : '') +
+    _h281Numeros(m) + _h281Impacto(m) + _h281Leituras(m, d) + '</div>';
+}
+
+// ── endereço (#calib/<id>) ─────────────────────────────────────────────────────────────────────────
+function _h281HashId() { var x = /^#calib\/(.+)$/.exec(location.hash || ''); if (!x) return null; try { return decodeURIComponent(x[1]); } catch (e) { return null; } }
+function _h281IrPara(mid) {   // (A14) o link #calib/<id> funciona mesmo com o endereço já igual (hashchange não dispararia)
+  if (!_h281PodeVer()) { toast('A calibração não está no seu perfil.', 'warning'); return; }
+  try { var md = document.getElementById('modalMachineParts'); if (md && md.classList.contains('open')) closeModal('modalMachineParts'); } catch (e) {}
+  H281.sel = mid;
+  if (_h281HashId() !== mid) { try { history.pushState({ h281: mid }, '', '#calib/' + encodeURIComponent(mid)); } catch (e) {} }
+  if (typeof currentView !== 'undefined' && currentView !== 'calibracao') { showView('calibracao'); return; }
+  _h281Pintar();
+}
+function _h281Abrir(mid, semHistorico) {
+  H281.sel = mid;
+  if (!semHistorico && _h281HashId() !== mid) { try { history.pushState({ h281: mid }, '', '#calib/' + encodeURIComponent(mid)); } catch (e) {} }
+  _h281Pintar();
+}
+function _h281Fechar(semHistorico) {
+  H281.sel = null;
+  if (!semHistorico && _h281HashId()) { try { history.replaceState(null, '', location.pathname + location.search); } catch (e) {} }
+  _h281Pintar();
+}
+function _h281Endereco() {
+  try {
+    var id = _h281HashId();
+    if (!id) { if (H281.sel && document.getElementById('h281Tela')) _h281Fechar(true); return; }
+    if (!_h281PodeVer()) return;   // (A2) endereço copiado por quem não tem a calibração no perfil: nada abre
+    try { var md = document.getElementById('modalMachineParts'); if (md && md.classList.contains('open')) closeModal('modalMachineParts'); } catch (e) {}
+    if (typeof currentView !== 'undefined' && currentView !== 'calibracao') { H281.sel = id; showView('calibracao'); return; }
+    if (id !== H281.sel) _h281Abrir(id, true);
+  } catch (e) { console.warn('[H281] endereço', e); }
+}
+window.addEventListener('popstate', _h281Endereco);
+window.addEventListener('hashchange', _h281Endereco);
+
+// ── ações ───────────────────────────────────────────────────────────────────────────────────────────
+async function _h281AplicarFatores(itens) {
+  var r = await gsPost({ action: 'aplicarHorimetroFatores', itens: itens, usuario: _h281Eu() });
+  if (!r || r.status !== 'ok') throw new Error((r && r.error) || 'o Apps Script não confirmou');
+  if (!(Number(r.aplicados) > 0)) throw new Error('NÃO foi aplicado: ' + (((r.erros || [])[0] || {}).error || 'o Apps Script não aplicou nenhum fator'));
+  (r.ok || []).forEach(function (o) {
+    H281.aplicadoLocal[o.machine_id] = { fator: Number(o.fator_correcao), em: Date.now() };
+    try { var eq = (db.machines || []).find(function (x) { return String(x.id) === String(o.machine_id); }); if (eq && eq._horimCalib) eq._horimCalib.fator = Number(o.fator_correcao); } catch (e) {}
+  });
+  if (H281.dados) _h281AplicarLocais(H281.dados.maquinas);
+  _h281AplicarLocais(Object.keys(H281.um).map(function (k) { return H281.um[k]; }));
+  _h281Resumo();
+  clearTimeout(H281.timer);
+  var recarregar = function () {
+    var f = document.activeElement;
+    if (f && f.id && f.id !== 'h281Busca' && /^(INPUT|TEXTAREA)$/.test(f.tagName) && f.closest && f.closest('#h281Tela')) { H281.timer = setTimeout(recarregar, 3000); return; }   // (A14) alguém digitando
+    _h281Carregar(true).then(function () { _h281Pintar(); _h281AtualizarContador(); });
+  };
+  H281.timer = setTimeout(recarregar, 6000);
+  return r;
+}
+async function _h281Marcar(p) {
+  var r = await _h281Rpc('pc_horim_marcar', p, true);
+  if (r && r.maquina) { _h281AplicarLocais([r.maquina]); H281.um[r.maquina.machine_id] = r.maquina; _h281Trocar(r.maquina); }
+  return r;
+}
+function _h281Ocupar(b, fn) {
+  if (H281.ocupado) return;
+  H281.ocupado = true;
+  var txt = b ? b.textContent : '';
+  if (b) { b.disabled = true; b.classList.add('is-busy'); b.setAttribute('data-pcm-enviando', '1'); b.textContent = '⏳ ' + txt; }
+  return Promise.resolve().then(fn).catch(function (e) { toast((e && e.message) || 'Não consegui.', 'error'); return false; })
+    .then(function (ok) {
+      H281.ocupado = false;
+      if (b && b.isConnected) { b.disabled = false; b.classList.remove('is-busy'); b.removeAttribute('data-pcm-enviando'); b.textContent = txt; }
+      return ok;
+    });
+}
+function _h281Valor(b, k) { return (b && b.getAttribute('data-' + k)) || ''; }
+async function _h281Clique(ev) {
+  var b = ev.target.closest && ev.target.closest('[data-h281]'); if (!b) return;
+  var a = b.getAttribute('data-h281'), mid = _h281Valor(b, 'mid');
+  if (a === 'marca') { ev.stopPropagation(); H281.marcados[mid] = !!b.checked; H281.confirmar = null; return _h281Pintar(); }
+  if (a === 'abrir') { if (ev.target.closest('input,button,a')) return; return _h281Abrir(mid); }
+  if (a === 'fechar') return _h281Fechar();
+  if (a === 'filtro') { H281.filtro = _h281Valor(b, 'k'); H281.confirmar = null; return _h281Pintar(); }
+  if (a === 'como') { H281.como = !H281.como; return _h281Pintar(); }
+  if (a === 'recarregar') { await _h281Ocupar(b, async function () { await _h281Carregar(true); _h281Pintar(); _h281AtualizarContador(); return true; }); return; }
+  if (a === 'ficha') { try { openMachineDetail(mid); } catch (e) { toast('Não consegui abrir a ficha: ' + e.message, 'error'); } return; }
+  if (a === 'regime') return _h281AbrirCadastro(mid);
+  if (a === 'lote') {
+    var apl = _h281Aplicaveis(_h281Visiveis()).filter(function (m) { return H281.marcados[m.machine_id] !== false; });
+    H281.confirmar = apl.map(function (m) { return { machine_id: m.machine_id, fator: Number(m.fator_recomendado) }; });
+    return _h281Pintar();
+  }
+  if (a === 'loteNao') { H281.confirmar = null; return _h281Pintar(); }
+  if (a === 'loteSim') {
+    var itens = H281.confirmar || []; if (!itens.length) return;
+    await _h281Ocupar(b, async function () {
+      var r = await _h281AplicarFatores(itens);
+      H281.confirmar = null;
+      toast('✅ ' + (r.aplicados || 0) + ' fator(es) aplicado(s)' + (r.falhas ? ' · ' + r.falhas + ' falharam (veja o console)' : '') + '.', r.falhas ? 'warning' : 'success');
+      if (r.falhas) console.warn('[H281] falhas no lote', r.erros);
+      _h281Pintar(); _h281AtualizarContador(); return true;
+    });
+    return;
+  }
+  if (a === 'aplicar' || a === 'outro') {
+    var f = a === 'aplicar' ? Number(_h281Valor(b, 'fator')) : Number(String((document.getElementById('h281Outro') || {}).value || '').replace(',', '.'));
+    if (!isFinite(f) || f < 0.3 || f > 3) { toast('Fator entre 0,300 e 3,000.', 'error'); return; }
+    await _h281Ocupar(b, async function () {
+      await _h281AplicarFatores([{ machine_id: mid, fator: f }]);
+      toast('✅ Fator ' + _h281F(f) + ' aplicado. As preventivas desta máquina passam a seguir este ritmo.', 'success');
+      _h281Pintar(); _h281AtualizarContador(); _h281RepintarCard(mid); return true;
+    });
+    return;
+  }
+  if (a === 'salvarCard') {   // o "Salvar fator" do cartão do modal: o mesmo caminho do aplicar, com trava própria
+    var fc = Number(String((document.getElementById('calibFatorInput') || {}).value || '').replace(',', '.'));
+    var msgC = document.getElementById('calibFatorMsg');
+    if (!isFinite(fc) || fc < 0.3 || fc > 3) { if (msgC) { msgC.style.color = '#b91c1c'; msgC.textContent = '⚠ Fator entre 0,300 e 3,000.'; } return; }
+    await _h281Ocupar(b, async function () {
+      await _h281AplicarFatores([{ machine_id: mid, fator: fc }]);
+      toast('✅ Fator ' + _h281F(fc) + ' salvo.', 'success');
+      try { await renderCalibHorim(mid); } catch (e) {}
+      _h281Pintar(); _h281AtualizarContador(); return true;
+    });
+    return;
+  }
+  if (a === 'manter' || a === 'reabrir') {
+    await _h281Ocupar(b, async function () {
+      var r = await _h281Marcar({ machine_id: mid, tipo: a });
+      toast(a === 'manter' ? 'Fator mantido. A recomendação volta quando chegar leitura nova.' : 'Recomendação reaberta.', 'success');
+      _h281Pintar(); _h281AtualizarContador(); _h281RepintarCard(mid); return !!r;
+    });
+    return;
+  }
+  if (a === 'lei') {
+    var tp = _h281Valor(b, 'tipo');
+    await _h281Ocupar(b, async function () {
+      var r = await _h281Marcar({ machine_id: mid, tipo: tp, dia: _h281Valor(b, 'dia'), valor: _h281Valor(b, 'valor') });
+      toast(tp === 'invalida' ? 'Leitura tirada da conta.' : tp === 'valida' ? 'Leitura marcada como certa: entra na conta.' : 'Marca desfeita.', 'success');
+      _h281Pintar(); _h281AtualizarContador(); _h281RepintarCard(mid); return !!r;
+    });
+  }
+}
+document.addEventListener('click', function (ev) {
+  try {
+    if (!ev.target.closest) return;
+    if (!ev.target.closest('#h281Tela') && !ev.target.closest('.h281-card')) return;
+    _h281Clique(ev);
+  } catch (e) { console.warn('[H281] clique', e); }
+});
+document.addEventListener('click', function (ev) {
+  try {
+    var a = ev.target.closest && ev.target.closest('a[href^="#calib/"]'); if (!a) return;
+    var x = /^#calib\/(.+)$/.exec(a.getAttribute('href') || ''); if (!x) return;
+    ev.preventDefault(); var mid; try { mid = decodeURIComponent(x[1]); } catch (e) { return; }
+    _h281IrPara(mid);
+  } catch (e) { console.warn('[H281] link', e); }
+}, true);
+document.addEventListener('input', function (ev) {
+  if (!ev.target || ev.target.id !== 'h281Busca') return;
+  clearTimeout(H281._tb);
+  var val = ev.target.value;
+  H281._tb = setTimeout(function () { H281.busca = val; H281._buscaFoco = true; _h281Pintar(); H281._buscaFoco = false; }, 140);
+});
+document.addEventListener('keydown', function (ev) {
+  if (ev.key === 'Escape' && H281.sel && document.getElementById('h281Tela') && (typeof currentView === 'undefined' || currentView === 'calibracao') && !document.querySelector('.overlay.open')) _h281Fechar();
+});
+function _h281AbrirCadastro(mid) {
+  try { openModalMachine(mid); } catch (e) { toast('Não consegui abrir o cadastro: ' + e.message, 'error'); return; }
+  // quando o cadastro fechar, a máquina é medida de novo (o regime pode ter mudado)
+  var t0 = Date.now(), iv = setInterval(function () {
+    var mod = document.getElementById('modalMachine');
+    var aberto = mod && (mod.classList.contains('open') || mod.style.display === 'flex' || mod.style.display === 'block');
+    if (!aberto || Date.now() - t0 > 900000) {
+      clearInterval(iv);
+      setTimeout(function () { _h281CarregarUma(mid).then(function () { _h281Pintar(); _h281AtualizarContador(); }).catch(function () {}); }, 1500);
+    }
+  }, 900);
+}
+
+// ── contador do menu ────────────────────────────────────────────────────────────────────────────────
+async function _h281AtualizarContador() {
+  var el = document.getElementById('navCalibCount'); if (!el) return 0;
+  var n = ((H281.dados && H281.dados.maquinas) || []).filter(function (m) { return _h281Grupo(m.status) === 'decidir'; }).length;
+  el.textContent = n ? String(n) : '';
+  return n;
+}
+
+// ── o cartão do modal da máquina (mesma análise) ───────────────────────────────────────────────────
+function _h281RepintarCard(mid) {
+  var box = document.getElementById('mdetCalibHorim');
+  if (box && box.getAttribute('data-h281-mid') === mid) _h281CardMaquina(mid, true);
+}
+async function _h281CardMaquina(mid, soPintar) {
+  var box = document.getElementById('mdetCalibHorim'); if (!box) return;
+  var m = null, d = H281.dados;
+  try {
+    if (!soPintar) m = await _h281CarregarUma(mid);
+    else m = ((d && d.maquinas) || []).find(function (x) { return x.machine_id === mid; }) || H281.um[mid] || null;
+  } catch (e) {
+    if (e && (e.v222 === 'sem_sql' || e.v222 === 'sem_token' || e.v222 === 'token')) return;   // fica o cartão antigo
+    return;
+  }
+  if (!m) return;
+  try { if (typeof _mdetMachineId !== 'undefined' && _mdetMachineId && String(_mdetMachineId) !== String(mid)) return; } catch (e) {}   // (A8) o modal já é de OUTRA máquina
+  d = H281.dados || H281._dCard || { pode_escrever: false, cfg: {} };   // o modal pode abrir antes da tela: _dCard vem da leitura de uma máquina
+  var box2 = document.getElementById('mdetCalibHorim'); if (!box2) return;
+  var fatorIn = document.getElementById('calibFatorInput'), velhoVal = fatorIn ? fatorIn.value : _h281F(m.fator_atual).replace(',', '.');
+  var v = _h281Veredito(m, d);
+  box2.setAttribute('data-h281-mid', mid);
+  box2.innerHTML = '<div class="h281-card">' +
+    '<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><span style="font-size:11px;font-weight:700;color:var(--blue-mid);text-transform:uppercase;letter-spacing:.05em">📊 Calibração do horímetro</span>' +
+      '<span class="h281-pill ' + _h281E(m.status) + '">' + _h281E(H281_ROT[m.status] || m.status) + '</span><span style="flex:1"></span>' +
+      '<a class="h281-link" href="#calib/' + encodeURIComponent(mid) + '" title="Abre na tela Calibração, com o gráfico grande">abrir na Calibração ↗</a></div>' +
+    '<div class="h281-veredito ' + v[0] + '" style="font-size:12.5px">' + v[1] + '</div>' +
+    _h281Acoes(m, d, true) +
+    ((m.pontos || []).length > 1 ? '<div class="h281-grafico">' + _h281Grafico(m, 560, 150) + '</div>' : '') +
+    _h281Numeros(m) +
+    '<details style="margin:0 0 8px"><summary style="cursor:pointer;font-size:12px;color:var(--text-muted,#6B6B6B)">Leituras e marcas</summary>' + _h281Leituras(m, d) + '</details>' +
+    '<div style="display:flex;gap:6px;align-items:center;margin-top:6px;flex-wrap:wrap">' +
+      '<span style="font-size:12px;color:var(--text3)">Fator vigente (edite para sobrescrever):</span>' +
+      '<input id="calibFatorInput" type="number" step="0.001" min="0.3" max="3" value="' + _h281E(velhoVal) + '" style="width:90px;padding:4px 8px;border:1px solid var(--border);border-radius:6px;font-size:12px">' +
+      '<button type="button" class="btn btn-secondary btn-sm" data-h281="salvarCard" data-mid="' + _h281E(mid) + '">Salvar fator</button>' +
+    '</div><div id="calibFatorMsg" style="font-size:12px;margin-top:6px"></div></div>';
+}
+
+// ── o Início (caixa "Calibração"): a mesma análise, os mesmos botões ───────────────────────────────
+function _h281CardInicio(m) {
+  var dec = m.status, fat = m.fator_recomendado;
+  return '<div class="v218-cab"><span class="v218-tp cal">Calibração · ' + _h281E(H281_ROT[dec] || dec) + '</span><span>' + _h281E(m.cliente || '—') + '</span></div>' +
+    '<div class="v218-tit">' + _h281E(m.maquina || '') + (m.serie ? ' · S/N ' + _h281E(m.serie) : '') + '</div>' +
+    '<div class="v218-sub">Sistema conta ' + _h281N(m.modelo_sem, 1) + ' h/sem · roda <b>' + _h281N(m.taxa_sem, 1) + ' h/sem</b> (' + _h281E(m.n_conta || 0) + ' leituras, ' + _h281E(m.dias_conta || 0) + ' dias, confiança ' + _h281E(m.confianca || '—') + ')' +
+      (m.impacto ? ' · 1.000 h: ' + _h281N(m.impacto.dias_1000_modelo) + ' d no sistema, ' + _h281N(m.impacto.dias_1000_real) + ' d de verdade' : '') + '</div>' +
+    '<div class="v218-acoes">' +
+      (fat != null && dec !== 'conferir' && m.confianca !== 'baixa' && H281.dados && H281.dados.pode_escrever ? '<button type="button" class="btn btn-primary btn-sm" data-v218="calAplicar" data-mid="' + _h281E(m.machine_id) + '" data-fator="' + _h281E(fat) + '">Aplicar ' + _h281F(fat) + '</button>' : '') +
+      (H281.dados && H281.dados.pode_escrever ? '<button type="button" class="btn btn-secondary btn-sm" data-v218="h281Manter" data-mid="' + _h281E(m.machine_id) + '">Manter ' + _h281F(m.fator_atual) + '</button>' : '') +
+      '<a class="btn btn-secondary btn-sm" href="#calib/' + encodeURIComponent(m.machine_id) + '">' + (dec === 'conferir' ? 'Conferir a leitura' : 'Ver o gráfico') + '</a></div>';
+}
+
+// ── embrulhos (só ADITIVO: sem o SQL, cada um devolve o comportamento antigo) ──────────────────────
+(function () {
+  try {
+    if (typeof renderCalibracao === 'function') {
+      H281.orig.renderCalibracao = renderCalibracao;
+      renderCalibracao = async function () {
+        try { return await _h281Entrar(); }
+        catch (e) { console.error('[H281] tela nova falhou, voltando à antiga:', e); _h281Desligar(); return H281.orig.renderCalibracao.apply(this, arguments); }
+      };
+    }
+    if (typeof _calibAtualizarContador === 'function') {
+      H281.orig.contador = _calibAtualizarContador;
+      _calibAtualizarContador = async function () {
+        if (window._pcmModoApp && window._pcmModoApp()) return 0;
+        if (!_h281PodeVer()) return H281.orig.contador.apply(this, arguments);   // (A2) quem não tem a calibração nem pergunta ao banco
+        try { await _h281Carregar(false); } catch (e) {}
+        if (H281.dados) return _h281AtualizarContador();
+        return H281.orig.contador.apply(this, arguments);
+      };
+    }
+    if (typeof renderCalibHorim === 'function') {
+      H281.orig.renderCalibHorim = renderCalibHorim;
+      renderCalibHorim = async function (machineId) {
+        var r = await H281.orig.renderCalibHorim.apply(this, arguments);   // o antigo repinta o Resumo com o fator (v79) e deixa o cartão antigo
+        try { await _h281CardMaquina(machineId); } catch (e) { console.warn('[H281] cartão da máquina', e); }
+        return r;
+      };
+    }
+    if (typeof _v218Cards === 'function') {
+      H281.orig.v218Cards = _v218Cards;
+      _v218Cards = function () {
+        var out = H281.orig.v218Cards.apply(this, arguments);
+        if (!_h281PodeVer()) return out;   // (A2) sem a calibração no perfil: nenhum cartão novo
+        if (!H281.dados && !H281._voo && !H281._inicioPediu && H281.cod !== 'sem_sql' && Date.now() - (H281._inicioFalhou || 0) > 60000) {
+          H281._inicioPediu = true;   // a caixa abriu antes da análise chegar: busca uma vez e repinta (falhou: espera 1 min — A14)
+          _h281Carregar(false).then(function () { H281._inicioPediu = false; if (H281.dados) { try { _v218Pintar(); } catch (e) {} } else H281._inicioFalhou = Date.now(); },
+                                    function () { H281._inicioPediu = false; H281._inicioFalhou = Date.now(); });
+        }
+        if (!H281.dados || !Array.isArray(out)) return out;   // sem o SQL: os cartões antigos ficam
+        out = out.filter(function (c) { return !(c && typeof c.k === 'string' && c.k.indexOf('ca:') === 0); });
+        H281.dados.maquinas.filter(function (m) { return _h281Grupo(m.status) === 'decidir'; })
+          .sort(function (a, c) { return Math.abs(Number((c.impacto || {}).erro_30d) || 0) - Math.abs(Number((a.impacto || {}).erro_30d) || 0); })
+          .forEach(function (m) { out.push({ k: 'ca:' + m.machine_id, g: 'cal', ordem: 4, t: 0, html: _h281CardInicio(m) }); });
+        out.sort(function (a, b) { return a.ordem - b.ordem || (a.t < b.t ? -1 : a.t > b.t ? 1 : 0); });
+        return out;
+      };
+    }
+    if (typeof _v218Carregar === 'function') {
+      H281.orig.v218Carregar = _v218Carregar;
+      _v218Carregar = async function (forcar) {
+        var p = (typeof _v218Pode === 'function' && _v218Pode('calibracao')) ? _h281Carregar(!!forcar).catch(function () { return null; }) : Promise.resolve(null);
+        var r = await H281.orig.v218Carregar.apply(this, arguments);
+        await p;
+        try { if (typeof _v218Pintar === 'function') _v218Pintar(); } catch (e) {}
+        return r;
+      };
+    }
+    if (typeof V218_ESCRITAS !== 'undefined' && Array.isArray(V218_ESCRITAS) && V218_ESCRITAS.indexOf('h281Manter') < 0) V218_ESCRITAS.push('h281Manter');
+    if (typeof _v218Escrever === 'function') {
+      H281.orig.v218Escrever = _v218Escrever;
+      _v218Escrever = async function (a, b, g) {
+        if (a === 'h281Manter') {
+          await _h281Marcar({ machine_id: g('mid'), tipo: 'manter' });
+          try { _v218Sair(b, 'Fator mantido. A recomendação volta quando chegar leitura nova.'); } catch (e) {}
+          _h281AtualizarContador();
+          return true;
+        }
+        var ok = await H281.orig.v218Escrever.apply(this, arguments);
+        if (ok && a === 'calAplicar') {
+          H281.aplicadoLocal[g('mid')] = { fator: Number(g('fator')), em: Date.now() };
+          if (H281.dados) { _h281AplicarLocais(H281.dados.maquinas); _h281Resumo(); _h281AtualizarContador(); }
+        }
+        return ok;
+      };
+    }
+  } catch (e) { console.error('[H281] embrulhos', e); }
+  // aberto com #calib/<id> no endereço (link copiado, F5): vai direto ao painel
+  try { if (_h281HashId()) setTimeout(function () { try { if (typeof showView === 'function') showView('calibracao'); } catch (e) {} }, 1200); } catch (e) {}
+})();
+</script>
+<!-- ████ FIM PCM V281 ████ -->
 </body>
 </html>
