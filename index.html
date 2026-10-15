@@ -5079,8 +5079,41 @@ v50 — Resiliência de rede: retry/backoff em gsGet e syncToGS
   entraram sem conflito; o bloco PCM V272 vem depois do bloco V274. Nenhuma linha nova de lógica. Par: SQL CRM_PROPOSTA_REABRIR
   (o do V272, roda ANTES) + os SQL do V273/V274 (já no ar ou já entregues). Chaves de volta: pcm_v272/pcm_v273/pcm_v274 = off.
 -->
-<title>ProperCare Manager · Gestão PGP v4.03 (PCM V275)</title>
-<meta name="app-build" content="PCM_V275" data-date="2026-10-13">
+<!--
+  PCM V276 — 14/10/2026 — ESCOLHER NA LISTA: O CLIQUE NÃO SE PERDE E O DIGITADO É SÓ A BUSCA (rodada 2026-10-14_escolher_peca_lista,
+  sobre o PCM V275 NO AR). Pedido do Fernando: "clico na peça certa na lista e ela não aceita confirmar ou aceita mas fica com nome
+  parcial na caixa de texto" (catálogo, peças da máquina e proposta). Vale o item que estava sob o mouse ao APERTAR o botão; nenhuma
+  lista se redesenha com o botão apertado; o aviso do estoque vai para o fim da busca e o inativo fica cinza enquanto o mouse está
+  nela; a lista do 🔁 fica colada na descrição. Nome/Referência: o digitado é só a busca (volta o nome de antes ou vem o do item;
+  palavra sem número não vira referência); produto do Omie sem referência escrita: a ligação é PERGUNTADA ("sim, ligar ao salvar").
+  Bloco PCM V276 no fim do body + costuras no V258 e no V271. Zero SQL, zero Apps Script. Chave de volta: localStorage pcm_v276 = off.
+-->
+<!--
+  PCM V279 — 14/10/2026 — 🏭 QUEM VENDE (O FORNECEDOR DA PEÇA) + CADASTRO DE FABRICANTES (rodada 2026-10-14_quem_vende_fornecedor,
+  sobre o PCM V276). Pedido do Fernando (aba Peças da máquina): "se já houver fornecedor cadastrado para aquela peça, oferecer o
+  nome. Se não, pode abrir para um cadastro." + o fabricante (V263) junto. Aba Peças: "🏭 fornecedor · última · fonte" debaixo do
+  nome (trocar / +N / ＋ cadastrar com a busca do Omie do V238); janela da peça do Catálogo/Biblioteca: o Fornecedor principal
+  sugere quem vende e casa no Salvar; proposta: "💡 quem vende" na linha sem fornecedor; similar marcado "via similar"; pendências
+  para o administrador/Suprimentos. Fabricante: lista dos cadastrados + conferência da grafia + "＋ cadastrar aqui" em todo campo de
+  marca. SQL QUEM_VENDE + CADASTRO_FABRICANTES rodam ANTES. Bloco PCM V279 no fim do body (só embrulhos). Zero Apps Script, zero PCF.
+  Chave de volta: localStorage pcm_v279 = off.
+-->
+<!--
+  PCM V278 — 14/10/2026 — OPORTUNIDADE DE SERVIÇO SEM MÁQUINA: "🔎 MÁQUINA A IDENTIFICAR" (rodada 2026-10-14_oportunidade_sem_maquina,
+  sobre o PCM V275 no ar). Par: SQL CRM_MAQ_A_IDENTIFICAR_2026-10-14 (roda ANTES). ＋ Oportunidade com Serviço aceita, no lugar da
+  máquina e do modelo, o que o cliente tem (texto curto) e quantas; selo "🔎 a identificar" no quadro e na lista até a máquina
+  aparecer (no card ou numa OS viva dele — a coleta do PCF cadastra e liga); linha com a orientação na caixa da OS do card (1
+  máquina: OS sem máquina e o técnico cadastra; 2+: cadastrar no card antes — aviso, não trava); editor da proposta diz a máquina
+  a identificar. Bloco PCM V278 no fim do body. Zero Apps Script, zero PCF. Chave de volta: localStorage pcm_v278 = off.
+-->
+<!--
+  PCM V280 — 14/10/2026 — JUNÇÃO (rodada 2026-10-14_juncao_pcm_v280, sobre o PCM V275 no ar): PCM V279 (que já contém o V276
+  "escolher peça na lista" e o V279 "quem vende + fabricantes") + o bloco PCM V278 "🔎 máquina a identificar", colado sem
+  mudança DEPOIS do bloco V279. Nenhuma linha das três rodadas foi alterada; só este comentário, o título e o app-build.
+  SQL que rodam ANTES: CADASTRO_FABRICANTES_2026-10-09 → QUEM_VENDE_2026-10-14 → CRM_MAQ_A_IDENTIFICAR_2026-10-14 (ordem livre entre eles).
+-->
+<title>ProperCare Manager · Gestão PGP v4.03 (PCM V280)</title>
+<meta name="app-build" content="PCM_V280" data-date="2026-10-14">
 <link rel="icon" type="image/jpeg" href="data:image/jpeg;base64,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">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -81172,8 +81205,28 @@ function _v257Pintar() { try { _v257PintarPainel(); } catch (e) {} try { _v257Pi
   function caixa() {
     if (V258.sug && V258.sug.isConnected) return V258.sug;
     var d = document.createElement('div'); d.className = 'v258-sug'; d.id = 'v258Sug'; d.setAttribute('role', 'listbox'); d.style.display = 'none';
-    d.addEventListener('mousedown', function (ev) { ev.preventDefault(); }, true);   // o campo não perde o foco ao clicar na lista
-    d.addEventListener('click', function (ev) { var b = ev.target.closest('[data-v258-i]'); if (b) escolher(Number(b.getAttribute('data-v258-i'))); });
+    /* PCM V276: fotografa o ITEM que está sob o mouse (ou o dedo) ao APERTAR — a lista pode ser redesenhada antes do soltar */
+    var v276Foto = function (ev, toque) { var b0 = ev.target.closest && ev.target.closest('[data-v258-i]'); return b0 ? { x: V258.itens[Number(b0.getAttribute('data-v258-i'))], alvo: V258.alvo, gen: V258.genLista || 0, em: Date.now(), toque: toque } : null; };
+    d.addEventListener('pointerdown', function (ev) {   /* PCM V276 · auditoria A5: no toque o mousedown só chega depois de o dedo sair */
+      if (ev.pointerType === 'mouse') return;
+      try { V258.prensa = v276Foto(ev, true); } catch (e) { V258.prensa = null; }
+      if (V258.prensa) v276Armar();
+    }, true);
+    d.addEventListener('pointercancel', function () { if (V258.prensa && V258.prensa.toque) { V258.prensa = null; v276Solta(); } }, true);
+    d.addEventListener('mousedown', function (ev) {   // o campo não perde o foco ao clicar na lista
+      ev.preventDefault();
+      var p0 = V258.prensa; if (p0 && p0.toque && Date.now() - p0.em < 2000) return;   /* PCM V276: o mousedown do toque não troca a foto do dedo */
+      try { V258.prensa = ev.button === 0 ? v276Foto(ev, false) : null; } catch (e) { V258.prensa = null; }
+      if (V258.prensa) v276Armar();
+    }, true);
+    d.addEventListener('click', function (ev) {
+      var b = ev.target.closest('[data-v258-i]');
+      /* PCM V276: a lista mudou entre apertar e soltar ⇒ vale o item apertado (antes: o clique caía no vizinho ou em nada) */
+      var p = V258.prensa; V258.prensa = null;
+      if (p && p.x && p.alvo === V258.alvo && Date.now() - p.em < 15000 && (p.gen !== (V258.genLista || 0) || (p.toque && !b))) { escolher(-1, p.x); v276Solta(); return; }
+      v276Solta();
+      if (b) escolher(Number(b.getAttribute('data-v258-i')));
+    });
     document.body.appendChild(d); V258.sug = d; return d;
   }
   function fechar() { if (V258.sug) V258.sug.style.display = 'none'; V258.alvo = null; V258.itens = []; V258.sel = -1; }
@@ -81282,6 +81335,40 @@ function _v257Pintar() { try { _v257PintarPainel(); } catch (e) {} try { _v257Pi
     var rs = refsSemCod.filter(function (r) { return r.indexOf(qn) >= 0; });   // 3) pedaço de UMA referência (o código do Omie não é referência, A5)
     return rs.length === 1 ? rs[0] : '';
   }
+  document.addEventListener('focusin', function (ev) {   /* PCM V276: o valor de ANTES da digitação em toda caixa com lista (nome, referência, catálogo) */
+    // auditoria A1: só no 1º foco depois de a linha ser desenhada (ou a janela aberta) — sair e voltar não faz do digitado o "antes"
+    var t = ev.target; try { var c = t && t.getAttribute && t.getAttribute('data-v258-campo'); if (c && c !== 'fab' && !t.hasAttribute('data-v276-antes')) t.setAttribute('data-v276-antes', t.value); } catch (e) {}
+  }, true);
+  (function () {   /* PCM V276: a janela da peça (a MESMA caixa para toda peça) zera o "antes" a cada abertura */
+    var m = document.getElementById('modalPart'), aberta = false; if (!m || typeof MutationObserver !== 'function') return;
+    aberta = m.classList.contains('open');
+    new MutationObserver(function () {
+      var agora = m.classList.contains('open');
+      if (agora !== aberta) ['pName', 'pRef'].forEach(function (id) {
+        var e = document.getElementById(id); if (!e) return;
+        e.removeAttribute('data-v276-antes');
+        // auditoria A6 (2ª): o foco pode ter ficado na caixa (sem focusin ao reabrir) — o "antes" é o valor com que a janela abriu
+        if (agora) setTimeout(function () { if (!e.hasAttribute('data-v276-antes')) e.setAttribute('data-v276-antes', e.value); }, 0);
+      });
+      aberta = agora;
+    }).observe(m, { attributes: true, attributeFilter: ['class'] });
+  })();
+  function v276NomeAntes(inp, pid, padrao) {   /* PCM V276: o nome que a linha tinha (o da caixa antes da busca); peça padrão sem ele: o gravado */
+    var a = T(inp.getAttribute('data-v276-antes'));
+    if (padrao && !a) { var eq = eqAtual(), g = eq && eq.parts && eq.parts[pid] && T(eq.parts[pid].name); return g || T((V258_PECA_CATALOGO[pid] || {}).nome); }
+    return a;
+  }
+  function v276Avisar(x, msg, ref, digitado, nomeVoltou) {   /* PCM V276: nunca calado — diz o que ficou na caixa e o que falta */
+    if (!x || (!msg && !nomeVoltou)) return;
+    var p = 'Omie ' + (x.omie || '') + (x.nome ? ' — ' + x.nome : ''), m = [], tipo = 'info';
+    // auditoria A4: o nome que volta é dito (quem quis RENOMEAR sabe o que fazer)
+    if (nomeVoltou) m.push('O nome da peça ficou "' + nomeVoltou + '" — o que você digitou serviu de busca. Para renomear, digite o nome e saia da caixa sem escolher na lista.');
+    if (msg === 'nome') m.push('Escolhido pelo nome: ' + p + '. Ele não tem referência escrita no Omie — a Referência ficou "' + ref + '". Se ela é deste produto, clique "sim, ligar ao salvar" debaixo da Referência.');
+    else if (msg === 'ref') m.push('"' + digitado + '" era só a busca: a Referência voltou a "' + ref + '".' + (x.fonte === 'omie' ? ' Se ela é do ' + p + ', clique "sim, ligar ao salvar" debaixo da Referência.' : ''));
+    else if (msg === 'semref' && x.fonte === 'omie') { m.push(p + ' não tem referência escrita no Omie e esta peça está sem referência — digite a referência da peça (a do fabricante) e escolha o produto de novo na caixa Referência para ligar.'); tipo = 'warning'; }
+    else if (msg === 'semref') m.push('"' + digitado + '" era só a busca e o item escolhido não tem referência — a Referência ficou vazia.');
+    if (m.length) try { toast(m.join(' '), tipo); } catch (e) {}
+  }
   document.addEventListener('focusin', function (ev) {   // auditoria V268 A4: a referência de ANTES da digitação (para a regra A9 do fabricante)
     var t = ev.target; try { if (t && t.getAttribute && t.getAttribute('data-v258-campo') === 'ref') t.setAttribute('data-v268-antes', t.value); } catch (e) {}
   }, true);
@@ -81319,7 +81406,22 @@ function _v257Pintar() { try { _v257PintarPainel(); } catch (e) {} try { _v257Pi
     var porG = {}; its = its.filter(function (x) { porG[x.g] = (porG[x.g] || 0) + 1; return porG[x.g] <= (x.g === '🔶 Omie' ? 6 : 8); });
     return its;
   }
+  /* PCM V276: segura a repintura da lista enquanto o botão do mouse está apertado num item dela */
+  function v276Segura(fn) { var p = V258.prensa; if (!p || p.solto || Date.now() - p.em > 15000) return false; V258.v276pend = fn; return true; }
+  function v276Solta() { setTimeout(function () { if (V258.prensa && !V258.prensa.solto && Date.now() - V258.prensa.em < 15000) return; V258.prensa = null; var f = V258.v276pend; V258.v276pend = null; if (f && V258.alvo && document.activeElement === V258.alvo) { try { f(); } catch (e) {} } }, 0); }
+  function v276Armar() { clearTimeout(V258.v276t); V258.v276t = setTimeout(function () { if (V258.prensa) V258.prensa.solto = true; v276Solta(); }, 15060); }   /* auditoria O3: nunca fica preso */
+  document.addEventListener('mouseup', function (ev) {
+    if (!V258.prensa) return;
+    var p = V258.prensa; if (p.toque) return;   /* PCM V276: no toque quem solta é o clique */
+    p.solto = true;
+    // a lista foi refeita com o botão apertado: o navegador NÃO manda o clique (o botão apertado saiu da tela) ⇒ vale o item apertado, aqui
+    if (p.x && p.alvo === V258.alvo && Date.now() - p.em < 15000 && p.gen !== (V258.genLista || 0) && V258.sug && ev.target && V258.sug.contains(ev.target)) {
+      V258.prensa = null; V258.v276pend = null; escolher(-1, p.x); return;
+    }
+    setTimeout(function () { V258.prensa = null; var f = V258.v276pend; V258.v276pend = null; if (f && V258.alvo && document.activeElement === V258.alvo) { try { f(); } catch (e) {} } }, 0);
+  }, true);
   function abrir(inp) {
+    if (v276Segura(function () { abrir(inp); })) return;   /* PCM V276 */
     V258.alvo = inp; V258.itens = montar(inp); V258.sel = -1;
     var d = caixa(), q = T(inp.value), h = '', g = '';
     V258.itens.forEach(function (x, i) {
@@ -81338,11 +81440,11 @@ function _v257Pintar() { try { _v257PintarPainel(); } catch (e) {} try { _v257Pi
     } else if (!V258.omie) {
       h += '<div class="v258-v">' + (V258.omieErro ? '🔶 Omie indisponível: ' + E(V258.omieErro) : '🔶 Omie carregando…') + '</div>';
     }
-    d.innerHTML = h; d.style.display = ''; posicionar(inp);
+    d.innerHTML = h; d.style.display = ''; posicionar(inp); V258.genLista = (V258.genLista || 0) + 1;   /* PCM V276 */
   }
   function realcar() { if (!V258.sug) return; V258.sug.querySelectorAll('.v258-i').forEach(function (b, i) { b.classList.toggle('on', i === V258.sel); if (i === V258.sel) try { b.scrollIntoView({ block: 'nearest' }); } catch (e) {} }); }
-  function escolher(i) {
-    var x = V258.itens[i], inp = V258.alvo; if (!x || !inp) return;
+  function escolher(i, xDireto) {   /* PCM V276: + xDireto (o item apertado) */
+    var x = xDireto || V258.itens[i], inp = V258.alvo; if (!x || !inp) return;
     var campo = inp.getAttribute('data-v258-campo');
     if (campo === 'nova') {
       var nn = document.getElementById('peNewName'), ni = document.getElementById('peNewInterval');
@@ -81366,17 +81468,30 @@ function _v257Pintar() { try { _v257PintarPainel(); } catch (e) {} try { _v257Pi
     var ins2 = tr.querySelectorAll('input.pe-input'), fab = tr.querySelector('input.v258-fab'), pid = tr.dataset.pid || '';
     var padrao = (typeof _PCM_DEFAULT_PART_IDS !== 'undefined' && _PCM_DEFAULT_PART_IDS.has(pid));
     var refAntes = T(campo === 'ref' && inp.hasAttribute('data-v268-antes') ? inp.getAttribute('data-v268-antes') : ins2[3].value);   /* V268 A4: a de antes de digitar */
+    var v276 = { pedir: false, msg: '', dig: T(ins2[3].value) };   /* PCM V276 */
     if (x.ref) ins2[3].value = x.ref;
+    else if (campo === 'ref' && (x.fonte === 'omie' || x.fonte === 'catalogo') && !/\d/.test(ins2[3].value)) {   /* PCM V276: palavra sem número é BUSCA ("airlube"), não referência (auditoria A6: vale para o catálogo) */
+      var ra276 = T(inp.getAttribute('data-v276-antes'));   /* auditoria A1: o "antes" do V276 (o do V268 muda a cada foco) */
+      ins2[3].value = ra276; v276.pedir = x.fonte === 'omie' && N(ra276).length >= 3; v276.msg = ra276 ? 'ref' : 'semref';
+    }
     else if (campo === 'ref') v268AvisoSemRef(x, ins2[3].value);   /* V268 */
     if (fab) {
       if (x.fab) fab.value = x.fab;
       else if (x.ref && R(x.ref) !== R(refAntes)) fab.value = '';   // auditoria A9: "Mann" não fica pendurado numa ref de outro fabricante
     }
     if (x.nome && campo === 'nome' && !padrao && x.fonte !== 'omie') ins2[0].value = x.nome;
-    if (x.nome && campo === 'nome' && !padrao && x.fonte === 'omie' && !T(ins2[0].value)) ins2[0].value = x.nome;
+    else if (campo === 'nome') {   /* PCM V276: o digitado na caixa Nome é só a BUSCA — volta o nome que a linha tinha (padrão: sempre), senão o do item */
+      var na276 = v276NomeAntes(inp, pid, padrao) || (!padrao && x.nome) || ins2[0].value;
+      if (N(na276) !== N(ins2[0].value) && N(na276) !== N(x.nome || '')) v276.nomeVoltou = na276;
+      ins2[0].value = na276;
+      if (x.fonte === 'omie' && !x.ref) { v276.pedir = N(ins2[3].value).length >= 3; v276.msg = T(ins2[3].value) ? 'nome' : 'semref'; }
+    }
     if (x.intervalo && !T(ins2[2].value)) ins2[2].value = x.intervalo;
     fechar(); pintarLinha(eqAtual(), tr);
-    try { if (typeof window._v271Escolheu === 'function') window._v271Escolheu(x, ins2[3], campo); } catch (e) {}   /* PCM V271 */
+    try { if (typeof window._v271Escolheu === 'function') window._v271Escolheu(x, ins2[3], campo, { pedir: v276.pedir }); } catch (e) {}   /* PCM V271 · V276: {pedir} */
+    try { inp.setAttribute('data-v276-antes', inp.value); } catch (e) {}   /* PCM V276: o escolhido passa a ser o "antes" */
+    try { ins2[3].setAttribute('data-v276-antes', ins2[3].value); } catch (e) {}
+    v276Avisar(x, v276.msg, T(ins2[3].value), v276.dig, v276.nomeVoltou);   /* PCM V276 */
     try { (fab || ins2[3]).focus(); } catch (e) {}
   }
 
@@ -81389,17 +81504,32 @@ function _v257Pintar() { try { _v257PintarPainel(); } catch (e) {} try { _v257Pi
   }
   function escolherCatalogo(x, campo) {
     var set = function (id, v, so) { var el = document.getElementById(id); if (el && v && (!so || !T(el.value))) { el.value = v; V258.calado = true; try { el.dispatchEvent(new Event('input', { bubbles: true })); } finally { V258.calado = false; } } };
-    if (campo === 'cat-ref') { if (!x.ref) v268AvisoSemRef(x, (document.getElementById('pRef') || {}).value); set('pRef', x.ref, false); set('pName', x.nome, true); }   /* V268: aviso */
-    else { set('pName', x.nome, x.fonte === 'omie'); set('pRef', x.ref, true); }
+    /* PCM V276: o digitado é só a busca — o nome vem do que a janela tinha ou do item; palavra sem número não vira referência */
+    var pN = document.getElementById('pName'), pR = document.getElementById('pRef'), v276 = { pedir: false, msg: '', dig: T(pR && pR.value) };
+    var forca = function (el, v) { if (!el) return; el.value = v; V258.calado = true; try { el.dispatchEvent(new Event('input', { bubbles: true })); } finally { V258.calado = false; } };
+    if (campo === 'cat-ref') {
+      if (!x.ref && (x.fonte === 'omie' || x.fonte === 'catalogo') && pR && !/\d/.test(pR.value)) { var ra = T(pR.getAttribute('data-v276-antes')); forca(pR, ra); v276.pedir = x.fonte === 'omie' && N(ra).length >= 3; v276.msg = ra ? 'ref' : 'semref'; }
+      else { if (!x.ref) v268AvisoSemRef(x, (pR || {}).value); set('pRef', x.ref, false); }   /* V268: aviso */
+      set('pName', x.nome, true);
+    }
+    else {
+      if (x.fonte === 'omie' && pN) { var nc276 = T(pN.getAttribute('data-v276-antes')) || x.nome || pN.value; if (N(nc276) !== N(pN.value) && N(nc276) !== N(x.nome || '')) v276.nomeVoltou = nc276; forca(pN, nc276); }
+      else set('pName', x.nome, false);
+      set('pRef', x.ref, true);
+      if (x.fonte === 'omie' && !x.ref) { v276.pedir = N(pR && pR.value).length >= 3; v276.msg = T(pR && pR.value) ? 'nome' : 'semref'; }
+    }
     set('pPartBrand', x.fab, true); set('pInterval', x.intervalo, true);
     fechar();
-    try { if (typeof window._v271Escolheu === 'function') window._v271Escolheu(x, document.getElementById('pRef'), campo); } catch (e) {}   /* PCM V271 */
+    try { if (typeof window._v271Escolheu === 'function') window._v271Escolheu(x, pR, campo, { pedir: v276.pedir }); } catch (e) {}   /* PCM V271 · V276: {pedir} */
+    try { if (pN) pN.setAttribute('data-v276-antes', pN.value); if (pR) pR.setAttribute('data-v276-antes', pR.value); } catch (e) {}
+    v276Avisar(x, v276.msg, T(pR && pR.value), v276.dig, v276.nomeVoltou);   /* PCM V276 */
     try { checkPartRefDuplicate(document.getElementById('pRef').value); } catch (e) {}
   }
 
   // ── ligações de evento (delegadas; nenhuma toma botão de ninguém) ──────────────────────────────────────
   function campoV258(t) { return t && t.getAttribute && t.getAttribute('data-v258-campo'); }
   function abrirOuMontar(t) {
+    if (v276Segura(function () { abrirOuMontar(t); })) return;   /* PCM V276 */
     var c = campoV258(t);
     if (c === 'cat-nome' || c === 'cat-ref') {
       V258.alvo = t; V258.itens = montarCatalogo(t); V258.sel = -1;
@@ -81410,7 +81540,7 @@ function _v257Pintar() { try { _v257PintarPainel(); } catch (e) {} try { _v257Pi
         h += '<button type="button" class="v258-i" role="option" data-v258-i="' + i + '">' + (x.ref ? '<span class="v258-ref">' + marca(x.ref, q) + '</span>' : '') +
              (x.ref && x.nome ? ' — ' : '') + (x.nome ? marca(x.nome, q) : '') + (x.fab ? ' · <b>' + E(x.fab) + '</b>' : '') + (x.sub ? '<small>' + E(x.sub) + '</small>' : '') + '</button>';
       });
-      d.innerHTML = h; d.style.display = ''; posicionar(t); return;
+      d.innerHTML = h; d.style.display = ''; posicionar(t); V258.genLista = (V258.genLista || 0) + 1; return;   /* PCM V276 */
     }
     if (c === 'fab') return;
     abrir(t);
@@ -84508,7 +84638,7 @@ td .v271-an{font-size:10.5px;padding:3px 6px;max-width:260px}
     for (var i = 0; i < its.length; i++) if (its[i] && String(its[i].codigo) === String(cod)) return !!its[i].inativo;
     return false;
   }
-  function travado(p) { return !!p && !p.forcado && p.estado !== 'ja' && ((p.ambiguo && p.ambiguo.length) || p.inativo); }
+  function travado(p) { return !!p && !p.forcado && p.estado !== 'ja' && ((p.ambiguo && p.ambiguo.length) || p.inativo || p.pedir); }   /* PCM V276: + pedir */
 
   // ── o aviso debaixo da caixa ───────────────────────────────────────────────────────────────────────
   function lugarDoAviso(box) {
@@ -84545,6 +84675,13 @@ td .v271-an{font-size:10.5px;padding:3px 6px;max-width:260px}
       nao = ' <button type="button" class="v271-forcar" data-v271="forcar" data-pw-off="1" title="Ligar ' + E(p.ref) + ' ao Omie ' + E(p.cod) + ' mesmo assim">ligar ao ' + E(p.cod) + ' mesmo assim</button>';
       tit += ' · também: ' + p.ambiguo.map(function (x) { return x.cod + ' ' + x.desc; }).join(' | ');
       a.className = cls; a.title = tit; a.innerHTML = h + nao; return;
+    }
+    if (p.pedir && !p.forcado && p.estado !== 'ja') {   /* PCM V276: escolhido sem a referência escrita no Omie ⇒ a ligação é PERGUNTADA */
+      cls += ' sug';
+      h = '🔗 ' + ref + ' é do Omie ' + cod + (linha ? '' : (p.desc ? ' — ' + E(p.desc) : '')) + '?' + (linha ? '' : ' <small>(o Omie não tem esta referência escrita; sem confirmar, não ligo)</small>');
+      a.className = cls; a.title = tit + ' · confirme para ligar ao salvar';
+      a.innerHTML = h + ' <button type="button" class="v271-forcar" data-v271="forcar" data-pw-off="1" title="Ao salvar, ligar ' + E(p.ref) + ' ao Omie ' + E(p.cod) + '">sim, ligar ao salvar</button>' + nao;
+      return;
     }
     if (p.estado === 'ja') { cls += ' ok'; h = '✓ ' + ref + ' já está ligada ao Omie ' + cod + (linha ? '' : (p.desc ? ' — ' + E(p.desc) : '')); nao = ''; }
     else if (p.estado === 'outro') { cls += ' sug'; h = '⚠ ' + ref + ' hoje aponta para o Omie <b>' + E(p.atual) + '</b>. Ao salvar, a troca para ' + cod + ' vai como <b>sugestão</b> à conciliação (não muda calada).'; }
@@ -84588,7 +84725,7 @@ td .v271-an{font-size:10.5px;padding:3px 6px;max-width:260px}
   }
 
   // ── a escolha na lista (chamada pelas 3 costuras do bloco V258) ─────────────────────────────────────────
-  window._v271Escolheu = function (x, box, campo) {
+  window._v271Escolheu = function (x, box, campo, opt) {   /* PCM V276: + opt {pedir} */
     if (!box) return;
     var ehOmie = x && x.fonte === 'omie' && T(x.omie);
     var caixaRef = campo === 'ref' || campo === 'cat-ref';
@@ -84597,14 +84734,17 @@ td .v271-an{font-size:10.5px;padding:3px 6px;max-width:260px}
     // não diz nada sobre a referência que ficou na caixa)
     // auditoria V271 A1: fora da caixa de referência, só quando a caixa ficou com a referência QUE O ITEM TROUXE (o V258 não troca
     // a referência que já existia ao escolher pelo nome — e ela seria ligada ao produto escolhido)
-    var elegivel = ehOmie && N(ref).length >= 3 && (caixaRef || (T(x.ref) && N(x.ref) === N(ref)));
+    var pedir = !!(opt && opt.pedir);   /* PCM V276 */
+    // auditoria V276 A3 (regra A9 do V271 antes do pedir): o MESMO produto para a MESMA referência não desfaz a escolha já feita
+    if (pedir && ehOmie && box.__v271 && box.__v271.cod === T(x.omie) && N(ref) === box.__v271.n) return;
+    var elegivel = ehOmie && N(ref).length >= 3 && (pedir || caixaRef || (T(x.ref) && N(x.ref) === N(ref)));
     if (!elegivel) {
       // auditoria V271 A9: escolher pelo nome o MESMO produto não desfaz a escolha feita na Referência
       if (ehOmie && box.__v271 && box.__v271.cod === T(x.omie) && N(ref) === box.__v271.n) return;
       limpar(box); return;
     }
     box.__v271 = { ref: ref, n: N(ref), cod: T(x.omie), desc: T(x.nome), g: ++V271.ger, estado: '', semRef: !T(x.ref),
-                   ambiguo: outrosComARef(N(ref), T(x.omie)), forcado: false, inativo: inativoNoOmie(T(x.omie)), ctx: box.id === 'pRef' ? ctxCatalogo() : '' };
+                   ambiguo: outrosComARef(N(ref), T(x.omie)), forcado: false, inativo: inativoNoOmie(T(x.omie)), ctx: box.id === 'pRef' ? ctxCatalogo() : '', pedir: pedir };   /* PCM V276: + pedir */
     box.setAttribute('data-v271-cod', T(x.omie)); box.setAttribute('data-v271-ref', ref);
     pintarAviso(box); conferir(box);
   };
@@ -86168,5 +86308,1494 @@ async function _v274GerarPdf238(p) {   // V274: cópia literal do _v238GerarPdf 
 })();
 </script>
 <!-- ████ FIM PCM V272 ████ -->
+<!-- ████ INICIO PCM V276 · ESCOLHER NA LISTA: O CLIQUE NÃO SE PERDE E O DIGITADO É SÓ A BUSCA ████ -->
+<style>
+/* PCM V276 · produto inativo do Omie que a busca da proposta ainda mostra enquanto o mouse está na lista (some quando o mouse sai) */
+#v204Res .v204-it.v276-ina{opacity:.5;cursor:not-allowed}
+#v204Res .v204-it.v276-ina small::after{content:" · inativo no Omie (sai da busca)";font-weight:600}
+/* PCM V276 · o chip de estoque que chega DEPOIS (~1 s) não aumenta a altura da linha do item: inline não cresce a caixa da linha */
+#v204Res .v204-it small .v218-est{display:inline}
+</style>
+<script>
+// ════════════════════════════════════════════════════════════════════════════════════════════════════════
+// PCM V276 · ESCOLHER NA LISTA: O CLIQUE NÃO SE PERDE E O DIGITADO É SÓ A BUSCA  (14/10/2026, rodada 2026-10-14_escolher_peca_lista)
+// ────────────────────────────────────────────────────────────────────────────────────────────────────────
+// Pedido do Fernando (14/10 17h06, print da aba Peças da máquina com "airlube" digitado no nome do Óleo Lubrificante e a lista do
+// Omie aberta): "às vezes clico na peça certa na lista e ela não aceita confirmar ou aceita mas fica com nome parcial na caixa de
+// texto" — no catálogo e na montagem de propostas.
+// 🕳 Duas causas, as duas reproduzidas no PCM V275 no ar:
+//  1. O CLIQUE SE PERDE quando a lista é redesenhada entre APERTAR e SOLTAR o botão do mouse. A busca da proposta repinta a lista
+//     quando a resposta chega (~0,4 s depois da última tecla) e de novo quando chega o estoque do Omie (~1,2 s: some o produto
+//     inativo, entra um aviso no TOPO e os itens descem). Apertar num botão e soltar noutro = o navegador não manda o clique para
+//     nenhum dos dois (nada acontece) ou o clique cai no vizinho. Na lista do 🔁 Trocar o item, o chip de estoque, o "usar preço
+//     do Omie" e o "⇄ equivalentes" entram ENTRE a descrição e a lista e a empurram para baixo.
+//  2. O DIGITADO FICAVA COMO SE FOSSE O NOME (bloco V258, costuras marcadas "PCM V276"): escolher um produto do Omie pela caixa
+//     Nome só trocava o nome se a caixa estivesse vazia — e ela nunca está, tem o que foi digitado para buscar; na peça PADRÃO o
+//     nome nunca era trocado (nem de volta). Na caixa Referência, uma palavra sem número ("airlube") ficava como referência e o
+//     V271 ia ligá-la ao Omie ao salvar.
+// O que muda:
+//  • vale o item que estava sob o mouse quando o botão foi APERTADO; enquanto o botão está apertado nenhuma lista se redesenha
+//    (a repintura espera o soltar); o clique que cair fora de um item porque a lista mudou escolhe o item apertado.
+//  • na busca da proposta o aviso do estoque vai para o FIM da lista e o produto inativo fica cinza (não some) enquanto o mouse
+//    está na lista; na lista do 🔁 a lista fica colada na descrição e os enfeites da linha entram DEPOIS dela.
+//  • o digitado é só a busca: a caixa Nome volta ao nome que a peça tinha (padrão: o nome gravado) ou recebe o nome do item;
+//    a Referência com palavra sem número volta à de antes. Produto do Omie escolhido sem referência escrita: a ligação da
+//    referência que ficou com o produto é PERGUNTADA debaixo da caixa ("sim, ligar ao salvar") — nunca calada (regra A1 do V271).
+// Costuras no corpo antigo: V258 (caixa, abrir, abrirOuMontar, escolher, escolherCatalogo, focusin "antes", mouseup) e V271
+//   (_v271Escolheu ganha o 4º argumento {pedir}, travado e pintarAviso). Embrulhos (este bloco, por FORA de todos):
+//   _v204PintarRes, _v204Pintar, _v204Escolher, _v239PintarRes, _v239PintarBox, _v239Escolher, _v239Decorar, _v218ChipDecorar,
+//   _v240TrocaDecorar. Zero SQL, zero Apps Script.
+// Chave de volta: localStorage pcm_v276 = off (este bloco sai: proposta e 🔁 voltam ao V275). As costuras do V258/V271 ficam
+//   (texto da caixa, ligação perguntada e o item apertado na lista das peças/catálogo).
+// Auditoria 1 (14/10, 8 achados) — consertos: A1 o "antes" é o valor da caixa no 1º foco depois de desenhada/aberta (não a cada
+//   foco); A2 a espera fica SEMPRE por fora (o V243/V246 embrulham o _v204Pintar só ao abrir o editor: re-embrulho ao apertar);
+//   A3 a mesma escolha não refaz a ligação já feita; A4 o nome que volta é AVISADO; A5 toque (dedo) também fotografa o item;
+//   A6 a regra da palavra sem número vale para item do catálogo; A7 a espera dura até 15 s; A8 Enter não escolhe inativo do Omie.
+// ════════════════════════════════════════════════════════════════════════════════════════════════════════
+(function () {
+  'use strict';
+  var DESL = false; try { DESL = localStorage.getItem('pcm_v276') === 'off'; } catch (e) {}
+  if (DESL) { console.info('[V276] desligado (localStorage pcm_v276 = off)'); return; }
+  var V276 = window.V276 = { versao: 'PCM_V276', prensa: null, noClique: null, pend: {}, g204: 0, g239: 0, tSeg: 0, tToque: 0 };
+  var PRAZO = 15000;   // botão apertado por mais que isso não segura repintura nenhuma (auditoria A7: 4 s era pouco)
+  function ed() { return (typeof V204 !== 'undefined' && V204.ed) || null; }
+  function fresca(p) { return !!(p && Date.now() - p.em < PRAZO); }
+  function segurando() { var p = V276.prensa; return !!(p && !p.solto && fresca(p)); }
+  function idx(lista, it) { var i = lista.indexOf(it); if (i < 0) { lista.push(it); i = lista.length - 1; } return i; }
+
+  // ── 1 · APERTAR (mouse ou dedo): fotografa o ITEM (o objeto), não a posição ─────────────────────────
+  function armar() { garantirFora(); clearTimeout(V276.tSeg); V276.tSeg = setTimeout(soltar, PRAZO + 60); }
+  function fotografar(t, toque) {
+    var ED = ed(); if (!ED || !t || !t.closest) return null;
+    var b = t.closest('#v204Res [data-v204="res"]');
+    if (b && ED.busca) return { k: '204', ed: ED, it: ED.busca.itens[Number(b.getAttribute('data-n'))], g: V276.g204, em: Date.now(), toque: toque };
+    if (t.closest('#v204Res [data-v204="avulsaQ"]')) return { k: '204a', ed: ED, g: V276.g204, em: Date.now(), toque: toque };
+    var c = t.closest('#v239Sug [data-v239="pick"]');
+    if (c && ED.v239s) return { k: '239', ed: ED, S: ED.v239s, it: ED.v239s.itens[Number(c.getAttribute('data-n'))], g: V276.g239, em: Date.now(), toque: toque };
+    return null;
+  }
+  // auditoria A5: no toque o mousedown só chega DEPOIS de o dedo sair — a foto é tirada no pointerdown
+  document.addEventListener('pointerdown', function (ev) {
+    try {
+      if (ev.pointerType === 'mouse') return;
+      V276.prensa = fotografar(ev.target, true); if (V276.prensa) armar();
+    } catch (e) { V276.prensa = null; }
+  }, true);
+  document.addEventListener('pointerup', function (ev) {
+    if (ev.pointerType === 'mouse' || !V276.prensa || !V276.prensa.toque) return;
+    // o dedo saiu: a repintura espera o clique de compatibilidade; se ele não vier (foi rolagem), solta em 0,7 s
+    clearTimeout(V276.tToque);
+    V276.tToque = setTimeout(function () { if (V276.prensa && V276.prensa.toque) { V276.prensa = null; soltar(); } }, 700);
+  }, true);
+  document.addEventListener('pointercancel', function () { if (V276.prensa && V276.prensa.toque) { V276.prensa = null; setTimeout(soltar, 0); } }, true);
+  document.addEventListener('mousedown', function (ev) {
+    try {
+      var t = ev.target, p = V276.prensa;
+      if (p && p.toque && Date.now() - p.em < 2000) { if (t && t.closest && t.closest('#v204Res [data-v204]')) ev.preventDefault(); return; }   // o mousedown do toque não troca a foto do dedo
+      V276.prensa = null;
+      if (ev.button !== 0) return;
+      p = fotografar(t, false); if (!p) return;
+      if (p.k !== '239') ev.preventDefault();   // o foco fica na busca: nenhum "change"/"focusout" repinta a tela no meio do clique
+      V276.prensa = p; armar();
+    } catch (e) { V276.prensa = null; }
+  }, true);
+  // ── 2 · SOLTAR: a repintura que esperou roda depois do clique ───────────────────────────────────────
+  document.addEventListener('mouseup', function (ev) {
+    var p = V276.prensa;
+    if (!p) { setTimeout(soltar, 0); return; }
+    if (p.toque) return;   // toque: quem solta é o clique (ou o tempo do pointerup)
+    setTimeout(soltar, 0);
+    p.solto = true;
+    // a lista foi refeita com o botão apertado (uma repintura que não esperou): o navegador NÃO manda o clique — o botão apertado
+    // saiu da tela —, então o item apertado é escolhido aqui, se o botão foi solto em cima da MESMA lista
+    try {
+      var t = ev.target, ED = ed(); if (!fresca(p) || !ED || p.ed !== ED || !p.it || !t || !t.closest) return;
+      if (p.k === '204' && ED.busca && p.g !== V276.g204 && t.closest('#v204Res, .v204-busca')) { V276.prensa = null; V276.noClique = p; try { _v204Escolher(idx(ED.busca.itens, p.it)); } finally { setTimeout(function () { V276.noClique = null; }, 0); } return; }
+      if (p.k === '239' && ED.v239s === p.S && p.g !== V276.g239 && t.closest('#v239Sug')) { V276.prensa = null; V276.noClique = p; try { _v239Escolher(idx(p.S.itens, p.it)); } finally { setTimeout(function () { V276.noClique = null; }, 0); } return; }
+    } catch (e) { console.warn('[V276] soltar:', e); }
+  }, true);
+  var ORDEM = ['_v204Pintar', '_v204PintarRes', '_v239PintarBox', '_v239PintarRes', '_v218ChipDecorar', '_v240TrocaDecorar', '_v239Decorar'];
+  function soltar() {
+    if (segurando()) return;
+    if (V276.prensa && !fresca(V276.prensa)) V276.prensa = null;
+    var p = V276.pend; V276.pend = {};
+    ORDEM.forEach(function (nome) {
+      var x = p[nome]; if (!x) return;
+      // auditoria A2: chama a função GLOBAL de agora (com os embrulhos que entraram depois — V243, V246), nunca a guardada
+      try { if (typeof window[nome] === 'function') window[nome].apply(null, x.a || []); } catch (e) { console.warn('[V276] repintura adiada (' + nome + '):', e); }
+    });
+  }
+  // ── 3 · CLICAR (captura, antes de todos): a foto vale para ESTE clique (os embrulhos de escolher a usam); nada mais fica adiado ──
+  document.addEventListener('click', function (ev) {
+    var p = V276.prensa; V276.prensa = null; clearTimeout(V276.tToque);
+    V276.noClique = fresca(p) ? p : null;
+    setTimeout(function () { V276.noClique = null; soltar(); }, 0);
+  }, true);
+
+  // ── 4 · embrulhos: repintura espera o soltar; a escolha usa o item apertado ───────────────────────────
+  var REG = {
+    _v204PintarRes: { g204: true },
+    _v204Pintar: { g204: true, g239: true, depois: function () { arrumarSug(); } },
+    _v239PintarRes: { g239: true },
+    _v239PintarBox: { g239: true, depois: function () { arrumarSug(); } },
+    _v239Decorar: { depois: function () { arrumarSug(); } },
+    _v240TrocaDecorar: { depois: function () { arrumarSug(); } },
+    _v218ChipDecorar: { antes: function () { var res = document.getElementById('v204Res'); try { return !!(res && res.matches(':hover')); } catch (e) { return false; } },
+                        depois: function (sobre) { try { arrumarRes(sobre); } catch (e) { console.warn('[V276] arrumarRes', e); } arrumarSug(); } }
+  };
+  function embrulhar(nome) {
+    var o = window[nome], gerar = REG[nome]; if (typeof o !== 'function') { console.warn('[V276] sem ' + nome); return; }
+    if (o.__v276fora) return;   // o de FORA já é o V276
+    var f = function () {
+      if (segurando()) { V276.pend[nome] = { a: [].slice.call(arguments) }; return; }
+      if (gerar.g204) V276.g204++;
+      if (gerar.g239) V276.g239++;
+      var x = gerar.antes ? gerar.antes() : undefined;
+      var r = o.apply(this, arguments);
+      if (gerar.depois) { try { gerar.depois(x); } catch (e) { console.warn('[V276] ' + nome, e); } }
+      return r;
+    };
+    f.__v276 = true; f.__v276fora = true; window[nome] = f;
+  }
+  // auditoria A2: quem embrulha DEPOIS (o V243/V246 ao abrir o editor) fica por fora e repinta durante o aperto — ao apertar,
+  // o V276 volta a ser o de fora (embrulho novo por cima; o antigo, por dentro, só repassa)
+  function garantirFora() { Object.keys(REG).forEach(function (nome) { try { var o = window[nome]; if (typeof o === 'function' && !o.__v276fora) embrulhar(nome); } catch (e) {} }); }
+  Object.keys(REG).forEach(embrulhar);
+  (function () {
+    var o = window._v204Escolher; if (typeof o !== 'function' || o.__v276) return;
+    var f = function (n) {
+      var p = V276.noClique, ED = ed();
+      try { if (p && p.k === '204' && p.ed === ED && p.it && ED.busca && ED.busca.itens[n] !== p.it) n = idx(ED.busca.itens, p.it); } catch (e) {}
+      // auditoria A8: produto INATIVO no Omie saiu da busca (G7) — nem o Enter o escolhe
+      try {
+        var it = ED && ED.busca && ED.busca.itens[n];
+        if (it && it.fonte === 'produto_erp' && typeof V218 !== 'undefined' && V218.inativos && V218.inativos[String(it.codigo)]) {
+          try { toast('O produto ' + it.codigo + ' está INATIVO no Omie — escolha outro item da lista.', 'warning'); } catch (e) {}
+          return;
+        }
+      } catch (e) {}
+      return o.call(this, n);
+    };
+    f.__v276 = true; window._v204Escolher = f;
+  })();
+  (function () {
+    var o = window._v239Escolher; if (typeof o !== 'function' || o.__v276) return;
+    var f = function (n, decisao) {
+      var p = V276.noClique, ED = ed();
+      try { if (decisao === undefined && p && p.k === '239' && p.ed === ED && p.it && ED.v239s === p.S && p.S.itens[n] !== p.it) n = idx(p.S.itens, p.it); } catch (e) {}
+      return o.apply(this, [n].concat([].slice.call(arguments, 1)));
+    };
+    f.__v276 = true; window._v239Escolher = f;
+  })();
+
+  // ── 5 · a lista não anda debaixo do mouse ───────────────────────────────────────────────────────────
+  // busca da proposta: o aviso do estoque vai para o FIM; o produto inativo fica cinza (sem clique) enquanto o mouse está na lista
+  function arrumarRes(sobre) {
+    var res = document.getElementById('v204Res'); if (!res) return;
+    var av = res.querySelector(':scope > [data-v218ocultos]'); if (av && av !== res.lastElementChild) res.appendChild(av);
+    if (!sobre) return;
+    var cinza = 0;
+    Array.prototype.forEach.call(res.querySelectorAll('[data-v204="res"]'), function (b) {
+      if (b.style.display !== 'none') return;
+      b.style.display = ''; b.classList.add('v276-ina'); b.disabled = true; b.setAttribute('aria-disabled', 'true'); cinza++;
+    });
+    if (cinza && !res.__v276sai) {
+      res.__v276sai = true;
+      res.addEventListener('mouseleave', function () {
+        Array.prototype.forEach.call(res.querySelectorAll('.v276-ina'), function (b) { b.style.display = 'none'; });
+      });
+    }
+  }
+  // 🔁 Trocar o item: a lista fica colada na descrição; chip, "usar preço do Omie", "⇄ equivalentes" e a dica entram DEPOIS dela
+  function arrumarSug() {
+    var sug = document.getElementById('v239Sug'); if (!sug || !sug.parentNode) return;
+    var inp = document.getElementById('v204d' + sug.getAttribute('data-i'));
+    if (!inp || inp.parentNode !== sug.parentNode) return;
+    var n = inp.nextSibling, mover = [];
+    while (n && n !== sug) { mover.push(n); n = n.nextSibling; }
+    if (!n || !mover.length) return;
+    var foco = document.activeElement;
+    if (foco && mover.some(function (x) { return x === foco || (x.contains && x.contains(foco)); })) return;
+    var depois = sug.nextSibling;
+    mover.forEach(function (x) { sug.parentNode.insertBefore(x, depois); });
+  }
+  V276.arrumarSug = arrumarSug; V276.arrumarRes = arrumarRes;
+})();
+</script>
+<!-- ████ FIM PCM V276 ████ -->
+<!-- ████ INICIO PCM V279 · QUEM VENDE (O FORNECEDOR DA PEÇA) E O CADASTRO DE FABRICANTES ████ -->
+<style>
+/* PCM V279 · 🏭 quem vende (fornecedor conhecido da peça) e o campo de fabricante com lista */
+.v279-qv{margin-top:3px;font-size:10.5px;line-height:1.4;color:var(--text2,#5b6577);display:flex;flex-wrap:wrap;gap:3px 6px;align-items:center}
+.v279-qv:empty{display:none}
+.v279-qv .v279-f{display:inline-flex;align-items:center;gap:3px;border-radius:999px;padding:1px 8px;border:1px solid #d6dbe4;background:#f7f8fa;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#344054}
+.v279-qv .v279-f.ok{background:#f0f9ff;border-color:#b9e6fe;color:#0b4a6f}
+.v279-qv .v279-f.sug{background:#fff7ed;border-color:#fed7aa;color:#9a3412}
+.v279-qv .v279-f.via{background:#f5f3ff;border-color:#ddd6fe;color:#4c1d95}
+.v279-qv .v279-f.nada{background:#fff;border-style:dashed;color:#667085}
+.v279-qv .v279-f.esp{background:#fff;color:#98a2b3}
+.v279-selo{display:inline-block;border-radius:4px;padding:0 4px;font-size:9.5px;font-weight:700;letter-spacing:.02em;background:#fef3c7;color:#92400e;margin-left:2px}
+.v279-bt{border:1px solid #c7d7fb;background:#fff;color:#1e3a8a;border-radius:6px;padding:1px 7px;font-size:10.5px;font-weight:700;cursor:pointer;min-height:22px;font-family:inherit}
+.v279-bt:hover{background:#eef4ff}.v279-bt:active{background:#dfe9fd}
+.v279-bt[disabled]{opacity:.55;cursor:progress}
+.v279-bt.vm{color:#B42318;border-color:#FECDCA}
+.v279-bt.vm:hover{background:#FEF3F2}
+.v279-busca{margin-top:4px;padding:6px;border:1px solid #c7d7fb;border-radius:8px;background:#fff;box-shadow:0 6px 18px rgba(15,23,42,.10);max-width:440px}
+.v279-busca input{width:100%;box-sizing:border-box;border:1px solid #cfd6e2;border-radius:6px;padding:5px 8px;font-size:12px;font-family:inherit}
+.v279-res{margin-top:4px;max-height:220px;overflow:auto}
+.v279-it{display:block;width:100%;text-align:left;border:0;background:transparent;padding:5px 8px;cursor:pointer;line-height:1.35;font:inherit;font-size:12px;color:inherit;border-radius:6px}
+.v279-it:hover,.v279-it.on{background:#eef4ff}
+.v279-it:active{background:#dfe9fd}
+.v279-it small{display:block;color:var(--text2,#5b6577);font-size:10.5px}
+.v279-g{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--text3,#6b7280);padding:6px 8px 2px}
+.v279-v{padding:6px 8px;color:var(--text3,#6b7280);font-size:11.5px}
+.v279-lista{margin-top:4px;padding:6px 8px;border:1px solid #e4e7ec;border-radius:8px;background:#fcfcfd;font-size:11px;line-height:1.5}
+.v279-lista .v279-ln{display:flex;flex-wrap:wrap;gap:4px;align-items:center;padding:2px 0;border-bottom:1px dashed #eaecf0}
+.v279-lista .v279-ln:last-child{border-bottom:0}
+.v279-cat{margin-top:5px;font-size:11.5px;line-height:1.45;color:var(--text2,#5b6577)}
+.v279-cat:empty{display:none}
+.v279-cat .v279-antigo{display:block;margin-top:3px;padding:4px 7px;border-radius:6px;background:#fff7ed;border:1px solid #fed7aa;color:#7c2d12}
+.v279-pend{margin:6px 0 8px;padding:7px 10px;border-radius:8px;font-size:11.5px;line-height:1.45;background:#f0f9ff;border:1px solid #b9e6fe;color:#0b4a6f}
+.v279-pend:empty{display:none}
+.v279-pend .v279-pl{display:flex;flex-wrap:wrap;gap:4px 8px;align-items:center;padding:3px 0;border-top:1px dashed #b9e6fe}
+.v279-sugf{position:fixed;z-index:430;background:#fff;border:1px solid var(--border-strong,#cfd6e2);border-radius:10px;box-shadow:0 12px 32px rgba(15,23,42,.18);
+  max-height:300px;overflow:auto;min-width:240px;max-width:420px;font-size:12.5px;color:var(--text,#1d2433);padding:4px 0}
+.v279-fst{margin-top:3px;font-size:10.5px;line-height:1.4;display:flex;flex-wrap:wrap;gap:3px 6px;align-items:center;color:var(--text2,#5b6577)}
+.v279-fst:empty{display:none}
+.v279-fst .v279-f{display:inline-flex;align-items:center;gap:3px;border-radius:999px;padding:1px 8px;border:1px solid #d6dbe4;background:#f7f8fa;white-space:nowrap}
+.v279-fst .v279-f.ok{background:#ecfdf3;border-color:#bbf7d0;color:#166534}
+.v279-fst .v279-f.dif{background:#fff7ed;border-color:#fed7aa;color:#9a3412}
+@media print{.v279-qv,.v279-busca,.v279-pend,.v279-sugf,.v279-fst,.v279-cat{display:none!important}}
+</style>
+<script>
+// ════════════════════════════════════════════════════════════════════════════════════════════════════════
+// PCM V279 · 🏭 QUEM VENDE (O FORNECEDOR DA PEÇA) + CADASTRO DE FABRICANTES  (14/10/2026, rodada 2026-10-14_quem_vende_fornecedor)
+// ────────────────────────────────────────────────────────────────────────────────────────────────────────
+// Pedido do Fernando (14/10, aba 🔧 Peças da Schulz SRP5050Flex): "essa tela já não deveria estar aceitando … fabricantes pré
+// cadastrados e fornecedores pré cadastrados também?" · "seria bom o sistema já ler o código, se já houver fornecedor cadastrado
+// para aquela peça, oferecer o nome. Se não, pode abrir para um cadastro." · 17h50: o fabricante (V263, reservado em 09/10 e nunca
+// construído) entra JUNTO nesta rodada.
+// 1. QUEM VENDE (decisão F2 de 09/10): SQL QUEM_VENDE (roda ANTES) — a peça (produto do Omie quando a referência tem par; senão a
+//    referência) × o fornecedor, preenchido SOZINHO pelas NF de entrada, pedidos de compra enviados e propostas emitidas.
+//    · aba 🔧 Peças da máquina: debaixo do nome (junto da linha de equivalência do V258) "🏭 MEGAMICRON · última 13/10/2026 · PC"
+//      com "trocar" e "+N"; sem fornecedor conhecido: "🏭 sem fornecedor — ＋ cadastrar", que abre a MESMA busca do V238 (Omie com
+//      a etiqueta → todo o cadastro do Omie → "usar X (fora do Omie)") ali mesmo. Escolher grava (administrador e Suprimentos) ou
+//      SUGERE (os outros; vai para conferência). Escolher um produto do Omie ou digitar a referência já mostra o fornecedor (sem salvar).
+//    · janela da peça do Catálogo/Biblioteca: "Fornecedor principal" sugere quem vende + a busca do Omie; o texto antigo continua
+//      no campo (nada se perde) com o aviso "ainda não casado" até alguém escolher da lista; o par vai ao banco no SALVAR da peça.
+//    · linha da proposta (V238, só para quem já vê custo): peça sem fornecedor mostra "💡 quem vende: X" com [usar].
+//    · similar (F3): o fornecedor de uma referência similar aparece DEPOIS dos diretos, marcado "via similar <ref>".
+//    · pendências (administrador/Suprimentos): sugestões a conferir e fornecedores fora do Omie (trocar pelo do Omie), na aba Peças.
+//    · Fornecedor é INTERNO: nada disto entra no PDF da proposta, no portal ou no que vai ao cliente (só telas internas).
+// 2. FABRICANTE (V263, SQL CADASTRO_FABRICANTES de 09/10, roda ANTES): os campos de fabricante (peça da máquina, peça do catálogo e
+//    da Biblioteca, máquina, modelo, subsistema, similar) abrem a lista de fabricantes cadastrados (nome e apelidos); ao sair do
+//    campo, a grafia é conferida: apelido → "é Techto [usar]"; parecido → "parece com X [usar X] [é outro: cadastrar]"; novo →
+//    "＋ cadastrar aqui" (quem pode escrever no cadastro). O campo continua TEXTO (nada muda no Salvar de cada tela).
+// Leituras: 1 chamada em lote por pintura (qv_fornecedores) e 1 lista de fabricantes por 5 min. Zero Apps Script, zero PCF.
+// Chave de volta: localStorage pcm_v279 = off (tudo some; as telas ficam como no V276).
+// ════════════════════════════════════════════════════════════════════════════════════════════════════════
+(function () {
+  'use strict';
+  var DESL = false; try { DESL = localStorage.getItem('pcm_v279') === 'off'; } catch (e) {}
+  if (DESL) { console.info('[V279] desligado (localStorage pcm_v279 = off)'); return; }
+  var V279 = window.V279 = { qv: {}, voo: null, fila: {}, estado: '', erro: '', pode: false, custo: false, pend: null, gen: 0,
+                             busca: null, fab: { lista: null, em: 0, voo: null, estado: '', pode: false, res: {} }, envio: {}, prop: {} };
+
+  // ── utilidades ─────────────────────────────────────────────────────────────────────────────────────
+  function E(v) { try { return escHtml(v == null ? '' : String(v)); } catch (e) { return String(v == null ? '' : v).replace(/[&<>"']/g, function (c) { return '&#' + c.charCodeAt(0) + ';'; }); } }
+  function T(v) { return String(v == null ? '' : v).trim(); }
+  function N(s) { return String(s == null ? '' : s).normalize('NFD').replace(/[̀-ͯ]/g, '').toUpperCase().replace(/[^A-Z0-9]/g, ''); }
+  function W(s) { return String(s == null ? '' : s).normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim(); }
+  function avisar(m, t) { try { toast(m, t); } catch (e) {} }
+  function uid() { try { return 'v279-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 10); } catch (e) { return 'v279-' + Date.now(); } }
+  function data(d) { if (!d) return ''; try { var x = new Date(d); return isNaN(x) ? '' : x.toLocaleDateString('pt-BR'); } catch (e) { return ''; } }
+  function dinheiro(n) { var x = Number(n); if (n === null || n === undefined || n === '' || isNaN(x)) return ''; try { return x.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }); } catch (e) { return 'R$ ' + x.toFixed(2); } }
+  var FONTE = { nf: 'NF de entrada', pc: 'pedido de compra', proposta: 'proposta', manual: 'cadastro' };
+  function rpc(fn, args, escrita) {
+    if (typeof _v222Rpc !== 'function') return Promise.reject(Object.assign(new Error('sem transporte do banco nesta versão'), { v222: 'erro' }));
+    return _v222Rpc(fn, args || {}, !!escrita);
+  }
+  function semSql(e) { return e && e.v222 === 'sem_sql'; }
+
+  // ════════════════════════════════════════════════════════════════════════════════════════════════════
+  // 1 · QUEM VENDE — leitura em lote com cache (60 s); a chave é a referência normalizada + o produto do Omie escolhido
+  // ════════════════════════════════════════════════════════════════════════════════════════════════════
+  function chave(ref, prod) { return N(ref) + '|' + T(prod); }
+  function qvDe(ref, prod) { var c = V279.qv[chave(ref, prod)]; return c && Date.now() - c.em < 60000 ? c : (c && c.velho ? c : null); }
+  function esquecer(ref, prod) { var k = chave(ref, prod); if (V279.qv[k]) V279.qv[k].em = 0; }
+  // auditoria 1 (U1): o que o BANCO acabou de devolver ao gravar entra na lista da peça na hora — se a releitura falhar, a linha
+  // não volta a dizer "sem fornecedor" (o banco gravou); a releitura em 2º plano só completa.
+  function anotar(ref, prod, par) {
+    if (!par || !par.nome) return;
+    var k = chave(ref, prod), c = V279.qv[k] || { itens: [] }, its = (c.itens || []).filter(function (f) { return String(f.id) !== String(par.id); });
+    V279.qv[k] = { em: 0, itens: [par].concat(its), velho: true, carregando: false, erro: '' };
+  }
+  function esquecerTudo() { Object.keys(V279.qv).forEach(function (k) { V279.qv[k].em = 0; }); }
+  // pede ao banco as que faltam (uma chamada para todas); devolve quando chegaram
+  function ler(pedidos) {
+    var falta = [], vistos = {};
+    (pedidos || []).forEach(function (p) {
+      var k = chave(p.ref, p.prod); if (vistos[k]) return; vistos[k] = 1;
+      if (N(p.ref).length < 3 && !T(p.prod)) return;
+      var c = V279.qv[k]; if (c && Date.now() - c.em < 60000) return;
+      falta.push({ k: k, ref: T(p.ref), prod: T(p.prod) });
+    });
+    if (!falta.length) return Promise.resolve(false);
+    if (V279.estado === 'sem_sql') return Promise.resolve(false);
+    var lote = falta.slice(0, 200);
+    lote.forEach(function (p) { var c = V279.qv[p.k]; V279.qv[p.k] = { em: Date.now(), itens: c ? c.itens : null, carregando: true, velho: c ? c.velho : false, erro: '' }; });
+    return rpc('qv_fornecedores', { p_itens: lote.map(function (p) { var o = {}; if (p.ref) o.ref = p.ref; if (p.prod) o.produto = p.prod; return o; }) }, false).then(function (r) {
+      V279.estado = 'ok'; V279.erro = '';
+      V279.pode = !!(r && r.pode_gravar); V279.custo = !!(r && r.pode_custo);
+      V279.pend = (r && r.pendencias != null) ? Number(r.pendencias) : null;
+      ((r && r.itens) || []).forEach(function (it) {
+        var p = lote[it.i]; if (!p) return;
+        V279.qv[p.k] = { em: Date.now(), itens: it.fornecedores || [], chave: it.chave, produto: it.produto, carregando: false, velho: true, erro: '' };
+      });
+      return true;
+    }, function (e) {
+      if (semSql(e)) V279.estado = 'sem_sql';
+      else { V279.estado = 'erro'; V279.erro = (e && e.message) || 'o banco não respondeu'; }
+      lote.forEach(function (p) { var c = V279.qv[p.k] || {}; c.carregando = false; c.erro = V279.estado === 'sem_sql' ? 'sem_sql' : V279.erro; c.em = 0; V279.qv[p.k] = c; });
+      return true;
+    });
+  }
+
+  // a linha "🏭 …" de uma peça (aba Peças, catálogo): ctx = { tipo, ref, prod, alvo (id para a busca) }
+  function htmlQv(ctx) {
+    var ref = T(ctx.ref), prod = T(ctx.prod);
+    if (N(ref).length < 3 && !prod) return '';
+    if (V279.estado === 'sem_sql') return '';   // o aviso único vai no topo da aba (nunca "sem fornecedor" sem o banco saber)
+    var c = V279.qv[chave(ref, prod)];
+    if (!c || (c.carregando && !c.itens)) return '<span class="v279-f esp" title="consultando quem vende esta peça">🏭 procurando fornecedor…</span>';
+    if (c.erro && !c.itens) return '<span class="v279-f esp" title="' + E(c.erro) + '">🏭 fornecedor: sem resposta do banco</span> <button type="button" class="v279-bt" data-v279="qvDeNovo" data-pw-off="1">tentar de novo</button>';
+    var its = c.itens || [], dad = ' data-ref="' + E(ref) + '" data-prod="' + E(prod) + '" data-alvo="' + E(ctx.alvo || '') + '" data-tipo="' + E(ctx.tipo || '') + '"';
+    if (!its.length) {
+      return '<span class="v279-f nada" title="Ninguém registrou ainda quem vende esta referência (NF de entrada, pedido de compra, proposta ou cadastro)">🏭 sem fornecedor</span>' +
+             '<button type="button" class="v279-bt" data-v279="qvBuscar"' + dad + ' data-pw-off="1" title="Procurar o fornecedor no cadastro do Omie">＋ cadastrar</button>';
+    }
+    var f = its[0], h = chipForn(f, true);
+    h += '<button type="button" class="v279-bt" data-v279="qvBuscar"' + dad + ' data-pw-off="1" title="Registrar outro fornecedor para esta peça">trocar</button>';
+    if (its.length > 1) h += '<button type="button" class="v279-bt" data-v279="qvMais"' + dad + ' data-pw-off="1" title="Ver todos os fornecedores conhecidos desta peça">+' + (its.length - 1) + '</button>';
+    if (ctx.aberta) h += htmlLista(its, dad);
+    return h;
+  }
+  function chipForn(f, principal) {
+    var cls = f.via ? 'via' : (f.situacao === 'sugerido' ? 'sug' : 'ok');
+    var partes = ['🏭 ' + E(f.nome)];
+    if (f.ultima_data) partes.push('última: ' + E(data(f.ultima_data)));
+    if (f.fonte) partes.push('fonte ' + E(FONTE[f.fonte] || f.fonte));
+    if (f.custo != null && V279.custo) partes.push(E(dinheiro(f.custo)));
+    var tit = (FONTE[f.fonte] || f.fonte || '') + (f.fonte_ref ? ' ' + f.fonte_ref : '') + (f.codigo_fornecedor ? ' · código do fornecedor ' + f.codigo_fornecedor : '') +
+              (f.codigo ? ' · Omie ' + f.codigo : '') + ' · interno: não sai no PDF nem no portal';
+    return '<span class="v279-f ' + cls + '" title="' + E(tit) + '">' + partes.join(' · ') +
+           (f.fora_omie ? '<span class="v279-selo" title="Fornecedor que não está no Omie — pendência para cadastrar lá">fora do Omie</span>' : '') +
+           (f.situacao === 'sugerido' ? '<span class="v279-selo" title="Sugerido por ' + E(f.sugerido_por || '?') + ' — a conferir pelo administrador ou Suprimentos">sugerido · a conferir</span>' : '') +
+           (f.via ? '<span class="v279-selo" title="Fornecedor de uma referência SIMILAR">via similar ' + E(f.via) + '</span>' : '') + '</span>';
+  }
+  function htmlLista(its, dad) {
+    return '<div class="v279-lista" data-v279-lista="1">' + its.map(function (f) {
+      var acoes = '';
+      if (V279.pode && !f.via) {
+        if (f.situacao === 'sugerido') acoes += '<button type="button" class="v279-bt" data-v279="qvConfirmar" data-id="' + E(f.id) + '"' + dad + ' data-pw-off="1">confirmar</button>';
+        acoes += '<button type="button" class="v279-bt vm" data-v279="qvRemover" data-id="' + E(f.id) + '"' + dad + ' data-pw-off="1" title="Não vende esta peça (pede o motivo)">remover</button>';
+      }
+      return '<div class="v279-ln">' + chipForn(f, false) + acoes + '</div>';
+    }).join('') + '<div class="v279-ln"><button type="button" class="v279-bt" data-v279="qvFechaLista"' + dad + ' data-pw-off="1">fechar</button></div></div>';
+  }
+
+  // ════════════════════════════════════════════════════════════════════════════════════════════════════
+  // 2 · A BUSCA DE FORNECEDOR (a mesma do V238: Omie com a etiqueta → todo o cadastro do Omie → "usar X (fora do Omie)")
+  // ════════════════════════════════════════════════════════════════════════════════════════════════════
+  function htmlBusca(id, valor) {
+    return '<div class="v279-busca" data-v279-busca="' + E(id) + '">' +
+      '<input type="text" data-v279c="busca" value="' + E(valor || '') + '" maxlength="120" placeholder="Fornecedor: buscar no Omie (nome, fantasia ou CNPJ) ou digitar o nome"' +
+      ' autocomplete="off" name="v279_forn_nofill" data-lpignore="true" data-1p-ignore readonly onfocus="this.removeAttribute(\'readonly\')">' +
+      '<div class="v279-res" data-v279-res="1"><div class="v279-v">Digite 2 letras do fornecedor.</div></div>' +
+      '<div style="margin-top:4px;text-align:right"><button type="button" class="v279-bt" data-v279="buscaFechar" data-pw-off="1">cancelar</button></div></div>';
+  }
+  var tBusca = 0, vooBusca = 0;
+  function buscar(caixa, q, todos) {
+    clearTimeout(tBusca);
+    var res = caixa && caixa.querySelector('[data-v279-res]'); if (!res) return;
+    q = T(q);
+    if (q.length < 2) { res.innerHTML = '<div class="v279-v">Digite 2 letras do fornecedor.</div>'; return; }
+    tBusca = setTimeout(function () {
+      var meu = ++vooBusca;
+      res.innerHTML = '<div class="v279-v">⏳ procurando…</div>';
+      rpc('erp_fornecedores', { p_texto: q, p_limite: 8, p_todos: !!todos }, false).then(function (r) {
+        if (meu !== vooBusca || !caixa.isConnected) return;
+        var its = (r && r.itens) || [], h = '';
+        if (r && r.lido === false) h = '<div class="v279-v">' + E(r.mensagem || 'O cadastro do Omie ainda não foi lido.') + '</div>';
+        else if (!its.length) h = '<div class="v279-v">nenhum fornecedor com "' + E(q) + '"' + (todos ? ' no cadastro do Omie' : ' (com a etiqueta Fornecedor no Omie)') + '</div>';
+        h += its.map(function (f) {
+          return '<button type="button" class="v279-it" data-v279="fPick" data-cod="' + E(f.codigo) + '" data-nome="' + E(f.nome) + '" data-pw-off="1">' + E(f.nome) +
+                 (f.fornecedor ? '' : ' <span class="v279-selo">sem a etiqueta Fornecedor</span>') +
+                 '<small>' + E([f.razao, f.cnpj, [f.cidade, f.uf].filter(Boolean).join('/')].filter(Boolean).join(' · ')) + '</small></button>';
+        }).join('');
+        if (!todos && r && r.lido !== false) h += '<button type="button" class="v279-it" data-v279="fTodos" data-q="' + E(q) + '" data-pw-off="1"><small>🔎 procurar em todo o cadastro do Omie (fornecedor sem a etiqueta)</small></button>';
+        h += '<button type="button" class="v279-it" data-v279="fLivre" data-nome="' + E(q) + '" data-pw-off="1"><small>✎ usar "' + E(q) + '" (fornecedor fora do Omie)</small></button>';
+        res.innerHTML = h;
+      }, function (e) {
+        if (meu !== vooBusca || !caixa.isConnected) return;
+        res.innerHTML = '<div class="v279-v">⚠ ' + E((e && e.message) || 'o banco não respondeu') + '</div>' +
+          '<button type="button" class="v279-it" data-v279="fLivre" data-nome="' + E(q) + '" data-pw-off="1"><small>✎ usar "' + E(q) + '" (fornecedor fora do Omie)</small></button>';
+      });
+    }, 280);
+  }
+  function abrirBusca(onde, alvo) {
+    fecharBusca();
+    var id = 'b' + (++V279.gen);
+    onde.insertAdjacentHTML('beforeend', htmlBusca(id, ''));
+    var caixa = onde.querySelector('[data-v279-busca="' + id + '"]');
+    V279.busca = { id: id, caixa: caixa, alvo: alvo };
+    var inp = caixa.querySelector('input'); try { inp.removeAttribute('readonly'); inp.focus(); } catch (e) {}
+  }
+  function fecharBusca() { var b = V279.busca; V279.busca = null; if (b && b.caixa && b.caixa.isConnected) b.caixa.remove(); }
+
+  // ════════════════════════════════════════════════════════════════════════════════════════════════════
+  // 3 · GRAVAR (o banco decide pelo papel: administrador/Suprimentos gravam; os outros sugerem)
+  // ════════════════════════════════════════════════════════════════════════════════════════════════════
+  function gravar(p, bt) {
+    var assin = JSON.stringify(p), en = V279.envio[assin] || { uid: uid() };
+    V279.envio[assin] = en;
+    if (bt) { bt.disabled = true; bt.setAttribute('data-pcm-enviando', '1'); }
+    return rpc('qv_gravar', { p: Object.assign({}, p, { client_uid: en.uid }) }, true).then(function (r) {
+      delete V279.envio[assin];
+      return r;
+    }, function (e) {
+      if (!e || e.v222 !== 'rede') delete V279.envio[assin];
+      if (semSql(e)) throw new Error('falta rodar o SQL QUEM_VENDE no Supabase — nada foi gravado');
+      throw e;
+    }).finally(function () { if (bt && bt.isConnected) { bt.disabled = false; bt.removeAttribute('data-pcm-enviando'); } });
+  }
+  function resultadoCadastro(r, nome, ref) {
+    if (r && r.sugestao && r.situacao === 'ativo') avisar('🏭 ' + nome + ' já está registrado como quem vende ' + ref + ' — nada mudou.', 'info');
+    else if (r && r.sugestao) avisar('🏭 Sugestão enviada: ' + nome + ' vende ' + ref + ' — o administrador ou Suprimentos confere (fica marcada "a conferir").', 'info');
+    else avisar('🏭 Gravado: ' + nome + ' vende ' + ref + '. Na próxima máquina (ou proposta) com esta referência, o nome já aparece.', 'success');
+  }
+
+  // ════════════════════════════════════════════════════════════════════════════════════════════════════
+  // 4 · ABA 🔧 PEÇAS DA MÁQUINA: a linha do fornecedor debaixo do nome
+  // ════════════════════════════════════════════════════════════════════════════════════════════════════
+  function linhas() { var tb = document.getElementById('peTableBody'); return tb ? Array.prototype.slice.call(tb.querySelectorAll('tr')) : []; }
+  function refDaLinha(tr) {
+    var ins = tr.querySelectorAll('input.pe-input'), box = ins[3]; if (!box) return { ref: '', prod: '' };
+    var ref = T(box.value), cod = box.getAttribute('data-v271-cod'), r0 = box.getAttribute('data-v271-ref');
+    return { ref: ref, prod: (cod && N(r0) === N(ref)) ? cod : '' };
+  }
+  function slotDaLinha(tr) {
+    var d = tr.querySelector('[data-v279-qv]'); if (d) return d;
+    var ins = tr.querySelectorAll('input.pe-input'); if (ins.length < 4) return null;
+    var nomeTd = ins[0].closest('td'); if (!nomeTd) return null;
+    d = document.createElement('div'); d.className = 'v279-qv'; d.setAttribute('data-v279-qv', '');
+    var eq = nomeTd.querySelector('[data-v258-eq]');
+    if (eq && eq.parentNode === nomeTd) nomeTd.insertBefore(d, eq.nextSibling); else nomeTd.appendChild(d);
+    return d;
+  }
+  function pintarLinha(tr) {
+    var d = slotDaLinha(tr); if (!d) return;
+    if (tr.querySelector('.pe-na-btn.active')) { if (d.getAttribute('data-h') !== '') { d.innerHTML = ''; d.setAttribute('data-h', ''); } return; }
+    if (V279.busca && V279.busca.caixa && d.contains(V279.busca.caixa)) return;   // a busca aberta nesta linha não é apagada pela repintura
+    var r = refDaLinha(tr), h = htmlQv({ tipo: 'linha', ref: r.ref, prod: r.prod, aberta: d.getAttribute('data-aberta') === chave(r.ref, r.prod) });
+    if (d.getAttribute('data-h') !== h) { d.innerHTML = h; d.setAttribute('data-h', h); }
+  }
+  function pintarTudo() { linhas().forEach(function (tr) { try { pintarLinha(tr); } catch (e) {} }); pintarPend(); }
+  function lerEPintar() {
+    var ps = linhas().map(function (tr) { return tr.querySelector('.pe-na-btn.active') ? null : refDaLinha(tr); }).filter(Boolean);
+    pintarTudo();
+    ler(ps).then(function (mudou) { if (mudou) { try { avisoTopo(); } catch (e) {} pintarTudo(); } });
+  }
+  function avisoTopo() {
+    var box = document.getElementById('mdetPecas'); if (!box) return;
+    var av = document.getElementById('v279Aviso');
+    if (!av) {
+      av = document.createElement('div'); av.id = 'v279Aviso'; av.className = 'v258-aviso'; av.style.display = 'none';
+      var ref = document.getElementById('v258Aviso');
+      if (ref && ref.parentNode) ref.parentNode.insertBefore(av, ref.nextSibling); else box.insertBefore(av, box.firstChild);
+    }
+    var txt = V279.estado === 'sem_sql' ? '⚠ Falta rodar o SQL <b>QUEM_VENDE</b> no Supabase: o fornecedor de cada peça (🏭) ainda não aparece aqui. O resto da aba funciona normalmente.' : '';
+    av.innerHTML = txt; av.style.display = txt ? '' : 'none';
+    var pd = document.getElementById('v279Pend');
+    if (!pd) { pd = document.createElement('div'); pd.id = 'v279Pend'; pd.className = 'v279-pend'; av.parentNode.insertBefore(pd, av.nextSibling); }
+  }
+  function aoDesenhar() {
+    if (!document.getElementById('peTableBody')) return;
+    try { avisoTopo(); } catch (e) {}
+    lerEPintar();
+    // o fabricante de cada linha: a grafia que não está no cadastro aparece já na abertura (pendência visível; conferência local)
+    fabLista(false).then(function (l) { if (!l) return; linhas().forEach(function (tr) { var i = tr.querySelector('input.v258-fab'); if (i && T(i.value) && document.activeElement !== i) fabStatus(i, true); }); });
+  }
+  // a referência mudou (digitou, colou, escolheu da lista): o fornecedor aparece SEM salvar
+  var tRef = 0;
+  document.addEventListener('input', function (ev) {
+    var t = ev.target; if (!t || !t.closest) return;
+    var tr = t.closest('#peTableBody tr'); if (!tr) return;
+    var ins = tr.querySelectorAll('input.pe-input'); if (t !== ins[3]) return;
+    // auditoria 2 (B3): um temporizador POR LINHA (digitar em outra linha não cancela a releitura desta) e a linha repinta NA HORA com a
+    // referência nova ("procurando…", sem botão que guarde a referência velha)
+    if (V279.busca && V279.busca.alvo && V279.busca.alvo.tr === tr) fecharBusca();
+    var sl = tr.querySelector('[data-v279-qv]'); if (sl) sl.removeAttribute('data-aberta');
+    pintarLinha(tr);
+    clearTimeout(tr.__v279t); tr.__v279t = setTimeout(function () { if (!tr.isConnected) return; var r = refDaLinha(tr); pintarLinha(tr); ler([r]).then(function () { pintarLinha(tr); }); }, 450);
+  }, true);
+  document.addEventListener('click', function (ev) { var b = ev.target.closest && ev.target.closest('#peTableBody .pe-na-btn'); if (b) setTimeout(pintarTudo, 0); });
+
+  // ── pendências (administrador/Suprimentos): sugestões a conferir e fornecedores fora do Omie ──
+  function pintarPend() {
+    var pd = document.getElementById('v279Pend'); if (!pd) return;
+    if (!V279.pode || !V279.pend) { if (!V279.pendAberta) { pd.innerHTML = ''; } return; }
+    if (V279.pendAberta) return;
+    pd.innerHTML = '🏭 <b>' + V279.pend + '</b> ' + (V279.pend === 1 ? 'fornecedor a conferir' : 'fornecedores a conferir') +
+      ' (sugestões e fornecedores fora do Omie) <button type="button" class="v279-bt" data-v279="pendAbrir" data-pw-off="1">abrir</button>';
+  }
+  function abrirPend(pd) {
+    V279.pendAberta = true;
+    pd.innerHTML = '🏭 ⏳ lendo as pendências…';
+    rpc('qv_pendencias', {}, false).then(function (r) {
+      if (!pd.isConnected) return;
+      var h = '<b>🏭 Fornecedores a conferir</b> <button type="button" class="v279-bt" data-v279="pendFechar" data-pw-off="1">fechar</button>';
+      var sg = (r && r.sugeridos) || [], fo = (r && r.fora_omie) || [];
+      if (!sg.length && !fo.length) h += '<div class="v279-pl">Nada a conferir.</div>';
+      sg.forEach(function (s) {
+        h += '<div class="v279-pl">💡 <b>' + E(s.fornecedor) + '</b> vende <b>' + E(s.ref || s.produto || s.peca) + '</b>' +
+             '<small>sugerido por ' + E(s.por || '?') + ' em ' + E(data(s.em)) + '</small>' +
+             '<button type="button" class="v279-bt" data-v279="pendConfirmar" data-id="' + E(s.id) + '" data-pw-off="1">confirmar</button>' +
+             '<button type="button" class="v279-bt vm" data-v279="pendDescartar" data-id="' + E(s.id) + '" data-pw-off="1">descartar</button></div>';
+      });
+      fo.forEach(function (f) {
+        var par = (f.parece || [])[0];
+        h += '<div class="v279-pl" data-fk="' + E(f.forn_chave) + '">✎ <b>' + E(f.nome) + '</b> <span class="v279-selo">fora do Omie</span> <small>' + E(f.pecas) + ' peça(s)</small>' +
+             (par ? '<button type="button" class="v279-bt" data-v279="pendTrocar" data-fk="' + E(f.forn_chave) + '" data-cod="' + E(par.codigo) + '" data-pw-off="1">é ' + E(par.nome) + ' do Omie</button>' : '') +
+             '<button type="button" class="v279-bt" data-v279="pendBuscar" data-fk="' + E(f.forn_chave) + '" data-pw-off="1">achar no Omie</button></div>';
+      });
+      pd.innerHTML = h;
+    }, function (e) {
+      if (!pd.isConnected) return;
+      pd.innerHTML = '⚠ Pendências: ' + E((e && e.message) || 'o banco não respondeu') + ' <button type="button" class="v279-bt" data-v279="pendFechar" data-pw-off="1">fechar</button>';
+    });
+  }
+
+  // ════════════════════════════════════════════════════════════════════════════════════════════════════
+  // 5 · JANELA DA PEÇA DO CATÁLOGO / BIBLIOTECA: o "Fornecedor principal"
+  // ════════════════════════════════════════════════════════════════════════════════════════════════════
+  function catRef() {
+    var pR = document.getElementById('pRef'); if (!pR) return { ref: '', prod: '' };
+    var ref = T(pR.value), cod = pR.getAttribute('data-v271-cod'), r0 = pR.getAttribute('data-v271-ref');
+    return { ref: ref, prod: (cod && N(r0) === N(ref)) ? cod : '' };
+  }
+  function catSlot() {
+    var inp = document.getElementById('pSupplierPrimary'); if (!inp) return null;
+    var d = document.getElementById('v279CatQv');
+    if (!d) {
+      d = document.createElement('div'); d.id = 'v279CatQv'; d.className = 'v279-cat';
+      var res = document.createElement('div'); res.id = 'v279CatRes'; res.className = 'v279-res'; res.style.display = 'none';
+      inp.parentNode.insertBefore(res, inp.nextSibling);
+      res.parentNode.insertBefore(d, res.nextSibling);
+      inp.setAttribute('autocomplete', 'off'); inp.setAttribute('data-lpignore', 'true'); inp.setAttribute('data-1p-ignore', ''); inp.setAttribute('name', 'v279_cat_forn_nofill');
+      inp.placeholder = 'buscar no Omie ou digitar o nome — mostra quem já vende esta referência';
+    }
+    return d;
+  }
+  function pintarCat() {
+    var d = catSlot(); if (!d) return;
+    var inp = document.getElementById('pSupplierPrimary'), r = catRef(), h = '';
+    if (V279.estado === 'sem_sql') { d.innerHTML = '<small>🏭 quem vende: falta rodar o SQL QUEM_VENDE no Supabase.</small>'; return; }
+    if (N(r.ref).length >= 3 || r.prod) {
+      var c = V279.qv[chave(r.ref, r.prod)];
+      if (!c || (c.carregando && !c.itens)) h = '<small>🏭 procurando quem vende ' + E(r.ref || r.prod) + '…</small>';
+      else if (c.erro && !c.itens) h = '<small>🏭 quem vende: sem resposta do banco (' + E(c.erro) + ').</small>';
+      else if (!(c.itens || []).length) h = '<small>🏭 Ninguém registrou ainda quem vende ' + E(r.ref || r.prod) + '. Escolha o fornecedor no campo acima (Omie) — ele é guardado ao salvar a peça.</small>';
+      else h = '<div>🏭 <b>Quem vende ' + E(r.ref || r.prod) + ':</b> ' + c.itens.slice(0, 4).map(function (f) {
+        // o fornecedor de um SIMILAR é informação, não botão: escolhê-lo aqui o gravaria como quem vende ESTA referência (auditoria 2)
+        if (f.via) return '<span class="v279-selo" title="' + E((FONTE[f.fonte] || f.fonte || '') + (f.ultima_data ? ' · ' + data(f.ultima_data) : '')) + '">' + E(f.nome) + ' (vende o similar ' + E(f.via) + ')</span>';
+        return '<button type="button" class="v279-bt" data-v279="catUsar" data-cod="' + E(f.codigo || '') + '" data-nome="' + E(f.nome) + '" data-pw-off="1" title="' + E((FONTE[f.fonte] || f.fonte || '') + (f.ultima_data ? ' · ' + data(f.ultima_data) : '') + (f.via ? ' · via similar ' + f.via : '')) + '">' +
+               E(f.nome) + (f.via ? ' ~' + E(f.via) : '') + (f.situacao === 'sugerido' ? ' (a conferir)' : '') + '</button>';
+      }).join(' ') + '</div>';
+      var txt = T(inp && inp.value), esc = inp && inp.__v279;
+      var conhecido = (c && c.itens || []).some(function (f) { return W(f.nome) === W(txt); });
+      if (txt && !conhecido && !(esc && W(esc.nome) === W(txt)))
+        h += '<span class="v279-antigo">"' + E(txt) + '" ainda não está casado com um fornecedor do cadastro — escolha no campo acima (Omie ou "fora do Omie") para casar. O texto fica como está até lá.</span>';
+    } else if (T(inp && inp.value)) {
+      h = '<small>🏭 Sem referência: o fornecedor fica só como texto nesta peça (digite a referência para ligar a quem vende).</small>';
+    }
+    if (inp && inp.__v279 && W(inp.__v279.nome) === W(inp.value)) h += '<small>✓ ' + E(inp.__v279.nome) + (inp.__v279.codigo ? ' (Omie ' + E(inp.__v279.codigo) + ')' : ' (fora do Omie)') + ' — vai para "quem vende" ao salvar a peça.</small>';
+    d.innerHTML = h;
+  }
+  function lerCat() { var r = catRef(); pintarCat(); ler([r]).then(function () { pintarCat(); }); }
+  function catBuscar(q, todos) {
+    var res = document.getElementById('v279CatRes'); if (!res) return;
+    if (T(q).length < 2) { res.style.display = 'none'; res.innerHTML = ''; return; }
+    res.style.display = '';
+    if (!res.querySelector('[data-v279-res]')) res.innerHTML = '<div data-v279-res="1"></div>';
+    buscar(res, q, todos);
+  }
+  document.addEventListener('input', function (ev) {
+    var t = ev.target; if (!t) return;
+    if (t.id === 'pSupplierPrimary') { if (t.__v279 && W(t.__v279.nome) !== W(t.value)) t.__v279 = null; catBuscar(t.value, false); pintarCat(); return; }
+    if (t.id === 'pRef') { clearTimeout(V279.tCat); V279.tCat = setTimeout(lerCat, 450); }
+  }, true);
+  document.addEventListener('focusout', function (ev) {
+    var t = ev.target; if (!t || t.id !== 'pSupplierPrimary') return;
+    var ir = ev.relatedTarget; if (ir && ir.closest && ir.closest('#v279CatRes')) return;
+    setTimeout(function () { var res = document.getElementById('v279CatRes'); if (res && !res.contains(document.activeElement)) { res.style.display = 'none'; } }, 150);
+  }, true);
+  // a janela abre (nova peça ou editar): relê quem vende da referência que está nela (observa a CLASSE, nunca embrulha closeModal)
+  (function () {
+    var m = document.getElementById('modalPart'); if (!m || typeof MutationObserver !== 'function') return;
+    var aberta = m.classList.contains('open');
+    new MutationObserver(function () {
+      var agora = m.classList.contains('open');
+      if (agora && !aberta) { var inp = document.getElementById('pSupplierPrimary'); if (inp) inp.__v279 = null; var res = document.getElementById('v279CatRes'); if (res) { res.style.display = 'none'; res.innerHTML = ''; } setTimeout(lerCat, 0); }
+      aberta = agora;
+    }).observe(m, { attributes: true, attributeFilter: ['class'] });
+  })();
+  // o SALVAR da peça (catálogo e Biblioteca): a janela fechou = salvou ⇒ o fornecedor escolhido vai para "quem vende"
+  (function () {
+    var o = window.savePart; if (typeof o !== 'function' || o.__v279) { if (typeof o !== 'function') console.warn('[V279] sem savePart'); return; }
+    var f = function () {
+      var inp = document.getElementById('pSupplierPrimary'), esc = inp && inp.__v279, r = catRef(), w = null;
+      if (esc && W(esc.nome) === W(inp.value) && (N(r.ref).length >= 3 || r.prod)) w = { ref: r.ref, prod: r.prod, esc: esc };
+      var ret = o.apply(this, arguments);
+      if (w) {
+        Promise.resolve(ret).then(function () {
+          var m = document.getElementById('modalPart');
+          if (m && m.classList.contains('open')) return;   // não salvou (nome vazio etc.)
+          var p = { acao: 'cadastrar', ref: w.ref, fornecedor: { codigo: w.esc.codigo || null, nome: w.esc.nome } }; if (w.prod) p.produto = w.prod;
+          gravar(p, null).then(function (x) { anotar(w.ref, w.prod, x && x.par); resultadoCadastro(x, w.esc.nome, w.ref || w.prod); },
+            function (e) { avisar('⚠ A peça foi salva, mas o fornecedor NÃO foi para "quem vende": ' + ((e && e.message) || e) + '. Abra a peça e escolha o fornecedor de novo.', 'error'); });
+        }, function () {});
+      }
+      return ret;
+    };
+    f.__v279 = true; window.savePart = f;
+  })();
+
+  // ════════════════════════════════════════════════════════════════════════════════════════════════════
+  // 6 · LINHA DA PROPOSTA (V238): peça sem fornecedor → "💡 quem vende: X [usar]" (só para quem já vê custo)
+  // ════════════════════════════════════════════════════════════════════════════════════════════════════
+  function propChave(l) { return { ref: T(l.codigo), prod: l.fonte === 'produto' ? T(l.codigo) : '' }; }
+  function propSugestao(l) {
+    if (!l || l.natureza !== 'peca' || T(l.fornecedor_nome) || N(l.codigo).length < 3) return null;
+    var k = propChave(l), c = V279.qv[chave(k.ref, k.prod)];
+    if (!c || !c.itens || !c.itens.length) return null;
+    // auditoria 2: na proposta, só quem vende ESTA peça (o fornecedor de um similar vende OUTRA referência: usá-lo aqui o gravaria como direto)
+    return c.itens.filter(function (f) { return f.situacao !== 'sugerido' && !f.via; })[0] || null;
+  }
+  function chipProp(f, i) {
+    return '<div data-v279-prop="' + i + '"><span class="v238-chip forn" title="interno: não sai no PDF nem no portal · ' + E((FONTE[f.fonte] || f.fonte || '') + (f.ultima_data ? ' ' + data(f.ultima_data) : '') + (f.via ? ' · via similar ' + f.via : '')) + '">💡 quem vende: ' + E(f.nome) +
+           (f.via ? ' (similar ' + E(f.via) + ')' : '') + '</span> <button type="button" class="v279-bt" data-v279="propUsar" data-i="' + i + '" data-cod="' + E(f.codigo || '') + '" data-nome="' + E(f.nome) + '" data-pw-off="1">usar</button></div>';
+  }
+  (function () {
+    var o = window._v204LinhaHtml; if (typeof o !== 'function' || o.__v279) return;
+    var f = function (l, i) {
+      var h = o.apply(this, arguments);
+      try {
+        if (typeof _v238PodeCusto === 'function' && _v238PodeCusto() && window.V204 && V204.ed && V204.ed.rasc) {
+          var s = propSugestao(l);
+          if (s) { var a = h.indexOf('id="v204d' + i + '"'), b = a >= 0 ? h.indexOf('</td>', a) : -1; if (b > 0) h = h.slice(0, b) + chipProp(s, i) + h.slice(b); }
+        }
+      } catch (e) { console.warn('[V279] linha da proposta', e); }
+      return h;
+    };
+    f.__v279 = true; window._v204LinhaHtml = f;
+  })();
+  (function () {
+    var o = window._v204Pintar; if (typeof o !== 'function' || o.__v279) return;
+    var f = function () {
+      var r = o.apply(this, arguments);
+      try {
+        var ED = V204.ed;
+        if (ED && !ED.carregando && ED.rasc && typeof _v238PodeCusto === 'function' && _v238PodeCusto()) {
+          var ps = (ED.linhas || []).filter(function (l) { return l && l.natureza === 'peca' && !T(l.fornecedor_nome) && N(l.codigo).length >= 3; }).map(propChave);
+          // a sugestão entra SEM repintar o editor (repintura apaga o que está sendo digitado): só no texto da linha, quando chega
+          ler(ps).then(function (mudou) { if (mudou) colocarNaProposta(); });
+        }
+      } catch (e) {}
+      return r;
+    };
+    f.__v279 = true; window._v204Pintar = f;
+  })();
+  function colocarNaProposta() {
+    try {
+      var ED = V204.ed; if (!ED || !ED.rasc) return;
+      (ED.linhas || []).forEach(function (l, i) {
+        var s = propSugestao(l), ce = document.getElementById('v204d' + i), td = ce && (ce.closest('td') || ce.parentNode); if (!td) return;   // o v204d<i> é a CAIXA da descrição: o chip vai na célula
+        var ja = td.querySelector('[data-v279-prop]');
+        if (!s) { if (ja) ja.remove(); return; }
+        if (!ja) td.insertAdjacentHTML('beforeend', chipProp(s, i));
+      });
+    } catch (e) {}
+  }
+
+  // ════════════════════════════════════════════════════════════════════════════════════════════════════
+  // 7 · FABRICANTE (V263): lista de fabricantes cadastrados + conferência da grafia + "＋ cadastrar aqui"
+  // ════════════════════════════════════════════════════════════════════════════════════════════════════
+  var SEL_FAB = 'input.v258-fab, #pPartBrand, #mBrand, #mcBrand, #libSubFabricante, #simBrandInput';
+  function ehFab(t) { try { return !!(t && t.matches && t.matches(SEL_FAB)); } catch (e) { return false; } }
+  function fabLista(forcar) {
+    var F = V279.fab;
+    if (!forcar && F.lista && Date.now() - F.em < 300000) return Promise.resolve(F.lista);
+    if (F.voo) return F.voo;
+    F.voo = rpc('pc_fabricante_lista', { p_completo: false }, false).then(function (r) {
+      F.voo = null; F.estado = 'ok'; F.pode = !!(r && r.pode_escrever); F.em = Date.now();
+      F.lista = ((r && r.fabricantes) || []).map(function (f) { return { id: f.id, nome: f.nome, w: W(f.nome), ap: (f.apelidos || []).map(function (a) { return { t: a.texto, w: W(a.texto) }; }) }; });
+      return F.lista;
+    }, function (e) { F.voo = null; F.estado = semSql(e) ? 'sem_sql' : 'erro'; F.erro = (e && e.message) || ''; F.em = Date.now() - 240000; return null; });
+    return F.voo;
+  }
+  function fabCaixa() {
+    var d = document.getElementById('v279FabSug'); if (d) return d;
+    d = document.createElement('div'); d.id = 'v279FabSug'; d.className = 'v279-sugf'; d.setAttribute('role', 'listbox'); d.style.display = 'none';
+    d.addEventListener('mousedown', function (ev) { ev.preventDefault(); }, true);   // o campo não perde o foco ao clicar na lista
+    document.body.appendChild(d); return d;
+  }
+  function fabFechar() { var d = document.getElementById('v279FabSug'); if (d) d.style.display = 'none'; V279.fab.alvo = null; V279.fab.itens = []; V279.fab.sel = -1; }
+  function fabPosicionar(inp) {
+    var d = fabCaixa(), r = inp.getBoundingClientRect(), vh = window.innerHeight || 800, vw = window.innerWidth || 1200;
+    var larg = Math.max(240, Math.min(420, r.width + 80)); d.style.minWidth = larg + 'px';
+    d.style.left = Math.max(8, Math.min(r.left, vw - larg - 8)) + 'px';
+    var abaixo = vh - r.bottom;
+    if (abaixo < 200 && r.top > abaixo) { d.style.top = ''; d.style.bottom = (vh - r.top + 4) + 'px'; d.style.maxHeight = Math.max(140, Math.min(300, r.top - 16)) + 'px'; }
+    else { d.style.bottom = ''; d.style.top = (r.bottom + 4) + 'px'; d.style.maxHeight = Math.max(140, Math.min(300, abaixo - 16)) + 'px'; }
+  }
+  function fabAbrir(inp) {
+    var F = V279.fab, q = W(inp.value), d = fabCaixa(), h = '';
+    F.alvo = inp; F.sel = -1;
+    if (!F.lista) {
+      if (F.estado === 'sem_sql') { d.style.display = 'none'; return; }
+      d.innerHTML = '<div class="v279-v">' + (F.estado === 'erro' ? '⚠ lista de fabricantes: ' + E(F.erro || 'o banco não respondeu') : '⏳ carregando os fabricantes…') + '</div>';
+      d.style.display = ''; fabPosicionar(inp);
+      fabLista(false).then(function () { if (F.alvo === inp && document.activeElement === inp) fabAbrir(inp); });
+      return;
+    }
+    var its = F.lista.map(function (f) {
+      var s = -1, via = '';
+      if (!q) s = 1;
+      else if (f.w === q) s = 0;
+      else if (f.w.indexOf(q) === 0) s = 0.5;
+      else if (f.w.indexOf(q) >= 0) s = 1;
+      f.ap.forEach(function (a) { if (s < 0 && q && (a.w === q || a.w.indexOf(q) === 0)) { s = 1.2; via = a.t; } });
+      return { f: f, s: s, via: via };
+    }).filter(function (x) { return x.s >= 0; }).sort(function (a, b) { return (a.s - b.s) || a.f.nome.localeCompare(b.f.nome); }).slice(0, 10);
+    F.itens = its;
+    h = '<div class="v279-g">🏭 Fabricantes cadastrados</div>' + its.map(function (x, i) {
+      return '<button type="button" class="v279-it" role="option" data-v279="fabPick" data-i="' + i + '" data-pw-off="1">' + E(x.f.nome) + (x.via ? '<small>grafia "' + E(x.via) + '" = ' + E(x.f.nome) + '</small>' : '') + '</button>';
+    }).join('');
+    var exato = its.some(function (x) { return x.s === 0; }) || F.lista.some(function (f) { return f.ap.some(function (a) { return a.w === q; }); });   // apelido exato também não é "novo"
+    if (!its.length) h += '<div class="v279-v">' + (q ? 'Nenhum fabricante cadastrado com "' + E(inp.value) + '".' : 'Nenhum fabricante cadastrado ainda.') + '</div>';
+    if (q && !exato) h += F.pode ? '<button type="button" class="v279-it" data-v279="fabCriar" data-nome="' + E(T(inp.value)) + '" data-pw-off="1"><small>＋ cadastrar "' + E(T(inp.value)) + '" como fabricante novo</small></button>'
+                                 : '<div class="v279-v"><small>"' + E(T(inp.value)) + '" não está cadastrado — o administrador (PCM – Completo) cadastra.</small></div>';
+    d.innerHTML = h; d.style.display = ''; fabPosicionar(inp);
+  }
+  function fabRealcar() { var d = document.getElementById('v279FabSug'); if (!d) return; d.querySelectorAll('[data-v279="fabPick"]').forEach(function (b, i) { b.classList.toggle('on', i === V279.fab.sel); }); }
+  function fabPor(inp, nome) {
+    inp.value = nome;
+    V279.fab.calado = true;   // auditoria 2 (B7): o "input" que avisa as outras camadas não reabre a lista
+    try { inp.dispatchEvent(new Event('input', { bubbles: true })); } catch (e) {} finally { V279.fab.calado = false; }
+    fabStatus(inp);
+  }
+  // a conferência da grafia (ao sair do campo e ao escolher): chip debaixo do campo
+  function fabSlot(inp) {
+    var d = inp.__v279st; if (d && d.isConnected) return d;
+    d = document.createElement('div'); d.className = 'v279-fst'; inp.__v279st = d; d.__inp = inp;
+    var host = inp.parentNode, flex = false;
+    try { flex = /flex/.test(getComputedStyle(host).display) && !host.classList.contains('form-group'); } catch (e) {}
+    if (flex && host.parentNode) host.parentNode.insertBefore(d, host.nextSibling);   // linha em flex (equivalências): o aviso vai debaixo da linha
+    else host.insertBefore(d, inp.nextSibling);
+    return d;
+  }
+  function fabStatus(inp, soLocal) {
+    var F = V279.fab, txt = T(inp.value), k = W(txt);
+    if (F.estado === 'sem_sql') return;
+    var d = fabSlot(inp);
+    if (!k) { d.innerHTML = ''; return; }
+    var lst = F.lista || [], ex = lst.find(function (f) { return f.w === k; });
+    if (ex) { d.innerHTML = ex.nome === txt ? '' : '<span class="v279-f ok">✓ cadastrado como ' + E(ex.nome) + '</span><button type="button" class="v279-bt" data-v279="fabUsar" data-nome="' + E(ex.nome) + '" data-pw-off="1">usar "' + E(ex.nome) + '"</button>'; return; }
+    var ap = null; lst.some(function (f) { var a = f.ap.find(function (x) { return x.w === k; }); if (a) { ap = f; return true; } return false; });
+    if (ap) { d.innerHTML = '<span class="v279-f dif">≈ "' + E(txt) + '" é ' + E(ap.nome) + '</span><button type="button" class="v279-bt" data-v279="fabUsar" data-nome="' + E(ap.nome) + '" data-pw-off="1">usar ' + E(ap.nome) + '</button>'; return; }
+    var c = F.res[k];
+    if (c && c.r) { d.innerHTML = htmlFabNovo(txt, c.r); return; }
+    if (soLocal) { d.innerHTML = htmlFabNovo(txt, { status: 'novo', parecidos: [] }); return; }   // na pintura da aba: sem ir ao banco por linha
+    d.innerHTML = '<span class="v279-f">⏳ conferindo "' + E(txt) + '"…</span>';
+    rpc('pc_fabricante_resolver', { p_texto: txt }, false).then(function (r) {
+      F.res[k] = { r: r }; if (T(inp.value) === txt && inp.isConnected) { if (r && (r.status === 'cadastrado' || r.status === 'apelido')) { fabLista(true).then(function () { fabStatus(inp); }); } else d.innerHTML = htmlFabNovo(txt, r); }
+    }, function (e) { if (semSql(e)) { F.estado = 'sem_sql'; d.innerHTML = ''; } else d.innerHTML = '<span class="v279-f">⚠ não deu para conferir o fabricante (' + E((e && e.message) || '') + ')</span>'; });
+  }
+  function htmlFabNovo(txt, r) {
+    var pode = V279.fab.pode, h = '';
+    if (r && (r.status === 'cadastrado' || r.status === 'apelido') && r.fabricante) return '<span class="v279-f ok">✓ ' + E(r.fabricante.nome) + '</span>' + (r.fabricante.nome !== txt ? '<button type="button" class="v279-bt" data-v279="fabUsar" data-nome="' + E(r.fabricante.nome) + '" data-pw-off="1">usar "' + E(r.fabricante.nome) + '"</button>' : '');
+    var par = (r && r.parecidos) || [];
+    if (par.length) {
+      h = '<span class="v279-f dif">parece com ' + par.map(function (p) { return E(p.nome); }).join(', ') + '</span>' +
+          par.slice(0, 3).map(function (p) { return '<button type="button" class="v279-bt" data-v279="fabUsar" data-nome="' + E(p.nome) + '" data-pw-off="1">usar ' + E(p.nome) + '</button>'; }).join('');
+      if (pode) h += '<button type="button" class="v279-bt" data-v279="fabCriarMesmo" data-nome="' + E(txt) + '" data-pw-off="1" title="É outro fabricante: cadastrar mesmo assim">é outro: cadastrar</button>';
+      return h;
+    }
+    return '<span class="v279-f">"' + E(txt) + '" não está no cadastro de fabricantes</span>' +
+           (pode ? '<button type="button" class="v279-bt" data-v279="fabCriar" data-nome="' + E(txt) + '" data-pw-off="1">＋ cadastrar aqui</button>' : '<small>(o administrador cadastra)</small>');
+  }
+  function fabCriar(nome, apesar, bt, inp) {
+    if (typeof _v222RpcEnvio !== 'function') { avisar('⚠ Transporte do cadastro indisponível nesta versão — o fabricante NÃO foi cadastrado.', 'error'); return; }
+    if (bt) { bt.disabled = true; bt.setAttribute('data-pcm-enviando', '1'); }
+    _v222RpcEnvio('pc_fabricante_criar', { p_nome: nome, p_apesar_parecido: !!apesar }).then(function (r) {
+      var f = r && r.fabricante;
+      avisar(r && r.ja_existia ? '🏭 "' + (f && f.nome) + '" já estava cadastrado — usei o nome do cadastro.' : '🏭 Fabricante cadastrado: ' + (f && f.nome) + '.', 'success');
+      V279.fab.res = {};
+      return fabLista(true).then(function () { if (inp && inp.isConnected && f) fabPor(inp, f.nome); });
+    }, function (e) {
+      var msg = (e && e.message) || String(e);
+      if (/parece com/i.test(msg) && inp && inp.isConnected) { V279.fab.res[W(nome)] = null; fabStatus(inp); }
+      avisar('⚠ O fabricante NÃO foi cadastrado: ' + msg, 'error');
+    }).finally(function () { if (bt && bt.isConnected) { bt.disabled = false; bt.removeAttribute('data-pcm-enviando'); } });
+  }
+  document.addEventListener('focusin', function (ev) {
+    var t = ev.target; if (!ehFab(t)) return;
+    t.setAttribute('autocomplete', 'off'); t.setAttribute('data-lpignore', 'true'); t.setAttribute('data-1p-ignore', '');
+    fabLista(false).then(function () { if (document.activeElement === t) fabAbrir(t); });
+    if (V279.fab.lista) fabAbrir(t);
+  }, true);
+  var tFab = 0;
+  document.addEventListener('input', function (ev) {
+    var t = ev.target; if (!ehFab(t)) return;
+    var st = t.__v279st; if (st && st.isConnected) st.innerHTML = '';
+    if (V279.fab.calado) { clearTimeout(tFab); return; }
+    clearTimeout(tFab); tFab = setTimeout(function () { if (document.activeElement === t) fabAbrir(t); }, 140);
+  }, true);
+  document.addEventListener('focusout', function (ev) {
+    var t = ev.target; if (!ehFab(t)) return;
+    setTimeout(function () { if (document.activeElement !== t) { if (V279.fab.alvo === t) fabFechar(); if (t.isConnected) fabStatus(t); } }, 150);
+  }, true);
+  document.addEventListener('keydown', function (ev) {
+    var t = ev.target, F = V279.fab; if (!ehFab(t) || t !== F.alvo) return;
+    var d = document.getElementById('v279FabSug'); if (!d || d.style.display === 'none') return;
+    var n = (F.itens || []).length;
+    if (ev.key === 'ArrowDown') { ev.preventDefault(); if (n) { F.sel = (F.sel + 1) % n; fabRealcar(); } }
+    else if (ev.key === 'ArrowUp') { ev.preventDefault(); if (n) { F.sel = (F.sel - 1 + n) % n; fabRealcar(); } }
+    else if (ev.key === 'Enter') { if (F.sel >= 0 && F.itens[F.sel]) { ev.preventDefault(); ev.stopPropagation(); var x = F.itens[F.sel]; fabFechar(); fabPor(t, x.f.nome); } }
+    else if (ev.key === 'Escape') { ev.stopPropagation(); fabFechar(); }
+  }, true);
+  window.addEventListener('scroll', function (ev) { var F = V279.fab, d = document.getElementById('v279FabSug'); if (F.alvo && d && d.style.display !== 'none' && !d.contains(ev.target)) { if (document.activeElement === F.alvo) fabPosicionar(F.alvo); else fabFechar(); } }, true);
+
+  // ════════════════════════════════════════════════════════════════════════════════════════════════════
+  // 8 · OS CLIQUES (delegados, na captura; nenhum toma botão de ninguém — só os data-v279)
+  // ════════════════════════════════════════════════════════════════════════════════════════════════════
+  function slotDoBotao(b) { return b.closest('[data-v279-qv]') || b.closest('#v279CatQv') || b.closest('#v279Pend'); }
+  document.addEventListener('click', function (ev) {
+    var b = ev.target && ev.target.closest ? ev.target.closest('[data-v279]') : null; if (!b) return;
+    var a = b.getAttribute('data-v279');
+    ev.preventDefault(); ev.stopPropagation();
+    if (b.disabled || b.getAttribute('data-pcm-enviando')) return;
+    var tr = b.closest('#peTableBody tr');
+    // ── a linha da peça da máquina ──
+    if (a === 'qvDeNovo') { esquecerTudo(); V279.estado = ''; if (tr) { var r0 = refDaLinha(tr); ler([r0]).then(function () { pintarLinha(tr); }); } else lerCat(); return; }
+    if (a === 'qvMais') { var sl = b.closest('[data-v279-qv]'); if (sl) { sl.setAttribute('data-aberta', chave(b.getAttribute('data-ref'), b.getAttribute('data-prod'))); if (tr) pintarLinha(tr); } return; }
+    if (a === 'qvFechaLista') { var sl2 = b.closest('[data-v279-qv]'); if (sl2) { sl2.removeAttribute('data-aberta'); if (tr) pintarLinha(tr); } return; }
+    if (a === 'qvBuscar') { var s3 = b.closest('[data-v279-qv]'); if (s3) abrirBusca(s3, { tipo: 'linha', tr: tr, ref: b.getAttribute('data-ref'), prod: b.getAttribute('data-prod') }); return; }
+    if (a === 'buscaFechar') { fecharBusca(); if (tr) pintarLinha(tr); return; }
+    if (a === 'fTodos') {
+      var cx = b.closest('[data-v279-busca]') || document.getElementById('v279CatRes');
+      if (cx && cx.id === 'v279CatRes') return buscar(cx, b.getAttribute('data-q'), true);
+      return buscar(cx, b.getAttribute('data-q'), true);
+    }
+    if (a === 'fPick' || a === 'fLivre') {
+      var forn = { codigo: a === 'fPick' ? (Number(b.getAttribute('data-cod')) || null) : null, nome: b.getAttribute('data-nome') || '' };
+      // o campo "Fornecedor principal" da janela da peça: só escreve e marca (vai ao banco no Salvar da peça)
+      if (b.closest('#v279CatRes')) {
+        var inp = document.getElementById('pSupplierPrimary'); if (inp) { inp.value = forn.nome; inp.__v279 = forn; }
+        var res = document.getElementById('v279CatRes'); if (res) { res.style.display = 'none'; res.innerHTML = ''; }
+        pintarCat(); return;
+      }
+      var B = V279.busca; if (!B) return;
+      // pendência: o fornecedor fora do Omie É este do Omie
+      if (B.alvo.tipo === 'pend') {
+        if (!forn.codigo) { avisar('Escolha um fornecedor DO Omie (o "usar fora do Omie" não resolve esta pendência).', 'warning'); return; }
+        return trocar(B.alvo.fk, forn.codigo, b);
+      }
+      var al = B.alvo;
+      gravar({ acao: 'cadastrar', ref: al.ref, produto: al.prod || undefined, fornecedor: forn }, b).then(function (r) {
+        fecharBusca(); anotar(al.ref, al.prod, r && r.par); resultadoCadastro(r, forn.nome, al.ref || al.prod); if (al.tr && al.tr.isConnected) pintarLinha(al.tr);
+        if (al.tr && al.tr.isConnected) ler([{ ref: al.ref, prod: al.prod }]).then(function () { pintarLinha(al.tr); pintarPend(); });
+      }, function (e) { avisar('⚠ O fornecedor NÃO foi gravado: ' + ((e && e.message) || e), 'error'); });
+      return;
+    }
+    if (a === 'qvConfirmar' || a === 'pendConfirmar') {
+      return gravar({ acao: 'confirmar', id: Number(b.getAttribute('data-id')) }, b).then(function () {
+        avisar('🏭 Confirmado.', 'success'); esquecerTudo(); V279.pendAberta = false;
+        if (a === 'pendConfirmar') { var pd = document.getElementById('v279Pend'); if (pd) abrirPend(pd); }
+        lerEPintar();
+      }, function (e) { avisar('⚠ NÃO foi confirmado: ' + ((e && e.message) || e), 'error'); });
+    }
+    if (a === 'qvRemover' || a === 'pendDescartar') {
+      var ln = b.closest('.v279-ln') || b.closest('.v279-pl');
+      if (ln && !ln.querySelector('[data-v279c="motivo"]')) {
+        ln.insertAdjacentHTML('beforeend', '<span><input type="text" data-v279c="motivo" maxlength="300" placeholder="motivo (ex.: não trabalha com esta peça)" autocomplete="off" name="v279_mot_nofill" data-lpignore="true" data-1p-ignore style="font-size:11px;padding:2px 6px;border:1px solid #cfd6e2;border-radius:6px;min-width:220px"> ' +
+          '<button type="button" class="v279-bt vm" data-v279="' + (a === 'qvRemover' ? 'qvRemoverOk' : 'pendDescartarOk') + '" data-id="' + E(b.getAttribute('data-id')) + '" data-pw-off="1">confirmar remoção</button></span>');
+        var mi = ln.querySelector('[data-v279c="motivo"]'); if (mi) { if (a === 'pendDescartar') mi.value = 'sugestão descartada na conferência'; try { mi.focus(); } catch (e) {} }
+      }
+      return;
+    }
+    if (a === 'qvRemoverOk' || a === 'pendDescartarOk') {
+      var ln2 = b.closest('.v279-ln') || b.closest('.v279-pl'), mot = T((ln2 && ln2.querySelector('[data-v279c="motivo"]') || {}).value);
+      if (mot.length < 3) { avisar('Diga o motivo (fica registrado).', 'warning'); return; }
+      return gravar({ acao: 'remover', id: Number(b.getAttribute('data-id')), motivo: mot }, b).then(function () {
+        avisar('🏭 Removido desta peça.', 'success'); esquecerTudo(); V279.pendAberta = false;
+        if (a === 'pendDescartarOk') { var pd2 = document.getElementById('v279Pend'); if (pd2) abrirPend(pd2); }
+        lerEPintar();
+      }, function (e) { avisar('⚠ NÃO foi removido: ' + ((e && e.message) || e), 'error'); });
+    }
+    // ── pendências ──
+    if (a === 'pendAbrir') { var pd3 = document.getElementById('v279Pend'); if (pd3) abrirPend(pd3); return; }
+    if (a === 'pendFechar') { V279.pendAberta = false; fecharBusca(); pintarPend(); return; }
+    if (a === 'pendTrocar') return trocar(b.getAttribute('data-fk'), Number(b.getAttribute('data-cod')), b);
+    if (a === 'pendBuscar') { var pl = b.closest('.v279-pl'); if (pl) abrirBusca(pl, { tipo: 'pend', fk: b.getAttribute('data-fk') }); return; }
+    // ── catálogo ──
+    if (a === 'catUsar') {
+      var ci = document.getElementById('pSupplierPrimary'); if (!ci) return;
+      ci.value = b.getAttribute('data-nome'); ci.__v279 = { codigo: Number(b.getAttribute('data-cod')) || null, nome: b.getAttribute('data-nome') };
+      pintarCat(); return;
+    }
+    // ── proposta ──
+    if (a === 'propUsar') {
+      var ED = window.V204 && window.V204.ed, i = parseInt(b.getAttribute('data-i'), 10), l = ED && ED.linhas && ED.linhas[i]; if (!l || !ED.rasc) return;
+      l.fornecedor_codigo = Number(b.getAttribute('data-cod')) || null; l.fornecedor_nome = b.getAttribute('data-nome') || ''; if (!l.sai_de) l.sai_de = 'comprar';
+      try { _v204Mudou(); } catch (e) {}
+      try { _v204Pintar(); } catch (e) {}
+      return;
+    }
+    // ── fabricante ──
+    if (a === 'fabPick') { var F = V279.fab, x = F.itens[Number(b.getAttribute('data-i'))], al2 = F.alvo; fabFechar(); if (x && al2) fabPor(al2, x.f.nome); return; }
+    if (a === 'fabUsar') { var st = b.closest('.v279-fst'), inp2 = st && st.__inp; if (inp2 && ehFab(inp2)) fabPor(inp2, b.getAttribute('data-nome')); return; }
+    if (a === 'fabCriar' || a === 'fabCriarMesmo') {
+      var alvo = V279.fab.alvo; if (!alvo) { var st2 = b.closest('.v279-fst'); alvo = st2 && st2.__inp; }
+      fabFechar(); if (alvo && ehFab(alvo)) fabCriar(b.getAttribute('data-nome'), a === 'fabCriarMesmo', b, alvo); return;
+    }
+  }, true);
+  function trocar(fk, cod, bt) {
+    if (!fk || !cod) return;
+    return gravar({ acao: 'trocar_forn', forn_chave: fk, codigo: cod }, bt).then(function (r) {
+      avisar('🏭 ' + (r && r.pares) + ' peça(s) passaram para ' + ((r && r.fornecedor && r.fornecedor.nome) || ('Omie ' + cod)) + '.', 'success');
+      fecharBusca(); esquecerTudo(); V279.pendAberta = false; var pd = document.getElementById('v279Pend'); if (pd) abrirPend(pd); lerEPintar();
+    }, function (e) { avisar('⚠ NÃO foi trocado: ' + ((e && e.message) || e), 'error'); });
+  }
+  // digitar na busca aberta (linha, pendência)
+  document.addEventListener('input', function (ev) {
+    var t = ev.target; if (!t || t.getAttribute('data-v279c') !== 'busca') return;
+    buscar(t.closest('[data-v279-busca]'), t.value, false);
+  }, true);
+  document.addEventListener('keydown', function (ev) {
+    var t = ev.target; if (!t || t.getAttribute('data-v279c') !== 'busca') return;
+    if (ev.key === 'Escape') { ev.stopPropagation(); var tr = t.closest('#peTableBody tr'); fecharBusca(); if (tr) pintarLinha(tr); }
+  }, true);
+
+  // ════════════════════════════════════════════════════════════════════════════════════════════════════
+  // 9 · EMBRULHOS (por FORA do V258/V271; o V258 decora a tabela antes — esta camada só acrescenta a linha 🏭)
+  // ════════════════════════════════════════════════════════════════════════════════════════════════════
+  function envolver(nome, depois) {
+    var o = window[nome]; if (typeof o !== 'function' || o.__v279) { if (typeof o !== 'function') console.warn('[V279] sem ' + nome); return; }
+    var f = function () { var r = o.apply(this, arguments); try { depois.apply(this, [r].concat([].slice.call(arguments))); } catch (e) { console.warn('[V279] ' + nome, e); } return r; };
+    f.__v279 = true; window[nome] = f;
+  }
+  envolver('_renderPartsEditor', function () { fecharBusca(); V279.pendAberta = false; aoDesenhar(); });
+  envolver('addPeRow', function () { var tr = linhas()[linhas().length - 1]; if (tr) pintarLinha(tr); });
+  (function () {
+    var o = window._v271Escolheu; if (typeof o !== 'function' || o.__v279) return;
+    var f = function (x, box) {
+      var r = o.apply(this, arguments);
+      try {
+        var tr = box && box.closest && box.closest('#peTableBody tr');
+        if (tr) { var k = refDaLinha(tr); pintarLinha(tr); ler([k]).then(function () { pintarLinha(tr); }); }
+        else if (box && box.id === 'pRef') lerCat();
+      } catch (e) {}
+      return r;
+    };
+    f.__v279 = true; window._v271Escolheu = f;
+  })();
+  // salvou as peças: o banco pode ter ganho fatos novos (a linha relê na próxima pintura)
+  envolver('saveMachineParts', function () { esquecerTudo(); });
+  // aba aberta antes deste bloco carregar (raro): decora agora
+  try { if (document.getElementById('peTableBody')) aoDesenhar(); } catch (e) {}
+})();
+</script>
+<!-- ████ FIM PCM V279 ████ -->
+<!-- ████ INICIO PCM V278 · 🔎 MÁQUINA A IDENTIFICAR (14/10/2026) ████ -->
+<style id="v278Css">
+.v278-box{margin-top:8px;padding:8px 10px;border:1px dashed #C9C9C9;border-radius:8px;background:#FAFAFA}
+.v278-box.on{border-style:solid;border-color:#7AA7E0;background:#F0F6FF}
+.v278-chk{display:flex!important;gap:8px;align-items:center;font-weight:600;cursor:pointer;margin:0!important;min-height:30px}
+.v278-chk input{width:auto!important;margin:0}
+.v278-chk small{font-weight:400;color:var(--text-muted,#6B6B6B)}
+.v278-campos{display:grid;grid-template-columns:1fr 150px;gap:8px;margin-top:6px}
+.v278-campos label{margin-top:0!important}
+@media (max-width:520px){.v278-campos{grid-template-columns:1fr}}
+.v278-sub{font-size:12px;color:var(--text2,#4F4F4F);margin-top:6px;line-height:1.4}
+.v278-sub.aviso{color:#8a3b00}
+.v278-chip{display:inline-block;font-size:10.5px;font-weight:700;line-height:1;padding:3px 6px;border-radius:999px;background:#EAF2FF;color:#1D4E89;border:1px solid #9DBDEA;margin-left:4px;vertical-align:middle;white-space:nowrap}
+.v278-linha{border-left-color:#2563eb!important;background:#F0F6FF!important;margin-bottom:6px}
+.v278-linha.ok{border-left-color:#16a34a!important;background:#F2FBF5!important}
+.v278-acoes{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:6px}
+.v278-form{display:grid;grid-template-columns:1fr 130px;gap:6px 8px;margin-top:6px}
+.v278-form input{width:100%}
+.v278-form .v278-acoes{grid-column:1/-1;margin-top:2px}
+@media (max-width:520px){.v278-form{grid-template-columns:1fr}}
+.v278-lnk{all:unset;cursor:pointer;color:var(--accent,#C2410C);text-decoration:underline;font-size:12px}
+.v278-lnk:hover{color:#9A3412}
+.v278-lnk:focus-visible{outline:2px solid var(--accent,#EE7625);outline-offset:1px}
+.v278-est{color:#1D4E89!important}
+</style>
+<script>
+/* PCM V278 — 14/10/2026 — rodada 2026-10-14_oportunidade_sem_maquina (sobre o PCM V275 no ar). Par: SQL CRM_MAQ_A_IDENTIFICAR_2026-10-14 (RODA ANTES).
+   Pedido do Fernando (14/10 17h26): "preciso oferecer serviços para o cliente antes de tomar conhecimento de quais máquinas ele tem no
+   parque dele ... Não posso ter impedimentos para criar propostas de possíveis leads." · 17h38: o técnico pode ir ao campo sem máquina
+   e cadastrar lá (a coleta do PCF já faz: savePreventiva/saveVisit cria a máquina e _marcarMaquinaAtendidaOS_ liga na OS).
+   O QUE MUDA NA TELA
+   1 · ＋ Oportunidade: com Serviço, além da máquina e do modelo, a opção "🔎 Máquina a identificar" — o que o cliente tem (3 a 160
+       letras: "2 compressores parafuso ~40 hp") e quantas (opcional). O card nasce sem máquina e sem modelo (o banco confere igual:
+       restrição ck_crm_manual_maquina + gatilho tg_crm_sem_maquina). Máquina marcada na lista vence (o campo é ignorado).
+   2 · Quadro e Lista: selo "🔎 a identificar" no card enquanto nem o card nem uma OS viva dele têm máquina (some sozinho). O alerta
+       vermelho "sem máquina" da coluna 1 sai desses cards (o selo diz a mesma coisa, com a saída). Na janela do card, a linha
+       "Máquinas" e o "Para andar" trocam o vermelho "sem máquina" pelo 🔎 com o texto.
+   3 · Card: na caixa 🛠 Ordem de serviço, a linha "🔎 Máquina a identificar" com a orientação — 1 máquina (ou não sei): a OS pode ir
+       ao campo sem máquina e o técnico cadastra na coleta do PCF; 2 ou mais: cadastrar as máquinas no card antes (uma OS por máquina)
+       — é aviso, não trava. Identificada: diz qual máquina e onde (no card / na OS). "✎ mudar" abre a linha para editar; "Tirar a
+       marca" só aparece quando já está identificada (com Serviço e sem máquina o banco recusa).
+   4 · Editor da proposta: "sem máquina no card" vira "🔎 Máquina a identificar: …".
+   NADA de Apps Script, nada no PCF. Embrulha (sempre por fora, pelo nome global): _v200PintarNova · _v200CriarOportunidade ·
+   _v200Carregar · _v200CardHtml · _v200Pintar · _v200PintarCard · _crosCardHtml · _crosNoCard · _v204Pintar · _v200AbrirCard · _v200Fechar. Chave de volta: localStorage pcm_v278 = off. */
+(function () {
+  'use strict';
+  if (window.V278) return;
+  var V278 = window.V278 = { versao: 'PCM_V278', orig: {}, mapa: null, mapaEm: 0, mapaVoo: null, semSql: false, det: {}, detVoo: {}, form: null, tirar: null, ger: 0 };
+  function off() { try { return localStorage.getItem('pcm_v278') === 'off'; } catch (e) { return false; } }
+  try { if (typeof V200_EVENTO === 'object' && V200_EVENTO) V200_EVENTO.a_identificar = '🔎 Máquina a identificar'; } catch (e) {}   // rótulo do evento na Trilha do card
+  function T(x) { return String(x == null ? '' : x).trim(); }
+  function E(x) { return String(x == null ? '' : x).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+  function semSql(e) { return !!(e && (e.v200 === 'sem_sql' || /PGRST202|42883|crm_a_identificar|ainda não rodou/i.test(String(e.message || '')))); }
+  var MSG_SEM_SQL = 'O SQL CRM_MAQ_A_IDENTIFICAR ainda não rodou no Supabase — nada foi gravado (LEIA-ME da entrega de 14/10).';
+  function qtdTxt(q) { var n = Number(q); return n > 0 ? (n === 1 ? '1 máquina' : n + ' máquinas') : 'quantidade não informada'; }
+  function rotMaq(id) { try { if (typeof _v200RotuloMaq === 'function') return _v200RotuloMaq(id); } catch (e) {} return String(id); }
+  function natsDaTela(M) {
+    try { if (document.querySelector('input[data-v214nat="v214NvNat"]') && typeof _v214NatsCanon === 'function') return _v214NatsCanon(_v214NatsLidas('v214NvNat')); } catch (e) {}
+    var s = document.getElementById('v200NvNat'); if (s) return [T(s.value) || 'servico'];
+    return (M && M.nats) || ['servico'];
+  }
+  function temServico(M) { return natsDaTela(M).indexOf('servico') >= 0; }
+  function soPeca(o) { var n = o && Array.isArray(o.naturezas) ? o.naturezas : (o && o.natureza ? [o.natureza] : []); return n.length === 1 && n[0] === 'peca'; }   // auditoria 1, nº 5
+  function uid() { return 'aid-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 10); }
+  function rotulosOS(x) { return Array.isArray(x.rotulos_os) && x.rotulos_os.length ? x.rotulos_os.map(T) : (x.maquinas_os || []).map(rotMaq); }   // o nome vem do BANCO (a máquina do campo não está na cópia deste computador)
+  function botaoOcupado(bt, on, txt) {
+    if (!bt) return;
+    if (on) { bt.disabled = true; bt.setAttribute('data-pcm-enviando', '1'); bt.classList.add('is-busy'); bt.setAttribute('data-v278txt', bt.textContent); bt.textContent = txt || '⏳ Gravando…'; }
+    else if (bt.isConnected) { bt.disabled = false; bt.removeAttribute('data-pcm-enviando'); bt.classList.remove('is-busy'); var t = bt.getAttribute('data-v278txt'); if (t) bt.textContent = t; }
+  }
+
+  // ═══ A · os cards "a identificar" (uma leitura para o quadro; uma por card aberto) ═══════════════════════════════════════
+  function lerMapa() {
+    if (V278.mapaVoo) return V278.mapaVoo;
+    var g = ++V278.ger;
+    V278.mapaVoo = _v200Rpc('crm_a_identificar', {}).then(function (r) {
+      var m = {}; ((r && r.cards) || []).forEach(function (x) { if (x && x.id) m[x.id] = x; });
+      V278.mapa = m; V278.mapaEm = Date.now(); V278.semSql = false;
+    }, function (e) {
+      if (semSql(e)) { V278.semSql = true; V278.mapa = {}; V278.mapaEm = Date.now(); }
+      else { try { console.warn('[V278] leitura dos cards a identificar:', e); } catch (x) {} }   // o selo não aparece; nada é afirmado
+    }).then(function () {
+      V278.mapaVoo = null;
+      try { if (g === V278.ger && typeof currentView !== 'undefined' && currentView === 'comercial' && !_v200.carregando) _v200Pintar(); } catch (e) {}
+    });
+    return V278.mapaVoo;
+  }
+  function lerDet(id) {
+    if (V278.detVoo[id]) return V278.detVoo[id];
+    V278.det[id] = V278.det[id] || {}; V278.det[id].lendo = true;
+    V278.detVoo[id] = _v200Rpc('crm_a_identificar', { p_ids: [id] }).then(function (r) {
+      var x = ((r && r.cards) || []).filter(function (k) { return k && k.id === id; })[0] || null;
+      V278.det[id] = { em: Date.now(), row: x, erro: '', sumiu: !x };   // auditoria 1, nº 7: leu certo e o card não está mais na lista
+      if (V278.mapa && x && x.id) { if (x.identificada === false || V278.mapa[x.id]) V278.mapa[x.id] = x; }
+    }, function (e) {
+      V278.det[id] = { em: Date.now(), row: null, erro: semSql(e) ? MSG_SEM_SQL : ((e && e.message) || String(e)), semSql: semSql(e) };
+    }).then(function () {
+      delete V278.detVoo[id];
+      try { var M = _v200.modal; if (M && M.tipo === 'card' && M.d && M.d.card && M.d.card.id === id && typeof _crosNoCard === 'function') { _crosNoCard(); decorarCard(); } } catch (e) {}
+    });
+    return V278.detVoo[id];
+  }
+  if (typeof _v200Carregar === 'function') {
+    V278.orig.carregar = _v200Carregar;
+    _v200Carregar = async function () {
+      if (!off()) { try { lerMapa(); } catch (e) {} }   // em paralelo com o quadro (não segura a abertura)
+      return V278.orig.carregar.apply(this, arguments);
+    };
+  }
+  function doMapa(id) { return (!off() && V278.mapa && id && V278.mapa[id]) || null; }
+
+  // ═══ B · ＋ OPORTUNIDADE ══════════════════════════════════════════════════════════════════════════════════════════════
+  function estado(M) {
+    // auditoria 1, nº 9: o que foi digitado para uma conta não vai para outra
+    if (!M.v278 || M.v278.cli !== M.cli) M.v278 = { on: false, desc: '', qtd: '', cli: M.cli, uid: uid() };
+    return M.v278;
+  }
+  function lerCampos(M) {
+    var bx = document.getElementById('v278Box'); if (!bx || bx.getAttribute('data-cli') !== String(M.cli)) return;   // o quadrinho na tela é de OUTRA conta
+    var S = estado(M), d = document.getElementById('v278Desc'), q = document.getElementById('v278Qtd'), c = document.getElementById('v278On');
+    if (c) S.on = !!c.checked;
+    if (d) S.desc = d.value;
+    if (q) S.qtd = q.value;
+  }
+  function maqsMarcadas() { return Array.prototype.slice.call(document.querySelectorAll('#v200ModalBody input[name="v200NvMaq"]:checked')).length; }
+  function boxHtml(M) {
+    var S = estado(M), serv = temServico(M);
+    var dc = ' data-cli="' + E(M.cli) + '"';
+    if (!serv) return '<div class="v278-box" id="v278Box"' + dc + ' hidden></div>';
+    var h = '<div class="v278-box' + (S.on ? ' on' : '') + '" id="v278Box"' + dc + '>';
+    if (V278.semSql) {
+      return h + '<label class="v278-chk"><input type="checkbox" id="v278On" disabled> 🔎 Máquina a identificar <small>— precisa do SQL CRM_MAQ_A_IDENTIFICAR no Supabase (ainda não rodou)</small></label></div>';
+    }
+    h += '<label class="v278-chk"><input type="checkbox" id="v278On" data-v278="on"' + (S.on ? ' checked' : '') + '> 🔎 Máquina a identificar <small>— lead: ainda não sei quais máquinas o cliente tem</small></label>';
+    if (S.on) {
+      h += '<div class="v278-campos"><div><label for="v278Desc">O que o cliente tem *</label>' +
+           '<input id="v278Desc" maxlength="160" value="' + E(S.desc) + '" placeholder="Ex.: 2 compressores parafuso ~40 hp" readonly onfocus="this.removeAttribute(\'readonly\')" autocomplete="off" name="v278_desc_nofill" data-lpignore="true" data-1p-ignore></div>' +
+           '<div><label for="v278Qtd">Quantas (se souber)</label>' +
+           '<input id="v278Qtd" type="number" min="1" max="50" step="1" inputmode="numeric" value="' + E(S.qtd) + '" placeholder="não sei" readonly onfocus="this.removeAttribute(\'readonly\')" autocomplete="off" name="v278_qtd_nofill" data-lpignore="true" data-1p-ignore></div></div>';
+      h += '<div class="v278-sub" id="v278Dica">' + dicaTxt() + '</div>';
+    }
+    return h + '</div>';
+  }
+  function dicaTxt() {
+    if (maqsMarcadas() || T((document.getElementById('v200NvMod') || {}).value)) return '<span class="aviso">Máquina ou modelo escolhido acima: vale ele — este campo é ignorado ao criar.</span>';
+    return 'O card nasce sem máquina. A OS pode ir ao campo assim: o técnico cadastra a máquina na coleta do PCF e ela entra na OS sozinha. ' +
+           'Com 2 ou mais, o card vai sugerir cadastrar as máquinas antes de abrir as OS (uma OS por máquina).';
+  }
+  var DICA_V265 = 'Com <b>Serviço</b>, a máquina (ou o modelo) é obrigatória.';
+  var DICA_V278 = 'Com <b>Serviço</b>: a máquina, o modelo — ou <b>🔎 Máquina a identificar</b> (abaixo do modelo).';
+  function textosV265() {
+    var d = document.getElementById('v265Dica'); if (d && d.innerHTML.indexOf(DICA_V265) >= 0) d.innerHTML = d.innerHTML.replace(DICA_V265, DICA_V278);
+    var lab = Array.prototype.find.call(document.querySelectorAll('#v200ModalBody .v200-form > label'), function (l) { return /^Máquina\(s\)/.test(T(l.textContent)); });
+    var sm = lab && lab.querySelector('small');
+    if (sm && /só Peça pode ficar sem/.test(sm.textContent)) sm.textContent = '(com Serviço: a máquina, o modelo ou 🔎 a identificar · só Peça pode ficar sem)';
+  }
+  function pintarBox(M) {
+    var body = document.getElementById('v200ModalBody'); if (!body || !M || M.tipo !== 'nova' || !M.cli) return;
+    var html = boxHtml(M), velho = document.getElementById('v278Box');
+    if (velho) { velho.outerHTML = html; }
+    else {
+      var mod = document.getElementById('v200NvMod'); if (!mod) return;
+      mod.insertAdjacentHTML('afterend', html);
+    }
+    textosV265();
+  }
+  if (typeof _v200PintarNova === 'function') {
+    V278.orig.pintarNova = _v200PintarNova;
+    _v200PintarNova = function () {
+      if (off()) return V278.orig.pintarNova.apply(this, arguments);
+      var M = _v200.modal, a = document.activeElement, foco = a && (a.id === 'v278Desc' || a.id === 'v278Qtd') ? a.id : '', p = null;
+      try { if (foco === 'v278Desc') p = a.selectionStart; } catch (e) {}
+      try { if (M && M.tipo === 'nova' && document.getElementById('v278Box')) lerCampos(M); } catch (e) {}
+      var r = V278.orig.pintarNova.apply(this, arguments);
+      try { M = _v200.modal; if (M && M.tipo === 'nova' && M.cli) { if ((!V278.mapa || (V278.semSql && Date.now() - V278.mapaEm > 15000)) && !V278.mapaVoo) lerMapa(); pintarBox(M); } } catch (e) { try { console.warn('[V278] ＋ Oportunidade:', e); } catch (x) {} }
+      if (foco) { var n = document.getElementById(foco); if (n) { n.removeAttribute('readonly'); try { n.focus({ preventScroll: true }); if (p != null) n.setSelectionRange(p, p); } catch (e) {} } }
+      return r;
+    };
+  }
+  // natureza / máquina / modelo mudam ⇒ o quadrinho acompanha (depois do V265, que reescreve a dica dele no mesmo tique)
+  document.addEventListener('change', function (ev) {
+    var t = ev.target; if (off() || !t) return;
+    var M = _v200.modal; if (!M || M.tipo !== 'nova' || !M.cli) return;
+    if (t.getAttribute && t.getAttribute('data-v214nat') === 'v214NvNat') { setTimeout(function () { if (_v200.modal !== M) return; try { lerCampos(M); } catch (e) {} pintarBox(M); }, 0); return; }
+    if (t.name === 'v200NvMaq' || t.id === 'v200NvMod') { var d = document.getElementById('v278Dica'); if (d) d.innerHTML = dicaTxt(); }
+  });
+  document.addEventListener('input', function (ev) {
+    var t0 = ev.target;
+    if (t0 && V278.form && (t0.id === 'v278EdDesc' || t0.id === 'v278EdQtd')) { if (t0.id === 'v278EdDesc') V278.form.desc0 = t0.value; else V278.form.qtd0 = t0.value; return; }   // auditoria 1, nº 6
+    var t = ev.target; if (off() || !t || (t.id !== 'v278Desc' && t.id !== 'v278Qtd')) return;
+    var M = _v200.modal; if (!M || M.tipo !== 'nova') return;
+    var S = estado(M); if (t.id === 'v278Desc') S.desc = t.value; else S.qtd = t.value;
+  }, true);
+
+  function validar(desc, qtdTxt0) {
+    var d = T(desc), qs = T(qtdTxt0), q = null;
+    if (d.length < 3) return { erro: 'Descreva o que o cliente tem (3 letras ou mais) — ex.: "2 compressores parafuso ~40 hp".', campo: 'v278Desc' };
+    if (d.length > 160) return { erro: 'A descrição passou de 160 letras (' + d.length + '). Resuma — o detalhe vai na proposta.', campo: 'v278Desc' };
+    if (qs) {
+      if (!/^\d{1,2}$/.test(qs) || Number(qs) < 1 || Number(qs) > 50) return { erro: 'Quantas máquinas: de 1 a 50 (ou deixe vazio se não souber).', campo: 'v278Qtd' };
+      q = Number(qs);
+    }
+    return { d: d, q: q };
+  }
+  if (typeof _v200CriarOportunidade === 'function') {
+    V278.orig.criar = _v200CriarOportunidade;
+    _v200CriarOportunidade = async function () {
+      if (off()) return V278.orig.criar.apply(this, arguments);
+      var M = _v200.modal; if (!M || M.tipo !== 'nova' || !M.cli) return V278.orig.criar.apply(this, arguments);
+      try { lerCampos(M); } catch (e) {}
+      var S = estado(M);
+      var nats = natsDaTela(M);
+      // Serviço sem máquina, sem modelo e sem o 🔎: a mesma recusa do V265, com a saída nova na frase
+      if (!S.on && !V278.semSql && !maqsMarcadas() && !_v200Val('v200NvMod') && nats.indexOf('servico') >= 0) {
+        toast('Com "Serviço" marcado, escolha a máquina (ou ＋ Cadastrar máquina deste cliente), o modelo — ou marque 🔎 Máquina a identificar e descreva o que o cliente tem. Só "Peça" — venda de peças avulsas — pode ficar sem máquina.', 'error');
+        return;
+      }
+      if (!S.on || V278.semSql) return V278.orig.criar.apply(this, arguments);
+      if (maqsMarcadas() || _v200Val('v200NvMod') || nats.indexOf('servico') < 0) return V278.orig.criar.apply(this, arguments);   // máquina/modelo vence; só Peça = venda de peças (V265)
+      var tit = _v200Val('v200NvTit'); if (tit.length < 3) { toast('Escreva o título (3 letras ou mais).', 'error'); return; }
+      var v = validar(S.desc, S.qtd);
+      if (v.erro) { toast(v.erro, 'error'); var f = document.getElementById(v.campo); if (f) { f.removeAttribute('readonly'); try { f.focus(); } catch (e) {} } return; }
+      if (M.v278criando) return;
+      // o botão "Criar oportunidade" já tem DONO: a trava do V200 (_v200CliqueComTrava) o ocupa antes de chamar aqui e o devolve depois
+      M.v278criando = true;
+      try {
+        var r = await _v200Rpc('crm_oportunidade_criar_a_identificar', { p_cliente: M.cli, p_titulo: tit, p_naturezas: nats, p_descricao: v.d, p_quantidade: v.q,
+          p_os: _v200Val('v200NvOs') || null, p_dono: _v200Val('v200NvDono') || null, p_client_uid: S.uid }, true);   // auditoria 1, nº 2: repetir o POST devolve o mesmo card
+        if (!r || !r.id) throw new Error('o banco não devolveu o número do card — confira o quadro antes de criar de novo.');
+        toast('Oportunidade ' + r.id + (r.repetido ? ' (já estava criada)' : ' criada') + ' — 🔎 máquina a identificar: ' + v.d + '.', 'success');
+        S.uid = uid();
+        V278.mapa = V278.mapa || {}; V278.mapa[r.id] = { id: r.id, descricao: v.d, quantidade: v.q, identificada: false, maquinas_card: 0, maquinas_os: [], os_vivas: 0, os_sem_maquina: 0 };
+        _v200Fechar(); await _v200Carregar();
+        _v200AbrirCard(r.id);
+      } catch (e) {
+        var msg = semSql(e) ? MSG_SEM_SQL : ((e && e.message) || 'Não consegui criar.');
+        if (/ck_crm_manual_maquina/.test(msg)) msg = MSG_SEM_SQL;
+        toast(msg, 'error');
+      } finally {
+        M.v278criando = false;
+      }
+    };
+  }
+
+  // ═══ C · QUADRO E LISTA: o selo ═════════════════════════════════════════════════════════════════════════════════════
+  var CHIP = function (x) { return '<span class="v278-chip" title="' + E('Máquina a identificar: ' + (x.descricao || '') + (x.quantidade ? ' (' + qtdTxt(x.quantidade) + ')' : '') + ' — o técnico cadastra no campo, ou cadastre no card') + '">🔎 a identificar</span>'; };
+  if (typeof _v200CardHtml === 'function') {
+    V278.orig.cardHtml = _v200CardHtml;
+    _v200CardHtml = function (c) {
+      var h = V278.orig.cardHtml.apply(this, arguments);
+      try {
+        var x = c && doMapa(c.id); if (!x || x.identificada || soPeca(c) || h.indexOf('v278-chip') >= 0) return h;
+        h = h.replace(/<span class="v200-chip" style="border-color:#dc2626;color:#dc2626">sem máquina<\/span>/, '');
+        var i = h.indexOf('<div class="v200-cli">'), j = i >= 0 ? h.indexOf('</div>', i) : -1;
+        if (j > 0) h = h.slice(0, j) + CHIP(x) + h.slice(j);
+      } catch (e) {}
+      return h;
+    };
+  }
+  if (typeof _v200Pintar === 'function') {
+    V278.orig.pintar = _v200Pintar;
+    _v200Pintar = function () {
+      var r = V278.orig.pintar.apply(this, arguments);
+      try {
+        if (!off() && V278.mapa) Array.prototype.forEach.call(document.querySelectorAll('#v200Lista tr[data-id]'), function (tr) {
+          var x = doMapa(tr.getAttribute('data-id')); if (!x || x.identificada || tr.querySelector('.v278-chip')) return;
+          var td = tr.children[1]; if (td) td.insertAdjacentHTML('beforeend', CHIP(x));
+        });
+      } catch (e) {}
+      return r;
+    };
+  }
+
+  // ═══ D · O CARD: a linha 🔎 na caixa da OS ════════════════════════════════════════════════════════════════════════════
+  function linhaCard(o) {
+    var dsc = T(o.maquina_a_identificar); if (!dsc || soPeca(o)) return '';
+    var D = V278.det[o.id];
+    if (!D || (!D.lendo && Date.now() - (D.em || 0) > 15000)) { lerDet(o.id); D = V278.det[o.id]; }
+    var q = o.maquinas_previstas, x = D && D.row, F = V278.form && V278.form.id === o.id ? V278.form : null;
+    var h = '<div class="cros-linha v278-linha' + (x && x.identificada ? ' ok' : '') + '" id="v278Linha"><b>🔎 Máquina a identificar</b> — «' + E(dsc) + '» · ' + E(qtdTxt(q)) + '.';
+    if (!x && D && D.sumiu) {
+      h += '<span class="cros-sub">A marca "🔎 máquina a identificar" não está mais neste card no banco (alguém tirou, ou ele virou só Peça). Feche e abra o card de novo.</span>';
+    } else if (!x) {
+      h += D && D.erro ? '<span class="cros-sub" style="color:#B42318">Não consegui conferir se a máquina já foi identificada: ' + E(D.erro) + ' <button type="button" class="v278-lnk" data-v278="reler">tentar de novo</button></span>'
+                       : '<span class="cros-sub">⏳ conferindo se a máquina já foi identificada…</span>';
+    } else if (x.identificada) {
+      var noCard = Number(x.maquinas_card) > 0, osM = rotulosOS(x);
+      var conhecidas = x.maquinas_conhecidas != null ? Number(x.maquinas_conhecidas) : (osM.length + Number(x.maquinas_card || 0));   // auditoria 1, nº 4: card ∪ OS, sem repetir
+      h += '<span class="cros-sub">✓ Identificada' + (noCard ? ' — a máquina está no card' : '') + (osM.length ? (noCard ? '; ' : ' — ') + 'na OS: ' + E(osM.join(', ')) : '') + '.' +
+           (!noCard && osM.length ? ' Ainda <b>fora do card</b>: inclua para a proposta e a ficha usarem a máquina.' : '') +
+           (Number(q) >= 2 && conhecidas < Number(q) ? ' O cliente disse ' + E(qtdTxt(q)) + ': cadastre as outras no card (🛠 Máquinas do card) e abra uma OS por máquina.' : '') + '</span>';
+    } else if (Number(q) >= 2) {
+      h += '<span class="cros-sub">Uma OS por máquina: cadastre as ' + E(q) + ' máquinas no card (<b>🛠 Máquinas do card › ＋ Cadastrar máquina deste cliente</b>) e abra uma OS para cada. ' +
+           'Se abrir a OS sem máquina, ela vale para <b>uma</b> máquina — o técnico cadastra na coleta do PCF.</span>';
+    } else {
+      h += '<span class="cros-sub">Pode abrir a OS sem máquina: o técnico cadastra a máquina na coleta do PCF (preventiva ou inspeção) e ela entra na OS sozinha. ' +
+           'Ou cadastre agora em <b>🛠 Máquinas do card</b>.</span>';
+    }
+    if (x && !x.identificada && Number(x.os_sem_maquina) > 0) h += '<span class="cros-sub">A OS deste card está sem máquina: o técnico cadastra na coleta do PCF (se a coleta já foi feita, a máquina aparece aqui quando o espelho sincronizar).</span>';
+    if (F) {
+      h += '<div class="v278-form" role="group" aria-label="Mudar a máquina a identificar">' +
+           '<div><label for="v278EdDesc">O que o cliente tem *</label><input id="v278EdDesc" maxlength="160" value="' + E(F.desc0) + '" readonly onfocus="this.removeAttribute(\'readonly\')" autocomplete="off" name="v278_eddesc_nofill" data-lpignore="true" data-1p-ignore></div>' +
+           '<div><label for="v278EdQtd">Quantas</label><input id="v278EdQtd" type="number" min="1" max="50" step="1" inputmode="numeric" value="' + E(F.qtd0) + '" placeholder="não sei" readonly onfocus="this.removeAttribute(\'readonly\')" autocomplete="off" name="v278_edqtd_nofill" data-lpignore="true" data-1p-ignore></div>' +
+           '<div class="v278-acoes"><button type="button" class="btn btn-primary btn-sm" data-v278="salvarDef">Salvar</button><button type="button" class="btn btn-secondary btn-sm" data-v278="cancelarDef">Cancelar</button></div></div>';
+    } else if (V278.tirar === o.id) {
+      h += '<div class="v278-acoes" role="group" aria-label="Tirar a marca"><span>Tirar a marca "🔎 máquina a identificar" deste card?</span>' +
+           '<button type="button" class="btn btn-primary btn-sm" data-v278="tirarSim">Sim, tirar</button><button type="button" class="btn btn-secondary btn-sm" data-v278="tirarNao">Não</button></div>';
+    } else if (podeEscrever()) {
+      var incluir = x && x.identificada && !(Number(x.maquinas_card) > 0) && (x.maquinas_os || []).length;
+      h += '<div class="v278-acoes">' +
+           (incluir ? '<button type="button" class="btn btn-primary btn-sm" data-v278="incluir" data-pw-off="1">＋ Incluir no card: ' + E(rotulosOS(x).join(', ')) + '</button>' : '') +
+           '<button type="button" class="v278-lnk" data-v278="mudar">✎ mudar</button>' +
+           (x && x.identificada && Number(x.maquinas_card) > 0 ? '<button type="button" class="v278-lnk" data-v278="tirar">tirar a marca</button>' : '') + '</div>';   // auditoria 1, nº 1: só com máquina NO CARD
+    }
+    return h + '</div>';
+  }
+  function podeEscrever() { try { return typeof _v200Pode !== 'function' || _v200Pode(); } catch (e) { return true; } }
+  if (typeof _crosCardHtml === 'function') {
+    V278.orig.crosHtml = _crosCardHtml;
+    _crosCardHtml = function (o, c, col) {
+      var h = V278.orig.crosHtml.apply(this, arguments);
+      try {
+        if (!off() && o && T(o.maquina_a_identificar) && !o.perdida_em && !o.fechada_em && !soPeca(o)) {
+          if (!(o.maquina_ids || []).length) h = h.replace('cliente e máquinas já preenchidos; ao gravar', 'cliente preenchido (máquina a identificar: o técnico cadastra na coleta); ao gravar');   // auditoria 1, nº 8
+          h = linhaCard(o) + h;
+        }
+      } catch (e) { try { console.warn('[V278] card:', e); } catch (x) {} }
+      return h;
+    };
+  }
+  // a máquina cadastrada no CAMPO não está na cópia deste computador: a linha "Máquinas" mostraria o id (MK-…). O nome vem do banco.
+  function nomesDoBanco(o) {
+    var D = V278.det[o.id], x = D && D.row; if (!x || !(x.maquinas_os || []).length || !Array.isArray(x.rotulos_os)) return;
+    var nome = {}; x.maquinas_os.forEach(function (id, i) { if (x.rotulos_os[i]) nome[T(id)] = T(x.rotulos_os[i]); });
+    var lab = Array.prototype.find.call(document.querySelectorAll('#v200ModalBody .v200-grid > div'), function (d) { return T(d.textContent) === 'Máquinas'; });
+    var cel = lab && lab.nextElementSibling; if (!cel) return;
+    Array.prototype.forEach.call(cel.childNodes, function (n) { if (n.nodeType === 3 && nome[T(n.nodeValue)]) n.nodeValue = nome[T(n.nodeValue)]; });
+  }
+  // a linha "Máquinas" e o "Para andar" do card: o vermelho "sem máquina" vira o 🔎 (o card tem a saída: o técnico cadastra no campo)
+  function decorarCard() {
+    var M = _v200.modal; if (!M || M.tipo !== 'card' || !M.d || !M.d.card) return;
+    var o = M.d.card;
+    nomesDoBanco(o);
+    var dsc = T(o.maquina_a_identificar); if (!dsc || (o.maquina_ids || []).length || o.modelo_id || soPeca(o)) return;
+    var D = V278.det[o.id], x = D && D.row;
+    if (x && x.identificada) {   // auditoria 1, nº 1: identificada pela OS e ainda fora do card — diz isso, não "a identificar"
+      dsc = '✓ na OS: ' + rotulosOS(x).join(', ') + ' — ainda fora do card (＋ Incluir no card, na caixa da OS)';
+    }
+    var body = document.getElementById('v200ModalBody'); if (!body) return;
+    var txt = x && x.identificada ? dsc : '🔎 a identificar — «' + dsc + '»' + (o.maquinas_previstas ? ' · ' + qtdTxt(o.maquinas_previstas) : '');
+    Array.prototype.forEach.call(body.querySelectorAll('.v200-grid > div > span, .v200-falta > span'), function (sp) {
+      if (T(sp.textContent) !== 'sem máquina' && !sp.hasAttribute('data-v278m')) return;
+      sp.setAttribute('data-v278m', '1');
+      sp.textContent = sp.parentNode && sp.parentNode.classList && sp.parentNode.classList.contains('v200-falta') ? (x && x.identificada ? 'máquina na OS, fora do card' : '🔎 máquina a identificar') : txt;
+      sp.removeAttribute('style'); sp.classList.add('v278-est');
+    });
+  }
+  if (typeof _v200PintarCard === 'function') {
+    V278.orig.pintarCard = _v200PintarCard;
+    _v200PintarCard = function () {
+      var r = V278.orig.pintarCard.apply(this, arguments);
+      try { if (!off()) decorarCard(); } catch (e) { try { console.warn('[V278] card:', e); } catch (x) {} }
+      return r;
+    };
+  }
+  async function salvarDef(bt, limpar) {
+    var M = _v200.modal, o = M && M.d && M.d.card; if (!o) return;
+    var d = '', q = null;
+    if (!limpar) {
+      var v = validar((document.getElementById('v278EdDesc') || {}).value, (document.getElementById('v278EdQtd') || {}).value);
+      if (v.erro) { toast(v.erro, 'error'); var f = document.getElementById(v.campo === 'v278Desc' ? 'v278EdDesc' : 'v278EdQtd'); if (f) { f.removeAttribute('readonly'); try { f.focus(); } catch (e) {} } return; }
+      d = v.d; q = v.q;
+    }
+    if (!bt || bt.getAttribute('data-pcm-enviando')) return;
+    botaoOcupado(bt, true);
+    try {
+      var r = await _v200Rpc('crm_a_identificar_definir', { p_id: o.id, p_descricao: d, p_quantidade: q }, true);
+      if (_v200.modal !== M || !M.d || !M.d.card || M.d.card.id !== o.id) return;
+      M.d.card.maquina_a_identificar = (r && r.maquina_a_identificar) || null;   // o que o SERVIDOR devolveu
+      M.d.card.maquinas_previstas = r && r.maquinas_previstas != null ? r.maquinas_previstas : null;
+      V278.form = null; V278.tirar = null;
+      if (V278.mapa) { if (M.d.card.maquina_a_identificar) { var x0 = V278.mapa[o.id] || {}; x0.id = o.id; x0.descricao = M.d.card.maquina_a_identificar; x0.quantidade = M.d.card.maquinas_previstas; V278.mapa[o.id] = x0; } else delete V278.mapa[o.id]; }
+      toast(limpar ? 'Marca "🔎 máquina a identificar" tirada do card.' : (r && r.mudou === false ? 'Nada mudou.' : 'Máquina a identificar atualizada.'), 'success');
+      delete V278.det[o.id]; _v200PintarCard();
+    } catch (e) {
+      toast(semSql(e) ? MSG_SEM_SQL : ((e && e.message) || String(e)), 'error');
+      if (limpar) { V278.tirar = null; try { _crosNoCard(); } catch (x) {} }   // recusado: o balão fecha (a frase do banco ficou no aviso)
+    } finally { botaoOcupado(bt, false); }
+  }
+
+  async function incluirNoCard(bt) {
+    var M = _v200.modal, o = M && M.d && M.d.card; if (!o) return;
+    var D = V278.det[o.id], x = D && D.row; if (!x || !(x.maquinas_os || []).length) return;
+    if (!bt || bt.getAttribute('data-pcm-enviando')) return;
+    botaoOcupado(bt, true, '⏳ Incluindo…');
+    try {
+      await _v200Rpc('crm_card_maquinas', { p_id: o.id, p_incluir: x.maquinas_os, p_retirar: null, p_versao: null }, true);
+      toast('Máquina incluída no card: ' + rotulosOS(x).join(', ') + '.', 'success');
+      delete V278.det[o.id];
+      if (_v200.modal === M) _v200AbrirCard(o.id);   // relê o card do banco (máquinas, coluna, proposta)
+    } catch (e) { toast((e && e.message) || String(e), 'error'); }
+    finally { botaoOcupado(bt, false); }
+  }
+
+  // ═══ E · EDITOR DA PROPOSTA ═══════════════════════════════════════════════════════════════════════════════════════════
+  if (typeof _v204Pintar === 'function') {
+    V278.orig.edPintar = _v204Pintar;
+    _v204Pintar = function () {
+      var r = V278.orig.edPintar.apply(this, arguments);
+      try {
+        if (off()) return r;
+        var ED = (typeof V204 !== 'undefined') ? V204.ed : null; if (!ED) return r;
+        var M = _v200.modal, oc = M && M.d && M.d.card && M.d.card.id === ED.op ? M.d.card : null;
+        var dsc = oc ? T(oc.maquina_a_identificar) : T((doMapa(ED.op) || {}).descricao);
+        if (!dsc || (oc && soPeca(oc))) return r;
+        var xr = (V278.det[ED.op] && V278.det[ED.op].row) || doMapa(ED.op);
+        var frase = xr && xr.identificada ? '🔎 Máquina identificada na OS (' + rotulosOS(xr).join(', ') + ') — inclua no card para a proposta usar a máquina'
+                                          : '🔎 Máquina a identificar: ' + dsc + ' (o técnico cadastra no campo)';
+        Array.prototype.forEach.call(document.querySelectorAll('span.v204-est'), function (s) {
+          if (T(s.textContent) === 'sem máquina no card') { s.textContent = frase; s.classList.add('v278-est'); s.classList.remove('v243-sem'); s.removeAttribute('style'); }
+        });
+      } catch (e) {}
+      return r;
+    };
+  }
+
+  // ═══ F · cliques ════════════════════════════════════════════════════════════════════════════════════════════════════
+  document.addEventListener('click', function (ev) {
+    var b = ev.target && ev.target.closest && ev.target.closest('[data-v278]'); if (!b || off()) return;
+    var a = b.getAttribute('data-v278');
+    if (a === 'on') {   // o checkbox: deixa marcar e repinta o quadrinho
+      var M = _v200.modal; if (!M || M.tipo !== 'nova') return;
+      setTimeout(function () { if (_v200.modal !== M) return; lerCampos(M); estado(M).on = !!b.checked; pintarBox(M);
+        if (estado(M).on) { var d = document.getElementById('v278Desc'); if (d) { d.removeAttribute('readonly'); try { d.focus(); } catch (e) {} } } }, 0);
+      return;
+    }
+    if (b.disabled) return;
+    ev.preventDefault(); ev.stopPropagation();
+    var M2 = _v200.modal, o = M2 && M2.d && M2.d.card;
+    if (a === 'reler') { if (o) { delete V278.det[o.id]; _crosNoCard(); } return; }
+    if (!o) return;
+    if (a === 'incluir') return incluirNoCard(b);
+    if (a === 'mudar') { V278.tirar = null; V278.form = { id: o.id, desc0: T(o.maquina_a_identificar), qtd0: o.maquinas_previstas != null ? String(o.maquinas_previstas) : '' }; _crosNoCard();
+      var f = document.getElementById('v278EdDesc'); if (f) { f.removeAttribute('readonly'); try { f.focus(); } catch (e) {} } return; }
+    if (a === 'cancelarDef') { V278.form = null; _crosNoCard(); return; }
+    if (a === 'salvarDef') return salvarDef(b, false);
+    if (a === 'tirar') { V278.form = null; V278.tirar = o.id; _crosNoCard(); return; }
+    if (a === 'tirarNao') { V278.tirar = null; _crosNoCard(); return; }
+    if (a === 'tirarSim') return salvarDef(b, true);
+  }, true);
+  // Enter no campo da linha = Salvar; Esc = Cancelar (sem fechar o card por baixo)
+  document.addEventListener('keydown', function (ev) {
+    var t = ev.target; if (off() || !t || (t.id !== 'v278EdDesc' && t.id !== 'v278EdQtd')) return;
+    if (ev.key === 'Enter') { ev.preventDefault(); var s = document.querySelector('[data-v278="salvarDef"]'); if (s) s.click(); }
+    else if (ev.key === 'Escape' || ev.key === 'Esc') { ev.preventDefault(); ev.stopImmediatePropagation(); V278.form = null; _crosNoCard(); }
+  }, true);
+  // a caixa da OS é repintada por outros (contexto a cada 15 s, envios…): o campo em edição volta com o foco e o cursor
+  if (typeof _crosNoCard === 'function') {
+    V278.orig.crosNoCard = _crosNoCard;
+    _crosNoCard = function () {
+      var a = document.activeElement, id = a && (a.id === 'v278EdDesc' || a.id === 'v278EdQtd') ? a.id : '', p = null;
+      try { if (id === 'v278EdDesc') p = a.selectionStart; } catch (e) {}
+      var r = V278.orig.crosNoCard.apply(this, arguments);
+      if (id) { var n = document.getElementById(id); if (n && n !== a) { n.removeAttribute('readonly'); try { n.focus({ preventScroll: true }); if (p != null) n.setSelectionRange(p, p); } catch (e) {} } }
+      return r;
+    };
+  }
+  // card fechado/trocado: esquece a edição em aberto
+  if (typeof _v200AbrirCard === 'function') {
+    V278.orig.abrirCard = _v200AbrirCard;
+    _v200AbrirCard = function () { V278.form = null; V278.tirar = null; return V278.orig.abrirCard.apply(this, arguments); };
+  }
+  if (typeof _v200Fechar === 'function') {
+    V278.orig.fechar = _v200Fechar;
+    _v200Fechar = function () { V278.form = null; V278.tirar = null; return V278.orig.fechar.apply(this, arguments); };
+  }
+})();
+</script>
+<!-- ████ FIM PCM V278 ████ -->
 </body>
 </html>
