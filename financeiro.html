@@ -1,0 +1,1710 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<!--
+  ══════════════════════════════════════════════════════════════════════
+  FINANCEIRO_V1 — 11/10/2026 (rodada 2026-10-11_financeiro_base)
+  Página NOVA e separada do PCM (não toca no index.html de 5,8 MB). Fala só com as funções fin_* do Supabase
+  (FINANCEIRO_BASE + FINANCEIRO_CADASTROS) usando o crachá do login com PIN (proper_session.supa_token).
+  Só Financeiro e administrador enxergam: quem não pode recebe a frase do banco, não uma tela vazia.
+  🔴 NÃO PUBLICAR antes das auditorias (nível 3, dinheiro) e antes de os dois SQL rodarem no Supabase.
+  O leitor de XML (PCFiscal) vai embutido abaixo, sem dependências.
+  Limite conhecido da V1: o crachá vale 12 h e esta página não o renova sozinha — vencido, entre de novo pelo Hub.
+  ══════════════════════════════════════════════════════════════════════
+-->
+<title>Proper · Financeiro · FINANCEIRO_V1</title>
+<style>
+:root{--bg:#f5f6f8;--card:#fff;--tx:#1d2433;--mut:#5d6779;--bd:#d9dde5;--pri:#1b5fd1;--pri-tx:#fff;--ok:#16794a;--okbg:#e2f4ea;--ruim:#b42318;--ruimbg:#fde8e6;--av:#8a5a00;--avbg:#fff1cf;--cinza:#eef0f4}
+@media (prefers-color-scheme:dark){:root:not([data-tema="claro"]){--bg:#10141c;--card:#181e29;--tx:#e8ecf3;--mut:#9aa5b8;--bd:#2c3546;--pri:#6ea0ff;--pri-tx:#08101f;--ok:#58d49a;--okbg:#12301f;--ruim:#ff8f84;--ruimbg:#3a1714;--av:#f2c15b;--avbg:#3a2c0b;--cinza:#222a38}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.45 system-ui,Segoe UI,Roboto,Arial,sans-serif}
+header{background:var(--card);border-bottom:1px solid var(--bd);padding:10px 16px;display:flex;gap:12px;align-items:center;flex-wrap:wrap;position:sticky;top:0;z-index:5}
+header h1{font-size:1.1rem;margin:0}
+header .quem{margin-left:auto;color:var(--mut);font-size:.88rem}
+nav{display:flex;gap:4px;flex-wrap:wrap}
+nav button{border:1px solid transparent;background:none;color:var(--tx);padding:7px 12px;border-radius:8px;cursor:pointer;font:inherit}
+nav button[aria-current="true"]{background:var(--pri);color:var(--pri-tx)}
+nav button:hover:not([aria-current="true"]){background:var(--cinza)}
+main{max-width:1180px;margin:0 auto;padding:16px}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:14px 16px;margin-bottom:14px}
+.card h2{font-size:1rem;margin:0 0 10px}
+.grid{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(190px,1fr))}
+.kpi{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:12px 14px}
+.kpi .t{color:var(--mut);font-size:.82rem}.kpi .v{font-size:1.35rem;font-weight:650;margin-top:2px}
+.kpi.ruim .v{color:var(--ruim)}.kpi.ok .v{color:var(--ok)}
+.barra{display:flex;gap:8px;flex-wrap:wrap;align-items:end;margin-bottom:12px}
+label.c{display:flex;flex-direction:column;gap:3px;font-size:.82rem;color:var(--mut)}
+input,select,textarea{font:inherit;color:var(--tx);background:var(--card);border:1px solid var(--bd);border-radius:8px;padding:7px 9px;min-width:0}
+input[type=checkbox]{width:auto}
+textarea{width:100%;min-height:60px}
+button.b{font:inherit;border:1px solid var(--bd);background:var(--card);color:var(--tx);padding:7px 12px;border-radius:8px;cursor:pointer}
+button.b:hover{background:var(--cinza)}
+button.b.pri{background:var(--pri);color:var(--pri-tx);border-color:var(--pri)}
+button.b.ruim{color:var(--ruim);border-color:var(--ruim)}
+button.b.peq{padding:3px 9px;font-size:.85rem}
+button:disabled{opacity:.55;cursor:not-allowed}
+.tw{overflow-x:auto}
+table{border-collapse:collapse;width:100%}
+th,td{padding:7px 9px;border-bottom:1px solid var(--bd);text-align:left;vertical-align:top;font-size:.9rem}
+th{color:var(--mut);font-weight:600;white-space:nowrap;font-size:.8rem}
+td.n,th.n{text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
+tr.cl{cursor:pointer}tr.cl:hover td{background:var(--cinza)}
+tfoot td{font-weight:650}
+.chip{display:inline-block;border-radius:999px;padding:1px 9px;font-size:.78rem;background:var(--cinza);white-space:nowrap}
+.chip.ok{background:var(--okbg);color:var(--ok)}.chip.ruim{background:var(--ruimbg);color:var(--ruim)}.chip.av{background:var(--avbg);color:var(--av)}
+.mut{color:var(--mut)}.vazio{padding:18px;text-align:center;color:var(--mut)}
+.aviso{background:var(--avbg);color:var(--av);border-radius:8px;padding:8px 12px;margin-bottom:10px}
+.erro{background:var(--ruimbg);color:var(--ruim);border-radius:8px;padding:8px 12px;margin-bottom:10px}
+.fundo{position:fixed;inset:0;background:rgba(10,14,22,.55);display:flex;align-items:flex-start;justify-content:center;overflow:auto;padding:24px 12px;z-index:20}
+.jan{background:var(--card);border:1px solid var(--bd);border-radius:14px;width:100%;max-width:720px;padding:16px 18px}
+.jan h3{margin:0 0 12px;font-size:1.05rem}
+.jan .rod{display:flex;gap:8px;justify-content:flex-end;margin-top:14px;flex-wrap:wrap}
+.f2{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
+.f2 .todo{grid-column:1/-1}
+#toast{position:fixed;bottom:14px;left:50%;transform:translateX(-50%);z-index:40;display:flex;flex-direction:column;gap:6px;align-items:center;pointer-events:none}
+#toast div{background:var(--tx);color:var(--bg);padding:8px 14px;border-radius:10px;font-size:.9rem;max-width:90vw}
+.drop{border:2px dashed var(--bd);border-radius:12px;padding:22px;text-align:center;color:var(--mut)}
+.drop.sobre{border-color:var(--pri);background:var(--cinza)}
+.gr{display:flex;gap:6px;align-items:end;height:110px}
+.gr .m{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;min-width:44px}
+.gr .bs{display:flex;gap:3px;align-items:end;height:90px}
+.gr .bs i{display:block;width:16px;border-radius:3px 3px 0 0;min-height:1px}
+.gr .bs i.r{background:var(--ok)}.gr .bs i.p{background:var(--ruim)}
+.gr small{color:var(--mut);font-size:.72rem}
+.leg{font-size:.8rem;color:var(--mut);margin-top:4px}.leg b{display:inline-block;width:10px;height:10px;border-radius:2px;margin:0 4px -1px 8px}
+.vlr{font-variant-numeric:tabular-nums;font-weight:600;white-space:nowrap}.vlr.e{color:var(--ok)}.vlr.s{color:var(--ruim)}
+.sug{font-size:.88rem}.sug small{display:block;color:var(--mut)}
+details.sec{border:1px solid var(--bd);border-radius:10px;padding:6px 10px;margin:8px 0}details.sec>summary{cursor:pointer;font-weight:600;padding:3px 0}
+.soma{padding:6px 10px;border-radius:8px;background:var(--cinza);margin:8px 0;font-variant-numeric:tabular-nums}.soma.ok{background:var(--okbg);color:var(--ok)}.soma.ruim{background:var(--ruimbg);color:var(--ruim)}
+td input.mini{width:92px;padding:3px 6px}
+@media (max-width:600px){main{padding:10px}header{padding:8px 10px}}
+@media print{header,#toast,.semimp{display:none!important}body{background:#fff;color:#000;font-size:11px}.card{border:0;padding:0;box-shadow:none}.tw{overflow:visible}th,td{padding:2px 4px}}
+</style>
+</head>
+<body>
+<header>
+  <h1>💰 Financeiro</h1>
+  <nav id="nav" aria-label="Seções"></nav>
+  <span class="quem" id="quem"></span>
+</header>
+<main id="main"><div class="vazio">Carregando…</div></main>
+<div id="toast" aria-live="polite"></div>
+
+<script>
+/* leitor_xml_fiscal.js — ProperCare · financeiro_base (11/10/2026)
+ * Lê o XML de NF-e (modelo 55, procNFe), o evento de cancelamento (procEventoNFe 110111) e a NFS-e do
+ * padrão nacional (NFSe 1.01 / distribuição) e devolve um objeto NORMALIZADO, sem dependência (serve no
+ * navegador, no Deno da Edge Function e no Node). NÃO grava nada: quem grava é o SQL (fin_nota_importar).
+ *   const r = PCFiscal.ler(textoXml);   // { ok, tipo, ..., avisos:[], erros:[] }
+ * Regras: dinheiro sai como NÚMERO com a precisão do XML (preço unitário tem até 6 casas); a conferência de
+ * soma usa CENTAVOS INTEIROS (nunca ponto flutuante direto); o que não bate vira aviso/erro, nunca é "arrumado".
+ */
+(function (raiz) {
+  'use strict';
+
+  // ── 1 · mini leitor de XML (nomes sem prefixo de namespace) ─────────────────────────────────────────
+  function lerXml(s) {
+    if (typeof s !== 'string') throw new Error('XML: esperava texto');
+    s = s.replace(/^﻿/, '');
+    var i = 0, n = s.length, raiz = { n: '#raiz', a: {}, c: [], t: '' }, pilha = [raiz];
+    function decod(t) {
+      return t.replace(/&(#x[0-9a-fA-F]+|#\d+|lt|gt|amp|quot|apos);/g, function (m, e) {
+        if (e === 'lt') return '<'; if (e === 'gt') return '>'; if (e === 'amp') return '&';
+        if (e === 'quot') return '"'; if (e === 'apos') return "'";
+        var cp = e[1] === 'x' ? parseInt(e.slice(2), 16) : parseInt(e.slice(1), 10);
+        return cp >= 0 && cp <= 0x10FFFF ? String.fromCodePoint(cp) : m;
+      });
+    }
+    while (i < n) {
+      var lt = s.indexOf('<', i);
+      if (lt < 0) { var resto = s.slice(i).trim(); if (resto) throw new Error('XML: texto solto depois do fim'); break; }
+      if (lt > i) { var tx = s.slice(i, lt); if (tx.trim()) pilha[pilha.length - 1].t += decod(tx); }
+      if (s.startsWith('<!--', lt)) { var f = s.indexOf('-->', lt + 4); if (f < 0) throw new Error('XML: comentário aberto'); i = f + 3; continue; }
+      if (s.startsWith('<![CDATA[', lt)) { var f2 = s.indexOf(']]>', lt + 9); if (f2 < 0) throw new Error('XML: CDATA aberto'); pilha[pilha.length - 1].t += s.slice(lt + 9, f2); i = f2 + 3; continue; }
+      if (s.startsWith('<?', lt)) { var f3 = s.indexOf('?>', lt + 2); if (f3 < 0) throw new Error('XML: instrução aberta'); i = f3 + 2; continue; }
+      if (s.startsWith('<!', lt)) { var f4 = s.indexOf('>', lt + 2); if (f4 < 0) throw new Error('XML: declaração aberta'); i = f4 + 1; continue; }
+      var gt = lt + 1, asp = null;                       // acha o '>' que fecha a marca, respeitando aspas dos atributos
+      while (gt < n) { var ch = s[gt]; if (asp) { if (ch === asp) asp = null; } else if (ch === '"' || ch === "'") asp = ch; else if (ch === '>') break; gt++; }
+      if (gt >= n) throw new Error('XML: marca sem fim');
+      var tag = s.slice(lt + 1, gt);
+      if (tag[0] === '/') {
+        var nomeF = tag.slice(1).trim().replace(/^.*:/, '');
+        var topo = pilha.pop();
+        if (!topo || topo.n !== nomeF) throw new Error('XML: </' + nomeF + '> não fecha <' + (topo && topo.n) + '>');
+      } else {
+        var vazio = tag.endsWith('/'); if (vazio) tag = tag.slice(0, -1);
+        var m = /^([^\s/>]+)([\s\S]*)$/.exec(tag); if (!m) throw new Error('XML: marca vazia');
+        var no = { n: m[1].replace(/^.*:/, ''), a: {}, c: [], t: '' };
+        var re = /([^\s=]+)\s*=\s*("([^"]*)"|'([^']*)')/g, am;
+        while ((am = re.exec(m[2]))) { var nomeA = am[1].replace(/^.*:/, ''); if (am[1].indexOf('xmlns') !== 0) no.a[nomeA] = decod(am[3] !== undefined ? am[3] : am[4]); }
+        pilha[pilha.length - 1].c.push(no);
+        if (!vazio) pilha.push(no);
+      }
+      i = gt + 1;
+    }
+    if (pilha.length !== 1) throw new Error('XML: <' + pilha[pilha.length - 1].n + '> sem fechamento');
+    if (!raiz.c.length) throw new Error('XML vazio');
+    return raiz.c[0];
+  }
+
+  // ── 2 · acesso por caminho ───────────────────────────────────────────────────────────────────────────
+  function filho(no, nome) { if (!no) return null; for (var k = 0; k < no.c.length; k++) if (no.c[k].n === nome) return no.c[k]; return null; }
+  function filhos(no, nome) { return no ? no.c.filter(function (x) { return x.n === nome; }) : []; }
+  function cam(no, caminho) { var p = caminho.split('/'), a = no; for (var k = 0; k < p.length && a; k++) a = filho(a, p[k]); return a; }
+  function txt(no, caminho) { var a = caminho ? cam(no, caminho) : no; return a ? a.t.trim() : ''; }
+  function ach(no, nome) {                              // 1ª ocorrência em qualquer profundidade
+    if (!no) return null; if (no.n === nome) return no;
+    for (var k = 0; k < no.c.length; k++) { var r = ach(no.c[k], nome); if (r) return r; } return null;
+  }
+  function num(v) { if (v === '' || v == null) return null; var x = Number(v); return isFinite(x) ? x : null; }
+  function cent(x) { return x == null ? null : Math.round(x * 100); }
+  function soDig(v) { return String(v || '').replace(/\D+/g, ''); }
+
+  // ── 3 · NF-e (procNFe) ───────────────────────────────────────────────────────────────────────────────
+  function lerNfe(raizNo) {
+    var av = [], er = [];
+    var nfe = raizNo.n === 'NFe' ? raizNo : cam(raizNo, 'NFe'), inf = filho(nfe, 'infNFe');
+    if (!inf) throw new Error('NF-e sem infNFe');
+    var prot = cam(raizNo, 'protNFe/infProt');
+    var chave = soDig(inf.a.Id || '').slice(-44);
+    if (chave.length !== 44) er.push('chave de acesso inválida no Id (' + (inf.a.Id || '') + ')');
+    if (prot && txt(prot, 'chNFe') && soDig(txt(prot, 'chNFe')) !== chave) er.push('chave do protocolo difere da chave da nota');
+    var ide = filho(inf, 'ide'), emit = filho(inf, 'emit'), dest = filho(inf, 'dest');
+    var cStat = prot ? txt(prot, 'cStat') : '';
+    var status = !prot ? 'sem_protocolo' : (cStat === '100' || cStat === '150') ? 'autorizada' : (cStat === '101' || cStat === '135' || cStat === '151') ? 'cancelada' : 'rejeitada';
+    if (!prot) av.push('XML sem protocolo de autorização (não é procNFe): não vale como nota autorizada');
+    var itens = filhos(inf, 'det').map(function (d) {
+      var p = filho(d, 'prod'), im = cam(d, 'imposto/ICMS'), g = im && im.c[0];     // ICMSSN102, ICMS00…
+      var orig = g ? txt(g, 'orig') : '', csosn = g ? (txt(g, 'CSOSN') || txt(g, 'CST')) : '';
+      return {
+        n: Number(d.a.nItem), codigo: txt(p, 'cProd'), descricao: txt(p, 'xProd'), ncm: txt(p, 'NCM'), cest: txt(p, 'CEST') || null,
+        cfop: txt(p, 'CFOP'), un: txt(p, 'uCom'), qtd: num(txt(p, 'qCom')), valor_unit: num(txt(p, 'vUnCom')), valor_total: num(txt(p, 'vProd')),
+        desconto: num(txt(p, 'vDesc')) || 0, frete: num(txt(p, 'vFrete')) || 0, origem: orig || null, csosn_cst: csosn || null,
+        regime_icms: g ? g.n : null
+      };
+    });
+    var tot = cam(inf, 'total/ICMSTot');
+    var totais = tot ? { produtos: num(txt(tot, 'vProd')), frete: num(txt(tot, 'vFrete')) || 0, desconto: num(txt(tot, 'vDesc')) || 0,
+                         outras: num(txt(tot, 'vOutro')) || 0, icms: num(txt(tot, 'vICMS')) || 0, nota: num(txt(tot, 'vNF')),
+                         seguro: num(txt(tot, 'vSeg')) || 0, ii: num(txt(tot, 'vII')) || 0, ipi: num(txt(tot, 'vIPI')) || 0, ipi_devol: num(txt(tot, 'vIPIDevol')) || 0,
+                         st: num(txt(tot, 'vST')) || 0, fcp_st: num(txt(tot, 'vFCPST')) || 0, icms_deson: num(txt(tot, 'vICMSDeson')) || 0 } : null;
+    var parcelas = filhos(filho(inf, 'cobr'), 'dup').map(function (d, k) {
+      return { numero: txt(d, 'nDup') || String(k + 1).padStart(3, '0'), vencimento: txt(d, 'dVenc') || null, valor: num(txt(d, 'vDup')) };
+    });
+    var pgto = filhos(filho(inf, 'pag'), 'detPag').map(function (d) { return { forma: txt(d, 'tPag'), valor: num(txt(d, 'vPag')) }; });
+    var infCpl = txt(inf, 'infAdic/infCpl');
+    var oc = /Orde?m?\s+de\s+Compra\s*:?\s*([A-Za-z0-9./-]+)/i.exec(infCpl);
+    var tpNF = txt(ide, 'tpNF');
+    var r = {
+      ok: false, tipo: 'nfe', modelo: txt(ide, 'mod'), serie: txt(ide, 'serie'), numero: Number(txt(ide, 'nNF')), chave: chave,
+      protocolo: prot ? txt(prot, 'nProt') : null, status: status, cstat: cStat || null, ambiente: txt(ide, 'tpAmb') === '1' ? 'producao' : 'homologacao',
+      tp_nf: tpNF, direcao_xml: tpNF === '0' ? 'entrada' : 'saida', natureza: txt(ide, 'natOp'), finalidade: txt(ide, 'finNFe'),     // a DIREÇÃO (entrada/saída) quem decide é o banco, pelo CNPJ da empresa — nunca só o tpNF
+      emitida_em: txt(ide, 'dhEmi') || null, saida_em: txt(ide, 'dhSaiEnt') || null,
+      emitente: { cnpj: soDig(txt(emit, 'CNPJ') || txt(emit, 'CPF')), nome: txt(emit, 'xNome'), ie: txt(emit, 'IE') || null, crt: txt(emit, 'CRT') || null,
+                  uf: txt(emit, 'enderEmit/UF') || null },
+      parte: dest ? { cnpj: soDig(txt(dest, 'CNPJ') || txt(dest, 'CPF')), nome: txt(dest, 'xNome'), ie: txt(dest, 'IE') || null,
+                      uf: txt(dest, 'enderDest/UF') || null, municipio: txt(dest, 'enderDest/xMun') || null, email: txt(dest, 'email') || null } : null,
+      itens: itens, totais: totais, frete_modalidade: txt(inf, 'transp/modFrete') || null, parcelas: parcelas, pagamentos: pgto,
+      info_complementar: infCpl || null, pedido_cliente: oc ? oc[1] : null, avisos: av, erros: er
+    };
+    // conferências (centavos inteiros)
+    var somaIt = itens.reduce(function (a, x) { return a + (cent(x.valor_total) || 0); }, 0);
+    if (totais && cent(totais.produtos) !== somaIt) er.push('soma dos itens (' + somaIt / 100 + ') ≠ valor dos produtos (' + totais.produtos + ')');
+    // coerência interna: o digVal do protocolo da SEFAZ tem de ser igual ao DigestValue da assinatura (os dois vêm do MESMO arquivo; ninguém recalcula o hash). Isto pega arquivo incompleto ou misturado, NÃO pega XML adulterado. A assinatura RSA NÃO é verificada.
+    var dv = ach(raizNo, 'DigestValue'), pv = prot ? txt(prot, 'digVal') : '';
+    r.dig_val = { assinatura: dv ? dv.t.trim() : null, protocolo: pv || null, confere: !!(dv && pv && dv.t.trim() === pv) };
+    if (prot && !r.dig_val.confere) er.push('digVal do protocolo ≠ DigestValue da assinatura (arquivo inconsistente — isto não prova autenticidade)');
+    if (totais) {
+      // fórmula completa do vNF (NT 2013/005): produtos − desconto − ICMS desonerado + ST + FCP ST + frete + seguro + outras + II + IPI + IPI devolvido
+      var esperado = cent(totais.produtos) - cent(totais.desconto) - cent(totais.icms_deson) + cent(totais.st) + cent(totais.fcp_st) + cent(totais.frete) + cent(totais.seguro)
+                   + cent(totais.outras) + cent(totais.ii) + cent(totais.ipi) + cent(totais.ipi_devol);
+      if (esperado !== cent(totais.nota)) er.push('vNF (' + totais.nota + ') não fecha com a fórmula da NF-e (' + esperado / 100 + ')');
+      if (parcelas.length) {
+        var somaP = parcelas.reduce(function (a, x) { return a + (cent(x.valor) || 0); }, 0);
+        if (somaP !== cent(totais.nota)) er.push('soma das parcelas (' + somaP / 100 + ') ≠ valor da nota (' + totais.nota + ')');
+      }
+    } else er.push('nota sem total (ICMSTot)');
+    if (!itens.length) er.push('nota sem itens');
+    if (r.ambiente !== 'producao') av.push('nota de HOMOLOGAÇÃO: não vale como nota real');
+    r.ok = er.length === 0; return r;
+  }
+
+  // ── 4 · evento (cancelamento) ────────────────────────────────────────────────────────────────────────
+  function lerEvento(raizNo) {
+    var evn = filho(raizNo, 'evento'), ev = (evn && filho(evn, 'infEvento')) || ach(raizNo, 'infEvento'), ret = filho(raizNo, 'retEvento'), ri = ret && filho(ret, 'infEvento'), er = [];
+    var tp = txt(ev, 'tpEvento'), det = filho(ev, 'detEvento');
+    var cs = ri ? txt(ri, 'cStat') : '';
+    var chv = soDig(txt(ev, 'chNFe')), chr = ri ? soDig(txt(ri, 'chNFe')) : '', tpr = ri ? txt(ri, 'tpEvento') : '';
+    // homologado = a SEFAZ devolveu 135 (evento registrado) ou 155 (cancelamento fora de prazo) PARA ESTA chave e PARA ESTE tipo de evento (136 = registrado sem vincular à nota: não vale)
+    var r = { ok: false, tipo: 'evento', evento: tp, descricao: txt(det, 'descEvento'), chave: chv, protocolo: ri ? txt(ri, 'nProt') : txt(det, 'nProt'),
+              justificativa: txt(det, 'xJust') || null, quando: txt(ev, 'dhEvento') || null, cstat: cs || null, ret_chave: chr || null, ret_evento: tpr || null,
+              homologado: !!ri && (cs === '135' || cs === '155') && chr === chv && tpr === tp && tp === '110111', avisos: [], erros: er };
+    if (r.chave.length !== 44) er.push('evento com chave inválida');
+    if (!ri) r.avisos.push('evento sem retorno da SEFAZ (retEvento): não vale como homologado');
+    else if (!r.homologado) r.avisos.push('retorno da SEFAZ não homologa ESTE cancelamento (cStat ' + cs + ', chave/tipo do retorno: ' + chr + '/' + tpr + ')');
+    r.ok = er.length === 0; return r;
+  }
+
+  // ── 4b · eventos da NFS-e nacional: cancelamento (e101101) e cancelamento por SUBSTITUIÇÃO (e105102) · rev. 16/10/2026 ───────────
+  // O arquivo "cancelar_nfse_resposta" é o evento já REGISTRADO pelo ambiente nacional (tem dhProc e nSeqEvento em infEvento); a "solicitacao" é só o pedido e NÃO vale.
+  // Outros eventos nacionais que também cancelam a nota (105104 deferimento por análise fiscal, 305101 cancelamento por ofício) ainda não são tratados: erro claro.
+  var EV_NFSE = { '101101': 'cancelamento', '105102': 'cancelamento por substituição' };
+  var EV_NFSE_OUTROS = { '101103': 'pedido de análise fiscal para cancelamento', '105104': 'cancelamento deferido por análise fiscal', '105105': 'cancelamento indeferido por análise fiscal',
+                         '305101': 'cancelamento por ofício' };
+  function lerEventoNfse(raizNo) {
+    var inf = filho(raizNo, 'infEvento'), ped = inf && filho(inf, 'pedRegEvento'), pi = ped && filho(ped, 'infPedReg'), er = [], av = [];
+    var ch = pi ? soDig(txt(pi, 'chNFSe')) : '', cod = '', ec = null;
+    if (pi) for (var k = 0; k < pi.c.length; k++) { var m = /^e(\d{6})$/.exec(pi.c[k].n); if (m) { cod = m[1]; ec = pi.c[k]; break; } }
+    var suportado = !!EV_NFSE[cod];
+    var reg = !!inf && !!txt(inf, 'dhProc') && !!txt(inf, 'nSeqEvento');
+    var r = { ok: false, tipo: 'evento_nfse', evento: suportado ? cod : '', evento_nome: EV_NFSE[cod] || EV_NFSE_OUTROS[cod] || null, chave: ch,
+              justificativa: ec ? (txt(ec, 'xMotivo') || null) : null, codigo_motivo: ec ? (txt(ec, 'cMotivo') || null) : null,
+              chave_substituta: cod === '105102' && ec ? (soDig(txt(ec, 'chSubstituta')) || null) : null,
+              quando: pi ? (txt(pi, 'dhEvento') || null) : null, registrado_em: inf ? (txt(inf, 'dhProc') || null) : null, ambiente: pi && txt(pi, 'tpAmb') === '1' ? 'producao' : 'homologacao',
+              cnpj_autor: pi ? soDig(txt(pi, 'CNPJAutor')) : '', homologado: reg && suportado, avisos: av, erros: er };
+    if (!cod) er.push('não é um evento de cancelamento de NFS-e (e101101 ou e105102)');
+    else if (!suportado) er.push('evento nacional ' + cod + (EV_NFSE_OUTROS[cod] ? ' (' + EV_NFSE_OUTROS[cod] + ')' : '') + ' ainda não é tratado pelo ProperCare: a nota continua autorizada — avise o Financeiro');
+    if (ch.length !== 50) er.push('evento com chave de NFS-e inválida');
+    if (cod === '105102' && (!r.chave_substituta || r.chave_substituta.length !== 50)) er.push('cancelamento por substituição sem a chave da nota substituta');
+    if (cod === '105102' && r.chave_substituta === ch) er.push('a nota substituta é a própria nota');
+    if (!reg) av.push('é o PEDIDO de cancelamento (sem registro do ambiente nacional): não vale — use o arquivo cancelar_nfse_resposta');
+    if (r.ambiente !== 'producao') av.push('evento de HOMOLOGAÇÃO');
+    if (cod === '105102' && r.chave_substituta) av.push('substituída pela NFS-e de chave …' + r.chave_substituta.slice(-8));
+    r.ok = er.length === 0; return r;
+  }
+
+  // ── 5 · NFS-e nacional ───────────────────────────────────────────────────────────────────────────────
+  function lerNfse(raizNo) {
+    var inf = filho(raizNo, 'infNFSe'), er = [], av = [];
+    if (!inf) throw new Error('NFS-e sem infNFSe');
+    var dps = cam(inf, 'DPS/infDPS'), em = filho(inf, 'emit'), tom = filho(dps, 'toma'), serv = filho(dps, 'serv');
+    var id = String(inf.a.Id || '').replace(/^NFS/, '');
+    var vServ = num(txt(dps, 'valores/vServPrest/vServ')), vLiq = num(txt(inf, 'valores/vLiq'));
+    var retido = txt(dps, 'valores/trib/tribMun/tpRetISSQN');
+    var r = {
+      ok: false, tipo: 'nfse', modelo: 'NFSE', padrao: 'nacional', serie: txt(dps, 'serie') || null, numero: Number(txt(inf, 'nNFSe')),
+      chave: id || null, numero_dfse: txt(inf, 'nDFSe') || null, status: txt(inf, 'cStat') === '100' ? 'autorizada' : 'desconhecido', cstat: txt(inf, 'cStat') || null,
+      ambiente: txt(dps, 'tpAmb') === '1' ? 'producao' : 'homologacao', emitida_em: txt(inf, 'dhProc') || txt(dps, 'dhEmi') || null,
+      competencia: txt(dps, 'dCompet') || null, numero_dps: txt(dps, 'nDPS') || null, sistema_emissor: txt(dps, 'verAplic') || null,
+      emitente: { cnpj: soDig(txt(em, 'CNPJ')), nome: txt(em, 'xNome'), im: txt(em, 'IM') || null },
+      parte: tom ? { cnpj: soDig(txt(tom, 'CNPJ') || txt(tom, 'CPF')), nome: txt(tom, 'xNome'), email: txt(tom, 'email') || null,
+                     municipio_ibge: txt(tom, 'end/endNac/cMun') || null } : null,
+      servico: { codigo_trib_nacional: txt(serv, 'cServ/cTribNac'), descricao: txt(serv, 'cServ/xDescServ'), nbs: txt(serv, 'cServ/cNBS') || null,
+                 info_complementar: txt(serv, 'infoCompl/xInfComp') || null, local_prestacao_ibge: txt(serv, 'locPrest/cLocPrestacao') || null },
+      valores: { servico: vServ, liquido: vLiq, base_calculo: num(txt(inf, 'IBSCBS/valores/vBC')), iss_retido: retido === '2' || retido === '3',
+                 ibs: num(txt(inf, 'IBSCBS/totCIBS/gIBS/vIBSTot')), cbs: num(txt(inf, 'IBSCBS/totCIBS/gCBS/vCBS')) },
+      regime: { simples_nacional: txt(dps, 'prest/regTrib/opSimpNac') || null }, substitui: soDig(txt(dps, 'subst/chSubstda')) || null, avisos: av, erros: er
+    };
+    if (vServ == null) er.push('NFS-e sem valor do serviço');
+    if (vServ != null && vLiq != null && cent(vServ) !== cent(vLiq) && !r.valores.iss_retido) av.push('valor líquido ≠ valor do serviço sem retenção — conferir');
+    if (!r.numero) er.push('NFS-e sem número');
+    if (r.ambiente !== 'producao') av.push('NFS-e de HOMOLOGAÇÃO');
+    if (r.substitui) av.push('esta NFS-e SUBSTITUI a de chave …' + r.substitui.slice(-8) + ': importe também o cancelamento por substituição da antiga (senão as duas somam no DAS)');
+    r.ok = er.length === 0; return r;
+  }
+
+  // ── 6 · entrada única ────────────────────────────────────────────────────────────────────────────────
+  function ler(texto) {
+    var no;
+    try { no = lerXml(texto); } catch (e) { return { ok: false, tipo: 'invalido', avisos: [], erros: [String(e.message || e)] }; }
+    try {
+      if (no.n === 'nfeProc' || no.n === 'NFe') return lerNfe(no);
+      if (no.n === 'evento' && ach(no, 'infPedReg')) return lerEventoNfse(no);   // evento da NFS-e nacional (o da NF-e não tem infPedReg)
+      if (no.n === 'procEventoNFe' || no.n === 'envEvento' || no.n === 'evento') return lerEvento(no);
+      if (no.n === 'NFSe') return lerNfse(no);
+      return { ok: false, tipo: 'desconhecido', avisos: [], erros: ['XML não reconhecido (raiz <' + no.n + '>). Aceito: nfeProc, procEventoNFe, NFSe nacional'] };
+    } catch (e) { return { ok: false, tipo: 'invalido', avisos: [], erros: [String(e.message || e)] }; }
+  }
+
+  var API = { ler: ler, lerXml: lerXml, versao: 'financeiro_base-2026-10-16-r4' };
+  if (typeof module !== 'undefined' && module.exports) module.exports = API; else raiz.PCFiscal = API;
+})(typeof self !== 'undefined' ? self : this);
+
+</script>
+<script>
+/* leitor_ofx.js — ProperCare · conciliação (12/10/2026)
+ * Lê o extrato OFX do banco (SGML 1.x e XML 2.x; conta corrente e cartão) e devolve um objeto NORMALIZADO, sem dependência
+ * (navegador e Node). NÃO grava nada: quem grava é o SQL (fin_extrato_importar).
+ *   const r = PCOfx.lerBytes(uint8array)   // detecta a codificação (UTF-8 ou Windows-1252) pelo cabeçalho
+ *   const r = PCOfx.ler(texto)             // { ok, banco_id, agencia, conta_banco, periodo_de, periodo_ate, saldo_final, saldo_final_em, linhas:[…], avisos:[], erros:[] }
+ *   const h = await PCOfx.hash(uint8array) // SHA-256 em hexadecimal (o mesmo arquivo nunca entra duas vezes)
+ * Regras: dinheiro sai como TEXTO com 2 casas exatas (conta em centavos inteiros, nunca ponto flutuante); a data é o dia de Brasília
+ * (DTPOSTED com fuso [-3:BRT] vale como está; em GMT, converte); o que não é compreendido vira ERRO (nada é "arrumado" em silêncio).
+ */
+(function (raiz) {
+  'use strict';
+  var MAX_BYTES = 8 * 1024 * 1024, MAX_LINHAS = 5000;
+
+  function decodificar(bytes) {
+    if (!bytes || typeof bytes.length !== 'number') throw new Error('OFX: esperava bytes');
+    var cab = '';
+    for (var i = 0; i < Math.min(bytes.length, 600); i++) cab += String.fromCharCode(bytes[i] & 127);
+    var cs = (/CHARSET:\s*([A-Za-z0-9-]+)/i.exec(cab) || [])[1] || '', en = (/ENCODING:\s*([A-Za-z0-9-]+)/i.exec(cab) || [])[1] || '';
+    var quer = /1252|latin|8859|ansi/i.test(cs) ? 'windows-1252' : (/utf/i.test(en + cs) ? 'utf-8' : 'utf-8');
+    var TD = (typeof TextDecoder !== 'undefined') ? TextDecoder : require('util').TextDecoder;
+    if (quer === 'utf-8') { try { return new TD('utf-8', { fatal: true }).decode(bytes); } catch (e) { return new TD('windows-1252').decode(bytes); } }
+    return new TD('windows-1252').decode(bytes);
+  }
+
+  function ent(t) {
+    return t.replace(/&(#x[0-9a-fA-F]+|#\d+|lt|gt|amp|quot|apos);/g, function (m, e) {
+      if (e === 'lt') return '<'; if (e === 'gt') return '>'; if (e === 'amp') return '&'; if (e === 'quot') return '"'; if (e === 'apos') return "'";
+      var cp = e[1] === 'x' ? parseInt(e.slice(2), 16) : parseInt(e.slice(1), 10);
+      return cp >= 32 && cp <= 0x10FFFF ? String.fromCodePoint(cp) : m;
+    });
+  }
+
+  // dia de Brasília a partir de DTPOSTED: 20240116 · 20240116000000 · 20240116000000[-3:BRT] · 20240116020000[0:GMT]
+  function dataBr(s) {
+    s = String(s || '').trim();
+    var m = /^(\d{4})(\d{2})(\d{2})(?:(\d{2})(\d{2})(\d{2})?(?:\.\d+)?)?(?:\[\s*([+-]?\d+(?:\.\d+)?)(?::[A-Za-z]+)?\s*\])?$/.exec(s);
+    // fuso: "[-3:BRT]", "[-3.5]" (horas) ou "[-0300]" (hhmm); acima de 14 h não existe → data inválida (auditoria 1, B3)
+    if (!m) return null;
+    var a = +m[1], me = +m[2], d = +m[3];
+    if (me < 1 || me > 12 || d < 1 || d > 31 || a < 1990 || a > 2100) return null;
+    var dc = new Date(Date.UTC(a, me - 1, d)); if (dc.getUTCMonth() !== me - 1 || dc.getUTCDate() !== d) return null;   // 31/02 não existe (auditoria 2, N5)
+    if ((m[4] !== undefined && +m[4] > 23) || (m[5] !== undefined && +m[5] > 59) || (m[6] !== undefined && +m[6] > 59)) return null;
+    var hh = m[4] === undefined ? null : +m[4], mi = m[5] === undefined ? 0 : +m[5], ss = m[6] === undefined ? 0 : +m[6], off = null;
+    if (m[7] !== undefined) {
+      var fz = m[7].replace(/^\+/, '');
+      if (/^-?\d{3,4}$/.test(fz)) { var sg = fz[0] === '-' ? -1 : 1, nn = fz.replace('-', '').padStart(4, '0'); off = sg * (+nn.slice(0, 2) + (+nn.slice(2)) / 60); }
+      else off = parseFloat(fz);
+      if (!isFinite(off) || Math.abs(off) > 14) return null;
+    }
+    if (hh === 0 && mi === 0 && ss === 0) hh = null;   // meia-noite "de data" (sem hora de verdade): vale o dia escrito, não converte
+    var ms;
+    if (hh !== null && off !== null && off !== -3) ms = Date.UTC(a, me - 1, d, hh, mi, ss) - off * 3600000 - 3 * 3600000;   // → relógio de Brasília (UTC−3)
+    else ms = Date.UTC(a, me - 1, d, 0, 0, 0);
+    var dt = new Date(ms);
+    if (hh === null || off === null || off === -3) { if (dt.getUTCMonth() !== me - 1 || dt.getUTCDate() !== d) return null; }
+    return dt.getUTCFullYear() + '-' + String(dt.getUTCMonth() + 1).padStart(2, '0') + '-' + String(dt.getUTCDate()).padStart(2, '0');
+  }
+
+  // "1234.56" · "-1.234,56" · "1234,5" → centavos inteiros (ou null)
+  function centavos(t) {
+    t = String(t == null ? '' : t).trim().replace(/\s/g, '');
+    if (!t) return null;
+    var neg = false; if (t[0] === '-') { neg = true; t = t.slice(1); } else if (t[0] === '+') t = t.slice(1);
+    if (/^\d+,\d{1,2}$/.test(t)) t = t.replace(',', '.');
+    else if (/^\d{1,3}(\.\d{3})+,\d{1,2}$/.test(t)) t = t.replace(/\./g, '').replace(',', '.');
+    else if (/^\d{1,3}(,\d{3})+\.\d{1,2}$/.test(t)) t = t.replace(/,/g, '');
+    if (!/^\d+(\.\d{1,2})?$/.test(t)) return null;
+    var p = t.split('.'), c = Number(p[0]) * 100 + Number(((p[1] || '') + '00').slice(0, 2));
+    if (!isFinite(c) || c > 9999999999) return null;
+    return neg ? -c : c;
+  }
+  function texto(c) { var neg = c < 0, a = Math.abs(c); return (neg ? '-' : '') + Math.floor(a / 100) + '.' + String(a % 100).padStart(2, '0'); }
+
+  function ler(txt) {
+    var R = { ok: false, tipo: 'ofx', banco_id: null, agencia: null, conta_banco: null, tipo_conta: null, periodo_de: null, periodo_ate: null, saldo_final: null, saldo_final_em: null, linhas: [], resumo: null, avisos: [], erros: [] };
+    if (typeof txt !== 'string') { R.erros.push('OFX: esperava texto'); return R; }
+    txt = txt.replace(/^﻿/, '');
+    if (txt.length > MAX_BYTES) { R.erros.push('Arquivo grande demais (máximo 8 MB).'); return R; }
+    if (!/<OFX[\s>]/i.test(txt)) { R.erros.push('Isto não parece um extrato OFX (falta a marca <OFX>).'); return R; }
+    // CDATA (OFX em XML): vira texto comum, com < > & escapados (auditoria 1, B3)
+    txt = txt.replace(/<!\[CDATA\[([\s\S]*?)\]\]>/g, function (x, v) { return v.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); });
+    // cartão (CCSTMTRS) e conta (STMTRS) no mesmo arquivo se misturariam
+    if (/<CCSTMTRS[\s>]/i.test(txt) && /<STMTRS[\s>]/i.test(txt)) { R.erros.push('O arquivo mistura extrato de CARTÃO e de CONTA. Exporte só o da conta.'); return R; }
+    // tokens: <TAG>valor (SGML sem fechamento) ou <TAG>valor</TAG> (XML)
+    var re = /<(\/?)([A-Za-z][A-Za-z0-9.]*)>([^<]*)/g, m, atual = null, contas = {}, dentroLista = false, nStmt = 0;
+    var conta = { banco: null, agencia: null, acct: null, tipo: null };
+    var camposConta = function (t, v) { if (t === 'BANKID') conta.banco = v; else if (t === 'BRANCHID') conta.agencia = v; else if (t === 'ACCTID') { conta.acct = v; contas[v] = true; } else if (t === 'ACCTTYPE') conta.tipo = v; };
+    var fecha = function () {
+      if (!atual) return;
+      var T = atual; atual = null; nStmt++;
+      var idx = R.linhas.length + 1, rot = 'Linha ' + nStmt + ' do extrato';
+      var fit = (T.FITID || '').trim(), d = dataBr(T.DTPOSTED), c = centavos(T.TRNAMT);
+      if (!fit) { R.erros.push(rot + ': sem FITID (identificador do banco).'); return; }
+      if (fit.length > 100) { R.erros.push(rot + ': FITID grande demais.'); return; }
+      if (!d) { R.erros.push(rot + ' (' + fit + '): data inválida "' + (T.DTPOSTED || '') + '".'); return; }
+      if (c === null) { R.erros.push(rot + ' (' + fit + '): valor inválido "' + (T.TRNAMT || '') + '".'); return; }
+      if (c === 0) { R.avisos.push(rot + ' (' + fit + '): valor zero — ignorada.'); return; }
+      var memo = ent((T.MEMO || '').trim().replace(/\s+/g, ' ')), nome = ent((T.NAME || '').trim().replace(/\s+/g, ' '));
+      var mm = memo && nome && memo.toUpperCase().indexOf(nome.toUpperCase()) < 0 ? nome + ' · ' + memo : (memo || nome);
+      var tt = (T.TRNTYPE || '').trim().toUpperCase();
+      if ((c > 0 && /^(DEBIT|PAYMENT|CHECK|FEE|SRVCHG|ATM|POS|DIRECTDEBIT|CASH)$/.test(tt)) || (c < 0 && /^(CREDIT|DEP|DIRECTDEP|INT|DIV)$/.test(tt))) sinal++;
+      var doc = (T.CHECKNUM || T.REFNUM || '').trim(); if (doc === conta.banco || /^0+$/.test(doc)) doc = '';
+      R.linhas.push({ fitid: fit, data: d, valor: texto(c), memo: mm ? mm.slice(0, 300) : null, tipo: (T.TRNTYPE || '').trim().slice(0, 30) || null, documento: doc ? doc.slice(0, 60) : null });
+    };
+    var CAMPOS = { TRNTYPE: 1, DTPOSTED: 1, TRNAMT: 1, FITID: 1, CHECKNUM: 1, REFNUM: 1, MEMO: 1, NAME: 1 };
+    var emBal = false, bal = {}, sinal = 0;
+    while ((m = re.exec(txt)) !== null) {
+      var fechando = m[1] === '/', tag = m[2].toUpperCase(), val = m[3].trim();
+      if (tag === 'STMTTRN') { if (!fechando) { fecha(); atual = {}; } else fecha(); continue; }
+      if (tag === 'BANKTRANLIST') { if (fechando) fecha(); else dentroLista = true; continue; }
+      if (tag === 'LEDGERBAL') { emBal = !fechando; continue; }
+      if (fechando) continue;
+      if (atual && CAMPOS[tag]) { if (!(tag in atual)) atual[tag] = val; else R.avisos.push('Campo ' + tag + ' repetido numa linha — vale o primeiro.'); continue; }
+      if (tag === 'DTSTART' && !atual) { var d1 = dataBr(val); if (d1 && !R.periodo_de) R.periodo_de = d1; continue; }
+      if (tag === 'DTEND' && !atual) { var d2 = dataBr(val); if (d2 && !R.periodo_ate) R.periodo_ate = d2; continue; }
+      if (emBal && tag === 'BALAMT') { bal.v = centavos(val); continue; }
+      if (emBal && tag === 'DTASOF') { bal.d = dataBr(val); continue; }
+      if (!atual) camposConta(tag, val);
+    }
+    fecha();
+    var ids = Object.keys(contas);
+    if (ids.length > 1) { R.erros.push('O arquivo tem mais de uma conta (' + ids.join(', ') + '). Exporte uma conta por arquivo.'); return R; }
+    R.banco_id = conta.banco || null; R.agencia = conta.agencia || null; R.conta_banco = conta.acct || null; R.tipo_conta = conta.tipo || null;
+    if (bal.v !== undefined && bal.v !== null) { R.saldo_final = texto(bal.v); R.saldo_final_em = bal.d || null; }
+    if (!R.linhas.length && !R.erros.length) R.erros.push('O extrato não tem nenhuma movimentação.');
+    if (R.linhas.length > MAX_LINHAS) R.erros.push('O extrato tem ' + R.linhas.length + ' linhas (máximo ' + MAX_LINHAS + ' por arquivo) — exporte por períodos.');
+    // conferências que viram AVISO
+    var vistos = {}, rep = 0, fora = 0;
+    R.linhas.forEach(function (l) { if (vistos[l.fitid]) rep++; vistos[l.fitid] = 1; if (R.periodo_de && l.data < R.periodo_de) fora++; if (R.periodo_ate && l.data > R.periodo_ate) fora++; });
+    if (rep) R.avisos.push(rep + ' linha(s) com FITID repetido no arquivo — entram as duas (a 2ª ganha sufixo).');
+    if (sinal) R.avisos.push(sinal + ' linha(s) com o sinal do valor contrário ao tipo (TRNTYPE): ex. DEBIT positivo. Confira se o banco não inverteu o sinal antes de importar.');
+    if (fora) R.avisos.push(fora + ' linha(s) fora do período informado no cabeçalho.');
+    if (R.saldo_final_em && R.periodo_ate && R.saldo_final_em > R.periodo_ate) R.avisos.push('O saldo do cabeçalho é de ' + R.saldo_final_em + ', depois do fim do extrato (' + R.periodo_ate + '): não serve para conferir o saldo do período.');
+    var ent_ = 0, sai = 0, mn = null, mx = null;
+    R.linhas.forEach(function (l) { var c = centavos(l.valor); if (c > 0) ent_ += c; else sai += -c; if (!mn || l.data < mn) mn = l.data; if (!mx || l.data > mx) mx = l.data; });
+    R.resumo = { linhas: R.linhas.length, entradas: texto(ent_), saidas: texto(sai), saldo_do_periodo: texto(ent_ - sai), de: mn, ate: mx };
+    R.ok = R.erros.length === 0;
+    return R;
+  }
+
+  function lerBytes(bytes) { return ler(decodificar(bytes)); }
+
+  function hash(bytes) {
+    var c = (typeof crypto !== 'undefined' && crypto.subtle) ? crypto : null;
+    if (c) return c.subtle.digest('SHA-256', bytes).then(function (b) { return Array.prototype.map.call(new Uint8Array(b), function (x) { return x.toString(16).padStart(2, '0'); }).join(''); });
+    if (typeof require === 'function') { var h = require('crypto').createHash('sha256').update(Buffer.from(bytes)).digest('hex'); return Promise.resolve(h); }
+    return Promise.resolve(null);           // contexto sem SHA-256 (página sem https): o banco aceita sem o hash; a chave de verdade é conta + FITID
+  }
+
+  var API = { ler: ler, lerBytes: lerBytes, hash: hash, centavos: centavos, dataBr: dataBr, versao: 'conciliacao-2026-10-12-r1' };
+  if (typeof module !== 'undefined' && module.exports) module.exports = API; else raiz.PCOfx = API;
+})(typeof globalThis !== 'undefined' ? globalThis : this);
+
+</script>
+<script>
+'use strict';
+var PCFIN = (function () {
+  var CFG = { url: 'https://mxczeemglrehadjualvi.supabase.co', anon: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im14Y3plZW1nbHJlaGFkanVhbHZpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ0Mjg4NzUsImV4cCI6MjEwMDAwNDg3NX0.TPToXpuPS6PvNzADaFqc7r7P9TIsS4DtGwm-n-0IXDw', prazo: 25000 };
+  var EMPRESA_CNPJ = '37022010000138';        // só para escolher a categoria na pré-visualização; QUEM decide entrada/saída é o banco (fin_config)
+  var S = { contas: [], cats: [], aba: 'resumo', ocupado: false, imp: [], res: null };
+
+  // ── utilidades ─────────────────────────────────────────────────────────────────────
+  function $(id) { return document.getElementById(id); }
+  function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]; }); }
+  function brl(n) { var x = Number(n); if (!isFinite(x)) return '—'; return x.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }); }
+  function dBR(iso) { var m = /^(\d{4})-(\d{2})-(\d{2})/.exec(String(iso || '')); return m ? m[3] + '/' + m[2] + '/' + m[1] : ''; }
+  function pad(n) { return String(n).padStart(2, '0'); }
+  function hoje() { var d = new Date(); return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()); }
+  function addDias(iso, n) { var m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(iso); if (!m) return ''; var d = new Date(Date.UTC(+m[1], +m[2] - 1, +m[3] + n)); return d.getUTCFullYear() + '-' + pad(d.getUTCMonth() + 1) + '-' + pad(d.getUTCDate()); }
+  function dataValida(iso) { var m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(iso || '')); if (!m) return false; var d = new Date(Date.UTC(+m[1], +m[2] - 1, +m[3])); return d.getUTCMonth() === +m[2] - 1 && d.getUTCDate() === +m[3]; }
+  // "1.234,56" | "1234,5" | "1234.56" → "1234.56" (texto, no máx. 2 casas) | null
+  function valorTxt(s) {
+    s = String(s == null ? '' : s).trim().replace(/^R\$\s*/, ''); if (!s) return null;
+    if (/,/.test(s)) s = s.replace(/\./g, '').replace(',', '.');
+    else if ((s.match(/\./g) || []).length > 1) s = s.replace(/\./g, '');
+    return /^[0-9]+(\.[0-9]{1,2})?$/.test(s) ? s : null;
+  }
+  function centavos(t) { var p = String(t).split('.'); return Number(p[0]) * 100 + Number(((p[1] || '') + '00').slice(0, 2)); }
+  function cent2txt(c) { return Math.floor(c / 100) + '.' + pad(c % 100); }
+  // as parcelas como o banco calcula (o centavo que sobra vai para as primeiras)
+  function parcelas(totalTxt, n, primeiro, inter) {
+    var tot = centavos(totalTxt), base = Math.floor(tot / n), resto = tot % n, out = [];
+    for (var i = 1; i <= n; i++) out.push({ n: i, valor: cent2txt(base + (i <= resto ? 1 : 0)), venc: addDias(primeiro, (i - 1) * inter) });
+    return out;
+  }
+  function uid() { try { if (window.crypto && crypto.randomUUID) return crypto.randomUUID(); } catch (e) {} var a = new Uint8Array(16); (window.crypto || window.msCrypto).getRandomValues(a); return Array.prototype.map.call(a, function (x) { return ('0' + x.toString(16)).slice(-2); }).join(''); }
+  function meses(a, z) { return (Number(z.slice(0, 4)) - Number(a.slice(0, 4))) * 12 + Number(z.slice(5, 7)) - Number(a.slice(5, 7)) + 1; }
+  function toast(m) { var d = document.createElement('div'); d.textContent = m; $('toast').appendChild(d); setTimeout(function () { d.remove(); }, 4500); }
+  function jwt(t) { try { return JSON.parse(atob(String(t).split('.')[1].replace(/-/g, '+').replace(/_/g, '/'))) || {}; } catch (e) { return {}; } }
+  function sessao() { try { return JSON.parse(localStorage.getItem('proper_session') || 'null'); } catch (e) { return null; } }
+
+  // ── o banco ──────────────────────────────────────────────────────────────────────
+  function erroDe(status, j, txt) {
+    var msg = (j && (j.message || j.error || j.hint)) || '';
+    if (status === 401 || /JWT|expired/i.test(msg)) return { msg: 'O crachá do login venceu. Entre de novo pelo Hub (PIN) e volte aqui.', fatal: true };
+    if (status === 404 && /Could not find the function|PGRST202/.test(msg + (j && j.code))) return { msg: 'O banco ainda não tem as funções do Financeiro (os dois SQL não rodaram).', fatal: true };
+    if (msg) return { msg: msg.replace(/^Financeiro:\s*/, '') };
+    return { msg: 'O banco respondeu HTTP ' + status + '.' };
+  }
+  async function rpc(nome, corpo, opts) {
+    opts = opts || {};
+    var tok = (sessao() || {}).supa_token || '';
+    if (!tok) throw { msg: 'Sem login. Entre pelo Hub (PIN) e volte aqui.', fatal: true };
+    var c = typeof AbortController !== 'undefined' ? new AbortController() : null, t = c ? setTimeout(function () { c.abort(); }, CFG.prazo) : null, r, txt;
+    try {
+      r = await fetch(CFG.url + '/rest/v1/rpc/' + nome, { method: 'POST', signal: c ? c.signal : undefined, body: JSON.stringify(corpo || {}),
+        headers: { apikey: CFG.anon, Authorization: 'Bearer ' + tok, 'Content-Type': 'application/json' } });
+      txt = await r.text();
+    } catch (e) {
+      throw { msg: (e && e.name === 'AbortError' ? 'O banco não respondeu em ' + CFG.prazo / 1000 + ' s.' : 'Sem conexão com o banco.') +
+        (opts.escrita ? ' Pode ter gravado mesmo assim — confira em Detalhe/Lista antes de repetir.' : ''), incerto: !!opts.escrita };
+    } finally { if (t) clearTimeout(t); }
+    var j = null; try { j = txt ? JSON.parse(txt) : null; } catch (e) {}
+    if (!r.ok) throw erroDe(r.status, j, txt);
+    return j;
+  }
+  // funções SQL com parâmetro jsonb chamado p: o PostgREST espera {"p": {...}}
+  function rpcJ(nome, obj, opts) { return rpc(nome, { p: obj || {} }, opts); }
+  // roda uma ação de tela: trava duplo clique, mostra erro no lugar certo
+  async function acao(btn, fn, onErro) {
+    if (S.ocupado) return; S.ocupado = true; if (btn) btn.disabled = true;
+    try { return await fn(); }
+    catch (e) { var m = (e && e.msg) || String(e && e.message || e); if (onErro) onErro(m); else toast(m); if (e && e.fatal) mostrarFatal(m); }
+    finally { S.ocupado = false; if (btn) btn.disabled = false; }
+  }
+  function mostrarFatal(m) { $('main').innerHTML = '<div class="erro"><b>Não deu para continuar.</b> ' + esc(m) + '</div>'; }
+
+  // ── janelas ──────────────────────────────────────────────────────────────────────
+  var pilha = [];
+  function janela(titulo, html, aoMontar) {
+    var f = document.createElement('div'); f.className = 'fundo'; f.setAttribute('role', 'dialog'); f.setAttribute('aria-modal', 'true');
+    f.innerHTML = '<div class="jan"><h3>' + titulo + '</h3><div class="corpo">' + html + '</div></div>';
+    f.addEventListener('mousedown', function (e) { if (e.target === f) fechar(f); });
+    document.body.appendChild(f); pilha.push(f);
+    var j = { el: f, corpo: f.querySelector('.corpo'), fechar: function () { fechar(f); } };
+    if (aoMontar) aoMontar(j);
+    var p = f.querySelector('input:not([type=hidden]),select,textarea,button'); if (p) p.focus();
+    return j;
+  }
+  function fechar(f) { var i = pilha.indexOf(f); if (i >= 0) pilha.splice(i, 1); f.remove(); }
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && pilha.length) fechar(pilha[pilha.length - 1]); });
+
+  // ── cadastros em memória (contas e categorias alimentam os seletores) ────────────────────────
+  async function carregarCadastros() {
+    var r = await Promise.all([rpc('fin_conta_listar'), rpc('fin_categoria_listar')]);
+    S.contas = r[0] || []; S.cats = r[1] || [];
+  }
+  function optsContas(sel, soAtivas) {
+    return '<option value="">—</option>' + S.contas.filter(function (c) { return !soAtivas || c.ativa || c.id === sel; })
+      .map(function (c) { return '<option value="' + esc(c.id) + '"' + (c.id === sel ? ' selected' : '') + '>' + esc(c.nome) + (c.ativa ? '' : ' (inativa)') + '</option>'; }).join('');
+  }
+  function optsCats(tipo, sel) {
+    return '<option value="">—</option>' + S.cats.filter(function (c) { return (c.ativa || c.id === sel) && (!tipo || c.tipo === tipo); })
+      .map(function (c) { return '<option value="' + esc(c.id) + '"' + (c.id === sel ? ' selected' : '') + '>' + esc(c.nome) + (c.ativa ? '' : ' (inativa)') + '</option>'; }).join('');
+  }
+  function nomeConta(id) { var c = S.contas.filter(function (x) { return x.id === id; })[0]; return c ? c.nome : ''; }
+
+  // ── navegação ──────────────────────────────────────────────────────────────────────
+  var ABAS = [['resumo', 'Resumo'], ['receber', 'A receber'], ['pagar', 'A pagar'], ['conciliacao', 'Conciliação'], ['provisoes', 'Provisões'], ['recorrencias', 'Recorrências'], ['notas', 'Notas'], ['relatorio', 'Relatório de notas'], ['cadastros', 'Contas e categorias']];
+  function nav() {
+    $('nav').innerHTML = ABAS.map(function (a) { return '<button data-act="aba" data-aba="' + a[0] + '"' + (S.aba === a[0] ? ' aria-current="true"' : '') + '>' + a[1] + '</button>'; }).join('');
+  }
+  async function ir(aba) {
+    S.aba = aba; nav(); try { history.replaceState(null, '', '#' + aba); } catch (e) {}
+    $('main').innerHTML = '<div class="vazio">Carregando…</div>';
+    await acao(null, async function () {
+      if (aba === 'resumo') await telaResumo();
+      else if (aba === 'receber' || aba === 'pagar') await telaTitulos(aba);
+      else if (aba === 'conciliacao') await telaConciliacao();
+      else if (aba === 'provisoes') await telaProvisoes();
+      else if (aba === 'recorrencias') await telaRecorrencias();
+      else if (aba === 'notas') await telaNotas();
+      else if (aba === 'relatorio') await telaRelatorio();
+      else await telaCadastros();
+    }, function (m) { $('main').innerHTML = '<div class="erro">' + esc(m) + '</div>'; });
+  }
+
+  // ── RESUMO ───────────────────────────────────────────────────────────────────────
+  async function telaResumo() {
+    var h = hoje(), mes0 = h.slice(0, 8) + '01';
+    var de = addMes(mes0, -1), ate = addDias(addMes(mes0, 6), -1);
+    if (S.res) { de = S.res.de; ate = S.res.ate; }
+    var r = await Promise.all([rpc('fin_fluxo', { p_de: de, p_ate: ate }), rpcJ('fin_titulo_listar', { status: 'aberto', ate: addDias(h, 7), limite: 500 }),
+      rpcJ('fin_titulo_listar', { status: 'parcial', ate: addDias(h, 7), limite: 500 }), rpc('fin_conta_listar'),
+      rpcJ('fin_resultado', { de: de, ate: h < ate ? h : ate }).catch(function () { return null; })]);
+    var fluxo = r[0] || [], ab = (r[1] || []).concat(r[2] || []), contas = r[3] || []; S.contas = contas;
+    function soma(tipo, f) { return ab.filter(function (t) { return t.tipo === tipo && f(t); }).reduce(function (a, t) { return a + Number(t.saldo); }, 0); }
+    var rv = soma('receber', function (t) { return t.vencimento < h; }), pv = soma('pagar', function (t) { return t.vencimento < h; });
+    var r7 = soma('receber', function (t) { return t.vencimento >= h; }), p7 = soma('pagar', function (t) { return t.vencimento >= h; });
+    var saldo = contas.filter(function (c) { return c.ativa && c.entra_no_fluxo; }).reduce(function (a, c) { return a + Number(c.saldo_atual); }, 0);
+    var cheio = (r[1] || []).length >= 500 || (r[2] || []).length >= 500;
+    var vr = function (m) { return Number(m.previsto_receber) + Number(m.realizado_receber); }, vp = function (m) { return Number(m.previsto_pagar) + Number(m.realizado_pagar); };
+    var maxv = Math.max.apply(null, fluxo.map(function (m) { return Math.max(vr(m), vp(m), 1); }).concat([1]));
+    $('main').innerHTML =
+      (cheio ? '<div class="aviso">Há mais de 500 títulos abertos até 7 dias — os números dos cartões podem estar incompletos.</div>' : '') +
+      '<div class="grid">' +
+      kpi('A receber vencido', brl(rv), rv > 0 ? 'ruim' : '') + kpi('A pagar vencido', brl(pv), pv > 0 ? 'ruim' : '') +
+      kpi('A receber em 7 dias', brl(r7), '') + kpi('A pagar em 7 dias', brl(p7), '') + kpi('Saldo das contas (no fluxo)', brl(saldo), saldo >= 0 ? 'ok' : 'ruim') + '</div>' +
+      '<p class="mut" style="margin:8px 0 0">O saldo inclui transferências para contas que ficam fora do fluxo. No histórico importado do Omie, os recebimentos de 2025 têm a data da baixa igual ao vencimento (o Omie não informa o dia do crédito).</p>' +
+      '<div class="card" style="margin-top:14px"><div class="barra"><h2 style="margin:0">Fluxo de caixa por mês</h2><span style="flex:1"></span>' +
+      '<label class="c">De<input type="month" id="rDe" value="' + esc(de.slice(0, 7)) + '"></label><label class="c">até<input type="month" id="rAte" value="' + esc(ate.slice(0, 7)) + '"></label>' +
+      '<button class="b" data-act="periodo">Ver período</button>' + (S.res ? '<button class="b" data-act="periodopadrao">Padrão</button>' : '') + '</div>' +
+      '<div class="gr" aria-hidden="true">' + fluxo.map(function (m) {
+        return '<div class="m"><div class="bs"><i class="r" style="height:' + Math.round(vr(m) / maxv * 90) + 'px"></i><i class="p" style="height:' + Math.round(vp(m) / maxv * 90) + 'px"></i></div><small>' + esc(m.mes.slice(5) + '/' + m.mes.slice(2, 4)) + '</small></div>'; }).join('') + '</div>' +
+      '<div class="leg"><b style="background:var(--ok)"></b>recebido + a receber previsto<b style="background:var(--ruim)"></b>pago + a pagar previsto</div>' +
+      '<div class="tw"><table><thead><tr><th>Mês</th><th class="n">A receber (previsto)</th><th class="n">A pagar (previsto)</th><th class="n">Saldo previsto</th><th class="n">Recebido</th><th class="n">Pago</th><th class="n">Saldo realizado</th></tr></thead><tbody>' +
+      fluxo.map(function (m) { return '<tr><td>' + esc(m.mes.slice(5) + '/' + m.mes.slice(0, 4)) + '</td><td class="n">' + brl(m.previsto_receber) + '</td><td class="n">' + brl(m.previsto_pagar) + '</td><td class="n">' + brl(m.saldo_previsto) +
+        '</td><td class="n">' + brl(m.realizado_receber) + '</td><td class="n">' + brl(m.realizado_pagar) + '</td><td class="n">' + brl(m.saldo_realizado) + '</td></tr>'; }).join('') +
+      '</tbody>' + (fluxo.length > 1 ? '<tfoot><tr><td>Total do período</td>' + ['previsto_receber', 'previsto_pagar', 'saldo_previsto', 'realizado_receber', 'realizado_pagar', 'saldo_realizado'].map(function (k) {
+        return '<td class="n">' + brl(Math.round(fluxo.reduce(function (a, m) { return a + Number(m[k]); }, 0) * 100) / 100) + '</td>'; }).join('') + '</tr></tfoot>' : '') +
+      '</table></div><p class="mut" style="margin:8px 0 0">Previsto = saldo em aberto por vencimento. Recebido/Pago = baixas (não estornadas) em contas que entram no fluxo. Empréstimos e antecipações <b>estão</b> no fluxo de caixa: é dinheiro que entra e sai do banco.</p></div>' +
+      resultadoHtml(r[4]);
+  }
+  // DRE de caixa: o que entrou e saiu no período (todas as contas), separando o RESULTADO dos financiamentos (empréstimos e antecipação de recebíveis)
+  function resultadoHtml(x) {
+    if (!x || !x.meses) return '';
+    var ms = x.meses, tt = x.totais || {}, temInv = Number(tt.investimento_entrou) || Number(tt.investimento_saiu);
+    var cats = function (g, tp) { return (x.categorias || []).filter(function (c) { return c.grupo === g && c.tipo === tp; }); };
+    var lst = function (g, tp, tit) { var l = cats(g, tp); return l.length ? '<tr><th colspan="2">' + esc(tit) + '</th></tr>' + l.map(function (c) { return '<tr><td>' + esc(c.categoria) + '</td><td class="n">' + brl(c.valor) + '</td></tr>'; }).join('') : ''; };
+    return '<div class="card" style="margin-top:14px" id="resDre"><div class="barra"><h2 style="margin:0">Resultado do período (regime de caixa)</h2></div>' +
+      '<p class="mut" style="margin:4px 0 8px">O que entrou e saiu em <b>todas as contas</b>, até hoje, pelo dia do pagamento. <b>Empréstimos e antecipação de recebíveis ficam fora do resultado</b> (como a contabilidade faz) e aparecem à parte. Os juros continuam no resultado.</p>' +
+      '<div class="tw"><table><thead><tr><th>Mês</th><th class="n">Receitas</th><th class="n">Despesas</th><th class="n">Resultado</th><th class="n">Empréstimos e antecipações: entrou</th><th class="n">saiu</th>' + (temInv ? '<th class="n">Investimentos: entrou</th><th class="n">saiu</th>' : '') + '</tr></thead><tbody>' +
+      ms.map(function (m) { return '<tr><td>' + esc(m.mes.slice(5) + '/' + m.mes.slice(0, 4)) + '</td><td class="n">' + brl(m.receitas) + '</td><td class="n">' + brl(m.despesas) + '</td><td class="n"><b style="color:var(' + (Number(m.resultado) < 0 ? '--ruim' : '--ok') + ')">' + brl(m.resultado) + '</b></td><td class="n">' + brl(m.financiamento_entrou) + '</td><td class="n">' + brl(m.financiamento_saiu) + '</td>' +
+        (temInv ? '<td class="n">' + brl(m.investimento_entrou) + '</td><td class="n">' + brl(m.investimento_saiu) + '</td>' : '') + '</tr>'; }).join('') + '</tbody>' +
+      (ms.length > 1 ? '<tfoot><tr><td>Total</td><td class="n">' + brl(tt.receitas) + '</td><td class="n">' + brl(tt.despesas) + '</td><td class="n">' + brl(tt.resultado) + '</td><td class="n">' + brl(tt.financiamento_entrou) + '</td><td class="n">' + brl(tt.financiamento_saiu) + '</td>' +
+        (temInv ? '<td class="n">' + brl(tt.investimento_entrou) + '</td><td class="n">' + brl(tt.investimento_saiu) + '</td>' : '') + '</tr></tfoot>' : '') + '</table></div>' +
+      '<details class="sec" style="margin-top:10px"><summary>Ver por categoria</summary><div class="tw"><table><tbody>' +
+      lst('resultado', 'receber', 'Receitas') + lst('resultado', 'pagar', 'Despesas') + lst('financiamento', 'receber', 'Fora do resultado: empréstimos e antecipações que entraram') +
+      lst('financiamento', 'pagar', 'Fora do resultado: empréstimos pagos') + lst('investimento', 'receber', 'Fora do resultado: investimentos (entrou)') + lst('investimento', 'pagar', 'Fora do resultado: investimentos (saiu)') +
+      '</tbody></table></div><p class="mut">Para mudar o lugar de uma categoria no resultado: aba Contas e categorias, coluna "No resultado?".</p></details></div>';
+  }
+  function kpi(t, v, cl) { return '<div class="kpi ' + cl + '"><div class="t">' + esc(t) + '</div><div class="v">' + esc(v) + '</div></div>'; }
+  function addMes(iso, n) { var m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(iso); var d = new Date(Date.UTC(+m[1], +m[2] - 1 + n, 1)); return d.getUTCFullYear() + '-' + pad(d.getUTCMonth() + 1) + '-01'; }
+
+  // ── TÍTULOS (a receber / a pagar) ────────────────────────────────────────────────────
+  var F = { receber: { status: 'abertos', de: '', ate: '', q: '', transf: false }, pagar: { status: 'abertos', de: '', ate: '', q: '', transf: false } };
+  function f_transf(tipo) { return F[tipo].transf; }
+  async function buscarTitulos(tipo) {
+    var f = F[tipo], base = { tipo: tipo, limite: 500, transferencias: !!f_transf(tipo) }; if (f.de) base.de = f.de; if (f.ate) base.ate = f.ate;
+    var qs = f.status === 'abertos' ? ['aberto', 'parcial'] : f.status === 'todos' ? [''] : [f.status], out = [];
+    var r = await Promise.all(qs.map(function (s) { var b = Object.assign({}, base); if (s) b.status = s; return rpcJ('fin_titulo_listar', b); }));
+    r.forEach(function (l) { out = out.concat(l || []); });
+    out.sort(function (a, b) { return a.vencimento < b.vencimento ? -1 : a.vencimento > b.vencimento ? 1 : String(a.parte_nome).localeCompare(String(b.parte_nome)); });
+    return { lista: out, cheio: r.some(function (l) { return (l || []).length >= 500; }) };
+  }
+  async function telaTitulos(tipo) {
+    var f = F[tipo], ti = tipo === 'receber' ? 'A receber' : 'A pagar';
+    await carregarCadastros();
+    $('main').innerHTML = '<div class="card"><div class="barra">' +
+      '<label class="c">Situação<select id="fSt"><option value="abertos">Em aberto</option><option value="pago">Pagos</option><option value="cancelado">Cancelados</option><option value="todos">Todos</option></select></label>' +
+      '<label class="c" style="flex-direction:row;gap:6px;align-items:center"><input type="checkbox" id="fTr"> mostrar transferências</label>' +
+      '<label class="c">Vence de<input type="date" id="fDe"></label><label class="c">até<input type="date" id="fAte"></label>' +
+      '<label class="c">Buscar<input id="fQ" placeholder="nome, documento…" autocomplete="off" readonly onfocus="this.removeAttribute(\'readonly\')" name="fin_busca_nofill" data-lpignore="true" data-1p-ignore></label>' +
+      '<button class="b" data-act="filtrar">Atualizar</button><span style="flex:1"></span><button class="b pri" data-act="novo">+ Novo lançamento</button></div>' +
+      '<div id="lista"></div></div>';
+    $('fTr').checked = !!f.transf; $('fSt').value = f.status; $('fDe').value = f.de; $('fAte').value = f.ate; $('fQ').value = f.q;
+    $('fQ').addEventListener('input', function () { f.q = this.value; pintarTitulos(tipo); });
+    await carregarTitulos(tipo);
+  }
+  var LISTA = { receber: null, pagar: null };
+  async function carregarTitulos(tipo) {
+    var f = F[tipo]; f.status = $('fSt').value; f.de = $('fDe').value; f.ate = $('fAte').value; f.q = $('fQ').value; f.transf = $('fTr').checked;
+    if ((f.de && !dataValida(f.de)) || (f.ate && !dataValida(f.ate))) { toast('Data do filtro inválida.'); return; }
+    $('lista').innerHTML = '<div class="vazio">Carregando…</div>';
+    LISTA[tipo] = await buscarTitulos(tipo); pintarTitulos(tipo);
+  }
+  function chipStatus(t) {
+    if (t.status === 'cancelado') return '<span class="chip">cancelado</span>';
+    if (t.status === 'pago') return '<span class="chip ok">pago</span>';
+    var v = t.vencido ? ' <span class="chip ruim">vencido</span>' : '';
+    return (t.status === 'parcial' ? '<span class="chip av">parcial</span>' : '<span class="chip">aberto</span>') + v;
+  }
+  function pintarTitulos(tipo) {
+    var L = LISTA[tipo]; if (!L || S.aba !== tipo) return;
+    var q = F[tipo].q.trim().toLowerCase(), l = L.lista.filter(function (t) { return !q || (String(t.parte_nome) + ' ' + String(t.documento || '')).toLowerCase().indexOf(q) >= 0; });
+    var tv = l.reduce(function (a, t) { return a + Number(t.valor); }, 0), ts = l.reduce(function (a, t) { return a + (t.status === 'cancelado' ? 0 : Number(t.saldo)); }, 0);
+    $('lista').innerHTML = (L.cheio ? '<div class="aviso">A lista chegou ao limite de 500 por situação — afine o período.</div>' : '') +
+      (!l.length ? '<div class="vazio">Nada por aqui.</div>' :
+      '<div class="tw"><table><thead><tr><th>Vencimento</th><th>' + (tipo === 'receber' ? 'Cliente' : 'Fornecedor') + '</th><th>Documento</th><th class="n">Valor</th><th class="n">Saldo</th><th class="n" title="Dinheiro que realmente entrou/saiu: baixas + juros − desconto">Dinheiro</th><th>Situação</th><th></th></tr></thead><tbody>' +
+      l.map(function (t) { return '<tr class="cl" data-act="detalhe" data-id="' + esc(t.id) + '"><td>' + dBR(t.vencimento) + '</td><td>' + esc(t.parte_nome) + (t.transferencia ? ' <span class="chip">transferência</span>' : '') + '</td><td>' + esc(t.documento || '') +
+        (t.parcelas > 1 ? ' <span class="mut">(' + t.parcela + '/' + t.parcelas + ')</span>' : '') + '</td><td class="n">' + brl(t.valor) + '</td><td class="n">' + (t.status === 'cancelado' ? '—' : brl(t.saldo)) + '</td><td class="n">' + brl(t.dinheiro) + '</td><td>' + chipStatus(t) + '</td><td>' +
+        ((!t.transferencia && (t.status === 'aberto' || t.status === 'parcial')) ? '<button class="b peq" data-act="baixar" data-id="' + esc(t.id) + '">' + (tipo === 'receber' ? 'Receber' : 'Pagar') + '</button>' : '') + '</td></tr>'; }).join('') +
+      '</tbody><tfoot><tr><td colspan="3">' + l.length + ' título(s)</td><td class="n">' + brl(tv) + '</td><td class="n">' + brl(ts) + '</td><td colspan="3"></td></tr></tfoot></table></div>');
+  }
+
+  // ── novo lançamento ─────────────────────────────────────────────────────────────────
+  function novoLancamento(tipo) {
+    var j = janela('Novo lançamento — ' + (tipo === 'receber' ? 'a receber' : 'a pagar'),
+      '<form id="fNovo" autocomplete="off"><div class="f2">' +
+      '<label class="c todo">' + (tipo === 'receber' ? 'Cliente' : 'Fornecedor') + '<input name="parte_nome" required maxlength="120"></label>' +
+      '<label class="c">CPF/CNPJ (opcional)<input name="parte_doc" inputmode="numeric" maxlength="18"></label>' +
+      '<label class="c">Documento (opcional)<input name="documento" maxlength="60"></label>' +
+      '<label class="c">Categoria<select name="categoria_id">' + optsCats(tipo === 'receber' ? 'receita' : 'despesa', '') + '</select></label>' +
+      '<label class="c">Conta<select name="conta_id">' + optsContas('', true) + '</select></label>' +
+      '<label class="c">Valor total (R$)<input name="valor_total" required inputmode="decimal" placeholder="0,00"></label>' +
+      '<label class="c">Parcelas<input name="n" type="number" min="1" max="120" value="1" required></label>' +
+      '<label class="c">1º vencimento<input name="primeiro_vencimento" type="date" required value="' + hoje() + '"></label>' +
+      '<label class="c">Intervalo (dias)<input name="intervalo_dias" type="number" min="0" max="366" value="30"></label>' +
+      '<label class="c todo">Observação<textarea name="observacao" maxlength="500"></textarea></label></div>' +
+      '<div id="prev" class="mut" style="margin-top:10px"></div><div id="msg"></div>' +
+      '<div class="rod"><button type="button" class="b" data-act="fechar">Cancelar</button><button class="b pri" type="submit">Lançar</button></div></form>');
+    var fm = j.el.querySelector('form'), chave = uid();
+    function prever() {
+      var v = valorTxt(fm.valor_total.value), n = Number(fm.n.value), pv = fm.primeiro_vencimento.value, it = Number(fm.intervalo_dias.value || 0), p = j.el.querySelector('#prev');
+      if (!v || centavos(v) <= 0 || !(n >= 1 && n <= 120) || !dataValida(pv) || centavos(v) < n) { p.textContent = ''; return null; }
+      var ps = parcelas(v, n, pv, it); p.innerHTML = ps.slice(0, 12).map(function (x) { return x.n + '/' + n + ' · ' + dBR(x.venc) + ' · ' + brl(x.valor); }).join('<br>') + (ps.length > 12 ? '<br>… e mais ' + (ps.length - 12) : '');
+      return v;
+    }
+    fm.addEventListener('input', prever);
+    fm.addEventListener('submit', function (e) {
+      e.preventDefault(); var msg = j.el.querySelector('#msg'), btn = fm.querySelector('[type=submit]');
+      var v = prever(); if (!v) { msg.innerHTML = '<div class="erro">Confira valor, parcelas e vencimento.</div>'; return; }
+      var o = { tipo: tipo, parte_nome: fm.parte_nome.value.trim(), parte_doc: fm.parte_doc.value.replace(/\D/g, ''), documento: fm.documento.value.trim(), categoria_id: fm.categoria_id.value,
+        conta_id: fm.conta_id.value, valor_total: v, n: Number(fm.n.value), primeiro_vencimento: fm.primeiro_vencimento.value, intervalo_dias: Number(fm.intervalo_dias.value || 0), observacao: fm.observacao.value.trim(), chave_envio: chave };
+      acao(btn, async function () {
+        var r = await rpcJ('fin_titulo_criar', o, { escrita: true }); j.fechar(); toast('Lançado: ' + r.parcelas + ' parcela(s), ' + brl(r.total)); await carregarTitulos(tipo);
+      }, function (m) { msg.innerHTML = '<div class="erro">' + esc(m) + '</div>'; });
+    });
+  }
+
+  // ── baixa ───────────────────────────────────────────────────────────────────────────
+  async function baixar(id, depois) {
+    var d = await rpc('fin_titulo_detalhe', { p_titulo: id }), t = d.titulo, rec = t.tipo === 'receber';
+    var j = janela((rec ? 'Receber' : 'Pagar') + ' — ' + esc(t.parte_nome),
+      '<p class="mut" style="margin-top:0">' + esc(t.documento || '') + (t.parcelas > 1 ? ' · parcela ' + t.parcela + '/' + t.parcelas : '') + ' · vence ' + dBR(t.vencimento) + ' · saldo <b>' + brl(t.saldo) + '</b></p>' +
+      '<form autocomplete="off"><div class="f2">' +
+      '<label class="c">Valor (R$)<input name="valor" required inputmode="decimal" value="' + String(Number(t.saldo).toFixed(2)).replace('.', ',') + '"></label>' +
+      '<label class="c">Data<input name="data" type="date" required max="' + hoje() + '" value="' + hoje() + '"></label>' +
+      '<label class="c">Conta<select name="conta_id" required>' + optsContas(t.conta_id || '', true) + '</select></label>' +
+      '<label class="c">Forma<select name="forma"><option value="">—</option><option>PIX</option><option>Boleto</option><option>Transferência</option><option>Dinheiro</option><option>Cartão</option><option>Cheque</option></select></label>' +
+      '<label class="c">Juros (R$)<input name="juros" inputmode="decimal" placeholder="0,00"></label><label class="c">Desconto (R$)<input name="desconto" inputmode="decimal" placeholder="0,00"></label>' +
+      '<label class="c todo">Observação<input name="observacao" maxlength="200"></label></div>' +
+      '<p class="mut" style="margin:8px 0 0">O saldo do título baixa pelo <b>valor</b>. Juros somam e desconto subtrai no dinheiro que entra/sai da conta.</p><div id="msg"></div>' +
+      '<div class="rod"><button type="button" class="b" data-act="fechar">Cancelar</button><button class="b pri" type="submit">Confirmar ' + (rec ? 'recebimento' : 'pagamento') + '</button></div></form>');
+    var fm = j.el.querySelector('form'), chave = uid();
+    fm.addEventListener('submit', function (e) {
+      e.preventDefault(); var msg = j.el.querySelector('#msg'), btn = fm.querySelector('[type=submit]');
+      var v = valorTxt(fm.valor.value), jr = fm.juros.value.trim() ? valorTxt(fm.juros.value) : '0', ds = fm.desconto.value.trim() ? valorTxt(fm.desconto.value) : '0';
+      if (!v || centavos(v) <= 0) { msg.innerHTML = '<div class="erro">Valor inválido.</div>'; return; }
+      if (jr === null || ds === null) { msg.innerHTML = '<div class="erro">Juros/desconto inválidos (até 2 casas).</div>'; return; }
+      if (!fm.conta_id.value) { msg.innerHTML = '<div class="erro">Escolha a conta.</div>'; return; }
+      if (centavos(v) > Math.round(Number(t.saldo) * 100)) { msg.innerHTML = '<div class="erro">O valor passa do saldo (' + brl(t.saldo) + ').</div>'; return; }
+      acao(btn, async function () {
+        var r = await rpc('fin_titulo_baixar', { p_titulo: id, p: { valor: v, data: fm.data.value, conta_id: fm.conta_id.value, forma: fm.forma.value, juros: jr, desconto: ds, observacao: fm.observacao.value.trim(), chave_envio: chave } }, { escrita: true });
+        j.fechar(); toast(r.status === 'pago' ? 'Título quitado.' : 'Baixa registrada. Saldo ' + brl(r.saldo)); if (depois) await depois();
+      }, function (m) { msg.innerHTML = '<div class="erro">' + esc(m) + '</div>'; });
+    });
+  }
+
+  // ── detalhe ─────────────────────────────────────────────────────────────────────────
+  async function detalhe(id, depois) {
+    var d = await rpc('fin_titulo_detalhe', { p_titulo: id }), t = d.titulo, rec = t.tipo === 'receber';
+    var vivas = (d.baixas || []).filter(function (b) { return !b.estornada_em; }).length;
+    var html =
+      '<div class="f2" style="margin-bottom:10px">' +
+      cel('Valor', brl(t.valor)) + cel('Pago', brl(t.valor_pago)) + cel('Saldo', brl(t.saldo)) + cel('Vencimento', dBR(t.vencimento) + (t.vencido ? ' (vencido)' : '')) +
+      cel('Emissão', dBR(t.emissao) || '—') + cel('Documento', (t.documento || '—') + (t.parcelas > 1 ? ' · ' + t.parcela + '/' + t.parcelas : '')) +
+      cel('Categoria', t.categoria_nome || '—') + cel('Conta', t.conta_nome || '—') + cel('Origem', t.origem) + cel('CPF/CNPJ', t.parte_doc || '—') + '</div>' +
+      (t.observacao ? '<p><b>Obs.:</b> ' + esc(t.observacao) + '</p>' : '') +
+      (t.status === 'cancelado' ? '<div class="aviso">Cancelado em ' + dBR(t.cancelado_em) + ': ' + esc(t.cancelado_motivo) + '</div>' : '') +
+      (d.nota ? '<p class="mut">Nota de origem: ' + (d.nota.modelo === '55' ? 'NF-e ' : 'NFS-e ') + esc(d.nota.numero) + ' (' + esc(d.nota.status) + ') · ' + brl(d.nota.valor_total) + '</p>' : '') +
+      '<h4 style="margin:12px 0 6px">Baixas</h4>' +
+      (!(d.baixas || []).length ? '<div class="mut">Nenhuma baixa.</div>' :
+        '<div class="tw"><table><thead><tr><th>Data</th><th class="n">Valor</th><th class="n">Juros</th><th class="n">Desc.</th><th>Conta</th><th>Forma</th><th>Por</th><th></th></tr></thead><tbody>' +
+        d.baixas.map(function (b) { return '<tr' + (b.estornada_em ? ' style="opacity:.6;text-decoration:line-through"' : '') + '><td>' + dBR(b.data) + '</td><td class="n">' + brl(b.valor) + '</td><td class="n">' + brl(b.juros) + '</td><td class="n">' + brl(b.desconto) + '</td><td>' +
+          esc(b.conta_nome) + '</td><td>' + esc(b.forma || '') + '</td><td>' + esc(b.criada_por || '') + '</td><td>' +
+          (b.estornada_em ? '<span class="chip" style="text-decoration:none">estornada: ' + esc(b.estorno_motivo) + '</span>' : t.em_transferencia ? '' : '<button class="b peq ruim" data-act="estornar" data-id="' + esc(b.id) + '">Estornar</button>') + '</td></tr>'; }).join('') + '</tbody></table></div>') +
+      (t.parcelas > 1 ? '<h4 style="margin:12px 0 6px">Parcelas do mesmo lançamento</h4><div class="tw"><table><tbody>' + d.irmaos.map(function (i) {
+        return '<tr class="cl" data-act="detalhe" data-id="' + esc(i.id) + '"' + (i.id === t.id ? ' style="font-weight:650"' : '') + '><td>' + i.parcela + '/' + t.parcelas + '</td><td>' + dBR(i.vencimento) + '</td><td class="n">' + brl(i.valor) + '</td><td>' + esc(i.status) + '</td></tr>'; }).join('') + '</tbody></table></div>' : '') +
+      '<div id="msg"></div><div class="rod">' +
+      (t.em_transferencia && t.transferencia_em_par && t.status !== 'cancelado' ? '<button class="b ruim" data-act="desfazer" data-grupo="' + esc(t.grupo_id) + '">Desfazer transferência</button>' : '') +
+      ((!t.em_transferencia && t.status !== 'cancelado' && !vivas) ? '<button class="b ruim" data-act="cancelar" data-id="' + esc(t.id) + '">Cancelar título</button>' : '') +
+      ((!t.em_transferencia && (t.status === 'aberto' || t.status === 'parcial')) ? '<button class="b pri" data-act="baixar" data-id="' + esc(t.id) + '">' + (rec ? 'Receber' : 'Pagar') + '</button>' : '') +
+      '<button class="b" data-act="fechar">Fechar</button></div>';
+    var j = janela(esc(t.parte_nome) + ' ' + chipStatus(t), html);
+    j.el.__depois = depois; j.el.__id = id;
+  }
+  function cel(t, v) { return '<div><div class="mut" style="font-size:.78rem">' + esc(t) + '</div><div>' + esc(v) + '</div></div>'; }
+
+  function pedirMotivo(titulo, rotulo, ok, fn) {
+    var j = janela(titulo, '<form><label class="c">' + esc(rotulo) + '<textarea name="m" required maxlength="300"></textarea></label><div id="msg"></div>' +
+      '<div class="rod"><button type="button" class="b" data-act="fechar">Voltar</button><button class="b ruim" type="submit">' + esc(ok) + '</button></div></form>');
+    var fm = j.el.querySelector('form');
+    fm.addEventListener('submit', function (e) {
+      e.preventDefault(); var m = fm.m.value.trim(), msg = j.el.querySelector('#msg');
+      if (!m) { msg.innerHTML = '<div class="erro">Diga o motivo.</div>'; return; }
+      acao(fm.querySelector('[type=submit]'), async function () { await fn(m); j.fechar(); }, function (x) { msg.innerHTML = '<div class="erro">' + esc(x) + '</div>'; });
+    });
+  }
+  function fecharTodasDetalhe() { pilha.slice().forEach(fechar); }
+
+  // ── RELATÓRIO DE NOTAS DO MÊS (para a contabilidade gerar o DAS) ─────────────────────────────
+  function mesPassado() { var h = hoje(); return addMes(h.slice(0, 8) + '01', -1).slice(0, 7); }
+  async function telaRelatorio() {
+    var mes = (S.rel && S.rel.mes) || mesPassado();
+    $('main').innerHTML =
+      '<div class="card semimp"><div class="barra"><h2 style="margin:0">Relatório de notas emitidas</h2><span style="flex:1"></span>' +
+      '<label class="c">Mês<input type="month" id="relMes" value="' + esc(mes) + '"></label><button class="b pri" data-act="relver">Ver relatório</button></div>' +
+      '<p class="mut" style="margin:8px 0 0">Notas emitidas pela empresa, de produto e de serviço, e as <b>devoluções de venda</b> recebidas, no mês da emissão (dia de Brasília). As notas só aparecem aqui depois de importar o XML na aba Notas.</p></div>' +
+      '<div id="relCorpo"></div>';
+    await carregarRelatorio(mes);
+  }
+  async function carregarRelatorio(mes) {
+    var r = await rpcJ('fin_relatorio_notas', { mes: mes });
+    S.rel = r; pintarRelatorio(r);
+  }
+  function dMes(m) { return /^(\d{4})-(\d{2})$/.test(m || '') ? m.slice(5) + '/' + m.slice(0, 4) : ''; }
+  function pintarRelatorio(r) {
+    var el = $('relCorpo'); if (!el) return;
+    var rs = r.resumo, pr = rs.produtos, sv = rs.servicos;
+    var classeTxt = { venda: 'Venda', devolucao: 'Devolução de compra', devolucao_venda: 'Devolução de venda (abate)', outros: 'Outros (remessa, transferência…)', servico: 'Serviço' };
+    var das = rs.das, devV = Number(das.devolucoes_sem_st || 0) + Number(das.devolucoes_st || 0);
+    var baseNota = function (n) { return Number(n.das_sem_st) + Number(n.das_st) + Number(n.das_ind || 0) + Number(n.das_serv); };
+    var comAviso = (r.notas || []).filter(function (n) { return n.classe !== 'devolucao_venda' && (n.avisos || []).length; });
+    var avHtml = comAviso.map(function (n) { return '<li>' + (n.modelo === '55' ? 'NF-e' : 'NFS-e') + ' ' + esc(n.numero) + ' (' + esc(n.parte_nome || '') + '): ' + (n.avisos || []).map(esc).join('; ') + '</li>'; }).join('');
+    var retHtml = (r.retificar || []).map(function (x) { return '<li>' + (x.modelo === '55' ? 'NF-e' : 'NFS-e') + ' ' + esc(x.numero) + ' (' + esc(x.parte_nome || '') + ', ' + brl(x.valor_total) + '): emitida em ' + esc(dMes(x.mes_emissao)) + ', cancelada em ' + esc(dBR(x.cancelada_dia)) + ' → <b>retificar o PGDAS-D de ' + esc(dMes(x.mes_emissao)) + '</b> se já foi transmitido</li>'; }).join('');
+    var lac = (r.lacunas || []).map(function (l) {
+      var nums = (l.faltam || []).join(', '), corta = (l.faltam || []).length >= 60 ? ' … (lista cortada em 60)' : '';
+      return '<li>' + (l.modelo === '55' ? 'NF-e' : 'NFS-e') + (l.serie ? ' série ' + esc(l.serie) : '') + ': faltam os números <b>' + esc(nums) + '</b>' + corta + '</li>'; }).join('');
+    el.innerHTML =
+      (!rs.total_notas ? '<div class="aviso">Nenhuma nota de saída encontrada em ' + esc(dMes(r.mes)) + '. Se o mês já fechou, importe os XMLs das notas na aba Notas e volte aqui.</div>' : '') +
+      (retHtml ? '<div class="aviso"><b>Nota de mês anterior cancelada neste mês.</b> Ela sai da receita do mês da emissão.<ul style="margin:6px 0 0 18px">' + retHtml + '</ul></div>' : '') +
+      (avHtml ? '<div class="aviso"><b>Para a contabilidade conferir (' + comAviso.length + ' nota' + (comAviso.length > 1 ? 's' : '') + ').</b> A classificação não sai só do CFOP.<ul style="margin:6px 0 0 18px">' + avHtml + '</ul></div>' : '') +
+      (lac ? '<div class="aviso"><b>Atenção: a numeração tem buraco.</b> Pode ser nota que ainda não foi importada (ou inutilizada). Confira antes de mandar à contabilidade.<ul style="margin:6px 0 0 18px">' + lac + '</ul></div>' : '') +
+      '<div class="grid">' + kpi('Base do DAS do mês (receita bruta)', brl(rs.faturamento), 'ok') + kpi('Comércio sem ST (Anexo I)', brl(rs.das.comercio_sem_st), '') + kpi('Comércio com ST (Anexo I, ICMS-ST)', brl(rs.das.comercio_st), '') +
+      (Number(das.industria) ? kpi('Indústria (Anexo II)', brl(das.industria), '') : '') +
+      kpi('Serviços (Anexo III, serviço − desconto incondicionado)', brl(rs.das.servicos), '') + kpi('Devoluções de venda (abatidas no mês)', brl(devV), devV ? 'ruim' : '') + kpi('Canceladas (não contam)', brl(Number(pr.canceladas_valor) + Number(sv.canceladas_valor)), '') + '</div>' +
+      '<div class="card" style="margin-top:14px" id="relImp"><div class="barra"><h2 style="margin:0">Notas de ' + esc(dMes(r.mes)) + ' <span class="mut" style="font-weight:400">(' + esc(dBR(r.de)) + ' a ' + esc(dBR(r.ate)) + ')</span></h2><span style="flex:1"></span>' +
+      '<span class="semimp"><button class="b" data-act="relcsv"' + (rs.total_notas ? '' : ' disabled') + '>Baixar planilha (CSV)</button> <button class="b" data-act="relcfop"' + ((r.por_cfop || []).length ? '' : ' disabled') + '>Baixar faturamento por CFOP (CSV)</button> <button class="b" data-act="relimp"' + (rs.total_notas ? '' : ' disabled') + '>Imprimir / salvar PDF</button></span></div>' +
+      '<div class="tw"><table><thead><tr><th>Como a contabilidade apura</th><th class="n">Valor</th></tr></thead><tbody>' +
+      '<tr><td>Anexo I — revenda sem substituição tributária</td><td class="n">' + brl(rs.das.comercio_sem_st) + '</td></tr>' +
+      '<tr><td>Anexo I — revenda com ST (itens com CFOP x.404, x.405, x.651–x.656 e x.667)</td><td class="n">' + brl(rs.das.comercio_st) + '</td></tr>' +
+      (Number(das.industria) ? '<tr><td>Anexo II — indústria, produção do estabelecimento (CFOP x.101, x.401 e x.402)</td><td class="n">' + brl(das.industria) + '</td></tr>' : '') +
+      '<tr><td>Anexo III — serviços (NFS-e: valor do serviço menos desconto incondicionado; retenções não reduzem)</td><td class="n">' + brl(rs.das.servicos) + '</td></tr>' +
+      (devV ? '<tr><td class="mut">· já abatido nas linhas do Anexo I: devoluções de venda do mês, sem ST ' + brl(das.devolucoes_sem_st) + ' e com ST ' + brl(das.devolucoes_st) + '</td><td class="n"></td></tr>' : '') +
+      '</tbody><tfoot><tr><td>Receita bruta do mês (base do DAS)</td><td class="n">' + brl(rs.faturamento) + '</td></tr></tfoot></table></div>' +
+      ((r.por_cfop || []).length ? '<div class="tw" style="margin-top:12px"><table><thead><tr><th>Faturamento por CFOP</th><th>Como entra</th><th class="n">Notas</th><th class="n">Valor dos itens</th><th class="n">Base do DAS</th></tr></thead><tbody>' +
+        r.por_cfop.map(function (c) { return '<tr><td>' + esc(/^\d{4}$/.test(c.cfop) ? c.cfop.charAt(0) + '.' + c.cfop.slice(1) : c.cfop) + '</td><td>' + esc(c.tratamento) + '</td><td class="n">' + c.notas + '</td><td class="n">' + brl(c.valor) + '</td><td class="n">' + brl(c.base_das) + '</td></tr>'; }).join('') +
+        '</tbody><tfoot><tr><td colspan="4">Base do DAS do mês</td><td class="n">' + brl(rs.faturamento) + '</td></tr></tfoot></table><p class="mut" style="margin:6px 0 0">Valor dos itens: soma dos itens de cada CFOP nas NF-e autorizadas e nas devoluções de venda. Base do DAS: a base de cada nota repartida entre os seus itens pelo valor (devoluções negativas; remessas e transferências zero). NFS-e numa linha só. Uma nota com dois CFOPs conta nos dois.</p></div>' : '') +
+      '<div class="tw" style="margin-top:12px"><table><thead><tr><th>Para conferência</th><th class="n">Notas</th><th class="n">Valor</th></tr></thead><tbody>' +
+      '<tr><td>NF-e de venda (soma das duas primeiras linhas acima)</td><td class="n">' + pr.venda_qtd + '</td><td class="n">' + brl(pr.venda_valor) + '</td></tr>' +
+      '<tr><td>Devoluções de venda recebidas (nota do cliente ou nota de entrada da Proper) — abatem a base</td><td class="n">' + (pr.devolucao_venda_qtd || 0) + '</td><td class="n">' + brl(pr.devolucao_venda_valor || 0) + '</td></tr>' +
+      '<tr><td>NF-e de devolução de compra (a Proper devolve ao fornecedor) — fora da base</td><td class="n">' + pr.devolucao_qtd + '</td><td class="n">' + brl(pr.devolucao_valor) + '</td></tr>' +
+      '<tr><td>NF-e outras (remessa, transferência, comodato, CFOPs misturados…) — fora da base</td><td class="n">' + pr.outros_qtd + '</td><td class="n">' + brl(pr.outros_valor) + '</td></tr>' +
+      '<tr><td>NFS-e autorizadas — valor bruto do serviço</td><td class="n">' + sv.autorizadas_qtd + '</td><td class="n">' + brl(sv.bruto) + '</td></tr>' +
+      '<tr><td>NFS-e autorizadas — desconto incondicionado</td><td class="n"></td><td class="n">' + brl(sv.desconto_incondicionado || 0) + '</td></tr>' +
+      '<tr><td>NFS-e autorizadas — valor líquido do XML (depois das retenções; não é a base)</td><td class="n"></td><td class="n">' + brl(sv.liquido) + '</td></tr>' +
+      '<tr><td>Canceladas (NF-e + NFS-e) — fora de tudo</td><td class="n">' + (Number(pr.canceladas_qtd) + Number(sv.canceladas_qtd)) + '</td><td class="n">' + brl(Number(pr.canceladas_valor) + Number(sv.canceladas_valor)) + '</td></tr>' +
+      '</tbody></table></div>' +
+      (rs.total_notas ? '<div class="tw" style="margin-top:12px"><table><thead><tr><th>Dia</th><th>Tipo</th><th>Série</th><th>Número</th><th>Cliente</th><th>Classe</th><th>CFOP</th><th class="n">Valor</th><th class="n">Líquido</th><th class="n">Base DAS</th><th>Situação</th><th>Aviso</th></tr></thead><tbody>' +
+        r.notas.map(function (n) { return '<tr><td>' + esc(dBR(n.dia)) + '</td><td>' + (n.modelo === '55' ? 'NF-e' : 'NFS-e') + '</td><td>' + esc(n.serie || '') + '</td><td>' + esc(n.numero) + '</td><td>' + esc(n.parte_nome || '') + '</td><td>' + esc(classeTxt[n.classe] || n.classe) + '</td><td>' + esc(n.cfops || '') +
+          '</td><td class="n">' + brl(n.valor_total) + '</td><td class="n">' + (n.modelo === 'NFSE' && n.valor_liquido != null ? brl(n.valor_liquido) : '') + '</td><td class="n">' + (baseNota(n) ? brl(baseNota(n)) : '') + '</td><td>' + (n.status === 'cancelada' ? '<span class="chip ruim">cancelada</span>' : '<span class="chip ok">autorizada</span>') + '</td><td>' + (n.classe !== 'devolucao_venda' && (n.avisos || []).length ? '<span class="chip ruim" title="' + esc((n.avisos || []).join(' · ')) + '">conferir</span>' : '') + '</td></tr>'; }).join('') + '</tbody></table></div>' : '') +
+      '<p class="mut" style="margin:10px 0 0">Gerado em ' + esc(new Date(r.gerado_em).toLocaleString('pt-BR')) + '. Regras combinadas com a contabilidade (14 e 15/10/2026): venda sem ST = x.102–x.149 e x.403; com ST = x.404, x.405, x.651–x.656 e x.667; Anexo II (produção) = x.101, x.401 e x.402; transferência (x.15x, x.408, x.409), remessa e comodato ficam fora; devolução de venda abate no mês em que acontece; NFS-e pelo serviço menos o desconto incondicionado. Nota com CFOPs misturados fica em "outras", fora da base. Nota cancelada aparece na lista, mas não entra nas somas. Conferido com a apuração do Simples de 02/2026.</p></div>';
+  }
+  function csvCel(v) {
+    var t = String(v == null ? '' : v);
+    if (/^[=+\-@\t\r]/.test(t)) t = "'" + t;                       // planilha não pode tratar texto como fórmula
+    return /[";\r\n]/.test(t) ? '"' + t.replace(/"/g, '""') + '"' : t;
+  }
+  function numCsv(v) { if (v == null || v === '') return ''; var x = Number(v); return isFinite(x) ? x.toFixed(2).replace('.', ',') : ''; }
+  function csvRelatorio(r) {
+    var cab = ['Dia', 'Tipo', 'Série', 'Número', 'Situação', 'Classe', 'Cliente', 'CNPJ/CPF', 'CFOP', 'Valor total', 'Valor líquido', 'Base DAS comércio sem ST', 'Base DAS comércio ST', 'Base DAS indústria (Anexo II)', 'Base DAS serviço', 'Avisos', 'Chave de acesso'];
+    var linhas = r.notas.map(function (n) { return [dBR(n.dia), n.modelo === '55' ? 'NF-e' : 'NFS-e', n.serie || '', n.numero, n.status === 'cancelada' ? 'cancelada' : 'autorizada', n.classe, n.parte_nome || '', n.parte_cnpj || '', n.cfops || '',
+      numCsv(n.valor_total), n.modelo === 'NFSE' ? numCsv(n.valor_liquido) : '', numCsv(n.das_sem_st), numCsv(n.das_st), numCsv(n.das_ind || 0), numCsv(n.das_serv), (n.avisos || []).join(' · '), n.chave || '']; });
+    return '﻿' + [cab].concat(linhas).map(function (l) { return l.map(csvCel).join(';'); }).join('\r\n') + '\r\n';
+  }
+  function csvCfop(r) {
+    var cab = ['Mês', 'CFOP', 'Como entra na base do DAS', 'Notas', 'Valor dos itens', 'Base do DAS'];
+    var linhas = (r.por_cfop || []).map(function (c) { return [dMes(r.mes), /^\d{4}$/.test(c.cfop) ? c.cfop.charAt(0) + '.' + c.cfop.slice(1) : c.cfop, c.tratamento, c.notas, numCsv(c.valor), numCsv(c.base_das)]; });
+    linhas.push(['', '', 'Base do DAS do mês (receita bruta)', '', '', numCsv(r.resumo.faturamento)]);
+    return '\ufeff' + [cab].concat(linhas).map(function (l) { return l.map(csvCel).join(';'); }).join('\r\n') + '\r\n';
+  }
+  function baixarTexto(nome, texto, tipo) {
+    var b = new Blob([texto], { type: tipo }), a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = nome; document.body.appendChild(a); a.click();
+    setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 1500);
+  }
+
+  // ── NOTAS ───────────────────────────────────────────────────────────────────────────
+  function notasHtml(lista) {
+    return !lista.length ? '<div class="vazio">Nenhuma nota importada ainda.</div>' :
+      '<div class="tw"><table><thead><tr><th>Emissão</th><th>Tipo</th><th>Número</th><th>Direção</th><th>Cliente/Fornecedor</th><th class="n">Valor</th><th>Situação</th><th class="n">Títulos</th></tr></thead><tbody>' +
+      lista.map(function (n) { return '<tr><td>' + dBR(String(n.emitida_em || '').slice(0, 10)) + '</td><td>' + (n.modelo === '55' ? 'NF-e' : 'NFS-e') + '</td><td>' + esc(n.numero) + '</td><td>' + (n.direcao === 'saida' ? 'Saída' : 'Entrada') + '</td><td>' + esc(n.parte_nome || '') +
+        '</td><td class="n">' + brl(n.valor_total) + '</td><td>' + (n.status === 'cancelada' ? '<span class="chip ruim">cancelada</span>' : '<span class="chip ok">autorizada</span>') + '</td><td class="n">' + n.titulos + (n.titulos ? ' (' + n.titulos_pagos + ' pagos)' : '') + '</td></tr>'; }).join('') + '</tbody></table></div>';
+  }
+  async function atualizarNotas() { var l = await rpcJ('fin_nota_listar', { limite: 100 }), el = $('lstNotas'); if (el) el.innerHTML = notasHtml(l || []); }
+  async function telaNotas() {
+    await carregarCadastros(); S.imp = [];
+    var lista = await rpcJ('fin_nota_listar', { limite: 100 });
+    $('main').innerHTML =
+      '<div class="card"><h2>Importar XML</h2><p class="mut" style="margin:0 0 8px">Use só XML que veio do Omie, da SEFAZ ou de um fornecedor conhecido: o sistema confere os valores com o próprio arquivo, mas <b>não verifica a assinatura digital</b> da nota.</p><div class="drop" id="drop">Arraste aqui os XML (NF-e, cancelamento ou NFS-e nacional) ou <label style="text-decoration:underline;cursor:pointer">escolha os arquivos<input type="file" id="arq" accept=".xml,text/xml" multiple style="display:none"></label></div><div id="imp"></div></div>' +
+      '<div class="card"><h2>Notas importadas</h2><div id="lstNotas">' + notasHtml(lista || []) + '</div></div>';
+    var dz = $('drop');
+    ['dragover', 'dragenter'].forEach(function (ev) { dz.addEventListener(ev, function (e) { e.preventDefault(); dz.classList.add('sobre'); }); });
+    ['dragleave', 'drop'].forEach(function (ev) { dz.addEventListener(ev, function (e) { e.preventDefault(); dz.classList.remove('sobre'); }); });
+    dz.addEventListener('drop', function (e) { lerArquivos(e.dataTransfer.files); });
+    $('arq').addEventListener('change', function () { lerArquivos(this.files); this.value = ''; });
+  }
+  async function lerArquivos(lista) {
+    var files = Array.prototype.slice.call(lista || []);     // cópia: o campo de arquivo é esvaziado logo depois (FileList é viva)
+    var novos = [];
+    for (var i = 0; i < files.length; i++) {
+      var f = files[i], txt = ''; try { txt = await f.text(); } catch (e) {}
+      var r = PCFiscal.ler(txt); r.xml = txt;       // o banco relê o XML (inclusive o do cancelamento) e confere com os campos
+      var devol = r.tipo === 'nfe' && (r.finalidade === '4' || (r.itens && r.itens.length && r.direcao_xml === 'saida' && r.itens.every(function (i) { return /^\d[2]/.test(String(i.cfop || '')); })));
+      var comodato = r.tipo === 'nfe' && r.itens && r.itens.some(function (i) { return /^\d9\d\d$/.test(String(i.cfop || '')); });
+      novos.push({ nome: f.name, r: r, gerar: !devol, venc: '', feito: null, devol: devol, avista: false, semFatura: r.tipo === 'nfe' && !(r.parcelas || []).length, comodato: comodato });
+    }
+    novos.forEach(function (x) {
+      var dup = S.imp.some(function (y) { return x.r.chave && y.r.chave === x.r.chave && y.r.tipo === x.r.tipo && (!ehEvento(x.r) || y.r.evento === x.r.evento); });
+      if (dup) { x.r.ok = false; x.r.erros = (x.r.erros || []).concat(['arquivo repetido neste lote']); }
+      if (x.r.tipo === 'nfe' && x.semFatura && !x.comodato && x.r.emitida_em) { x.avista = false; }
+      if (x.r.tipo === 'nfse' && x.r.emitida_em) x.venc = addDias(String(x.r.emitida_em).slice(0, 10), 30);
+      S.imp.push(x);
+    });
+    pintarImp();
+  }
+  function ehEvento(r) { return r.tipo === 'evento' || r.tipo === 'evento_nfse'; }
+  function tipoRotulo(r) { if (r.tipo === 'evento_nfse') return r.evento === '105102' ? 'Cancelamento NFS-e (substituição)' : 'Cancelamento NFS-e';
+    return r.tipo === 'nfe' ? 'NF-e' : r.tipo === 'nfse' ? 'NFS-e' : r.tipo === 'evento' ? (r.evento === '110111' ? 'Cancelamento' : 'Evento ' + esc(r.evento)) : 'Inválido'; }
+  function pintarImp() {
+    var el = $('imp'); if (!el) return;
+    if (!S.imp.length) { el.innerHTML = ''; return; }
+    var pend = S.imp.filter(function (x) { return x.r.ok && !x.feito && !(ehEvento(x.r) && !x.r.homologado); }).length;
+    el.innerHTML = '<div class="barra" style="margin-top:12px">' +
+      '<label class="c">Categoria (vendas)<select id="iCr">' + optsCats('receita', '') + '</select></label><label class="c">Categoria (compras)<select id="iCp">' + optsCats('despesa', '') + '</select></label>' +
+      '<label class="c">Conta<select id="iCt">' + optsContas('', true) + '</select></label></div>' +
+      '<div class="tw"><table><thead><tr><th>Arquivo</th><th>Tipo</th><th>Nº</th><th>Emitente → destinatário</th><th class="n">Valor</th><th>Gerar títulos</th><th>Vencimento (NFS-e)</th><th>Situação</th></tr></thead><tbody>' +
+      S.imp.map(function (x, i) {
+        var r = x.r, val = r.tipo === 'nfe' ? (r.totais && r.totais.nota) : r.tipo === 'nfse' ? (r.valores && r.valores.servico) : null;
+        var liq = r.tipo === 'nfse' && r.valores && r.valores.liquido != null && Number(r.valores.liquido) !== Number(r.valores.servico) ? '<br><span class="mut">líquido ' + brl(r.valores.liquido) + '</span>' : '';
+        var sit = x.feito ? '<span class="chip ' + (x.feito.ok ? 'ok' : 'ruim') + '">' + esc(x.feito.txt) + '</span>' :
+          !r.ok ? '<span class="chip ruim">não entra</span> ' + esc((r.erros || []).join('; ')) :
+          (r.tipo === 'nfe' && r.status !== 'autorizada') || (r.tipo === 'nfse' && r.status !== 'autorizada') ? '<span class="chip ruim">' + esc(r.status || '') + '</span>' :
+          ehEvento(r) && !r.homologado ? '<span class="chip ruim">' + (r.tipo === 'evento_nfse' ? 'só o pedido: use o arquivo "resposta"' : 'sem homologação') + '</span>' :
+          '<span class="chip ok">pronta</span>' + ((r.avisos || []).length ? ' <span class="mut">' + esc(r.avisos.join('; ')) + '</span>' : '');
+        return '<tr><td>' + esc(x.nome) + '</td><td>' + tipoRotulo(r) + '</td><td>' + esc(r.numero || (r.chave ? '…' + String(r.chave).slice(-8) : '')) + '</td><td>' + esc((r.emitente && r.emitente.nome) || '') + (r.parte ? ' → ' + esc(r.parte.nome) : '') +
+          '</td><td class="n">' + (val != null ? brl(val) : '') + liq + '</td><td>' + ((r.tipo === 'nfe' || r.tipo === 'nfse') ? '<input type="checkbox" data-i="' + i + '" data-k="gerar"' + (x.gerar ? ' checked' : '') + (x.feito ? ' disabled' : '') + '>' : '') +
+          '</td><td>' + (r.tipo === 'nfse' ? '<input type="date" data-i="' + i + '" data-k="venc" value="' + esc(x.venc) + '"' + (x.feito ? ' disabled' : '') + '>' : (r.tipo === 'nfe' ? (x.devol ? '<span class="mut">devolução: sem título automático</span>' : x.semFatura ? '<label class="mut"><input type="checkbox" data-i="' + i + '" data-k="avista"' + (x.avista ? ' checked' : '') + (x.feito ? ' disabled' : '') + '> à vista (vence na emissão)</label>' + (x.comodato ? '<br><span class="mut">CFOP x.9xx: em geral não gera cobrança</span>' : '') : '<span class="mut">pela fatura</span>') : '')) + '</td><td>' + sit + '</td></tr>'; }).join('') +
+      '</tbody></table></div><div class="rod" style="display:flex;gap:8px;justify-content:flex-end;margin-top:10px"><button class="b" data-act="limparimp">Limpar lista</button><button class="b pri" data-act="importar"' + (pend ? '' : ' disabled') + '>Importar ' + pend + ' arquivo(s)</button></div>';
+    el.querySelectorAll('[data-k]').forEach(function (inp) {
+      inp.addEventListener('change', function () { var x = S.imp[+inp.dataset.i]; if (inp.dataset.k === 'gerar') x.gerar = inp.checked; else if (inp.dataset.k === 'avista') x.avista = inp.checked; else x.venc = inp.value; });
+    });
+  }
+  async function importar(btn) {
+    var cr = $('iCr').value, cp = $('iCp').value, ct = $('iCt').value;
+    var fila = S.imp.filter(function (x) { return x.r.ok && !x.feito && !(ehEvento(x.r) && !x.r.homologado); });
+    fila.sort(function (a, b) { return (ehEvento(a.r) ? 1 : 0) - (ehEvento(b.r) ? 1 : 0); });       // notas primeiro, cancelamentos por último
+    for (var i = 0; i < fila.length; i++) {
+      var x = fila[i], r = x.r;
+      try {
+        if (ehEvento(r)) {
+          var e = await rpcJ(r.tipo === 'evento_nfse' ? 'fin_nota_cancelar_nfse' : 'fin_nota_cancelar_evento', r, { escrita: true });
+          // rev. 16/10: o banco diz o que fez com cada título; título com dinheiro recebido NÃO se estorna por causa do cancelamento (o dinheiro entrou no banco)
+          x.feito = e.nota_encontrada === false ? { ok: false, txt: 'PENDENTE: ' + e.aviso } :
+            { ok: !e.titulos_com_baixa_mantidos, txt: (e.ja_cancelada ? 'já estava cancelada' : 'nota cancelada') + (e.substituida_por ? ' (substituída' + (e.substituta_importada ? '' : ' por uma nota ainda não importada') + ')' : '') +
+              ' · ' + (e.titulos_cancelados || 0) + ' título(s) cancelado(s)' + (e.titulos_reduzidos ? ' · ' + e.titulos_reduzidos + ' com saldo não cobrado (' + brl(e.saldo_nao_cobrado) + ')' : '') +
+              (e.aviso ? ' · ⚠ ' + e.aviso : '') };
+        } else {
+          var saida = r.emitente && String(r.emitente.cnpj).replace(/\D/g, '') === EMPRESA_CNPJ && r.tp_nf !== '0';
+          var tit = { gerar: !!x.gerar, categoria_id: (saida ? cr : cp) || '', conta_id: ct || '' };
+          if (r.tipo === 'nfse') {
+            if (x.gerar && !dataValida(x.venc)) { x.feito = { ok: false, txt: 'informe o vencimento' }; continue; }
+            tit.vencimento = x.venc;
+          }
+          if (r.tipo === 'nfe' && x.gerar && x.semFatura && x.avista && r.emitida_em) tit.vencimento = String(r.emitida_em).slice(0, 10);
+          var n = await rpcJ('fin_nota_importar', Object.assign({}, r, { titulos: tit }), { escrita: true });
+          x.feito = n.ja_existia ? { ok: true, txt: 'já estava importada' } :
+            { ok: true, txt: 'importada (' + (n.direcao === 'saida' ? 'saída' : 'entrada') + ')' + (n.titulos ? ' · ' + n.titulos.parcelas + ' título(s) ' + brl(n.titulos.total) : '') + (n.titulos_aviso === 'devolucao_sem_titulo' ? ' · devolução: nenhum título gerado' : n.titulos_aviso === 'sem_cobranca' ? ' · nota sem fatura: nenhum título gerado (marque “à vista” para gerar)' : '') + (n.aviso === 'cliente_nao_encontrado' ? ' · cliente não achado no ProperCare' : n.aviso ? ' · CNPJ em mais de um cliente' : '') };
+        }
+      } catch (err) { x.feito = { ok: false, txt: (err && err.msg) || String(err) }; if (err && err.fatal) { pintarImp(); throw err; } }
+      pintarImp();
+    }
+    toast('Importação terminada.'); await atualizarNotas();
+  }
+
+  // ── CADASTROS ───────────────────────────────────────────────────────────────────────
+  async function telaCadastros() {
+    await carregarCadastros();
+    S.grupos = await rpc('fin_categoria_grupos').catch(function () { return null; });
+    var GR = { resultado: 'sim', financiamento: 'não — empréstimo/antecipação', investimento: 'não — investimento' };
+    var nomeCat = {}; S.cats.forEach(function (c) { nomeCat[c.id] = c.nome; });
+    $('main').innerHTML =
+      '<div class="card"><div class="barra"><h2 style="margin:0">Contas</h2><span style="flex:1"></span><button class="b" data-act="transferir">Transferir entre contas</button><button class="b pri" data-act="conta" data-id="">+ Nova conta</button></div>' +
+      (!S.contas.length ? '<div class="vazio">Cadastre ao menos uma conta (ex.: Sicredi) — a baixa de um título precisa de conta.</div>' :
+      '<div class="tw"><table><thead><tr><th>Conta</th><th>Banco</th><th>Boleto</th><th>No fluxo</th><th class="n">Saldo inicial (início do dia)</th><th class="n">Saldo atual</th><th></th></tr></thead><tbody>' +
+      S.contas.map(function (c) { return '<tr' + (c.ativa ? '' : ' style="opacity:.6"') + '><td>' + esc(c.nome) + (c.ativa ? '' : ' <span class="chip">inativa</span>') + '</td><td>' + esc(c.banco || '') + '</td><td>' + (c.emite_boleto ? 'sim' : '') + '</td><td>' + (c.entra_no_fluxo ? 'sim' : 'não') +
+        '</td><td class="n">' + brl(c.saldo_inicial) + (c.saldo_inicial_em ? ' <span class="mut">em ' + dBR(c.saldo_inicial_em) + '</span>' : '') + '</td><td class="n">' + brl(c.saldo_atual) + '</td><td><button class="b peq" data-act="conta" data-id="' + esc(c.id) + '">Editar</button></td></tr>'; }).join('') + '</tbody></table></div>') + '</div>' +
+      '<div class="card"><div class="barra"><h2 style="margin:0">Categorias</h2><span style="flex:1"></span><button class="b pri" data-act="cat" data-id="">+ Nova categoria</button></div>' +
+      (!S.cats.length ? '<div class="vazio">Nenhuma categoria ainda (ex.: Venda de peças — receita; Compra de mercadoria — despesa).</div>' :
+      '<div class="tw"><table><thead><tr><th>Categoria</th><th>Tipo</th><th>Dentro de</th>' + (S.grupos ? '<th>No resultado?</th>' : '') + '<th class="n">Títulos</th><th></th></tr></thead><tbody>' +
+      S.cats.map(function (c) { return '<tr' + (c.ativa ? '' : ' style="opacity:.6"') + '><td>' + esc(c.nome) + (c.ativa ? '' : ' <span class="chip">inativa</span>') + '</td><td>' + esc(c.tipo) + '</td><td>' + esc(nomeCat[c.pai_id] || '') + '</td>' +
+        (S.grupos ? '<td>' + (c.tipo === 'transferencia' ? '<span class="mut">— (transferência)</span>' : '<select class="grdre" data-id="' + esc(c.id) + '">' + ['resultado', 'financiamento', 'investimento'].map(function (g) {
+          return '<option value="' + g + '"' + ((S.grupos[c.id] || 'resultado') === g ? ' selected' : '') + '>' + esc(GR[g]) + '</option>'; }).join('') + '</select>') + '</td>' : '') +
+        '<td class="n">' + c.titulos + '</td><td><button class="b peq" data-act="cat" data-id="' + esc(c.id) + '">Editar</button></td></tr>'; }).join('') + '</tbody></table></div>') + '</div>';
+    [].forEach.call(document.querySelectorAll('select.grdre'), function (sel) {
+      sel.addEventListener('change', function () {
+        var antes = (S.grupos || {})[sel.dataset.id] || 'resultado', novo = sel.value;
+        acao(sel, async function () {
+          await rpcJ('fin_categoria_grupo_dre', { id: sel.dataset.id, grupo: novo }, { escrita: true });
+          S.grupos[sel.dataset.id] = novo; toast(novo === 'resultado' ? 'A categoria entra no resultado.' : 'A categoria sai do resultado (continua no fluxo de caixa).');
+        }, function (m) { sel.value = antes; toast(m); });
+      });
+    });
+  }
+  function formTransferir() {
+    var j = janela('Transferir entre contas',
+      '<form autocomplete="off"><div class="f2">' +
+      '<label class="c">Sai da conta<select name="co" required>' + optsContas('', true) + '</select></label>' +
+      '<label class="c">Entra na conta<select name="cd" required>' + optsContas('', true) + '</select></label>' +
+      '<label class="c">Valor (R$)<input name="valor" required inputmode="decimal" placeholder="0,00"></label>' +
+      '<label class="c">Data<input name="data" type="date" required max="' + hoje() + '" value="' + hoje() + '"></label>' +
+      '<label class="c todo">Observação<input name="observacao" maxlength="200"></label></div>' +
+      '<p class="mut" style="margin:8px 0 0">Não conta como receita nem despesa; só move o saldo entre as contas.</p><div id="msg"></div>' +
+      '<div class="rod"><button type="button" class="b" data-act="fechar">Cancelar</button><button class="b pri" type="submit">Transferir</button></div></form>');
+    var fm = j.el.querySelector('form'), chave = uid();
+    fm.addEventListener('submit', function (e) {
+      e.preventDefault(); var msg = j.el.querySelector('#msg'), btn = fm.querySelector('[type=submit]'), v = valorTxt(fm.valor.value);
+      if (!fm.co.value || !fm.cd.value || fm.co.value === fm.cd.value) { msg.innerHTML = '<div class="erro">Escolha duas contas diferentes.</div>'; return; }
+      if (!v || centavos(v) <= 0) { msg.innerHTML = '<div class="erro">Valor inválido.</div>'; return; }
+      if (!dataValida(fm.data.value)) { msg.innerHTML = '<div class="erro">Data inválida.</div>'; return; }
+      acao(btn, async function () {
+        var r = await rpcJ('fin_transferir', { conta_origem_id: fm.co.value, conta_destino_id: fm.cd.value, valor: v, data: fm.data.value, observacao: fm.observacao.value.trim(), chave_envio: chave }, { escrita: true });
+        j.fechar(); toast(r.repetida ? 'Esta transferência já estava registrada.' : 'Transferência registrada: ' + brl(r.valor)); await recarregar();
+      }, function (m) { msg.innerHTML = '<div class="erro">' + esc(m) + '</div>'; });
+    });
+  }
+  function formConta(id) {
+    var c = S.contas.filter(function (x) { return x.id === id; })[0] || { nome: '', banco: '', emite_boleto: false, entra_no_fluxo: true, ativa: true, saldo_inicial: 0, saldo_inicial_em: '' };
+    var j = janela(id ? 'Editar conta' : 'Nova conta',
+      '<form autocomplete="off"><div class="f2"><label class="c">Nome<input name="nome" required maxlength="80" value="' + esc(c.nome) + '"></label><label class="c">Banco<input name="banco" maxlength="60" value="' + esc(c.banco || '') + '"></label>' +
+      '<label class="c">Saldo no INÍCIO do dia (R$)<input name="saldo" inputmode="decimal" value="' + (Number(c.saldo_inicial) ? String(Number(c.saldo_inicial).toFixed(2)).replace('.', ',') : '') + '" placeholder="0,00"></label>' +
+      '<label class="c">Dia do saldo (o saldo vale no começo deste dia)<input name="em" type="date" value="' + esc(c.saldo_inicial_em || '') + '"></label>' +
+      '<label><input type="checkbox" name="bol"' + (c.emite_boleto ? ' checked' : '') + '> emite boleto</label><label><input type="checkbox" name="fluxo"' + (c.entra_no_fluxo ? ' checked' : '') + '> entra no fluxo de caixa</label>' +
+      '<label><input type="checkbox" name="ativa"' + (c.ativa ? ' checked' : '') + '> ativa</label></div><p class="mut">Conta não se apaga: para parar de usar, desmarque “ativa”. Saldo diferente de zero precisa do dia a que se refere; só baixas desse dia em diante entram no saldo atual.</p><div id="msg"></div>' +
+      '<div class="rod"><button type="button" class="b" data-act="fechar">Cancelar</button><button class="b pri" type="submit">Salvar</button></div></form>');
+    var fm = j.el.querySelector('form');
+    fm.addEventListener('submit', function (e) {
+      e.preventDefault(); var msg = j.el.querySelector('#msg'), sv = fm.saldo.value.trim() ? valorTxt(fm.saldo.value) : '0';
+      if (sv === null) { msg.innerHTML = '<div class="erro">Saldo inválido (até 2 casas decimais; sem sinal negativo nesta tela).</div>'; return; }
+      acao(fm.querySelector('[type=submit]'), async function () {
+        await rpcJ('fin_conta_salvar', { id: id || '', nome: fm.nome.value, banco: fm.banco.value, saldo_inicial: sv, saldo_inicial_em: fm.em.value, emite_boleto: fm.bol.checked, entra_no_fluxo: fm.fluxo.checked, ativa: fm.ativa.checked }, { escrita: true });
+        j.fechar(); toast('Conta salva.'); await telaCadastros();
+      }, function (m) { msg.innerHTML = '<div class="erro">' + esc(m) + '</div>'; });
+    });
+  }
+  function formCat(id) {
+    var c = S.cats.filter(function (x) { return x.id === id; })[0] || { nome: '', tipo: 'receita', pai_id: '', ativa: true };
+    var j = janela(id ? 'Editar categoria' : 'Nova categoria',
+      '<form autocomplete="off"><div class="f2"><label class="c">Nome<input name="nome" required maxlength="80" value="' + esc(c.nome) + '"></label>' +
+      '<label class="c">Tipo<select name="tipo"><option value="receita">receita</option><option value="despesa">despesa</option><option value="transferencia">transferência</option></select></label>' +
+      '<label class="c">Dentro de (opcional)<select name="pai">' + '<option value="">—</option>' + S.cats.filter(function (x) { return x.id !== id; }).map(function (x) { return '<option value="' + esc(x.id) + '"' + (x.id === c.pai_id ? ' selected' : '') + '>' + esc(x.nome) + ' (' + esc(x.tipo) + ')</option>'; }).join('') + '</select></label>' +
+      '<label><input type="checkbox" name="ativa"' + (c.ativa ? ' checked' : '') + '> ativa</label></div><p class="mut">A categoria de dentro tem de ser do mesmo tipo.</p><div id="msg"></div>' +
+      '<div class="rod"><button type="button" class="b" data-act="fechar">Cancelar</button><button class="b pri" type="submit">Salvar</button></div></form>');
+    var fm = j.el.querySelector('form'); fm.tipo.value = c.tipo;
+    fm.addEventListener('submit', function (e) {
+      e.preventDefault(); var msg = j.el.querySelector('#msg');
+      acao(fm.querySelector('[type=submit]'), async function () {
+        await rpcJ('fin_categoria_salvar', { id: id || '', nome: fm.nome.value, tipo: fm.tipo.value, pai_id: fm.pai.value, ativa: fm.ativa.checked }, { escrita: true });
+        j.fechar(); toast('Categoria salva.'); await telaCadastros();
+      }, function (m) { msg.innerHTML = '<div class="erro">' + esc(m) + '</div>'; });
+    });
+  }
+
+  // ── CONCILIAÇÃO COM O EXTRATO DO BANCO (OFX) ──────────────────────────────────────────────────
+  // O ProperCare só LÊ o extrato que o usuário sobe; nunca fala com o banco nem aprova pagamento.
+  var CX_SIT = [['pendente', 'Pendentes'], ['conciliada', 'Conciliadas'], ['ignorada', 'Ignoradas'], ['todas', 'Todas']];
+  function cxEstado() { if (!S.cx) S.cx = { conta: '', status: 'pendente', de: '', ate: '', busca: '', dados: null }; return S.cx; }
+  async function telaConciliacao() {
+    await carregarCadastros();
+    var c = cxEstado(), ativas = S.contas.filter(function (x) { return x.ativa; });
+    if (!c.conta || !ativas.some(function (x) { return x.id === c.conta; })) { var p = ativas.filter(function (x) { return /sicredi/i.test(x.nome); })[0] || ativas[0]; c.conta = p ? p.id : ''; }
+    $('main').innerHTML =
+      '<div class="card semimp"><div class="barra"><h2 style="margin:0">Conciliação com o extrato do banco</h2><span style="flex:1"></span>' +
+      '<label class="c">Conta<select id="cxConta">' + ativas.map(function (x) { return '<option value="' + esc(x.id) + '"' + (x.id === c.conta ? ' selected' : '') + '>' + esc(x.nome) + '</option>'; }).join('') + '</select></label>' +
+      '<label class="c">Situação<select id="cxSit">' + CX_SIT.map(function (x) { return '<option value="' + x[0] + '"' + (x[0] === c.status ? ' selected' : '') + '>' + x[1] + '</option>'; }).join('') + '</select></label>' +
+      '<label class="c">De<input type="date" id="cxDe" value="' + esc(c.de) + '"></label><label class="c">Até<input type="date" id="cxAte" value="' + esc(c.ate) + '"></label>' +
+      '<label class="c">Buscar<input id="cxBusca" placeholder="texto ou valor" value="' + esc(c.busca) + '"></label><button class="b" data-act="cxfiltrar">Filtrar</button> <button class="b" data-act="cxregras">Regras</button></div>' +
+      '<div class="drop" id="cxDrop">Arraste aqui o extrato <b>.ofx</b> do banco, ou <label class="b pri" style="cursor:pointer;margin-left:6px">escolher o arquivo<input type="file" id="cxArq" accept=".ofx,.OFX,.txt" hidden></label>' +
+      '<div class="mut" style="margin-top:6px;font-size:.85rem">O ProperCare só <b>lê</b> o extrato: nunca mexe no banco nem aprova pagamento. Subir o mesmo arquivo (ou um que se sobreponha) não duplica nada.</div></div></div>' +
+      '<div id="cxCorpo"><div class="vazio">Carregando…</div></div>';
+    var dz = $('cxDrop');
+    ['dragover', 'dragenter'].forEach(function (ev) { dz.addEventListener(ev, function (e) { e.preventDefault(); dz.classList.add('sobre'); }); });
+    ['dragleave', 'drop'].forEach(function (ev) { dz.addEventListener(ev, function (e) { e.preventDefault(); dz.classList.remove('sobre'); }); });
+    dz.addEventListener('drop', function (e) { if (e.dataTransfer.files[0]) cxArquivo(e.dataTransfer.files[0]); });
+    $('cxArq').addEventListener('change', function () { var f = this.files[0]; this.value = ''; if (f) cxArquivo(f); });
+    $('cxConta').addEventListener('change', function () { cxEstado().conta = this.value; acao(null, carregarConciliacao); });
+    await carregarConciliacao();
+  }
+  async function carregarConciliacao() {
+    var c = cxEstado(), el = $('cxCorpo'); if (!el) return;
+    if (!c.conta) { el.innerHTML = '<div class="aviso">Cadastre uma conta em "Contas e categorias" para conciliar.</div>'; return; }
+    var r = await rpcJ('fin_conciliacao_listar', { conta_id: c.conta, status: c.status, de: c.de || undefined, ate: c.ate || undefined, busca: c.busca || undefined, limite: 150 });
+    // diagnóstico (auditoria 1, M4): o que deveria estar sempre vazio; se não estiver, aviso vermelho no topo
+    try { r.__aud = await rpc('fin_conciliacao_auditar'); } catch (e) { r.__aud = { erro: String((e && e.msg) || (e && e.message) || e) }; }
+    c.dados = r; pintarConciliacao(r);
+  }
+  var CONF = { alta: ['ok', 'alta'], media: ['av', 'média'], baixa: ['', 'baixa'] };
+  var CX_AUD = { conciliada_sem_soma: 'linha(s) conciliada(s) cuja soma não fecha com as baixas', pendente_com_vinculo: 'linha(s) pendente(s) ainda ligada(s) a baixa',
+                 vinculo_de_baixa_estornada: 'vínculo(s) com baixa estornada', conciliada_com_desconto_alto: 'linha(s) conciliada(s) com desconto acima da metade do valor' };
+  function cxAudTxt(a) {
+    if (!a) return '';
+    if (a.erro) return '<div class="erro" id="cxAud">Não consegui rodar a conferência da conciliação: ' + esc(a.erro) + '</div>';
+    var it = Object.keys(CX_AUD).filter(function (k) { return a[k] && a[k].length; });
+    if (!it.length) return '';
+    return '<div class="erro" id="cxAud"><b>Conferência da conciliação achou problema — avise o Bruno antes de seguir:</b> ' + it.map(function (k) { return a[k].length + ' ' + esc(CX_AUD[k]); }).join(' · ') + '.</div>';
+  }
+  function cxSugTxt(s) { return (s.tipo === 'titulo' ? 'Pagar/receber: ' : s.tipo === 'baixa' ? 'Já lançado: ' : s.tipo === 'par' ? 'Transferência: ' : '') + s.rotulo; }
+  function pintarConciliacao(r) {
+    var el = $('cxCorpo'); if (!el) return;
+    var rs = r.resumo, lin = r.linhas || [], altas = lin.filter(function (l) { return l.status === 'pendente' && l.sugestoes && l.sugestoes[0] && l.sugestoes[0].confianca === 'alta'; });
+    var sb = r.saldo_banco, sbTxt = '';
+    if (sb && sb.banco != null) {
+      var dif = Math.round((Number(sb.banco) - Number(sb.sistema)) * 100) / 100;
+      sbTxt = '<div class="' + (sb.confiavel ? (dif === 0 ? 'soma ok' : 'soma ruim') : 'soma') + '">Saldo do extrato (' + esc(dBR(sb.em)) + '): <b>' + brl(sb.banco) + '</b> · no ProperCare na mesma data: <b>' + brl(sb.sistema) + '</b>' +
+        (sb.confiavel ? ' · diferença <b>' + brl(dif) + '</b>' + (dif === 0 ? ' — fecha.' : ' — falta conciliar ou lançar algo.') : ' <span class="mut">(o banco informou esse saldo numa data fora do período do extrato; não serve de conferência)</span>') + '</div>';
+    }
+    el.innerHTML =
+      '<div class="grid">' + kpi('Pendentes', String(rs.pendentes), rs.pendentes ? 'ruim' : 'ok') + kpi('Entradas pendentes', brl(rs.pendentes_entrada), '') + kpi('Saídas pendentes', brl(rs.pendentes_saida), '') +
+      kpi('Conciliadas', String(rs.conciliadas), '') + kpi('Ignoradas', String(rs.ignoradas), '') + '</div>' + cxAudTxt(r.__aud) + sbTxt +
+      (r.ultimo_lote ? '<p class="mut" style="margin:6px 0">Último extrato: ' + esc(r.ultimo_lote.arquivo || '') + ' · ' + esc(dBR(r.ultimo_lote.periodo_de)) + ' a ' + esc(dBR(r.ultimo_lote.periodo_ate)) + ' · enviado em ' + esc(new Date(r.ultimo_lote.importado_em).toLocaleString('pt-BR')) + '</p>' : '<div class="aviso">Nenhum extrato enviado para esta conta ainda. Baixe o OFX no internet banking e solte-o na área acima.</div>') +
+      (rs.suspeitas ? '<div class="aviso"><b>' + rs.suspeitas + ' linha(s) suspeita(s) de repetição:</b> mesmo dia, valor e texto de outra já guardada, mas com outro identificador do banco. Pode ser o mesmo lançamento num arquivo que numera diferente — confira antes de conciliar.</div>' : '') +
+      (altas.length ? '<div class="card" style="margin-top:12px;display:flex;gap:10px;align-items:center;flex-wrap:wrap"><div><b>' + altas.length + ' sugestão(ões) de confiança ALTA</b><div class="mut" style="font-size:.85rem">Valor, data e nome batem e não há outra linha concorrendo. O servidor confere de novo na hora de confirmar.</div></div><span style="flex:1"></span><button class="b pri" data-act="cxaltas">Confirmar as ' + altas.length + ' altas</button></div>' : '') +
+      (!lin.length ? '<div class="vazio">Nenhuma linha com este filtro.</div>' :
+        '<div class="tw" style="margin-top:12px"><table><thead><tr><th>Data</th><th>No extrato</th><th class="n">Valor</th><th>' + (cxEstado().status === 'pendente' ? 'Sugestão' : 'Situação') + '</th><th></th></tr></thead><tbody>' +
+        lin.map(function (l) {
+          var v = Number(l.valor), cel;
+          if (l.status === 'pendente') {
+            var s0 = l.sugestoes && l.sugestoes[0], cf = s0 ? CONF[s0.confianca] : null;
+            cel = s0 ? '<div class="sug"><span class="chip ' + cf[0] + '">' + cf[1] + '</span> ' + esc(cxSugTxt(s0)) + '<small>' + esc(s0.porque) + (l.sugestoes.length > 1 ? ' · +' + (l.sugestoes.length - 1) + ' opção(ões)' : '') + '</small></div>' : '<span class="mut">sem sugestão</span>';
+          } else if (l.status === 'conciliada') {
+            cel = '<span class="chip ok">conciliada</span> ' + (l.vinculos || []).map(function (x) { return esc(x.parte) + (x.documento ? ' · ' + esc(x.documento) : '') + ' (' + brl(x.valor) + (x.transferencia ? ', transferência' : '') + ')'; }).join('; ');
+          } else cel = '<span class="chip">ignorada</span> <span class="mut">' + esc(l.motivo || '') + '</span>';
+          var ac = l.status === 'pendente' ? (l.sugestoes && l.sugestoes[0] ? '<button class="b peq pri" data-act="cxconf" data-id="' + esc(l.id) + '" data-i="0">Confirmar</button> ' : '') + '<button class="b peq" data-act="cxoutro" data-id="' + esc(l.id) + '">' + (l.sugestoes && l.sugestoes[0] ? 'Outro…' : 'Resolver…') + '</button>' :
+            l.status === 'conciliada' ? '<button class="b peq ruim" data-act="cxdesfazer" data-id="' + esc(l.id) + '">Desfazer</button>' : '<button class="b peq" data-act="cxreabrir" data-id="' + esc(l.id) + '">Reabrir</button>';
+          return '<tr><td>' + esc(dBR(l.data)) + '</td><td>' + esc(l.memo || '') + (l.suspeita ? ' <span class="chip av" title="Mesmo dia, valor e texto de outra linha já guardada">suspeita</span>' : '') + '</td><td class="n"><span class="vlr ' + (v < 0 ? 's' : 'e') + '">' + brl(v) + '</span></td><td>' + cel + '</td><td class="n">' + ac + '</td></tr>';
+        }).join('') + '</tbody></table></div>') +
+      (lin.length >= 150 ? '<p class="mut">Mostrando as primeiras 150 linhas; confirme/resolva e a lista avança. Use o período para ver outras.</p>' : '');
+  }
+
+  // ── subir o OFX ──
+  async function cxArquivo(file) {
+    var c = cxEstado(); if (!c.conta) { toast('Escolha a conta.'); return; }
+    if (file.size > 8 * 1024 * 1024) { toast('Arquivo grande demais (máximo 8 MB).'); return; }
+    var buf; try { buf = new Uint8Array(await file.arrayBuffer()); } catch (e) { toast('Não consegui ler o arquivo.'); return; }
+    var r = PCOfx.lerBytes(buf), h = null; try { h = await PCOfx.hash(buf); } catch (e) {}
+    cxPrevia(file.name, r, h);
+  }
+  function cxPrevia(nome, r, hash) {
+    var c = cxEstado(), conta = nomeConta(c.conta), rs = r.resumo;
+    var html = '<p style="margin:0 0 8px">Arquivo <b>' + esc(nome) + '</b> → conta <b>' + esc(conta) + '</b></p>' +
+      (r.erros.length ? '<div class="erro"><b>Este arquivo não pode ser importado:</b><ul style="margin:6px 0 0 18px">' + r.erros.slice(0, 8).map(function (e) { return '<li>' + esc(e) + '</li>'; }).join('') + (r.erros.length > 8 ? '<li>… e mais ' + (r.erros.length - 8) + '</li>' : '') + '</ul></div>' : '') +
+      (r.avisos.length ? '<div class="aviso"><ul style="margin:0 0 0 18px">' + r.avisos.slice(0, 6).map(function (e) { return '<li>' + esc(e) + '</li>'; }).join('') + '</ul></div>' : '');
+    if (r.ok) {
+      html += '<div class="f2" style="margin-bottom:8px">' + cel('Banco / conta', (r.banco_id || '?') + ' / ' + (r.conta_banco || '?')) + cel('Período', dBR(r.periodo_de) + ' a ' + dBR(r.periodo_ate)) + cel('Linhas', String(rs.linhas)) +
+        cel('Entradas', brl(rs.entradas)) + cel('Saídas', brl(rs.saidas)) + cel('Movimento do período', brl(rs.saldo_do_periodo)) + '</div>' +
+        '<div class="tw"><table><thead><tr><th>Data</th><th>Texto</th><th class="n">Valor</th></tr></thead><tbody>' + r.linhas.slice(0, 8).map(function (l) { return '<tr><td>' + esc(dBR(l.data)) + '</td><td>' + esc(l.memo || '') + '</td><td class="n">' + brl(l.valor) + '</td></tr>'; }).join('') + '</tbody></table></div>' +
+        (r.linhas.length > 8 ? '<p class="mut">… e mais ' + (r.linhas.length - 8) + ' linhas.</p>' : '');
+    }
+    html += '<div id="msg"></div><div class="rod"><button type="button" class="b" data-act="fechar">Cancelar</button>' + (r.ok ? '<button class="b pri" id="cxImp">Importar ' + rs.linhas + ' linhas</button>' : '') + '</div>';
+    var j = janela('Extrato para conciliar', html);
+    var bt = j.el.querySelector('#cxImp'); if (!bt) return;
+    var enviar = function (aceitar) {
+      var msg = j.el.querySelector('#msg');
+      acao(bt, async function () {
+        var res = await rpcJ('fin_extrato_importar', { conta_id: c.conta, arquivo: nome, hash: hash || undefined, banco_id: r.banco_id || undefined, conta_banco: r.conta_banco || undefined, periodo_de: r.periodo_de || undefined, periodo_ate: r.periodo_ate || undefined,
+          saldo_final: r.saldo_final || undefined, saldo_final_em: r.saldo_final_em || undefined, aceitar_conta_diferente: aceitar ? true : undefined, linhas: r.linhas }, { escrita: true });
+        j.fechar();
+        if (res.repetido) toast('Este mesmo arquivo já tinha sido importado — nada mudou.');
+        else toast(res.novas + ' nova(s), ' + res.repetidas + ' já existia(m)' + (res.conflitos ? ', ' + res.conflitos + ' em CONFLITO (mesmo identificador, valor/data diferentes — não importadas)' : '') + (res.anteriores ? ', ' + res.anteriores + ' anterior(es) ao saldo inicial (ignoradas)' : '') + '.');
+        c.status = 'pendente'; await telaConciliacao();
+      }, function (m) {
+        msg.innerHTML = '<div class="erro">' + esc(m) + '</div>' + (/este extrato é do banco/.test(m) ? '<button type="button" class="b ruim" id="cxForcar">O número da conta mudou: importar mesmo assim</button>' : '');
+        var f = msg.querySelector('#cxForcar'); if (f) f.addEventListener('click', function () { enviar(true); });
+      });
+    };
+    bt.addEventListener('click', function () { enviar(false); });
+  }
+
+  // ── confirmar a sugestão ──
+  async function cxAplicar(linhaId, s) {
+    var o = { escrita: true };
+    if (s.tipo === 'titulo') return rpcJ('fin_conciliacao_baixar_titulos', { linha_id: linhaId, itens: [{ titulo_id: s.ref_id }] }, o);
+    if (s.tipo === 'baixa') return rpcJ('fin_conciliacao_vincular_baixa', { linha_id: linhaId, baixa_ids: [s.ref_id] }, o);
+    if (s.tipo === 'par') return rpcJ('fin_conciliacao_transferir', { linha_id: linhaId, conta_contraparte_id: s.extra.conta_id, par_linha_id: s.ref_id }, o);
+    if (s.extra.acao === 'ignorar') return rpcJ('fin_conciliacao_ignorar', { linha_id: linhaId, motivo: s.extra.motivo }, o);
+    return rpcJ('fin_conciliacao_lancar', { linha_id: linhaId, categoria_id: s.extra.categoria_id, parte_nome: s.extra.parte_nome, observacao: 'regra "' + s.extra.padrao + '"' }, o);
+  }
+  async function cxConfirmar(id, i) {
+    var l = ((cxEstado().dados || {}).linhas || []).filter(function (x) { return x.id === id; })[0];
+    if (!l || !l.sugestoes || !l.sugestoes[i]) { toast('Atualize a lista: a sugestão mudou.'); await carregarConciliacao(); return; }
+    await cxAplicar(id, l.sugestoes[i]); toast('Conciliada.'); await carregarConciliacao();
+  }
+  function cxAltas(btn) {
+    var c = cxEstado(), lin = (c.dados || {}).linhas || [], altas = lin.filter(function (l) { return l.status === 'pendente' && l.sugestoes && l.sugestoes[0] && l.sugestoes[0].confianca === 'alta'; });
+    if (!altas.length) return;
+    var j = janela('Confirmar sugestões de confiança alta',
+      '<p style="margin:0 0 8px">Vou conciliar <b>' + altas.length + '</b> linha(s). Cada uma gera a baixa (ou liga à baixa já lançada, ou cria a transferência/lançamento da regra) <b>na data do extrato</b>. O servidor refaz a conferência agora; se alguma deixou de ser alta, fica de fora.</p>' +
+      '<div class="tw" style="max-height:48vh;overflow:auto"><table><thead><tr><th>Data</th><th>No extrato</th><th class="n">Valor</th><th>Vai para</th></tr></thead><tbody>' +
+      altas.map(function (l) { return '<tr><td>' + esc(dBR(l.data)) + '</td><td>' + esc(l.memo || '') + '</td><td class="n">' + brl(l.valor) + '</td><td>' + esc(cxSugTxt(l.sugestoes[0])) + '</td></tr>'; }).join('') + '</tbody></table></div>' +
+      '<div id="msg"></div><div class="rod"><button type="button" class="b" data-act="fechar">Voltar</button><button class="b pri" id="cxGo">Confirmar ' + altas.length + '</button></div>');
+    j.el.querySelector('#cxGo').addEventListener('click', function () {
+      var b = this, msg = j.el.querySelector('#msg');
+      acao(b, async function () {
+        var r = await rpcJ('fin_conciliacao_confirmar_altas', { conta_id: c.conta, ids: altas.map(function (l) { return l.id; }) }, { escrita: true });
+        j.fechar(); toast(r.confirmadas + ' conciliada(s)' + (r.falhas.length ? ', ' + r.falhas.length + ' com problema (continuam pendentes): ' + r.falhas[0].erro.replace(/^Financeiro:\s*/, '') : '') + '.'); await carregarConciliacao();
+      }, function (m) { msg.innerHTML = '<div class="erro">' + esc(m) + '</div>'; });
+    });
+  }
+
+  // ── "Outro…": busca manual, lançar, transferir, ignorar ──
+  async function cxOutro(id) {
+    var c = cxEstado(), l = ((c.dados || {}).linhas || []).filter(function (x) { return x.id === id; })[0]; if (!l) return;
+    var v = Number(l.valor), saida = v < 0, av = Math.abs(v);
+    var sugs = (l.sugestoes || []).map(function (s, i) { var cf = CONF[s.confianca]; return '<tr><td><span class="chip ' + cf[0] + '">' + cf[1] + '</span></td><td>' + esc(cxSugTxt(s)) + '<div class="mut" style="font-size:.8rem">' + esc(s.porque) + '</div></td><td class="n"><button class="b peq pri" data-act="cxsug" data-id="' + esc(id) + '" data-i="' + i + '">Confirmar</button></td></tr>'; }).join('');
+    var outras = S.contas.filter(function (x) { return x.ativa && x.id !== c.conta; });
+    var pares = (l.sugestoes || []).filter(function (s) { return s.tipo === 'par'; });
+    var j = janela('Resolver linha do extrato',
+      '<div class="f2" style="margin-bottom:8px">' + cel('Data', dBR(l.data)) + cel('Valor', (saida ? 'Saiu ' : 'Entrou ') + brl(av)) + '<div class="todo"><div class="mut" style="font-size:.78rem">No extrato</div><div>' + esc(l.memo || '') + '</div></div></div>' +
+      (sugs ? '<details class="sec" open><summary>Sugestões do sistema</summary><div class="tw"><table><tbody>' + sugs + '</tbody></table></div></details>' : '') +
+      '<details class="sec" ' + (sugs ? '' : 'open') + '><summary>' + (saida ? 'Pagar' : 'Receber') + ' títulos em aberto (marque um ou mais)</summary>' +
+        '<div class="barra" style="margin-top:6px"><label class="c" style="flex:1">Buscar por nome, documento ou valor<input id="cxQ" placeholder="deixe vazio para ver os de valor mais próximo"></label><button type="button" class="b" data-act="cxbuscar">Buscar</button></div>' +
+        '<div id="cxTit" class="tw"><div class="mut">Clique em Buscar.</div></div><div id="cxSomaT" class="soma">Marque os títulos.</div>' +
+        '<div class="rod" style="margin-top:0"><button type="button" class="b pri" data-act="cxbaixar" id="cxBtnBaixar" disabled>' + (saida ? 'Dar baixa nos títulos marcados' : 'Receber os títulos marcados') + '</button></div></details>' +
+      '<details class="sec"><summary>Ligar a baixas que já estão lançadas (marcadas como ' + (saida ? 'pagas' : 'recebidas') + ' à mão)</summary><div id="cxBx" class="tw"><div class="mut">Clique em Buscar acima.</div></div><div id="cxSomaB" class="soma">Marque as baixas.</div>' +
+        '<div class="rod" style="margin-top:0"><button type="button" class="b pri" data-act="cxligar" id="cxBtnLigar" disabled>Ligar às baixas marcadas</button></div></details>' +
+      '<details class="sec"><summary>Lançar como novo (tarifa, juros, entrada avulsa…)</summary><div class="f2">' +
+        '<label class="c">Categoria<select id="cxCat">' + optsCats(saida ? 'despesa' : 'receita', '') + '</select></label><label class="c">' + (saida ? 'Fornecedor/favorecido' : 'Cliente/origem') + '<input id="cxNome" maxlength="120" value="' + esc(String(l.memo || '').slice(0, 120)) + '"></label>' +
+        '<label class="c todo">Observação<input id="cxObs" maxlength="200"></label>' +
+        '<label class="c todo" style="flex-direction:row;align-items:center;gap:8px"><input type="checkbox" id="cxRegraOn"> Lembrar: da próxima vez, lançar sozinho quando o extrato tiver o texto <input id="cxRegraTxt" maxlength="60" style="flex:1" value="' + esc(String(l.memo || '').replace(/[0-9]+/g, ' ').replace(/[^0-9A-Za-zÀ-ÿ]+/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 40).trim()) + '"></label></div>' +
+        '<div class="rod"><button type="button" class="b pri" data-act="cxlancar">Lançar e dar baixa</button></div></details>' +
+      '<details class="sec" id="cxDivSec"><summary>Dividir em várias categorias (um valor só no banco, mais de um assunto)</summary>' +
+        '<p class="mut" style="margin:4px 0">Ex.: TED de R$ 1.150 = 900 de aluguel do imóvel + 250 de aluguel de carro. A soma das partes tem de fechar com o extrato.</p>' +
+        '<div id="cxDivLin">' + cxDivLinha(saida, 1) + cxDivLinha(saida, 2) + '</div>' +
+        '<div class="rod" style="margin-top:4px"><button type="button" class="b peq" data-act="cxdivadd" id="cxDivAdd">+ Adicionar parte</button></div>' +
+        '<div id="cxSomaD" class="soma">Preencha as partes.</div>' +
+        '<div class="rod" style="margin-top:0"><button type="button" class="b pri" data-act="cxdividir" id="cxBtnDividir" disabled>Lançar dividido e dar baixa</button></div></details>' +
+      '<details class="sec"><summary>É transferência entre contas da empresa</summary><div class="f2"><label class="c">Outra conta<select id="cxCt">' + optsContasLista(outras, pares[0] && pares[0].extra.conta_id) + '</select></label>' +
+        (pares.length ? '<label class="c">Ponta no extrato da outra conta<select id="cxPar"><option value="">(nenhuma — só esta ponta está no extrato)</option>' + pares.map(function (s) { return '<option value="' + esc(s.ref_id) + '" selected>' + esc(s.rotulo) + ' (' + dBR(s.ref_data) + ')</option>'; }).join('') + '</select></label>' : '<input type="hidden" id="cxPar" value="">') +
+        '</div><p class="mut" style="margin:6px 0 0">Cria a saída e a entrada (não é receita nem despesa). ' + (saida ? 'Sai desta conta e entra na outra.' : 'Sai da outra conta e entra nesta.') + '</p><div class="rod"><button type="button" class="b pri" data-act="cxtransf">Registrar transferência</button></div></details>' +
+      '<details class="sec"><summary>Ignorar esta linha</summary><label class="c">Motivo (fica registrado)<input id="cxMot" maxlength="200" placeholder="ex.: lançamento duplicado no extrato"></label><div class="rod"><button type="button" class="b ruim" data-act="cxignorar">Ignorar linha</button></div></details>' +
+      '<div id="msg"></div><div class="rod"><button type="button" class="b" data-act="fechar">Fechar</button></div>');
+    j.el.__linha = l; j.el.__tit = []; j.el.__bx = []; cxSomaD(j.el);
+    j.el.addEventListener('input', function () { cxSomaT(j.el); cxSomaB(j.el); cxSomaD(j.el); });
+    j.el.addEventListener('change', function () { cxSomaT(j.el); cxSomaB(j.el); cxSomaD(j.el); });
+    var q = j.el.querySelector('#cxQ'); q.addEventListener('keydown', function (e) { if (e.key === 'Enter') { e.preventDefault(); acao(null, function () { return cxBuscar(j.el); }); } });
+    cxBuscar(j.el).catch(function (e) { toast((e && e.msg) || String(e && e.message || e)); });
+  }
+  function optsContasLista(lista, sel) { return lista.map(function (c) { return '<option value="' + esc(c.id) + '"' + (c.id === sel ? ' selected' : '') + '>' + esc(c.nome) + '</option>'; }).join(''); }
+  async function cxBuscar(f) {
+    var l = f.__linha, r = await rpcJ('fin_conciliacao_buscar', { linha_id: l.id, q: f.querySelector('#cxQ').value.trim(), limite: 30 });
+    f.__tit = r.titulos || []; f.__bx = r.baixas || [];
+    f.querySelector('#cxTit').innerHTML = !f.__tit.length ? '<div class="vazio">Nenhum título em aberto com este filtro.</div>' :
+      '<table><thead><tr><th></th><th>Fornecedor/cliente</th><th>Doc.</th><th>Venc.</th><th class="n">Saldo</th><th class="n">Valor a baixar</th><th class="n">Juros</th><th class="n">Desconto</th></tr></thead><tbody>' +
+      f.__tit.map(function (t, i) { return '<tr><td><input type="checkbox" data-i="' + i + '" class="cxT"></td><td>' + esc(t.parte_nome) + '</td><td>' + esc(t.documento || '') + (t.parcelas > 1 ? ' ' + t.parcela + '/' + t.parcelas : '') + '</td><td>' + esc(dBR(t.vencimento)) + '</td><td class="n">' + brl(t.saldo) + '</td>' +
+        '<td class="n"><input class="mini" data-k="v" value="' + esc(String(t.saldo).replace('.', ',')) + '"></td><td class="n"><input class="mini" data-k="j" placeholder="0,00"></td><td class="n"><input class="mini" data-k="d" placeholder="0,00"></td></tr>'; }).join('') + '</tbody></table>';
+    f.querySelector('#cxBx').innerHTML = !f.__bx.length ? '<div class="vazio">Nenhuma baixa livre desta conta, nesta direção, a até 31 dias.</div>' :
+      '<table><thead><tr><th></th><th>Fornecedor/cliente</th><th>Doc.</th><th>Data da baixa</th><th>Forma</th><th class="n">Dinheiro</th></tr></thead><tbody>' +
+      f.__bx.map(function (b, i) { return '<tr><td><input type="checkbox" data-i="' + i + '" class="cxB"></td><td>' + esc(b.parte_nome) + '</td><td>' + esc(b.documento || '') + '</td><td>' + esc(dBR(b.data)) + '</td><td>' + esc(b.forma || '') + '</td><td class="n">' + brl(b.dinheiro) + '</td></tr>'; }).join('') + '</tbody></table>';
+    cxSomaT(f); cxSomaB(f);
+  }
+  function cxItens(f) {
+    var itens = [], soma = 0, ok = true;
+    f.querySelectorAll('.cxT:checked').forEach(function (cb) {
+      var tr = cb.closest('tr'), t = f.__tit[Number(cb.dataset.i)];
+      var v = valorTxt(tr.querySelector('[data-k=v]').value), jt = tr.querySelector('[data-k=j]').value.trim(), dt = tr.querySelector('[data-k=d]').value.trim();
+      var j = jt ? valorTxt(jt) : '0', d = dt ? valorTxt(dt) : '0';
+      if (!v || j === null || d === null || centavos(v) <= 0) { ok = false; return; }
+      if (centavos(v) + centavos(j) - centavos(d) <= 0 || centavos(d) * 2 > centavos(v)) { ok = false; return; }   // auditoria 1, M3: sem dinheiro ou desconto > metade
+      if (centavos(v) > Math.round(Number(t.saldo) * 100)) { ok = false; return; }
+      soma += centavos(v) + centavos(j) - centavos(d); itens.push({ titulo_id: t.id, valor: v, juros: j, desconto: d });
+    });
+    return { itens: itens, soma: soma, ok: ok };
+  }
+  function cxSomaT(f) {
+    if (!f.__linha || !f.__tit) return; var el = f.querySelector('#cxSomaT'), bt = f.querySelector('#cxBtnBaixar'); if (!el) return;
+    var r = cxItens(f), alvo = Math.round(Math.abs(Number(f.__linha.valor)) * 100), dif = alvo - r.soma;
+    if (!r.itens.length && r.ok) { el.className = 'soma'; el.textContent = 'Marque os títulos.'; bt.disabled = true; return; }
+    if (!r.ok) { el.className = 'soma ruim'; el.textContent = 'Valor, juros ou desconto inválido (valor maior que o saldo do título, ou desconto acima da metade do valor).'; bt.disabled = true; return; }
+    el.className = 'soma ' + (dif === 0 ? 'ok' : 'ruim');
+    el.innerHTML = 'Soma dos títulos (valor + juros − desconto): <b>' + brl(r.soma / 100) + '</b> · extrato: <b>' + brl(alvo / 100) + '</b> · ' + (dif === 0 ? 'fecha.' : 'diferença <b>' + brl(dif / 100) + '</b> (ajuste juros ou desconto).');
+    bt.disabled = dif !== 0;
+  }
+  function cxSomaB(f) {
+    if (!f.__linha || !f.__bx) return; var el = f.querySelector('#cxSomaB'), bt = f.querySelector('#cxBtnLigar'); if (!el) return;
+    var sel = []; f.querySelectorAll('.cxB:checked').forEach(function (cb) { sel.push(f.__bx[Number(cb.dataset.i)]); });
+    var alvo = Math.round(Math.abs(Number(f.__linha.valor)) * 100), soma = sel.reduce(function (a, b) { return a + Math.round(Number(b.dinheiro) * 100); }, 0), dif = alvo - soma;
+    if (!sel.length) { el.className = 'soma'; el.textContent = 'Marque as baixas.'; bt.disabled = true; return; }
+    el.className = 'soma ' + (dif === 0 ? 'ok' : 'ruim'); el.innerHTML = 'Soma das baixas: <b>' + brl(soma / 100) + '</b> · extrato: <b>' + brl(alvo / 100) + '</b> · ' + (dif === 0 ? 'fecha.' : 'diferença <b>' + brl(dif / 100) + '</b>.'); bt.disabled = dif !== 0;
+  }
+  function cxFim(f, msgTxt) { fechar(f); toast(msgTxt); return carregarConciliacao(); }
+  function cxBaixarSel(b) {
+    var f = b.closest('.fundo'), r = cxItens(f), msg = f.querySelector('#msg');
+    return acao(b, async function () { await rpcJ('fin_conciliacao_baixar_titulos', { linha_id: f.__linha.id, itens: r.itens }, { escrita: true }); await cxFim(f, 'Conciliada: ' + r.itens.length + ' título(s) baixado(s).'); }, function (m) { msg.innerHTML = '<div class="erro">' + esc(m) + '</div>'; });
+  }
+  function cxLigarSel(b) {
+    var f = b.closest('.fundo'), ids = [], msg = f.querySelector('#msg');
+    f.querySelectorAll('.cxB:checked').forEach(function (cb) { ids.push(f.__bx[Number(cb.dataset.i)].id); });
+    return acao(b, async function () { await rpcJ('fin_conciliacao_vincular_baixa', { linha_id: f.__linha.id, baixa_ids: ids }, { escrita: true }); await cxFim(f, 'Conciliada com a baixa que já existia.'); }, function (m) { msg.innerHTML = '<div class="erro">' + esc(m) + '</div>'; });
+  }
+  function cxDivLinha(saida, n) {
+    return '<div class="f2 cxDP" style="align-items:end;margin-bottom:4px"><label class="c">Parte ' + n + ' — valor<input class="cxDv" inputmode="decimal" placeholder="0,00"></label>' +
+      '<label class="c">Categoria<select class="cxDc">' + optsCats(saida ? 'despesa' : 'receita', '') + '</select></label>' +
+      '<label class="c">Nome (opcional)<input class="cxDn" maxlength="120" placeholder="ex.: Anivaldo — imóvel"></label>' +
+      '<button type="button" class="b peq ruim cxDx" data-act="cxdivrem" title="Tirar esta parte">×</button></div>';
+  }
+  function cxRenumDiv(f) { f.querySelectorAll('.cxDP').forEach(function (r, i) { var lb = r.querySelector('label.c'); lb.firstChild.nodeValue = 'Parte ' + (i + 1) + ' — valor'; }); }
+  function cxDivPartes(f) {
+    var ok = true, soma = 0, ps = [];
+    f.querySelectorAll('.cxDP').forEach(function (r) {
+      var vt = r.querySelector('.cxDv').value.trim(), v = valorTxt(vt), cat = r.querySelector('.cxDc').value, nome = r.querySelector('.cxDn').value.trim();
+      if (!v || centavos(v) <= 0 || !cat) { ok = false; if (v && centavos(v) > 0) soma += centavos(v); return; }
+      soma += centavos(v); var o = { valor: v, categoria_id: cat }; if (nome) o.parte_nome = nome; ps.push(o);
+    });
+    return { ok: ok, soma: soma, partes: ps };
+  }
+  function cxSomaD(f) {
+    if (!f.__linha) return; var el = f.querySelector('#cxSomaD'), bt = f.querySelector('#cxBtnDividir'); if (!el) return;
+    var n = f.querySelectorAll('.cxDP').length, r = cxDivPartes(f), alvo = Math.round(Math.abs(Number(f.__linha.valor)) * 100), dif = alvo - r.soma;
+    f.querySelector('#cxDivAdd').disabled = n >= 10;
+    f.querySelectorAll('.cxDx').forEach(function (x) { x.disabled = n <= 2; });
+    var vazio = !r.soma && !f.querySelector('.cxDc').value;
+    if (vazio) { el.className = 'soma'; el.textContent = 'Preencha as partes.'; bt.disabled = true; return; }
+    var falta = !r.ok ? ' Falta valor ou categoria em alguma parte.' : '';
+    el.className = 'soma ' + (dif === 0 && r.ok ? 'ok' : 'ruim');
+    el.innerHTML = 'Soma das partes: <b>' + brl(r.soma / 100) + '</b> · extrato: <b>' + brl(alvo / 100) + '</b> · ' + (dif === 0 ? 'fecha.' : (dif > 0 ? 'faltam <b>' + brl(dif / 100) + '</b>.' : 'passou <b>' + brl(-dif / 100) + '</b>.')) + falta;
+    bt.disabled = !(dif === 0 && r.ok && n >= 2);
+  }
+  function cxDividir(b) {
+    var f = b.closest('.fundo'), msg = f.querySelector('#msg'), r = cxDivPartes(f);
+    return acao(b, async function () {
+      var res = await rpcJ('fin_conciliacao_lancar_dividido', { linha_id: f.__linha.id, partes: r.partes }, { escrita: true });
+      await cxFim(f, 'Conciliada: dividida em ' + res.partes + ' lançamentos.');
+    }, function (m) { msg.innerHTML = '<div class="erro">' + esc(m) + '</div>'; });
+  }
+  function cxLancar(b) {
+    var f = b.closest('.fundo'), msg = f.querySelector('#msg'), cat = f.querySelector('#cxCat').value, on = f.querySelector('#cxRegraOn').checked, pad = f.querySelector('#cxRegraTxt').value.trim();
+    if (!cat) { msg.innerHTML = '<div class="erro">Escolha a categoria.</div>'; return; }
+    if (!f.querySelector('#cxNome').value.trim()) { msg.innerHTML = '<div class="erro">Diga o fornecedor/cliente.</div>'; return; }
+    if (on && pad.length < 4) { msg.innerHTML = '<div class="erro">O texto da regra precisa de pelo menos 4 letras/números.</div>'; return; }
+    return acao(b, async function () {
+      await rpcJ('fin_conciliacao_lancar', { linha_id: f.__linha.id, categoria_id: cat, parte_nome: f.querySelector('#cxNome').value.trim(), observacao: f.querySelector('#cxObs').value.trim() || undefined, salvar_regra: on || undefined, padrao: on ? pad : undefined }, { escrita: true });
+      await cxFim(f, 'Lançado e baixado' + (on ? ' (regra salva).' : '.'));
+    }, function (m) { msg.innerHTML = '<div class="erro">' + esc(m) + '</div>'; });
+  }
+  function cxTransf(b) {
+    var f = b.closest('.fundo'), msg = f.querySelector('#msg'), ct = f.querySelector('#cxCt').value, par = f.querySelector('#cxPar').value;
+    if (!ct) { msg.innerHTML = '<div class="erro">Escolha a outra conta.</div>'; return; }
+    return acao(b, async function () { await rpcJ('fin_conciliacao_transferir', { linha_id: f.__linha.id, conta_contraparte_id: ct, par_linha_id: par || undefined }, { escrita: true }); await cxFim(f, par ? 'Transferência registrada; as duas pontas conciliadas.' : 'Transferência registrada.'); }, function (m) { msg.innerHTML = '<div class="erro">' + esc(m) + '</div>'; });
+  }
+  function cxIgnorar(b) {
+    var f = b.closest('.fundo'), msg = f.querySelector('#msg'), m = f.querySelector('#cxMot').value.trim();
+    if (m.length < 3) { msg.innerHTML = '<div class="erro">Diga o motivo.</div>'; return; }
+    return acao(b, async function () { await rpcJ('fin_conciliacao_ignorar', { linha_id: f.__linha.id, motivo: m }, { escrita: true }); await cxFim(f, 'Linha ignorada.'); }, function (x) { msg.innerHTML = '<div class="erro">' + esc(x) + '</div>'; });
+  }
+  async function cxRegras() {
+    var l = await rpc('fin_conciliacao_regras');
+    janela('Regras de conciliação', (!(l || []).length ? '<div class="vazio">Nenhuma regra. Ao lançar uma linha como nova, marque "Lembrar" para criar uma.</div>' :
+      '<div class="tw"><table><thead><tr><th>Quando o extrato tiver</th><th>Sentido</th><th>Faz</th><th></th></tr></thead><tbody>' + l.map(function (r) {
+        return '<tr><td>' + esc(r.padrao) + '</td><td>' + (r.sentido === 'entrada' ? 'entrada' : r.sentido === 'saida' ? 'saída' : 'qualquer') + '</td><td>' + (r.acao === 'lancar' ? 'Lança "' + esc(r.parte_nome) + '" em ' + esc(r.categoria || '') : 'Ignora: ' + esc(r.motivo)) + '</td><td><button class="b peq ruim" data-act="cxregraoff" data-id="' + esc(r.id) + '">Desativar</button></td></tr>'; }).join('') + '</tbody></table></div>') +
+      '<p class="mut" style="margin:8px 0 0">Uma regra só vira "alta" quando é a ÚNICA sugestão da linha; se houver título parecido, você decide.</p><div class="rod"><button type="button" class="b" data-act="fechar">Fechar</button></div>');
+  }
+
+  // ── PROVISÕES (caixinhas do Nubank) ───────────────────────────────────────────────────────────
+  // O saldo de cada caixinha é INFORMADO por quem olha o app do banco; o dinheiro delas já está dentro do saldo da conta.
+  function c2(n) { return String(Number(n).toFixed(2)).replace('.', ','); }
+  async function telaProvisoes() {
+    var r = await Promise.all([rpc('fin_provisao_listar'), carregarCadastros()]), d = r[0] || { provisoes: [], contas: [] };
+    S.pv = d;
+    var ativas = S.contas.filter(function (c) { return c.ativa; });
+    var corpo = '';
+    if (!d.provisoes.length) {
+      corpo = '<div class="card"><div class="barra"><h2 style="margin:0">Provisões</h2><span style="flex:1"></span><button class="b pri" data-act="pvnova">+ Nova caixinha</button></div>' +
+        '<div class="vazio">Nenhuma caixinha cadastrada. Cadastre as caixinhas do Nubank (EPI, Férias e 13º, Impostos anuais…) — cada uma tem só um nome e um saldo.</div></div>';
+    }
+    d.contas.forEach(function (c) {
+      var ps = d.provisoes.filter(function (p) { return p.conta_id === c.conta_id; }), ativasC = ps.filter(function (p) { return p.ativa; }), inativas = ps.filter(function (p) { return !p.ativa; });
+      var semInfo = ativasC.filter(function (p) { return p.saldo == null; }).length;
+      corpo += '<div class="card"><div class="barra"><h2 style="margin:0">Caixinhas · ' + esc(c.conta) + '</h2><span style="flex:1"></span>' +
+        '<button class="b" data-act="pvnova" data-conta="' + esc(c.conta_id) + '">+ Nova caixinha</button><button class="b pri" data-act="pvinformar" data-conta="' + esc(c.conta_id) + '">Informar saldos</button></div>' +
+        '<div class="grid" style="margin:10px 0">' + kpi('Saldo da conta', brl(c.saldo_conta), '') + kpi('Guardado nas caixinhas', brl(c.total_caixinhas), '') + kpi('Conta livre (conta − caixinhas)', brl(c.livre), c.excede ? 'ruim' : 'ok') + '</div>' +
+        (c.excede ? '<div class="aviso">As caixinhas somam mais do que o saldo da conta. Confira os saldos informados e se há baixas da conta ainda sem lançar.</div>' : '') +
+        (semInfo ? '<div class="aviso">' + semInfo + ' caixinha(s) ainda sem saldo informado — o total acima está incompleto. Use “Informar saldos”.</div>' : '') +
+        '<div class="tw"><table><thead><tr><th>Caixinha</th><th class="n">Saldo</th><th>Informado para o dia</th><th class="n">Variação desde o informe anterior</th><th></th></tr></thead><tbody>' +
+        ativasC.map(function (p) {
+          var v = p.variacao == null ? '' : (Number(p.variacao) > 0 ? '+' : '') + brl(p.variacao) + ' <span class="mut">(' + dBR(p.data_anterior) + ')</span>';
+          return '<tr><td>' + esc(p.nome) + '</td><td class="n">' + (p.saldo == null ? '<span class="mut">—</span>' : brl(p.saldo)) + '</td><td>' + (p.data ? dBR(p.data) : '<span class="mut">nunca informado</span>') + '</td><td class="n">' + v +
+            '</td><td><button class="b peq" data-act="pvhist" data-id="' + esc(p.id) + '">Histórico</button> <button class="b peq" data-act="pvedit" data-id="' + esc(p.id) + '">Editar</button></td></tr>'; }).join('') +
+        '</tbody><tfoot><tr><td>Total</td><td class="n">' + brl(c.total_caixinhas) + '</td><td></td><td></td><td></td></tr></tfoot></table></div>' +
+        (inativas.length ? '<p class="mut" style="margin:8px 0 0">Desativadas: ' + inativas.map(function (p) { return esc(p.nome) + ' <button class="b peq" data-act="pvedit" data-id="' + esc(p.id) + '">Editar</button>'; }).join(' · ') + '</p>' : '') + '</div>';
+    });
+    $('main').innerHTML = corpo + '<p class="mut" style="margin:8px 0 0">O dinheiro das caixinhas já está dentro do saldo da conta (o Nubank mostra um total só). O saldo de cada caixinha é o que você vê no app do banco, informado por aqui — o ProperCare não lê o Nubank. A variação junta aportes, retiradas e rendimento; o rendimento do Nubank é receita financeira.</p>';
+  }
+  function pvDaConta(contaId) { return (S.pv ? S.pv.provisoes : []).filter(function (p) { return p.conta_id === contaId && p.ativa; }); }
+  function formProvInformar(contaId) {
+    var ps = pvDaConta(contaId), ct = (S.pv.contas.filter(function (c) { return c.conta_id === contaId; })[0]) || { saldo_conta: 0, conta: '' };
+    var j = janela('Informar saldos · ' + esc(ct.conta),
+      '<form autocomplete="off"><div class="f2"><label class="c">Saldos de que dia?<input name="data" type="date" required max="' + hoje() + '" value="' + hoje() + '"></label>' +
+      '<label class="c">Observação (opcional)<input name="obs" maxlength="200" placeholder="ex.: conferido no app"></label></div>' +
+      '<p class="mut" style="margin:8px 0">Copie do app do banco <b>só o que você conferiu</b>. Em branco = não informado agora (continua valendo o saldo anterior, com a data antiga).</p>' +
+      '<div class="tw"><table><thead><tr><th>Caixinha</th><th class="n">Saldo informado antes</th><th class="n">Saldo agora (R$)</th></tr></thead><tbody>' +
+      ps.map(function (p, i) { return '<tr><td>' + esc(p.nome) + '</td><td class="n">' + (p.saldo == null ? '<span class="mut">—</span>' : brl(p.saldo)) + '</td><td class="n"><input name="s' + i + '" data-i="' + i + '" inputmode="decimal" placeholder="' + (p.saldo == null ? '0,00' : 'igual: ' + c2(p.saldo)) + '" value="" style="width:9em;text-align:right"></td></tr>'; }).join('') +
+      '</tbody></table></div><div id="pvSoma" class="mut" style="margin:8px 0"></div><div id="msg"></div>' +
+      '<div class="rod"><button type="button" class="b" data-act="fechar">Cancelar</button><button class="b pri" type="submit">Gravar saldos</button></div></form>');
+    var fm = j.el.querySelector('form');
+    function soma() {
+      var t = 0, ok = true;
+      ps.forEach(function (p, i) { var v = fm['s' + i].value.trim(); if (v === '') { if (p.saldo != null) t += Math.round(Number(p.saldo) * 100); return; } var x = valorTxt(v); if (x === null) { ok = false; return; } t += centavos(x); });
+      j.el.querySelector('#pvSoma').innerHTML = ok ? 'Soma das caixinhas: <b>' + brl(t / 100) + '</b> · saldo da conta: ' + brl(ct.saldo_conta) + ' · conta livre: <b' + (t / 100 > Number(ct.saldo_conta) ? ' style="color:var(--ruim)"' : '') + '>' + brl(Number(ct.saldo_conta) - t / 100) + '</b>' : '<span style="color:var(--ruim)">Há um valor inválido.</span>';
+    }
+    fm.addEventListener('input', soma); soma();
+    fm.addEventListener('submit', function (e) {
+      e.preventDefault(); var msg = j.el.querySelector('#msg'), itens = [], ruim = '';
+      if (!dataValida(fm.data.value) || fm.data.value > hoje()) { msg.innerHTML = '<div class="erro">Data inválida (não pode ser no futuro).</div>'; return; }
+      ps.forEach(function (p, i) { var v = fm['s' + i].value.trim(); if (v === '') return; var x = valorTxt(v); if (x === null) { ruim = p.nome; return; } itens.push({ provisao_id: p.id, saldo: x }); });
+      if (ruim) { msg.innerHTML = '<div class="erro">Saldo inválido em “' + esc(ruim) + '” (até 2 casas decimais; sem sinal).</div>'; return; }
+      if (!itens.length) { msg.innerHTML = '<div class="erro">Preencha ao menos um saldo.</div>'; return; }
+      acao(fm.querySelector('[type=submit]'), async function () {
+        var r = await rpcJ('fin_provisao_saldos_informar', { conta_id: contaId, data: fm.data.value, obs: fm.obs.value.trim() || undefined, itens: itens }, { escrita: true });
+        j.fechar(); toast(r.gravados + ' saldo(s) gravado(s)' + (r.repetidos ? ' · ' + r.repetidos + ' já estavam iguais' : '') + '.'); await telaProvisoes();
+      }, function (m) { msg.innerHTML = '<div class="erro">' + esc(m) + '</div>'; });
+    });
+  }
+  function formProv(id, contaId) {
+    var p = id ? (S.pv.provisoes.filter(function (x) { return x.id === id; })[0]) : null, ativas = S.contas.filter(function (c) { return c.ativa; });
+    if (id && !p) return;
+    var j = janela(id ? 'Editar caixinha' : 'Nova caixinha',
+      '<form autocomplete="off"><div class="f2"><label class="c">Nome<input name="nome" required maxlength="60" value="' + esc(p ? p.nome : '') + '"></label>' +
+      (id ? '<div class="c">Conta<div>' + esc(p.conta) + '</div></div>' : '<label class="c">Conta<select name="conta" required>' + optsContas(contaId || (S.pv.contas[0] || {}).conta_id || '', true) + '</select></label>') +
+      (id ? '<label><input type="checkbox" name="ativa"' + (p.ativa ? ' checked' : '') + '> ativa</label>' : '') + '</div>' +
+      '<p class="mut">Caixinha não se apaga: para parar de usar, informe saldo zero e desmarque “ativa”. Renomear mantém o histórico.</p><div id="msg"></div>' +
+      '<div class="rod"><button type="button" class="b" data-act="fechar">Cancelar</button><button class="b pri" type="submit">Salvar</button></div></form>');
+    var fm = j.el.querySelector('form');
+    fm.addEventListener('submit', function (e) {
+      e.preventDefault(); var msg = j.el.querySelector('#msg');
+      if (!id && !fm.conta.value) { msg.innerHTML = '<div class="erro">Escolha a conta.</div>'; return; }
+      acao(fm.querySelector('[type=submit]'), async function () {
+        await rpcJ('fin_provisao_salvar', id ? { id: id, nome: fm.nome.value, ativa: fm.ativa.checked } : { conta_id: fm.conta.value, nome: fm.nome.value }, { escrita: true });
+        j.fechar(); toast('Caixinha salva.'); await telaProvisoes();
+      }, function (m) { msg.innerHTML = '<div class="erro">' + esc(m) + '</div>'; });
+    });
+  }
+  async function histProv(id) {
+    var p = S.pv.provisoes.filter(function (x) { return x.id === id; })[0], h = await rpc('fin_provisao_historico', { p_provisao: id, p_limite: 200 });
+    janela('Histórico · ' + esc(p ? p.nome : ''), (!h.length ? '<div class="vazio">Nenhum saldo informado.</div>' :
+      '<div class="tw"><table><thead><tr><th>Dia do saldo</th><th class="n">Saldo</th><th class="n">Variação</th><th>Observação</th><th>Informado por</th><th>Quando</th></tr></thead><tbody>' +
+      h.map(function (x, i) { var ant = h[i + 1], v = ant ? Number(x.saldo) - Number(ant.saldo) : null;
+        return '<tr><td>' + dBR(x.data) + '</td><td class="n">' + brl(x.saldo) + '</td><td class="n">' + (v == null ? '' : (v > 0 ? '+' : '') + brl(v)) + '</td><td>' + esc(x.obs || '') + '</td><td>' + esc(x.informado_por || '') + '</td><td>' + esc(String(x.informado_em).slice(0, 16).replace('T', ' ')) + '</td></tr>'; }).join('') + '</tbody></table></div>') +
+      '<p class="mut" style="margin:8px 0 0">Nada se edita nem se apaga: para corrigir, informe o saldo de novo (vale o mais recente do dia).</p><div class="rod"><button type="button" class="b" data-act="fechar">Fechar</button></div>');
+  }
+
+  // ── RECORRÊNCIAS (aluguel, folha, impostos, contas fixas…) ─────────────────────────────────────
+  // Todo mês: confere o valor e o dia de cada uma e gera os títulos. Nada é gerado sozinho (o valor muda todo mês).
+  async function telaRecorrencias() {
+    var r = await Promise.all([rpc('fin_recorrencia_listar'), carregarCadastros()]);
+    S.rec = r[0] || [];
+    var mes = (S.recMes) || hoje().slice(0, 7);
+    S.recMes = mes;
+    $('main').innerHTML =
+      '<div class="card"><div class="barra"><h2 style="margin:0">Gerar o mês</h2><span style="flex:1"></span><label class="c">Mês<input type="month" id="rcMes" value="' + esc(mes) + '"></label><button class="b" data-act="rcver">Ver o mês</button></div>' +
+      '<div id="rcMesCorpo"><div class="vazio">Carregando…</div></div></div>' +
+      '<div class="card"><div class="barra"><h2 style="margin:0">Cadastro de recorrências</h2><span style="flex:1"></span><button class="b pri" data-act="rcnova">+ Nova recorrência</button></div>' + tabelaRec() + '</div>' +
+      '<p class="mut" style="margin:8px 0 0">Gerar cria títulos <b>a pagar/a receber</b> previstos (não cria baixa). Gerar o mesmo mês de novo não duplica. Um título cancelado não é recriado. Dia útil bancário = segunda a sexta sem feriado; dia útil da CLT (salário) conta o sábado. Feriados municipais: cadastre abaixo.</p>' +
+      '<details class="sec card" id="rcFer"><summary>Feriados (nacionais já cadastrados; municipais de Divinópolis entram aqui)</summary><div id="rcFerCorpo" class="mut">Abra para carregar.</div></details>';
+    var fe = $('rcFer'); if (fe) fe.addEventListener('toggle', function () { if (fe.open) acao(null, carregarFeriados); });
+    await carregarMesRec();
+  }
+  function tabelaRec() {
+    if (!S.rec.length) return '<div class="vazio">Nenhuma recorrência cadastrada.</div>';
+    return '<div class="tw"><table><thead><tr><th>Descrição</th><th>Tipo</th><th>Quem</th><th>Categoria</th><th>Vence</th><th class="n">Valor de referência</th><th>Vale de</th><th></th></tr></thead><tbody>' +
+      S.rec.map(function (x) {
+        return '<tr' + (x.ativa ? '' : ' style="opacity:.6"') + '><td>' + esc(x.descricao) + (x.ativa ? '' : ' <span class="chip">desativada</span>') + '</td><td>' + (x.tipo === 'pagar' ? 'a pagar' : 'a receber') + '</td><td>' + esc(x.parte_nome) + '</td><td>' + esc(x.categoria || '') +
+          '</td><td>' + esc(rcRegraTxt(x)) + '</td><td class="n">' + (x.valor_ref == null ? '<span class="mut">—</span>' : brl(x.valor_ref)) + '</td><td>' + esc(x.inicio.slice(5, 7) + '/' + x.inicio.slice(0, 4)) + (x.fim ? ' até ' + esc(x.fim.slice(5, 7) + '/' + x.fim.slice(0, 4)) : '') +
+          '</td><td><button class="b peq" data-act="rcedit" data-id="' + esc(x.id) + '">Editar</button></td></tr>'; }).join('') + '</tbody></table></div>';
+  }
+  var RC_AJ = { antecipar: ' (antecipa)', prorrogar: ' (prorroga)', manter: '' };
+  function rcRegraTxt(x) { return (x.regra === 'dia_util' ? x.dia + 'º dia útil' : x.regra === 'dia_util_sab' ? x.dia + 'º dia útil (CLT, com sábado)' : 'dia ' + x.dia + (RC_AJ[x.ajuste] || '')) + (x.competencia === 'anterior' ? ' · competência do mês anterior' : ''); }
+  async function carregarFeriados() {
+    var el = $('rcFerCorpo'); if (!el) return; var ano = Number((S.recMes || hoje()).slice(0, 4));
+    var l = await rpc('fin_feriado_listar', { p_ano: ano }), ORIG = { nacional: 'nacional', bancario: 'sem banco', municipal: 'municipal' };
+    el.innerHTML = '<div class="tw"><table><thead><tr><th>Data</th><th>Feriado</th><th>Tipo</th><th></th></tr></thead><tbody>' + l.map(function (f) {
+        return '<tr' + (f.ativo ? '' : ' style="opacity:.55"') + '><td>' + esc(dBR(f.data)) + '</td><td>' + esc(f.nome) + '</td><td><span class="chip">' + esc(ORIG[f.origem] || f.origem) + '</span></td><td><button class="b peq" data-act="rcferliga" data-d="' + esc(f.data) + '" data-a="' + (f.ativo ? '0' : '1') + '">' + (f.ativo ? 'Desligar' : 'Ligar') + '</button></td></tr>'; }).join('') +
+      '</tbody></table></div><form id="rcFerNovo" class="barra" autocomplete="off" style="margin-top:8px"><label class="c">Data<input name="data" type="date" required></label><label class="c" style="flex:1">Nome<input name="nome" required maxlength="80" placeholder="ex.: Aniversário de Divinópolis"></label><button class="b pri" type="submit">Adicionar feriado municipal</button></form><div id="rcFerMsg"></div>';
+    var fm = $('rcFerNovo');
+    fm.addEventListener('submit', function (e) {
+      e.preventDefault();
+      acao(fm.querySelector('[type=submit]'), async function () { await rpcJ('fin_feriado_salvar', { data: fm.data.value, nome: fm.nome.value.trim() }, { escrita: true }); toast('Feriado salvo.'); await carregarFeriados(); await carregarMesRec(); },
+        function (m) { $('rcFerMsg').innerHTML = '<div class="erro">' + esc(m) + '</div>'; });
+    });
+  }
+  async function carregarMesRec() {
+    var el = $('rcMesCorpo'); if (!el) return;
+    var m = S.recMes, l = await rpc('fin_recorrencia_mes', { p_mes: m + '-01' });
+    S.recLinhas = l;
+    if (!l.length) { el.innerHTML = '<div class="vazio">Nenhuma recorrência vale para ' + esc(m.slice(5) + '/' + m.slice(0, 4)) + '.</div>'; return; }
+    var geradas = l.filter(function (x) { return x.titulo_id; }).length;
+    el.innerHTML = (geradas ? '<div class="aviso" style="background:var(--okbg);color:var(--ok)">' + geradas + ' de ' + l.length + ' já gerada(s) neste mês.</div>' : '') +
+      '<div class="tw"><table><thead><tr><th></th><th>Descrição</th><th>Quem</th><th>Vencimento</th><th class="n">Valor (R$)</th><th></th></tr></thead><tbody>' +
+      l.map(function (x, i) {
+        if (x.titulo_id) return '<tr style="opacity:.75"><td></td><td>' + esc(x.descricao) + '</td><td>' + esc(x.parte_nome) + '</td><td>' + dBR(x.titulo_vencimento) + '</td><td class="n">' + brl(x.titulo_valor) + '</td><td><span class="chip ' + (x.titulo_status === 'cancelado' ? 'ruim' : 'ok') + '">' + (x.titulo_status === 'cancelado' ? 'cancelada (não recriada)' : 'gerada · ' + esc(x.titulo_status)) + '</span></td></tr>';
+        return '<tr><td><input type="checkbox" class="rcCk" data-i="' + i + '"' + (x.valor_sugerido != null ? ' checked' : '') + ' aria-label="gerar ' + esc(x.descricao) + '"></td><td>' + esc(x.descricao) + ' <span class="chip">' + (x.tipo === 'pagar' ? 'pagar' : 'receber') + '</span>' +
+          (x.rotulo ? '<div class="mut rcRot" style="font-size:.78rem">título: ' + esc(x.rotulo) + '</div>' : '') + '</td><td>' + esc(x.parte_nome) +
+          (x.problema ? '<div class="erro" style="padding:2px 6px;font-size:.8rem">' + esc(x.problema) + '</div>' : '') +
+          '</td><td><input type="date" class="rcVn" data-i="' + i + '" value="' + esc(x.vencimento) + '">' + (x.vencimento_aviso ? '<div class="mut rcAv" style="font-size:.78rem;color:var(--ruim)">' + esc(x.vencimento_aviso) + '</div>' : '') + '</td><td class="n"><input class="rcVl" data-i="' + i + '" inputmode="decimal" placeholder="0,00" value="' + (x.valor_sugerido == null ? '' : c2(x.valor_sugerido)) + '" style="width:9em;text-align:right"></td>' +
+          '<td class="mut" style="font-size:.82rem">' + (x.valor_sugerido == null ? 'informe o valor' : x.sugerido_do_ultimo ? 'valor do último mês' : 'valor de referência') + '</td></tr>'; }).join('') +
+      '</tbody></table></div><div id="rcSoma" class="mut" style="margin:8px 0"></div><div id="rcMsg"></div>' +
+      '<div class="barra"><span style="flex:1"></span><button class="b pri" data-act="rcgerar"' + (geradas === l.length ? ' disabled' : '') + '>Gerar marcados</button></div>';
+    el.addEventListener('input', somaRec); el.addEventListener('change', somaRec); somaRec();
+  }
+  function somaRec() {
+    var el = $('rcSoma'); if (!el) return; var p = 0, r = 0, n = 0, ruim = false;
+    document.querySelectorAll('.rcCk:checked').forEach(function (ck) {
+      var i = Number(ck.dataset.i), v = document.querySelector('.rcVl[data-i="' + i + '"]').value.trim(), x = v === '' ? null : valorTxt(v);
+      if (x === null) { ruim = true; return; } n++; if (S.recLinhas[i].tipo === 'pagar') p += centavos(x); else r += centavos(x);
+    });
+    el.innerHTML = ruim ? '<span style="color:var(--ruim)">Há marcada sem valor ou com valor inválido.</span>' : n + ' marcada(s) · a pagar <b>' + brl(p / 100) + '</b> · a receber <b>' + brl(r / 100) + '</b>';
+  }
+  function gerarRec(b) {
+    var msg = $('rcMsg'), itens = [], erro = '';
+    document.querySelectorAll('.rcCk:checked').forEach(function (ck) {
+      var i = Number(ck.dataset.i), x = S.recLinhas[i], v = document.querySelector('.rcVl[data-i="' + i + '"]').value.trim(), vn = document.querySelector('.rcVn[data-i="' + i + '"]').value, t = v === '' ? null : valorTxt(v);
+      if (t === null) { erro = 'Valor inválido ou vazio em “' + x.descricao + '”.'; return; }
+      if (!dataValida(vn)) { erro = 'Vencimento inválido em “' + x.descricao + '”.'; return; }
+      itens.push({ recorrencia_id: x.id, valor: t, vencimento: vn });
+    });
+    if (erro) { msg.innerHTML = '<div class="erro">' + esc(erro) + '</div>'; return; }
+    if (!itens.length) { msg.innerHTML = '<div class="erro">Marque ao menos uma recorrência.</div>'; return; }
+    return acao(b, async function () {
+      var r = await rpcJ('fin_recorrencia_gerar', { mes: S.recMes + '-01', itens: itens }, { escrita: true });
+      toast(r.criados + ' título(s) gerado(s)' + (r.repetidos ? ' · ' + r.repetidos + ' já existia(m)' : '') + '.'); await telaRecorrencias();
+    }, function (m) { msg.innerHTML = '<div class="erro">' + esc(m) + '</div>'; });
+  }
+  function formRec(id) {
+    var x = id ? S.rec.filter(function (y) { return y.id === id; })[0] : null; if (id && !x) return;
+    x = x || { descricao: '', tipo: 'pagar', parte_nome: '', parte_doc: '', categoria_id: '', conta_id: '', regra: 'dia_mes', dia: 10, competencia: 'mesmo', valor_ref: null, inicio: hoje().slice(0, 7) + '-01', fim: '', ativa: true, observacao: '' };
+    var j = janela(id ? 'Editar recorrência' : 'Nova recorrência',
+      '<form autocomplete="off"><div class="f2"><label class="c">Descrição<input name="descricao" required maxlength="80" value="' + esc(x.descricao) + '"></label>' +
+      '<label class="c">Tipo<select name="tipo"><option value="pagar"' + (x.tipo === 'pagar' ? ' selected' : '') + '>a pagar</option><option value="receber"' + (x.tipo === 'receber' ? ' selected' : '') + '>a receber</option></select></label>' +
+      '<label class="c">Fornecedor / cliente<input name="parte" required maxlength="120" value="' + esc(x.parte_nome) + '"></label>' +
+      '<label class="c">Categoria<select name="cat"></select></label>' +
+      '<label class="c">Conta (opcional)<select name="conta">' + optsContas(x.conta_id || '', true) + '</select></label>' +
+      '<label class="c">Vence<select name="regra"><option value="dia_mes"' + (x.regra === 'dia_mes' ? ' selected' : '') + '>no dia do mês</option><option value="dia_util"' + (x.regra === 'dia_util' ? ' selected' : '') + '>no N-ésimo dia útil (bancário)</option><option value="dia_util_sab"' + (x.regra === 'dia_util_sab' ? ' selected' : '') + '>no N-ésimo dia útil da CLT (salário: sábado conta)</option></select></label>' +
+      '<label class="c">Se cair em sábado, domingo ou feriado<select name="ajuste"><option value="manter"' + ((x.ajuste || 'manter') === 'manter' ? ' selected' : '') + '>manter o dia</option><option value="antecipar"' + (x.ajuste === 'antecipar' ? ' selected' : '') + '>antecipar (ex.: FGTS, GPS)</option><option value="prorrogar"' + (x.ajuste === 'prorrogar' ? ' selected' : '') + '>prorrogar (ex.: DAS)</option></select></label>' +
+      '<label class="c">Dia<input name="dia" required inputmode="numeric" maxlength="2" value="' + esc(x.dia) + '"></label>' +
+      '<label class="c">Nome do título gerado<select name="comp"><option value="mesmo"' + (x.competencia !== 'anterior' ? ' selected' : '') + '>pelo mês (ex.: Aluguel 11/2026)</option><option value="anterior"' + (x.competencia === 'anterior' ? ' selected' : '') + '>pela competência do mês anterior (ex.: FGTS – Competência 10/2026 – Vencimento 11/2026)</option></select></label>' +
+      '<label class="c">Valor de referência (R$, opcional)<input name="valor" inputmode="decimal" placeholder="muda todo mês? deixe vazio" value="' + (x.valor_ref == null ? '' : c2(x.valor_ref)) + '"></label>' +
+      '<label class="c">Começa em<input name="ini" type="month" required value="' + esc(String(x.inicio).slice(0, 7)) + '"></label>' +
+      '<label class="c">Termina em (opcional)<input name="fim" type="month" value="' + esc(x.fim ? String(x.fim).slice(0, 7) : '') + '"></label>' +
+      (id ? '<label><input type="checkbox" name="ativa"' + (x.ativa ? ' checked' : '') + '> ativa</label>' : '') +
+      '<label class="c todo">Observação<input name="obs" maxlength="300" value="' + esc(x.observacao || '') + '"></label></div>' +
+      '<p class="mut">Recorrência não se apaga: para parar, desmarque “ativa” ou defina o mês de término. Mudar aqui vale só para os meses ainda não gerados.</p><div id="msg"></div>' +
+      '<div class="rod"><button type="button" class="b" data-act="fechar">Cancelar</button><button class="b pri" type="submit">Salvar</button></div></form>');
+    var fm = j.el.querySelector('form');
+    function cats() { fm.cat.innerHTML = optsCats(fm.tipo.value === 'pagar' ? 'despesa' : 'receita', x.categoria_id || ''); }
+    cats(); fm.tipo.addEventListener('change', function () { x.categoria_id = ''; cats(); });
+    function aj() { fm.ajuste.disabled = fm.regra.value !== 'dia_mes'; } aj(); fm.regra.addEventListener('change', aj);
+    fm.addEventListener('submit', function (e) {
+      e.preventDefault(); var msg = j.el.querySelector('#msg'), vv = fm.valor.value.trim() === '' ? '' : valorTxt(fm.valor.value);
+      if (vv === null) { msg.innerHTML = '<div class="erro">Valor de referência inválido (até 2 casas decimais).</div>'; return; }
+      acao(fm.querySelector('[type=submit]'), async function () {
+        await rpcJ('fin_recorrencia_salvar', { id: id || '', descricao: fm.descricao.value, tipo: fm.tipo.value, parte_nome: fm.parte.value, categoria_id: fm.cat.value, conta_id: fm.conta.value, regra: fm.regra.value, ajuste: fm.ajuste.value, competencia: fm.comp.value, dia: fm.dia.value.trim(), valor_ref: vv,
+          inicio: fm.ini.value ? fm.ini.value + '-01' : '', fim: fm.fim.value ? fm.fim.value + '-01' : '', ativa: id ? fm.ativa.checked : true, observacao: fm.obs.value.trim() }, { escrita: true });
+        j.fechar(); toast('Recorrência salva.'); await telaRecorrencias();
+      }, function (m) { msg.innerHTML = '<div class="erro">' + esc(m) + '</div>'; });
+    });
+  }
+
+  // ── cliques ─────────────────────────────────────────────────────────────────────────
+  var ACT = {
+    aba: function (d) { return ir(d.aba); },
+    filtrar: function () { return acao(null, function () { return carregarTitulos(S.aba); }); },
+    novo: function () { novoLancamento(S.aba); },
+    fechar: function (d, b) { var f = b.closest('.fundo'); if (f) fechar(f); },
+    detalhe: function (d) { return acao(null, function () { return detalhe(d.id, function () { return recarregar(); }); }); },
+    baixar: function (d, b) {
+      var antes = b.closest('.fundo'); if (antes) fechar(antes);
+      return acao(null, function () { return baixar(d.id, function () { return recarregar(); }); });
+    },
+    estornar: function (d, b) {
+      var base = b.closest('.fundo');
+      pedirMotivo('Estornar baixa', 'Motivo do estorno', 'Estornar', async function (m) {
+        await rpc('fin_baixa_estornar', { p_baixa: d.id, p_motivo: m }, { escrita: true });
+        toast('Baixa estornada.'); if (base) fechar(base); await recarregar();
+      });
+    },
+    cancelar: function (d, b) {
+      var base = b.closest('.fundo');
+      pedirMotivo('Cancelar título', 'Motivo do cancelamento', 'Cancelar título', async function (m) {
+        await rpc('fin_titulo_cancelar', { p_titulo: d.id, p_motivo: m }, { escrita: true });
+        toast('Título cancelado.'); if (base) fechar(base); await recarregar();
+      });
+    },
+    periodo: function () {
+      var a = $('rDe').value, z = $('rAte').value;
+      if (!/^\d{4}-\d{2}$/.test(a) || !/^\d{4}-\d{2}$/.test(z)) { toast('Escolha o mês inicial e o final.'); return; }
+      if (a > z) { toast('O mês inicial não pode ser depois do final.'); return; }
+      var de = a + '-01', ate = addDias(addMes(z + '-01', 1), -1);
+      if (meses(a, z) > 36) { toast('Período grande demais (máximo 36 meses).'); return; }
+      S.res = { de: de, ate: ate }; return acao(null, function () { return telaResumo(); });
+    },
+    desfazer: function (d, b) {
+      var base = b.closest('.fundo');
+      pedirMotivo('Desfazer transferência', 'Motivo', 'Desfazer', async function (m) {
+        await rpc('fin_transferencia_estornar', { p_grupo: d.grupo, p_motivo: m }, { escrita: true });
+        toast('Transferência desfeita.'); if (base) fechar(base); await recarregar();
+      });
+    },
+    transferir: function () { formTransferir(); },
+    relver: function () {
+      var m = $('relMes').value; if (!/^\d{4}-\d{2}$/.test(m)) { toast('Escolha o mês.'); return; }
+      return acao(null, function () { return carregarRelatorio(m); });
+    },
+    relcsv: function () { if (!S.rel) return; baixarTexto('notas-emitidas-' + S.rel.mes + '.csv', csvRelatorio(S.rel), 'text/csv;charset=utf-8'); },
+    relcfop: function () { if (!S.rel) return; baixarTexto('faturamento-por-cfop-' + S.rel.mes + '.csv', csvCfop(S.rel), 'text/csv;charset=utf-8'); },
+    relimp: function () { window.print(); },
+    cxfiltrar: function () { var c = cxEstado(); c.conta = $('cxConta').value; c.status = $('cxSit').value; c.de = $('cxDe').value; c.ate = $('cxAte').value; c.busca = $('cxBusca').value.trim(); return acao(null, carregarConciliacao); },
+    cxconf: function (d, b) { return acao(b, function () { return cxConfirmar(d.id, Number(d.i || 0)); }); },
+    cxaltas: function (d, b) { return cxAltas(b); },
+    cxoutro: function (d) { return acao(null, function () { return cxOutro(d.id); }); },
+    cxdesfazer: function (d, b) {
+      pedirMotivo('Desfazer conciliação', 'Motivo (as baixas que a conciliação criou serão estornadas; nada é apagado)', 'Desfazer', async function (m) {
+        await rpc('fin_conciliacao_desfazer', { p_linha: d.id, p_motivo: m }, { escrita: true });
+        toast('Conciliação desfeita.'); await carregarConciliacao();
+      });
+    },
+    cxreabrir: function (d, b) { return acao(b, async function () { await rpc('fin_conciliacao_reabrir', { p_linha: d.id }, { escrita: true }); toast('Linha reaberta.'); await carregarConciliacao(); }); },
+    cxbuscar: function (d, b) { return acao(b, function () { return cxBuscar(b.closest('.fundo')); }); },
+    cxbaixar: function (d, b) { return cxBaixarSel(b); },
+    cxligar: function (d, b) { return cxLigarSel(b); },
+    cxdivadd: function (d, b) { var f = b.closest('.fundo'), box = f.querySelector('#cxDivLin'), n = box.querySelectorAll('.cxDP').length; if (n >= 10) return; var t = document.createElement('div'); t.innerHTML = cxDivLinha(Number(f.__linha.valor) < 0, n + 1); box.appendChild(t.firstChild); cxRenumDiv(f); cxSomaD(f); },
+    cxdivrem: function (d, b) { var f = b.closest('.fundo'); if (f.querySelectorAll('.cxDP').length <= 2) return; b.closest('.cxDP').remove(); cxRenumDiv(f); cxSomaD(f); },
+    cxdividir: function (d, b) { return cxDividir(b); },
+    cxlancar: function (d, b) { return cxLancar(b); },
+    cxtransf: function (d, b) { return cxTransf(b); },
+    cxignorar: function (d, b) { return cxIgnorar(b); },
+    cxsug: function (d, b) { var f = b.closest('.fundo'); return acao(b, async function () { await cxConfirmar(d.id, Number(d.i)); if (f) fechar(f); }); },
+    cxregras: function () { return acao(null, cxRegras); },
+    cxregraoff: function (d, b) { return acao(b, async function () { await rpc('fin_conciliacao_regra_desativar', { p_regra: d.id }, { escrita: true }); toast('Regra desativada.'); var f = b.closest('.fundo'); if (f) fechar(f); await cxRegras(); }); },
+    rcver: function () { var m = $('rcMes').value; if (!/^\d{4}-\d{2}$/.test(m)) { toast('Escolha o mês.'); return; } S.recMes = m; return acao(null, carregarMesRec); },
+    rcgerar: function (d, b) { return gerarRec(b); },
+    rcferliga: function (d, b) { return acao(b, async function () { await rpcJ('fin_feriado_salvar', { data: d.d, ativo: d.a === '1' }, { escrita: true }); toast('Feriado ' + (d.a === '1' ? 'ligado' : 'desligado') + '.'); await carregarFeriados(); await carregarMesRec(); }); },
+    rcnova: function () { formRec(''); },
+    rcedit: function (d) { formRec(d.id); },
+    pvnova: function (d) { formProv('', d.conta); },
+    pvedit: function (d) { formProv(d.id); },
+    pvinformar: function (d) { formProvInformar(d.conta); },
+    pvhist: function (d) { return acao(null, function () { return histProv(d.id); }); },
+    periodopadrao: function () { S.res = null; return acao(null, function () { return telaResumo(); }); },
+    importar: function (d, b) { return acao(b, function () { return importar(b); }); },
+    limparimp: function () { S.imp = []; pintarImp(); },
+    conta: function (d) { formConta(d.id); },
+    cat: function (d) { formCat(d.id); }
+  };
+  async function recarregar() {
+    if (S.aba === 'receber' || S.aba === 'pagar') await carregarTitulos(S.aba);
+    else if (S.aba === 'resumo') await telaResumo();
+    else if (S.aba === 'relatorio') await telaRelatorio();
+    else if (S.aba === 'conciliacao') await carregarConciliacao();
+    else if (S.aba === 'provisoes') await telaProvisoes();
+    else if (S.aba === 'recorrencias') await telaRecorrencias();
+    else if (S.aba === 'cadastros') await telaCadastros();
+  }
+  document.addEventListener('click', function (e) {
+    var b = e.target.closest('[data-act]'); if (!b) return;
+    if (b.tagName === 'TR' && e.target.closest('button')) return;       // botão dentro da linha: só o botão age
+    var f = ACT[b.dataset.act]; if (f) { e.preventDefault(); f(b.dataset, b); }
+  });
+
+  // ── partida ─────────────────────────────────────────────────────────────────────────
+  async function iniciar() {
+    var s = sessao(), tok = s && s.supa_token;
+    if (!tok) { $('main').innerHTML = '<div class="erro"><b>Sem login.</b> Abra o Hub, entre com seu PIN e volte para esta página.</div>'; return; }
+    var c = jwt(tok);
+    if ((c.exp || 0) < Date.now() / 1000) { $('main').innerHTML = '<div class="erro"><b>O crachá do login venceu.</b> Entre de novo pelo Hub (PIN) e volte aqui.</div>'; return; }
+    $('quem').textContent = s.nome_tecnico || (s.tecnico && s.tecnico.nome) || '';
+    var h = (location.hash || '').slice(1); S.aba = ABAS.some(function (a) { return a[0] === h; }) ? h : 'resumo';
+    await ir(S.aba);
+  }
+  if (typeof document !== 'undefined') iniciar();
+  return { _t: { valorTxt: valorTxt, parcelas: parcelas, centavos: centavos, addDias: addDias, dataValida: dataValida, brl: brl, esc: esc, dBR: dBR } };
+})();
+</script>
+</body>
+</html>
