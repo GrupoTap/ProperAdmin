@@ -1,0 +1,792 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<!--
+  EMITIR_NOTA_V1 — 21/10/2026 · página NOVA e separada do PCM (Fase 3: a Notaas ligada no ProperCare).
+  Fala com as funções fis_* do Supabase (07_FISCAL_EMISSAO) e com a função do servidor "notaas" (que guarda a chave da Notaas),
+  sempre com o crachá do login com PIN (proper_session.supa_token), como a financeiro.html e a estoque.html.
+  Só admin e financeiro (com PIN). A nota é MONTADA NO BANCO a partir do cadastro: a página só escolhe cliente, itens e vencimento.
+  Autorizada → o XML passa pelo mesmo leitor do financeiro e entra com o título a receber (fin_nota_importar).
+  Modo demonstração (sem banco, sem Notaas): abra com #demo ou ?demo=1.
+-->
+<title>Proper · Notas fiscais</title>
+<style>
+:root{--bg:#f5f6f8;--card:#fff;--tx:#1d2433;--mut:#5d6779;--bd:#d9dde5;--pri:#0f6a55;--pri-tx:#fff;--ok:#16794a;--okbg:#e2f4ea;--ruim:#b42318;--ruimbg:#fde8e6;--av:#8a5a00;--avbg:#fff1cf;--cinza:#eef0f4}
+@media (prefers-color-scheme:dark){:root{--bg:#10141c;--card:#181e29;--tx:#e8ecf3;--mut:#9aa5b8;--bd:#2c3546;--pri:#5cc9a7;--pri-tx:#08101f;--ok:#58d49a;--okbg:#12301f;--ruim:#ff8f84;--ruimbg:#3a1714;--av:#f2c15b;--avbg:#3a2c0b;--cinza:#222a38}}
+*{box-sizing:border-box}html,body{margin:0}body{background:var(--bg);color:var(--tx);font:16px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;padding-bottom:env(safe-area-inset-bottom)}
+header{background:var(--card);border-bottom:1px solid var(--bd);padding:10px 14px;display:flex;gap:10px;align-items:center;flex-wrap:wrap;position:sticky;top:0;z-index:5}
+header h1{font-size:1.05rem;margin:0}header .quem{margin-left:auto;color:var(--mut);font-size:.85rem}
+.amb{border-radius:999px;padding:2px 10px;font-size:.78rem;font-weight:800;letter-spacing:.02em}.amb.h{background:var(--avbg);color:var(--av)}.amb.p{background:var(--okbg);color:var(--ok)}
+nav{display:flex;gap:4px;flex-wrap:wrap;width:100%}nav button{border:1px solid var(--bd);background:var(--card);color:var(--tx);padding:7px 12px;border-radius:999px;cursor:pointer;font:inherit;font-size:.92rem}
+nav button[aria-current="true"]{background:var(--pri);color:var(--pri-tx);border-color:var(--pri)}
+main{max-width:900px;margin:0 auto;padding:12px 14px 80px}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:12px 14px;margin:0 0 12px}
+.card h2{font-size:1rem;margin:0 0 8px}
+.faixa{border-radius:12px;padding:10px 12px;margin:0 0 12px;font-size:.95rem}.faixa.ok{background:var(--okbg)}.faixa.av{background:var(--avbg)}.faixa.ruim{background:var(--ruimbg)}
+.faixa ul{margin:4px 0 0;padding-left:20px}
+input,select,textarea{font:inherit;color:var(--tx);background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:10px 12px;min-width:0;width:100%}
+textarea{min-height:84px;resize:vertical}
+label{display:block;margin:10px 0 4px;font-weight:600;font-size:.9rem}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:0 10px}.g3{display:grid;grid-template-columns:2fr 1fr 1fr;gap:0 10px}
+@media (max-width:560px){.g2,.g3{grid-template-columns:1fr}}
+button.b{border:0;border-radius:10px;padding:10px 14px;font:600 1rem system-ui,sans-serif;cursor:pointer;background:var(--pri);color:var(--pri-tx)}
+button.b2{border:1px solid var(--bd);border-radius:10px;padding:9px 12px;font:inherit;cursor:pointer;background:var(--card);color:var(--tx)}
+button.perigo{background:var(--ruim);color:#fff}
+button:disabled{opacity:.55;cursor:default}
+.seg{display:flex;border:1px solid var(--bd);border-radius:12px;overflow:hidden;margin:0 0 12px}.seg button{flex:1;border:0;background:var(--card);color:var(--tx);padding:10px;font:600 1rem system-ui,sans-serif;cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--pri);color:var(--pri-tx)}
+.lista{list-style:none;margin:6px 0 0;padding:0}.lista li{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:9px 12px;margin:0 0 6px;display:flex;gap:10px;align-items:center;cursor:pointer}
+.lista li .t{flex:1;min-width:0}.sub{color:var(--mut);font-size:.86rem}.cod{font-family:ui-monospace,Consolas,monospace;font-size:.85rem;color:var(--mut)}
+.tag{display:inline-block;white-space:nowrap;border-radius:999px;padding:1px 8px;font-size:.75rem;font-weight:700;background:var(--avbg);color:var(--av);margin-right:4px}.tag.ok{background:var(--okbg);color:var(--ok)}.tag.ruim{background:var(--ruimbg);color:var(--ruim)}.tag.cz{background:var(--cinza);color:var(--mut)}
+.esc{border:1px solid var(--bd);border-radius:12px;padding:10px 12px;display:flex;gap:10px;align-items:center}.esc .t{flex:1;min-width:0}
+.tw{overflow-x:auto}table{width:100%;border-collapse:collapse;font-size:.9rem}th,td{padding:7px 6px;border-bottom:1px solid var(--bd);text-align:left;vertical-align:top}th{color:var(--mut);font-weight:600}
+td.n{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}td input{padding:7px 8px}
+.tot{display:flex;justify-content:flex-end;gap:10px;font-size:1.15rem;margin-top:8px}.tot b{font-variant-numeric:tabular-nums}
+.acoes{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}.acoes .b{flex:1 1 200px}
+.fundo{position:fixed;inset:0;background:rgba(0,0,0,.45);display:flex;align-items:flex-end;justify-content:center;z-index:20}
+.folha{background:var(--card);width:100%;max-width:600px;max-height:92vh;overflow:auto;border-radius:16px 16px 0 0;padding:16px 16px calc(16px + env(safe-area-inset-bottom))}
+@media (min-width:700px){.fundo{align-items:center}.folha{border-radius:16px}}
+.folha h2{margin:0 0 4px;font-size:1.1rem}
+.toast{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);display:flex;flex-direction:column;gap:6px;z-index:30;width:min(92vw,460px)}.toast div{background:var(--tx);color:var(--bg);padding:10px 14px;border-radius:10px;text-align:center}
+.vazio{color:var(--mut);text-align:center;padding:24px}.erro{background:var(--ruimbg);color:var(--ruim);border-radius:12px;padding:12px}
+.linha{display:flex;gap:8px;flex-wrap:wrap;align-items:center}.linha>*{flex:0 0 auto}
+.prev dl{display:grid;grid-template-columns:max-content 1fr;gap:4px 12px;margin:0}.prev dt{color:var(--mut)}.prev dd{margin:0;overflow-wrap:anywhere}
+.big{font-size:1.25rem;font-weight:800}
+.chk{display:flex;gap:8px;align-items:center;margin-top:10px;font-weight:600}.chk input{width:auto}
+</style>
+</head>
+<body>
+<header><h1>🧾 Notas fiscais</h1><span id="amb"></span><span class="quem" id="quem"></span><nav id="nav"></nav></header>
+<main id="main"><div class="vazio">Carregando…</div></main>
+<div class="toast" id="toast"></div>
+<script>
+/* leitor_xml_fiscal.js — ProperCare · financeiro_base (11/10/2026)
+ * Lê o XML de NF-e (modelo 55, procNFe), o evento de cancelamento (procEventoNFe 110111) e a NFS-e do
+ * padrão nacional (NFSe 1.01 / distribuição) e devolve um objeto NORMALIZADO, sem dependência (serve no
+ * navegador, no Deno da Edge Function e no Node). NÃO grava nada: quem grava é o SQL (fin_nota_importar).
+ *   const r = PCFiscal.ler(textoXml);   // { ok, tipo, ..., avisos:[], erros:[] }
+ * Regras: dinheiro sai como NÚMERO com a precisão do XML (preço unitário tem até 6 casas); a conferência de
+ * soma usa CENTAVOS INTEIROS (nunca ponto flutuante direto); o que não bate vira aviso/erro, nunca é "arrumado".
+ */
+(function (raiz) {
+  'use strict';
+
+  // ── 1 · mini leitor de XML (nomes sem prefixo de namespace) ─────────────────────────────────────────
+  function lerXml(s) {
+    if (typeof s !== 'string') throw new Error('XML: esperava texto');
+    s = s.replace(/^﻿/, '');
+    var i = 0, n = s.length, raiz = { n: '#raiz', a: {}, c: [], t: '' }, pilha = [raiz];
+    function decod(t) {
+      return t.replace(/&(#x[0-9a-fA-F]+|#\d+|lt|gt|amp|quot|apos);/g, function (m, e) {
+        if (e === 'lt') return '<'; if (e === 'gt') return '>'; if (e === 'amp') return '&';
+        if (e === 'quot') return '"'; if (e === 'apos') return "'";
+        var cp = e[1] === 'x' ? parseInt(e.slice(2), 16) : parseInt(e.slice(1), 10);
+        return cp >= 0 && cp <= 0x10FFFF ? String.fromCodePoint(cp) : m;
+      });
+    }
+    while (i < n) {
+      var lt = s.indexOf('<', i);
+      if (lt < 0) { var resto = s.slice(i).trim(); if (resto) throw new Error('XML: texto solto depois do fim'); break; }
+      if (lt > i) { var tx = s.slice(i, lt); if (tx.trim()) pilha[pilha.length - 1].t += decod(tx); }
+      if (s.startsWith('<!--', lt)) { var f = s.indexOf('-->', lt + 4); if (f < 0) throw new Error('XML: comentário aberto'); i = f + 3; continue; }
+      if (s.startsWith('<![CDATA[', lt)) { var f2 = s.indexOf(']]>', lt + 9); if (f2 < 0) throw new Error('XML: CDATA aberto'); pilha[pilha.length - 1].t += s.slice(lt + 9, f2); i = f2 + 3; continue; }
+      if (s.startsWith('<?', lt)) { var f3 = s.indexOf('?>', lt + 2); if (f3 < 0) throw new Error('XML: instrução aberta'); i = f3 + 2; continue; }
+      if (s.startsWith('<!', lt)) { var f4 = s.indexOf('>', lt + 2); if (f4 < 0) throw new Error('XML: declaração aberta'); i = f4 + 1; continue; }
+      var gt = lt + 1, asp = null;                       // acha o '>' que fecha a marca, respeitando aspas dos atributos
+      while (gt < n) { var ch = s[gt]; if (asp) { if (ch === asp) asp = null; } else if (ch === '"' || ch === "'") asp = ch; else if (ch === '>') break; gt++; }
+      if (gt >= n) throw new Error('XML: marca sem fim');
+      var tag = s.slice(lt + 1, gt);
+      if (tag[0] === '/') {
+        var nomeF = tag.slice(1).trim().replace(/^.*:/, '');
+        var topo = pilha.pop();
+        if (!topo || topo.n !== nomeF) throw new Error('XML: </' + nomeF + '> não fecha <' + (topo && topo.n) + '>');
+      } else {
+        var vazio = tag.endsWith('/'); if (vazio) tag = tag.slice(0, -1);
+        var m = /^([^\s/>]+)([\s\S]*)$/.exec(tag); if (!m) throw new Error('XML: marca vazia');
+        var no = { n: m[1].replace(/^.*:/, ''), a: {}, c: [], t: '' };
+        var re = /([^\s=]+)\s*=\s*("([^"]*)"|'([^']*)')/g, am;
+        while ((am = re.exec(m[2]))) { var nomeA = am[1].replace(/^.*:/, ''); if (am[1].indexOf('xmlns') !== 0) no.a[nomeA] = decod(am[3] !== undefined ? am[3] : am[4]); }
+        pilha[pilha.length - 1].c.push(no);
+        if (!vazio) pilha.push(no);
+      }
+      i = gt + 1;
+    }
+    if (pilha.length !== 1) throw new Error('XML: <' + pilha[pilha.length - 1].n + '> sem fechamento');
+    if (!raiz.c.length) throw new Error('XML vazio');
+    return raiz.c[0];
+  }
+
+  // ── 2 · acesso por caminho ───────────────────────────────────────────────────────────────────────────
+  function filho(no, nome) { if (!no) return null; for (var k = 0; k < no.c.length; k++) if (no.c[k].n === nome) return no.c[k]; return null; }
+  function filhos(no, nome) { return no ? no.c.filter(function (x) { return x.n === nome; }) : []; }
+  function cam(no, caminho) { var p = caminho.split('/'), a = no; for (var k = 0; k < p.length && a; k++) a = filho(a, p[k]); return a; }
+  function txt(no, caminho) { var a = caminho ? cam(no, caminho) : no; return a ? a.t.trim() : ''; }
+  function ach(no, nome) {                              // 1ª ocorrência em qualquer profundidade
+    if (!no) return null; if (no.n === nome) return no;
+    for (var k = 0; k < no.c.length; k++) { var r = ach(no.c[k], nome); if (r) return r; } return null;
+  }
+  function num(v) { if (v === '' || v == null) return null; var x = Number(v); return isFinite(x) ? x : null; }
+  function cent(x) { return x == null ? null : Math.round(x * 100); }
+  function soDig(v) { return String(v || '').replace(/\D+/g, ''); }
+
+  // ── 3 · NF-e (procNFe) ───────────────────────────────────────────────────────────────────────────────
+  function lerNfe(raizNo) {
+    var av = [], er = [];
+    var nfe = raizNo.n === 'NFe' ? raizNo : cam(raizNo, 'NFe'), inf = filho(nfe, 'infNFe');
+    if (!inf) throw new Error('NF-e sem infNFe');
+    var prot = cam(raizNo, 'protNFe/infProt');
+    var chave = soDig(inf.a.Id || '').slice(-44);
+    if (chave.length !== 44) er.push('chave de acesso inválida no Id (' + (inf.a.Id || '') + ')');
+    if (prot && txt(prot, 'chNFe') && soDig(txt(prot, 'chNFe')) !== chave) er.push('chave do protocolo difere da chave da nota');
+    var ide = filho(inf, 'ide'), emit = filho(inf, 'emit'), dest = filho(inf, 'dest');
+    var cStat = prot ? txt(prot, 'cStat') : '';
+    var status = !prot ? 'sem_protocolo' : (cStat === '100' || cStat === '150') ? 'autorizada' : (cStat === '101' || cStat === '135' || cStat === '151') ? 'cancelada' : 'rejeitada';
+    if (!prot) av.push('XML sem protocolo de autorização (não é procNFe): não vale como nota autorizada');
+    var itens = filhos(inf, 'det').map(function (d) {
+      var p = filho(d, 'prod'), im = cam(d, 'imposto/ICMS'), g = im && im.c[0];     // ICMSSN102, ICMS00…
+      var orig = g ? txt(g, 'orig') : '', csosn = g ? (txt(g, 'CSOSN') || txt(g, 'CST')) : '';
+      return {
+        n: Number(d.a.nItem), codigo: txt(p, 'cProd'), descricao: txt(p, 'xProd'), ncm: txt(p, 'NCM'), cest: txt(p, 'CEST') || null,
+        cfop: txt(p, 'CFOP'), un: txt(p, 'uCom'), qtd: num(txt(p, 'qCom')), valor_unit: num(txt(p, 'vUnCom')), valor_total: num(txt(p, 'vProd')),
+        desconto: num(txt(p, 'vDesc')) || 0, frete: num(txt(p, 'vFrete')) || 0, origem: orig || null, csosn_cst: csosn || null,
+        regime_icms: g ? g.n : null
+      };
+    });
+    var tot = cam(inf, 'total/ICMSTot');
+    var totais = tot ? { produtos: num(txt(tot, 'vProd')), frete: num(txt(tot, 'vFrete')) || 0, desconto: num(txt(tot, 'vDesc')) || 0,
+                         outras: num(txt(tot, 'vOutro')) || 0, icms: num(txt(tot, 'vICMS')) || 0, nota: num(txt(tot, 'vNF')),
+                         seguro: num(txt(tot, 'vSeg')) || 0, ii: num(txt(tot, 'vII')) || 0, ipi: num(txt(tot, 'vIPI')) || 0, ipi_devol: num(txt(tot, 'vIPIDevol')) || 0,
+                         st: num(txt(tot, 'vST')) || 0, fcp_st: num(txt(tot, 'vFCPST')) || 0, icms_deson: num(txt(tot, 'vICMSDeson')) || 0 } : null;
+    var parcelas = filhos(filho(inf, 'cobr'), 'dup').map(function (d, k) {
+      return { numero: txt(d, 'nDup') || String(k + 1).padStart(3, '0'), vencimento: txt(d, 'dVenc') || null, valor: num(txt(d, 'vDup')) };
+    });
+    var pgto = filhos(filho(inf, 'pag'), 'detPag').map(function (d) { return { forma: txt(d, 'tPag'), valor: num(txt(d, 'vPag')) }; });
+    var infCpl = txt(inf, 'infAdic/infCpl');
+    var oc = /Orde?m?\s+de\s+Compra\s*:?\s*([A-Za-z0-9./-]+)/i.exec(infCpl);
+    var tpNF = txt(ide, 'tpNF');
+    var r = {
+      ok: false, tipo: 'nfe', modelo: txt(ide, 'mod'), serie: txt(ide, 'serie'), numero: Number(txt(ide, 'nNF')), chave: chave,
+      protocolo: prot ? txt(prot, 'nProt') : null, status: status, cstat: cStat || null, ambiente: txt(ide, 'tpAmb') === '1' ? 'producao' : 'homologacao',
+      tp_nf: tpNF, direcao_xml: tpNF === '0' ? 'entrada' : 'saida', natureza: txt(ide, 'natOp'), finalidade: txt(ide, 'finNFe'),     // a DIREÇÃO (entrada/saída) quem decide é o banco, pelo CNPJ da empresa — nunca só o tpNF
+      emitida_em: txt(ide, 'dhEmi') || null, saida_em: txt(ide, 'dhSaiEnt') || null,
+      emitente: { cnpj: soDig(txt(emit, 'CNPJ') || txt(emit, 'CPF')), nome: txt(emit, 'xNome'), ie: txt(emit, 'IE') || null, crt: txt(emit, 'CRT') || null,
+                  uf: txt(emit, 'enderEmit/UF') || null },
+      parte: dest ? { cnpj: soDig(txt(dest, 'CNPJ') || txt(dest, 'CPF')), nome: txt(dest, 'xNome'), ie: txt(dest, 'IE') || null,
+                      uf: txt(dest, 'enderDest/UF') || null, municipio: txt(dest, 'enderDest/xMun') || null, email: txt(dest, 'email') || null } : null,
+      itens: itens, totais: totais, frete_modalidade: txt(inf, 'transp/modFrete') || null, parcelas: parcelas, pagamentos: pgto,
+      info_complementar: infCpl || null, pedido_cliente: oc ? oc[1] : null, avisos: av, erros: er
+    };
+    // conferências (centavos inteiros)
+    var somaIt = itens.reduce(function (a, x) { return a + (cent(x.valor_total) || 0); }, 0);
+    if (totais && cent(totais.produtos) !== somaIt) er.push('soma dos itens (' + somaIt / 100 + ') ≠ valor dos produtos (' + totais.produtos + ')');
+    // coerência interna: o digVal do protocolo da SEFAZ tem de ser igual ao DigestValue da assinatura (os dois vêm do MESMO arquivo; ninguém recalcula o hash). Isto pega arquivo incompleto ou misturado, NÃO pega XML adulterado. A assinatura RSA NÃO é verificada.
+    var dv = ach(raizNo, 'DigestValue'), pv = prot ? txt(prot, 'digVal') : '';
+    r.dig_val = { assinatura: dv ? dv.t.trim() : null, protocolo: pv || null, confere: !!(dv && pv && dv.t.trim() === pv) };
+    if (prot && !r.dig_val.confere) er.push('digVal do protocolo ≠ DigestValue da assinatura (arquivo inconsistente — isto não prova autenticidade)');
+    if (totais) {
+      // fórmula completa do vNF (NT 2013/005): produtos − desconto − ICMS desonerado + ST + FCP ST + frete + seguro + outras + II + IPI + IPI devolvido
+      var esperado = cent(totais.produtos) - cent(totais.desconto) - cent(totais.icms_deson) + cent(totais.st) + cent(totais.fcp_st) + cent(totais.frete) + cent(totais.seguro)
+                   + cent(totais.outras) + cent(totais.ii) + cent(totais.ipi) + cent(totais.ipi_devol);
+      if (esperado !== cent(totais.nota)) er.push('vNF (' + totais.nota + ') não fecha com a fórmula da NF-e (' + esperado / 100 + ')');
+      if (parcelas.length) {
+        var somaP = parcelas.reduce(function (a, x) { return a + (cent(x.valor) || 0); }, 0);
+        if (somaP !== cent(totais.nota)) er.push('soma das parcelas (' + somaP / 100 + ') ≠ valor da nota (' + totais.nota + ')');
+      }
+    } else er.push('nota sem total (ICMSTot)');
+    if (!itens.length) er.push('nota sem itens');
+    if (r.ambiente !== 'producao') av.push('nota de HOMOLOGAÇÃO: não vale como nota real');
+    r.ok = er.length === 0; return r;
+  }
+
+  // ── 4 · evento (cancelamento) ────────────────────────────────────────────────────────────────────────
+  function lerEvento(raizNo) {
+    var evn = filho(raizNo, 'evento'), ev = (evn && filho(evn, 'infEvento')) || ach(raizNo, 'infEvento'), ret = filho(raizNo, 'retEvento'), ri = ret && filho(ret, 'infEvento'), er = [];
+    var tp = txt(ev, 'tpEvento'), det = filho(ev, 'detEvento');
+    var cs = ri ? txt(ri, 'cStat') : '';
+    var chv = soDig(txt(ev, 'chNFe')), chr = ri ? soDig(txt(ri, 'chNFe')) : '', tpr = ri ? txt(ri, 'tpEvento') : '';
+    // homologado = a SEFAZ devolveu 135 (evento registrado) ou 155 (cancelamento fora de prazo) PARA ESTA chave e PARA ESTE tipo de evento (136 = registrado sem vincular à nota: não vale)
+    var r = { ok: false, tipo: 'evento', evento: tp, descricao: txt(det, 'descEvento'), chave: chv, protocolo: ri ? txt(ri, 'nProt') : txt(det, 'nProt'),
+              justificativa: txt(det, 'xJust') || null, quando: txt(ev, 'dhEvento') || null, cstat: cs || null, ret_chave: chr || null, ret_evento: tpr || null,
+              homologado: !!ri && (cs === '135' || cs === '155') && chr === chv && tpr === tp && tp === '110111', avisos: [], erros: er };
+    if (r.chave.length !== 44) er.push('evento com chave inválida');
+    if (!ri) r.avisos.push('evento sem retorno da SEFAZ (retEvento): não vale como homologado');
+    else if (!r.homologado) r.avisos.push('retorno da SEFAZ não homologa ESTE cancelamento (cStat ' + cs + ', chave/tipo do retorno: ' + chr + '/' + tpr + ')');
+    r.ok = er.length === 0; return r;
+  }
+
+  // ── 4b · eventos da NFS-e nacional: cancelamento (e101101) e cancelamento por SUBSTITUIÇÃO (e105102) · rev. 16/10/2026 ───────────
+  // O arquivo "cancelar_nfse_resposta" é o evento já REGISTRADO pelo ambiente nacional (tem dhProc e nSeqEvento em infEvento); a "solicitacao" é só o pedido e NÃO vale.
+  // Outros eventos nacionais que também cancelam a nota (105104 deferimento por análise fiscal, 305101 cancelamento por ofício) ainda não são tratados: erro claro.
+  var EV_NFSE = { '101101': 'cancelamento', '105102': 'cancelamento por substituição' };
+  var EV_NFSE_OUTROS = { '101103': 'pedido de análise fiscal para cancelamento', '105104': 'cancelamento deferido por análise fiscal', '105105': 'cancelamento indeferido por análise fiscal',
+                         '305101': 'cancelamento por ofício' };
+  function lerEventoNfse(raizNo) {
+    var inf = filho(raizNo, 'infEvento'), ped = inf && filho(inf, 'pedRegEvento'), pi = ped && filho(ped, 'infPedReg'), er = [], av = [];
+    var ch = pi ? soDig(txt(pi, 'chNFSe')) : '', cod = '', ec = null;
+    if (pi) for (var k = 0; k < pi.c.length; k++) { var m = /^e(\d{6})$/.exec(pi.c[k].n); if (m) { cod = m[1]; ec = pi.c[k]; break; } }
+    var suportado = !!EV_NFSE[cod];
+    var reg = !!inf && !!txt(inf, 'dhProc') && !!txt(inf, 'nSeqEvento');
+    var r = { ok: false, tipo: 'evento_nfse', evento: suportado ? cod : '', evento_nome: EV_NFSE[cod] || EV_NFSE_OUTROS[cod] || null, chave: ch,
+              justificativa: ec ? (txt(ec, 'xMotivo') || null) : null, codigo_motivo: ec ? (txt(ec, 'cMotivo') || null) : null,
+              chave_substituta: cod === '105102' && ec ? (soDig(txt(ec, 'chSubstituta')) || null) : null,
+              quando: pi ? (txt(pi, 'dhEvento') || null) : null, registrado_em: inf ? (txt(inf, 'dhProc') || null) : null, ambiente: pi && txt(pi, 'tpAmb') === '1' ? 'producao' : 'homologacao',
+              cnpj_autor: pi ? soDig(txt(pi, 'CNPJAutor')) : '', homologado: reg && suportado, avisos: av, erros: er };
+    if (!cod) er.push('não é um evento de cancelamento de NFS-e (e101101 ou e105102)');
+    else if (!suportado) er.push('evento nacional ' + cod + (EV_NFSE_OUTROS[cod] ? ' (' + EV_NFSE_OUTROS[cod] + ')' : '') + ' ainda não é tratado pelo ProperCare: a nota continua autorizada — avise o Financeiro');
+    if (ch.length !== 50) er.push('evento com chave de NFS-e inválida');
+    if (cod === '105102' && (!r.chave_substituta || r.chave_substituta.length !== 50)) er.push('cancelamento por substituição sem a chave da nota substituta');
+    if (cod === '105102' && r.chave_substituta === ch) er.push('a nota substituta é a própria nota');
+    if (!reg) av.push('é o PEDIDO de cancelamento (sem registro do ambiente nacional): não vale — use o arquivo cancelar_nfse_resposta');
+    if (r.ambiente !== 'producao') av.push('evento de HOMOLOGAÇÃO');
+    if (cod === '105102' && r.chave_substituta) av.push('substituída pela NFS-e de chave …' + r.chave_substituta.slice(-8));
+    r.ok = er.length === 0; return r;
+  }
+
+  // ── 5 · NFS-e nacional ───────────────────────────────────────────────────────────────────────────────
+  function lerNfse(raizNo) {
+    var inf = filho(raizNo, 'infNFSe'), er = [], av = [];
+    if (!inf) throw new Error('NFS-e sem infNFSe');
+    var dps = cam(inf, 'DPS/infDPS'), em = filho(inf, 'emit'), tom = filho(dps, 'toma'), serv = filho(dps, 'serv');
+    var id = String(inf.a.Id || '').replace(/^NFS/, '');
+    var vServ = num(txt(dps, 'valores/vServPrest/vServ')), vLiq = num(txt(inf, 'valores/vLiq'));
+    var retido = txt(dps, 'valores/trib/tribMun/tpRetISSQN');
+    var r = {
+      ok: false, tipo: 'nfse', modelo: 'NFSE', padrao: 'nacional', serie: txt(dps, 'serie') || null, numero: Number(txt(inf, 'nNFSe')),
+      chave: id || null, numero_dfse: txt(inf, 'nDFSe') || null, status: txt(inf, 'cStat') === '100' ? 'autorizada' : 'desconhecido', cstat: txt(inf, 'cStat') || null,
+      ambiente: txt(dps, 'tpAmb') === '1' ? 'producao' : 'homologacao', emitida_em: txt(inf, 'dhProc') || txt(dps, 'dhEmi') || null,
+      competencia: txt(dps, 'dCompet') || null, numero_dps: txt(dps, 'nDPS') || null, sistema_emissor: txt(dps, 'verAplic') || null,
+      emitente: { cnpj: soDig(txt(em, 'CNPJ')), nome: txt(em, 'xNome'), im: txt(em, 'IM') || null },
+      parte: tom ? { cnpj: soDig(txt(tom, 'CNPJ') || txt(tom, 'CPF')), nome: txt(tom, 'xNome'), email: txt(tom, 'email') || null,
+                     municipio_ibge: txt(tom, 'end/endNac/cMun') || null } : null,
+      servico: { codigo_trib_nacional: txt(serv, 'cServ/cTribNac'), descricao: txt(serv, 'cServ/xDescServ'), nbs: txt(serv, 'cServ/cNBS') || null,
+                 info_complementar: txt(serv, 'infoCompl/xInfComp') || null, local_prestacao_ibge: txt(serv, 'locPrest/cLocPrestacao') || null },
+      valores: { servico: vServ, liquido: vLiq, base_calculo: num(txt(inf, 'IBSCBS/valores/vBC')), iss_retido: retido === '2' || retido === '3',
+                 ibs: num(txt(inf, 'IBSCBS/totCIBS/gIBS/vIBSTot')), cbs: num(txt(inf, 'IBSCBS/totCIBS/gCBS/vCBS')) },
+      regime: { simples_nacional: txt(dps, 'prest/regTrib/opSimpNac') || null }, substitui: soDig(txt(dps, 'subst/chSubstda')) || null, avisos: av, erros: er
+    };
+    if (vServ == null) er.push('NFS-e sem valor do serviço');
+    if (vServ != null && vLiq != null && cent(vServ) !== cent(vLiq) && !r.valores.iss_retido) av.push('valor líquido ≠ valor do serviço sem retenção — conferir');
+    if (!r.numero) er.push('NFS-e sem número');
+    if (r.ambiente !== 'producao') av.push('NFS-e de HOMOLOGAÇÃO');
+    if (r.substitui) av.push('esta NFS-e SUBSTITUI a de chave …' + r.substitui.slice(-8) + ': importe também o cancelamento por substituição da antiga (senão as duas somam no DAS)');
+    r.ok = er.length === 0; return r;
+  }
+
+  // ── 6 · entrada única ────────────────────────────────────────────────────────────────────────────────
+  function ler(texto) {
+    var no;
+    try { no = lerXml(texto); } catch (e) { return { ok: false, tipo: 'invalido', avisos: [], erros: [String(e.message || e)] }; }
+    try {
+      if (no.n === 'nfeProc' || no.n === 'NFe') return lerNfe(no);
+      if (no.n === 'evento' && ach(no, 'infPedReg')) return lerEventoNfse(no);   // evento da NFS-e nacional (o da NF-e não tem infPedReg)
+      if (no.n === 'procEventoNFe' || no.n === 'envEvento' || no.n === 'evento') return lerEvento(no);
+      if (no.n === 'NFSe') return lerNfse(no);
+      return { ok: false, tipo: 'desconhecido', avisos: [], erros: ['XML não reconhecido (raiz <' + no.n + '>). Aceito: nfeProc, procEventoNFe, NFSe nacional'] };
+    } catch (e) { return { ok: false, tipo: 'invalido', avisos: [], erros: [String(e.message || e)] }; }
+  }
+
+  var API = { ler: ler, lerXml: lerXml, versao: 'financeiro_base-2026-10-16-r4' };
+  if (typeof module !== 'undefined' && module.exports) module.exports = API; else raiz.PCFiscal = API;
+})(typeof self !== 'undefined' ? self : this);
+
+</script>
+<script>
+'use strict';
+var PCNOTA = (function () {
+  var CFG = { url: 'https://mxczeemglrehadjualvi.supabase.co', anon: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im14Y3plZW1nbHJlaGFkanVhbHZpIiwicm9sZSI6ImFub24iLCJpYXQiOj', funcao: '/functions/v1/notaas', prazo: 25000, prazoEmissao: 70000 };
+  var DEMO = /(^|[?&#])demo(=1)?($|&)/.test(location.search + '&' + location.hash.slice(1));
+  var S = { op: null, aba: 'emitir', tipo: 'nfse', cli: null, itens: [], prev: null, edita: null, ocupado: false, notas: [], mes: '' };
+  function $(id) { return document.getElementById(id); }
+  function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]; }); }
+  function brl(n) { var x = Number(n); return isFinite(x) ? x.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) : '—'; }
+  function num(v) { var x = Number(String(v == null ? '' : v).trim().replace(/\./g, function (m, i, s) { return s.indexOf(',') >= 0 ? '' : m; }).replace(',', '.')); return isFinite(x) ? x : NaN; }
+  function dh(iso) { var d = new Date(iso); return isNaN(d) ? '' : d.toLocaleString('pt-BR', { day: '2-digit', month: '2-digit', year: '2-digit', hour: '2-digit', minute: '2-digit' }); }
+  function hojeMais(d) { var x = new Date(); x.setDate(x.getDate() + d); return x.toISOString().slice(0, 10); }
+  function toast(m) { var d = document.createElement('div'); d.textContent = m; $('toast').appendChild(d); setTimeout(function () { d.remove(); }, 4500); }
+  function sessao() { try { return JSON.parse(localStorage.getItem('proper_session') || 'null'); } catch (e) { return null; } }
+  function jwt(t) { try { return JSON.parse(atob(String(t).split('.')[1].replace(/-/g, '+').replace(/_/g, '/'))) || {}; } catch (e) { return {}; } }
+  function token() { var tok = (sessao() || {}).supa_token || ''; if (!tok) throw { msg: 'Sem login. Entre pelo Hub (PIN) e volte aqui.', fatal: true }; return tok; }
+  function msgLimpa(m) { return String(m || '').replace(/^Fiscal:\s*/, '').replace(/^Financeiro:\s*/, ''); }
+
+  // ── o banco ──────────────────────────────────────────────────────────────────────
+  async function rpc(nome, corpo, opts) {
+    if (DEMO) return demo(nome, corpo || {});
+    opts = opts || {};
+    var tok = token(), c = typeof AbortController !== 'undefined' ? new AbortController() : null, t = c ? setTimeout(function () { c.abort(); }, CFG.prazo) : null, r, txt;
+    try {
+      r = await fetch(CFG.url + '/rest/v1/rpc/' + nome, { method: 'POST', signal: c ? c.signal : undefined, body: JSON.stringify(corpo || {}),
+        headers: { apikey: CFG.anon, Authorization: 'Bearer ' + tok, 'Content-Type': 'application/json' } });
+      txt = await r.text();
+    } catch (e) { throw { msg: (e && e.name === 'AbortError' ? 'O banco não respondeu.' : 'Sem conexão.') + (opts.escrita ? ' Pode ter gravado: confira antes de repetir.' : '') }; }
+    finally { if (t) clearTimeout(t); }
+    var j = null; try { j = txt ? JSON.parse(txt) : null; } catch (e) {}
+    if (!r.ok) {
+      var m = (j && (j.message || j.hint)) || ('HTTP ' + r.status);
+      if (r.status === 401 || /JWT|expired/i.test(m)) throw { msg: 'O crachá do login venceu. Entre de novo pelo Hub (PIN).', fatal: true };
+      if (r.status === 404 && /PGRST202|Could not find/.test(m + (j && j.code))) throw { msg: 'O banco ainda não tem as funções de nota fiscal (07_FISCAL_EMISSAO não rodou).', fatal: true };
+      throw { msg: msgLimpa(m) };
+    }
+    return j;
+  }
+  function rpcJ(nome, obj, opts) { return rpc(nome, { p: obj || {} }, opts); }
+  // a função do servidor (ela tem a chave da Notaas; quem decide se pode é o banco)
+  async function servidor(corpo) {
+    if (DEMO) return demoServidor(corpo);
+    var tok = token(), c = new AbortController(), t = setTimeout(function () { c.abort(); }, CFG.prazoEmissao), r, txt;
+    try {
+      r = await fetch(CFG.url + CFG.funcao, { method: 'POST', signal: c.signal, body: JSON.stringify(corpo),
+        headers: { apikey: CFG.anon, Authorization: 'Bearer ' + tok, 'Content-Type': 'application/json' } });
+      txt = await r.text();
+    } catch (e) { throw { msg: 'A Notaas/servidor não respondeu a tempo. NÃO emita de novo: abra "Notas" e toque em Atualizar para ver se saiu.' }; }
+    finally { clearTimeout(t); }
+    var j = null; try { j = JSON.parse(txt); } catch (e) {}
+    if (!r.ok && !(j && j.estado)) throw { msg: msgLimpa((j && j.erro) || ('Servidor: HTTP ' + r.status)) };
+    return j;
+  }
+  async function acao(btn, fn) {
+    if (S.ocupado) return; S.ocupado = true; var rot = btn && btn.textContent; if (btn) { btn.disabled = true; }
+    try { return await fn(); } catch (e) { toast((e && e.msg) || String(e && e.message || e)); if (e && e.fatal) fatal(e.msg); }
+    finally { S.ocupado = false; if (btn) { btn.disabled = false; if (rot) btn.textContent = rot; } }
+  }
+  function fatal(m) { $('main').innerHTML = '<div class="erro"><b>' + esc(m) + '</b></div>'; }
+  function folha(html) { var f = document.createElement('div'); f.className = 'fundo'; f.innerHTML = '<div class="folha" role="dialog">' + html + '</div>';
+    f.addEventListener('click', function (e) { if (e.target === f || e.target.closest('[data-fechar]')) f.remove(); }); document.body.appendChild(f); return f; }
+
+  // ── abas ────────────────────────────────────────────────────────────────────────
+  var ABAS = [['emitir', 'Emitir', false], ['notas', 'Notas', false], ['clientes', 'Dados fiscais dos clientes', false], ['pgdas', '% ICMS (PGDAS)', true]];
+  function nav() {
+    var adm = S.op && S.op.papel === 'admin';
+    $('nav').innerHTML = ABAS.filter(function (a) { return adm || !a[2]; }).map(function (a) { return '<button data-aba="' + a[0] + '" aria-current="' + (S.aba === a[0]) + '">' + a[1] + '</button>'; }).join('');
+    var h = S.op && S.op.ambiente === 'homologacao';
+    $('amb').innerHTML = S.op ? '<span class="amb ' + (h ? 'h' : 'p') + '">' + (h ? 'HOMOLOGAÇÃO · sem valor fiscal' : 'PRODUÇÃO') + '</span>' : '';
+  }
+  async function ir(aba) {
+    var adm = S.op && S.op.papel === 'admin';
+    if (!adm && ABAS.some(function (a) { return a[0] === aba && a[2]; })) aba = 'emitir';
+    S.aba = aba; nav(); try { history.replaceState(null, '', (DEMO ? '#demo&' : '#') + aba); } catch (e) {}
+    $('main').innerHTML = '<div class="vazio">Carregando…</div>';
+    try {
+      if (aba === 'emitir') telaEmitir(); else if (aba === 'notas') await telaNotas(); else if (aba === 'clientes') telaClientes(); else if (aba === 'pgdas') telaPgdas();
+    } catch (e) { $('main').innerHTML = '<div class="erro">' + esc((e && e.msg) || e) + '</div>'; if (e && e.fatal) fatal(e.msg); }
+  }
+
+  // ── EMITIR ──────────────────────────────────────────────────────────────────────
+  function operacao() { return (S.op.operacoes || []).find(function (o) { return o.codigo === ($('f_op') ? $('f_op').value : S.edita && S.edita.operacao); }) || S.op.operacoes[0]; }
+  function catPadrao(tipo) { var re = tipo === 'nfse' ? /servi/i : /revenda|mercador/i; var c = (S.op.categorias || []).find(function (x) { return re.test(x.nome); }); return c ? c.id : ''; }
+  function contaPadrao() { var c = (S.op.contas || []).find(function (x) { return /sicredi/i.test(x.nome); }); return c ? c.id : ''; }
+  function telaEmitir() {
+    var e = S.edita && S.edita.entrada || {}, tit = e.titulos || {};
+    var ops = S.op.operacoes.map(function (o) { return '<option value="' + o.codigo + '">' + esc(o.nome) + ' (' + o.cfop_dentro + (o.cfop_fora ? '/' + o.cfop_fora : '') + ')</option>'; }).join('');
+    $('main').innerHTML =
+      (S.edita ? '<div class="faixa av">Corrigindo a nota ' + (S.edita.estado === 'recusada' ? 'recusada' : 'em rascunho') + (S.edita.motivo ? ': <b>' + esc(S.edita.motivo) + '</b>' : '') + ' <button class="b2" id="novo">Começar outra</button></div>' : '') +
+      '<div class="seg" role="group" aria-label="tipo de nota"><button data-tipo="nfse" aria-pressed="' + (S.tipo === 'nfse') + '">NFS-e · serviço</button><button data-tipo="nfe" aria-pressed="' + (S.tipo === 'nfe') + '">NF-e · peças</button></div>' +
+      '<div class="card"><h2>Cliente</h2><div id="cli"></div></div>' +
+      (S.tipo === 'nfse'
+        ? '<div class="card"><h2>Serviço</h2><label for="f_desc">Descrição (aparece na nota)</label><textarea id="f_desc" maxlength="2000">' + esc(e.descricao || 'Serviço de manutenção de compressor') + '</textarea>' +
+          '<label for="f_valor">Valor do serviço (R$)</label><input id="f_valor" inputmode="decimal" value="' + esc(e.valor != null ? String(e.valor).replace('.', ',') : '') + '" placeholder="0,00">' +
+          '<div class="sub" style="margin-top:6px">Código 14.01.01 (manutenção) · ISS no DAS · IBS/CBS informativos — preenchidos sozinhos.</div></div>'
+        : '<div class="card"><h2>Operação e itens</h2><label for="f_op">Tipo de operação</label><select id="f_op">' + ops + '</select><div id="opinfo" class="sub" style="margin-top:4px"></div>' +
+          '<label for="f_prod">Adicionar peça (código ou descrição)</label><input id="f_prod" autocomplete="off" placeholder="ex.: 002039 ou filtro"><ul class="lista" id="prodres"></ul>' +
+          '<div class="tw"><table id="itens"></table></div><div class="tot"><span>Total</span><b id="total">R$ 0,00</b></div>' +
+          '<label for="f_info">Informações complementares (opcional)</label><textarea id="f_info" maxlength="2000" placeholder="ex.: Retorno referente à NF 274">' + esc(e.info || '') + '</textarea></div>') +
+      '<div class="card" id="cobr"><h2>Cobrança (título a receber)</h2><div class="g2"><div><label for="f_venc">Vencimento</label><input id="f_venc" type="date" value="' + esc(tit.vencimento || hojeMais(28)) + '"></div>' +
+      '<div><label for="f_forma">Forma</label><select id="f_forma">' + [['boleto', 'Boleto'], ['pix', 'PIX'], ['transferencia', 'Transferência'], ['dinheiro', 'Dinheiro'], ['credito', 'Cartão de crédito'], ['debito', 'Cartão de débito'], ['outro', 'Outro']].map(function (f) { return '<option value="' + f[0] + '"' + ((tit.forma || 'boleto') === f[0] ? ' selected' : '') + '>' + f[1] + '</option>'; }).join('') + '</select></div>' +
+      '<div><label for="f_npar">Parcelas</label><input id="f_npar" type="number" min="1" max="24" value="' + ((tit.parcelas && tit.parcelas.length) || 1) + '"></div>' +
+      '<div><label for="f_int">Intervalo entre parcelas (dias)</label><input id="f_int" type="number" min="1" max="120" value="30"></div>' +
+      '<div><label for="f_conta">Conta</label><select id="f_conta">' + S.op.contas.map(function (c) { return '<option value="' + c.id + '">' + esc(c.nome) + '</option>'; }).join('') + '</select></div>' +
+      '<div><label for="f_cat">Categoria</label><select id="f_cat">' + S.op.categorias.map(function (c) { return '<option value="' + c.id + '">' + esc(c.nome) + '</option>'; }).join('') + '</select></div></div>' +
+      '<div id="parc"></div><div class="sub" style="margin-top:6px">O título (um por parcela) nasce sozinho no financeiro quando a nota for autorizada.' + (S.tipo === 'nfe' ? ' Na NF-e as parcelas vão impressas na nota (duplicatas).' : '') + '</div></div>' +
+      '<div id="prev"></div>' +
+      '<div class="acoes"><button class="b" id="conferir">Conferir a nota</button></div>';
+    if (S.tipo === 'nfe') { $('f_op').value = (S.edita && S.edita.operacao) || e.operacao || 'venda'; if (!$('f_op').value) $('f_op').selectedIndex = 0; }
+    $('f_conta').value = tit.conta_id || contaPadrao(); $('f_cat').value = tit.categoria_id || catPadrao(S.tipo);
+    S.parc = (tit.parcelas || []).map(function (x) { return { vencimento: x.vencimento, valor: x.valor }; });
+    desenhaCliente(); if (S.tipo === 'nfe') { desenhaItens(); opInfo(); } desenhaParcelas(false);
+  }
+  function totalAtual() {
+    if (S.tipo === 'nfse') return num(($('f_valor') || {}).value);
+    var t = 0; S.itens.forEach(function (it) { var x = num(it.quantidade) * num(it.valor_unitario) - (num(it.desconto) || 0); if (isFinite(x)) t += x; }); return Math.round(t * 100) / 100;
+  }
+  // parcelas iguais (a última leva os centavos), vencimentos a cada N dias a partir do 1º vencimento; dá para editar uma a uma
+  function desenhaParcelas(refaz) {
+    if (!$('parc')) return;
+    var n = Math.max(1, Math.min(24, parseInt($('f_npar').value, 10) || 1));
+    if (n === 1) { S.parc = []; $('parc').innerHTML = ''; return; }
+    if (refaz || S.parc.length !== n) {
+      var tot = totalAtual(), base = isFinite(tot) && tot > 0 ? Math.floor(tot * 100 / n) / 100 : 0, d0 = new Date(($('f_venc').value || hojeMais(28)) + 'T12:00:00'), dias = parseInt($('f_int').value, 10) || 30;
+      S.parc = []; for (var i = 0; i < n; i++) { var d = new Date(d0); d.setDate(d.getDate() + i * dias); S.parc.push({ vencimento: d.toISOString().slice(0, 10), valor: i < n - 1 ? base : Math.round((tot - base * (n - 1)) * 100) / 100 }); }
+    }
+    var soma = S.parc.reduce(function (a, x) { return a + (num(x.valor) || 0); }, 0);
+    $('parc').innerHTML = '<div class="tw" style="margin-top:8px"><table><tr><th>#</th><th>Vencimento</th><th style="text-align:right">Valor</th></tr>' + S.parc.map(function (x, i) {
+      return '<tr><td>' + (i + 1) + '</td><td><input type="date" data-par="' + i + '" data-k="vencimento" value="' + esc(x.vencimento) + '"></td><td class="n"><input data-par="' + i + '" data-k="valor" inputmode="decimal" style="width:110px;text-align:right" value="' + esc(String(x.valor).replace('.', ',')) + '"></td></tr>'; }).join('') +
+      '<tr><td></td><td class="sub">Soma das parcelas</td><td class="n" id="psoma">' + brl(soma) + '</td></tr></table></div><button class="b2" id="prefaz" style="margin-top:6px">Recalcular parcelas iguais</button>';
+  }
+  function opInfo() {
+    var o = operacao(); if (!o) return;
+    $('opinfo').textContent = 'CSOSN ' + o.csosn + (o.cobrar ? ' · gera título a receber' : ' · sem cobrança (remessa/retorno)') + (o.credito_icms ? ' · crédito de ICMS: só cliente marcado e com o % do PGDAS de ' + S.op.competencia_exigida.slice(5, 7) + '/' + S.op.competencia_exigida.slice(0, 4) + (S.op.icms_mes_anterior ? ' (' + String(S.op.icms_mes_anterior.pct_icms).replace('.', ',') + '%)' : ' — AINDA NÃO LANÇADO') : '') + (o.exige_anp ? ' · lubrificante: precisa do código ANP no cadastro' : '') + (o.entrada_propria ? ' · nota de ENTRADA: destinatário é a própria Proper' : '');
+    $('cobr').style.display = o.cobrar ? '' : 'none';
+    $('cli').closest('.card').style.display = o.entrada_propria ? 'none' : '';
+  }
+  function desenhaCliente() {
+    var c = S.cli;
+    if (c) {
+      var ind = c.indicador_ie === 1 ? 'Contribuinte · IE ' + esc(c.ie) : c.indicador_ie === 2 ? 'Isento de IE' : c.indicador_ie === 9 ? 'Não contribuinte' : '';
+      $('cli').innerHTML = '<div class="esc"><div class="t"><b>' + esc(c.nome_fiscal || c.nome) + '</b><div class="sub">' + esc(c.cnpj || '') + ' · ' + esc(c.cidade || '') + '/' + esc(c.uf || '') + '</div>' +
+        '<div style="margin-top:4px">' + (c.tem_fiscal ? '<span class="tag ok">dados fiscais ok</span><span class="sub">' + ind + (c.credito_icms ? ' · leva crédito de ICMS' : '') + (c.email_nf ? '' : ' · sem e-mail (a nota não vai para ele)') + '</span>' : '<span class="tag ruim">faltam dados fiscais</span> <button class="b2" data-completar="' + esc(c.id) + '">Completar agora</button>') + '</div></div>' +
+        '<button class="b2" id="trocacli">Trocar</button></div>';
+      return;
+    }
+    $('cli').innerHTML = '<input id="f_cli" autocomplete="off" placeholder="nome ou CNPJ do cliente"><ul class="lista" id="clires"></ul>';
+  }
+  var tBusca = null;
+  async function buscaCli(q) { var r = await rpcJ('fis_clientes_buscar', { q: q }); $('clires').innerHTML = r.map(function (c, i) { return '<li data-cli="' + i + '"><div class="t"><b>' + esc(c.nome_fiscal || c.nome) + '</b><div class="sub">' + esc(c.cnpj || 'sem CNPJ') + ' · ' + esc(c.cidade || '') + '</div></div>' + (c.tem_fiscal ? '<span class="tag ok">fiscal ok</span>' : '<span class="tag ruim">sem fiscal</span>') + '</li>'; }).join('') || '<li class="sub">Nenhum cliente.</li>'; S._clires = r; }
+  async function buscaProd(q) { var r = await rpcJ('fis_produtos_buscar', { q: q }); $('prodres').innerHTML = r.map(function (p, i) { return '<li data-prod="' + i + '"><div class="t"><span class="cod">' + esc(p.codigo) + '</span> ' + esc(p.descricao) + '<div class="sub">NCM ' + esc(p.ncm || '—') + (p.preco_venda ? ' · ' + brl(p.preco_venda) : '') + (p.codigo_anp ? ' · ANP ' + esc(p.codigo_anp) : '') + '</div></div>' + (p.fiscal_ok ? '' : '<span class="tag ruim">falta NCM/origem</span>') + '</li>'; }).join('') || '<li class="sub">Nada encontrado.</li>'; S._prodres = r; }
+  function desenhaItens() {
+    var tot = 0;
+    $('itens').innerHTML = S.itens.length ? '<tr><th>Peça</th><th style="text-align:right">Qtd</th><th style="text-align:right">Unitário</th><th style="text-align:right">Desconto</th><th style="text-align:right">Total</th><th></th></tr>' + S.itens.map(function (it, i) {
+      var t = Math.round((num(it.quantidade) * num(it.valor_unitario) - (num(it.desconto) || 0)) * 100) / 100; if (isFinite(t)) tot += t;
+      return '<tr><td><span class="cod">' + esc(it.codigo) + '</span><br>' + esc(it.descricao || '') + '</td>' +
+        '<td class="n"><input data-it="' + i + '" data-k="quantidade" inputmode="decimal" style="width:70px;text-align:right" value="' + esc(String(it.quantidade).replace('.', ',')) + '"></td>' +
+        '<td class="n"><input data-it="' + i + '" data-k="valor_unitario" inputmode="decimal" style="width:100px;text-align:right" value="' + esc(String(it.valor_unitario).replace('.', ',')) + '"></td>' +
+        '<td class="n"><input data-it="' + i + '" data-k="desconto" inputmode="decimal" style="width:80px;text-align:right" value="' + esc(it.desconto ? String(it.desconto).replace('.', ',') : '') + '"></td>' +
+        '<td class="n">' + (isFinite(t) ? brl(t) : '—') + '</td><td><button class="b2" data-tira="' + i + '" aria-label="tirar">✕</button></td></tr>';
+    }).join('') : '<tr><td class="sub">Nenhuma peça ainda.</td></tr>';
+    $('total').textContent = brl(tot);
+  }
+  function montarEntrada() {
+    var o = S.tipo === 'nfe' ? operacao() : null;
+    var tit = (S.tipo === 'nfse' || (o && o.cobrar)) ? { gerar: true, vencimento: $('f_venc').value, forma: $('f_forma').value, conta_id: $('f_conta').value, categoria_id: $('f_cat').value } : { gerar: false };
+    if (tit.gerar && S.parc && S.parc.length > 1) { delete tit.vencimento; tit.parcelas = S.parc.map(function (x) { return { vencimento: x.vencimento, valor: num(x.valor) }; }); }
+    var p = { titulos: tit };
+    if (S.edita) p.id = S.edita.id;
+    if (!(o && o.entrada_propria)) p.cliente_id = S.cli ? S.cli.id : null;
+    if (S.tipo === 'nfse') { p.descricao = $('f_desc').value.trim(); p.valor = num($('f_valor').value); }
+    else { p.operacao = o.codigo; p.info = $('f_info').value.trim(); p.itens = S.itens.map(function (it) { return { codigo: it.codigo, quantidade: num(it.quantidade), valor_unitario: num(it.valor_unitario), desconto: num(it.desconto) || 0 }; }); }
+    return p;
+  }
+  function desenhaPrevia(r) {
+    S.prev = r; var pay = r.payload || {}, erros = r.erros || [], av = r.avisos || [];
+    var h = '';
+    if (erros.length) h += '<div class="faixa ruim"><b>Ainda não dá para emitir:</b><ul>' + erros.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</ul></div>';
+    if (av.length) h += '<div class="faixa av"><b>Confira:</b><ul>' + av.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</ul></div>';
+    if (r.payload) {
+      var dest = pay.tomador || pay.dest || {}, en = dest.endereco || {};
+      h += '<div class="card prev"><h2>Como a nota vai sair</h2><dl>' +
+        '<dt>Nota</dt><dd>' + (S.tipo === 'nfse' ? 'NFS-e de serviço (14.01.01)' : 'NF-e · ' + esc(pay.naturezaOperacao) + (pay.serie ? ' · série ' + pay.serie : '')) + '</dd>' +
+        '<dt>' + (S.tipo === 'nfse' ? 'Tomador' : 'Destinatário') + '</dt><dd><b>' + esc(dest.nome) + '</b> · ' + esc(dest.cnpj || dest.cpf) + (dest.ie ? ' · IE ' + esc(dest.ie) : '') + '<br><span class="sub">' + esc([en.logradouro, en.numero, en.complemento, en.bairro, en.cidade + '/' + en.uf, en.cep].filter(Boolean).join(', ')) + '</span></dd>' +
+        (S.tipo === 'nfse' ? '<dt>Serviço</dt><dd>' + esc(pay.servico.descricao) + '</dd>'
+          : '<dt>Itens</dt><dd>' + pay.items.map(function (it) { return esc(it.codigo) + ' · ' + esc(it.descricao) + ' · ' + String(it.quantidade).replace('.', ',') + ' × ' + brl(it.valorUnitario) + ' · CFOP ' + it.cfop + ' · CSOSN ' + it.csosn + (it.aliquotaIcms ? ' · crédito ' + String(it.aliquotaIcms).replace('.', ',') + '%' : ''); }).join('<br>') + '</dd>' +
+            (pay.infCpl ? '<dt>Inf. complementares</dt><dd>' + esc(pay.infCpl) + '</dd>' : '')) +
+        '<dt>Total</dt><dd class="big">' + brl(r.total) + '</dd>' +
+        '<dt>Cobrança</dt><dd>' + (S.tipo === 'nfse' || (pay.pagamentos && pay.pagamentos[0].tipoPagamento !== '90') ? (S.parc && S.parc.length > 1 ? S.parc.length + ' parcelas: ' + S.parc.map(function (x) { return esc(x.vencimento.split('-').reverse().join('/')) + ' ' + brl(num(x.valor)); }).join(' · ') : 'título a receber, vence ' + esc((($('f_venc') || {}).value || '').split('-').reverse().join('/'))) : 'sem cobrança') + '</dd></dl>' +
+        (r.estado === 'pronta' ? '<div class="acoes"><button class="b" id="emitir">' + (S.op.ambiente === 'homologacao' ? 'Emitir (TESTE · homologação)' : 'Emitir a nota') + '</button></div>' : '') + '</div>';
+    }
+    $('prev').innerHTML = h; $('prev').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+  async function conferir(btn) {
+    await acao(btn, async function () {
+      var p = montarEntrada();
+      if (!p.cliente_id && !(S.tipo === 'nfe' && operacao().entrada_propria)) throw { msg: 'Escolha o cliente.' };
+      if (S.tipo === 'nfe' && !p.itens.length) throw { msg: 'Adicione pelo menos uma peça.' };
+      var r = await rpcJ(S.tipo === 'nfse' ? 'fis_nfse_preparar' : 'fis_nfe_preparar', p, { escrita: true });
+      S.edita = Object.assign({}, S.edita || {}, { id: r.id, estado: r.estado, entrada: p, operacao: p.operacao, motivo: null });
+      desenhaPrevia(r);
+    });
+  }
+  function confirmarEmissao() {
+    var r = S.prev, f = folha('<h2>' + (S.op.ambiente === 'homologacao' ? 'Emitir nota de TESTE?' : 'Emitir a nota?') + '</h2>' +
+      '<p>' + (S.tipo === 'nfse' ? 'NFS-e' : 'NF-e') + ' de <b>' + brl(r.total) + '</b> para <b>' + esc((r.payload.tomador || r.payload.dest).nome) + '</b>.</p>' +
+      (S.op.ambiente === 'producao' ? '<div class="faixa av">Depois de autorizada, NF-e só pode ser cancelada em até 24 h. Confira valor e cliente.</div>' : '<div class="faixa av">Homologação: sem valor fiscal, não entra no financeiro.</div>') +
+      '<div class="acoes"><button class="b2" data-fechar>Voltar</button><button class="b" id="vai">Emitir</button></div>');
+    f.querySelector('#vai').addEventListener('click', function () { var b = this; b.textContent = 'Enviando à ' + (S.tipo === 'nfse' ? 'Prefeitura' : 'SEFAZ') + '…';
+      acao(b, async function () { var x = await servidor({ acao: 'emitir', id: r.id }); f.remove(); await resultado(x); }); });
+  }
+  async function resultado(x) {
+    if (x.estado === 'autorizada') {
+      toast('Autorizada' + (x.numero ? ': nº ' + x.numero : '') + '.');
+      var fin = await concluirFinanceiro(x.id, true);
+      folha('<h2>✅ Nota autorizada</h2><p>' + (x.numero ? 'Número <b>' + x.numero + '</b>' + (x.serie ? ' · série ' + esc(x.serie) : '') : '') + '<br><span class="cod">' + esc(x.chave || '') + '</span></p>' +
+        '<div class="faixa ' + (fin.ok ? 'ok' : 'av') + '">' + esc(fin.msg) + '</div><div class="acoes"><button class="b" data-fechar>OK</button></div>');
+      S.edita = null; S.cli = null; S.itens = []; S.prev = null; await ir('notas');
+    } else if (x.estado === 'recusada' || x.estado === 'erro_envio') {
+      folha('<h2>❌ Não foi autorizada</h2><div class="faixa ruim">' + esc(x.motivo || 'sem motivo') + (x.cstat ? ' (código ' + esc(x.cstat) + ')' : '') + '</div><p class="sub">Nota recusada não gasta número. Corrija e confira de novo.</p><div class="acoes"><button class="b" data-fechar>Corrigir</button></div>');
+      S.edita = Object.assign(S.edita || {}, { estado: 'recusada', motivo: x.motivo }); telaEmitir();
+    } else {
+      folha('<h2>⏳ Ainda processando</h2><p>A ' + (S.tipo === 'nfse' ? 'Prefeitura' : 'SEFAZ') + ' ainda não respondeu. <b>Não emita de novo.</b> Em "Notas", toque em Atualizar daqui a pouco.</p><div class="acoes"><button class="b" data-fechar>OK</button></div>');
+      await ir('notas');
+    }
+  }
+  // XML autorizado → mesmo leitor do financeiro → fin_nota_importar (cria o título) → vincula
+  async function concluirFinanceiro(id, silencioso) {
+    try {
+      var n = await rpc('fis_emissao_xml_ler', { p_id: id });
+      if (!n.xml) return { ok: false, msg: 'O XML ainda não chegou da Notaas. Em "Notas", toque em "Financeiro" daqui a pouco.' };
+      if (n.ambiente !== 'producao') return { ok: true, msg: 'Nota de homologação: fica fora do financeiro (sem valor fiscal).' };
+      if (n.fin_nota_id) return { ok: true, msg: 'Já está no financeiro.' };
+      var L = (typeof PCFiscal !== 'undefined' && PCFiscal) || null; if (!L) throw { msg: 'Leitor de XML não carregou.' };
+      var lido = L.ler(n.xml); if (!lido.ok) throw { msg: 'O leitor não aceitou o XML: ' + (lido.erros || []).join('; ') };
+      lido.xml = n.xml; lido.titulos = n.titulos && n.titulos.gerar ? n.titulos : { gerar: false };
+      if (n.tipo === 'nfse' && n.titulos && n.titulos.parcelas && n.titulos.parcelas.length > 1) lido.titulos = { gerar: false };   // NFS-e não tem duplicatas no XML: as parcelas nascem no vincular (NF-e: o importador lê as duplicatas do XML)
+      var imp = await rpcJ('fin_nota_importar', lido, { escrita: true });
+      var vin = await rpc('fis_emissao_vincular', { p_id: id, p_fin_nota: imp.nota_id }, { escrita: true });
+      return { ok: true, msg: 'Entrou no financeiro' + (imp.titulos || vin.titulos ? ' com o(s) título(s) a receber' : '') + (imp.aviso === 'cliente_nao_encontrado' ? ' (cliente não ligado: confira em A receber)' : '') + '.' };
+    } catch (e) {
+      // até a virada (19_), só o administrador lança no financeiro: a nota está emitida e fica esperando o Bruno tocar em "Financeiro"
+      if (/só o administrador usa o financeiro/.test((e && e.msg) || String(e))) return { ok: true, espera: true, msg: 'Nota emitida ✅. A entrada no financeiro (título a receber) fica para o administrador até a virada de 01/11 — ela aparece em "Notas" como "aguarda financeiro".' };
+      if (!silencioso) throw e; return { ok: false, msg: 'Não entrou no financeiro ainda: ' + ((e && e.msg) || e) + ' — em "Notas", toque em "Financeiro".' }; }
+  }
+
+  // ── NOTAS ───────────────────────────────────────────────────────────────────────
+  var EST = { rascunho: ['cz', 'rascunho'], pronta: ['cz', 'pronta'], enviando: ['', 'enviando'], processando: ['', 'processando'], autorizada: ['ok', 'autorizada'], recusada: ['ruim', 'recusada'], erro_envio: ['ruim', 'erro no envio'], cancelando: ['', 'cancelando'], cancelada: ['ruim', 'cancelada'] };
+  async function telaNotas() {
+    S.notas = await rpcJ('fis_emissoes', { mes: S.mes || '' });
+    var adm = S.op.papel === 'admin';
+    $('main').innerHTML = '<div class="linha" style="margin-bottom:10px"><input id="f_mes" type="month" style="width:auto" value="' + esc(S.mes) + '"><button class="b2" id="rf">Atualizar</button></div>' +
+      (S.notas.length ? '<ul class="lista">' + S.notas.map(function (n) {
+        var e = EST[n.estado] || ['', n.estado], b = [];
+        if (n.estado === 'processando' || n.estado === 'cancelando' || n.estado === 'enviando') b.push('<button class="b2" data-st="' + n.id + '">Atualizar</button>');
+        if (n.estado === 'autorizada' && n.ambiente === 'producao' && !n.fin_nota_id) b.push('<button class="b2" data-fin="' + n.id + '">Financeiro</button>');
+        if (n.estado === 'autorizada' && adm) b.push('<button class="b2" data-canc="' + n.id + '">Cancelar</button>');
+        if (n.estado === 'autorizada' && adm && n.tipo === 'nfe') b.push('<button class="b2" data-cce="' + n.id + '">Carta de correção</button>');
+        if (['rascunho', 'pronta', 'recusada', 'erro_envio'].indexOf(n.estado) >= 0) b.push('<button class="b2" data-abrir="' + n.id + '">Abrir</button>');
+        return '<li style="cursor:default"><div class="t"><b>' + (n.tipo === 'nfse' ? 'NFS-e' : 'NF-e') + (n.numero ? ' nº ' + n.numero : '') + (n.serie && n.tipo === 'nfe' ? '/' + esc(n.serie) : '') + '</b> · ' + esc(n.cliente || 'Proper (entrada)') + ' · ' + brl(n.total) +
+          '<div class="sub"><span class="tag ' + e[0] + '">' + e[1] + '</span>' + (n.ambiente === 'homologacao' ? '<span class="tag">teste</span>' : '') + (n.fin_nota_id ? '<span class="tag ok">no financeiro</span>' : (n.estado === 'autorizada' && n.ambiente === 'producao' ? '<span class="tag">aguarda financeiro</span>' : '')) + dh(n.autorizada_em || n.criado_em) + (n.motivo ? ' · ' + esc(n.motivo) : '') + (n.n_erros ? ' · ' + n.n_erros + ' pendência(s)' : '') + '</div></div>' +
+          '<div class="linha">' + b.join('') + '</div></li>';
+      }).join('') + '</ul>' : '<div class="vazio">Nenhuma nota' + (S.mes ? ' neste mês' : '') + '.</div>');
+    $('rf').addEventListener('click', function () { S.mes = $('f_mes').value; telaNotas(); });
+  }
+  async function atualizarStatus(id, btn) { await acao(btn, async function () { var x = await servidor({ acao: 'status', id: id }); toast('Situação: ' + ((EST[x.estado] || [0, x.estado])[1])); if (x.estado === 'autorizada') { var f = await concluirFinanceiro(id, true); toast(f.msg); } await telaNotas(); }); }
+  function folhaCancelar(id) {
+    var n = S.notas.find(function (x) { return x.id === id; }) || {};
+    var f = folha('<h2>Cancelar ' + (n.tipo === 'nfse' ? 'NFS-e' : 'NF-e') + (n.numero ? ' nº ' + n.numero : '') + '?</h2>' + (n.tipo === 'nfe' ? '<div class="faixa av">NF-e só cancela até 24 h depois de autorizada.</div>' : '') +
+      '<label for="mot">Motivo (mínimo 15 letras — vai para a SEFAZ/Prefeitura)</label><textarea id="mot" maxlength="255"></textarea>' +
+      '<div class="acoes"><button class="b2" data-fechar>Voltar</button><button class="b perigo" id="ok">Cancelar a nota</button></div>');
+    f.querySelector('#ok').addEventListener('click', function () { var m = f.querySelector('#mot').value.trim(); if (m.length < 15) { toast('Motivo com pelo menos 15 letras.'); return; }
+      acao(this, async function () { var x = await servidor({ acao: 'cancelar', id: id, motivo: m }); f.remove(); toast(x.estado === 'cancelada' ? 'Cancelada.' : (x.motivo || 'Situação: ' + x.estado)); await telaNotas(); }); });
+  }
+  function folhaCce(id) {
+    var f = folha('<h2>Carta de correção</h2><div class="faixa av">Não pode mudar valor, imposto, quantidade, cliente nem data — só descrições e dados que não mexem no cálculo.</div>' +
+      '<label for="txt">O que está sendo corrigido (15 a 1.000 letras)</label><textarea id="txt" maxlength="1000"></textarea>' +
+      '<div class="acoes"><button class="b2" data-fechar>Voltar</button><button class="b" id="ok">Enviar a carta</button></div>');
+    f.querySelector('#ok').addEventListener('click', function () { var t = f.querySelector('#txt').value.trim(); if (t.length < 15) { toast('Escreva pelo menos 15 letras.'); return; }
+      acao(this, async function () { var x = await servidor({ acao: 'correcao', id: id, texto: t }); f.remove(); toast(x.ok ? 'Carta de correção registrada.' : 'A SEFAZ não aceitou a carta.'); }); });
+  }
+  async function abrirNota(id) {
+    var n = await rpc('fis_emissao_ver', { p_id: id });
+    S.tipo = n.tipo; S.edita = { id: n.id, estado: n.estado, entrada: n.entrada, operacao: n.operacao, motivo: n.motivo };
+    S.itens = (n.entrada.itens || []).map(function (it) { return Object.assign({}, it); });
+    S.cli = null;
+    if (n.cliente_id) { var r = await rpcJ('fis_clientes_buscar', { q: '' }); S.cli = r.find(function (c) { return c.id === n.cliente_id; }) || { id: n.cliente_id, nome: n.cliente_id }; }
+    await ir('emitir');
+  }
+
+  // ── DADOS FISCAIS DO CLIENTE ─────────────────────────────────────────────────────
+  function telaClientes() {
+    $('main').innerHTML = '<div class="faixa av">Para emitir, o cliente precisa de CNPJ/CPF, endereço com o <b>código do município (IBGE)</b> e, se for contribuinte do ICMS, a <b>Inscrição Estadual</b> (sem ela a SEFAZ-MG recusa). O botão "Buscar na Receita" preenche endereço e código.</div>' +
+      '<input id="f_cli2" autocomplete="off" placeholder="nome ou CNPJ do cliente"><ul class="lista" id="clires2"></ul>';
+    buscaCli2('');
+  }
+  async function buscaCli2(q) { var r = await rpcJ('fis_clientes_buscar', { q: q }); S._cli2 = r; $('clires2').innerHTML = r.map(function (c, i) { return '<li data-cli2="' + i + '"><div class="t"><b>' + esc(c.nome_fiscal || c.nome) + '</b><div class="sub">' + esc(c.cnpj || 'sem CNPJ') + ' · ' + esc(c.cidade || '') + (c.ie ? ' · IE ' + esc(c.ie) : '') + '</div></div>' + (c.tem_fiscal ? '<span class="tag ok">ok</span>' : '<span class="tag ruim">completar</span>') + '</li>'; }).join('') || '<li class="sub">Nenhum cliente.</li>'; }
+  async function folhaFiscal(clienteId, depois) {
+    var v = await rpc('fis_cliente_fiscal_ver', { p_cliente: clienteId }), c = v.cliente || {}, x = v.fiscal || {};
+    var doc = x.documento || String(c.cnpj || '').replace(/\D/g, '');
+    var f = folha('<h2>Dados fiscais</h2><div class="sub">' + esc(c.nome) + '</div>' +
+      '<div class="g2"><div><label for="d_doc">CNPJ ou CPF</label><input id="d_doc" inputmode="numeric" value="' + esc(doc) + '"></div><div style="align-self:end"><button class="b2" id="rec" style="width:100%">Buscar na Receita</button></div></div>' +
+      '<label for="d_nome">Razão social (como na Receita)</label><input id="d_nome" value="' + esc(x.nome || c.nome || '') + '">' +
+      '<div class="g2"><div><label for="d_ind">Contribuinte do ICMS?</label><select id="d_ind"><option value="1">Sim — tem IE</option><option value="2">Isento de IE</option><option value="9">Não contribuinte</option></select></div>' +
+      '<div><label for="d_ie">Inscrição Estadual</label><input id="d_ie" inputmode="numeric" value="' + esc(x.ie || '') + '" placeholder="só se contribuinte"></div></div>' +
+      '<label class="chk"><input type="checkbox" id="d_cred"' + (x.credito_icms ? ' checked' : '') + '> Regime normal (Presumido/Real) que revende ou industrializa — leva crédito de ICMS (CSOSN 101)</label>' +
+      '<label for="d_email">E-mail para receber a nota</label><input id="d_email" type="email" value="' + esc(x.email_nf || c.email || '') + '">' +
+      '<div class="g3"><div><label for="d_log">Logradouro</label><input id="d_log" value="' + esc(x.logradouro || c.endereco || '') + '"></div><div><label for="d_num">Número</label><input id="d_num" value="' + esc(x.numero || c.numero || '') + '"></div><div><label for="d_cpl">Complemento</label><input id="d_cpl" value="' + esc(x.complemento || c.complemento || '') + '"></div></div>' +
+      '<div class="g2"><div><label for="d_bai">Bairro</label><input id="d_bai" value="' + esc(x.bairro || c.bairro || '') + '"></div><div><label for="d_cep">CEP</label><input id="d_cep" inputmode="numeric" value="' + esc(x.cep || c.cep || '') + '"></div></div>' +
+      '<div class="g3"><div><label for="d_mun">Município</label><input id="d_mun" value="' + esc(x.municipio || c.cidade || '') + '"></div><div><label for="d_uf">UF</label><input id="d_uf" maxlength="2" value="' + esc(x.uf || c.uf || '') + '"></div><div><label for="d_ibge">Código IBGE</label><input id="d_ibge" inputmode="numeric" maxlength="7" value="' + esc(x.municipio_ibge || '') + '" placeholder="7 dígitos"></div></div>' +
+      '<div class="sub" style="margin-top:4px">Divinópolis = 3122306. Outros: o "Buscar na Receita" preenche; para CPF, consulte em ibge.gov.br.</div>' +
+      '<div class="acoes"><button class="b2" data-fechar>Fechar</button><button class="b" id="salvar">Salvar</button></div>');
+    var g = function (k) { return f.querySelector('#d_' + k); };
+    g('ind').value = String(x.indicador_ie || (doc.length === 11 ? 9 : 1));
+    g('mun').addEventListener('change', function () { if (!g('ibge').value && /divin[oó]polis/i.test(this.value)) g('ibge').value = '3122306'; });
+    if (!g('ibge').value && /divin[oó]polis/i.test(g('mun').value)) g('ibge').value = '3122306';
+    f.querySelector('#rec').addEventListener('click', function () {
+      var d = g('doc').value.replace(/\D/g, ''); if (d.length !== 14) { toast('A Receita só responde CNPJ (14 dígitos).'); return; }
+      acao(this, async function () {
+        var r = await consultaCnpj(d);
+        g('nome').value = r.razao_social || g('nome').value;
+        g('log').value = [r.descricao_tipo_de_logradouro, r.logradouro].filter(Boolean).join(' ') || g('log').value;
+        g('num').value = r.numero || g('num').value; g('cpl').value = r.complemento || ''; g('bai').value = r.bairro || g('bai').value;
+        g('cep').value = r.cep || g('cep').value; g('mun').value = r.municipio || g('mun').value; g('uf').value = r.uf || g('uf').value;
+        if (r.codigo_municipio_ibge) g('ibge').value = String(r.codigo_municipio_ibge);
+        if (!g('email').value && r.email) g('email').value = String(r.email).toLowerCase();
+        toast('Preenchido pela Receita' + (r.descricao_situacao_cadastral && r.descricao_situacao_cadastral !== 'ATIVA' ? ' — ATENÇÃO: situação ' + r.descricao_situacao_cadastral : '') + '. A IE é digitada.');
+      });
+    });
+    f.querySelector('#salvar').addEventListener('click', function () {
+      var p = { cliente_id: clienteId, documento: g('doc').value, nome: g('nome').value, indicador_ie: Number(g('ind').value), ie: g('ie').value, credito_icms: g('cred').checked,
+        email_nf: g('email').value, logradouro: g('log').value, numero: g('num').value, complemento: g('cpl').value, bairro: g('bai').value, cep: g('cep').value,
+        municipio: g('mun').value, uf: g('uf').value.toUpperCase(), municipio_ibge: g('ibge').value, fonte: 'tela' };
+      acao(this, async function () { var r = await rpcJ('fis_cliente_fiscal_salvar', p, { escrita: true }); f.remove(); toast('Dados fiscais salvos.'); if (depois) await depois(r); else if (S.aba === 'clientes') buscaCli2($('f_cli2').value); });
+    });
+  }
+  async function consultaCnpj(d) {
+    if (DEMO) return { razao_social: 'EMPRESA DE DEMONSTRACAO LTDA', cep: '35500000', descricao_tipo_de_logradouro: 'RUA', logradouro: 'GOIAS', numero: '100', bairro: 'CENTRO', municipio: 'DIVINOPOLIS', uf: 'MG', codigo_municipio_ibge: 3122306, descricao_situacao_cadastral: 'ATIVA' };
+    var ult = 0;
+    for (var u of ['https://minhareceita.org/', 'https://brasilapi.com.br/api/cnpj/v1/']) {
+      try { var r = await fetch(u + d); if (r.ok) return r.json(); if (r.status === 404) throw { msg: 'CNPJ não encontrado na Receita.' }; ult = r.status; }
+      catch (e) { if (e && e.msg) throw e; }
+    }
+    throw { msg: 'A consulta da Receita não respondeu' + (ult ? ' (' + ult + ')' : '') + '; preencha à mão.' };
+  }
+
+  // ── % ICMS DO PGDAS (admin) ──────────────────────────────────────────────────────
+  function telaPgdas() {
+    var u = S.op.icms_ultimos || [], comp = S.op.competencia_exigida;
+    $('main').innerHTML = '<div class="faixa ' + (S.op.icms_mes_anterior ? 'ok' : 'av') + '">Notas com <b>crédito de ICMS (CSOSN 101)</b> deste mês usam o % do PGDAS de <b>' + comp.slice(5, 7) + '/' + comp.slice(0, 4) + '</b>: ' + (S.op.icms_mes_anterior ? '<b>' + String(S.op.icms_mes_anterior.pct_icms).replace('.', ',') + '%</b> ✓' : '<b>ainda não lançado</b> — sem ele essas notas não saem.') + '</div>' +
+      '<div class="card"><h2>Lançar o extrato do PGDAS</h2><div class="sub">No extrato que a contabilidade manda: "Receita bruta acumulada nos doze meses anteriores (RBT12)" e, na Partilha, a alíquota do <b>ICMS</b>. O sistema confere pela conta do Anexo I.</div>' +
+      '<div class="g3"><div><label for="p_comp">Competência (mês do extrato)</label><input id="p_comp" type="month" value="' + comp.slice(0, 7) + '"></div><div><label for="p_rb">RBT12 (R$)</label><input id="p_rb" inputmode="decimal" placeholder="1.054.442,63"></div><div><label for="p_pct">% ICMS</label><input id="p_pct" inputmode="decimal" placeholder="2,869667"></div></div>' +
+      '<label class="chk"><input type="checkbox" id="p_forca"> O extrato está certo mesmo não batendo com a conta (lançar assim)</label>' +
+      '<div class="acoes"><button class="b" id="p_ok">Lançar</button></div></div>' +
+      (u.length ? '<div class="card"><h2>Lançados</h2><div class="tw"><table><tr><th>Competência</th><th style="text-align:right">RBT12</th><th style="text-align:right">% ICMS</th><th>Por</th></tr>' + u.map(function (x) { return '<tr><td>' + esc(String(x.competencia).slice(5, 7) + '/' + String(x.competencia).slice(0, 4)) + '</td><td class="n">' + brl(x.rbt12) + '</td><td class="n">' + String(x.pct_icms).replace('.', ',') + '%</td><td>' + esc(x.lancado_por || '') + '</td></tr>'; }).join('') + '</table></div></div>' : '');
+    $('p_ok').addEventListener('click', function () {
+      var p = { competencia: $('p_comp').value + '-01', rbt12: num($('p_rb').value), pct_icms: num($('p_pct').value), forcar: $('p_forca').checked ? 'sim' : '' };
+      if (!isFinite(p.rbt12) || !isFinite(p.pct_icms)) { toast('Preencha RBT12 e o % de ICMS.'); return; }
+      acao(this, async function () { var r = await rpcJ('fis_icms_lancar', p, { escrita: true }); toast('Lançado: ' + String(r.pct_icms).replace('.', ',') + '%' + (r.confere ? ' (confere com a conta)' : ' (não conferiu — lançado mesmo assim)')); S.op = await rpc('fis_opcoes'); telaPgdas(); });
+    });
+  }
+
+  // ── eventos ─────────────────────────────────────────────────────────────────────
+  document.addEventListener('click', function (e) {
+    var t;
+    if ((t = e.target.closest('nav [data-aba]'))) return ir(t.dataset.aba);
+    if ((t = e.target.closest('[data-tipo]'))) { if (S.tipo !== t.dataset.tipo) { S.tipo = t.dataset.tipo; S.edita = null; S.prev = null; telaEmitir(); } return; }
+    if ((t = e.target.closest('#novo'))) { S.edita = null; S.cli = null; S.itens = []; S.prev = null; telaEmitir(); return; }
+    if ((t = e.target.closest('#trocacli'))) { S.cli = null; desenhaCliente(); return; }
+    if ((t = e.target.closest('[data-cli]'))) { S.cli = S._clires[Number(t.dataset.cli)]; desenhaCliente(); if (!S.cli.tem_fiscal) folhaFiscal(S.cli.id, async function () { var r = await rpcJ('fis_clientes_buscar', { q: S.cli.nome }); S.cli = r.find(function (c) { return c.id === S.cli.id; }) || S.cli; desenhaCliente(); }); return; }
+    if ((t = e.target.closest('[data-completar]'))) { folhaFiscal(t.dataset.completar, async function () { var r = await rpcJ('fis_clientes_buscar', { q: S.cli.nome }); S.cli = r.find(function (c) { return c.id === S.cli.id; }) || S.cli; desenhaCliente(); }); return; }
+    if ((t = e.target.closest('[data-prod]'))) { var p = S._prodres[Number(t.dataset.prod)]; S.itens.push({ codigo: p.codigo, descricao: p.descricao, quantidade: 1, valor_unitario: p.preco_venda || '', desconto: '' }); $('f_prod').value = ''; $('prodres').innerHTML = ''; desenhaItens(); return; }
+    if ((t = e.target.closest('[data-tira]'))) { S.itens.splice(Number(t.dataset.tira), 1); desenhaItens(); return; }
+    if ((t = e.target.closest('#prefaz'))) { desenhaParcelas(true); return; }
+    if ((t = e.target.closest('#conferir'))) return conferir(t);
+    if ((t = e.target.closest('#emitir'))) return confirmarEmissao();
+    if ((t = e.target.closest('[data-st]'))) return atualizarStatus(t.dataset.st, t);
+    if ((t = e.target.closest('[data-fin]'))) { var id = t.dataset.fin; return acao(t, async function () { var r = await concluirFinanceiro(id, false); toast(r.msg); await telaNotas(); }); }
+    if ((t = e.target.closest('[data-canc]'))) return folhaCancelar(t.dataset.canc);
+    if ((t = e.target.closest('[data-cce]'))) return folhaCce(t.dataset.cce);
+    if ((t = e.target.closest('[data-abrir]'))) { var ida = t.dataset.abrir; return acao(t, function () { return abrirNota(ida); }); }
+    if ((t = e.target.closest('[data-cli2]'))) return folhaFiscal(S._cli2[Number(t.dataset.cli2)].id);
+  });
+  document.addEventListener('input', function (e) {
+    var t = e.target;
+    if (t.id === 'f_cli' || t.id === 'f_prod' || t.id === 'f_cli2') {
+      clearTimeout(tBusca); var v = t.value.trim();
+      tBusca = setTimeout(function () { (t.id === 'f_cli' ? buscaCli(v) : t.id === 'f_cli2' ? buscaCli2(v) : v.length >= 2 ? buscaProd(v) : ($('prodres').innerHTML = '')); }, 250);
+      return;
+    }
+    if (t.id === 'f_npar' || t.id === 'f_int') { desenhaParcelas(true); return; }
+    if (t.id === 'f_valor' && S.parc && S.parc.length > 1) desenhaParcelas(true);
+    if (t.dataset && t.dataset.par != null) { S.parc[Number(t.dataset.par)][t.dataset.k] = t.dataset.k === 'valor' ? t.value : t.value; var sm = S.parc.reduce(function (a, x) { return a + (num(x.valor) || 0); }, 0); $('psoma').textContent = brl(sm); return; }
+    if (t.dataset && t.dataset.it != null) { S.itens[Number(t.dataset.it)][t.dataset.k] = t.value; var tot = 0; S.itens.forEach(function (it) { var x = num(it.quantidade) * num(it.valor_unitario) - (num(it.desconto) || 0); if (isFinite(x)) tot += x; }); $('total').textContent = brl(tot); if (S.parc && S.parc.length > 1) desenhaParcelas(true); }
+  });
+  document.addEventListener('change', function (e) { if (e.target.id === 'f_op') { opInfo(); var o = operacao(); $('f_cat').value = catPadrao('nfe'); if (S.prev) $('prev').innerHTML = ''; }
+    if (e.target.dataset && e.target.dataset.it != null) desenhaItens(); });
+
+  async function iniciar() {
+    if (!DEMO) {
+      var s = sessao(), tok = s && s.supa_token;
+      if (!tok) { fatal('Sem login. Abra o Hub, entre com seu PIN e volte para esta página.'); return; }
+      if ((jwt(tok).exp || 0) < Date.now() / 1000) { fatal('O crachá do login venceu. Entre de novo pelo Hub (PIN) e volte aqui.'); return; }
+      $('quem').textContent = s.nome_tecnico || (s.tecnico && s.tecnico.nome) || '';
+    } else $('quem').textContent = 'DEMONSTRAÇÃO · dados de exemplo';
+    try { S.op = await rpc('fis_opcoes'); } catch (e) { fatal((e && e.msg) || e); return; }
+    var h = (location.hash || '').replace('#demo&', '').replace('#', '');
+    await ir(ABAS.some(function (a) { return a[0] === h; }) ? h : 'emitir');
+  }
+
+  // ── modo demonstração: respostas em memória (nada vai a banco nem à Notaas) ──────────────────
+  var DB = null;
+  function demoDB() {
+    if (DB) return DB;
+    DB = { papel: 'admin', amb: 'homologacao', n: 3, notas: [],
+      ops: [['venda', 'Venda de mercadoria', '5102', '6102', '102', true, false, false, false], ['venda_credito', 'Venda com crédito de ICMS (CSOSN 101)', '5102', '6102', '101', true, true, false, false],
+            ['venda_lubrif', 'Venda de lubrificante', '5656', '6656', '102', true, false, true, false], ['remessa_conserto', 'Remessa para conserto', '5915', '6915', '102', false, false, false, false],
+            ['retorno_conserto', 'Retorno de conserto (devolve ao cliente)', '5916', '6916', '400', false, false, false, false], ['retorno_proprio', 'Retorno de remessa própria para conserto (entrada)', '1916', '2916', '400', false, false, false, true],
+            ['comodato', 'Remessa em comodato / locação', '5908', '6908', '102', false, false, false, false]].map(function (o) { return { codigo: o[0], nome: o[1], cfop_dentro: o[2], cfop_fora: o[3], csosn: o[4], cobrar: o[5], credito_icms: o[6], exige_anp: o[7], entrada_propria: o[8], so_admin: false }; }),
+      cli: [{ id: 'CLI-ENG', nome: 'Engetap', cnpj: '15.112.431/0001-17', cidade: 'Divinópolis', uf: 'MG', tem_fiscal: true, indicador_ie: 1, ie: '0019216940050', credito_icms: false, email_nf: 'financeiro@engetap.com.br', nome_fiscal: 'ENGETAP ENGENHARIA LTDA',
+              fiscal: { documento: '15112431000117', nome: 'ENGETAP ENGENHARIA LTDA', ie: '0019216940050', indicador_ie: 1, email_nf: 'financeiro@engetap.com.br', logradouro: 'RUA ANTONIO PIRES DE MORAES', numero: '271', bairro: 'NOSSA SENHORA DAS GRACAS', municipio_ibge: '3122306', municipio: 'Divinopolis', uf: 'MG', cep: '35501094' } },
+            { id: 'CLI-FUN', nome: 'Fundimig', cnpj: '61.585.865/0001-51', cidade: 'Divinópolis', uf: 'MG', tem_fiscal: true, indicador_ie: 1, ie: '0012345670099', credito_icms: true, email_nf: 'compras@fundimig.com.br', nome_fiscal: 'FUNDIMIG INDUSTRIA DE PECAS',
+              fiscal: { documento: '61585865000151', nome: 'FUNDIMIG INDUSTRIA DE PECAS', ie: '0012345670099', indicador_ie: 1, credito_icms: true, email_nf: 'compras@fundimig.com.br', logradouro: 'RUA B', numero: '5', bairro: 'INDUSTRIAL', municipio_ibge: '3122306', municipio: 'Divinopolis', uf: 'MG', cep: '35500000' } },
+            { id: 'CLI-NOVO', nome: 'Metalúrgica Exemplo', cnpj: '11.222.333/0001-81', cidade: 'Divinópolis', uf: 'MG', tem_fiscal: false }],
+      prod: [{ codigo: '002039', descricao: 'LUB HIDRAULICO HIDRAMAX AW 150', unidade: 'UN', ncm: '27101932', origem: 0, preco_venda: 60.93, codigo_anp: '620101001', fiscal_ok: true },
+             { codigo: '000002331', descricao: 'ELEMENTO FILTRANTE AR W800 (MFA 2316/1)', unidade: 'UN', ncm: '84149039', origem: 0, preco_venda: 17.03, fiscal_ok: true },
+             { codigo: '1941', descricao: 'VALVULA DE RETENCAO W700 / PSV25/32 1" X 1/2', unidade: 'UN', ncm: '84813000', origem: 0, preco_venda: 199.58, fiscal_ok: true },
+             { codigo: 'PRD00047', descricao: 'Correia A63', unidade: 'UN', ncm: '40103400', origem: 0, preco_venda: 50, fiscal_ok: true }],
+      icms: [{ competencia: '2026-09-01', rbt12: 1054442.63, pct_icms: 2.869667, lancado_por: 'Bruno' }] };
+    return DB;
+  }
+  function demo(nome, a) {
+    var D = demoDB(), p = a.p || {}, comp = (function () { var d = new Date(); d.setDate(1); d.setMonth(d.getMonth() - 1); return d.toISOString().slice(0, 8) + '01'; })();
+    var cli = function (id) { return D.cli.find(function (c) { return c.id === id; }); };
+    switch (nome) {
+      case 'fis_opcoes': var ic = D.icms.find(function (x) { return x.competencia === comp; });
+        return { papel: D.papel, ambiente: D.amb, operacoes: D.ops, contas: [{ id: 'sic', nome: 'Sicredi' }, { id: 'nub', nome: 'Nubank' }], categorias: [{ id: 'serv', nome: 'Clientes - Serviços Prestados' }, { id: 'rev', nome: 'Clientes - Revenda de Mercadoria' }],
+          icms_mes_anterior: ic ? { competencia: comp, pct_icms: ic.pct_icms } : null, competencia_exigida: comp, icms_ultimos: D.icms };
+      case 'fis_clientes_buscar': var q = String(p.q || '').toLowerCase(); return D.cli.filter(function (c) { return !q || c.nome.toLowerCase().indexOf(q) >= 0 || c.cnpj.replace(/\D/g, '').indexOf(q.replace(/\D/g, '') || '§') === 0; }).map(function (c) { var x = Object.assign({}, c); delete x.fiscal; return x; });
+      case 'fis_produtos_buscar': var qp = String(p.q || '').toLowerCase(); return D.prod.filter(function (x) { return x.codigo.toLowerCase().indexOf(qp) === 0 || x.descricao.toLowerCase().indexOf(qp) >= 0; });
+      case 'fis_cliente_fiscal_ver': var c = cli(a.p_cliente); return { cliente: { id: c.id, nome: c.nome, cnpj: c.cnpj, cidade: c.cidade, uf: c.uf }, fiscal: c.fiscal || null };
+      case 'fis_cliente_fiscal_salvar': var cs = cli(p.cliente_id); if (Number(p.indicador_ie) === 1 && !String(p.ie || '').replace(/\D/g, '')) throw { msg: 'Cliente contribuinte (1) precisa da Inscrição Estadual — sem ela a SEFAZ-MG recusa (rejeição 232).' };
+        if (!/^\d{7}$/.test(String(p.municipio_ibge || ''))) throw { msg: 'Endereço incompleto ou fora do formato (… município com código IBGE de 7 dígitos …).' };
+        cs.fiscal = Object.assign({}, p, { documento: String(p.documento).replace(/\D/g, ''), ie: String(p.ie || '').replace(/\D/g, '') || null }); Object.assign(cs, { tem_fiscal: true, indicador_ie: Number(p.indicador_ie), ie: cs.fiscal.ie, credito_icms: !!p.credito_icms, email_nf: p.email_nf, nome_fiscal: String(p.nome).toUpperCase() }); return cs.fiscal;
+      case 'fis_icms_lancar': var calc = (function (rb) { var ef = (rb * 0.107 - 22500) / rb; return Math.round(ef * 0.335 * 1e8) / 1e6; })(p.rbt12);
+        if (Math.abs(calc - p.pct_icms) > 0.001 && p.forcar !== 'sim') throw { msg: 'o % digitado (' + p.pct_icms + ') não bate com a conta do Anexo I (dá ' + calc.toFixed(6) + '). Confira o extrato.' };
+        D.icms = D.icms.filter(function (x) { return x.competencia !== p.competencia; }); D.icms.unshift({ competencia: p.competencia, rbt12: p.rbt12, pct_icms: p.pct_icms, lancado_por: 'demo' }); return { pct_icms: p.pct_icms, confere: Math.abs(calc - p.pct_icms) <= 0.001 };
+      case 'fis_nfse_preparar': case 'fis_nfe_preparar': return demoPreparar(nome === 'fis_nfse_preparar' ? 'nfse' : 'nfe', p, comp);
+      case 'fis_emissoes': return D.notas.slice().reverse().map(function (n) { return { id: n.id, tipo: n.tipo, estado: n.estado, ambiente: D.amb, numero: n.numero, serie: n.serie, total: n.total, cliente: n.cliente, motivo: n.motivo, criado_em: n.criado_em, autorizada_em: n.autorizada_em, n_erros: n.erros.length }; });
+      case 'fis_emissao_ver': var nv = D.notas.find(function (x) { return x.id === a.p_id; }); return Object.assign({}, nv);
+      case 'fis_emissao_xml_ler': return { id: a.p_id, ambiente: D.amb, xml: '<nfeProc/>', titulos: {} };
+    }
+    throw { msg: 'demo: ' + nome };
+  }
+  function demoPreparar(tipo, p, comp) {
+    var D = DB, erros = [], av = [], c = D.cli.find(function (x) { return x.id === p.cliente_id; }), op = D.ops.find(function (o) { return o.codigo === p.operacao; }), pay = null, total = 0;
+    if (!(op && op.entrada_propria) && !(c && c.fiscal)) erros.push('Cliente sem dados fiscais (CNPJ/CPF, IE, endereço com código IBGE). Preencha em "Dados fiscais do cliente".');
+    var f = c && c.fiscal || {}, end = { logradouro: f.logradouro, numero: f.numero, bairro: f.bairro, codigoMunicipio: f.municipio_ibge, cidade: f.municipio, uf: f.uf, cep: f.cep };
+    if (tipo === 'nfse') {
+      total = Math.round(Number(p.valor) * 100) / 100; if (!(total > 0)) erros.push('Valor do serviço tem de ser maior que zero.'); if (!p.titulos.vencimento && !(p.titulos.parcelas || []).length) erros.push('Informe o vencimento (ou as parcelas) do título a receber.');
+      if (c && c.fiscal) pay = { tomador: { cnpj: f.documento, nome: f.nome, email: f.email_nf, endereco: end }, servico: { codigo: '140101', nbs: '120015000', descricao: p.descricao }, valores: { total: total } };
+    } else {
+      var ic = D.icms.find(function (x) { return x.competencia === comp; }), cred = op.credito_icms ? (ic ? Math.round(ic.pct_icms * 100) / 100 : 0) : 0;
+      if (op.credito_icms && !ic) erros.push('Falta lançar o % de ICMS do PGDAS de ' + comp.slice(5, 7) + '/' + comp.slice(0, 4) + '.');
+      if (op.credito_icms && c && !c.credito_icms) erros.push('Este cliente não está marcado como "regime normal que revende/industrializa" — sem isso não leva crédito de ICMS.');
+      var uf = op.entrada_propria ? 'MG' : f.uf, cfop = uf === 'MG' ? op.cfop_dentro : op.cfop_fora;
+      var items = (p.itens || []).map(function (it, i) { var pr = D.prod.find(function (x) { return x.codigo === it.codigo; }); var vt = Math.round(it.quantidade * it.valor_unitario * 100) / 100;
+        if (!(it.quantidade > 0)) erros.push('Item ' + (i + 1) + ' (' + it.codigo + '): quantidade tem de ser maior que zero.'); if (!(it.valor_unitario > 0)) erros.push('Item ' + (i + 1) + ' (' + it.codigo + '): valor unitário tem de ser maior que zero.');
+        if (op.exige_anp && !pr.codigo_anp) erros.push('Item ' + (i + 1) + ' (' + pr.codigo + '): lubrificante precisa do código ANP no cadastro.');
+        total += vt - (it.desconto || 0); return { codigo: pr.codigo, descricao: pr.descricao, ncm: pr.ncm, cfop: cfop, quantidade: it.quantidade, valorUnitario: it.valor_unitario, valorTotal: vt, csosn: op.csosn, aliquotaIcms: op.credito_icms ? cred : undefined }; });
+      total = Math.round(total * 100) / 100;
+      if (op.cobrar && !p.titulos.vencimento && !(p.titulos.parcelas || []).length) erros.push('Informe o vencimento (ou as parcelas) do título a receber.');
+      var dest = op.entrada_propria ? { cnpj: '37022010000138', nome: 'PROPER COMPRESSORES LTDA', ie: '0037203160068', endereco: { logradouro: 'RUA ORIBES BATISTA LEITE', numero: '830', bairro: 'SANTA TEREZA', cidade: 'Divinopolis', uf: 'MG', cep: '35501102' } } : (c && c.fiscal ? { cnpj: f.documento, nome: f.nome, ie: f.ie, endereco: end } : null);
+      if (dest && items.length) pay = { serie: D.amb === 'homologacao' ? 889 : undefined, naturezaOperacao: op.nome.toUpperCase(), dest: dest, items: items, pagamentos: [{ tipoPagamento: op.cobrar ? '15' : '90' }],
+        infCpl: [p.info, op.credito_icms && cred ? 'Permite o aproveitamento do credito de ICMS no valor de R$ ' + (Math.round(total * cred) / 100).toFixed(2).replace('.', ',') + ', correspondente a aliquota de ' + cred.toFixed(2).replace('.', ',') + '%, nos termos do art. 23 da LC 123/2006.' : ''].filter(Boolean).join(' ') || undefined };
+    }
+    var n = p.id ? D.notas.find(function (x) { return x.id === p.id; }) : null;
+    if (!n) { n = { id: 'demo-' + (D.notas.length + 1), tipo: tipo, criado_em: new Date().toISOString() }; D.notas.push(n); }
+    Object.assign(n, { estado: erros.length ? 'rascunho' : 'pronta', entrada: p, operacao: p.operacao, cliente_id: p.cliente_id, cliente: c ? (c.nome_fiscal || c.nome) : null, total: total, erros: erros, payload: pay, motivo: null });
+    return { id: n.id, estado: n.estado, ambiente: D.amb, total: total, payload: pay, avisos: av, erros: erros };
+  }
+  function demoServidor(c) {
+    var D = DB, n = D.notas.find(function (x) { return x.id === c.id; });
+    return new Promise(function (ok) { setTimeout(function () {
+      if (c.acao === 'emitir') { Object.assign(n, { estado: 'autorizada', numero: n.tipo === 'nfe' ? (D.n++) : 3, serie: n.tipo === 'nfe' ? '889' : null, autorizada_em: new Date().toISOString(), chave: '31261037022010000138558890000000' + String(1e11 + D.n).slice(1) }); ok({ id: n.id, estado: 'autorizada', numero: n.numero, serie: n.serie, chave: n.chave }); }
+      else if (c.acao === 'cancelar') { n.estado = 'cancelada'; ok({ id: n.id, estado: 'cancelada' }); }
+      else if (c.acao === 'correcao') ok({ id: n.id, ok: true });
+      else ok({ id: n.id, estado: n.estado });
+    }, 900); });
+  }
+
+  iniciar();
+  return { S: S };
+})();
+</script>
+</body>
+</html>
