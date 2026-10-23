@@ -5230,25 +5230,14 @@ v50 — Resiliência de rede: retry/backoff em gsGet e syncToGS
   Bloco isolado no fim do body. Depende do SQL ROTORES_FICHA_V2 e do GAS v179. Chave de volta: pcm_v301 = off.
 -->
 <!--
-  PCM V299 — 22/10/2026 — ESTOQUE x COMPRA NA PROPOSTA, NO CARD, NO QUADRO E NA APROVACAO (rodada 2026-10-22_FERNANDO_estoque_separar_e_comprar,
-  sobre o PCM V298 no ar). Editor da proposta: o chip compara quantidade x LIVRE (saldo menos o prometido aos cards
-  aceitos), resumo no topo da tabela, faixa com o motivo quando nao ha leitura, "De onde sai" sugerido pelo estoque; o fornecedor
-  da linha nao muda mais o "De onde sai". Gaveta do card: bloco "Pecas: estoque x compra" agrupado. Quadro e Lista: chip "5/8 em
-  estoque". Tela "Separar e comprar" depois do aceite (#separar/OPO): separar, decidir, comprar o que falta, acompanhar.
-  Par: SQL CRM_ESTOQUE_SEPARAR_2026-10-22 (roda ANTES; tambem refaz a espera do V287 com a mesma regua). Zero Apps
-  Script, zero PCF. Chave de volta: localStorage pcm_v299 = off.
+  PCM V303 — 22/10/2026 — LEAD PELO CNPJ NA ＋ OPORTUNIDADE (ENTREGA A da rodada 2026-10-22_FERNANDO_pcm_grava_no_omie, sobre o PCM V301
+  no ar). No ＋ Cliente novo o CNPJ e o 1o campo; com 14 digitos validos a tela procura sozinha: PCM (mesmo CNPJ → "E este, usar"),
+  Omie ("Trazer e usar", ja atrelado como no V261) e Receita (BrasilAPI, so preenche o vazio). O endereco e gravado: no cadastro do
+  cliente (perfil que edita Clientes) ou na observacao (perfil so-CRM). Zero SQL, zero Apps Script, nada e escrito no Omie.
+  Chave de volta: localStorage pcm_v303 = off.
 -->
-<!--
-  PCM V302 — 22/10/2026 — JUNCAO + COMPRAS DO CARD FLEXIVEL (rodada 2026-10-22_FERNANDO_compras_pedido_flexivel). Junta o PCM V301 no ar
-  (ficha de rotores v2) e o bloco do PCM V299 (estoque x compra, intacto) e acrescenta o 📦 Compras do card: "Comprar de" por linha
-  (padrao = fornecedor base, a proposta nao muda, com o 💡 quem vende e a ultima compra), um pedido junta as maquinas do MESMO card
-  (peca igual vira UM item somado no PDF e no texto; a divisao por maquina/OS e interna; o PDF guardado vai para os internos de
-  cada OS), colunas de estoque (livre, falta) e "Qtd a comprar" (padrao = o que falta), codigo do fornecedor e fabricante no PDF,
-  "precisa ate" da OS e "Entrega prevista" com aviso. Par: SQL COM_PEDIDO_FLEXIVEL_2026-10-22 (roda ANTES; sem ele a tela e a do
-  V238 com um aviso). Zero Apps Script, zero PCF. Chaves de volta: pcm_v302 = off (esta tela) · pcm_v299 = off (o estoque).
--->
-<title>ProperCare Manager · Gestão PGP v4.03 (PCM V302)</title>
-<meta name="app-build" content="PCM_V302" data-date="2026-10-22">
+<title>ProperCare Manager · Gestão PGP v4.03 (PCM V303)</title>
+<meta name="app-build" content="PCM_V303" data-date="2026-10-22">
 <link rel="icon" type="image/jpeg" href="data:image/jpeg;base64,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">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -95831,1663 +95820,345 @@ var V295 = window.V295 = { versao: 'PCM_V295', of: { rol: {}, escritas: 0, h: 0,
 })();
 </script>
 <!-- ████ FIM PCM V301 ████ -->
-<!-- ████ INICIO PCM V299 · 📦 ESTOQUE × COMPRA NA PROPOSTA, NO CARD, NO QUADRO E NA TELA SEPARAR E COMPRAR (22/10/2026) ████ -->
-<style id="v299Css">
-/* PCM V299 · estoque × compra (rodada 2026-10-22_FERNANDO_estoque_separar_e_comprar) */
-.v218-est.parcial{background:#FFF7E6;border-color:#F4C46A;color:#8A5A00}
-.v218-est.v299-tem{background:#EEF7F1;border-color:#A6D8B8;color:#1E7B45}
-.v218-est.v299-caminho,.v218-est.v299-chegou,.v218-est.v299-separado{background:#EEF4FF;border-color:#B7CCF5;color:#1E3A6B}
-.v299-sai{display:inline-flex;align-items:center;gap:3px;font-size:11px;color:#475467;margin-left:6px;padding:1px 6px;border-radius:999px;border:1px dashed #D0D5DD;background:#fff;cursor:pointer;white-space:nowrap;vertical-align:1px}
-.v299-sai:hover,.v299-sai:focus-visible{border-color:#98A2B3;background:#F9FAFB;outline:none}
-.v299-sai.manual{border-style:solid;color:#344054}
-#v299Res{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:6px 0 8px;padding:8px 10px;border:1px solid #D0D5DD;border-radius:10px;background:#F9FAFB;font-size:13px;color:#344054}
-#v299Res b{color:#101828}
-#v299Res .v299-g{border:1px solid #D0D5DD;background:#fff;border-radius:999px;padding:3px 10px;font-size:12px;font-weight:600;cursor:pointer;color:#344054;min-height:28px}
-#v299Res .v299-g:hover,#v299Res .v299-g:focus-visible{background:#F2F4F7;outline:none}
-#v299Res .v299-g.on{background:#101828;color:#fff;border-color:#101828}
-#v299Res .v299-g.tem{border-color:#A6D8B8}#v299Res .v299-g.parcial,#v299Res .v299-g.comprar{border-color:#F4C46A}#v299Res .v299-g.similar{border-color:#BFD6FB}
-#v299Res .v299-sub,.v299-box .v299-sub{font-size:12px;color:#475467}
-#v299Res.aviso,.v299-box .v299-aviso{background:#FFFAEB;border-color:#FEDF89;color:#7A4A00}
-#v204Linhas tr.v299-oculta{display:none}
-.v299-chip{display:inline-block;margin:3px 0 0;padding:1px 8px;border-radius:999px;font-size:11px;font-weight:600;border:1px solid;white-space:nowrap}
-.v299-chip.verde{background:#EEF7F1;border-color:#A6D8B8;color:#1E7B45}
-.v299-chip.ambar{background:#FFF7E6;border-color:#F4C46A;color:#8A5A00}
-.v299-chip.azul{background:#EEF4FF;border-color:#B7CCF5;color:#1E3A6B}
-.v299-chip.cinza{background:#F5F5F5;border-color:#DADADA;color:#6B6B6B}
-.v299-box{margin:8px 0 12px;border:1px solid #D0D5DD;border-radius:10px;background:#fff;font-size:13px;overflow:hidden}
-.v299-box .v299-bh{display:flex;flex-wrap:wrap;gap:6px 12px;align-items:center;padding:8px 12px;background:#F9FAFB;border-bottom:1px solid #EAECF0}
-.v299-box .v299-bh b{font-size:14px;color:#101828}
-.v299-box .v299-acoes{margin-left:auto;display:flex;gap:6px;flex-wrap:wrap}
-.v299-box .v299-btn{border:1px solid #D0D5DD;background:#fff;border-radius:8px;padding:5px 10px;font-size:12px;font-weight:600;cursor:pointer;color:#344054;min-height:32px}
-.v299-box .v299-btn:hover,.v299-box .v299-btn:focus-visible{background:#F2F4F7;outline:none}
-.v299-box .v299-btn.pri{background:#101828;border-color:#101828;color:#fff}
-.v299-box .v299-btn.pri:hover{background:#344054}
-.v299-box .v299-aviso{margin:8px 12px;padding:6px 10px;border:1px solid #FEDF89;border-radius:8px}
-.v299-box details{border-top:1px solid #F2F4F7}
-.v299-box details:first-of-type{border-top:0}
-.v299-box summary{display:flex;align-items:center;gap:8px;padding:7px 12px;cursor:pointer;list-style:none;font-weight:600;color:#344054;min-height:36px}
-.v299-box summary::-webkit-details-marker{display:none}
-.v299-box summary:hover,.v299-box summary:focus-visible{background:#F9FAFB;outline:none}
-.v299-box summary .v299-n{min-width:26px;text-align:center;border-radius:999px;padding:1px 8px;background:#F2F4F7;font-size:12px}
-.v299-box summary .v299-n.zero{opacity:.45}
-.v299-box summary .v299-seta{margin-left:auto;color:#98A2B3;font-weight:400}
-.v299-box details[open] summary .v299-seta{transform:rotate(90deg)}
-.v299-box ul{margin:0;padding:0 12px 8px 34px;list-style:disc;color:#344054}
-.v299-box li{margin:3px 0;line-height:1.35}
-.v299-box li small{color:#475467}
-@media (max-width:600px){.v299-box .v299-acoes{margin-left:0;width:100%}.v299-box .v299-btn{flex:1}}
-.v299-box .v299-oferta{margin:8px 12px;padding:8px 10px;border:1px solid #A6D8B8;border-radius:8px;background:#EEF7F1;color:#1E5631;display:flex;flex-wrap:wrap;gap:8px;align-items:center}
-.v299-ov{position:fixed;inset:0;z-index:10040;background:rgba(20,20,20,.38);display:flex;align-items:flex-start;justify-content:center;padding:28px 16px;overflow-y:auto}
-.v299-ov[hidden]{display:none}
-.v299-jan{background:#fff;border-radius:14px;box-shadow:0 18px 50px rgba(0,0,0,.25);width:min(1080px,100%);padding:16px 18px 20px;font-size:14px;color:#101828;outline:none}
-.v299-cab{display:flex;gap:12px;align-items:flex-start;justify-content:space-between;border-bottom:1px solid #EAECF0;padding-bottom:10px;margin-bottom:10px}
-.v299-cab h3{margin:0;font-size:18px}
-.v299-cabd{display:flex;gap:6px;flex-wrap:wrap;align-items:center;justify-content:flex-end}
-.v299-x{border:0;background:#F2F4F7;border-radius:8px;width:36px;height:36px;font-size:22px;cursor:pointer;color:#344054}
-.v299-x:hover,.v299-x:focus-visible{background:#EAECF0;outline:none}
-.v299-jan .v299-sub{font-size:12px;color:#475467}
-.v299-jan .v299-btn{border:1px solid #D0D5DD;background:#fff;border-radius:8px;padding:7px 12px;font-size:13px;font-weight:600;cursor:pointer;color:#344054;min-height:36px}
-.v299-jan .v299-btn:hover,.v299-jan .v299-btn:focus-visible{background:#F2F4F7;outline:none}
-.v299-jan .v299-btn.pri{background:#101828;border-color:#101828;color:#fff}
-.v299-jan .v299-btn.pri:hover{background:#344054}
-.v299-jan .v299-btn:disabled{opacity:.6;cursor:wait}
-.v299-prog{border:1px solid #EAECF0;border-radius:12px;padding:10px 12px;margin:6px 0 12px;background:#F9FAFB}
-.v299-barra{height:8px;border-radius:999px;background:#EAECF0;overflow:hidden}
-.v299-barra i{display:block;height:100%;background:#12B76A;border-radius:999px}
-.v299-cont{display:flex;flex-wrap:wrap;gap:6px 18px;margin-top:8px;font-size:13px;color:#344054}
-.v299-cont b{font-size:20px;color:#101828;margin-right:3px}
-.v299-passo{border:1px solid #EAECF0;border-radius:12px;padding:10px 12px;margin:0 0 10px}
-.v299-passo h4{margin:0 0 4px;font-size:15px;display:flex;align-items:center;gap:8px}
-.v299-passo h4 small{background:#F2F4F7;border-radius:999px;padding:1px 9px;font-size:12px;color:#344054}
-.v299-num{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:999px;background:#101828;color:#fff;font-size:13px}
-.v299-diz{margin:0 0 8px;color:#344054}
-.v299-lista{display:flex;flex-direction:column;gap:6px}
-.v299-it{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between;border:1px solid #F2F4F7;border-radius:10px;padding:8px 10px}
-.v299-it.ok{background:#F6FEF9;border-color:#D1FADF}
-.v299-itx{flex:1 1 320px;min-width:0;overflow-wrap:anywhere}
-.v299-itb{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
-.v299-cod{color:#475467;font-family:ui-monospace,Menlo,monospace}
-.v299-q{display:flex;gap:6px;align-items:center;font-size:12px;color:#475467}
-.v299-q input{width:84px;padding:6px 8px;border:1px solid #D0D5DD;border-radius:8px;font-size:14px;text-align:right}
-.v299-desf{flex-basis:100%;display:flex;flex-wrap:wrap;gap:6px;align-items:center}
-.v299-desf label{flex-basis:100%;font-size:12px;color:#475467}
-.v299-desf input{flex:1 1 260px;padding:7px 9px;border:1px solid #D0D5DD;border-radius:8px;font-size:14px}
-.v299-grupo{border:1px dashed #D0D5DD;border-radius:10px;padding:8px;margin:6px 0}
-.v299-gh{margin:0 0 6px}
-.v299-pe{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
-.v299-vazio{padding:18px;color:#475467}
-.v299-err{margin:6px 0 10px;padding:8px 10px;border:1px solid #FDA29B;background:#FEF3F2;color:#912018;border-radius:8px}
-.v299-ok{margin:6px 0 10px;padding:8px 10px;border:1px solid #A6D8B8;background:#EEF7F1;color:#1E5631;border-radius:8px}
-.v299-avi{margin:6px 0 10px;padding:8px 10px;border:1px solid #FEDF89;background:#FFFAEB;color:#7A4A00;border-radius:8px}
-@media (max-width:700px){.v299-ov{padding:0}.v299-jan{border-radius:0;min-height:100vh;padding:12px}.v299-cab{flex-wrap:wrap}.v299-it{align-items:stretch}.v299-itb{width:100%}.v299-itb .v299-btn{flex:1}}
-@media print{.v299-ov{display:none!important}}
+<!-- ████ INICIO PCM V303 · LEAD PELO CNPJ ████ -->
+<style>
+#v303Topo{margin:2px 0 6px}
+#v303Topo .v303-lin{display:flex;gap:6px;align-items:flex-end}
+#v303Topo .v303-lin>div{flex:1}
+.v303-faixa{margin:6px 0 2px;font-size:.86rem}
+.v303-faixa .v303-bx{border-radius:8px;padding:7px 10px;margin:4px 0;border:1px solid var(--border,#ddd);background:#f7f8fa}
+.v303-faixa .v303-bx.pcm{background:#eefaf1;border-color:#9bd3ab}
+.v303-faixa .v303-bx.omie{background:#fff6ec;border-color:#f0c28a}
+.v303-faixa .v303-bx.rec{background:#eef4fd;border-color:#a9c4ec}
+.v303-faixa .v303-bx.aviso{background:#fff8e1;border-color:#ecd277}
+.v303-faixa .v303-bx.erro{background:#fdecec;border-color:#e3a4a4}
+.v303-faixa .v303-lin2{display:flex;gap:8px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+#v303End{margin:6px 0 2px}
+#v303End summary{cursor:pointer;font-size:.86rem;font-weight:600}
+#v303End .v303-g{display:grid;grid-template-columns:1fr 1fr;gap:0 10px}
+@media (max-width:640px){#v303End .v303-g{grid-template-columns:1fr}}
 </style>
 <script>
-/* ════════════════════════════════════════════════════════════════════════════════════════════════════════════
-   PCM V299 — 22/10/2026 — 📦 ESTOQUE × COMPRA NA PROPOSTA, NO CARD, NO QUADRO E NA APROVAÇÃO (rodada 2026-10-22_FERNANDO_estoque_separar_e_comprar,
-   entrega única A + B + C, sobre o PCM V298 no ar). Par: SQL CRM_ESTOQUE_SEPARAR_2026-10-22 (RODA ANTES; sem ele a tela fica como no V298 e nada
-   quebra). Zero Apps Script. Prefixo _v299 / V299 / v299- / data-v299.
-   Pedido do Fernando (22/10 10h40): saber do estoque desde a elaboração da proposta e, com o card andando, ver agrupado o que já está
-     no estoque e o que vai precisar de pedido de compra. Caso real: OPO-2026-0036 com 7 itens "a comprar, sem pedido", inclusive o óleo.
-   A · EDITOR DA PROPOSTA: o chip do V218 passa a comparar QUANTIDADE × LIVRE (o saldo menos o que os cards aceitos já têm prometido):
-       "✓ tenho 6 (precisa 2)" · "◐ tenho 1 de 4 — comprar 3" · "🛒 comprar 4" · "≈ similar X (3)" · "⚠ 2 livres, 3 prometidos" (o title diz
-       a quais cards). Resumo no topo da tabela ("📦 Estoque: 5 de 8 peças em estoque · 1 parcial · 2 a comprar", R$ a comprar só para quem
-       vê custo; o clique filtra as linhas). Sem leitura: UMA faixa com o motivo e o caminho. "De onde sai" à vista na linha (sugerido
-       pelo estoque quando está "—"; o escolhido à mão vence). Fornecedor na linha NÃO muda mais o "De onde sai" sozinho.
-   B · GAVETA DO CARD (Resumo): bloco "📦 Peças: estoque × compra" — Em estoque · Parcial · Similar · A comprar sem pedido · Pedido a
-       caminho · Chegou · Separado, cada grupo com a lista (descrição, quantidade, máquina); diz qual versão leu. QUADRO e LISTA: chip curto
-       "📦 5/8 em estoque" (verde tudo coberto · âmbar falta comprar · azul tudo pedido e a caminho), de UMA leitura em lote (cache 15 s).
-       A espera ⏸ do V287 já vem do banco com a mesma régua (SQL).
-   C · TELA "📦 SEPARAR E COMPRAR" (depois do aceite; endereço #separar/<OPO>, o Voltar fecha): 1 ✅ separar do estoque (marcar
-       separado linha a linha ou todos, ↩ desfazer com motivo, 🖨 lista de separação A4) · 2 ≈ decidir (parcial: separar N e comprar o
-       resto; similar: usar a similar = trocar o item na proposta; 🛒 comprar tudo) · 3 🛒 comprar com a quantidade QUE FALTA, um pedido
-       por fornecedor e máquina (os mesmos pedidos do 📦 Compras) · 4 📬 acompanhar. Abre pela gaveta, pelo 📦 Compras e é oferecida
-       logo depois do aceite.
-   Chave de volta: localStorage pcm_v299 = off (editor, gaveta e quadro como no V298; o banco segue com a régua nova da espera — para
-   voltar a régua antiga: crm_estoque_cfg.espera = 'antiga', ver LEIA-ME).
-   Embrulha (por fora, pelo nome global): _v204Pintar · _v218ChipDecorar · _v200Carregar · _v200Pintar · _v200PintarCard · _v200Rpc (só
-   para saber do aceite) · _v238OvPintar.
-   Chamadas: editor 1 (crm_estoque_proposta, só depois que a tela pinta, 400 ms de calma, cache por assinatura 20 s) · quadro 1 em paralelo
-   com o crm_quadro (crm_estoque_cards, cache 15 s) · gaveta 1 (crm_estoque_cards do card, cache 15 s).
-   ════════════════════════════════════════════════════════════════════════════════════════════════════════════ */
+/* ════════════════════════════════════════════════════════════════════════
+   PCM V303 · 22/10/2026 — ENTREGA A da rodada pcm_grava_no_omie: LEAD PELO CNPJ na ＋ Oportunidade.
+   No "＋ Cliente novo" o CNPJ vira o 1º campo. Com 14 dígitos válidos a tela procura sozinha, nesta ordem e parando no 1º achado:
+     1) PCM  (crm_cliente_parecidos, "mesmo CNPJ")  → "É este — usar"
+     2) Omie (erp_clientes_omie + erp_cliente_omie) → "Trazer e usar" (cadastra pelo caminho de sempre, já atrelado ao Omie, como no V261)
+     3) Receita (BrasilAPI, a mesma consulta do V253)  → preenche SÓ o que estiver vazio
+   O ENDEREÇO é gravado: quem tem perfil de cadastro (Administrador / PCM Completo) grava rua, número, complemento, bairro e CEP no
+   cadastro do cliente (pc_cliente_salvar, o mesmo caminho do V222); perfil só-CRM grava o endereço na observação do cliente.
+   100% ADITIVO, zero SQL, zero Apps Script. Nada é escrito no Omie. Chave de volta: localStorage pcm_v303 = off.
+   ════════════════════════════════════════════════════════════════════════ */
 (function () {
   'use strict';
-  if (window.V299) return;
-  var V299 = window.V299 = { versao: (function () { try { var m = document.querySelector('meta[name="app-build"]'); return m ? m.getAttribute('content') : ''; } catch (e) { return ''; } })(), orig: {}, semSql: false, semAcesso: false,
-                             ed: { sig: '', r: null, em: 0, voo: null, ger: 0, enviados: {}, filtro: '', erro: '' },
-                             mapa: null, fonte: null, em: 0, voo: null, ger: 0, card: {}, obsEsc: 0 };
-  function off() { try { return localStorage.getItem('pcm_v299') === 'off'; } catch (e) { return false; } }
-  function T(x) { return String(x == null ? '' : x).trim(); }
-  function E(x) { return String(x == null ? '' : x).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
-  function N(x) { var n = Number(x); return isFinite(n) ? n : 0; }
-  function Q(x) { return N(x).toLocaleString('pt-BR', { maximumFractionDigits: 3 }); }
-  function RS(x) { return 'R$ ' + N(x).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
-  function hora(iso) {
-    var d = iso ? new Date(iso) : null; if (!d || isNaN(d.getTime())) return '';
-    var hh = d.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit', timeZone: 'America/Sao_Paulo' });
-    var dd = d.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', timeZone: 'America/Sao_Paulo' });
-    var hj = new Date().toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', timeZone: 'America/Sao_Paulo' });
-    return dd === hj ? hh : dd + ' ' + hh;
+  var V303 = window.V303 = { ger: 0, orig: {} };
+  function off() { try { return localStorage.getItem('pcm_v303') === 'off'; } catch (e) { return false; } }
+  function S(v) { return String(v == null ? '' : v); }
+  function T(v) { return S(v).replace(/\s+/g, ' ').trim(); }
+  function E(v) { return S(v).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;'); }
+  function dig(v) { return S(v).replace(/\D/g, ''); }
+  function tc(v) { try { return _v253Tc(v); } catch (e) { return T(v); } }
+  function cnpjOk(d) { try { return d.length === 14 && !!_v126CnpjValido(d); } catch (e) { return false; } }
+  function podeCadastro() { try { return typeof _v222Pode === 'function' ? !!_v222Pode() : !!_v222PodeLocal(); } catch (e) { return false; } }
+  function ctx() { var M = (typeof _v200 !== 'undefined' && _v200) ? _v200.modal : null; return (M && M.tipo === 'nova' && M.nc) ? { M: M, nc: M.nc } : null; }
+  var CAMPOS_END = ['cep', 'endereco', 'numero', 'complemento', 'bairro'];
+  var ROT_END = { cep: 'CEP', endereco: 'Rua / logradouro', numero: 'Número', complemento: 'Complemento', bairro: 'Bairro' };
+  function cap(k) { return k.charAt(0).toUpperCase() + k.slice(1); }
+  function end(nc) { nc.v303end = nc.v303end || {}; return nc.v303end; }
+  function endTexto(nc) {
+    var e = nc.v303end || {}, c = [];
+    if (T(e.endereco)) c.push(T(e.endereco) + (T(e.numero) ? ', ' + T(e.numero) : ''));
+    if (T(e.complemento)) c.push(T(e.complemento));
+    if (T(e.bairro)) c.push(T(e.bairro));
+    if (T(nc.cidade)) c.push(T(nc.cidade) + (T(nc.uf) ? '/' + T(nc.uf).toUpperCase() : ''));
+    if (T(e.cep)) c.push('CEP ' + T(e.cep));
+    return c.join(' · ');
   }
-  var CAMINHO = 'Comercial › ⚙ › 🔌 Integração Omie';
-  function fonteRot(f) {
-    if (!f) return '';
-    if (f.fonte === 'proper') return 'Estoque Proper · agora';
-    var h = hora(f.lido_em); return 'Omie' + (h ? ' · lido ' + h : '') + (f.velha ? ' ⚠ leitura velha' : '');
-  }
-  function fonteAviso(f) {   // A3: uma frase com o motivo e o caminho (nunca número inventado)
-    if (!f) return '';
-    if (f.ok) return f.nota ? f.nota : '';
-    return 'Estoque fora da proposta: ' + T(f.motivo || 'sem leitura do estoque') + ' — para resolver: ' + CAMINHO + '.';
-  }
-  async function rpc(fn, args) {
-    try { return await _v200Rpc(fn, args || {}); }
-    catch (e) {
-      if (e && e.v200 === 'sem_sql') V299.semSql = true;
-      else if (e && e.v200 === 'acesso') V299.semAcesso = true;
-      throw e;
-    }
-  }
-  function nomeCard(id) {
-    try { var c = ((_v200.q && _v200.q.cards) || []).find(function (x) { return x.id === id; }); if (c) return id + ' (' + T(c.cliente || c.cliente_id) + ')'; } catch (e) {}
-    return id;
-  }
-  function promTxt(l) {   // "⚠ 2 livres, 3 prometidos a OPO-…" — o title diz a quem
-    var p = (l && l.prometidos) || [], tot = 0, fila = 0, quem = [];
-    p.forEach(function (x) { tot += N(x.qtd); fila += N(x.fila); quem.push(nomeCard(x.card) + (N(x.qtd) ? ': ' + Q(x.qtd) + ' prometida(s)' : '') + (N(x.fila) ? (N(x.qtd) ? ', ' : ': ') + Q(x.fila) + ' na fila' : '')); });
-    return { tot: tot, fila: fila, quem: quem };
-  }
+  function temEnd(nc) { var e = nc.v303end || {}; return CAMPOS_END.some(function (k) { return T(e[k]); }); }
 
-  // ═══ A · O EDITOR DA PROPOSTA ═══════════════════════════════════════════════════════════════════════════════════════
-  function edAtivo() { return !off() && !V299.semSql && typeof V204 !== 'undefined' && V204.ed && V204.ed.rasc && !V204.ed.carregando; }
-  function edLinhas() {
-    var ED = V204.ed, out = [];
-    (ED.linhas || []).forEach(function (l, i) {
-      if (!l || l.natureza !== 'peca' || l.incluida === false) return;
-      out.push({ k: 'i' + i, ref: T(l.codigo), qtd: String(l.qtd == null ? '' : l.qtd), sai_de: T(l.sai_de), desc: T(l.descricao).slice(0, 120),
-                 maquina_id: T(l.maquina_id), natureza: 'peca', custo: l.custo_unit != null && l.custo_unit !== '' ? String(l.custo_unit) : '' });
-    });
-    return out;
-  }
-  var edT = null;
-  function edAgendar() { clearTimeout(edT); edT = setTimeout(edCarregar, 400); }
-  async function edCarregar() {
-    if (!edAtivo()) { edDecorar(); return; }
-    var ED = V204.ed, L = edLinhas(), prop = (ED.prop && ED.prop.id) || null, sig = JSON.stringify([ED.op, prop, L]);
-    if (!L.length) { V299.ed.sig = sig; V299.ed.r = null; edDecorar(); return; }
-    if (sig === V299.ed.sig && V299.ed.r && Date.now() - V299.ed.em < 20000) { edDecorar(); return; }
-    var g = ++V299.ed.ger;
-    try {
-      var r = await rpc('crm_estoque_proposta', { p_card: ED.op, p_linhas: L, p_proposta: prop });
-      if (g !== V299.ed.ger) return;
-      V299.ed.sig = sig; V299.ed.r = r; V299.ed.em = Date.now(); V299.ed.erro = '';
-      V299.ed.enviados = {}; L.forEach(function (x) { V299.ed.enviados[x.k] = x.ref + '|' + x.qtd; });
-    } catch (e) {
-      if (g !== V299.ed.ger) return;
-      V299.ed.r = null; V299.ed.erro = (e && e.v200 === 'sem_sql') ? '' : ((e && e.message) || String(e));
+  // ── a faixa de resultado e o bloco de endereço ──────────────────────────────────────────────
+  function faixaHtml(nc) {
+    var s = nc.v303, d = dig(nc.cnpj);
+    if (!s) {
+      if (d.length === 14 && !cnpjOk(d)) return '<div class="v303-bx erro">CNPJ inválido — confira o dígito verificador.</div>';
+      return '<div class="v200-sub" style="margin:2px 0">Digite o CNPJ (14 dígitos): procuro no PCM, no Omie e na Receita.</div>';
     }
-    edDecorar();
-  }
-  function chipTexto(l, f) {
-    var e = l.estado, t = '', tit = [], cls = e;
-    if (l.inativo) return null;   // AUDITORIA A4: produto inativo no Omie — o chip do V218 ("inativo no Omie") fica
-    var h = f ? hora(f.lido_em) : '';
-    var pr = promTxt(l);
-    if (e === 'tem') { t = '✓ tenho ' + Q(l.livre) + ' (precisa ' + Q(l.qtd) + ')'; cls = 'v299-tem'; }
-    else if (e === 'parcial') t = '◐ tenho ' + Q(N(l.cobre) + Math.max(N(l.separado), N(l.chegou))) + ' de ' + Q(l.qtd) + ' — comprar ' + Q(l.falta);
-    else if (e === 'similar' && l.sim) { t = '≈ similar ' + T(l.sim.codigo || l.sim.ref) + ' (' + Q(l.sim.saldo) + ')'; tit.push('A peça pedida não tem livre; ' + (l.sim.tipo === 'equivalente' ? 'a equivalente da conciliação' : 'a similar do catálogo') + ' tem.'); }
-    else if (e === 'comprar') t = '🛒 comprar ' + Q(l.falta || l.qtd);
-    else if (e === 'caminho') { t = '📬 a caminho'; cls = 'v299-caminho'; }
-    else if (e === 'chegou') { t = '✔ chegou'; cls = 'v299-chegou'; }
-    else if (e === 'separado') { t = '📦 separado'; cls = 'v299-separado'; }
-    else return null;   // sem_info: o chip do V218 fica como está
-    if (pr.tot > 0 && N(l.saldo) > N(l.livre) && e !== 'tem') t += ' · ⚠ ' + Q(l.livre) + ' livre' + (N(l.livre) === 1 ? '' : 's') + ', ' + Q(N(l.saldo) - N(l.livre)) + ' prometid' + (N(l.saldo) - N(l.livre) === 1 ? 'a' : 'as');
-    if (h) t += ' · ' + h;
-    if (f && f.velha) { t += ' ⚠'; tit.push('LEITURA VELHA: o saldo pode ter mudado — confirme ou peça "Ler agora" (' + CAMINHO + ').'); }
-    tit.unshift('Saldo ' + Q(l.saldo) + (l.produto ? ' de ' + l.produto : '') + ' · livre para esta proposta ' + Q(l.livre) + ' · precisa ' + Q(l.qtd) + '.');
-    if (pr.quem.length) tit.push('Já prometido a: ' + pr.quem.join('; ') + '.');
-    if (l.custo_est != null && N(l.falta) > 0) tit.push('Custo estimado do que falta: ' + RS(N(l.falta) * N(l.custo_est)) + ' (interno).');
-    tit.push((f && f.fonte === 'proper') ? 'Fonte: estoque Proper.' : 'Fonte: Omie' + (h ? ', lido ' + h : '') + ' — não é o saldo agora.');
-    return { t: t, cls: cls, tit: tit.join(' ') };
-  }
-  var SAI = { estoque: 'estoque', comprar: 'comprar', terceiro: 'terceiro', mo_propria: 'mão de obra própria' };
-  function sugestao(l) {
-    if (!l) return '';
-    if (l.estado === 'tem') return 'estoque';
-    if (l.estado === 'parcial') return 'estoque ' + Q(l.cobre) + ' + comprar ' + Q(l.falta);
-    if (l.estado === 'comprar' || l.estado === 'similar') return 'comprar';
-    return '';
-  }
-  function edDecorar() {
-    var ED = (typeof V204 !== 'undefined' && V204.ed) || null;
-    var tab = document.getElementById('v204Linhas');
-    var velhos = document.querySelectorAll('#v204Ed [data-v299sai], #v204Ed [data-v299chip]'); Array.prototype.forEach.call(velhos, function (x) { x.remove(); });
-    var res0 = document.getElementById('v299Res');
-    if (!ED || !tab || off() || V299.semSql) { if (res0) res0.remove(); return; }
-    var r = V299.ed.r, f = r && r.fonte, L = (r && r.linhas) || {};
-    var g = { tem: [], parcial: [], similar: [], comprar: [], caminho: [], sem_info: [] }, n = 0;
-    (ED.linhas || []).forEach(function (l, i) {
-      if (!l || l.natureza !== 'peca' || l.incluida === false) return;
-      var k = 'i' + i, x = L[k];
-      var mudou = !!(x && V299.ed.enviados[k] !== T(l.codigo) + '|' + String(l.qtd == null ? '' : l.qtd));
-      if (mudou) x = null;   // a linha mudou depois da leitura: não afirma nada
-      var inp = document.getElementById('v204d' + i); if (!inp || !inp.parentNode) return;
-      if (mudou) { var c0 = inp.parentNode.querySelector('[data-v218chip][data-v299]'); if (c0) { c0.textContent = '⏳ conferindo o estoque…'; c0.setAttribute('title', 'A linha mudou: conferindo de novo o livre para esta quantidade.'); } }
-      n++;
-      if (x) {
-        var grp = (x.estado === 'separado' || x.estado === 'chegou') ? 'tem' : (g[x.estado] ? x.estado : 'sem_info'); g[grp].push(i);
-        var c = f && f.ok ? chipTexto(x, f) : null;
-        if (c) {
-          var chip = inp.parentNode.querySelector('[data-v218chip]');
-          if (chip) {
-            chip.className = chip.className.replace(/\b(tem|similar|comprar|parcial|inativo|ambiguo|sem_par|v299-[a-z]+)\b/g, '').replace(/\s+/g, ' ').trim() + ' ' + c.cls;
-            chip.textContent = c.t; chip.setAttribute('title', c.tit); chip.setAttribute('data-v299', x.estado);
-          } else inp.insertAdjacentHTML('afterend', '<span class="v218-est ' + E(c.cls) + '" data-v299chip="1" title="' + E(c.tit) + '">' + E(c.t) + '</span>');
-        }
-      } else g.sem_info.push(i);
-      // A4 · "De onde sai" à vista: o escolhido à mão vence; com "—" o estoque sugere
-      var manual = T(l.sai_de), sug = manual ? '' : sugestao(x && f && f.ok ? x : null);
-      if (manual || sug) {
-        var ap = inp.parentNode.querySelector('[data-v240t]') || inp.parentNode.querySelector('[data-v218chip]') || inp.parentNode.querySelector('[data-v299chip]') || inp;
-        ap.insertAdjacentHTML('afterend', '<span class="v299-sai' + (manual ? ' manual' : '') + '" role="button" tabindex="0" data-v299sai="' + i + '" title="' +
-          E(manual ? 'De onde sai: ' + (SAI[manual] || manual) + ' (escolhido na linha — vence a sugestão do estoque). Clique para mudar (⋯ da linha).'
-                   : 'De onde sai: "—" na linha; pelo estoque de agora a sugestão é ' + sug + '. O fornecedor da linha é só referência de custo. Clique para escolher (⋯ da linha).') + '">' +
-          E(manual ? '↳ sai: ' + (SAI[manual] || manual) : '↳ sugerido: ' + sug) + '</span>');
-      }
-    });
-    // A2/A3 · o resumo no topo da tabela (ou a faixa do motivo)
-    var caixa = tab.parentNode; if (!caixa || !caixa.parentNode) return;
     var h = '';
-    if (!n) h = '';
-    else if (V299.ed.erro) h = '<div id="v299Res" class="aviso" data-v299res="erro"><span>📦 Não consegui ler o estoque agora: ' + E(V299.ed.erro) + '</span></div>';
-    else if (!r) h = '<div id="v299Res" data-v299res="carregando"><span class="v299-sub">📦 conferindo o estoque das peças…</span></div>';
-    else if (!f || !f.ok) h = '<div id="v299Res" class="aviso" data-v299res="sem_leitura"><span>📦 ' + E(fonteAviso(f)) + '</span></div>';
-    else {
-      var tot = n, rs = (r.resumo || {});
-      var bt = function (k, rot, cls) { var q = g[k].length; if (!q) return ''; return '<button type="button" class="v299-g ' + cls + (V299.ed.filtro === k ? ' on' : '') + '" data-v299="filtro" data-k="' + k + '" data-pw-off="1" title="mostrar só estas linhas (clique de novo para ver todas)">' + rot.replace('#', q) + '</button>'; };
-      h = '<div id="v299Res" data-v299res="ok"><span>📦 <b>Estoque:</b> ' + g.tem.length + ' de ' + tot + ' peça' + (tot === 1 ? '' : 's') + ' em estoque</span>' +
-        bt('tem', '✓ # em estoque', 'tem') + bt('parcial', '◐ # parcial', 'parcial') + bt('similar', '≈ # com similar', 'similar') + bt('comprar', '🛒 # a comprar', 'comprar') +
-        bt('caminho', '📬 # a caminho', 'caminho') + bt('sem_info', '? # sem informação', 'sem_info') +
-        (rs.custo_comprar != null && N(rs.custo_comprar) > 0 ? '<span class="v299-sub">· ' + E(RS(rs.custo_comprar)) + ' estimado a comprar' + (rs.custo_incompleto ? ' (parte sem custo)' : '') + ' (interno)</span>' : '') +
-        '<span class="v299-sub">· ' + E(fonteRot(f)) + (f.nota ? ' · ' + E(f.nota) : '') + '</span></div>';
+    (s.pcm || []).forEach(function (p) {
+      h += '<div class="v303-bx pcm"><div class="v303-lin2"><span>✅ <b>Já está no PCM:</b> ' + E(p.nome) + ' <small>' + E([p.cnpj, p.cidade].filter(Boolean).join(' · ')) + '</small></span>' +
+        (p.ativo === false ? '<small>inativo — reative em Clientes</small>'
+          : '<button type="button" class="btn btn-primary btn-sm" data-v303="usarPcm" data-id="' + E(p.id) + '" data-nome="' + E(p.nome) + '">É este — usar</button>') + '</div>' +
+        '<small>Mesmo CNPJ em outro endereço costuma ser UNIDADE do mesmo cliente (menu Unidades), não cliente novo.</small></div>';
+    });
+    if (s.omie) {
+      var o = s.omie;
+      h += '<div class="v303-bx omie"><div class="v303-lin2"><span>🔶 <b>Está no Omie:</b> ' + E(o.razao || o.fantasia) + ' <small>' + E([o.cnpj, o.cidade && (o.cidade + (o.uf ? '/' + o.uf : ''))].filter(Boolean).join(' · ')) + '</small></span>' +
+        '<button type="button" class="btn btn-primary btn-sm" data-v303="trazer" data-cod="' + E(o.codigo_omie) + '"' + (s.trazendo ? ' disabled' : '') + '>' + (s.trazendo ? '⏳ Trazendo…' : 'Trazer e usar') + '</button></div>' +
+        '<small>Traz o cadastro com o endereço e deixa o cliente atrelado ao Omie.</small></div>';
     }
-    var cmp = res0 ? res0.outerHTML : '';
-    if (cmp !== h) { if (res0) res0.remove(); if (h) caixa.insertAdjacentHTML('beforebegin', h); }
-    // o filtro do resumo (só esconde: a linha continua no rascunho)
-    var alvo = V299.ed.filtro && g[V299.ed.filtro] ? g[V299.ed.filtro] : null;
-    if (V299.ed.filtro && (!alvo || !alvo.length)) { V299.ed.filtro = ''; alvo = null; }
-    Array.prototype.forEach.call(tab.querySelectorAll('tbody tr'), function (tr) {
-      var i = tr.getAttribute('data-i'), det = tr.classList.contains('v204-det'), bl = tr.classList.contains('v204-bl');
-      if (det) { var ant = tr.previousElementSibling; i = ant && ant.getAttribute('data-i'); }
-      var esc = !!(alvo && !bl && i != null && alvo.indexOf(Number(i)) < 0) || !!(alvo && bl);
-      if (tr.classList.contains('v299-oculta') !== esc) tr.classList.toggle('v299-oculta', esc);
-    });
-  }
-  V299.edDecorar = edDecorar; V299.edCarregar = edCarregar;
-  if (typeof _v204Pintar === 'function') {
-    V299.orig.pintar204 = _v204Pintar;
-    _v204Pintar = function () { var r = V299.orig.pintar204.apply(this, arguments); try { if (!off()) { edDecorar(); edAgendar(); } } catch (e) {} return r; };
-  }
-  if (typeof _v218ChipDecorar === 'function') {   // o V218 tira e põe o chip a cada pintura: depois dele, o nosso texto volta
-    V299.orig.chipDec = _v218ChipDecorar;
-    _v218ChipDecorar = function () { var r = V299.orig.chipDec.apply(this, arguments); try { if (!off()) edDecorar(); } catch (e) {} return r; };
-  }
-  // D5 · o fornecedor da linha não muda mais o "De onde sai" sozinho (V238 "fornecedor" e V279 "💡 quem vende › usar" faziam "—" virar "comprar")
-  window.addEventListener('click', function (ev) {
-    if (off()) return;
-    var b = ev.target && ev.target.closest && ev.target.closest('[data-v238="fornPick"][data-ctx="linha"],[data-v238="fornLivre"][data-ctx="linha"],[data-v279="propUsar"]');
-    if (!b) return;
-    var ED = (typeof V204 !== 'undefined' && V204.ed) || null; if (!ED) return;
-    var i = parseInt(b.getAttribute('data-v279') ? b.getAttribute('data-i') : b.getAttribute('data-ref'), 10), l = ED.linhas && ED.linhas[i];
-    if (!l || T(l.sai_de)) return;   // já tinha "De onde sai" escolhido: nada a proteger
-    setTimeout(function () {
-      if (V204.ed !== ED || ED.linhas[i] !== l) return;
-      if (l.sai_de === 'comprar') { l.sai_de = ''; try { _v204Mudou(); _v204Pintar(); } catch (e) {} }
-    }, 0);
-  }, true);
-  // a quantidade muda sem repintar a tabela (só o total da linha): a leitura refaz com calma
-  document.addEventListener('input', function (ev) {
-    var t = ev.target; if (off() || !t || !t.matches || !t.matches('#v204Linhas [data-v204c="qtd"]')) return;
-    try { edDecorar(); } catch (e) {} edAgendar();
-  });
-  document.addEventListener('click', function (ev) {
-    var b = ev.target && ev.target.closest && ev.target.closest('[data-v299]'); if (!b || off()) return;
-    var a = b.getAttribute('data-v299');
-    if (a === 'filtro') { var k = b.getAttribute('data-k'); V299.ed.filtro = V299.ed.filtro === k ? '' : k; edDecorar(); return; }
-  });
-  function abrirSai(el) {
-    var i = el.getAttribute('data-v299sai'), det = document.querySelector('#v204Linhas [data-v204="det"][data-i="' + i + '"]');
-    var ED = V204.ed, l = ED && ED.linhas && ED.linhas[Number(i)];
-    if (l && l.aberta) { var s = document.querySelector('#v204Linhas select[data-v204c="sai_de"][data-i="' + i + '"]'); if (s) { try { s.focus(); } catch (e) {} } return; }
-    if (det) det.click();
-    setTimeout(function () { var s = document.querySelector('#v204Linhas select[data-v204c="sai_de"][data-i="' + i + '"]'); if (s) { try { s.focus(); } catch (e) {} } }, 60);
-  }
-  document.addEventListener('click', function (ev) { var s = ev.target && ev.target.closest && ev.target.closest('[data-v299sai]'); if (s && !off()) abrirSai(s); });
-  document.addEventListener('keydown', function (ev) { var s = ev.target && ev.target.closest && ev.target.closest('[data-v299sai]'); if (s && !off() && (ev.key === 'Enter' || ev.key === ' ')) { ev.preventDefault(); abrirSai(s); } });
-
-  // ═══ B · O QUADRO, A LISTA E A GAVETA ════════════════════════════════════════════════════════════════════════════════
-  function lerMapa(forcar) {
-    if (off() || V299.semSql || V299.semAcesso) return Promise.resolve(null);
-    if (V299.voo) return V299.voo;
-    if (!forcar && V299.mapa && Date.now() - V299.em < 15000) return Promise.resolve(V299.mapa);
-    var g = ++V299.ger;
-    V299.voo = rpc('crm_estoque_cards', { p_ids: null, p_detalhe: false }).then(function (r) {
-      V299.em = Date.now(); if (!r || r.ok !== true) return null;
-      V299.mapa = r.cards || {}; V299.fonte = r.fonte || null; return V299.mapa;
-    }, function (e) { V299.em = Date.now(); try { console.info('[V299] estoque dos cards: ' + ((e && e.message) || e)); } catch (x) {} return null; })
-      .then(function (x) { V299.voo = null; if (g === V299.ger) { try { arrumarQuadro(); } catch (e) {} } return x; });
-    return V299.voo;
-  }
-  V299.lerMapa = lerMapa;
-  var COLS_OK = { '1': 1, '2': 1, '3': 1, '4': 1, '5': 1, '6': 1, '7': 1, '8': 1, aguardando: 1 };
-  function chipCard(x) {
-    if (!x || !V299.fonte || !V299.fonte.ok || !x.n) return '';
-    var g = x.g || {}, dica = [T(x.texto) + ' — ' + (x.fase === 'aceita' ? 'proposta aceita' : x.fase === 'rascunho' ? 'proposta em elaboração' : 'última proposta emitida')];
-    [['tem', 'em estoque'], ['separado', 'separado'], ['chegou', 'chegou'], ['caminho', 'a caminho'], ['parcial', 'parcial'], ['similar', 'com similar'], ['comprar', 'a comprar'], ['sem_info', 'sem informação']]
-      .forEach(function (p) { if (N(g[p[0]])) dica.push(N(g[p[0]]) + ' ' + p[1]); });
-    dica.push(fonteRot(V299.fonte) + ' — abra o card para ver a lista');
-    return '<span class="v299-chip ' + E(x.cor || 'cinza') + '" data-v299card="1" title="' + E(dica.join('\n')) + '">' + E(x.texto) + '</span>';
-  }
-  function arrumarQuadro() {
-    var raiz = document.getElementById('viewComercial'); if (!raiz) return;
-    Array.prototype.forEach.call(raiz.querySelectorAll('[data-v299card]'), function (c) { c.remove(); });
-    if (off() || !V299.mapa) return;
-    Array.prototype.forEach.call(raiz.querySelectorAll('.v200-col [data-v200="card"][data-id]'), function (el) {
-      var col = el.closest('.v200-col'); if (!col || !COLS_OK[col.getAttribute('data-col')]) return;
-      var h = chipCard(V299.mapa[el.getAttribute('data-id')]); if (!h) return;
-      var ap = el.querySelector('.v287-chip') || el.querySelector('.v200-cli');
-      if (ap) ap.insertAdjacentHTML('afterend', h); else el.insertAdjacentHTML('beforeend', h);
-    });
-    var tab = raiz.querySelector('#v200Lista');
-    if (tab) Array.prototype.forEach.call(tab.querySelectorAll('tbody tr[data-id]'), function (tr) {
-      var h = chipCard(V299.mapa[tr.getAttribute('data-id')]); if (!h) return;
-      var td = tr.children[1]; if (!td) return;
-      if (!td.hasAttribute('data-cfx-val')) td.setAttribute('data-cfx-val', T(td.textContent));   // o filtro/ordem do CFX lê o título, não o chip
-      td.insertAdjacentHTML('beforeend', ' ' + h);
-    });
-  }
-  V299.arrumarQuadro = arrumarQuadro;
-  if (typeof _v200Carregar === 'function') {
-    V299.orig.carregar = _v200Carregar;
-    _v200Carregar = async function () { if (!off()) { try { lerMapa(Date.now() - V299.em > 5000); } catch (e) {} } return V299.orig.carregar.apply(this, arguments); };
-  }
-  if (typeof _v200Pintar === 'function') {
-    V299.orig.pintar = _v200Pintar;
-    _v200Pintar = function () { var r = V299.orig.pintar.apply(this, arguments); try { if (!off()) arrumarQuadro(); } catch (e) { console.warn('[V299] quadro', e); } return r; };
-  }
-
-  // ── a gaveta do card: "📦 Peças: estoque × compra" ──────────────────────────────────────────────────────────────────
-  function cardAberto() { try { var M = _v200.modal; return M && M.tipo === 'card' && M.d && M.d.card && M.d.card.id ? M : null; } catch (e) { return null; } }
-  function lerCard(id, forcar) {
-    var C = V299.card[id] || (V299.card[id] = { em: 0, x: null, f: null, erro: '', voo: null, pc: false });
-    if (C.voo) return C.voo;
-    if (!forcar && C.em && Date.now() - C.em < 15000) return Promise.resolve(C.x);
-    C.voo = rpc('crm_estoque_cards', { p_ids: [id], p_detalhe: true }).then(function (r) {
-      C.em = Date.now(); C.erro = ''; C.x = (r && r.cards && r.cards[id]) || { vazio: true }; C.f = r && r.fonte; C.pc = !!(r && r.pode_custo); C.ps = !!(r && r.pode_separar);
-      if (V299.mapa && r && r.cards) { if (r.cards[id]) V299.mapa[id] = Object.assign({}, r.cards[id], { linhas: undefined }); else delete V299.mapa[id]; }
-      return C.x;
-    }, function (e) { C.em = Date.now(); C.erro = (e && e.v200 === 'sem_sql') ? 'sem_sql' : ((e && e.message) || String(e)); return null; })
-      .then(function (x) { C.voo = null; try { pintarGaveta(); } catch (e) {} return x; });
-    return C.voo;
-  }
-  V299.lerCard = lerCard;
-  var GRUPOS = [
-    ['tem', '✅ Em estoque — separar', 'Estas peças já estão no estoque livre para este card: falta separar.'],
-    ['separado', '📦 Separado', 'Já separadas no almoxarifado para este card.'],
-    ['chegou', '✔ Chegou (pedido de compra)', 'O pedido de compra chegou: separe.'],
-    ['caminho', '📬 Pedido feito / a caminho', 'Têm pedido de compra; esperando chegar.'],
-    ['parcial', '◐ Parcial — tem uma parte', 'O estoque cobre uma parte; o resto precisa de pedido de compra.'],
-    ['similar', '≈ Similar disponível', 'A peça pedida não tem livre, mas uma similar/equivalente tem.'],
-    ['comprar', '🛒 A comprar, sem pedido', 'Sem estoque livre e sem pedido de compra.'],
-    ['sem_info', '❔ Sem informação de estoque', 'Peça sem código/cadastro no estoque ou sem leitura: confira à mão.']];
-  function linhaTxt(l, pc) {
-    var maq = ''; try { if (l.maquina_id && typeof _v200RotuloMaq === 'function') maq = _v200RotuloMaq(l.maquina_id); } catch (e) {}
-    var det = [];
-    if (l.estado === 'parcial') det.push('tem ' + Q(N(l.cobre) + Math.max(N(l.separado), N(l.chegou))) + ' de ' + Q(l.qtd) + (N(l.caminho) ? ', ' + Q(l.caminho) + ' a caminho' : '') + ', comprar ' + Q(l.falta));
-    if (l.estado === 'similar' && l.sim) det.push('similar ' + T(l.sim.codigo || l.sim.ref) + ' com ' + Q(l.sim.saldo));
-    if (l.estado === 'caminho' && N(l.cobre)) det.push(Q(l.cobre) + ' do estoque + ' + Q(l.caminho) + ' a caminho');
-    if (l.estado === 'separado' || (N(l.separado) > 0 && l.estado !== 'separado')) { if (N(l.separado)) det.push(Q(l.separado) + ' separada(s)'); }
-    var pr = promTxt(l); if (pr.tot > 0 && (l.estado === 'comprar' || l.estado === 'parcial' || l.estado === 'similar')) det.push('prometidas a outros cards: ' + pr.quem.join('; '));
-    if (l.decisao === 'comprar') det.push('decidido: comprar tudo');
-    if (pc && l.custo_est != null && N(l.falta) > 0) det.push('≈ ' + RS(N(l.falta) * N(l.custo_est)) + ' a comprar (interno)');
-    return '<li>' + E(T(l.descricao) || T(l.ref) || 'peça') + ' <small>· ' + E(Q(l.qtd)) + ' ' + (l.ref ? '· ' + E(l.ref) + ' ' : '') + (maq ? '· ' + E(maq) + ' ' : '') +
-      (det.length ? '— ' + E(det.join(' · ')) : '') + '</small></li>';
-  }
-  function gavetaHtml(M) {
-    var o = M.d.card || {}, est = M.d.estado || {}, id = o.id, C = V299.card[id];
-    if (o.perdida_em || o.fechada_em) return '';
-    var col = Number(est.coluna || 0); if (col > 8) return '';   // Pós-venda: as peças já saíram
-    if (V299.semSql || (C && C.erro === 'sem_sql')) return '';
-    if (!C || (!C.x && !C.erro)) return '<div class="v299-box" id="v299Box" data-card="' + E(id) + '"><div class="v299-bh"><span class="v299-sub">⏳ conferindo o estoque das peças do card…</span></div></div>';
-    if (C.erro) return '<div class="v299-box" id="v299Box" data-card="' + E(id) + '"><div class="v299-bh"><span class="v299-sub" style="color:#B42318">Não consegui ler o estoque das peças: ' + E(C.erro) + '</span>' +
-      '<span class="v299-acoes"><button type="button" class="v299-btn" data-v299="reler" data-pw-off="1">↻ tentar de novo</button></span></div></div>';
-    var x = C.x || {}, f = C.f || {};
-    if (x.vazio || !x.n) return '';   // card sem peça na proposta: nada a dizer
-    var ver = (x.fase === 'aceita' ? 'proposta ACEITA' : x.fase === 'rascunho' ? 'proposta em elaboração (rascunho)' : 'última proposta emitida (ainda não aceita)') + ((x.versoes || []).length ? ' · ' + (x.versoes || []).join(', ') : '');
-    var h = '<div class="v299-box" id="v299Box" data-card="' + E(id) + '"><div class="v299-bh"><b>📦 Peças: estoque × compra</b><span class="v299-sub">' + E(ver) + '</span>' +
-      '<span class="v299-acoes">' + (x.fase === 'aceita' ? '<button type="button" class="v299-btn pri" data-v299="separar" data-pw-off="1" title="O que já está no estoque (separar) e o que falta comprar, passo a passo">📦 Separar e comprar</button>' : '') +
-      (x.fase === 'aceita' && C.pc ? '<button type="button" class="v299-btn" data-v299="compras" data-pw-off="1" title="Pedidos de compra do card (📦 Compras)">📦 Compras</button>' : '') +
-      '<button type="button" class="v299-btn" data-v299="reler" data-pw-off="1" title="Ler de novo o estoque deste card">↻</button></span></div>';
-    if (x.fase === 'aceita' && V299.oferta && V299.oferta[id] && Date.now() - V299.oferta[id] < 600000)
-      h += '<div class="v299-oferta">✅ Proposta aceita. Conferir o estoque e as compras agora? <button type="button" class="v299-btn pri" data-v299="separar" data-pw-off="1">📦 Separar e comprar</button></div>';
-    if (!f.ok) h += '<div class="v299-aviso">' + E(fonteAviso(f)) + '</div>';
-    else h += '<div class="v299-bh" style="background:#fff;border-bottom:1px solid #F2F4F7;padding:6px 12px"><span class="v299-sub">' + E(T(x.texto)) + ' · ' + E(fonteRot(f)) +
-      (x.custo_comprar != null && N(x.custo_comprar) > 0 ? ' · ' + E(RS(x.custo_comprar)) + ' estimado a comprar (interno)' : '') + (f.nota ? ' · ' + E(f.nota) : '') + '</span></div>';
-    var L = x.linhas || [];
-    GRUPOS.forEach(function (gp) {
-      var ls = L.filter(function (l) { return l.estado === gp[0]; }); if (!ls.length) return;
-      var aberto = V299.abertos && V299.abertos[id + '|' + gp[0]];
-      h += '<details data-v299g="' + gp[0] + '"' + (aberto ? ' open' : '') + '><summary data-pw-off="1"><span class="v299-n">' + ls.length + '</span>' + E(gp[1]) + '<span class="v299-seta">›</span></summary>' +
-        '<div class="v299-sub" style="padding:0 12px 4px 34px">' + E(gp[2]) + '</div><ul>' + ls.map(function (l) { return linhaTxt(l, C.pc); }).join('') + '</ul></details>';
-    });
-    return h + '</div>';
-  }
-  function pintarGaveta() {
-    var ja = document.getElementById('v299Box');
-    if (off()) { if (ja) ja.remove(); return; }
-    var M = cardAberto(), corpo = document.getElementById('v200ModalBody');
-    if (!M || !corpo) { if (ja) ja.remove(); return; }
-    var id = M.d.card.id;
-    if (!V299.card[id] || (!V299.card[id].em && !V299.card[id].voo)) lerCard(id, true);
-    var h = gavetaHtml(M);
-    if (!h) { if (ja) ja.remove(); return; }
-    if (ja && ja.getAttribute('data-card') === id && ja.__v299 === h && ja.parentNode === corpo) return;
-    if (ja) ja.remove();
-    var ancora = document.getElementById('v287Esp') || corpo.querySelector('.v200-falta') || corpo.querySelector('.v200-grid');
-    if (ancora && ancora.parentNode === corpo) ancora.insertAdjacentHTML('afterend', h); else corpo.insertAdjacentHTML('afterbegin', h);
-    var novo = document.getElementById('v299Box'); if (novo) novo.__v299 = h;
-  }
-  V299.pintarGaveta = pintarGaveta;
-  if (typeof window._v200PintarCard === 'function') {
-    V299.orig.pintarCard = window._v200PintarCard;
-    window._v200PintarCard = function () {
-      var r = V299.orig.pintarCard.apply(this, arguments);
-      try { pintarGaveta(); } catch (e) { console.warn('[V299] gaveta', e); }
-      try { var M = cardAberto(); if (M && !off() && !V299.semSql) lerCard(M.d.card.id, false); } catch (e) {}
-      return r;
-    };
-  }
-  document.addEventListener('toggle', function (ev) {   // o grupo aberto continua aberto na próxima repintura
-    var d = ev.target; if (!d || !d.matches || !d.matches('#v299Box details[data-v299g]')) return;
-    var box = document.getElementById('v299Box'); if (!box) return;
-    V299.abertos = V299.abertos || {}; V299.abertos[box.getAttribute('data-card') + '|' + d.getAttribute('data-v299g')] = d.open;
-    var h = box.__v299, novo = gavetaHtml(cardAberto() || { d: { card: {} } }); box.__v299 = novo || h;
-  }, true);
-  document.addEventListener('click', function (ev) {
-    var b = ev.target && ev.target.closest && ev.target.closest('#v299Box [data-v299]'); if (!b || off()) return;
-    var a = b.getAttribute('data-v299'), M = cardAberto(); if (!M) return;
-    if (a === 'reler') { var bx = document.getElementById('v299Box'); if (bx) bx.__v299 = null; b.disabled = true; b.textContent = '⏳'; lerCard(M.d.card.id, true); return; }
-    if (a === 'separar') { try { delete V299.oferta[M.d.card.id]; } catch (e) {} scAbrir(M.d.card.id, 'card'); return; }
-    if (a === 'compras') { try { if (typeof _v238Abrir === 'function') _v238Abrir(M.d.card.id, 'card'); } catch (e) { toast('Não abriu o 📦 Compras: ' + ((e && e.message) || e), 'error'); } return; }
-  });
-  // outro bloco repinta o corpo da gaveta por conta própria (innerHTML) e a caixa some: volta (disjuntor por ESCRITAS, que se rearma)
-  (function () {
-    var mod = document.getElementById('v200Modal'); if (!mod || typeof MutationObserver !== 'function') return;
-    var janela = 0, escritas = 0;
-    new MutationObserver(function () {
-      if (off() || !cardAberto() || document.getElementById('v299Box')) return;
-      var C = V299.card[cardAberto().d.card.id]; if (!C || !C.x || C.x.vazio || !C.x.n) return;
-      var agora = Date.now(); if (agora - janela > 5000) { janela = agora; escritas = 0; }
-      if (++escritas > 20) return;
-      try { pintarGaveta(); } catch (e) {}
-    }).observe(mod, { childList: true, subtree: true });
-  })();
-
-  // ═══ C · A TELA "📦 SEPARAR E COMPRAR" (depois do aceite) — sobreposição larga, endereço #separar/<OPO>, o Voltar fecha ════════════
-  // Evolução do 📦 Compras do card (V238): os pedidos continuam os MESMOS (com_pedido_criar/salvar, PC-AAAA-NNNN, rascunho → enviado →
-  // recebido, PDF no 📦 Compras). Nada é escrito no Omie. Custo e fornecedor só para quem o banco deixa (pode_custo).
-  V299.sc = null;
-  function scRaiz() {
-    var el = document.getElementById('v299Ov');
-    if (!el) {
-      el = document.createElement('div'); el.id = 'v299Ov'; el.className = 'v299-ov mob-keep'; el.hidden = true;
-      el.setAttribute('role', 'dialog'); el.setAttribute('aria-modal', 'true'); el.setAttribute('aria-label', 'Separar e comprar');
-      el.innerHTML = '<div class="v299-jan" id="v299Jan" tabindex="-1"></div>';
-      document.body.appendChild(el);
-      el.addEventListener('mousedown', function (ev) { if (ev.target === el) el.__fundo = true; else el.__fundo = false; });
-      el.addEventListener('click', function (ev) { if (ev.target === el && el.__fundo && V299.sc && !scSujo()) scFechar(); });
+    if (s.busca) h += '<div class="v303-bx">⏳ Procurando ' + (s.busca === 'pcm' ? 'no PCM' : s.busca === 'omie' ? 'no Omie' : 'na Receita') + '…</div>';
+    if (s.avisoOmie) h += '<div class="v303-bx aviso">' + E(s.avisoOmie) + '</div>';
+    if (s.pcmErro) h += '<div class="v303-bx aviso">Não consegui conferir o PCM agora: ' + E(s.pcmErro) + '</div>';
+    if (s.rec) {
+      var r = s.rec;
+      var ruim = r.situacao && r.situacao !== 'ATIVA';
+      h += '<div class="v303-bx ' + (ruim ? 'erro' : 'rec') + '">✓ <b>Receita:</b> ' + E(r.razao) + (r.fantasia ? ' (' + E(r.fantasia) + ')' : '') +
+        (r.n ? ' — preenchi ' + r.n + ' campo(s) vazio(s); o que já estava na tela foi preservado.' : ' — os campos já estavam preenchidos.') +
+        (ruim ? '<br>⚠ Situação cadastral na Receita: <b>' + E(r.situacao) + '</b> — dá para criar o cliente, mas confira antes de vender.' : '') +
+        (r.fora && r.fora.length ? '<br><small>Não usei (não passa na validação): ' + r.fora.map(E).join(' · ') + '.</small>' : '') + '</div>';
     }
-    return el;
+    if (s.recErro) h += '<div class="v303-bx aviso">' + E(s.recErro) + '</div>';
+    if (s.fim && !s.rec && !s.recErro && !s.busca) h += '<div class="v303-bx">Não achei no PCM nem no Omie.</div>';
+    if (s.pode && !s.busca && !s.rec) h += '<div><button type="button" class="btn btn-secondary btn-sm" data-v303="receita">🔎 Buscar na Receita</button></div>';
+    return h;
   }
-  function scSujo() { var S = V299.sc; return !!(S && Object.keys(S.qtd || {}).length) || !!(S && S.desf); }
-  async function scAbrir(card, volta) {
-    if (off()) return;
-    if (V299.semSql) { toast('O SQL CRM_ESTOQUE_SEPARAR ainda não rodou no Supabase.', 'error'); return; }
-    try { if (volta === 'card' && typeof _v200Fechar === 'function') _v200Fechar(); } catch (e) {}   // nunca janela sobre janela
-    var raiz = scRaiz();
-    V299.sc = { card: card, volta: volta || '', d: null, f: null, pc: false, ps: false, carregando: true, erro: '', ger: (V299.sc ? V299.sc.ger : 0) + 1,
-                qtd: {}, uid: {}, msg: null, desf: null, foco: document.activeElement, gravando: false };
-    raiz.hidden = false; document.body.style.overflow = 'hidden'; document.body.classList.add('v299-aberto');
-    try { if (location.hash !== '#separar/' + card) history.pushState({ v299: card }, '', '#separar/' + card); } catch (e) {}
-    scPintar(); await scCarregar();
-    try { document.getElementById('v299Jan').focus({ preventScroll: true }); } catch (e) {}
+  function endHtml(nc) {
+    var e = nc.v303end || {}, aberto = temEnd(nc);
+    return '<details' + (aberto ? ' open' : '') + '><summary>Endereço (opcional)</summary><div class="v303-g">' +
+      CAMPOS_END.map(function (k) {
+        return '<div><label>' + ROT_END[k] + '</label><input data-v303end="' + k + '" id="v303E' + cap(k) + '" value="' + E(e[k] || '') + '" autocomplete="off" name="v303_' + k + '_nofill" data-lpignore="true" data-1p-ignore' +
+          (k === 'cep' ? ' inputmode="numeric" maxlength="9"' : '') + '></div>';
+      }).join('') + '</div><div class="v200-sub">' + (podeCadastro()
+        ? 'Ao criar o cliente, o endereço é gravado no cadastro dele.'
+        : 'O seu perfil grava o endereço na observação do cliente; o cadastro completo (rua, número, CEP) fica com quem edita Clientes.') + '</div></details>';
   }
-  V299.scAbrir = scAbrir;
-  async function scCarregar() {
-    var S = V299.sc; if (!S) return; var g = S.ger;
-    try {
-      var r = await rpc('crm_estoque_cards', { p_ids: [S.card], p_detalhe: true });
-      if (!V299.sc || V299.sc.ger !== g) return;
-      S.d = (r && r.cards && r.cards[S.card]) || { vazio: true }; S.f = r && r.fonte; S.pc = !!(r && r.pode_custo); S.ps = !!(r && r.pode_separar); S.carregando = false; S.erro = '';
-      try { var C = V299.card[S.card] || (V299.card[S.card] = {}); C.x = S.d; C.f = S.f; C.pc = S.pc; C.em = Date.now(); C.erro = ''; } catch (e) {}
-    } catch (e) { if (!V299.sc || V299.sc.ger !== g) return; S.carregando = false; S.erro = (e && e.message) || String(e); }
-    scPintar();
-  }
-  function scFechar(doVoltar) {
-    var S = V299.sc; if (!S) return;
-    if (!doVoltar && scSujo() && !S.confirmaFechar) { S.confirmaFechar = true; return scPintar(); }
-    var volta = S.volta, card = S.card, foco = S.foco;
-    V299.sc = null;
-    var raiz = document.getElementById('v299Ov'); if (raiz) { raiz.hidden = true; raiz.querySelector('#v299Jan').innerHTML = ''; }
-    document.body.style.overflow = ''; document.body.classList.remove('v299-aberto');
-    var voltou = false;
-    if (!doVoltar) { try { if (history.state && history.state.v299 === card && location.hash === '#separar/' + card) { history.back(); voltou = true; } } catch (e) {} }
-    try { lerMapa(true); } catch (e) {}
-    // AUDITORIA A13: depois do Voltar quem reabre a gaveta é o endereço #opo/ (V288); só abrimos se ninguém abriu. Com history.back() a
-    // decisão espera o popstate (todos os ouvintes) — ou 500 ms, se o navegador não voltar.
-    function devolver() {
-      try {
-        var jaAberto = typeof _v200 !== 'undefined' && _v200.modal && _v200.modal.tipo === 'card' && _v200.modal.id === card;
-        if (volta === 'card' && card && !jaAberto && typeof _v200AbrirCard === 'function') _v200AbrirCard(card);
-        else if (!jaAberto && foco && document.body.contains(foco)) foco.focus({ preventScroll: true });
-      } catch (e) {}
-    }
-    if (voltou) {
-      var feito = false, uma = function () { if (feito) return; feito = true; window.removeEventListener('popstate', ouvir); setTimeout(devolver, 0); };
-      var ouvir = function () { uma(); };
-      window.addEventListener('popstate', ouvir); setTimeout(uma, 500);
-    } else setTimeout(devolver, doVoltar ? 0 : 60);
-  }
-  V299.scFechar = scFechar;
-  window.addEventListener('popstate', function () { if (V299.sc && location.hash !== '#separar/' + V299.sc.card) { V299.sc.qtd = {}; V299.sc.desf = null; scFechar(true); } });
-  document.addEventListener('keydown', function (ev) {
-    if (ev.key !== 'Escape' || !V299.sc) return;
-    if (document.querySelector('.overlay.open')) return;
-    ev.preventDefault(); ev.stopPropagation(); scFechar(false);
-  }, true);
-  // os passos: a separação é pelo que o estoque COBRE para a linha (o que chegou + o livre); parcial e similar pedem decisão
-  function podeSeparar(l) { return Math.min(N(l.qtd), Math.max(N(l.separado), N(l.chegou)) + N(l.cobre)); }   // AUDITORIA A2: o cobre do banco já vem sem o firme
-  function passos(L) {
-    var p = { sep: [], dec: [], com: [], aco: [], info: [] };
-    L.forEach(function (l) {
-      if (l.estado === 'sem_info') { p.info.push(l); return; }
-      var cobre = Math.max(N(l.separado), podeSeparar(l));
-      var decidida = l.decisao === 'estoque' || l.decisao === 'comprar';
-      if ((l.estado === 'parcial' || l.estado === 'similar') && !decidida) { p.dec.push(l); }
-      else if (cobre > 0 || N(l.separado) > 0) p.sep.push(l);
-      if (N(l.falta) > 0 && (decidida || (l.estado !== 'parcial' && l.estado !== 'similar'))) p.com.push(l);
-      if (N(l.caminho) > 0 || N(l.chegou) > 0 || (l.pedidos || []).length) p.aco.push(l);
-    });
-    return p;
-  }
-  function maqRot(id) { try { return id && typeof _v200RotuloMaq === 'function' ? _v200RotuloMaq(id) : (id || ''); } catch (e) { return id || ''; } }
-  function osDoCard(card) { try { var c = ((_v200.q && _v200.q.cards) || []).find(function (x) { return x.id === card; }); return c ? (c.numero_os || '') : ''; } catch (e) { return ''; } }
-  function linhaRot(l) { return '<b>' + E(T(l.descricao) || T(l.ref) || 'peça') + '</b>' + (l.ref ? ' <small class="v299-cod">' + E(l.ref) + (l.produto && l.produto !== l.ref ? ' · Omie ' + E(l.produto) : '') + '</small>' : '') +
-    (l.maquina_id ? ' <small>· ' + E(maqRot(l.maquina_id)) + '</small>' : ''); }
-  function scPintar() {
-    var S = V299.sc, jan = document.getElementById('v299Jan'); if (!S || !jan) return;
-    var foco = document.activeElement, focoId = foco && jan.contains(foco) ? foco.id : '';
-    var tit = '📦 Separar e comprar' + (S.d && S.d.versoes ? ' · ' + E((S.d.versoes || []).join(', ')) : '');
-    var cab = '<div class="v299-cab"><div><h3>' + tit + '</h3><div class="v299-sub">' + E(nomeCard(S.card)) + (osDoCard(S.card) ? ' · ' + E(osDoCard(S.card)) : '') +
-      (S.f ? ' · saldo: ' + E(fonteRot(S.f)) : '') + '</div></div><div class="v299-cabd">' +
-      (S.f && S.f.fonte === 'omie' && S.f.velha ? '<button type="button" class="v299-btn"' + (S.lendo ? ' disabled' : '') + ' data-v299s="lerOmie" data-pw-off="1" title="Pede ao Omie a Posição de Estoque de novo (leva 1 a 2 minutos)">↻ Ler o estoque agora</button>' : '') +
-      (S.pc ? '<button type="button" class="v299-btn" data-v299s="compras" data-pw-off="1" title="Os pedidos de compra do card: PDF, enviar, receber">📦 Compras do card</button>' : '') +
-      '<button type="button" class="v299-x" data-v299s="fechar" aria-label="Fechar" data-pw-off="1">×</button></div></div>';
-    if (S.carregando) { jan.innerHTML = cab + '<div class="v299-vazio">⏳ Lendo a proposta aceita, o estoque e os pedidos…</div>'; return; }
-    if (S.erro) { jan.innerHTML = cab + '<div class="v299-err">' + E(S.erro) + '</div><div class="v299-pe"><button type="button" class="v299-btn" data-v299s="reler" data-pw-off="1">Tentar de novo</button></div>'; return; }
-    var d = S.d || {}, L = d.linhas || [], h = cab;
-    if (S.confirmaFechar) h += '<div class="v299-avi">Há quantidades digitadas e não gravadas. <button type="button" class="v299-btn" data-v299s="fecharMesmo" data-pw-off="1">Fechar mesmo assim</button> <button type="button" class="v299-btn" data-v299s="ficar" data-pw-off="1">Continuar aqui</button></div>';
-    if (S.msg) h += '<div class="' + (S.msg.erro ? 'v299-err' : 'v299-ok') + '">' + E(S.msg.txt) + '</div>';
-    if (d.vazio || !L.length) { jan.innerHTML = h + '<div class="v299-vazio">Este card ainda não tem proposta com peças. A tela de separar trabalha com a proposta ACEITA.</div>'; return; }
-    if (d.fase !== 'aceita') h += '<div class="v299-avi">A proposta deste card ainda NÃO foi aceita (' + E(d.fase === 'rascunho' ? 'em elaboração' : 'emitida') + '): dá para conferir o estoque, mas separar e comprar só depois do aceite.</div>';
-    if (!S.f || !S.f.ok) h += '<div class="v299-avi">📦 ' + E(fonteAviso(S.f)) + '</div>';
-    var P = passos(L), nSep = L.filter(function (l) { return N(l.separado) >= N(l.qtd); }).length,
-        nPed = L.filter(function (l) { return (l.pedidos || []).length; }).length, nDec = P.dec.length;
-    var pct = Math.round(100 * (L.filter(function (l) { return N(l.separado) >= N(l.qtd) || ((l.pedidos || []).length && N(l.falta) === 0); }).length) / L.length);
-    h += '<div class="v299-prog" role="status"><div class="v299-barra"><i style="width:' + pct + '%"></i></div><div class="v299-cont">' +
-      '<span><b>' + L.length + '</b> itens</span><span><b>' + nSep + '</b> separados</span><span><b>' + nPed + '</b> com pedido</span><span><b>' + nDec + '</b> a decidir</span>' +
-      (P.info.length ? '<span><b>' + P.info.length + '</b> sem informação</span>' : '') + '</div></div>';
-    var aceita = d.fase === 'aceita', podeS = aceita && S.ps && S.f && S.f.ok, podeC = aceita && S.pc;
-    // Passo 1 · separar
-    var aSep = P.sep.filter(function (l) { return N(l.separado) < podeSeparar(l); });
-    h += '<section class="v299-passo" data-passo="1"><h4><span class="v299-num">1</span> ✅ Separar do estoque <small>' + P.sep.length + '</small></h4>' +
-      '<p class="v299-diz">' + (P.sep.length ? (aSep.length ? 'Estes ' + aSep.length + ' ite' + (aSep.length === 1 ? 'm já está' : 'ns já estão') + ' na prateleira para este card: separe e marque.' : 'Tudo o que o estoque cobre já foi separado.') : 'Nada deste card está no estoque livre agora.') + '</p>';
-    if (P.sep.length) {
-      h += '<div class="v299-lista">' + P.sep.map(function (l) {
-        var alvo = Math.max(N(l.separado), podeSeparar(l)), feito = N(l.separado) >= alvo && alvo > 0;
-        var desf = S.desf && S.desf.linha === l.linha;
-        return '<div class="v299-it' + (feito ? ' ok' : '') + '" data-linha="' + E(l.linha) + '"><div class="v299-itx">' + linhaRot(l) +
-          '<div class="v299-sub">' + (feito ? '📦 separado: ' + Q(l.separado) + ' de ' + Q(l.qtd) : 'separar ' + Q(alvo - N(l.separado)) + (N(l.separado) ? ' (já separadas ' + Q(l.separado) + ')' : '') + ' de ' + Q(l.qtd) +
-            (N(l.chegou) ? ' · ' + Q(l.chegou) + ' chegaram pelo pedido' : '')) + '</div></div><div class="v299-itb">' +
-          (feito ? (podeS ? '<button type="button" class="v299-btn" data-v299s="desfAbrir" data-linha="' + E(l.linha) + '" data-pw-off="1">↩ Desfazer</button>' : '')
-                 : (podeS ? '<button type="button" class="v299-btn pri" data-v299s="separar" data-linha="' + E(l.linha) + '" data-qtd="' + alvo + '" data-antes="' + N(l.separado) + '">📦 Separado</button>' : '')) + '</div>' +
-          (desf ? '<div class="v299-desf"><label for="v299DesfMot">Por que desfazer? (vai para a trilha)</label><input type="text" id="v299DesfMot" maxlength="300" value="' + E(S.desf.motivo || '') + '" placeholder="ex.: peça com defeito, voltou para a prateleira" autocomplete="off" name="v299_desf_nofill" data-lpignore="true" data-1p-ignore>' +
-            '<button type="button" class="v299-btn pri" data-v299s="desfOk" data-linha="' + E(l.linha) + '">↩ Desfazer o separado</button><button type="button" class="v299-btn" data-v299s="desfNao" data-pw-off="1">Cancelar</button></div>' : '') + '</div>';
-      }).join('') + '</div><div class="v299-pe">' + (podeS && aSep.length > 1 ? '<button type="button" class="v299-btn pri" data-v299s="separarTodos">📦 Marcar os ' + aSep.length + ' como separados</button>' : '') +
-        '<button type="button" class="v299-btn" data-v299s="imprimir" data-pw-off="1" title="A4, para o almoxarife ticar">🖨 Lista de separação</button></div>';
-      if (aceita && !S.ps) h += '<p class="v299-sub">Marcar separado é do almoxarifado/Suprimentos (perfil Estoque) ou de quem tem o PCM completo.</p>';
-    }
-    h += '</section>';
-    // Passo 2 · decidir
-    h += '<section class="v299-passo" data-passo="2"><h4><span class="v299-num">2</span> ≈ Decidir <small>' + P.dec.length + '</small></h4>' +
-      '<p class="v299-diz">' + (P.dec.length ? 'O estoque cobre só uma parte, ou tem uma peça parecida. Escolha o que fazer em cada uma.' + (aceita && !podeS ? ' (Decidir é de quem separa: almoxarifado/Suprimentos ou PCM completo.)' : '') : 'Nada a decidir.') + '</p>';
-    if (P.dec.length) h += '<div class="v299-lista">' + P.dec.map(function (l) {
-      var par = l.estado === 'parcial', sim = l.sim;
-      return '<div class="v299-it" data-linha="' + E(l.linha) + '"><div class="v299-itx">' + linhaRot(l) + '<div class="v299-sub">' +
-        (par ? 'tem ' + Q(N(l.cobre) + Math.max(N(l.separado), N(l.chegou))) + ' de ' + Q(l.qtd) + ' no estoque · faltam ' + Q(l.falta) : 'sem estoque livre · ' + (sim ? (sim.tipo === 'equivalente' ? 'equivalente' : 'similar') + ' ' + E(sim.codigo || sim.ref) + ' tem ' + Q(sim.saldo) : '')) + '</div></div><div class="v299-itb">' +
-        (par && podeS ? '<button type="button" class="v299-btn pri" data-v299s="decidir" data-d="estoque" data-linha="' + E(l.linha) + '">Separar ' + Q(N(l.cobre) + Math.max(N(l.separado), N(l.chegou))) + ' e comprar ' + Q(l.falta) + '</button>' : '') +
-        (podeS ? '<button type="button" class="v299-btn" data-v299s="decidir" data-d="comprar" data-linha="' + E(l.linha) + '">🛒 Comprar tudo</button>' : '') + '</div>' +
-        (sim ? '<div class="v299-sub" data-v299sim="1" style="flex-basis:100%">≈ Para usar a ' + E(sim.codigo || sim.ref) + ' no lugar: a proposta aceita não troca item — combine com o cliente e faça um orçamento complementar (Proposta › ＋ Complementar). Enquanto isso, a pedida segue a comprar.</div>' : '') + '</div>';
-    }).join('') + '</div>';
-    h += '</section>';
-    // Passo 3 · comprar (agrupado por fornecedor e máquina — um pedido de compra por grupo, como hoje)
-    var semPed = P.com.filter(function (l) { return !(l.pedidos || []).length; });
-    var grupos = {}, ordem = [];
-    semPed.forEach(function (l) {
-      var fk = l.fornecedor_codigo ? 'c' + l.fornecedor_codigo : (T(l.fornecedor_nome) ? 'n' + T(l.fornecedor_nome).toLowerCase() : '');
-      var k = fk + '|' + (l.maquina_id || '');
-      if (!grupos[k]) { grupos[k] = { k: k, sem: !fk, nome: T(l.fornecedor_nome), cod: l.fornecedor_codigo || null, maq: l.maquina_id || '', ls: [] }; ordem.push(k); }
-      grupos[k].ls.push(l);
-    });
-    h += '<section class="v299-passo" data-passo="3"><h4><span class="v299-num">3</span> 🛒 Comprar <small>' + semPed.length + '</small></h4>' +
-      '<p class="v299-diz">' + (semPed.length ? 'O que falta, já com a quantidade que FALTA (o estoque cobre o resto). Um pedido por fornecedor e máquina — confira a quantidade e crie.' : 'Nada a comprar sem pedido.') + '</p>';
-    ordem.forEach(function (k) {
-      var G = grupos[k];
-      h += '<div class="v299-grupo" data-g="' + E(k) + '"><div class="v299-gh"><b>' + (G.sem ? '❔ Escolher fornecedor' : E(S.pc ? G.nome : 'fornecedor da proposta')) + '</b>' + (G.maq ? ' <small>· ' + E(maqRot(G.maq)) + '</small>' : '') + '</div><div class="v299-lista">' +
-        G.ls.map(function (l) {
-          var v = Object.prototype.hasOwnProperty.call(S.qtd, l.linha) ? S.qtd[l.linha] : String(N(l.falta)).replace('.', ',');
-          return '<div class="v299-it" data-linha="' + E(l.linha) + '"><div class="v299-itx">' + linhaRot(l) + '<div class="v299-sub">falta ' + Q(l.falta) + ' de ' + Q(l.qtd) +
-            (S.pc && l.custo_est != null ? ' · último custo ' + E(RS(l.custo_est)) + ' (interno)' : '') + '</div></div><div class="v299-itb">' +
-            '<label class="v299-q">Qtd <input type="text" inputmode="decimal" id="v299q_' + E(l.linha) + '" data-v299q="' + E(l.linha) + '" value="' + E(v) + '" autocomplete="off" name="v299_q_nofill" data-lpignore="true" data-1p-ignore></label></div></div>';
-        }).join('') + '</div><div class="v299-pe">' +
-        (G.sem ? (podeC ? '<button type="button" class="v299-btn" data-v299s="compras" data-pw-off="1">Escolher o fornecedor no 📦 Compras do card</button>' : '')
-               : (podeC ? '<button type="button" class="v299-btn pri" data-v299s="criar" data-g="' + E(k) + '">🛒 Criar o pedido (' + G.ls.length + ' ite' + (G.ls.length === 1 ? 'm' : 'ns') + ')</button>' : '')) + '</div></div>';
-    });
-    if (semPed.length && !podeC) h += '<p class="v299-sub">' + (aceita ? 'Criar pedido de compra é de quem usa Compras (módulo CRM, Financeiro ou administrador).' : 'Os pedidos nascem depois do aceite.') + '</p>';
-    h += '</section>';
-    // Passo 4 · acompanhar
-    h += '<section class="v299-passo" data-passo="4"><h4><span class="v299-num">4</span> 📬 Acompanhar <small>' + P.aco.length + '</small></h4>' +
-      '<p class="v299-diz">' + (P.aco.length ? 'Cada peça comprada com o estado do pedido. Quando chega, ela passa para o passo 1 (separar).' : 'Nenhum pedido de compra ainda.') + '</p>';
-    if (P.aco.length) h += '<div class="v299-lista">' + P.aco.map(function (l) {
-      var ps = (l.pedidos || []).map(function (p) { return (p.id ? E(p.id) : 'pedido') + ' (' + E({ rascunho: 'rascunho', enviado: 'enviado ao fornecedor', recebido: '✅ recebido', cancelado: 'cancelado' }[p.estado] || p.estado) + ')'; }).join(', ');
-      return '<div class="v299-it' + (N(l.chegou) >= N(l.qtd) ? ' ok' : '') + '"><div class="v299-itx">' + linhaRot(l) + '<div class="v299-sub">' +
-        (N(l.chegou) ? '✔ chegou ' + Q(l.chegou) : '') + (N(l.chegou) && N(l.caminho) ? ' · ' : '') + (N(l.caminho) ? '📬 a caminho ' + Q(l.caminho) : '') + (ps ? ' · ' + ps : '') + '</div></div></div>';
-    }).join('') + '</div>';
-    h += '</section>';
-    if (P.info.length) h += '<section class="v299-passo" data-passo="5"><h4>❔ Sem informação de estoque <small>' + P.info.length + '</small></h4><p class="v299-diz">Peça sem código/cadastro no estoque (ou sem leitura): confira na prateleira e, se faltar, peça no 📦 Compras do card.</p><div class="v299-lista">' +
-      P.info.map(function (l) { return '<div class="v299-it"><div class="v299-itx">' + linhaRot(l) + '<div class="v299-sub">' + Q(l.qtd) + ' ' + E(l.unidade || '') + ((l.pedidos || []).length ? ' · ' + (l.pedidos[0].id ? 'pedido ' + E(l.pedidos.map(function (p) { return p.id; }).join(', ')) : l.pedidos.length + ' pedido(s) de compra') : '') + '</div></div></div>'; }).join('') + '</div></section>';
-    jan.innerHTML = h;
-    if (focoId) { var nf = document.getElementById(focoId); if (nf) { try { nf.focus({ preventScroll: true }); } catch (e) {} } }
-  }
-  V299.scPintar = scPintar;
-  function numBr(t) { var s = T(t).replace(/\s/g, ''); if (!/^\d{1,9}([.,]\d{1,3})?$/.test(s)) return NaN; return Number(s.replace(',', '.')); }
-  async function scAcao(b) {
-    var S = V299.sc; if (!S) return; var a = b.getAttribute('data-v299s'), card = S.card;
-    if (a === 'fechar') return scFechar(false);
-    if (a === 'fecharMesmo') { S.qtd = {}; S.desf = null; return scFechar(false); }
-    if (a === 'ficar') { S.confirmaFechar = false; return scPintar(); }
-    if (a === 'reler') { S.carregando = true; S.erro = ''; scPintar(); return scCarregar(); }
-    if (a === 'compras') { var c0 = card; scFechar(false); setTimeout(function () { try { if (typeof _v238Abrir === 'function') _v238Abrir(c0, 'card'); } catch (e) {} }, 120); return; }
-    if (a === 'usarSim') { var c1 = card; scFechar(false); setTimeout(function () { try { if (typeof _v204AbrirEditor === 'function') _v204AbrirEditor(c1); } catch (e) {} }, 120); return; }
-    if (a === 'imprimir') return imprimir();
-    if (a === 'desfAbrir') { S.desf = { linha: b.getAttribute('data-linha'), motivo: '' }; scPintar(); var mi = document.getElementById('v299DesfMot'); if (mi) mi.focus(); return; }
-    if (a === 'desfNao') { S.desf = null; return scPintar(); }
-    if (a === 'lerOmie') {
-      if (S.lendo) return; S.lendo = true; b.disabled = true;
-      try { var r0 = await rpc('erp_pedir', { p_verbo: 'lerEstoque', p_modo: 'completo' }); S.msg = { txt: r0 && r0.ja_estava_na_fila ? 'A leitura do estoque já estava na fila — reabra em 1 ou 2 minutos.' : 'Pedi ao Omie a Posição de Estoque — reabra esta tela em 1 ou 2 minutos.' }; }
-      catch (e) { S.msg = { erro: true, txt: 'Não deu para pedir a leitura (' + ((e && e.message) || e) + '). O administrador pede em ' + CAMINHO + '.' }; }
-      return scPintar();
-    }
-    // as gravações (uma por vez; o resultado volta com o card relido do banco)
-    if (S.gravando) return;
-    S.gravando = true; S.msg = null;
-    var txt = b.textContent; b.disabled = true; b.classList.add('is-busy'); b.setAttribute('data-pcm-enviando', '1'); b.textContent = '⏳ ' + txt;
-    try {
-      var r = null;
-      if (a === 'separar' || a === 'separarTodos') {
-        var L = (S.d && S.d.linhas) || [], its = [];
-        if (a === 'separar') its.push({ linha: b.getAttribute('data-linha'), qtd: Number(b.getAttribute('data-qtd')), antes: Number(b.getAttribute('data-antes')) });
-        else passos(L).sep.forEach(function (l) { var alvo = Math.max(N(l.separado), podeSeparar(l)); if (N(l.separado) < alvo) its.push({ linha: l.linha, qtd: alvo, antes: N(l.separado) }); });
-        r = await _v200Rpc('crm_estoque_separar', { p_card: card, p_itens: its }, true);
-        S.msg = { txt: r && r.sem_mudanca ? 'Nada mudou (já estava assim).' : '📦 Marcado como separado (' + its.length + ' ite' + (its.length === 1 ? 'm' : 'ns') + ') — está na trilha do card.' };
-      } else if (a === 'desfOk') {
-        var mot = T((document.getElementById('v299DesfMot') || {}).value);
-        if (mot.length < 5) { S.msg = { erro: true, txt: 'Diga o motivo de desfazer (pelo menos 5 letras).' }; S.desf.motivo = mot; return; }
-        r = await _v200Rpc('crm_estoque_desfazer', { p_card: card, p_linha: b.getAttribute('data-linha'), p_motivo: mot }, true);
-        S.desf = null; S.msg = { txt: '↩ Separado desfeito — o motivo está na trilha do card.' };
-      } else if (a === 'decidir') {
-        r = await _v200Rpc('crm_estoque_decidir', { p_card: card, p_linha: b.getAttribute('data-linha'), p_decisao: b.getAttribute('data-d') }, true);
-        S.msg = { txt: b.getAttribute('data-d') === 'comprar' ? '🛒 Decidido: comprar tudo — a linha foi para o passo 3.' : '📦 Decidido: separar o que tem e comprar o resto.' };
-      } else if (a === 'criar') {
-        var k = b.getAttribute('data-g'), ls = passos((S.d && S.d.linhas) || []).com.filter(function (l) {
-          var fk = l.fornecedor_codigo ? 'c' + l.fornecedor_codigo : (T(l.fornecedor_nome) ? 'n' + T(l.fornecedor_nome).toLowerCase() : '');
-          return !(l.pedidos || []).length && fk + '|' + (l.maquina_id || '') === k; });
-        if (!ls.length) throw new Error('as linhas mudaram — atualize a tela');
-        var qs = {}, ruim = '';
-        ls.forEach(function (l) {
-          var el = document.getElementById('v299q_' + l.linha), q = numBr(el ? el.value : (S.qtd[l.linha] != null ? S.qtd[l.linha] : String(N(l.falta))));
-          if (!(q > 0) || q > N(l.qtd)) ruim = ruim || (T(l.descricao) + ': quantidade entre 0 e ' + Q(l.qtd));
-          qs[l.linha] = q;
-        });
-        if (ruim) { S.msg = { erro: true, txt: 'Confira: ' + ruim + '.' }; return; }
-        var l0 = ls[0], forn = l0.fornecedor_codigo ? { codigo: l0.fornecedor_codigo } : { nome: T(l0.fornecedor_nome) };
-        S.uid[k] = S.uid[k] || ('v299-' + card + '-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 8));
-        var pc = await _v200Rpc('com_pedido_criar', { p_card: card, p_linhas: ls.map(function (l) { return l.linha; }), p_fornecedor: forn, p_client_uid: S.uid[k] }, true);
-        var ped = pc && pc.pedido;
-        if (ped && ped.estado === 'rascunho' && (ped.itens || []).some(function (it) { return it.linha_id && qs[it.linha_id] != null && N(it.qtd) !== qs[it.linha_id]; })) {
-          var itens = (ped.itens || []).map(function (it) { return { id: it.id, qtd: it.linha_id && qs[it.linha_id] != null ? qs[it.linha_id] : N(it.qtd) }; });
-          await _v200Rpc('com_pedido_salvar', { p_id: ped.id, p_rev: ped.rev, p_cab: {}, p_itens: itens }, true);
-        }
-        ls.forEach(function (l) { delete S.qtd[l.linha]; }); delete S.uid[k];
-        S.msg = { txt: '🛒 Pedido ' + (ped ? ped.id : '') + ' criado (rascunho) com a quantidade que falta. PDF e envio ao fornecedor: 📦 Compras do card.' };
+  function desenhar(comEnd) {
+    var c = ctx(); if (!c) return;
+    var f = document.getElementById('v303Faixa'); if (f) f.innerHTML = faixaHtml(c.nc);
+    if (comEnd) {
+      var e = document.getElementById('v303End');
+      if (e) {
+        var foco = document.activeElement && e.contains(document.activeElement);
+        if (foco) { CAMPOS_END.forEach(function (k) { var el = document.getElementById('v303E' + cap(k)); if (el && el !== document.activeElement && !T(el.value)) el.value = (c.nc.v303end || {})[k] || ''; }); }
+        else { var aberto = !!(e.querySelector('details') && e.querySelector('details').open); e.innerHTML = endHtml(c.nc); if (aberto) { var dt = e.querySelector('details'); if (dt) dt.open = true; } }
       }
-      await scCarregar();
+    }
+  }
+  function nomeLivre(M, nc) { return !T(nc.nome) || (!nc.v303nomeDig && T(nc.nome) === T(M && M.busca)); }   // vazio, ou só o texto da busca que a pessoa não escreveu como nome
+  function por(nc, k, v) {   // preenche SÓ o vazio (o que a pessoa escreveu é soberano); atualiza o campo sem repintar (não perde o foco)
+    v = T(v); if (!v) return false;
+    if (T(nc[k]) && !(k === 'nome' && nomeLivre(ctx() && ctx().M, nc))) return false;
+    nc[k] = v;
+    var el = document.getElementById('v214Nc' + cap(k)); if (el) el.value = v;
+    return true;
+  }
+  function porEnd(nc, k, v) {
+    v = T(v); if (!v) return false; var e = end(nc); if (T(e[k])) return false; e[k] = v; return true;
+  }
+  function fmtTel(d) {
+    d = dig(d); if (!d) return '';
+    var ok = false; try { ok = !!_v126TelValido(d); } catch (e) { ok = d.length === 10 || d.length === 11; }
+    if (!ok) return '';
+    try { return _v126TelFmt(d); } catch (e) { return d; }
+  }
+  function fmtCep(c) { c = dig(c); if (c.length === 7) c = '0' + c; return c.length === 8 ? c.replace(/^(\d{5})(\d{3})$/, '$1-$2') : ''; }
+
+  // ── a busca em cascata ──────────────────────────────────────────────────────────────────────
+  function vivo(M, nc, ger, d) { return ger === V303.ger && _v200.modal === M && M.nc === nc && dig(nc.cnpj) === d; }
+  function solta(nc, s) { if (nc && s && nc.v303 === s) { s.busca = ''; s.trazendo = false; } }   // resposta descartada: não deixa "Procurando…" para sempre
+  async function iniciar(M, nc, d) {
+    var ger = ++V303.ger;
+    nc.v303 = { dig: d, busca: 'pcm', pcm: [], omie: null, rec: null, recErro: '', avisoOmie: '', pcmErro: '', fim: false, pode: false };
+    desenhar();
+    var s = nc.v303, achouPcm = false;
+    try {
+      var l = await _v200Rpc('crm_cliente_parecidos', { p_nome: '', p_cnpj: d });
+      if (!vivo(M, nc, ger, d)) return solta(nc, s);
+      if (l && !Array.isArray(l) && Array.isArray(l.parecidos)) l = l.parecidos;
+      s.pcm = (Array.isArray(l) ? l : []).filter(function (p) { return p && p.motivo === 'mesmo CNPJ'; });
+      achouPcm = s.pcm.length > 0;
+    } catch (e) { if (!vivo(M, nc, ger, d)) return solta(nc, s); s.pcmErro = (e && e.message) || 'erro'; }
+    if (achouPcm) { s.busca = ''; s.pode = true; desenhar(); return; }
+    s.busca = 'omie'; desenhar();
+    try {
+      var r = await _v200Rpc('erp_clientes_omie', { p_texto: d, p_filtro: 'todos', p_limite: 10 });
+      if (!vivo(M, nc, ger, d)) return solta(nc, s);
+      if (r && r.lido === false) s.avisoOmie = 'O Omie ainda não foi lido no PCM (ainda não achei a lista de clientes dele). Segui para a Receita.';
+      var ach = ((r && r.itens) || []).filter(function (x) { return dig(x.cnpj) === d && ['so_omie', 'parecido', 'no_pcm', 'inativo_omie'].indexOf(S(x.estado)) >= 0; });
+      var it = ach.filter(function (x) { return !x.inativo; })[0];
+      if (it) { s.omie = it; s.busca = ''; s.pode = true; desenhar(); return; }
+      if (ach.length) s.avisoOmie = 'No Omie este CNPJ está INATIVO (' + T(ach[0].razao || ach[0].fantasia) + ') — não trago cadastro inativo. Segui para a Receita.';
+    } catch (e) { if (!vivo(M, nc, ger, d)) return solta(nc, s); s.avisoOmie = 'Não consegui consultar o Omie agora (' + ((e && e.message) || 'erro') + '). Segui para a Receita.'; }
+    s.fim = true;
+    await receita(M, nc, d, ger);
+  }
+  async function receita(M, nc, d, ger) {
+    var s = nc.v303; if (!s) return;
+    if (ger == null) ger = ++V303.ger;
+    s.busca = 'receita'; s.recErro = ''; desenhar();
+    var ctl = typeof AbortController === 'function' ? new AbortController() : null;
+    var prazo = 15000; try { prazo = V253.PRAZO_MS || 15000; } catch (e) {}
+    var tm = setTimeout(function () { try { ctl && ctl.abort(); } catch (e) {} }, prazo);
+    var j = null, falha = '';
+    try {
+      var r = await fetch('https://brasilapi.com.br/api/cnpj/v1/' + d, ctl ? { signal: ctl.signal } : undefined);
+      if (r.status === 404) falha = 'CNPJ não encontrado na base pública da Receita.';
+      else if (!r.ok) falha = 'A Receita não respondeu agora (HTTP ' + r.status + ') — preencha à mão; dá para buscar depois na ficha do cliente.';
+      else j = await r.json();
     } catch (e) {
-      S.msg = { erro: true, txt: (e && e.message) || String(e) };
-      try { if (V299.sc === S) await scCarregar(); } catch (e2) {}   // AUDITORIA A11: relê (o "antes" da tela volta a ser o do banco)
-    } finally {
-      S.gravando = false;
-      if (b.isConnected) { b.disabled = false; b.classList.remove('is-busy'); b.removeAttribute('data-pcm-enviando'); b.textContent = txt; }
-      if (V299.sc === S) scPintar();
-    }
+      falha = (e && e.name === 'AbortError') ? 'A Receita não respondeu em ' + Math.round(prazo / 1000) + ' s — preencha à mão; dá para buscar depois na ficha do cliente.'
+            : 'A Receita não respondeu agora (' + ((e && e.message) || e) + ') — preencha à mão; dá para buscar depois na ficha do cliente.';
+    } finally { clearTimeout(tm); }
+    if (!vivo(M, nc, ger, d)) return solta(nc, s);
+    s.busca = ''; s.pode = true;
+    if (falha) { s.recErro = falha; desenhar(); return; }
+    if (!j || typeof j !== 'object' || Array.isArray(j)) { s.recErro = 'A Receita respondeu num formato inesperado — nada foi preenchido.'; desenhar(); return; }
+    var razao = tc(j.razao_social), fantasia = tc(j.nome_fantasia);
+    var rua = T([j.descricao_tipo_de_logradouro, j.logradouro].filter(function (x) { return T(x); }).join(' '));
+    if (!razao && !rua && !T(j.municipio)) { s.recErro = 'A Receita não trouxe dados para este CNPJ — nada foi preenchido.'; desenhar(); return; }
+    var n = 0, fora = [];
+    if (por(nc, 'nome', razao)) n++;
+    if (por(nc, 'cidade', tc(j.municipio))) n++;
+    var uf = T(j.uf).toUpperCase();
+    if (/^[A-Z]{2}$/.test(uf)) { if (por(nc, 'uf', uf)) n++; } else if (uf) fora.push('UF "' + uf + '"');
+    var tel = dig(j.ddd_telefone_1), telF = fmtTel(tel);
+    if (telF) { if (por(nc, 'telefone', telF)) n++; } else if (tel) fora.push('telefone "' + T(j.ddd_telefone_1) + '" (sem DDD ou incompleto)');
+    var em = T(j.email).toLowerCase();
+    if (em && /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(em)) { if (por(nc, 'email', em)) n++; } else if (em) fora.push('e-mail "' + em + '"');
+    if (porEnd(nc, 'endereco', tc(rua))) n++;
+    if (porEnd(nc, 'numero', j.numero)) n++;
+    if (porEnd(nc, 'complemento', tc(j.complemento))) n++;
+    if (porEnd(nc, 'bairro', tc(j.bairro))) n++;
+    var cep = fmtCep(j.cep); if (cep) { if (porEnd(nc, 'cep', cep)) n++; } else if (T(j.cep)) fora.push('CEP "' + T(j.cep) + '"');
+    s.rec = { razao: razao, fantasia: (fantasia && fantasia.toLowerCase() !== razao.toLowerCase()) ? fantasia : '', situacao: T(j.descricao_situacao_cadastral).toUpperCase(), n: n, fora: fora };
+    desenhar(true);
   }
-  document.addEventListener('click', function (ev) {
-    var b = ev.target && ev.target.closest && ev.target.closest('#v299Jan [data-v299s]'); if (!b || off()) return;
-    ev.preventDefault(); scAcao(b);
-  });
-  document.addEventListener('input', function (ev) {
-    var t = ev.target; if (!V299.sc || !t || !t.getAttribute) return;
-    if (t.hasAttribute('data-v299q')) V299.sc.qtd[t.getAttribute('data-v299q')] = t.value;
-    if (t.id === 'v299DesfMot' && V299.sc.desf) V299.sc.desf.motivo = t.value;
-  });
-  // 🖨 a lista de separação (A4, fundo branco): impressa por um quadro invisível — sem aba nova
-  function imprimir() {
-    var S = V299.sc; if (!S || !S.d) return;
-    var ls = passos(S.d.linhas || []).sep, cli = nomeCard(S.card), os = osDoCard(S.card);
-    var h = '<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><title>Lista de separação ' + E(S.card) + '</title><style>' +
-      '@page{size:A4;margin:14mm}body{font:12pt Arial,sans-serif;color:#000;background:#fff}h1{font-size:16pt;margin:0 0 4px}.s{font-size:10pt;color:#333;margin-bottom:10px}' +
-      'table{width:100%;border-collapse:collapse}th,td{border:1px solid #444;padding:6px;text-align:left;vertical-align:top}th{background:#eee}td.q{text-align:right;white-space:nowrap}td.c{width:18mm;text-align:center;font-size:16pt}' +
-      '.ass{margin-top:18mm;display:flex;gap:20mm}.ass div{flex:1;border-top:1px solid #000;padding-top:4px;font-size:10pt}</style></head><body>' +
-      '<h1>📦 Lista de separação</h1><div class="s">' + E(cli) + (os ? ' · OS ' + E(os) : '') + ' · ' + E((S.d.versoes || []).join(', ')) + ' · impressa em ' + E(new Date().toLocaleString('pt-BR')) + '</div>' +
-      '<table><thead><tr><th>Código</th><th>Descrição</th><th>Máquina</th><th>Qtd</th><th>Separado</th></tr></thead><tbody>' +
-      (ls.length ? ls.map(function (l) { var alvo = Math.max(N(l.separado), podeSeparar(l)); return '<tr><td>' + E(l.ref || '') + (l.produto && l.produto !== l.ref ? '<br><small>Omie ' + E(l.produto) + '</small>' : '') + '</td><td>' + E(T(l.descricao)) + '</td><td>' + E(maqRot(l.maquina_id)) + '</td><td class="q">' + E(Q(alvo)) + ' ' + E(l.unidade || '') + '</td><td class="c">☐</td></tr>'; }).join('')
-                 : '<tr><td colspan="5">Nada a separar do estoque agora.</td></tr>') +
-      '</tbody></table><div class="ass"><div>Separado por</div><div>Conferido por</div></div></body></html>';
-    var fr = document.getElementById('v299Print');
-    if (!fr) { fr = document.createElement('iframe'); fr.id = 'v299Print'; fr.setAttribute('aria-hidden', 'true'); fr.style.cssText = 'position:fixed;right:0;bottom:0;width:0;height:0;border:0;visibility:hidden'; document.body.appendChild(fr); }
-    var dc = fr.contentWindow.document; dc.open(); dc.write(h); dc.close();
-    setTimeout(function () { try { fr.contentWindow.focus(); fr.contentWindow.print(); } catch (e) { toast('Não deu para imprimir: ' + ((e && e.message) || e), 'error'); } }, 150);
+  async function trazer(cod) {
+    var c = ctx(); if (!c) return; var M = c.M, nc = c.nc, s = nc.v303; if (!s || s.trazendo) return;
+    var ger = V303.ger, d = dig(nc.cnpj);
+    s.trazendo = true; desenhar();
+    try {
+      var r;
+      try { r = await _v200Rpc('erp_cliente_omie', { p_codigo: Number(cod) }); }
+      catch (e) { if (vivo(M, nc, ger, d) && nc.v303 === s) { s.avisoOmie = 'Não consegui ler o cliente no Omie: ' + ((e && e.message) || e); } return; }
+      if (!vivo(M, nc, ger, d) || nc.v303 !== s) return;   // trocou o CNPJ, a janela ou o formulário enquanto lia: NADA é criado nem atrelado
+      if (dig(r && r.cnpj) !== d && dig(r && r.dados && r.dados.cnpj) !== d) { s.avisoOmie = 'O cadastro do Omie lido não tem este CNPJ — nada foi criado.'; return; }
+      if (r && r.estado === 'no_pcm') {
+        var p = (r.no_pcm || []).filter(function (y) { return y && y.ativo !== false; })[0];
+        if (p) { toast('“' + p.nome + '” já está no cadastro do PCM (mesmo CNPJ) — escolhido.', 'success'); _v214UsarConta(p.id, p.nome, false); return; }
+      }
+      var dd = (r && r.dados) || {};
+      if (T(dd.nome).length < 3) { s.avisoOmie = 'O Omie não tem um nome utilizável para este cliente.'; return; }
+      por(nc, 'nome', dd.nome); por(nc, 'cidade', dd.cidade); if (dd.uf) por(nc, 'uf', S(dd.uf).toUpperCase());
+      var tf = fmtTel(dd.telefone); if (tf) por(nc, 'telefone', tf);
+      por(nc, 'contato', dd.contato); if (T(dd.email)) por(nc, 'email', S(dd.email).toLowerCase());
+      porEnd(nc, 'endereco', dd.endereco); porEnd(nc, 'numero', dd.numero); porEnd(nc, 'complemento', dd.complemento); porEnd(nc, 'bairro', dd.bairro);
+      var cep = fmtCep(dd.cep); if (cep) porEnd(nc, 'cep', cep);
+      nc.v303obs = 'Cadastro trazido do Omie (código ' + Number(cod) + ').';
+      desenhar(true);
+      if (typeof _v214CriarCliente === 'function') await _v214CriarCliente(false);
+    } finally { if (nc.v303 === s) { s.trazendo = false; if (_v200.modal === M && M.nc === nc) desenhar(); } }
   }
-  V299.imprimir = imprimir;
-  // C0 · a tela é OFERECIDA logo depois de registrar o aceite (a gaveta mostra a faixa com o botão)
-  V299.oferta = {};
-  if (typeof _v200Rpc === 'function') {
-    V299.orig.rpc = _v200Rpc;
-    _v200Rpc = async function (fn, args) {
-      var r = await V299.orig.rpc.apply(this, arguments);
-      try { if (fn === 'crm_aceite_registrar' && args && (args.p_id || args.p_oportunidade)) { var id = args.p_id || args.p_oportunidade; V299.oferta[id] = Date.now(); if (V299.card[id]) V299.card[id].em = 0; } } catch (e) {}
+
+  // ── o endereço vai junto: observação (perfil CRM) e cadastro (perfil que grava) ───────────────
+  if (typeof _v214Rpc === 'function') {
+    V303.orig.rpc = _v214Rpc;
+    _v214Rpc = function (fn, args, escrita, oque) {
+      try {
+        if (!off() && fn === 'crm_cliente_criar' && args) {
+          var c = ctx();
+          if (c && T(args.p_nome) === T(c.nc.nome)) {
+            var extra = [];
+            if (c.nc.v303obs) extra.push(c.nc.v303obs);
+            if (!podeCadastro() && temEnd(c.nc)) extra.push('Endereço: ' + endTexto(c.nc) + '.');
+            if (extra.length) args = Object.assign({}, args, { p_obs: (args.p_obs ? S(args.p_obs) + ' ' : '') + extra.join(' ') });
+          }
+        }
+      } catch (e) { console.warn('[V303] rpc:', e); }
+      return V303.orig.rpc.call(this, fn, args, escrita, oque);
+    };
+  }
+  async function gravarEnd(id, e, texto) {
+    var cli = { id: id };
+    CAMPOS_END.forEach(function (k) { if (T(e[k])) cli[k] = T(e[k]); });
+    var falha = '';
+    try {
+      var r = await _v222PonteCliente({ client: cli });
+      if (r && r.status === 'ok' && r.action !== 'blocked') { toast('Endereço gravado no cadastro do cliente.', 'success'); return; }
+      falha = 'o cadastro não aceitou agora';
+    } catch (err) { falha = (err && err.message) || String(err); }
+    toast('O cliente foi criado, mas o endereço NÃO foi gravado (' + falha + '). Complete em Clientes › Dados: ' + texto, 'warning');
+  }
+  if (typeof _v214UsarConta === 'function') {
+    V303.orig.usar = _v214UsarConta;
+    _v214UsarConta = function (id, nome, novo) {
+      var c = null, e = null;
+      try { c = ctx(); if (!off() && novo && c && temEnd(c.nc) && podeCadastro() && typeof _v222PonteCliente === 'function') e = Object.assign({}, c.nc.v303end); } catch (x) {}
+      var r = V303.orig.usar.apply(this, arguments);
+      if (e) gravarEnd(id, e, c ? endTexto(c.nc) : '');
       return r;
     };
   }
-  // o 📦 Compras do card (V238) ganha o atalho para esta tela
-  if (typeof _v238OvPintar === 'function') {
-    V299.orig.ov238 = _v238OvPintar;
-    _v238OvPintar = function () {
-      var r = V299.orig.ov238.apply(this, arguments);
-      try {
-        var O = V238.ov, cab = document.querySelector('#v238Jan .v238-cab');
-        if (!off() && !V299.semSql && O && O.d && cab && !cab.querySelector('[data-v299c]')) {
-          var x = cab.querySelector('.v238-x');
-          var bt = '<button type="button" class="v238-btn" data-v299c="1" data-pw-off="1" title="O que já está no estoque (separar) e o que falta comprar, passo a passo">📦 Separar e comprar</button>';
-          if (x) x.insertAdjacentHTML('beforebegin', bt); else cab.insertAdjacentHTML('beforeend', bt);
-        }
-      } catch (e) {}
+
+  // ── a tela: o CNPJ sobe para o 1º campo ────────────────────────────────────────────────────
+  if (typeof _v200PintarNova === 'function') {
+    V303.orig.pintar = _v200PintarNova;
+    _v200PintarNova = function () {
+      var r = V303.orig.pintar.apply(this, arguments);
+      try { if (!off()) montar(); } catch (e) { console.warn("[V303] montar:", e); }
       return r;
     };
   }
-  document.addEventListener('click', function (ev) {
-    var b = ev.target && ev.target.closest && ev.target.closest('#v238Jan [data-v299c]'); if (!b || off()) return;
-    var card = V238.ov && V238.ov.card; if (!card) return;
-    try { _v238Fechar(false); } catch (e) {}
-    if (V238.ov) return;   // havia edição pendente no pedido: o 📦 Compras pediu confirmação e ficou aberto
-    setTimeout(function () { scAbrir(card, 'card'); }, 80);
-  });
-  try { if (typeof V200_EVENTO === 'object' && V200_EVENTO && !V200_EVENTO.estoque) V200_EVENTO.estoque = '📦 estoque'; } catch (e) {}
+  function montar() {
+    var c = ctx(); if (!c) return;
+    var box = document.getElementById('v214Novo'); if (!box || document.getElementById('v303Topo')) return;
+    var inp = document.getElementById('v214NcCnpj'); if (!inp) return;
+    var col = inp.parentNode, lab = col.querySelector('label'), prim = box.querySelector('label');
+    if (!prim) return;
+    var topo = document.createElement('div'); topo.id = 'v303Topo';
+    var lin = document.createElement('div'); lin.className = 'v303-lin';
+    var cel = document.createElement('div'); lin.appendChild(cel);
+    if (lab) { lab.textContent = 'CNPJ (ou CPF) — comece por aqui'; cel.appendChild(lab); }
+    cel.appendChild(inp);
+    inp.placeholder = 'CNPJ de 14 dígitos: procuro no PCM, no Omie e na Receita'; inp.setAttribute('maxlength', '18');
+    var bt = document.createElement('button'); bt.type = 'button'; bt.className = 'btn btn-secondary btn-sm'; bt.setAttribute('data-v303', 'buscar'); bt.textContent = '🔎 Buscar';
+    lin.appendChild(bt); topo.appendChild(lin);
+    var fx = document.createElement('div'); fx.id = 'v303Faixa'; fx.className = 'v303-faixa'; fx.setAttribute('role', 'status'); topo.appendChild(fx);
+    box.insertBefore(topo, prim);
+    var en = document.createElement('div'); en.id = 'v303End';
+    var dica = null;
+    Array.prototype.forEach.call(box.children, function (x) { if (x.classList && x.classList.contains('v200-sub') && /^Endere/.test(T(x.textContent))) dica = x; });
+    if (dica) { dica.textContent = 'Filial e o resto do cadastro se completam depois em Clientes.'; box.insertBefore(en, dica); }
+    else box.appendChild(en);
+    fx.innerHTML = faixaHtml(c.nc); en.innerHTML = endHtml(c.nc);
+    if (!c.nc.v303foco) { c.nc.v303foco = true; try { inp.removeAttribute('readonly'); inp.focus(); } catch (e) {} }
+  }
+
+  // ── cliques e digitação (um ouvinte no modal) ───────────────────────────────────────────────
+  function buscar() {
+    var c = ctx(); if (!c) return; var d = dig(c.nc.cnpj);
+    if (!cnpjOk(d)) { toast('CNPJ inválido — confira os 14 dígitos e o dígito verificador.', 'warning'); desenhar(); return; }
+    iniciar(c.M, c.nc, d);
+  }
+  function digitou(ev) {
+    var t = ev.target; if (!t || !t.getAttribute || off()) return;
+    var c = ctx(); if (!c) return;
+    var ke = t.getAttribute('data-v303end');
+    if (ke) { end(c.nc)[ke] = t.value; return; }
+    if (t.getAttribute('data-v214nc') === 'nome') c.nc.v303nomeDig = true;
+    if (t.getAttribute('data-v214nc') !== 'cnpj') return;
+    var d = dig(t.value);
+    c.nc.cnpj = t.value;
+    if (c.nc.v303 && c.nc.v303.dig !== d) { V303.ger++; c.nc.v303 = null; c.nc.v303obs = ''; desenhar(); }
+    if (d.length === 14 && cnpjOk(d)) { if (!c.nc.v303) iniciar(c.M, c.nc, d); }
+    else desenhar();
+  }
+  function clicou(ev) {
+    var a = ev.target && ev.target.closest && ev.target.closest('[data-v303]'); if (!a || off()) return;
+    ev.preventDefault();
+    var k = a.getAttribute('data-v303'), c = ctx();
+    if (k === 'buscar') return buscar();
+    if (!c) return;
+    if (k === 'usarPcm') return _v214UsarConta(a.getAttribute('data-id'), a.getAttribute('data-nome'), false);
+    if (k === 'trazer') return trazer(a.getAttribute('data-cod'));
+    if (k === 'receita') { var d = dig(c.nc.cnpj); if (cnpjOk(d)) receita(c.M, c.nc, d, ++V303.ger); }
+  }
+  try {
+    var m = document.getElementById('v200Modal');
+    if (m) { m.addEventListener('click', clicou); m.addEventListener('input', digitou); }
+  } catch (e) { console.warn('[V303] ligar a tela:', e); }
 })();
 </script>
-<!-- ████ FIM PCM V299 ████ -->
-<!-- ████ INICIO PCM V302 · 📦 COMPRAS DO CARD: COMPRAR DE POR LINHA · VÁRIAS MÁQUINAS SOMADAS · ESTOQUE NA TABELA (22/10/2026) ████ -->
-<style id="v302Css">
-/* PCM V302 · compras do card flexível (rodada 2026-10-22_FERNANDO_compras_pedido_flexivel) */
-#v302Bl .v302-faixa{display:flex;flex-wrap:wrap;gap:6px 12px;align-items:center;margin:0 11px 6px;padding:7px 10px;border:1px solid #D0D5DD;border-radius:9px;background:#F9FAFB;font-size:12.5px;color:#344054}
-#v302Bl .v302-faixa.aviso{background:#FFFAEB;border-color:#FEDF89;color:#7A4A00}
-#v302Bl .v302-dica{margin:0 11px 8px;font-size:12px;color:#475467}
-#v302Bl table.v302-tab td,#v302Bl table.v302-tab th{vertical-align:top}
-#v302Bl .v302-gr td{background:#F2F4F7;font-weight:600;color:#344054;border-top:1px solid #EAECF0}
-#v302Bl .v302-gr .v302-pr{font-weight:400;color:#475467;margin-left:6px}
-#v302Bl .v302-gr .v302-pr.perto{color:#B54708;font-weight:600}
-#v302Bl .v302-chip{display:inline-block;padding:1px 8px;border-radius:999px;font-size:11.5px;font-weight:600;border:1px solid;white-space:nowrap}
-#v302Bl .v302-chip.verde{background:#EEF7F1;border-color:#A6D8B8;color:#1E7B45}
-#v302Bl .v302-chip.ambar{background:#FFF7E6;border-color:#F4C46A;color:#8A5A00}
-#v302Bl .v302-chip.azul{background:#EEF4FF;border-color:#B7CCF5;color:#1E3A6B}
-#v302Bl .v302-chip.cinza{background:#F5F5F5;border-color:#DADADA;color:#6B6B6B}
-#v302Bl .v302-cobre{margin-top:3px;font-size:11.5px;color:#1E7B45}
-#v302Bl input.v302-q{width:68px;text-align:right}
-#v302Bl input.v302-q.ruim,.v302-gtab input.ruim{border-color:#D92D20;background:#FEF3F2}
-#v302Bl .v302-forn{position:relative;min-width:190px}
-#v302Bl .v302-forn input{width:100%;min-width:150px}
-#v302Bl .v302-forn .v302-fl{display:flex;gap:4px;align-items:center;flex-wrap:wrap;margin-top:2px;font-size:11px;color:#475467}
-#v302Bl .v302-mini{border:1px solid #D0D5DD;background:#fff;border-radius:7px;padding:2px 7px;font-size:11.5px;cursor:pointer;color:#344054;min-height:26px}
-#v302Bl .v302-mini:hover,#v302Bl .v302-mini:focus-visible{background:#F2F4F7;outline:none}
-#v302Bl .v302-escolhido{color:#1E3A6B;font-weight:600}
-#v302Bl tr.v302-qv td{background:#FCFCFD}
-#v302Bl .v302-qvl{display:flex;flex-direction:column;gap:4px;padding:4px 0 6px}
-#v302Bl .v302-qvi{display:flex;gap:8px;align-items:center;flex-wrap:wrap;font-size:12.5px}
-#v302Bl .v302-ult{display:block;font-size:11px;color:#475467;white-space:nowrap}
-#v302Bl .v302-form{padding:10px 11px;border-top:1px solid #EAECF0}
-#v302Bl .v302-form .v302-lin{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:flex-end;margin-top:6px}
-#v302Bl .v302-form label{display:flex;flex-direction:column;gap:3px;font-size:12px;color:#344054}
-.v302-ultbox{margin:6px 0;padding:6px 10px;border:1px solid #D0D5DD;border-radius:8px;background:#F9FAFB;font-size:12.5px}.v302-ultbox ul{margin:4px 0 0;padding-left:18px}.v302-ultbox li{margin:2px 0}
-.v302-am{margin:6px 0;padding:6px 10px;border:1px solid #FEDF89;border-radius:8px;background:#FFFAEB;color:#7A4A00;font-size:12.5px}
-.v302-maqs{margin:6px 0 8px;font-size:12.5px;color:#344054}
-.v302-maqs li{margin:2px 0}
-.v302-gtab .v302-partes{font-size:11.5px;color:#475467;margin-top:2px}
-.v302-gtab tr.v302-parte td{background:#FCFCFD;font-size:12px}
-.v302-gtab tr.v302-parte input{max-width:80px}
-.v302-sub2{font-size:11.5px;color:#475467}
-#v238Jan .v238-cab.v302-cab{flex-wrap:nowrap}
-#v238Jan .v238-cab.v302-cab > div:first-child{flex:1 1 auto;min-width:0}
-#v302Bl .v302-m-show{display:none}
-@media (max-width:700px){#v302Bl .v302-forn{min-width:0}#v302Bl input.v302-q{width:54px}#v238Jan .v238-cab.v302-cab{flex-wrap:wrap}
-  #v302Bl .v302-m-hide{display:none}#v302Bl .v302-m-show{display:inline}#v302Bl .v302-chip{font-size:11px;padding:1px 6px;white-space:normal}
-  #v302Bl table.v302-tab td,#v302Bl table.v302-tab th{padding-left:4px;padding-right:4px}}
-</style>
-<script>
-(function () {
-  'use strict';
-  if (window.V302) return;
-  var V302 = window.V302 = { orig: {}, qv: {}, qvVoo: 0, ent: {}, abre: {}, ger: 0, gravando: false };
-  function off() { try { return localStorage.getItem('pcm_v302') === 'off'; } catch (e) { return false; } }
-  function T(x) { return String(x == null ? '' : x).trim(); }
-  function E(x) { return _v200E(x); }
-  function N(x) { var n = Number(x); return isFinite(n) ? n : 0; }
-  function Q(x) { return N(x).toLocaleString('pt-BR', { maximumFractionDigits: 3 }); }
-  function RS(x) { return 'R$ ' + N(x).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
-  function dia(d) {   // 'AAAA-MM-DD' (ou instante) → 'dd/mm'
-    var s = T(d); if (!s) return '';
-    var m = /^(\d{4})-(\d{2})-(\d{2})/.exec(s); if (m) return m[3] + '/' + m[2];
-    var x = new Date(s); return isNaN(x) ? s : x.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', timeZone: 'America/Sao_Paulo' });
-  }
-  function hora(iso) {
-    var d = iso ? new Date(iso) : null; if (!d || isNaN(d.getTime())) return '';
-    var hh = d.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit', timeZone: 'America/Sao_Paulo' });
-    var dd = d.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', timeZone: 'America/Sao_Paulo' });
-    var hj = new Date().toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', timeZone: 'America/Sao_Paulo' });
-    return dd === hj ? hh : dd + ' ' + hh;
-  }
-  function hojeIso() { try { return new Date().toLocaleDateString('sv-SE', { timeZone: 'America/Sao_Paulo' }); } catch (e) { return new Date().toISOString().slice(0, 10); } }
-  function diasAte(iso) { var s = T(iso).slice(0, 10); if (!/^\d{4}-\d{2}-\d{2}$/.test(s)) return null; return Math.round((Date.parse(s + 'T12:00:00Z') - Date.parse(hojeIso() + 'T12:00:00Z')) / 86400000); }
-  var CAMINHO = 'Comercial › ⚙ › 🔌 Integração Omie';
-  async function rpc(fn, args, escrita) { return _v200Rpc(fn, args || {}, escrita); }   // nunca pelo _v238Rpc: RPC desta rodada que falta não pode travar o 📦 Compras inteiro
-  function O() { return (typeof V238 !== 'undefined' && V238.ov) || null; }
-  function D() { var o = O(); return o && o.d && o.d.pf && o.d.pf.ok ? o.d : null; }
-  function ativo() { return !off() && !!D(); }
-  function U() { var o = O(); if (!o) return {}; o.ui.v302 = o.ui.v302 || { qtd: {}, criar: null, lote: null, qvAberto: '', msg: null }; return o.ui.v302; }
-  function maqs() { var d = D(); return (d && d.maquinas) || []; }
-  function maq(id) { return maqs().find(function (m) { return m.id === id; }) || null; }
-  function maqRot(id) { var m = maq(id); return m ? m.rotulo : (id || 'sem máquina'); }
-  function linhas() { var d = D(); return (d && d.linhas) || []; }
-  function linha(id) { return linhas().find(function (l) { return l.id === id; }) || null; }
-  // o fornecedor DESTA compra: o escolhido na tela de Compras ("Comprar de") ou, sem escolha, o fornecedor base da proposta
-  function fornDe(l) {
-    if (l.comprar_de && T(l.comprar_de.nome)) return { codigo: l.comprar_de.codigo || null, nome: T(l.comprar_de.nome), de: 'escolhido' };
-    if (T(l.fornecedor_nome)) return { codigo: l.fornecedor_codigo || null, nome: T(l.fornecedor_nome), de: 'base' };
-    return null;
-  }
-  function chaveForn(f) { return f ? (f.codigo ? 'c' + f.codigo : 'n' + T(f.nome).toLowerCase()) : ''; }
-  // a quantidade a comprar: o digitado na tela (ainda não gravado) ou o que o banco sugere (escolhida · o que falta · a aprovada)
-  function qtdTxt(l) { var u = U(); if (Object.prototype.hasOwnProperty.call(u.qtd, l.id)) return u.qtd[l.id]; return Q(l.pf_qtd != null ? l.pf_qtd : l.qtd); }
-  function qtdDe(l) { var n = _v204Num(qtdTxt(l)); return n; }
-  function qtdRuim(l) { var n = qtdDe(l); return n === null || isNaN(n) || !(n > 0) || n > N(l.qtd) + 1e-9; }
-
-  // ── o chip do estoque (a mesma régua do V299, lida do banco) ──
-  function chip(l, d) {
-    var es = d.estoque || {}, e = l.est;
-    if (!es.ok) return '<span class="v302-chip cinza" title="' + E(es.motivo === 'sem_sql' ? 'O SQL do estoque (CRM_ESTOQUE_SEPARAR) ainda não rodou: sem leitura, a compra é a quantidade cheia.' : 'A leitura do estoque deu erro: ' + T(es.erro)) + '">sem leitura</span>';
-    if (!e) return l.natureza === 'servico' ? '<small>serviço</small>' : '<small>—</small>';
-    var tit = 'Saldo ' + Q(e.saldo) + (e.produto ? ' de ' + e.produto : '') + ' · livre para este card ' + Q(e.livre) + ' · precisa ' + Q(e.qtd) + '.';
-    if (Array.isArray(e.prometidos) && e.prometidos.length) tit += ' Prometido a: ' + e.prometidos.map(function (x) { return x.card + (N(x.qtd) ? ' (' + Q(x.qtd) + ')' : '') + (N(x.fila) ? ' (' + Q(x.fila) + ' na fila)' : ''); }).join('; ') + '.';
-    var st = e.estado;
-    if (e.regra === 'antiga' || st === 'sem_info') return '<span class="v302-chip cinza" title="Sem leitura de estoque para esta peça (produto sem par no Omie ou sem posição lida).">❔ sem informação</span>';
-    if (st === 'tem') return '<span class="v302-chip verde" title="' + E(tit) + '">✅ tenho ' + E(Q(e.livre)) + '</span>';
-    if (st === 'parcial') return '<span class="v302-chip ambar" title="' + E(tit) + '">◐ tenho ' + E(Q(N(e.cobre) + Math.max(N(e.separado), N(e.chegou)) + N(e.caminho))) + ' de ' + E(Q(e.qtd)) + '</span>';
-    if (st === 'similar') return '<span class="v302-chip azul" title="' + E(tit + ' A peça pedida não tem livre; a similar/equivalente tem.') + '">≈ similar ' + E(T((e.similar || {}).codigo || (e.similar || {}).ref)) + '</span>';
-    if (st === 'comprar') return '<span class="v302-chip ambar" title="' + E(tit) + '">🛒 comprar ' + E(Q(e.falta)) + '</span>';
-    if (st === 'caminho') return '<span class="v302-chip azul" title="' + E(tit) + '">📬 a caminho</span>';
-    if (st === 'chegou') return '<span class="v302-chip azul" title="' + E(tit) + '">✔ chegou</span>';
-    if (st === 'separado') return '<span class="v302-chip azul" title="' + E(tit) + '">📦 separado</span>';
-    return '<small>—</small>';
-  }
-  function precisaHtml(m) {
-    if (!m || !m.precisa_ate) return '';
-    var n = diasAte(m.precisa_ate);
-    return '<span class="v302-pr' + (n !== null && n <= 3 ? ' perto' : '') + '" title="' + E(m.precisa_origem === 'tarefa' ? 'a 1ª tarefa com data da OS' : 'a data prevista da OS') + '">⏰ precisa até ' + E(dia(m.precisa_ate)) + (n !== null && n < 0 ? ' (passou)' : '') + '</span>';
-  }
-  function ultHtml(l, d) {
-    if (!(d.ultima_compra && l.codigo)) return '';
-    var u = d.ultima_compra[l.codigo]; if (!u) return '';
-    return '<span class="v302-ult" title="' + E((u.fonte === 'nf' ? 'NF de entrada ' : 'pedido de compra ') + T(u.fonte_ref)) + '">últ. compra ' + E(RS(u.custo)) + ' · ' + E(T(u.fornecedor)) + ' · ' + E(dia(u.data)) + '</span>';
-  }
-  function precisa(l) { return l.pf_comprar === true && !l.pedido; }
-
-  // ── o bloco "Linhas aprovadas" (substitui o do V238 quando o SQL desta rodada está no banco) ──
-  function blocoHtml() {
-    var o = O(), d = D(), ui = o.ui, u = U(), L = linhas();
-    var nPend = L.filter(precisa).length, es = d.estoque || {};
-    var h = '<div class="v238-bl" id="v302Bl"><h4><span>✅ Linhas aprovadas <small>' + L.length + ' no total · <b data-v302n="pend">' + nPend + '</b> para comprar sem pedido</small></span>' +
-      '<label style="font-weight:400;font-size:12px;display:flex;gap:5px;align-items:center"><input type="checkbox" id="v238So"' + (ui.so ? ' checked' : '') + '> só o que falta comprar</label></h4>';
-    if (es.ok) {
-      var f = es.fonte || {};
-      h += '<div class="v302-faixa' + (f.velha ? ' aviso' : '') + '">📦 Estoque: <b>' + E(f.fonte === 'proper' ? 'Estoque Proper · agora' : 'Omie' + (f.lido_em ? ' · lido ' + hora(f.lido_em) : '')) + '</b>' + (f.velha ? ' ⚠ leitura velha — confirme antes de comprar' : '') +
-        (es.resumo && es.resumo.texto ? '<span>' + E(es.resumo.texto) + '</span>' : '') +
-        '<button type="button" class="v302-mini" data-v302="lerEstoque" data-pw-off="1">↻ Ler o estoque agora</button>' +
-        '<small>"Livre" = saldo menos o prometido a outros cards aceitos · separar do estoque é na tela 📦 Separar e comprar</small></div>';
-    } else {
-      h += '<div class="v302-faixa aviso">📦 <b>Sem leitura de estoque</b> — ' + E(es.motivo === 'sem_sql' ? 'falta rodar o SQL CRM_ESTOQUE_SEPARAR (o estoque na proposta)' : 'a leitura deu erro') + '. A "Qtd a comprar" vem cheia. Para resolver: ' + E(CAMINHO) + '.</div>';
-    }
-    h += '<div class="v302-dica">O <b>fornecedor base</b> se marca na proposta (linha › ⋯ › 🏭 Fornecedor); aqui você escolhe de quem <b>COMPRAR</b> — a proposta não muda.' +
-      (d.pf && d.pf.modo === 'antigo' ? ' <b style="color:#B42318">O banco está no modo antigo (um pedido por máquina).</b>' : '') + '</div>';
-    if (u.msg) h += '<div class="' + (u.msg.erro ? 'v238-err' : 'v238-ok') + '">' + u.msg.txt + '</div>';
-    if (!L.length) return h + '<div class="v238-vazio">Este card ainda não tem proposta ACEITA. O pedido de compra nasce do que o cliente aprovou.</div></div>';
-    var vis = L.filter(function (x) { return !ui.so || precisa(x) || x.pedido; });
-    var grupos = {}, ordem = [];
-    vis.forEach(function (x) { var k = x.maquina_id || ''; if (!grupos[k]) { grupos[k] = []; ordem.push(k); } grupos[k].push(x); });
-    h += '<div style="overflow:auto;max-height:52vh" id="v302Rol"><table class="v238-tab v302-tab" data-cfx-off="1" title=""><thead><tr><th style="width:28px"></th><th>Item</th><th class="n v302-m-hide">Aprovada</th><th>Estoque</th>' +
-      '<th class="n v238-hide">Livre</th><th class="n v238-hide">Falta</th><th class="n">Qtd a comprar</th><th class="v238-hide">Comprar de</th><th class="n v238-hide">Compra un.</th><th class="v302-m-hide">Pedido</th></tr></thead><tbody>';
-    if (!vis.length) h += '<tr><td></td><td colspan="9"><div class="v238-vazio">Nada falta comprar ' + (ui.so ? '(desmarque "só o que falta comprar" para ver tudo)' : '') + '.</div></td></tr>';
-    ordem.forEach(function (k) {
-      var m = maq(k), livres = grupos[k].filter(function (x) { return !x.pedido; });
-      var todas = livres.length && livres.every(function (x) { return ui.sel[x.id]; });
-      h += '<tr class="v302-gr"><td><input type="checkbox" data-v302="selMaq" data-k="' + E(k) + '" title="marcar/desmarcar as linhas desta máquina que faltam comprar"' + (todas ? ' checked' : '') + (livres.length ? '' : ' disabled') + '></td>' +
-        '<td colspan="9">🛠 ' + E(k ? maqRot(k) : 'sem máquina') + (m && m.numero_os ? ' · OS ' + E(m.numero_os) : (k ? ' · <span style="font-weight:400">sem OS ainda</span>' : (d.os_card && d.os_card.numero_os ? ' · OS ' + E(d.os_card.numero_os) : ''))) + precisaHtml(m) + '</td></tr>';
-      grupos[k].forEach(function (x) {
-        var ocup = !!x.pedido, f = ocup && T(x.pedido_forn) ? { nome: T(x.pedido_forn), de: 'pedido' } : fornDe(x), e = x.est,   /* AUDITORIA A10: em pedido = o fornecedor DO pedido */ cobre = !ocup && e && e.regra === 'estoque' && N(e.falta) === 0;
-        var ruim = !ocup && qtdRuim(x), aberto = u.qvAberto === x.id;
-        h += '<tr data-v302l="' + E(x.id) + '"' + (ocup ? ' class="ocup"' : '') + '><td><input type="checkbox" data-v238sel="' + E(x.id) + '"' + (ui.sel[x.id] ? ' checked' : '') + (ocup ? ' disabled title="já está num pedido"' : '') + '></td>' +
-          '<td>' + E(x.descricao) + (x.codigo ? ' <small>(' + E(x.codigo) + ')</small>' : '') + '<div class="v238-sub">' + E(x.proposta_id + ' v' + x.versao) + (x.sai_de ? ' · ' + E(x.sai_de) : '') + (x.incluso ? ' · incluso' : '') +
-            '<span class="v302-m-show"> · aprovada ' + E(Q(x.qtd)) + ' ' + E(x.unidade) + ' · ' + (ocup ? E(x.pedido.id) : 'sem pedido') + '</span></div>' +
-          (cobre ? '<div class="v302-cobre">✅ o estoque cobre — separe na tela 📦 Separar e comprar (marcar aqui = comprar mesmo assim)</div>' : '') + '</td>' +
-          '<td class="n v302-m-hide">' + E(Q(x.qtd)) + ' ' + E(x.unidade) + '</td>' +
-          '<td>' + chip(x, d) + '</td>' +
-          '<td class="n v238-hide">' + (e && e.regra === 'estoque' ? E(Q(e.livre)) : '<small>—</small>') + '</td>' +
-          '<td class="n v238-hide">' + (e && e.regra === 'estoque' ? (N(e.falta) > 0 ? '<b>' + E(Q(e.falta)) + '</b>' : '0') : '<small>—</small>') + '</td>' +
-          '<td class="n">' + (ocup ? '<small>—</small>' : '<input type="text" class="v302-q' + (ruim ? ' ruim' : '') + '" id="v302q_' + E(x.id) + '" data-v302q="' + E(x.id) + '" value="' + E(qtdTxt(x)) + '" inputmode="decimal"' +
-            ' autocomplete="off" name="v302_q_nofill" data-lpignore="true" data-1p-ignore title="' + E(ruim ? 'de 0 a ' + Q(x.qtd) + ' (a aprovada)' : (x.pf_qtd_origem === 'falta' ? 'o que falta (o estoque livre cobre o resto)' : x.pf_qtd_origem === 'escolhida' ? 'quantidade escolhida aqui' : 'a quantidade aprovada')) + '">') + '</td>' +
-          '<td class="v238-hide"><div class="v302-forn">' + (ocup ? '<small>' + E(f ? f.nome : '—') + '</small>' :
-            '<input type="text" id="v302f_' + E(x.id) + '" data-v302f="' + E(x.id) + '" value="' + E(f ? f.nome : '') + '" maxlength="120" placeholder="' + E(f ? '' : 'escolher (Omie ou nome)') + '"' +
-            ' autocomplete="off" name="v302_forn_nofill" data-lpignore="true" data-1p-ignore readonly onfocus="this.removeAttribute(\'readonly\')">' +
-            '<div class="v302-fl">' + (f ? (f.de === 'escolhido' ? '<span class="v302-escolhido">escolhido aqui</span>' + (T(x.fornecedor_nome) ? ' · base: ' + E(x.fornecedor_nome) : '') : '<span>fornecedor base</span>') : '<span>sem fornecedor</span>') +
-            '<button type="button" class="v302-mini" data-v302="qv" data-l="' + E(x.id) + '" title="quem já vendeu esta peça (e o último preço)" data-pw-off="1">💡</button>' +
-            (f && f.de === 'escolhido' ? '<button type="button" class="v302-mini" data-v302="base" data-l="' + E(x.id) + '" title="voltar ao fornecedor base da proposta" data-pw-off="1">↺ base</button>' : '') + '</div>' +
-            '<div class="v238-fres" id="v302fr_' + E(x.id) + '"></div>') + '</div></td>' +
-          '<td class="n v238-hide">' + (x.custo_unit !== null && x.custo_unit !== undefined ? E(_v238R(x.custo_unit)) : '<small>a cotar</small>') + ultHtml(x, d) + '</td>' +
-          '<td class="v302-m-hide">' + (ocup ? '<span class="v238-chip ' + (V238_EST[x.pedido.estado] || ['', ''])[1] + '">' + E(x.pedido.id) + '</span>' : '<small>sem pedido</small>') + '</td></tr>';
-        if (aberto) h += '<tr class="v302-qv"><td></td><td colspan="9">' + qvHtml(x) + '</td></tr>';
-      });
-    });
-    h += '</tbody></table></div>';
-    var marc = L.filter(function (x) { return ui.sel[x.id] && !x.pedido; });
-    var nFalta = L.filter(precisa).length;
-    var lote = gruposLote();
-    var temEsc = L.some(function (x) { return !x.pedido && x.comprar_de && T(x.comprar_de.nome); });
-    h += '<div class="v238-acoes" style="padding:0 11px 10px">' +
-      '<button type="button" class="v238-btn" data-v302="marcarFalta" data-pw-off="1"' + (nFalta ? '' : ' disabled') + '>☑ Marcar o que falta comprar (' + nFalta + ')</button>' +
-      '<button type="button" class="v238-btn pri" data-v302="criarAbrir" data-pw-off="1"' + (marc.length ? '' : ' disabled title="marque as linhas"') + '>＋ Criar pedido com as marcadas (' + marc.length + ')</button>' +
-      '<button type="button" class="v238-btn" data-v302="loteAbrir" data-pw-off="1"' + (lote.length ? '' : ' disabled') + ' title="um pedido por fornecedor (o &quot;Comprar de&quot; de cada linha), juntando as máquinas do card">⚡ Um pedido por fornecedor (' + lote.filter(function (g) { return g.f; }).length + ')</button>' +
-      (temEsc ? '<button type="button" class="v238-btn" data-v302="baseTodas" data-pw-off="1">↺ Usar o fornecedor base em todas</button>' : '') + '</div>';
-    if (u.criar) h += formCriar(marc);
-    if (u.lote) h += formLote(lote);
-    return h + '</div>';
-  }
-  function qvHtml(l) {
-    var ref = T(l.codigo);
-    if (!ref) return '<div class="v302-qvl"><small>Sem código na linha: o "💡 quem vende" procura pela referência da peça.</small></div>';
-    var q = V302.qv[ref];
-    if (q === undefined || q === 'lendo') return '<div class="v302-qvl"><small>⏳ procurando quem já vendeu ' + E(ref) + '…</small></div>';
-    if (q && q.erro) return '<div class="v302-qvl"><small>' + E(q.erro) + '</small></div>';
-    var fs = (q && q.fornecedores) || [];
-    if (!fs.length) return '<div class="v302-qvl"><small>Ninguém registrado ainda como vendedor de ' + E(ref) + ' (o "💡 quem vende" aprende com as NFs, os pedidos e as propostas).</small></div>';
-    return '<div class="v302-qvl"><b style="font-size:12.5px">💡 Quem vende ' + E(ref) + '</b>' + fs.map(function (f) {
-      return '<div class="v302-qvi"><b>' + E(f.nome) + '</b>' + (f.codigo ? '<small>Omie ' + E(f.codigo) + '</small>' : '<small>fora do Omie</small>') +
-        (f.custo !== undefined && f.custo !== null ? '<span>últ. ' + E(RS(f.custo)) + (f.ultima_data ? ' · ' + E(dia(f.ultima_data)) : '') + '</span>' : (f.ultima_data ? '<span>' + E(dia(f.ultima_data)) + '</span>' : '')) +
-        (f.codigo_fornecedor ? '<small>cód. dele: ' + E(f.codigo_fornecedor) + '</small>' : '') + (f.via ? '<small>via similar ' + E(f.via) + '</small>' : '') +
-        '<button type="button" class="v302-mini" data-v302="qvUsar" data-l="' + E(l.id) + '" data-cod="' + E(f.codigo || '') + '" data-nome="' + E(f.nome) + '" data-pw-off="1">usar</button></div>';
-    }).join('') + '</div>';
-  }
-  function gruposLote() {
-    var o = O(), L = linhas(), marc = L.filter(function (x) { return o.ui.sel[x.id] && !x.pedido; });
-    var base = marc.length ? marc : L.filter(precisa);
-    var g = {}, ordem = [];
-    base.forEach(function (x) {
-      var f = fornDe(x), k = f ? chaveForn(f) : '?';
-      if (!g[k]) { g[k] = { k: k, f: f, linhas: [] }; ordem.push(k); }
-      g[k].linhas.push(x);
-    });
-    ordem.sort(function (a, b) { return (a === '?') - (b === '?'); });
-    return ordem.map(function (k) { return g[k]; });
-  }
-  function resumoMaqs(ls) {
-    var ms = {}, semOs = 0, oses = [];
-    ls.forEach(function (x) { ms[x.maquina_id || ''] = 1; });
-    Object.keys(ms).forEach(function (k) { if (!k) return; var m = maq(k); if (m && m.numero_os) oses.push('OS ' + m.numero_os); else semOs++; });
-    var nm = Object.keys(ms).filter(Boolean).length;
-    return { n: nm, txt: (oses.length ? oses.join(', ') : '') + (semOs ? (oses.length ? ', ' : '') + semOs + ' sem OS' : '') };
-  }
-  function precisaDe(ls) {
-    var melhor = null;
-    ls.forEach(function (x) { var m = maq(x.maquina_id); if (m && m.precisa_ate && (!melhor || m.precisa_ate < melhor.precisa_ate)) melhor = m; });
-    return melhor;
-  }
-  function formCriar(marc) {
-    var u = U(), C = u.criar, r = resumoMaqs(marc), pm = precisaDe(marc);
-    var ent = T(C.entrega), aviso = ent && pm && ent > T(pm.precisa_ate).slice(0, 10);
-    return '<div class="v302-form"><b>Novo pedido com ' + marc.length + ' linha(s)' + (r.n ? ' de ' + r.n + ' máquina(s)' : '') + '</b>' + (r.txt ? ' <small>(' + E(r.txt) + ')</small>' : '') +
-      (pm ? ' <span class="v302-sub2">⏰ precisa até ' + E(dia(pm.precisa_ate)) + (pm.numero_os ? ' · OS ' + E(pm.numero_os) : '') + '</span>' : '') +
-      (r.n > 1 ? '<div class="v302-sub2">Peça igual nas máquinas vira <b>um item somado</b> no PDF e no texto ao fornecedor; a divisão por máquina/OS fica só aqui dentro. Sem nome de cliente, máquina ou OS no PDF.</div>' : '') +
-      '<div class="v302-lin"><div class="v238-forn"><label>Fornecedor *<input type="text" id="v302CForn" value="' + E((C.forn && C.forn.nome) || '') + '" maxlength="120" placeholder="buscar no Omie ou digitar"' +
-      ' autocomplete="off" name="v302_cforn_nofill" data-lpignore="true" data-1p-ignore readonly onfocus="this.removeAttribute(\'readonly\')"></label>' +
-      (C.forn && C.forn.codigo ? '<small class="v238-int">Omie ' + E(C.forn.codigo) + '</small>' : '') + '<div class="v238-fres" id="v302CFornR"></div></div>' +
-      '<label>Entrega prevista<input type="date" id="v302CEnt" value="' + E(ent) + '" autocomplete="off" name="v302_cent_nofill" data-lpignore="true" data-1p-ignore></label>' +
-      '<button type="button" class="v238-btn pri" data-v302="criarOk">Criar o pedido</button><button type="button" class="v238-btn" data-v302="criarNao" data-pw-off="1">Cancelar</button></div>' +
-      (aviso ? '<div class="v302-am" data-v302am="criar">⚠ entrega prevista (' + E(dia(ent)) + ') depois da data da OS (' + E(dia(pm.precisa_ate)) + ') — só um aviso, não trava.</div>' : '<div data-v302am="criar"></div>') +
-      (C.fornNota ? '<div class="v302-sub2">' + E(C.fornNota) + '</div>' : '<div class="v302-sub2">Vem com o "Comprar de" das linhas (se for um só). Trocar aqui = comprar de outro; a proposta não muda.</div>') + '</div>';
-  }
-  function formLote(gs) {
-    var tot = function (ls) { var t = 0, cot = 0; ls.forEach(function (x) { var q = qtdDe(x); if (x.custo_unit === null || x.custo_unit === undefined) cot++; else t += _v204Val(q, x.custo_unit); }); return { t: t, cot: cot }; };
-    var bons = gs.filter(function (g) { return g.f; }), sem = gs.find(function (g) { return !g.f; });
-    return '<div class="v302-form"><b>⚡ Criar ' + bons.length + ' pedido(s) — um por fornecedor (as máquinas do card juntas)</b><ul class="v238-trilha" style="font-size:12.5px;color:#344054">' +
-      bons.map(function (g) { var r = resumoMaqs(g.linhas), tt = tot(g.linhas); return '<li><b>' + E(g.f.nome) + '</b> · ' + g.linhas.length + ' linha(s)' + (r.n ? ' · ' + r.n + ' máquina(s)' : '') + ' · ' + E(RS(tt.t)) + (tt.cot ? ' + ' + tt.cot + ' a cotar' : '') + '</li>'; }).join('') +
-      (sem ? '<li style="color:#B54708"><b>❔ escolher fornecedor</b> · ' + sem.linhas.length + ' linha(s) ficam de fora <button type="button" class="v302-mini" data-v302="irForn" data-l="' + E(sem.linhas[0].id) + '" data-pw-off="1">escolher</button></li>' : '') + '</ul>' +
-      '<div class="v238-acoes"><button type="button" class="v238-btn pri" data-v302="loteOk"' + (bons.length ? '' : ' disabled') + '>Criar os ' + bons.length + ' pedido(s)</button><button type="button" class="v238-btn" data-v302="loteNao" data-pw-off="1">Cancelar</button></div>' +
-      '<div class="v302-sub2">' + (O().ui.sel && linhas().some(function (x) { return O().ui.sel[x.id] && !x.pedido; }) ? 'Só as linhas MARCADAS.' : 'Todas as linhas que faltam comprar.') + ' A quantidade de cada linha é a da coluna "Qtd a comprar".</div></div>';
-  }
-
-  // ── pintar: o V238 (+V299) pinta, e o bloco das linhas é trocado pelo desta rodada ──
-  function pintarDepois(focoId, sel, rol) {
-    try {
-      var jan = document.getElementById('v238Jan'); if (!jan) return;
-      var o = O(), d = o && o.d;
-      if (o && !o.carregando && !o.erro && d && !(d.pf && d.pf.ok) && !off() && !jan.querySelector('[data-v302sem]')) {
-        var cab0 = jan.querySelector('.v238-cab'); if (cab0) cab0.insertAdjacentHTML('afterend', '<div class="v238-avi" data-v302sem="1">Para juntar máquinas num pedido, escolher o fornecedor por linha e ver o estoque, falta rodar o SQL <code>COM_PEDIDO_FLEXIVEL_2026-10-22.sql</code> no Supabase (LEIA-ME da entrega).</div>');
-        return;
-      }
-      if (!ativo() || o.carregando || o.erro) return;
-      var cabX = jan.querySelector('.v238-cab'); if (cabX) cabX.classList.add('v302-cab');
-      var sub = jan.querySelector('.v238-cab .v238-sub');
-      if (sub) sub.textContent = T(sub.textContent).replace('um pedido por fornecedor e máquina (a OS dela)', 'um pedido pode juntar as máquinas do card (peça igual somada)');
-      var velho = jan.querySelector('.v238-bl'); if (!velho) return;
-      var div = document.createElement('div'); div.innerHTML = blocoHtml();
-      velho.parentNode.replaceChild(div.firstChild, velho);
-      var r2 = document.getElementById('v302Rol'); if (r2 && rol) r2.scrollTop = rol;
-      if (focoId) { var n = document.getElementById(focoId); if (n && document.activeElement !== n) { n.removeAttribute('readonly'); try { n.focus({ preventScroll: true }); if (sel && typeof n.setSelectionRange === 'function') n.setSelectionRange(sel[0], sel[1]); } catch (e) {} } }
-    } catch (e) { console.warn('[V302] pintar:', e); }
-  }
-  V302.orig.ovPintar = _v238OvPintar;
-  _v238OvPintar = function () {
-    if (off()) return V302.orig.ovPintar.apply(this, arguments);
-    var foco = document.activeElement, jan = document.getElementById('v238Jan'), focoId = foco && jan && jan.contains(foco) ? foco.id : '', sel = null;
-    try { if (focoId && typeof foco.selectionStart === 'number') sel = [foco.selectionStart, foco.selectionEnd]; } catch (e) {}
-    var rr = document.getElementById('v302Rol'), rol = rr ? rr.scrollTop : 0;
-    var r = V302.orig.ovPintar.apply(this, arguments);
-    pintarDepois(focoId, sel, rol);
-    return r;
-  };
-  // carregar: depois das linhas, UMA leitura do "💡 quem vende" para as referências do card (em 2º plano)
-  V302.orig.ovCarregar = _v238OvCarregar;
-  _v238OvCarregar = async function () {
-    try { var o0 = O(); if (o0 && !o0.d) V302.qv = {}; } catch (e) {}   // abrir o 📦 Compras de novo relê o "💡 quem vende" (a última compra muda com os pedidos)
-    var r = await V302.orig.ovCarregar.apply(this, arguments);
-    try { if (ativo()) qvLer(); } catch (e) {}
-    return r;
-  };
-  async function qvLer() {
-    var refs = []; linhas().forEach(function (l) { var c = T(l.codigo); if (c && l.natureza !== 'servico' && refs.indexOf(c) < 0 && V302.qv[c] === undefined) refs.push(c); });
-    if (!refs.length) return;
-    refs = refs.slice(0, 200);
-    var voo = ++V302.qvVoo; refs.forEach(function (c) { V302.qv[c] = 'lendo'; });
-    try {
-      var r = await rpc('qv_fornecedores', { p_itens: refs.map(function (c) { return { ref: c }; }) });
-      ((r && r.itens) || []).forEach(function (it) { V302.qv[refs[it.i]] = { fornecedores: it.fornecedores || [] }; });
-    } catch (e) { refs.forEach(function (c) { V302.qv[c] = { erro: 'Não deu para ler o "💡 quem vende": ' + ((e && e.message) || e) }; }); }
-    refs.forEach(function (c) { if (V302.qv[c] === 'lendo') V302.qv[c] = { fornecedores: [] }; });
-    if (voo === V302.qvVoo && O() && U().qvAberto) _v238OvPintar();
-  }
-  async function recarregar(msg) { var u = U(); u.msg = msg || null; await _v238OvCarregar(); }
-
-  // ── gravar: "Comprar de", quantidade, criar, lote ──
-  async function definir(ids, forn, qtd, limpar, txt) {
-    var o = O(); if (!o) return;
-    var u = U();
-    try {
-      await rpc('com_linha_compra_definir', { p_card: o.card, p_linhas: ids, p_fornecedor: forn || null, p_qtd: qtd === undefined ? null : qtd, p_limpar: !!limpar }, true);
-      if (O() !== o) return;
-      await recarregar(txt ? { txt: txt } : null);
-    } catch (e) { if (O() !== o) return; u.msg = { erro: true, txt: E((e && e.message) || String(e)) }; _v238OvPintar(); }
-  }
-  async function escolherForn(id, f) {
-    var l = linha(id); if (!l) return;
-    var nome = T(f.nome); if (nome.length < 2) return;
-    var semForn = linhas().filter(function (x) { return x.id !== id && !x.pedido && !fornDe(x); });
-    var txt = '🏭 Comprar de <b>' + E(nome) + '</b>: ' + E(T(l.descricao).slice(0, 50)) + '.' +
-      (semForn.length ? ' <button type="button" class="v302-mini" data-v302="aplicarSem" data-cod="' + E(f.codigo || '') + '" data-nome="' + E(nome) + '" data-pw-off="1">Aplicar a todas as ' + semForn.length + ' linha(s) sem fornecedor</button>' : '');
-    await definir([id], { codigo: f.codigo || null, nome: nome }, undefined, false, txt);
-  }
-  function lerQtds(ls) {   // a coluna "Qtd a comprar" como está NA TELA (o digitado vale, gravado ou não)
-    var out = {}, ruins = [];
-    ls.forEach(function (x) {
-      var inp = document.getElementById('v302q_' + x.id); if (inp) U().qtd[x.id] = inp.value;
-      if (qtdRuim(x)) ruins.push(T(x.descricao).slice(0, 40) + ' (de 0 a ' + Q(x.qtd) + ')');
-      else out[x.id] = String(qtdDe(x));
-    });
-    return { qtds: out, ruins: ruins };
-  }
-  async function criar() {
-    var o = O(); if (!o || !o.d) return;
-    var u = U(), C = u.criar || {}, marc = linhas().filter(function (x) { return o.ui.sel[x.id] && !x.pedido; });
-    if (!marc.length) { u.msg = { erro: true, txt: 'Marque as linhas.' }; return _v238OvPintar(); }
-    var inp = document.getElementById('v302CForn'); if (inp && T(inp.value) !== T(C.forn && C.forn.nome)) C.forn = { codigo: null, nome: inp.value };
-    var en = document.getElementById('v302CEnt'); if (en) C.entrega = en.value;
-    if (!C.forn || T(C.forn.nome).length < 2) { u.msg = { erro: true, txt: 'Escolha o fornecedor (da lista do Omie ou digite o nome).' }; return _v238OvPintar(); }
-    var q = lerQtds(marc);
-    if (q.ruins.length) { u.msg = { erro: true, txt: 'Quantidade a comprar inválida: ' + E(q.ruins.join(' · ')) }; return _v238OvPintar(); }
-    C.uid = C.uid || ('pc_' + _v238Uid());
-    try {
-      var r = await rpc('com_pf_pedido_criar', { p_card: o.card, p_linhas: marc.map(function (x) { return x.id; }), p_fornecedor: { codigo: C.forn.codigo || null, nome: T(C.forn.nome) },
-        p_client_uid: C.uid, p_qtds: q.qtds, p_entrega: T(C.entrega) || null }, true);
-      if (O() !== o) return;
-      u.criar = null; o.ui.sel = {}; marc.forEach(function (x) { delete u.qtd[x.id]; }); o.aberto[r.pedido.id] = true;
-      await recarregar({ txt: '📦 Pedido <b>' + E(r.pedido.id) + '</b> criado (' + E(r.pedido.fornecedor.nome) + (r.pedido.multi ? ' · ' + (r.pedido.maquinas || []).length + ' máquinas, peça igual somada' : '') + '). Confira preços e condições e salve; depois "📤 Marcar como enviado".' });
-    } catch (e) { if (O() !== o) return; u.msg = { erro: true, txt: E((e && e.message) || String(e)) }; _v238OvPintar(); }
-  }
-  async function criarLote() {
-    var o = O(); if (!o || !o.d) return;
-    var u = U(), gs = gruposLote().filter(function (g) { return g.f; });
-    if (!gs.length) return;
-    var todas = []; gs.forEach(function (g) { todas = todas.concat(g.linhas); });
-    var q = lerQtds(todas);
-    if (q.ruins.length) { u.msg = { erro: true, txt: 'Quantidade a comprar inválida: ' + E(q.ruins.join(' · ')) }; return _v238OvPintar(); }
-    u.loteUids = u.loteUids || {};
-    var feitos = [], erros = [];
-    for (var i = 0; i < gs.length; i++) {
-      var g = gs[i]; u.loteUids[g.k] = u.loteUids[g.k] || ('pc_' + _v238Uid());
-      var qs = {}; g.linhas.forEach(function (x) { qs[x.id] = q.qtds[x.id]; });
-      try {
-        var r = await rpc('com_pf_pedido_criar', { p_card: o.card, p_linhas: g.linhas.map(function (x) { return x.id; }), p_fornecedor: { codigo: g.f.codigo || null, nome: g.f.nome },
-          p_client_uid: u.loteUids[g.k], p_qtds: qs, p_entrega: null }, true);
-        if (r && r.repetida && r.pedido && r.pedido.estado === 'cancelado') {   /* AUDITORIA A13: o uid guardado era de um pedido que já foi cancelado — envio novo */
-          u.loteUids[g.k] = 'pc_' + _v238Uid();
-          r = await rpc('com_pf_pedido_criar', { p_card: o.card, p_linhas: g.linhas.map(function (x) { return x.id; }), p_fornecedor: { codigo: g.f.codigo || null, nome: g.f.nome },
-            p_client_uid: u.loteUids[g.k], p_qtds: qs, p_entrega: null }, true);
-        }
-        feitos.push(r.pedido.id); o.aberto[r.pedido.id] = false; delete u.loteUids[g.k];   /* AUDITORIA A13: grupo criado não guarda o uid */
-      } catch (e) { erros.push(g.f.nome + ': ' + ((e && e.message) || e)); }
-      if (O() !== o) return;
-    }
-    u.lote = null; if (!erros.length) { u.loteUids = {}; o.ui.sel = {}; todas.forEach(function (x) { delete u.qtd[x.id]; }); }
-    await recarregar(erros.length ? { erro: true, txt: (feitos.length ? feitos.length + ' pedido(s) criado(s) (' + E(feitos.join(', ')) + '). ' : '') + 'Não criados: ' + E(erros.join(' · ')) }
-                                  : { txt: '⚡ ' + feitos.length + ' pedido(s) criado(s): ' + E(feitos.join(', ')) + '. Abra cada um para conferir e enviar.' });
-  }
-
-  // ── ouvintes: digitar e clicar (janela, em captura: antes do V238) ──
-  var buscaT = null;
-  document.addEventListener('input', function (ev) {
-    var t = ev.target; if (!t || !t.getAttribute || off()) return;
-    var id = t.getAttribute('data-v302q');
-    if (id) {
-      var l = linha(id); U().qtd[id] = t.value; if (l) { var ru = qtdRuim(l); t.classList.toggle('ruim', ru); t.title = ru ? 'de 0 a ' + Q(l.qtd) + ' (a aprovada)' : ''; }
-      return;
-    }
-    var fid = t.getAttribute('data-v302f');
-    if (fid) { clearTimeout(buscaT); var v = t.value; buscaT = setTimeout(function () { _v238FornBuscar(v, 'v302fr_' + fid, { ctx: 'v302l', ref: fid }); }, 10); return; }
-    if (t.id === 'v302CForn') { var u = U(); if (u.criar) { u.criar.forn = { codigo: null, nome: t.value }; u.criar.fornNota = ''; } return _v238FornBuscar(t.value, 'v302CFornR', { ctx: 'v302c', ref: '' }); }
-    if (t.id === 'v302CEnt') { var u2 = U(); if (u2.criar) u2.criar.entrega = t.value; return; }
-  }, true);
-  document.addEventListener('change', function (ev) {
-    var t = ev.target; if (!t || !t.getAttribute || off()) return;
-    var id = t.getAttribute('data-v302q');
-    if (id) {   // a "Qtd a comprar" grava na linha (0 ou vazio = volta ao padrão: o que falta)
-      var l = linha(id); if (!l) return;
-      var n = _v204Num(t.value);
-      if (T(t.value) === '') n = 0;
-      if (n === null || isNaN(n) || n < 0 || n > N(l.qtd) + 1e-9) return;
-      var antes = N(l.pf_qtd);
-      if (n === 0 || Math.abs(n - antes) > 1e-9) { delete U().qtd[id]; definir([id], null, n, false, null); }
-      return;
-    }
-    if (t.id === 'v302CEnt') { var u = U(); if (u.criar) { u.criar.entrega = t.value; _v238OvPintar(); } return; }
-    if (t.getAttribute('data-v302') === 'selMaq') {
-      var o = O(); if (!o) return; var k = t.getAttribute('data-k');
-      var daMaq = linhas().filter(function (x) { return (x.maquina_id || '') === k && !x.pedido; }), falt = daMaq.filter(precisa);
-      daMaq.forEach(function (x) { delete o.ui.sel[x.id]; });
-      if (t.checked) (falt.length ? falt : daMaq).forEach(function (x) { o.ui.sel[x.id] = true; });
-      return _v238OvPintar();
-    }
-  }, true);
-  var V302_ACOES = ['qv', 'qvUsar', 'base', 'baseTodas', 'aplicarSem', 'marcarFalta', 'criarAbrir', 'criarNao', 'criarOk', 'loteAbrir', 'loteNao', 'loteOk', 'irForn', 'lerEstoque', 'gAbrir', 'gTirar', 'ultUsar'];
-  // a lista de fornecedores dos campos desta rodada fecha ao sair do campo e com Esc (como as do V238)
-  document.addEventListener('focusout', function (ev) {
-    var t = ev.target; if (!t || !t.getAttribute) return;
-    var box = t.getAttribute('data-v302f') ? 'v302fr_' + t.getAttribute('data-v302f') : (t.id === 'v302CForn' ? 'v302CFornR' : '');
-    if (!box) return;
-    var ir = ev.relatedTarget; if (ir && ir.closest && ir.closest('#' + CSS.escape(box))) return;
-    setTimeout(function () { var b = document.getElementById(box); if (b && !b.contains(document.activeElement)) b.innerHTML = ''; }, 150);
-  }, true);
-  window.addEventListener('keydown', function (ev) {
-    if (ev.key !== 'Escape') return;
-    var t = ev.target; if (!t || !t.getAttribute) return;
-    var box = t.getAttribute('data-v302f') ? document.getElementById('v302fr_' + t.getAttribute('data-v302f')) : (t.id === 'v302CForn' ? document.getElementById('v302CFornR') : null);
-    if (box && box.innerHTML) { box.innerHTML = ''; ev.preventDefault(); ev.stopImmediatePropagation(); }
-  }, true);
-  window.addEventListener('click', async function (ev) {
-    var t = ev.target && ev.target.closest && ev.target.closest('[data-v302],[data-v238][data-ctx^="v302"]'); if (!t || off()) return;
-    var a = t.getAttribute('data-v302') || t.getAttribute('data-v238');
-    if (a === 'selMaq') return;   // é checkbox: o "change" decide
-    // os botões da lista de fornecedores do V238 com o contexto desta rodada
-    var ctx = t.getAttribute('data-ctx') || '';
-    if (/^v302/.test(ctx) && (a === 'fornPick' || a === 'fornLivre' || a === 'fornTodos')) {
-      ev.preventDefault(); ev.stopImmediatePropagation();
-      var ref = t.getAttribute('data-ref');
-      if (a === 'fornTodos') return _v238FornBuscar(t.getAttribute('data-q'), ctx === 'v302l' ? 'v302fr_' + ref : 'v302CFornR', { ctx: ctx, ref: ref, todos: true });
-      var f = { codigo: a === 'fornPick' ? Number(t.getAttribute('data-cod')) || null : null, nome: t.getAttribute('data-nome') || '' };
-      if (ctx === 'v302c') { var u = U(); if (u.criar) { u.criar.forn = f; u.criar.fornNota = ''; } return _v238OvPintar(); }
-      if (ctx === 'v302l') { if (V302.gravando) return; V302.gravando = true; try { await escolherForn(ref, f); } finally { V302.gravando = false; } }
-      return;
-    }
-    if (V302_ACOES.indexOf(a) < 0) return;
-    ev.preventDefault(); ev.stopImmediatePropagation();
-    if (t.disabled) return;
-    var o = O(), u2 = U(), lid = t.getAttribute('data-l');
-    var ESCR = ['qvUsar', 'base', 'baseTodas', 'aplicarSem', 'criarOk', 'loteOk', 'lerEstoque'];
-    var escrita = ESCR.indexOf(a) >= 0, txt = t.textContent;
-    if (escrita) { if (V302.gravando) return; V302.gravando = true; t.disabled = true; t.setAttribute('data-pcm-enviando', '1'); t.classList.add('is-busy'); }
-    try {
-      if (a === 'qv') { u2.qvAberto = u2.qvAberto === lid ? '' : lid; _v238OvPintar(); var l0 = linha(lid); if (l0 && V302.qv[T(l0.codigo)] === undefined) qvLer(); return; }
-      if (a === 'qvUsar') { u2.qvAberto = ''; return await escolherForn(lid, { codigo: Number(t.getAttribute('data-cod')) || null, nome: t.getAttribute('data-nome') }); }
-      if (a === 'base') return await definir([lid], null, undefined, true, '↺ Voltou ao fornecedor base da proposta.');
-      if (a === 'baseTodas') { var ids = linhas().filter(function (x) { return !x.pedido && x.comprar_de && T(x.comprar_de.nome); }).map(function (x) { return x.id; }); if (ids.length) return await definir(ids, null, undefined, true, '↺ ' + ids.length + ' linha(s) de volta ao fornecedor base.'); return; }
-      if (a === 'aplicarSem') {
-        var ids2 = linhas().filter(function (x) { return !x.pedido && !fornDe(x); }).map(function (x) { return x.id; });
-        var nm = t.getAttribute('data-nome');
-        if (ids2.length) return await definir(ids2, { codigo: Number(t.getAttribute('data-cod')) || null, nome: nm }, undefined, false, '🏭 Comprar de <b>' + E(nm) + '</b> aplicado a ' + ids2.length + ' linha(s) sem fornecedor.');
-        return;
-      }
-      if (a === 'marcarFalta') { linhas().forEach(function (x) { if (precisa(x)) o.ui.sel[x.id] = true; }); return _v238OvPintar(); }
-      if (a === 'criarAbrir') {
-        var marc = linhas().filter(function (x) { return o.ui.sel[x.id] && !x.pedido; }), fs = {};
-        marc.forEach(function (x) { var f2 = fornDe(x); fs[f2 ? chaveForn(f2) : '?'] = f2; });
-        var ks = Object.keys(fs);
-        u2.criar = { forn: ks.length === 1 && fs[ks[0]] ? { codigo: fs[ks[0]].codigo, nome: fs[ks[0]].nome } : { codigo: null, nome: '' }, entrega: '',
-                     fornNota: ks.length > 1 ? 'As marcadas têm fornecedores diferentes: escolha um aqui (todas vão para ele) ou use "⚡ Um pedido por fornecedor".' : '' };
-        u2.lote = null; u2.msg = null; _v238OvPintar(); var c = document.getElementById('v302CForn'); if (c && !T(c.value)) try { c.focus(); } catch (e) {} return;
-      }
-      if (a === 'criarNao') { u2.criar = null; return _v238OvPintar(); }
-      if (a === 'criarOk') return await criar();
-      if (a === 'loteAbrir') { u2.lote = true; u2.criar = null; u2.msg = null; return _v238OvPintar(); }
-      if (a === 'loteNao') { u2.lote = null; return _v238OvPintar(); }
-      if (a === 'loteOk') return await criarLote();
-      if (a === 'irForn') { u2.lote = null; _v238OvPintar(); var fi = document.getElementById('v302f_' + lid); if (fi) { fi.removeAttribute('readonly'); try { fi.scrollIntoView({ block: 'center' }); fi.focus(); } catch (e) {} } return; }
-      if (a === 'lerEstoque') {
-        try { var r0 = await rpc('erp_pedir', { p_verbo: 'lerEstoque', p_modo: 'completo' }, true); u2.msg = { txt: r0 && r0.ja_estava_na_fila ? 'A leitura do estoque já estava na fila — reabra em 1 ou 2 minutos.' : 'Pedi ao Omie a Posição de Estoque — reabra esta tela em 1 ou 2 minutos.' }; }
-        catch (e) { u2.msg = { erro: true, txt: E((e && e.message) || String(e)) }; }
-        return _v238OvPintar();
-      }
-      if (a === 'gAbrir') { var k = t.getAttribute('data-id') + '|' + t.getAttribute('data-g'); V302.abre[k] = !V302.abre[k]; return _v238Repintar(); }
-      if (a === 'gTirar') return gTirar(t.getAttribute('data-id'), t.getAttribute('data-g'));
-      if (a === 'ultUsar') return ultUsar(t.getAttribute('data-id'), t.getAttribute('data-c'), t.getAttribute('data-v'));
-    } catch (e) { console.warn('[V302] clique', a, e); try { toast((e && e.message) || String(e), 'error'); } catch (x) {} }
-    finally { if (escrita) { V302.gravando = false; if (t.isConnected) { t.disabled = false; t.removeAttribute('data-pcm-enviando'); t.classList.remove('is-busy'); t.textContent = txt; } } }
-  }, true);
-
-  // ═══ O PEDIDO: várias máquinas (itens somados), entrega prevista, cópia do PDF em cada OS ═══════════════════════════
-  function pedAtual(id) { try { return _v238PedAtual(id); } catch (e) { return null; } }
-  function itemInfo(p) { var m = {}; (p.itens || []).forEach(function (i) { m[i.id] = i; }); return m; }
-  // os grupos do RASCUNHO em edição (o estado do V238: e.itens), pela chave que o banco deu a cada item
-  function gruposEd(p, e) {
-    var inf = itemInfo(p), g = {}, ordem = [];
-    e.itens.forEach(function (it, n) {
-      var i = it.id ? inf[it.id] : null, k = i && i.chave ? i.chave : 'av:' + n;
-      if (!g[k]) { g[k] = { k: k, partes: [] }; ordem.push(k); }
-      g[k].partes.push({ n: n, it: it, i: i });
-    });
-    return ordem.map(function (k) { return g[k]; });
-  }
-  function teto(parte) { var lq = parte.i && parte.i.linha_qtd; return parte.it.linha && lq !== undefined && lq !== null ? N(lq) : Infinity; }
-  // a quantidade do item somado reparte entre as máquinas: primeiro quem precisa antes (a ordem do pedido), cada uma até a aprovada
-  function repartir(gr, total) {
-    var resta = total;
-    gr.partes.forEach(function (pt) { var q = Math.min(teto(pt), Math.max(resta, 0)); pt.it.qtd = Math.round(q * 1000) / 1000; resta -= q; });
-    return resta > 1e-9 ? resta : 0;
-  }
-  function custoGrupo(gr) { var cs = {}; gr.partes.forEach(function (pt) { cs[String(pt.it.custo_unit)] = pt.it.custo_unit; }); var ks = Object.keys(cs); return ks.length === 1 ? cs[ks[0]] : undefined; }
-  function totalGrupo(gr) { var t = 0, cot = false; gr.partes.forEach(function (pt) { if (pt.it.custo_unit === null || pt.it.custo_unit === undefined) cot = true; else t += _v204Val(pt.it.qtd, pt.it.custo_unit); }); return { t: t, cot: cot }; }
-  function parteRot(p, pt) {
-    var mid = pt.i && pt.i.maquina_id, m = (p.maquinas || []).find(function (x) { return x.maquina_id === mid; }) || {};
-    return (mid ? (pt.i.maquina || mid) : 'sem máquina') + (m.numero_os ? ' · OS ' + m.numero_os : (mid ? ' · sem OS' : '')) + (m.precisa_ate ? ' · precisa até ' + dia(m.precisa_ate) : '');
-  }
-  function tabelaEdHtml(p) {
-    var e = _v238PedEd(p), gs = gruposEd(p, e), id = E(p.id), tot = 0, cot = 0;
-    var h = '<table class="v238-tab v302-gtab" data-cfx-off="1" title=""><thead><tr><th>Descrição (somada por peça)</th><th class="v238-hide" style="width:120px">Código</th><th style="width:80px">Qtd</th><th style="width:60px">Un</th><th style="width:110px">Preço un.</th><th class="n" style="width:100px">Total</th><th style="width:60px"></th></tr></thead><tbody>';
-    gs.forEach(function (gr) {
-      var p0 = gr.partes[0].it, soma = gr.partes.reduce(function (s, pt) { return s + N(pt.it.qtd); }, 0), cg = custoGrupo(gr), tg = totalGrupo(gr), k = E(gr.k), aberto = !!V302.abre[p.id + '|' + gr.k];
-      tot += tg.t; if (tg.cot) cot++;
-      var tetoG = gr.partes.reduce(function (s, pt) { return s + teto(pt); }, 0), ruim = soma > tetoG + 1e-9;
-      var a = ' data-id="' + id + '" data-g="' + k + '" autocomplete="off" data-lpignore="true" data-1p-ignore', pid = 'v302G_' + id + '_' + gr.k.replace(/[^A-Za-z0-9]/g, '_') + '_';
-      h += '<tr data-v302grow="' + k + '"><td><input type="text" data-v302gi="descricao" id="' + pid + 'd"' + a + ' name="v302_gd_nofill" value="' + E(p0.descricao) + '" maxlength="300">' +
-        (p0.linha ? '' : '<small class="v238-int">avulso</small>') +
-        '<div class="v302-partes" data-v302partes="' + k + '" data-id="' + id + '">' + (gr.partes.length > 1 || (gr.partes[0].i && gr.partes[0].i.maquina_id) ? gr.partes.map(function (pt) { return '▸ ' + E(parteRot(p, pt)) + ': <b>' + E(Q(pt.it.qtd)) + '</b>' + (N(pt.it.qtd) === 0 ? ' (sai do pedido)' : ''); }).join(' · ') : '') + '</div></td>' +
-        '<td class="v238-hide"><input type="text" data-v302gi="codigo" id="' + pid + 'c"' + a + ' name="v302_gc_nofill" value="' + E(p0.codigo) + '" maxlength="80"></td>' +
-        '<td><input type="text" class="v238-n' + (ruim ? ' ruim' : '') + '" data-v302gi="qtd" id="' + pid + 'q"' + a + ' name="v302_gq_nofill" value="' + E(Q(soma)) + '" inputmode="decimal" title="' + E(isFinite(tetoG) ? 'aprovado: ' + Q(tetoG) + ' (reparte na ordem de "precisa até")' : '') + '"></td>' +
-        '<td><input type="text" data-v302gi="unidade" id="' + pid + 'u"' + a + ' name="v302_gu_nofill" value="' + E(p0.unidade) + '" maxlength="20"></td>' +
-        '<td><input type="text" class="v238-n" data-v302gi="custo_unit" id="' + pid + 'p"' + a + ' name="v302_gp_nofill" value="' + E(cg === undefined ? '' : _v238Txt(cg)) + '" placeholder="' + (cg === undefined ? 'vários' : 'a cotar') + '" inputmode="decimal"></td>' +
-        '<td class="n" id="' + pid + 't">' + (tg.cot ? '<small>a cotar</small>' : E(_v204N2(tg.t))) + '</td>' +
-        '<td style="white-space:nowrap">' + (gr.partes.length > 1 ? '<button type="button" class="v238-btn" data-v302="gAbrir" data-id="' + id + '" data-g="' + k + '" title="a quantidade de cada máquina" data-pw-off="1">' + (aberto ? '▾' : '▸') + '</button>' : '') +
-        '<button type="button" class="v238-btn" data-v302="gTirar" data-id="' + id + '" data-g="' + k + '" title="tirar do pedido (as linhas da proposta ficam livres)" data-pw-off="1">✕</button></td></tr>';
-      if (aberto) gr.partes.forEach(function (pt) {
-        h += '<tr class="v302-parte"><td colspan="2">↳ ' + E(parteRot(p, pt)) + '</td><td><input type="text" class="v238-n" data-v302gp="' + pt.n + '" data-id="' + id + '" data-g="' + k + '" id="v302GP_' + id + '_' + pt.n + '" value="' + E(Q(pt.it.qtd)) + '" inputmode="decimal" autocomplete="off" name="v302_gpq_nofill" data-lpignore="true" data-1p-ignore title="' + E(isFinite(teto(pt)) ? 'aprovado nesta máquina: ' + Q(teto(pt)) + ' · 0 = sai do pedido' : '') + '"></td><td colspan="4"></td></tr>';
-      });
-    });
-    return h + '</tbody></table><div class="v238-acoes"><button type="button" class="v238-btn" data-v238="itMais" data-id="' + id + '" data-pw-off="1">＋ Item avulso (frete, embalagem…)</button>' +
-      '<span style="margin-left:auto">Total do pedido <b id="v238PTot_' + id + '">' + E(_v238R(tot)) + '</b>' + (cot ? ' <small>(' + cot + ' a cotar)</small>' : '') + '</span></div>';
-  }
-  function tabelaLerHtml(p) {
-    var inf = itemInfo(p), g = {}, ordem = [];
-    (p.itens || []).forEach(function (it, n) { var k = it.chave || 'av:' + n; if (!g[k]) { g[k] = []; ordem.push(k); } g[k].push(it); });
-    var h = '<table class="v238-tab v302-gtab" data-cfx-off="1" title=""><thead><tr><th>Descrição (somada por peça)</th><th class="v238-hide">Código</th><th class="n">Qtd</th><th class="n">Preço un.</th><th class="n">Total</th></tr></thead><tbody>';
-    ordem.forEach(function (k) {
-      var ps = g[k], soma = ps.reduce(function (s, i) { return s + N(i.qtd); }, 0), cs = {}, t = 0, cot = false;
-      ps.forEach(function (i) { cs[String(i.custo_unit)] = i.custo_unit; if (i.custo_unit === null || i.custo_unit === undefined) cot = true; else t += N(i.total); });
-      var cks = Object.keys(cs), cu = cks.length === 1 ? cs[cks[0]] : undefined;
-      h += '<tr><td>' + E(ps[0].descricao) + '<div class="v302-partes">' + ps.map(function (i) { return '▸ ' + E((i.maquina || i.maquina_id || 'sem máquina')) + ': ' + E(Q(i.qtd)); }).join(' · ') + '</div></td><td class="v238-hide">' + E(ps[0].codigo || '') + '</td>' +
-        '<td class="n">' + E(Q(soma)) + ' ' + E(ps[0].unidade) + '</td><td class="n">' + (cu === undefined ? '<small>vários</small>' : cu === null ? '<small>a cotar</small>' : E(_v238R(cu))) + '</td><td class="n">' + (cot ? '—' : E(_v204N2(t))) + '</td></tr>';
-    });
-    return h + '<tr><td colspan="4" class="n"><b>Total</b></td><td class="n"><b>' + E(_v238R(p.total)) + '</b></td></tr></tbody></table>';
-  }
-  function maqsHtml(p) {
-    var ms = p.maquinas || [], adm = _v200EhAdmin();
-    if (!p.multi) return '';
-    return '<div class="v302-maqs"><b>🛠 Máquinas deste pedido</b> <small>(interno — o PDF ao fornecedor diz só "Card ' + E(p.oportunidade_id) + '")</small><ul>' + ms.map(function (m) {
-      var cop = p.pdf_doc_id ? (m.pdf_falta ? (m.os_id ? '🔒 falta a cópia na OS' : '🔒 falta a cópia no card') : '🔒 cópia ' + (m.pdf_os_id ? 'na OS' : 'no card') + (m.pdf_url ? ' · ' + _v204Link(m.pdf_url, 'abrir') : '')) : '';
-      return '<li>' + E(m.maquina || m.maquina_id || 'sem máquina') + (m.numero_os ? ' · OS ' + E(m.numero_os) : ' · <b>sem OS</b> (a cópia vai para a pasta do card)') + (m.precisa_ate ? ' · precisa até ' + E(dia(m.precisa_ate)) : '') + ' · ' + N(m.itens) + ' item(ns)' + (cop ? ' · ' + cop : '') + '</li>';
-    }).join('') + '</ul>' + (adm ? '' : '<small>Guardar o PDF nos 🔒 internos é com o administrador (PIN).</small>') + '</div>';
-  }
-  function entregaHtml(p) {
-    var en = V302.ent[p.id], val = en && en.rev === p.rev ? en.val : T(p.entrega_prevista);
-    return '<label>Entrega prevista<input type="date" id="v302E_' + E(p.id) + '" data-v302e="' + E(p.id) + '" value="' + E(val) + '" autocomplete="off" name="v302_ent_nofill" data-lpignore="true" data-1p-ignore></label>';
-  }
-  function avisoEntrega(p) {
-    var en = V302.ent[p.id], val = en && en.rev === p.rev ? en.val : T(p.entrega_prevista), pa = T(p.precisa_ate).slice(0, 10);
-    if (!val || !pa || val <= pa) return '<div data-v302am="' + E(p.id) + '"></div>';
-    var m = (p.maquinas || []).find(function (x) { return T(x.precisa_ate).slice(0, 10) === pa; }) || {};
-    return '<div class="v302-am" data-v302am="' + E(p.id) + '">⚠ entrega prevista (' + E(dia(val)) + ') depois da data da OS (' + E(dia(pa)) + (m.numero_os ? ' · ' + E(m.numero_os) : '') + ') — só um aviso, não trava.</div>';
-  }
-  V302.orig.pedCorpo = _v238PedidoCorpo;
-  _v238PedidoCorpo = function (p) {
-    var h = V302.orig.pedCorpo.apply(this, arguments);
-    if (off() || !p || !p.pf) return h;
-    try {
-      // a entrega prevista (todo rascunho) e o aviso do "precisa até"
-      if (p.estado === 'rascunho') {
-        var ip = h.indexOf('id="v238P_' + _v238E(p.id) + '_prazo"');
-        var fimLab = ip > 0 ? h.indexOf('</label>', ip) : -1;
-        if (fimLab > 0) h = h.slice(0, fimLab + 8) + entregaHtml(p) + h.slice(fimLab + 8);
-      } else if (p.entrega_prevista) {
-        var k0 = h.indexOf('<div class="v238-acoes">');
-        if (k0 > 0) h = h.slice(0, k0) + '<div class="v238-sub">Entrega prevista: ' + E(dia(p.entrega_prevista)) + '</div>' + h.slice(k0);
-      }
-      if (!p.multi) return comAviso(h, p);
-      // vários máquinas: a tabela de itens vira a dos itens SOMADOS (a edição reparte entre as máquinas)
-      var i0 = h.indexOf('<table class="v238-tab"'), i1 = i0 >= 0 ? h.indexOf('</table>', i0) : -1;
-      if (i0 >= 0 && i1 > i0) {
-        var fim = i1 + 8;
-        if (p.estado === 'rascunho') {   // a barra "＋ Item avulso · Total" do V238 vem logo depois da tabela: troca junto
-          var b0 = h.indexOf('<div class="v238-acoes">', fim);
-          if (b0 === fim) { var b1 = h.indexOf('</span></div>', b0); fim = b1 > 0 ? b1 + 13 : fim; }
-          h = h.slice(0, i0) + tabelaEdHtml(p) + h.slice(fim);
-        } else h = h.slice(0, i0) + tabelaLerHtml(p) + h.slice(fim);
-      }
-      // a nota do V273 ("Sem OS: a referência é o card…") não serve: o pedido TEM as OS (uma por máquina)
-      h = h.replace(/<div class="v238-sub" data-v273-nota="1">[\s\S]*?<\/div>/, '');
-      h = h.replace('data-v273-guardar="1">🔒 Guardar o PDF nos internos</button>', 'data-v273-guardar="1">🔒 Guardar o PDF nos internos (uma cópia em cada OS)</button>');
-      var k1 = h.indexOf('<div class="v238-sub">', h.indexOf('<div class="v238-sub">') + 1);   // depois da linha "Criado … por …"
-      var ins = maqsHtml(p);
-      h = k1 > 0 ? h.slice(0, k1) + ins + h.slice(k1) : ins + h;
-      h = comAviso(h, p);
-    } catch (e) { console.warn('[V302] pedido:', e); }
-    return h;
-  };
-  // o aviso do "precisa até" vai logo antes da barra de ações do pedido (a que tem o 📄 PDF)
-  function comAviso(h, p) {
-    var kp = h.indexOf('data-v238="pedPdf"'); if (kp < 0) return h;
-    var kA = h.lastIndexOf('<div class="v238-acoes">', kp); if (kA < 0) return h;
-    return h.slice(0, kA) + ultBox(p) + avisoEntrega(p) + h.slice(kA);
-  }
-  // E1 (AUDITORIA A6): no RASCUNHO, a última compra de cada peça do pedido com "usar" — copia o preço para o item (só quem vê custo recebe a última compra)
-  function ultBox(p) {
-    try {
-      if (!p || p.estado !== 'rascunho') return '';
-      var o = O(), uc = o && o.d && o.d.ultima_compra; if (!uc) return '';
-      var e = _v238PedEd(p), vis = {}, it = [];
-      (e.itens || []).forEach(function (x) { var c = T(x.codigo); if (c && uc[c] && !vis[c]) { vis[c] = true; it.push({ c: c, d: x.descricao, u: uc[c], ja: N(x.custo_unit) === N(uc[c].custo) && x.custo_unit !== null && x.custo_unit !== undefined && x.custo_unit !== '' }); } });
-      if (!it.length) return '';
-      return '<div class="v302-ultbox" data-v302ub="' + E(p.id) + '"><b>💲 Última compra</b> <small>(interno)</small><ul>' + it.map(function (z) {
-        return '<li>' + E(T(z.d).slice(0, 60)) + ' <small>(' + E(z.c) + ')</small>: últ. compra ' + E(RS(z.u.custo)) + ' · ' + E(T(z.u.fornecedor)) + ' · ' + E(dia(z.u.data)) +
-          (z.ja ? ' <small>✓ no pedido</small>' : ' <button type="button" class="v302-mini" data-v302="ultUsar" data-id="' + E(p.id) + '" data-c="' + E(z.c) + '" data-v="' + E(String(z.u.custo)) + '" title="pôr este preço no item do rascunho" data-pw-off="1">usar ' + E(RS(z.u.custo)) + '</button>') + '</li>';
-      }).join('') + '</ul></div>';
-    } catch (x) { return ''; }
-  }
-  function ultUsar(id, cod, val) {
-    var p = pedAtual(id); if (!p || p.estado !== 'rascunho') return;
-    var e = _v238PedEd(p), v = _v204Cent(Number(val)), n = 0;
-    if (!isFinite(v) || v < 0) return;
-    (e.itens || []).forEach(function (x) { if (T(x.codigo) === cod) { x.custo_unit = v; n++; } });
-    if (!n) return;
-    e.sujo = true;
-    _v238Msg(false, '💲 Preço da última compra (' + E(RS(v)) + ') posto em ' + n + ' item(ns) de ' + E(cod) + ' — salve o pedido para gravar.');
-    return _v238Repintar();
-  }
-  V302.orig.pedHtml = _v238PedidoHtml;
-  _v238PedidoHtml = function (p) {
-    var h = V302.orig.pedHtml.apply(this, arguments);
-    if (off() || !p || !p.pf) return h;
-    try {
-      if (p.multi) {
-        var ms = p.maquinas || [], os = ms.filter(function (m) { return m.numero_os; }).map(function (m) { return 'OS ' + m.numero_os; }), sem = ms.filter(function (m) { return m.maquina_id && !m.numero_os; }).length;
-        h = h.replace('<small style="color:#B42318">sem OS</small>', '<small>🛠 ' + ms.filter(function (m) { return m.maquina_id; }).length + ' máquinas · ' + E(os.join(', ') + (sem ? (os.length ? ', ' : '') + sem + ' sem OS' : '')) + '</small>');
-      }
-      var en = T(p.entrega_prevista), pa = T(p.precisa_ate).slice(0, 10);
-      if (en && pa && en > pa && p.estado !== 'recebido' && p.estado !== 'cancelado') { var k = h.indexOf('<span style="margin-left:auto">'); if (k > 0) h = h.slice(0, k) + '<small style="color:#B54708">⚠ entrega depois da OS</small>' + h.slice(k); }
-    } catch (e) {}
-    return h;
-  };
-  // digitar no pedido somado: a mudança vai para TODAS as partes (descrição, código, un, preço) ou se reparte (quantidade)
-  function pedIn(ev) {
-    var t = ev.target; if (!t || !t.getAttribute || off()) return;
-    var pidE = t.getAttribute('data-v302e');
-    if (pidE) {
-      var pe = pedAtual(pidE); if (!pe) return;
-      V302.ent[pidE] = { rev: pe.rev, val: t.value, mudou: true };
-      var ed0 = _v238PedEd(pe); ed0.sujo = true;
-      var box = document.querySelector('[data-v302am="' + CSS.escape(pidE) + '"]');
-      if (box) { var tmp = document.createElement('div'); tmp.innerHTML = avisoEntrega(pe); box.replaceWith(tmp.firstChild); }
-      return;
-    }
-    var gi = t.getAttribute('data-v302gi'), gp = t.getAttribute('data-v302gp'); if (!gi && gp === null) return;
-    var id = t.getAttribute('data-id'), k = t.getAttribute('data-g'), p = pedAtual(id); if (!p) return;
-    var e = _v238PedEd(p); e.sujo = true;
-    var gr = gruposEd(p, e).find(function (g) { return g.k === k; }); if (!gr) return;
-    e.v302exc = e.v302exc || {};   /* AUDITORIA A5: o que passou da aprovada fica anotado — o Salvar avisa em vez de gravar cortado calado */
-    if (gi === 'qtd') { var q = _v204Num(t.value); if (q === null || isNaN(q) || q < 0) { t.classList.add('ruim'); return; } var sob = repartir(gr, q); t.classList.toggle('ruim', sob > 0); t.title = sob > 0 ? 'passa da aprovada em ' + Q(sob) : t.title; if (sob > 0) e.v302exc[k] = sob; else delete e.v302exc[k]; gr.partes.forEach(function (x) { delete e.v302exc[k + '#' + x.n]; }); }
-    else if (gi === 'custo_unit') { var c = _v204Num(t.value); if (c !== null && (isNaN(c) || c < 0)) return; gr.partes.forEach(function (pt) { pt.it.custo_unit = c === null ? null : _v204Cent(c); }); }
-    else if (gi) gr.partes.forEach(function (pt) { pt.it[gi] = t.value; });
-    else { var pt0 = gr.partes.find(function (x) { return String(x.n) === String(gp); }); var q2 = _v204Num(t.value); if (!pt0 || q2 === null || isNaN(q2) || q2 < 0) return; pt0.it.qtd = Math.min(q2, teto(pt0)); t.classList.toggle('ruim', q2 > teto(pt0)); if (q2 > teto(pt0) + 1e-9) e.v302exc[k + '#' + pt0.n] = q2 - teto(pt0); else delete e.v302exc[k + '#' + pt0.n]; delete e.v302exc[k]; }
-    // o que mostra sem repintar (quem digita não perde o foco)
-    var tg = totalGrupo(gr), pid = 'v302G_' + id + '_' + k.replace(/[^A-Za-z0-9]/g, '_') + '_';
-    var cel = document.getElementById(pid + 't'); if (cel) cel.innerHTML = tg.cot ? '<small>a cotar</small>' : E(_v204N2(tg.t));
-    var part = document.querySelector('[data-v302partes="' + CSS.escape(k) + '"][data-id="' + CSS.escape(id) + '"]');   /* AUDITORIA A14: a linha do MESMO pedido */
-    if (part) part.innerHTML = gr.partes.map(function (pt) { return '▸ ' + E(parteRot(p, pt)) + ': <b>' + E(Q(pt.it.qtd)) + '</b>' + (N(pt.it.qtd) === 0 ? ' (sai do pedido)' : ''); }).join(' · ');
-    if (gp !== null && gp !== undefined) { var qt = document.getElementById(pid + 'q'); if (qt) qt.value = Q(gr.partes.reduce(function (s, x) { return s + N(x.it.qtd); }, 0)); }
-    if (gi === 'qtd') gr.partes.forEach(function (pt) { var c2 = document.getElementById('v302GP_' + id + '_' + pt.n); if (c2) c2.value = Q(pt.it.qtd); });
-    var tot = e.itens.reduce(function (s, x) { return s + (x.custo_unit === null || x.custo_unit === undefined ? 0 : _v204Val(x.qtd, x.custo_unit)); }, 0);
-    var tb = document.getElementById('v238PTot_' + id); if (tb) tb.textContent = _v238R(tot);
-  }
-  document.addEventListener('input', pedIn, true);
-  document.addEventListener('change', function (ev) { var t = ev.target; if (t && t.getAttribute && t.getAttribute('data-v302e')) pedIn(ev); }, true);
-  function gTirar(id, k) {
-    var p = pedAtual(id); if (!p) return;
-    var e = _v238PedEd(p), gr = gruposEd(p, e).find(function (g) { return g.k === k; }); if (!gr) return;
-    var tirar = gr.partes.map(function (pt) { return pt.n; });
-    e.itens = e.itens.filter(function (it, n) { return tirar.indexOf(n) < 0; }); e.sujo = true;
-    return _v238Repintar();
-  }
-  // salvar: as partes com quantidade 0 saem do pedido (a linha da proposta fica livre); a entrega prevista vai junto
-  V302.orig.pedSalvar = _v238PedSalvar;
-  _v238PedSalvar = async function (id) {
-    try {
-      var p = pedAtual(id);
-      if (!off() && p && p.multi && p.estado === 'rascunho') {
-        var e = _v238PedEd(p), ruins = gruposEd(p, e).filter(function (gr) { return gr.partes.some(function (pt) { return N(pt.it.qtd) > teto(pt) + 1e-9; }); });
-        var exc = Object.keys(e.v302exc || {}).filter(function (k) { return e.v302exc[k] > 1e-9; });
-        if (ruins.length || exc.length) {   /* AUDITORIA A5: avisa UMA vez; a quantidade na tela já ficou na aprovada — salvar de novo grava assim */
-          e.v302exc = {};
-          _v238Msg(true, 'Quantidade acima da aprovada em ' + Math.max(ruins.length, exc.length) + ' item(ns): ficou a aprovada (confira e salve de novo). Para comprar mais, use "＋ Item avulso".'); return _v238Repintar(); }
-        e.itens = e.itens.filter(function (it) { return !(it.linha && N(it.qtd) === 0); });
-      }
-    } catch (x) {}
-    return V302.orig.pedSalvar.apply(this, arguments);
-  };
-  V302.orig.rpc238 = _v238Rpc;
-  _v238Rpc = async function (fn, args, escrita) {
-    if (!off() && fn === 'com_pedido_salvar' && args && args.p_id && V302.ent[args.p_id] && V302.ent[args.p_id].mudou && V302.ent[args.p_id].rev === args.p_rev) {
-      args = Object.assign({}, args, { p_cab: Object.assign({}, args.p_cab || {}, { entrega_prevista: V302.ent[args.p_id].val || '' }) });
-      var r = await V302.orig.rpc238.call(this, fn, args, escrita);
-      delete V302.ent[args.p_id];
-      return r;
-    }
-    return V302.orig.rpc238.apply(this, arguments);
-  };
-
-  // ── o PDF e o texto ao FORNECEDOR: peça igual somada; sem máquina, OS ou cliente quando o pedido tem várias máquinas; código do fornecedor (E2) ──
-  function subE2(it, sep) {
-    var s = [];
-    if (T(it.cod_forn)) s.push('Cód. fornecedor: ' + T(it.cod_forn));
-    if (T(it.pn) && T(it.pn) !== T(it.codigo)) s.push('PN: ' + T(it.pn));
-    if (T(it.fabricante)) s.push('Fabricante: ' + T(it.fabricante));
-    return s.length ? sep + s.join(' · ') : '';
-  }
-  function paraFornecedor(p, modo) {
-    var sep = modo === 'pdf' ? '\n' : ' — ';
-    var q = Object.assign({}, p), its = (p.itens || []).map(function (i) { return Object.assign({}, i); });
-    if (p.multi) {
-      var g = {}, ordem = [];
-      its.forEach(function (i, n) {
-        var k = (i.chave || 'av:' + n) + '|' + String(i.custo_unit);   // preços diferentes na mesma peça não se misturam
-        if (!g[k]) { g[k] = Object.assign({}, i, { qtd: 0, total: 0 }); ordem.push(k); }
-        g[k].qtd = Math.round((N(g[k].qtd) + N(i.qtd)) * 1000) / 1000;
-        g[k].total = i.custo_unit === null || i.custo_unit === undefined ? null : _v204Val(g[k].qtd, i.custo_unit);
-      });
-      its = ordem.map(function (k) { return g[k]; });
-      q.numero_os = null; q.os_id = null; q.maquina = null; q.maquina_id = null;   // D3: a referência ao fornecedor é o CARD
-    }
-    q.itens = its.map(function (i) { var d = Object.assign({}, i); d.descricao = T(i.descricao) + subE2(i, sep); return d; });
-    return q;
-  }
-  V302.orig.gerarPdf = _v238GerarPdf;
-  _v238GerarPdf = function (p) {
-    if (off() || !p || !p.pf) return V302.orig.gerarPdf.apply(this, arguments);
-    return V302.orig.gerarPdf.call(this, paraFornecedor(p, 'pdf'));
-  };
-  V302.orig.pedTexto = _v238PedTexto;
-  _v238PedTexto = function (p) {
-    if (off() || !p || !p.pf) return V302.orig.pedTexto.apply(this, arguments);
-    return V302.orig.pedTexto.call(this, paraFornecedor(p, 'txt'));
-  };
-  // guardar o PDF de pedido de VÁRIAS máquinas: UMA cópia nos 🔒 internos de cada OS (máquina sem OS = a pasta do card)
-  V302.orig.pedPdf = _v238PedPdf;
-  _v238PedPdf = function (id, guardar) {
-    try { var p = pedAtual(id); if (!off() && guardar && p && p.multi) return guardarMulti(id); } catch (e) { console.warn('[V302] guardar:', e); }
-    return V302.orig.pedPdf.apply(this, arguments);
-  };
-  async function guardarMulti(id) {
-    var p0 = pedAtual(id); if (!p0) return;
-    var box = V238.ov ? V238.ov.ed : (V238.tab.ed || {});
-    if (p0.estado === 'rascunho' && box[id] && box[id].sujo) { _v238Msg(true, 'Salve o pedido antes de guardar o PDF.'); return _v238Repintar(); }
-    var c = _v238Ctx(), p, doc;
-    try { p = await _v238Rpc('com_pedido_ler', { p_id: id }); } catch (e) { return _v238Falhou(c, 'Não consegui reler o pedido: ' + E(e.message || String(e))); }
-    var falta = (p.maquinas || []).filter(function (m) { return m.pdf_falta || !p.pdf_doc_id; });
-    var vistos = {}; falta = falta.filter(function (m) { var kk = m.os_id ? 'os:' + m.os_id : 'card'; if (vistos[kk]) return false; vistos[kk] = true; return true; });   /* AUDITORIA A2: UMA cópia por OS (o banco marca as outras máquinas da mesma OS) */
-    if (!falta.length) { _v238Msg(false, '🔒 O PDF deste pedido já está nos internos de todas as OS.'); return _v238Repintar(); }
-    try { doc = await _v204Demorado(function () { return _v238GerarPdf(p); }, 'Montando o PDF do pedido…'); }
-    catch (e) { return _v238Falhou(c, 'Não consegui montar o PDF: ' + E(e.message || String(e))); }
-    var arquivo = p.id + ' - ' + String((p.fornecedor || {}).nome || '').replace(/[\\/:*?"<>|]/g, '-').slice(0, 60) + '.pdf';
-    var b64 = _v238Base64(doc.output('arraybuffer')), feitos = [], erros = [], x = null;
-    for (var i = 0; i < falta.length; i++) {
-      var m = falta[i], ondeTxt = m.numero_os ? 'OS ' + m.numero_os : 'card ' + p.oportunidade_id + ' (' + (m.maquina || m.maquina_id || 'sem máquina') + ')';
-      try {
-        var corpo = { action: 'docInternoSalvar', os_id: m.os_id || '', os_numero: m.numero_os || '', maquina_id: m.maquina_id || '', maquina_label: m.maquina || '',
-          base64: b64, fileName: arquivo, mime: 'application/pdf', categoria: 'outro_interno',
-          descricao: 'Pedido de compra ' + p.id + ' · ' + ((p.fornecedor || {}).nome || '') + (m.os_id ? '' : ' · card ' + p.oportunidade_id),
-          client_uid: 'pcc_' + p.id + '_r' + p.rev + '_' + String(m.os_id || 'card').replace(/[^A-Za-z0-9_-]/g, '') };
-        if (!m.os_id) { corpo.card_id = p.oportunidade_id; corpo.cliente = p.cliente || ''; }
-        var r = await _v180PostInterno(corpo);
-        var dd = (r && r.doc) || r || {}, did = dd.doc_id || (r && r.doc_id) || '';
-        if (!r || (r.status && r.status !== 'ok') || !did) throw new Error((r && r.error) || 'o Apps Script gravou mas não devolveu o documento');
-        if (!m.os_id && String(dd.card_id || '') !== String(p.oportunidade_id)) throw new Error('o Apps Script gravou o PDF fora da área do card');
-        x = await rpc('com_pf_pdf_os', { p_id: p.id, p_maquina: m.maquina_id || null, p_doc_id: did, p_url: dd.file_url || (r && r.file_url) || null, p_rev: p.rev, p_os: m.os_id || null }, true);
-        feitos.push(ondeTxt + (r.duplicate ? ' (já estava)' : ''));
-      } catch (e) {
-        if (e && e.v180Cancelado) { erros.push('o PIN de administrador não foi confirmado'); break; }
-        erros.push(ondeTxt + ': ' + ((e && e.message) || e));
-      }
-    }
-    try { _v180Internos = null; } catch (e) {}
-    var txt = (feitos.length ? '🔒 PDF do ' + E(p.id) + ' guardado nos internos: ' + E(feitos.join(' · ')) + '.' : '') + (erros.length ? ' NÃO guardado: ' + E(erros.join(' · ')) : '');
-    if (erros.length) return _v238Falhou(c, txt);
-    await _v238DepoisDe(c, p.id, x, txt);
-  }
-
-  // ── a gaveta do card: o resumo pela MESMA régua da tela (D6) ──
-  V302.orig.secCard = _v238SecCard;
-  _v238SecCard = function () {
-    var r = V302.orig.secCard.apply(this, arguments);
-    try {
-      if (off()) return r;
-      var M = _v200.modal; if (!M || M.tipo !== 'card' || !M.d || !M.d.card) return r;
-      var res = V238.res[M.d.card.id]; if (!res || typeof res.para_comprar_pf !== 'number') return r;
-      var sec = document.querySelector('#v200ModalBody #v238Sec'); if (!sec || sec.getAttribute('data-v302sec') === String(res.para_comprar_pf)) return r;
-      var dv = sec.querySelector('.v202-h + div');
-      if (dv) {
-        var fil = dv.innerHTML.replace(/^(<b>\d+<\/b> linha\(s\) aprovada\(s\) para comprar ainda sem pedido|Nenhuma linha aprovada esperando pedido)/,
-          res.para_comprar_pf ? '<b>' + res.para_comprar_pf + '</b> linha(s) aprovada(s) para comprar ainda sem pedido' + (res.estoque_ok ? ' (o estoque livre já descontado)' : '') : 'Nada falta comprar');
-        dv.innerHTML = fil;
-      }
-      var sm = sec.querySelector('.v238-lin small'); if (sm) sm.textContent = 'peça igual das máquinas do card num pedido só · PDF nos 🔒 internos de cada OS · nada vai ao Omie';
-      sec.setAttribute('data-v302sec', String(res.para_comprar_pf));
-    } catch (e) { console.warn('[V302] gaveta:', e); }
-    return r;
-  };
-  // ── a aba Comercial › 📦 Compras: a fase 2 registrada (D1) ──
-  V302.orig.tabPintar = _v238TabPintar;
-  _v238TabPintar = function () {
-    var r = V302.orig.tabPintar.apply(this, arguments);
-    try {
-      if (off()) return r;
-      var s = document.querySelector('#viewComercial .v200-top .v200-sub');
-      if (s && !s.querySelector('[data-v302f2]')) s.insertAdjacentHTML('beforeend', '<span data-v302f2="1"> · um pedido junta as máquinas do MESMO card; juntar cards diferentes num pedido é a fase 2</span>');
-    } catch (e) {}
-    return r;
-  };
-})();
-</script>
-<!-- ████ FIM PCM V302 ████ -->
+<!-- ████ FIM PCM V303 ████ -->
 </body>
 </html>
