@@ -5314,9 +5314,13 @@ v50 — Resiliência de rede: retry/backoff em gsGet e syncToGS
   Maquinas > TAGs e placas: uma aba nova com o gerador UNICO (placas.html PLACAS_V5) com o filtro Frota da Proper Locacao | Clientes. A ficha da maquina ganha
   "TAG e placa" (abre a aba ja na maquina). Campo e parque > TAGs e placas continua abrindo o mesmo gerador no painel. Tudo o mais fica como estava.
   Precisa do SQL PLACA_TAG_TODAS_MAQUINAS (roda ANTES) e do GAS v180. Chave de volta: localStorage pcm_v316 = off.
+  PCM V317 — 27/10/2026 — B2.3 CONDICAO DE PAGAMENTO ESCOLHIDA DA LISTA DO OMIE (rodada condicao_pagto_listas_produtos, 1a entrega), sobre o V316 no ar.
+  Editor da proposta > Condicoes: Pagamento escolhido da lista do Omie (codigo guardado; texto = descricao; sugestao = ultima do cliente, senao a padrao).
+  Ficha > enviar ao Omie: "Condicao: ... (codigo)"; sem condicao = Escolha a condicao (Escolher/Trocar ali mesmo). Config: a padrao vira sugestao.
+  Precisa do SQL OMIE_CONDICAO_PAGAMENTO_2026-10-27 (roda ANTES). Chave de volta: localStorage pcm_v317 = off.
 -->
-<title>ProperCare Manager · Gestão PGP v4.03 (PCM V316)</title>
-<meta name="app-build" content="PCM_V316" data-date="2026-10-26">
+<title>ProperCare Manager · Gestão PGP v4.03 (PCM V317)</title>
+<meta name="app-build" content="PCM_V317" data-date="2026-10-27">
 <link rel="icon" type="image/jpeg" href="data:image/jpeg;base64,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">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -100312,5 +100316,304 @@ html:not(.v311-off):has(>body.v292-alto #viewComercial.v292-on:not([style*="disp
 })();
 </script>
 <!-- ████ FIM PCM V316 ████ -->
+<!-- ████ INICIO PCM V317 · CONDIÇÃO DE PAGAMENTO ESCOLHIDA DA LISTA DO OMIE (B2.3) ████ -->
+<style id="v317Css">
+/* PCM V317 (27/10/2026) — B2.3: a condição de pagamento é ESCOLHIDA da lista do Omie (proposta e ficha). Chave de volta: localStorage pcm_v317 = off. */
+.v317-cond{border:1px solid var(--border,#d0d7de);border-radius:8px;padding:8px;margin:2px 0 6px;background:var(--surface,#fff)}
+.v317-esc{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-bottom:6px}
+.v317-esc b{font-size:14px}
+.v317-sug{font-size:12px;color:var(--text-muted,#57606a)}
+.v317-antigo{background:#fff8e1;border:1px solid #f0c36d;border-radius:6px;padding:6px 8px;margin-bottom:6px;font-size:13px}
+.v317-nada{color:var(--text-muted,#57606a);font-size:13px;margin-bottom:6px}
+.v317-q{width:100%;box-sizing:border-box;padding:7px 9px;border:1px solid var(--border,#d0d7de);border-radius:6px;font-size:14px}
+.v317-lst{max-height:190px;overflow:auto;margin-top:6px;border-top:1px solid var(--border,#eaeef2)}
+.v317-it{display:flex;justify-content:space-between;align-items:center;gap:8px;width:100%;text-align:left;background:none;border:0;border-bottom:1px solid var(--border,#eaeef2);padding:7px 6px;cursor:pointer;font-size:13px;color:inherit}
+.v317-it:hover,.v317-it:focus{background:var(--hover,#f3f6fa)}
+.v317-it.sel{background:#e7f3ff;font-weight:600}
+.v317-it small{color:var(--text-muted,#57606a);white-space:nowrap}
+.v317-dica{font-size:12px;color:var(--text-muted,#57606a);margin-top:6px}
+.v317-aviso{background:#fff8e1;border:1px solid #f0c36d;border-radius:8px;padding:8px 10px;margin:0 0 8px;font-size:13px}
+.v317-bal{position:fixed;z-index:100060;width:380px;max-width:calc(100vw - 24px);background:var(--surface,#fff);border:1px solid var(--border,#d0d7de);border-radius:10px;box-shadow:0 10px 30px rgba(0,0,0,.25);padding:12px}
+.v317-bal h5{margin:0 0 6px;font-size:14px}
+.v317-bal .v317-acoes{display:flex;gap:6px;justify-content:flex-end;margin-top:10px;flex-wrap:wrap}
+.v317-msg{font-size:13px;margin-top:6px}
+.v317-msg.er{color:#b42318}
+@media (max-width:640px){.v317-bal{left:12px!important;right:12px;width:auto}}
+</style>
+<script>
+/* ════════════════════════════════════════════════════════════════════════
+   PCM V317 (bloco v317) · 27/10/2026 — B2.3, 1ª entrega da rodada condicao_pagto_listas_produtos.
+   Até o V316 todo pedido (e toda OS) ia ao Omie com a condição padrão da ⚙; a condição da proposta era texto livre e não seguia.
+   1) Editor da proposta › ✎ Condições: "Pagamento" passa a ser ESCOLHIDO da lista de condições lida do Omie (busca sem acento), guardando o
+      CÓDIGO (condicoes.pagamento_codigo); o texto que o PDF e o Portal mostram vira a descrição da lista (o banco garante). Ao abrir uma proposta
+      sem condição: sugere a última usada com o cliente, senão a padrão da ⚙. Proposta antiga com texto livre mostra o texto e pede a escolha.
+      O "Aplicar" guarda o código junto (o V204 remontava o objeto e o perderia). Na emissão, aviso se a condição não veio da lista.
+   2) Ficha de faturamento › 📤: a conferência diz "Condição de pagamento: … (código)"; sem condição = ❌ "Escolha a condição" — o
+      "Escolher"/"Trocar" abre a lista ali mesmo (balão) e grava pela omp_ficha_definir (Financeiro/administrador).
+   3) ⚙ › 🔌 › Gravar no Omie: a "condição padrão" vira só a SUGESTÃO.
+   Precisa do SQL OMIE_CONDICAO_PAGAMENTO_2026-10-27 (roda ANTES). Sem ele o bloco não mostra nada (fica o V316). Chave de volta: localStorage pcm_v317 = off.
+   ════════════════════════════════════════════════════════════════════════ */
+(function () {
+  'use strict';
+  if (window.V317) return;
+  var V317 = window.V317 = { versao: 'V317 · 27/10/2026', orig: {}, semSql: false, listas: {}, ed: null, bal: null, obsT: null };
+  function off() { try { return localStorage.getItem('pcm_v317') === 'off'; } catch (e) { return false; } }
+  function S(v) { return String(v == null ? '' : v); }
+  function E(v) { return S(v).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;'); }
+  function N(v) { try { return S(v).normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/\s+/g, ' ').trim(); } catch (e) { return S(v).toLowerCase(); } }
+  function toastx(t, k) { try { toast(t, k || 'success'); } catch (e) { /* sem toast */ } }
+  function sessao() { try { return typeof _v235Sessao === 'function' ? (_v235Sessao() || {}) : (window.PROPER_SESSION || {}); } catch (e) { return {}; } }
+  function ehAdmin() { return sessao().is_admin === true; }
+  function ehFin() { try { return _v235Financeiro(); } catch (e) { return ehAdmin(); } }
+  // o guard anti-autofill vai ESCRITO em cada campo de busca (a varredura de paridade lê a marcação, não a variável)
+
+  async function rpc(fn, args, escrita, ja) {
+    var tok = await _v200Token(false), r;
+    try {
+      r = await fetch(SUPA_URL + '/rest/v1/rpc/' + fn, { method: 'POST', signal: _pcmSinalTimeout_(!!escrita),
+        headers: { apikey: SUPA_ANON, Authorization: 'Bearer ' + tok, 'Content-Type': 'application/json' }, body: JSON.stringify(args || {}) });
+    } catch (e) { throw new Error(escrita ? 'Sem resposta do banco — NÃO sei se gravou. Confira antes de tentar de novo.' : 'Sem conexão com o banco.'); }
+    var txt = ''; try { txt = await r.text(); } catch (e) { /* vazio */ }
+    var j = null; try { j = txt ? JSON.parse(txt) : null; } catch (e) { j = null; }
+    if (r.ok) return j;
+    if (r.status === 401 && !ja) { try { _v200Tok = null; } catch (e) { /* nada */ } return rpc(fn, args, escrita, true); }
+    var cod = (j && j.code) || '';
+    if (cod === 'PGRST202' || (r.status === 404 && /function|rpc/i.test(txt))) { V317.semSql = true; throw new Error('O SQL OMIE_CONDICAO_PAGAMENTO não está no Supabase (falta ' + fn + ').'); }
+    var msg = (j && (j.message || j.hint)) || txt || ('HTTP ' + r.status);
+    throw new Error(S(msg).replace(/^Faturamento: /, '').replace(/^CRM: /, ''));
+  }
+
+  // ── a lista do Omie (uma leitura por cliente a cada minuto) ──
+  function lista(cliente) { var L = V317.listas[S(cliente)]; return L && L.d ? L.d : null; }
+  function carregarLista(cliente, depois) {
+    var k = S(cliente), L = V317.listas[k] || (V317.listas[k] = { d: null, em: 0, voo: null, erro: '' });
+    if (L.d && Date.now() - L.em < 60000) { if (depois) depois(); return; }
+    if (L.voo) { L.voo.then(function () { if (depois) depois(); }); return; }
+    L.voo = rpc('omp_lista', { p_cliente: k || null }).then(function (d) { L.d = d || { lista: [] }; L.em = Date.now(); L.erro = ''; },
+                                                         function (e) { L.erro = e.message || S(e); L.em = Date.now(); })
+      .then(function () { L.voo = null; if (depois) depois(); });
+  }
+  function filtrar(l, q) {
+    var t = N(q); if (!t) return l;
+    var ps = t.split(' ');
+    return l.filter(function (x) { var h = N(x.descricao) + ' ' + N(x.codigo); return ps.every(function (p) { return h.indexOf(p) >= 0; }); });
+  }
+  function itensHtml(l, sel, alvo) {
+    if (!l.length) return '<div class="v317-nada">Nenhuma condição com esse texto.</div>';
+    return l.slice(0, 60).map(function (x) {
+      return '<button type="button" class="v317-it' + (S(x.codigo) === S(sel) ? ' sel' : '') + '" data-v317="' + alvo + '" data-cod="' + E(x.codigo) + '" data-pw-off="1">' +
+        '<span>' + E(x.descricao || x.codigo) + '</span><small>' + E(x.codigo) + (Number(x.parcelas) > 1 ? ' · ' + E(x.parcelas) + ' parcelas' : '') + '</small></button>';
+    }).join('') + (l.length > 60 ? '<div class="v317-dica">… mais ' + (l.length - 60) + ' — refine a busca.</div>' : '');
+  }
+  function acharNaLista(L, cod) { var l = (L && L.lista) || []; for (var i = 0; i < l.length; i++) if (S(l[i].codigo) === S(cod)) return l[i]; return null; }
+  function rotSug(s) { return s ? (s.origem === 'cliente' ? 'a última usada com este cliente' : 'a padrão da ⚙') : ''; }
+
+  // ════ 1 · EDITOR DA PROPOSTA › ✎ CONDIÇÕES ══════════════════════════════════════════════════════════════
+  function cliDoEditor(ED) { return S((ED && ED.card && ED.card.cliente_id) || ''); }
+  function iniciarCond(ED) {
+    var st = V317.ed;
+    if (st && st.ED === ED && st.aberto) return st;
+    var c = (ED.cab && ED.cab.condicoes) || {};
+    var cod = S(c.pagamento_codigo).trim();
+    st = V317.ed = { ED: ED, aberto: true, cod: cod, desc: cod ? S(c.pagamento) : '', antigo: cod ? '' : S(c.pagamento).trim(), q: '', trocar: !cod, sugerida: false, tocou: false, cli: cliDoEditor(ED) };
+    carregarLista(st.cli, function () { if (V317.semSql) { st.aberto = false; try { _v204Pintar(); } catch (e) { /* nada */ } return; } aplicarSugestao(st); repintarCond(); });
+    return st;
+  }
+  function aplicarSugestao(st) {
+    if (!st || st.tocou || st.cod || st.antigo) return;
+    var L = lista(st.cli); if (!L || !L.sugerida || !L.sugerida.codigo) return;
+    st.cod = S(L.sugerida.codigo); st.desc = S(L.sugerida.descricao); st.sugerida = true; st.trocar = false;
+  }
+  function condTopoHtml(st) {
+    var L = lista(st.cli), h = '';
+    if (st.cod) {
+      var it = acharNaLista(L, st.cod);
+      h += '<div class="v317-esc">✅ <b>' + E(st.desc || (it && it.descricao) || st.cod) + '</b> <small>(' + E(st.cod) + ')</small>' +
+        (L && !it ? ' <small style="color:#b42318">— não está mais na lista ativa do Omie; escolha outra</small>' : '') +
+        ' <button type="button" class="btn btn-secondary btn-sm" data-v317="condTrocar" data-pw-off="1">Trocar</button>' +
+        ' <button type="button" class="btn btn-secondary btn-sm" data-v317="condTirar" data-pw-off="1">Tirar</button></div>';
+      if (st.sugerida) h += '<div class="v317-sug">Sugerida: ' + E(rotSug(L && L.sugerida)) + '. Confira antes de aplicar.</div>';
+    } else if (st.antigo) {
+      h += '<div class="v317-antigo">Texto antigo (não vai ao Omie): "<b>' + E(st.antigo) + '</b>" — escolha a condição da lista. ' +
+        (L && L.sugerida ? 'Sugestão: ' + E(L.sugerida.descricao) + ' (' + E(rotSug(L.sugerida)) + ').' : '') + '</div>';
+    } else {
+      h += '<div class="v317-nada">Nenhuma condição escolhida — o faturamento vai pedir antes do 📤.</div>';
+    }
+    return h;
+  }
+  function condListaHtml(st) {
+    var Lw = V317.listas[st.cli] || {}, L = lista(st.cli);
+    if (!L) return Lw.erro ? '<div class="v317-msg er">' + E(Lw.erro) + '</div>' : '<div class="v317-nada">⏳ Lendo as condições do Omie…</div>';
+    var l = L.lista || [];
+    if (!l.length) return '<div class="v317-antigo">A lista de condições do Omie está vazia. Peça ao administrador: ⚙ › 🔌 Integração Omie › Ler as listas do Omie.</div>';
+    return itensHtml(filtrar(l, st.q), st.cod, 'condEsc');
+  }
+  function condHtml(st) {
+    var mostrar = st.trocar || !st.cod;
+    return '<label>Pagamento <small style="color:var(--text-muted)">(lista do Omie — é o que vai no pedido)</small></label>' +
+      '<div class="v317-cond" id="v317Cond"><div id="v317Topo">' + condTopoHtml(st) + '</div>' +
+      '<div id="v317Busca"' + (mostrar ? '' : ' hidden') + '><input type="text" id="v317Q" class="v317-q" placeholder="Buscar condição (ex.: 28, vista, 30/60)" value="' + E(st.q) + '" autocomplete="off" name="v317q_nofill" data-lpignore="true" data-1p-ignore readonly onfocus="this.removeAttribute(\'readonly\')">' +
+      '<div class="v317-lst" id="v317Lst">' + condListaHtml(st) + '</div>' +
+      '<div class="v317-dica">Não achou? Cadastre a condição NO OMIE e depois ⚙ › 🔌 Integração Omie › Ler as listas do Omie. O PCM não cria condição.</div></div></div>' +
+      '<textarea id="v204CondPag" hidden maxlength="600">' + E(st.cod ? st.desc : st.antigo) + '</textarea>';
+  }
+  function repintarCond() {
+    var st = V317.ed; if (!st || !st.aberto) return;
+    var topo = document.getElementById('v317Topo'), lst = document.getElementById('v317Lst'), bus = document.getElementById('v317Busca'), ta = document.getElementById('v204CondPag');
+    if (!topo) return;
+    topo.innerHTML = condTopoHtml(st);
+    if (lst) lst.innerHTML = condListaHtml(st);
+    if (bus) bus.hidden = !(st.trocar || !st.cod);
+    if (ta) ta.value = st.cod ? st.desc : st.antigo;
+  }
+  function avisoEmitir(ED) {
+    var c = (ED.cab && ED.cab.condicoes) || {};
+    if (S(c.pagamento_codigo).trim()) return '';
+    return '<div class="v317-aviso">⚠ A condição de pagamento não foi escolhida da lista do Omie' + (S(c.pagamento).trim() ? ' (o texto "' + E(S(c.pagamento).trim()) + '" não vai ao Omie)' : '') +
+      '. Dá para emitir, mas o faturamento vai pedir a condição antes do 📤. <button type="button" class="btn btn-secondary btn-sm" data-v204="painel" data-k="cond">Escolher agora</button></div>';
+  }
+  V317.orig.painel = typeof _v204PainelHtml === 'function' ? _v204PainelHtml : null;
+  if (V317.orig.painel) {
+    _v204PainelHtml = function () {
+      var h = V317.orig.painel.apply(this, arguments);
+      try {
+        if (off() || V317.semSql || typeof h !== 'string') return h;
+        var ED = V204.ed; if (!ED) return h;
+        if (ED.painel !== 'cond') { if (V317.ed) V317.ed.aberto = false; return ED.painel === 'emitir' ? avisoEmitir(ED) + h : h; }
+        var i = h.indexOf('<label>Pagamento</label><textarea id="v204CondPag"'), j = i < 0 ? -1 : h.indexOf('</textarea>', i);
+        if (i < 0 || j < 0) return h;
+        return h.slice(0, i) + condHtml(iniciarCond(ED)) + h.slice(j + '</textarea>'.length);
+      } catch (e) { console.warn('[V317] painel:', e); return h; }
+    };
+  }
+  function aplicarCond(ev) {
+    var ED = V204.ed, st = V317.ed; if (!ED || !st || !st.aberto || st.ED !== ED) return false;
+    var g = function (x) { return String((document.getElementById(x) || {}).value || ''); };
+    var base = Object.assign({}, (ED.cab && ED.cab.condicoes) || {});
+    base.ac = g('v204CondAc'); base.prazo = g('v204CondPrazo'); base.garantia = g('v204CondGar'); base.obs = g('v204CondObs');
+    if (st.cod) { base.pagamento = st.desc; base.pagamento_codigo = st.cod; }
+    else { base.pagamento = st.antigo; delete base.pagamento_codigo; }
+    ED.cab.condicoes = base; ED.painel = ''; st.aberto = false;
+    ev.preventDefault(); ev.stopImmediatePropagation();
+    try { _v204Mudou(); } catch (e) { /* nada */ }
+    try { _v204Pintar(); } catch (e) { /* nada */ }
+    if (!st.cod) toastx('Sem condição escolhida da lista do Omie: o faturamento vai pedir antes do 📤.', 'warning');
+    return true;
+  }
+
+  // ════ 2 · FICHA DE FATURAMENTO › 📤 — escolher/trocar a condição (balão) ═══════════════════════════════════════
+  function fichaAtual() { try { var O = V235.ov; return O && O.d && O.d.ficha && !O.carregando ? O.d.ficha : null; } catch (e) { return null; } }
+  function reconferir() { try { var b = document.querySelector('#v235Jan [data-v304="enviar"]'); if (b) b.click(); } catch (e) { /* a ficha fechou */ } }
+  function fecharBal() { var b = document.getElementById('v317Bal'); if (b) b.remove(); V317.bal = null; }
+  function abrirBal(ancora, fid) {
+    if (!ehFin()) { toastx('Só o Financeiro ou o administrador escolhe a condição de pagamento da ficha.', 'error'); return; }
+    fecharBal();
+    var f = fichaAtual();
+    V317.bal = { fid: S(fid || (f && f.id)), cli: S(f && f.cliente_id), q: '', sel: '', salvando: false, msg: null };
+    var d = document.createElement('div'); d.id = 'v317Bal'; d.className = 'v317-bal'; d.setAttribute('role', 'dialog'); d.setAttribute('aria-label', 'Condição de pagamento da ficha');
+    document.body.appendChild(d);
+    try {
+      var r = ancora.getBoundingClientRect(), w = Math.min(380, window.innerWidth - 24), x = Math.max(12, Math.min(r.right - w, window.innerWidth - w - 12)), y = r.bottom + 6;
+      if (y + 360 > window.innerHeight) y = Math.max(12, r.top - 366);
+      d.style.left = x + 'px'; d.style.top = y + 'px';
+    } catch (e) { d.style.left = '12px'; d.style.top = '80px'; }
+    pintarBal();
+    carregarLista(V317.bal.cli, function () { var B = V317.bal; if (!B) return; var L = lista(B.cli); if (L && L.sugerida && !B.sel) B.sel = S(L.sugerida.codigo); pintarBal(); });
+    setTimeout(function () { var q = document.getElementById('v317BQ'); if (q) { q.removeAttribute('readonly'); q.focus(); } }, 30);
+  }
+  function balListaHtml(B) {
+    var Lw = V317.listas[B.cli] || {}, L = lista(B.cli);
+    if (!L) return Lw.erro ? '<div class="v317-msg er">' + E(Lw.erro) + '</div>' : '<div class="v317-nada">⏳ Lendo as condições do Omie…</div>';
+    if (!(L.lista || []).length) return '<div class="v317-antigo">A lista de condições do Omie está vazia. ⚙ › 🔌 Integração Omie › Ler as listas do Omie.</div>';
+    return itensHtml(filtrar(L.lista, B.q), B.sel, 'balEsc');
+  }
+  function pintarBal() {
+    var B = V317.bal, d = document.getElementById('v317Bal'); if (!B || !d) return;
+    var L = lista(B.cli), it = acharNaLista(L, B.sel);
+    var q = document.getElementById('v317BQ'), temQ = !!q;
+    if (!temQ) {
+      d.innerHTML = '<h5>Condição de pagamento da ficha ' + E(B.fid) + '</h5>' +
+        '<div class="v317-sug" id="v317BSug"></div>' +
+        '<input type="text" id="v317BQ" class="v317-q" placeholder="Buscar condição (ex.: 28, vista, 30/60)" autocomplete="off" name="v317bq_nofill" data-lpignore="true" data-1p-ignore readonly onfocus="this.removeAttribute(\'readonly\')">' +
+        '<div class="v317-lst" id="v317BLst"></div><div id="v317BMsg"></div>' +
+        '<div class="v317-acoes"><button type="button" class="btn btn-secondary btn-sm" data-v317="balProposta" data-pw-off="1" title="Volta a valer a condição da proposta aceita">Usar a da proposta</button>' +
+        '<button type="button" class="btn btn-secondary btn-sm" data-v317="balFechar" data-pw-off="1">Cancelar</button>' +
+        '<button type="button" class="btn btn-primary btn-sm" data-v317="balAplicar">Aplicar</button></div>' +
+        '<div class="v317-dica">Não achou? Cadastre NO OMIE e depois ⚙ › 🔌 › Ler as listas do Omie.</div>';
+    }
+    var sug = document.getElementById('v317BSug');
+    if (sug) sug.textContent = it ? 'Escolhida: ' + S(it.descricao) + ' (' + S(it.codigo) + ')' + (L && L.sugerida && S(L.sugerida.codigo) === S(B.sel) ? ' — sugerida: ' + rotSug(L.sugerida) : '') : 'Escolha uma condição na lista.';
+    var lst = document.getElementById('v317BLst'); if (lst) lst.innerHTML = balListaHtml(B);
+    var m = document.getElementById('v317BMsg'); if (m) m.innerHTML = B.msg ? '<div class="v317-msg ' + (B.msg.er ? 'er' : '') + '">' + E(B.msg.txt) + '</div>' : '';
+    var ap = d.querySelector('[data-v317="balAplicar"]'); if (ap) { ap.disabled = B.salvando || !B.sel; if (B.salvando) ap.setAttribute('data-pcm-enviando', '1'); else ap.removeAttribute('data-pcm-enviando'); ap.textContent = B.salvando ? '⏳ Gravando…' : 'Aplicar'; }
+  }
+  async function gravarBal(cod) {
+    var B = V317.bal; if (!B || B.salvando) return;
+    B.salvando = true; B.msg = null; pintarBal();
+    try {
+      var r = await rpc('omp_ficha_definir', { p_ficha: B.fid, p_codigo: cod }, true);
+      var c = (r && r.condicao) || {};
+      fecharBal();
+      toastx(c.codigo ? 'Condição da ficha: ' + S(c.descricao || c.codigo) + ' (' + S(c.codigo) + ')' + (c.origem === 'proposta' ? ' — a da proposta' : '') : 'A ficha volta a seguir a proposta — que não tem condição da lista: escolha uma.', c.codigo ? 'success' : 'warning');
+      reconferir();
+    } catch (e) { if (V317.bal) { V317.bal.salvando = false; V317.bal.msg = { er: true, txt: e.message || S(e) }; pintarBal(); } }
+  }
+
+  // ════ 3 · AJUSTES DE TEXTO (um observador; tudo idempotente) ════════════════════════════════════════════════
+  function ajustar() {
+    if (off() || V317.semSql) return;
+    var cfg = document.querySelector('select[data-v304cfg="parcela_padrao"]');
+    if (cfg && !cfg.getAttribute('data-v317r')) {
+      cfg.setAttribute('data-v317r', '1');
+      var lb = cfg.closest('label'); if (lb && lb.firstChild && lb.firstChild.nodeType === 3) lb.firstChild.nodeValue = 'Condição de pagamento SUGERIDA (só a sugestão da tela: a do pedido vem da proposta ou da ficha)';
+    }
+    var sec = document.getElementById('v304Sec'); if (!sec) return;
+    sec.querySelectorAll('button[data-v304="corrigir"][data-onde="ficha"]').forEach(function (b) { if (!b.getAttribute('data-v317l')) { b.setAttribute('data-v317l', '1'); b.textContent = 'Escolher'; } });
+    if (!ehFin()) return;
+    sec.querySelectorAll('.v304-it.ok').forEach(function (n) {
+      var t = n.querySelector('.t'); if (!t || n.querySelector('[data-v317="trocar"]')) return;
+      if (S(t.textContent).indexOf('Condição de pagamento:') !== 0) return;
+      var b = document.createElement('button'); b.type = 'button'; b.className = 'v235-mini az'; b.setAttribute('data-v317', 'trocar'); b.textContent = 'Trocar';
+      n.appendChild(b);
+    });
+  }
+  function agendar() { clearTimeout(V317.obsT); V317.obsT = setTimeout(function () { try { ajustar(); } catch (e) { console.warn('[V317] ajustar:', e); } }, 40); }
+  try {
+    var mo = new MutationObserver(function (ms) { if (off() || V317.semSql) return; for (var i = 0; i < ms.length; i++) { if (ms[i].addedNodes && ms[i].addedNodes.length) { agendar(); break; } } });
+    mo.observe(document.body, { childList: true, subtree: true });
+  } catch (e) { /* sem observador: os botões continuam valendo */ }
+
+  // ── os CLIQUES (um ouvinte em captura) ──
+  document.addEventListener('click', function (ev) {
+    if (off() || V317.semSql) return;
+    var t = ev.target && ev.target.closest && ev.target.closest('[data-v317],[data-v204="condOk"],button[data-v304="corrigir"][data-onde="ficha"]');
+    if (!t) { if (V317.bal && !(ev.target && ev.target.closest && ev.target.closest('#v317Bal')) && !V317.bal.salvando) fecharBal(); return; }
+    if (t.getAttribute('data-v204') === 'condOk') { if (document.getElementById('v317Cond')) aplicarCond(ev); return; }
+    ev.preventDefault(); ev.stopPropagation();
+    if (t.getAttribute('data-v304') === 'corrigir') { abrirBal(t, t.getAttribute('data-id')); return; }
+    var a = t.getAttribute('data-v317'), st = V317.ed, B = V317.bal;
+    try {
+      if (a === 'condEsc' && st) {
+        var L = lista(st.cli), it = acharNaLista(L, t.getAttribute('data-cod'));
+        if (it) { st.cod = S(it.codigo); st.desc = S(it.descricao); st.sugerida = false; st.tocou = true; st.trocar = false; st.q = ''; var q0 = document.getElementById('v317Q'); if (q0) q0.value = ''; repintarCond(); }
+      } else if (a === 'condTrocar' && st) { st.trocar = true; st.tocou = true; repintarCond(); var q1 = document.getElementById('v317Q'); if (q1) { q1.removeAttribute('readonly'); q1.focus(); } }
+      else if (a === 'condTirar' && st) { st.cod = ''; st.desc = ''; st.sugerida = false; st.tocou = true; st.trocar = true; repintarCond(); }
+      else if (a === 'trocar') { var f = fichaAtual(); if (f) abrirBal(t, f.id); }
+      else if (a === 'balEsc' && B) { B.sel = S(t.getAttribute('data-cod')); B.msg = null; pintarBal(); }
+      else if (a === 'balFechar') { if (!B || !B.salvando) fecharBal(); }
+      else if (a === 'balAplicar' && B && B.sel && !t.disabled) gravarBal(B.sel);
+      else if (a === 'balProposta' && B && !B.salvando) gravarBal('');
+    } catch (e) { console.warn('[V317] clique', a, e); toastx(e.message || S(e), 'error'); }
+  }, true);
+  document.addEventListener('input', function (ev) {
+    if (off() || V317.semSql) return; var id = ev.target && ev.target.id;
+    if (id === 'v317Q' && V317.ed) { V317.ed.q = ev.target.value; var l = document.getElementById('v317Lst'); if (l) l.innerHTML = condListaHtml(V317.ed); }
+    else if (id === 'v317BQ' && V317.bal) { V317.bal.q = ev.target.value; var l2 = document.getElementById('v317BLst'); if (l2) l2.innerHTML = balListaHtml(V317.bal); }
+  }, true);
+  // Esc fecha só o balão (na JANELA em captura: chega antes do Esc da janela da ficha, que o seguraria)
+  window.addEventListener('keydown', function (ev) { if ((ev.key === 'Escape' || ev.key === 'Esc') && V317.bal && !V317.bal.salvando && !off()) { fecharBal(); ev.preventDefault(); ev.stopImmediatePropagation(); } }, true);
+})();
+</script>
+<!-- ████ FIM PCM V317 ████ -->
 </body>
 </html>
