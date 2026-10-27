@@ -53,8 +53,24 @@ Endereços aceitos: maquina.html?tag=PL-CP-002 · ?id=<ID> · ?m=<TAG>
   Bancada: _testes/T_PWAIT_V4.mjs · _testes/T_PCM_JANELAS_V201.mjs
   ══════════════════════════════════════════════════════════════════════
 -->
-<title>Proper · Ficha da máquina · FICHA_V4</title>
-<meta name="app-build" content="FICHA_V4">
+<!--
+  ══════════════════════════════════════════════════════════════════════
+  FICHA_V5 — "IR PARA A OS" + MÁQUINA DE CLIENTE COM TAG DA PLACA   26/10/2026
+  ══════════════════════════════════════════════════════════════════════
+  Fernando, 26/10: o QR da placa (PORTAL…/M/<TAG>) passa a existir também
+  nas máquinas dos CLIENTES (TAG PC-CP-0001…). O técnico que lê o QR com o
+  crachá cai nesta ficha.
+  ⇒ cada OS ABERTA ganha o botão "Ir para a OS" (abre a OS no PCF);
+  ⇒ máquina de cliente mostra a "TAG anterior" (a que o cliente usava) quando
+    a TAG PC- trocou a antiga (vem do GAS v180: tag_anterior);
+  ⇒ "Placa e QR desta máquina" abre o MESMO gerador do PCM já no cliente.
+  Frota: nada muda. ZERO SQL; o GAS v180 só acrescenta campos (sem ele a ficha
+  funciona igual: os campos novos vêm vazios).
+  Bancada: _testes/T_FICHA_V5.py
+  ══════════════════════════════════════════════════════════════════════
+-->
+<title>Proper · Ficha da máquina · FICHA_V5</title>
+<meta name="app-build" content="FICHA_V5">
 <style>
 :root{--or:#f07725;--or-d:#c2410c;--bg:#f4f4f5;--card:#fff;--ink:#111114;--ink2:#3f3f46;--mut:#6b6b73;--line:#e4e4e7;
   --red:#b91c1c;--red-l:#fef2f2;--am:#b45309;--am-l:#fffbeb;--gr:#15803d;--gr-l:#f0fdf4;--bl:#1d4ed8;--bl-l:#eff6ff}
@@ -92,6 +108,8 @@ h2 .n{margin-left:auto;font-size:12px;color:var(--mut);font-weight:500}
 .os{padding:10px 12px;border:1px solid var(--line);border-radius:10px;margin-bottom:8px}
 .os b{font-family:monospace;font-size:14px}
 .os small{display:block;color:var(--mut);font-size:12.5px}
+.os .ir{display:flex;align-items:center;justify-content:center;min-height:44px;margin-top:8px;border-radius:10px;border:1px solid var(--or);color:var(--or-d);font-weight:700;font-size:15px;text-decoration:none;background:#fff}
+.os .ir:active{background:var(--or);color:#fff}
 .btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;min-height:52px;border-radius:12px;border:1px solid var(--line);
   background:#fff;color:var(--ink);font:600 16px inherit;text-decoration:none;cursor:pointer;margin-top:8px}
 .btn:active{transform:scale(.99);background:#f4f4f5}
@@ -109,7 +127,7 @@ input[type=text]:focus{outline:none;border-color:var(--or)}
 </style>
 </head>
 <body>
-<header><div class="mk">P</div><b>Ficha da máquina</b><span class="v" id="versao">FICHA_V4</span></header>
+<header><div class="mk">P</div><b>Ficha da máquina</b><span class="v" id="versao">FICHA_V5</span></header>
 <main id="main">
   <div class="card"><div class="sk" style="width:55%;height:30px"></div><div class="sk" style="width:80%"></div><div class="sk" style="width:65%"></div></div>
 </main>
@@ -207,10 +225,15 @@ function linhaPeca(p) {
   return '<div class="peca ' + esc(p.status) + '"><div class="t"><b>' + esc(p.nome) + '</b><small>' + esc(det.join(' · ')) + '</small></div>' +
          '<div class="st">' + esc(p.rotulo) + '</div></div>';
 }
-function linhaOS(o) {
+var PCF_URL = 'https://grupotap.github.io/ProperTech/';
+function urlDaOS(o) {
+  return PCF_URL + '?modo=pipeline&os_id=' + encodeURIComponent(o.id_os || '');
+}
+function linhaOS(o, aberta) {
   return '<div class="os"><b>' + esc(o.numero_os) + '</b> · ' + esc(o.tipo || '') +
     '<small>' + esc(o.cliente) + ' · aberta em ' + esc(dataBR(o.data_abertura)) + (o.status ? ' · ' + esc(o.status) : '') +
-    (o.local ? ' · ' + (o.local === 'interno' ? 'na oficina' : 'no cliente') : '') + '</small></div>';
+    (o.local ? ' · ' + (o.local === 'interno' ? 'na oficina' : 'no cliente') : '') + '</small>' +
+    (aberta === true && o.id_os ? '<a class="ir" href="' + esc(urlDaOS(o)) + '" target="_blank" rel="noopener">Ir para a OS ' + esc(o.numero_os) + ' →</a>' : '') + '</div>';
 }
 
 function telaFicha(r) {
@@ -220,6 +243,7 @@ function telaFicha(r) {
   else if (r.frota) chips.push('<span class="chip">Frota Proper Locação · na Proper</span>');
   if (m.na_oficina) chips.push('<span class="chip ofi">Na oficina</span>');
   if (!r.frota) chips.push('<span class="chip">' + esc(m.cliente) + (m.filial ? ' · ' + esc(m.filial) : '') + '</span>');
+  if (!r.frota && m.tag_placa === 'PC' && m.tag_anterior) chips.push('<span class="chip">TAG anterior do cliente: ' + esc(m.tag_anterior) + '</span>');
   h += '<div class="card"><p class="tag">' + esc(m.tag || '(sem TAG)') + '</p>' +
        '<p class="nome">' + esc([m.marca, m.modelo].filter(Boolean).join(' ')) + '</p>' +
        '<div class="chips">' + chips.join('') + '</div>' +
@@ -242,11 +266,11 @@ function telaFicha(r) {
        '<p class="resumo">' + (partes.join(' · ') || 'sem dados de troca') + '</p>' +
        (r.pecas || []).map(linhaPeca).join('') + '</div>';
   h += '<div class="card"><h2>📋 OS abertas <span class="n">' + (r.os_abertas || []).length + '</span></h2>' +
-       ((r.os_abertas || []).length ? r.os_abertas.map(linhaOS).join('') : '<p class="mut" style="margin:0">Nenhuma OS aberta para esta máquina.</p>') + '</div>';
+       ((r.os_abertas || []).length ? r.os_abertas.map(function (o) { return linhaOS(o, true); }).join('') : '<p class="mut" style="margin:0">Nenhuma OS aberta para esta máquina.</p>') + '</div>';
   if ((r.historico || []).length)
-    h += '<div class="card"><h2>🕑 Últimos atendimentos</h2>' + r.historico.map(linhaOS).join('') + '</div>';
+    h += '<div class="card"><h2>🕑 Últimos atendimentos</h2>' + r.historico.map(function (o) { return linhaOS(o, false); }).join('') + '</div>';
   h += '<a class="btn p" href="./?maq=' + encodeURIComponent(m.id) + '">Abrir no PCM (nova OS, fotos, peças)</a>' +
-       '<a class="btn" href="placas.html?id=' + encodeURIComponent(m.id) + '">🏷 Placa e QR desta máquina</a>' +
+       '<a class="btn" href="placas.html?' + (!r.frota && m.cliente_id ? 'modo=clientes&cliente=' + encodeURIComponent(m.cliente_id) + '&' : '') + 'id=' + encodeURIComponent(m.id) + '">🏷 Placa e QR desta máquina</a>' +
        '<button class="btn" type="button" id="btAtualizar">↻ Atualizar</button>' +
        '<p class="mut" style="text-align:center;margin-top:14px">Horímetro e peças pela última leitura registrada (sem projeção pelo regime).</p>';
   $('main').innerHTML = h;

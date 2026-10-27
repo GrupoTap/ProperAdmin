@@ -93,8 +93,28 @@ Camadas do DXF (EZCAD): MOLDURA/CAIXAS = linha · TEXTO/LOGO = HACHURAR ·
   Bancada: _testes/T_PLACAS_V4.js · T_PARIDADE_PLACAS.js
   ══════════════════════════════════════════════════════════════════════
 -->
-<title>Proper · Placas da Frota · PLACAS_V4</title>
-<meta name="app-build" content="PLACAS_V4">
+<!--
+  ══════════════════════════════════════════════════════════════════
+  PLACAS_V5 — UM GERADOR DE TAG + PLACA PARA TODAS AS MÁQUINAS     26/10/2026
+  ══════════════════════════════════════════════════════════════════
+  Pedido do Fernando (26/10): a placa com TAG + QR só existia para a frota
+  da Proper Locação. Agora é UM gerador, dentro do PCM (Máquinas › TAGs e
+  placas), com o filtro  Frota Proper Locação | Clientes.
+  ⇒ Clientes: cliente → máquinas → TAG PC-<CP|SC|FL|VP>-NNNN gerada pelo
+    BANCO (única no banco todo; a TAG que o cliente usava vai para as
+    Observações). O QR é o mesmo da frota (PORTAL.../M/<TAG>): o cliente
+    cai no Portal com a máquina aberta; o técnico com crachá cai na ficha.
+  ⇒ O dono da máquina decide o prefixo (PL-/PC-) e os textos da placa.
+  ⇒ Tamanho digitável (86×54, 85×50, 100×70 e os que a equipe salvar): o
+    desenho se ajusta e a tela avisa quando não couber.
+  ⇒ Frota + 86×54 + textos padrão = as funções da V4, intactas (DXF idêntico).
+  SQL PLACA_TAG_TODAS_MAQUINAS roda ANTES (sem ele: só o filtro Clientes
+  e os tamanhos salvos ficam indisponíveis; a Frota segue normal).
+  Par: GAS v180 · FICHA_V5 · PCM V316.
+  ══════════════════════════════════════════════════════════════════
+-->
+<title>Proper · TAGs e Placas · PLACAS_V5</title>
+<meta name="app-build" content="PLACAS_V5">
 <style>
 :root{
   --accent:#f07725; --accent-d:#c2410c; --accent-s:#fef3ec;
@@ -155,25 +175,40 @@ dialog{border:none;border-radius:14px;padding:0;max-width:560px;width:calc(100% 
 dialog .dh{padding:14px 18px;border-bottom:1px solid var(--line);font-weight:650}
 dialog .db{padding:14px 18px;font-size:13.5px}
 dialog .df{padding:12px 18px;border-top:1px solid var(--line);display:flex;justify-content:flex-end;gap:8px}
+/* PLACAS_V5 */
+[hidden]{display:none!important}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:10px;overflow:hidden;margin:2px 0 10px}
+.seg button{border:0;background:#fff;color:var(--ink2);padding:8px 16px;font:600 13px inherit;cursor:pointer}
+.seg button+button{border-left:1px solid var(--line)}
+.seg button.on{background:var(--accent);color:#fff}
+body[data-modo="clientes"] #pl4Fonte{display:none}
+#boxTextos{display:grid;grid-template-columns:1fr 1fr;gap:0 10px}
+details.pl5 summary{cursor:pointer;font-weight:600;font-size:13px;margin:4px 0}
+#avisosPlaca:empty{display:none}
 </style>
 </head>
 <body>
 <header>
-  <div class="mark">PL</div>
-  <h1>Placas da frota · Proper Locação</h1>
-  <span class="v" id="versao">PLACAS_V4</span>
+  <div class="mark">QR</div>
+  <h1>TAGs e placas · frota e clientes</h1>
+  <span class="v" id="versao">PLACAS_V5</span>
 </header>
 <div class="wrap">
   <div class="msg tip" id="avisoTopo">TAG + QR Code gravados a laser. A TAG é <b style="display:inline">definitiva</b>: depois de gravada numa placa ela não muda mais no sistema.</div>
   <div class="grid">
     <section class="card">
       <div class="acts" style="justify-content:space-between;margin-bottom:6px">
-        <div><h2>Frota da Proper Locação</h2><p class="sub" id="resumo">Carregando a frota…</p></div>
+        <div><h2 id="tituloLista">Frota da Proper Locação</h2><p class="sub" id="resumo">Carregando a frota…</p></div>
         <div class="acts">
           <button class="btn" id="btnAtualizar" type="button">↻ Atualizar</button>
           <button class="btn p" id="btnGerarFaltam" type="button" disabled>🏷 Gerar as TAGs que faltam</button>
         </div>
       </div>
+      <div class="seg" id="segModo" role="tablist" aria-label="Qual parque">
+        <button type="button" class="on" role="tab" aria-selected="true" data-modo="frota">Frota Proper Locação</button>
+        <button type="button" role="tab" aria-selected="false" data-modo="clientes">Clientes</button>
+      </div>
+      <div id="boxCliente" hidden><label class="f"><span>Cliente</span><select id="selCliente"><option value="">— carregando —</option></select></label></div>
       <input type="text" id="busca" name="busca_frota_nofill" placeholder="Buscar por TAG, máquina, série ou cliente…" autocomplete="off"
              readonly onfocus="this.removeAttribute('readonly')" data-lpignore="true" data-1p-ignore style="margin:4px 0 10px">
       <div id="listaFrota"><div class="vazio">⏳ Lendo a frota no servidor…</div></div>
@@ -191,13 +226,29 @@ dialog .df{padding:12px 18px;border-top:1px solid var(--line);display:flex;justi
     <section class="card prev">
       <div>
         <h2>Placa</h2>
-        <p class="sub">86 × 54 mm · 4 furos de 3,5 mm · selecione as máquinas na lista.</p>
+        <p class="sub" id="subPlaca">86 × 54 mm · 4 furos de 3,5 mm · selecione as máquinas na lista.</p>
         <div class="row3">
           <label class="f"><span>Material da placa</span>
             <select id="optPlaca"><option value="escura" selected>Escura (anodizada) — gravação sai clara</option><option value="clara">Clara (inox) — gravação sai escura</option></select></label>
           <label class="f"><span>Endereço do QR</span><input type="text" id="optBase" autocomplete="off"></label>
           <label class="f"><span>Painel do lote (mm)</span><input type="text" id="optPainel" value="200" autocomplete="off"></label>
         </div>
+      </div>
+      <div>
+        <div class="row3" id="blocoTam">
+          <label class="f"><span>Tamanho salvo</span><select id="optTam"><option value="0">86 × 54 (padrão Proper)</option></select></label>
+          <label class="f"><span>Largura (mm)</span><input type="text" id="tamL" inputmode="decimal" autocomplete="off" value="86"></label>
+          <label class="f"><span>Altura (mm)</span><input type="text" id="tamA" inputmode="decimal" autocomplete="off" value="54"></label>
+        </div>
+        <div class="acts" style="margin:-2px 0 8px">
+          <button class="btn xs" id="btnSalvarTam" type="button">💾 Salvar este tamanho para a equipe</button>
+          <button class="btn xs" id="btnExcluirTam" type="button" disabled>🗑 Excluir o tamanho salvo</button>
+        </div>
+        <details class="pl5" id="detTextos"><summary>✎ Textos da placa — <span id="rotDono">placa da FROTA (TAG PL-)</span></summary>
+          <div id="boxTextos"></div>
+          <button class="btn xs" id="btnTextosPadrao" type="button">↺ Voltar ao padrão</button>
+        </details>
+        <div id="avisosPlaca" role="status"></div>
       </div>
       <div id="prevArea"><div class="vazio">Nenhuma máquina selecionada.</div></div>
       <div class="acts">
@@ -4134,8 +4185,545 @@ $('btnManual').onclick = function () {
   MANUAL = { id: '__manual', tag: tag, marca: String($('mEquip').value || '').trim(), modelo: '', serie: String($('mSerie').value || '').trim(), tag_ok: true };
   pintarPrevia();
 };
-carregar();
+if (!/[?&]modo=clientes(&|$)/.test(location.search)) carregar();   // PLACAS_V5: aberta já em Clientes não lê a frota à toa
 </script>
+<!-- ████ INICIO PL5 · PLACAS_V5 (TAG + placa para TODAS as máquinas) ████ -->
+<script>
+/* ═════════════════════════════════════════════════════════════════════════════════════════════════
+   PL5 · PLACAS_V5 (26/10/2026) — UM gerador de TAG + placa com QR para a FROTA e para os CLIENTES
+   ─────────────────────────────────────────────────────────────────────────────────────────────────
+   · Filtro  Frota Proper Locação | Clientes.  Frota: o caminho da V4, INTACTO (lista pelo banco/GAS, TAG PL- pelo GAS, DXF).
+     Clientes: o cliente escolhido → as máquinas dele (pc_placas_maquinas) → TAG PC-<CP|SC|FL|VP>-NNNN pelo BANCO
+     (pc_maquina_tag_gerar: única no banco inteiro, nunca repete; a TAG que o cliente usava vai para as Observações).
+   · O DONO da máquina decide o prefixo da TAG (PL- / PC-) e os textos da placa (padrões abaixo; editáveis e lembrados neste aparelho).
+   · Tamanho DIGITÁVEL (largura × altura em mm) + tamanhos salvos para a equipe (86×54 padrão, 85×50, 100×70 e os que a equipe salvar).
+     O desenho se ajusta (escala única, centrado, moldura na borda da placa; furos continuam a 4 mm dos cantos) e AVISA quando não couber:
+     QR pequeno demais para ler, texto pequeno demais para gravar, furo encostando no desenho, furo perto da borda, placa maior que o painel.
+   · Frota + 86×54 + textos padrão = EXATAMENTE as funções da V4 (o DXF sai byte a byte igual ao da V4).
+   · Abre direto num cliente/máquina:  ?modo=clientes&cliente=<CLI-…>&id=<MK-…>   (ficha da máquina e Campo e parque).
+   Sem SQL rodado (PLACA_TAG_TODAS_MAQUINAS): o filtro Clientes explica e a Frota segue normal.
+   ═════════════════════════════════════════════════════════════════════════════════════════════════ */
+var PL5 = (function () {
+  'use strict';
+  var SUPA_URL = 'https://mxczeemglrehadjualvi.supabase.co', SUPA_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im14Y3plZW1nbHJlaGFkanVhbHZpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ0Mjg4NzUsImV4cCI6MjEwMDAwNDg3NX0.TPToXpuPS6PvNzADaFqc7r7P9TIsS4DtGwm-n-0IXDw';
+  var PRAZO_LER = 15000, PRAZO_GRAVAR = 40000;
+  var TAMANHO_BASE = { l: 86, a: 54 };
+  var TAMANHOS_FIXOS = [{ id: null, nome: '86 × 54 (padrão Proper)', largura_mm: 86, altura_mm: 54, padrao: true },
+                        { id: null, nome: '85 × 50', largura_mm: 85, altura_mm: 50, padrao: false },
+                        { id: null, nome: '100 × 70', largura_mm: 100, altura_mm: 70, padrao: false }];
+  var PC_RE = /^PC-(CP|SC|FL|VP)-\d{4,8}$/;
+  var S = { modo: 'frota', clientes: null, cliente: '', maq: [], tipos: [], falha: null, ger: 0, lendo: 0, tamanhos: [], tamOk: true,
+            semSql: false, avisos: [] };
+  var _cacheLayout = null;
+
+  function $$(id) { return document.getElementById(id); }
+  function ls(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
+  function lsSet(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
+  function mm(n) { return String(Math.round(n * 100) / 100).replace('.', ','); }
+
+  // ── textos da placa: o padrão da FROTA vem do próprio layout (nunca diverge); o do CLIENTE troca só o que muda de sentido ──
+  function textosFrota() {
+    var o = {}; LAYOUT_TAG.textos_fixos.forEach(function (t) { o[t.id] = t.texto; }); return o;
+  }
+  var TEXTOS_ID = [['SUB', 'Sob a logo', 40], ['LB_TAG', 'Rótulo da TAG', 30], ['QR1', 'Chamada do QR (linha 1)', 30], ['QR2', 'Chamada do QR (linha 2)', 30],
+                   ['NR', 'Aviso', 24], ['RODAPE', 'Rodapé', 70]];
+  function textosPadrao(dono) {
+    var t = textosFrota();
+    if (dono === 'cliente') { t.SUB = 'ASSISTÊNCIA TÉCNICA'; t.QR2 = 'E ABRA UM CHAMADO'; t.LB_TAG = 'TAG PROPER'; }
+    return t;
+  }
+  function dono() { return S.modo === 'clientes' ? 'cliente' : 'frota'; }
+  function textosAtuais() {
+    var d = textosPadrao(dono()), salvo = null;
+    if (dono() === 'cliente') { try { salvo = JSON.parse(ls('pl5_txt_cliente') || 'null'); } catch (e) { salvo = null; } } else salvo = S.txtFrota || null;   // a FROTA nunca fica com texto de outra sessão (a placa dela é a de hoje)
+    if (salvo && typeof salvo === 'object') TEXTOS_ID.forEach(function (x) { if (typeof salvo[x[0]] === 'string' && salvo[x[0]].trim()) d[x[0]] = salvo[x[0]].slice(0, x[2]); });
+    return d;
+  }
+  function textosSaoPadrao() {
+    var a = textosAtuais(), p = textosPadrao(dono());
+    return TEXTOS_ID.every(function (x) { return a[x[0]] === p[x[0]]; });
+  }
+
+  // ── tamanho ──
+  function lerMM(s) {
+    var t = String(s == null ? '' : s).trim().replace(',', '.');
+    if (!/^\d+(\.\d{1,2})?$/.test(t)) return NaN;
+    return Math.round(parseFloat(t) * 10) / 10;
+  }
+  function tamanhoAtual() {
+    var l = lerMM($$('tamL').value), a = lerMM($$('tamA').value);
+    var ok = isFinite(l) && isFinite(a) && l >= 20 && l <= 400 && a >= 20 && a <= 400;
+    return { l: l, a: a, ok: ok };
+  }
+  function ehPadraoFrota() {
+    var t = tamanhoAtual();
+    return S.modo === 'frota' && t.ok && t.l === TAMANHO_BASE.l && t.a === TAMANHO_BASE.a && textosSaoPadrao();
+  }
+
+  // ── medida de texto (estimativa do que o motor vai reduzir para caber) ──
+  var _cv = null;
+  function medir(txt, fonte) {
+    try {
+      if (!_cv) _cv = document.createElement('canvas').getContext('2d');
+      _cv.font = (fonte && fonte.weight === 'bold' ? 'bold ' : '') + '100px ' + ((fonte && fonte.family) || 'Arial');
+      var m = _cv.measureText(txt);
+      return { w: m.width, h: (m.actualBoundingBoxAscent || 72) + (m.actualBoundingBoxDescent || 0) };
+    } catch (e) { return null; }
+  }
+  // altura efetiva (mm) que o motor vai usar: o texto encolhe até caber na largura disponível
+  function alturaEfetiva(txt, fonte, hMm, wMm, trackMm) {
+    var m = medir(txt, fonte); if (!m || !m.h) return hMm;
+    var k = hMm / m.h, natural = m.w * k + (trackMm || 0) * Math.max(0, txt.length - 1);
+    return natural > wMm ? hMm * (wMm / natural) : hMm;
+  }
+
+  // ── o layout ajustado ao tamanho (escala única, centrada) ──
+  function layoutPara(W, H, textos) {
+    var L = JSON.parse(JSON.stringify(LAYOUT_TAG));
+    (L.textos_fixos || []).forEach(function (t) { if (textos && typeof textos[t.id] === 'string') t.texto = textos[t.id]; });
+    if (W === TAMANHO_BASE.l && H === TAMANHO_BASE.a) return L;
+    var s = Math.min(W / TAMANHO_BASE.l, H / TAMANHO_BASE.a), ox = (W - TAMANHO_BASE.l * s) / 2, oy = (H - TAMANHO_BASE.a * s) / 2;
+    function R(b) { var r = { x: ox + b.x * s, y: oy + b.y * s, w: b.w * s, h: b.h * s }; if (b.r != null) r.r = b.r * s; return r; }
+    L.placa.largura_mm = W; L.placa.altura_mm = H;
+    L.moldura = { x: 0.5, y: 0.5, w: W - 1, h: H - 1, r: Math.min(3.5, (W - 1) / 2, (H - 1) / 2) };
+    L.logo = Object.assign({}, L.logo, R(L.logo));
+    L.textos_fixos.forEach(function (t) { t.x = ox + t.x * s; t.y = oy + t.y * s; t.w = t.w * s; t.h = t.h * s; });
+    L.campos.forEach(function (c) { c.box = R(c.box); c.h_texto = c.h_texto * s; });
+    L.qr = R(L.qr);
+    return L;
+  }
+
+  // ── os avisos de "não coube" ──
+  function retDoTexto(L, t) {
+    var larg = t.w || (L.placa.largura_mm - t.x), x = t.x;
+    if (t.align === 'center') x = t.x - larg / 2; else if (t.align === 'right') x = t.x - larg;
+    return { x: x, y: t.y, w: larg, h: t.h };
+  }
+  function circuloToca(c, r) {
+    var dx = Math.max(r.x - c.x, 0, c.x - (r.x + r.w)), dy = Math.max(r.y - c.y, 0, c.y - (r.y + r.h));
+    return Math.hypot(dx, dy) < c.r;
+  }
+  function avaliar(L, amostra, qrN) {
+    var av = [], W = L.placa.largura_mm, H = L.placa.altura_mm;
+    // QR
+    var N = (qrN || 33) + 2 * 3, lado = Math.min(L.qr.w, L.qr.h), modulo = lado / N;
+    if (modulo < 0.4) av.push({ n: 'bloqueia', m: 'O QR ficaria pequeno demais: cada ponto sairia com ' + mm(modulo) + ' mm (mínimo para ler: 0,4 mm). Aumente a placa.' });
+    else if (modulo < 0.55) av.push({ n: 'aviso', m: 'QR no limite: cada ponto sai com ' + mm(modulo) + ' mm (o confortável é 0,55 mm ou mais). Teste a leitura com o celular antes de gravar o lote.' });
+    // textos
+    var fontes = L.fontes || {};
+    function conferir(rot, txt, fonte, h, w, trk) {
+      if (!txt) return;
+      var e = alturaEfetiva(txt, fonte, h, w, trk);
+      if (e < 1.0) av.push({ n: 'bloqueia', m: rot + ' “' + txt + '” ficaria com ' + mm(e) + ' mm de altura — pequeno demais para gravar. Aumente a placa ou encurte o texto.' });
+      else if (e < 1.3) av.push({ n: 'aviso', m: rot + ' “' + txt + '” ficaria com ' + mm(e) + ' mm de altura — no limite para gravar.' });
+    }
+    (L.textos_fixos || []).forEach(function (t) { conferir('O texto', t.texto, fontes[t.font], t.h, retDoTexto(L, t).w, t.tracking ? t.tracking : 0); });
+    (L.campos || []).forEach(function (c) {
+      var v = amostra && amostra[c.id]; if (!v) return;
+      v = String(v).toUpperCase();
+      conferir(c.rotulo || c.id, v, fontes[c.font], c.h_texto, c.box.w - 2.0, 0);
+    });
+    // furos
+    var F = null;
+    try { F = PlacaDXF.furos(L, {}, 0, 0); } catch (e) { F = null; }
+    if (F && F.lista.length) {
+      var cfg = Object.assign({}, PlacaDXF.FUROS_PADRAO || {}, L.furos || {});
+      var fb = PlacaDXF.folgaBorda(L, cfg);
+      if (fb < 1.0) av.push({ n: 'bloqueia', m: 'Os furos ficam a só ' + mm(fb) + ' mm da borda da placa — o material pode rasgar ao parafusar.' });
+      var itens = [['a logo', L.logo]];
+      (L.textos_fixos || []).forEach(function (t) { itens.push(['o texto “' + t.texto + '”', retDoTexto(L, t)]); });
+      (L.campos || []).forEach(function (c) { itens.push(['a caixa ' + (c.rotulo || c.id), c.box]); });
+      var q = L.qr, lq = Math.min(q.w, q.h); itens.push(['o QR', { x: q.x + (q.w - lq) / 2, y: q.y + (q.h - lq) / 2, w: lq, h: lq }]);
+      var tocados = {};
+      F.lista.forEach(function (c) {
+        var cc = { x: c.x, y: H - c.y, r: c.r + 0.5 };   // o furo vem com y para cima
+        itens.forEach(function (it) { if (circuloToca(cc, it[1])) tocados[it[0]] = true; });
+      });
+      var nomes = Object.keys(tocados);
+      if (nomes.length) av.push({ n: 'bloqueia', m: 'Um furo encosta no desenho: ' + nomes.slice(0, 3).join(', ') + (nomes.length > 3 ? ' e mais ' + (nomes.length - 3) : '') + '. Aumente a placa.' });
+    }
+    // painel do lote
+    var p = parseFloat(String($$('optPainel').value).replace(',', '.')) || 200;
+    if (W > p || H > p) av.push({ n: 'bloqueia', m: 'A placa (' + mm(W) + ' × ' + mm(H) + ' mm) é maior que o painel do lote (' + mm(p) + ' mm). Aumente o painel.' });
+    return av;
+  }
+
+  // o layout que vale agora + os avisos (com o QR da 1ª placa selecionada como amostra)
+  function estado() {
+    var t = tamanhoAtual(), txt = textosAtuais();
+    if (!t.ok) return { ok: false, L: null, av: [{ n: 'bloqueia', m: 'Informe largura e altura entre 20 e 400 mm (ex.: 86 e 54).' }], padrao: false };
+    var L = layoutPara(t.l, t.a, txt), sel = selecionadas(), amostra = { TAG: 'PC-CP-0001', EQUIP: '', SERIE: '' }, qrN = 33;
+    sel.slice(0, 60).forEach(function (m) {
+      var e = [m.marca, m.modelo].filter(Boolean).join(' ');
+      if (String(m.tag || '').length > String(amostra.TAG).length) amostra.TAG = m.tag;
+      if (e.length > amostra.EQUIP.length) amostra.EQUIP = e;
+      if (String(m.serie || '').length > amostra.SERIE.length) amostra.SERIE = String(m.serie);
+    });
+    try { if (sel[0]) qrN = matrizQR(urlDoQR(sel[0].tag)).n; } catch (e) {}
+    return { ok: true, L: L, av: avaliar(L, amostra, qrN), padrao: ehPadraoFrota(), t: t };
+  }
+  function pintarAvisos(av) {
+    var el = $$('avisosPlaca'); if (!el) return;
+    S.avisos = av || [];
+    el.innerHTML = S.avisos.map(function (a) {
+      return '<div class="msg ' + (a.n === 'bloqueia' ? 'warn' : 'info') + '" style="margin:6px 0">' + (a.n === 'bloqueia' ? '🔴 ' : '🟡 ') + esc(a.m) + '</div>';
+    }).join('');
+    el.setAttribute('data-n', String(S.avisos.length));
+  }
+  function temBloqueio() { return S.avisos.some(function (a) { return a.n === 'bloqueia'; }); }
+
+  // ── o banco (RPC com o crachá do login com PIN) ──
+  async function rpc(nome, args, escrita) {
+    var tok = null;
+    try { if (window.CRACHA_V1) tok = await CRACHA_V1.token(300, 8000); } catch (e) {}
+    if (!tok) return { erro: 'Sem o crachá do login com PIN. Entre pelo ProperHub com o seu PIN e abra esta tela de novo.', cod: 'sem_cracha' };
+    var ms = escrita ? PRAZO_GRAVAR : PRAZO_LER, c = (typeof AbortController !== 'undefined') ? new AbortController() : null, t = c ? setTimeout(function () { try { c.abort(); } catch (e) {} }, ms) : 0, r, txt;
+    var t0 = Date.now();
+    try {
+      r = await fetch(SUPA_URL + '/rest/v1/rpc/' + nome, { method: 'POST', signal: c ? c.signal : undefined,
+        headers: { apikey: SUPA_ANON, Authorization: 'Bearer ' + tok, 'Content-Type': 'application/json' }, body: JSON.stringify(args || {}) });
+      txt = await r.text();
+    } catch (e) {
+      var prazo = e && (e.name === 'AbortError' || e.name === 'TimeoutError');
+      try { PL4.anotar({ a: nome, f: 'pg', ms: Date.now() - t0, m: 'erro: ' + (prazo ? 'prazo' : 'rede') }); } catch (e2) {}
+      return { erro: prazo ? 'O banco não respondeu em ' + Math.round(ms / 1000) + ' s.' : 'Sem conexão com o banco.', cod: prazo ? 'prazo' : 'rede', incerto: !!escrita };
+    } finally { if (t) clearTimeout(t); }
+    var j = null; try { j = txt ? JSON.parse(txt) : null; } catch (e) {}
+    try { PL4.anotar({ a: nome, f: 'pg', ms: Date.now() - t0, m: r.ok ? '' : 'HTTP ' + r.status }); } catch (e2) {}
+    if (r.ok) return { j: j };
+    var cod = (j && j.code) || '', msg = (j && (j.message || j.error)) || '';
+    if (cod === 'PGRST202' || (r.status === 404 && /pc_placa|pc_maquina_tag/.test(txt || ''))) {
+      return { erro: 'O SQL PLACA_TAG_TODAS_MAQUINAS ainda não rodou no banco. Rode-o no Supabase (SQL Editor) e abra esta tela de novo.', cod: 'sem_sql', semSql: true };
+    }
+    if (escrita && (r.status >= 500 || r.status === 408 || r.status === 429)) return { erro: 'O servidor respondeu HTTP ' + r.status + ' no meio da gravação.', cod: 'http_' + r.status, incerto: true };
+    if (/jwt|expired/i.test(msg) && (r.status === 401 || r.status === 403)) return { erro: 'A sua sessão expirou. Entre de novo pelo ProperHub com o seu PIN.', cod: 'recusado' };
+    if (r.status === 401 || r.status === 403 || cod === '42501') return { erro: msg ? String(msg) : 'O banco recusou o crachá (ou o seu perfil não pode gravar). Entre de novo pelo ProperHub.', cod: 'recusado' };
+    return { erro: msg ? String(msg).replace(/^(Placas|Cadastro|Parque): /, '') : 'O banco respondeu HTTP ' + r.status + '.', cod: 'http_' + r.status };
+  }
+
+  // ── lista de clientes / máquinas do cliente ──
+  function opcCliente(c) { return '<option value="' + esc(c.id) + '">' + esc(c.nome) + ' — ' + c.maquinas + ' máq.' + (c.sem_tag ? ' · ' + c.sem_tag + ' sem TAG' : '') + '</option>'; }
+  async function carregarClientes(opts) {
+    opts = opts || {};
+    var ger = ++S.ger; S.lendo = ger; S.falha = null;
+    if ($$('resumo')) $$('resumo').textContent = '⏳ Lendo no banco…';
+    $$('btnGerarFaltam').disabled = true;
+    if (!S.clientes || opts.clientes) {
+      var rc = await rpc('pc_placas_clientes', {});
+      if (ger !== S.ger) return;
+      if (rc.erro) { S.lendo = 0; S.falha = rc; S.semSql = !!rc.semSql; pintarLista(); return; }
+      S.clientes = (rc.j && rc.j.clientes) || [];
+    }
+    var sel = $$('selCliente'), atual = S.cliente;
+    sel.innerHTML = '<option value="">— escolha o cliente —</option>' + S.clientes.map(opcCliente).join('');
+    if (atual && S.clientes.some(function (c) { return c.id === atual; })) sel.value = atual; else { S.cliente = ''; sel.value = ''; }
+    if (S.cliente) {
+      var rm = await rpc('pc_placas_maquinas', { p_cliente_id: S.cliente });
+      if (ger !== S.ger) return;
+      if (rm.erro) { S.lendo = 0; S.falha = rm; pintarLista(); return; }
+      S.maq = (rm.j && rm.j.maquinas) || []; S.tipos = (rm.j && rm.j.tipos) || [];
+    } else { S.maq = []; }
+    S.lendo = 0;
+    var q = new URLSearchParams(location.search);
+    if (q.get('id') && !SEL.length && S.maq.some(function (m) { return m.id === q.get('id'); })) SEL = [q.get('id')];
+    SEL = SEL.filter(function (id) { return S.maq.some(function (m) { return m.id === id; }); });
+    pintarLista(); pintarPrevia();
+  }
+  function situacaoCli(m) {
+    if (m.tag_ok) return '<span class="pill ok">TAG PC- ok</span>';
+    if (m.tag_pl) return '<span class="pill am" title="Está numa placa gravada a laser: não se troca por aqui">TAG PL- da frota</span>';
+    if (!m.tipo_codigo) return '<span class="pill no">sem tipo</span>';
+    if (m.tag) return '<span class="pill am">TAG do cliente</span>';
+    return '<span class="pill no">sem TAG</span>';
+  }
+  function pintarListaClientes() {
+    var box = $$('listaFrota'), f = S.falha;
+    if (f) {
+      box.innerHTML = '<div class="pl4-erro" role="alert"><b>Não deu para ler os clientes agora.</b>' + esc(f.erro) +
+        '<div class="acts"><button class="btn p" type="button" id="pl5Tentar">↻ Tentar de novo</button></div></div>';
+      $$('pl5Tentar').onclick = function () { carregarClientes({ clientes: true }); };
+      $$('resumo').textContent = 'Clientes indisponíveis agora.'; $$('btnGerarFaltam').disabled = true; return;
+    }
+    if (S.lendo) { $$('resumo').textContent = '⏳ Lendo no banco…'; if (!S.maq.length) box.innerHTML = '<div class="vazio">⏳ Lendo…</div>'; $$('btnGerarFaltam').disabled = true; return; }
+    if (!S.cliente) {
+      var n = (S.clientes || []).length;
+      $$('resumo').textContent = n ? n + ' cliente(s) com máquina cadastrada.' : 'Nenhum cliente com máquina cadastrada.';
+      box.innerHTML = '<div class="vazio">Escolha o cliente acima para ver as máquinas dele.</div>'; $$('btnGerarFaltam').disabled = true; return;
+    }
+    var comTag = S.maq.filter(function (m) { return m.tag_ok; }).length;
+    var doCli = S.maq.filter(function (m) { return !m.tag_ok && !m.tag_pl && m.tag; }).length;
+    var faltam = S.maq.filter(function (m) { return !m.tag_ok && !m.tag && m.tipo_codigo; }).length;
+    $$('resumo').textContent = S.maq.length + ' máquina(s) · ' + comTag + ' com TAG PC- · ' + doCli + ' com a TAG do cliente · ' + faltam + ' sem TAG';
+    $$('btnGerarFaltam').disabled = !(faltam + doCli);
+    if (!S.maq.length) { box.innerHTML = '<div class="vazio">Este cliente não tem máquina ativa cadastrada.</div>'; return; }
+    var sem = function (x) { return String(x == null ? '' : x).normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase(); };
+    var q = sem($$('busca').value).trim();
+    var vis = S.maq.filter(function (m) { return !q || sem([m.tag, m.marca, m.modelo, m.serie, m.tipo_equip, m.unidade, m.localizacao].join(' ')).indexOf(q) >= 0; });
+    if (!vis.length) { box.innerHTML = '<div class="vazio">Nada encontrado para “' + esc($$('busca').value) + '”.</div>'; return; }
+    var h = '<div class="tbl-wrap"><table class="frota"><thead><tr><th></th><th>TAG</th><th>Máquina</th><th>Série</th><th>Tipo</th><th>Unidade / local</th><th>Situação</th><th></th></tr></thead><tbody>';
+    vis.forEach(function (m) {
+      var s = SEL.indexOf(m.id) >= 0, loc = [m.unidade, m.localizacao].filter(Boolean).join(' · ');
+      var acao = '';
+      if (!m.tag_ok && !m.tag_pl && m.tipo_codigo) acao = '<button class="btn xs" type="button" data-pl5-gerar="' + esc(m.id) + '"' + (m.tag ? ' data-trocar="1"' : '') + '>' + (m.tag ? 'Trocar por PC-' : 'Gerar TAG') + '</button>';
+      h += '<tr class="' + (s ? 'sel' : '') + '"><td><input type="checkbox" data-sel="' + esc(m.id) + '"' + (s ? ' checked' : '') + (m.tag_ok ? '' : ' disabled title="Gere a TAG PC- antes"') + '></td>' +
+        '<td class="tag">' + (m.tag ? esc(m.tag) : '—') + '</td><td>' + esc([m.marca, m.modelo].filter(Boolean).join(' ')) + '</td><td>' + esc(m.serie) + '</td>' +
+        '<td>' + esc(m.tipo_equip || '—') + '</td><td>' + esc(loc || '—') + '</td><td>' + situacaoCli(m) + '</td><td>' + acao + '</td></tr>';
+    });
+    box.innerHTML = h + '</tbody></table></div>';
+  }
+
+  // ── gerar TAG PC- (prévia → confirmação → grava) ──
+  function nomeMaq(id) { var m = S.maq.filter(function (x) { return x.id === id; })[0]; return m ? [m.marca, m.modelo, m.serie].filter(Boolean).join(' · ') : id; }
+  function uid() { return 'pl5-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 10); }
+  async function gerarTagsCliente(ids, trocarInicial) {
+    if (S.falha) { await dialogo('Atualize a lista antes', '<p>A última leitura falhou. Toque em <b>↻ Tentar de novo</b> e gere a TAG depois.</p>', [{ t: 'Fechar', v: 0 }]); return; }
+    var trocar = !!trocarInicial, prev;
+    for (;;) {
+      var pr = await rpc('pc_maquina_tag_gerar', { p_ids: ids, p_trocar: trocar, p_confirmar: false });
+      if (pr.erro) {
+        var de = await dialogo('Não consegui calcular as TAGs', '<p>' + esc(pr.erro) + '</p><p class="sub">Nada foi gravado.</p>', [{ t: 'Fechar', v: 0 }, { t: '↻ Tentar de novo', p: true, v: 'repetir' }]);
+        if (de !== 'repetir') return; continue;
+      }
+      prev = pr.j;
+      if (prev && prev.ok === false) { await dialogo('Não dá para gerar agora', '<p>' + esc(prev.mensagem || prev.motivo || 'O banco recusou.') + '</p>', [{ t: 'Fechar', v: 0 }]); return; }
+      var itens = (prev && prev.itens) || [];
+      var lin = itens.map(function (x) {
+        var nome = esc(nomeMaq(x.id));
+        if (x.acao === 'gerar') return '<li><b class="tag">' + esc(x.tag_nova) + '</b> — ' + nome + '</li>';
+        if (x.acao === 'trocar') return '<li><b class="tag">' + esc(x.tag_nova) + '</b> — ' + nome + ' <span style="color:var(--muted)">(era ' + esc(x.tag_atual) + ', vai para as observações)</span></li>';
+        if (x.acao === 'tag_do_cliente') return '<li>' + nome + ' — tem a TAG do cliente <b>' + esc(x.tag_atual) + '</b> (não troca sem você pedir)</li>';
+        return '<li>' + nome + ' — ' + esc(x.motivo || x.acao) + '</li>';
+      }).join('');
+      var n = (prev.geradas || 0) + (prev.trocadas || 0), tc = itens.filter(function (x) { return x.acao === 'tag_do_cliente'; }).length;
+      if (!n && !tc) { await dialogo('Nada a gerar', '<ul>' + lin + '</ul>', [{ t: 'Fechar', v: 0 }]); return; }
+      var bot = [{ t: 'Cancelar', v: false }];
+      if (tc && !trocar) bot.push({ t: 'Trocar também as ' + tc + ' TAG(s) do cliente', v: 'trocar' });
+      if (n) bot.push({ t: 'Gerar e gravar ' + n, p: true, v: true });
+      var vai = await dialogo((n ? 'Gerar ' + n + ' TAG(s)?' : 'Só TAG(s) do cliente'), '<p>A TAG é <b>definitiva</b>: depois de gravada na placa, o sistema não deixa trocar.</p><ul>' + lin + '</ul>' +
+        '<p style="font-size:12px;color:var(--muted)">O número final é o que o banco der na hora da gravação (se alguém gerar outra TAG no meio, ele avança). Nenhum número se repete.</p>', bot);
+      if (vai === 'trocar') { trocar = true; continue; }
+      if (!vai) return;
+      break;
+    }
+    var meu = uid(), preso = true; PL4.E.gravando++;
+    function soltar() { if (preso) { preso = false; PL4.E.gravando = Math.max(0, PL4.E.gravando - 1); } }
+    try {
+      for (;;) {   // gerar é IDEMPOTENTE pelo client_uid: repetir devolve a MESMA resposta
+        var w = await rpc('pc_maquina_tag_gerar', { p_ids: ids, p_trocar: trocar, p_confirmar: true, p_client_uid: meu }, true);
+        if (w.erro) {
+          var de2 = await dialogo(w.incerto ? 'Não deu para confirmar a gravação' : 'Não gravou', '<p>' + esc(w.erro) + '</p>' + (w.incerto ? '<p class="sub">Pode ter gravado. “Tentar de novo” é seguro: não duplica a TAG.</p>' : ''),
+            [{ t: 'Fechar', v: 0 }, { t: '↻ Atualizar a lista', v: 'lista' }, { t: '↻ Tentar de novo', p: true, v: 'repetir' }]);
+          if (de2 === 'lista') { soltar(); await carregarClientes({ clientes: true }); return; }
+          if (de2 !== 'repetir') { if (w.incerto) { soltar(); await carregarClientes({ clientes: true }); } return; } continue;
+        }
+        var res = w.j || {};
+        if (res.ok === false) { await dialogo('Não gravou', '<p>' + esc(res.mensagem || res.motivo || 'O banco recusou.') + '</p>', [{ t: 'Fechar', v: 0 }]); return; }
+        (res.itens || []).forEach(function (x) {
+          if ((x.acao === 'gerar' || x.acao === 'trocar' || x.acao === 'ja_tem') && x.tag_nova) { PL4.E.geradas[x.id] = x.tag_nova; if (SEL.indexOf(x.id) < 0) SEL.push(x.id); }
+        });
+        soltar();
+        await carregarClientes({ clientes: true });
+        return;
+      }
+    } finally { soltar(); }
+  }
+
+  // ── tamanhos salvos ──
+  function tamanhosParaTela() { return S.tamanhos.length ? S.tamanhos : TAMANHOS_FIXOS; }
+  function pintarTamanhos() {
+    var sel = $$('optTam'), t = tamanhoAtual(), achou = -1;
+    var l = tamanhosParaTela();
+    sel.innerHTML = l.map(function (x, i) { if (t.ok && Number(x.largura_mm) === t.l && Number(x.altura_mm) === t.a) achou = i; return '<option value="' + i + '">' + esc(x.nome) + '</option>'; }).join('') + '<option value="-1">Outro (digitado)</option>';
+    sel.value = String(achou);
+    var x = achou >= 0 ? l[achou] : null;
+    $$('btnExcluirTam').disabled = !(x && x.id && !x.padrao);
+    $$('btnSalvarTam').disabled = !t.ok || achou >= 0 || S.semSql;
+  }
+  async function carregarTamanhos() {
+    var r = await rpc('pc_placa_tamanhos', {});
+    if (r.erro) { if (r.semSql) S.semSql = true; S.tamanhos = []; }
+    else S.tamanhos = ((r.j && r.j.tamanhos) || []).map(function (x) { return { id: x.id, nome: x.nome, largura_mm: Number(x.largura_mm), altura_mm: Number(x.altura_mm), padrao: !!x.padrao }; });
+    pintarTamanhos();
+  }
+  function aoMudarTamanho() {
+    var t = tamanhoAtual();
+    pintarTamanhos(); pintarPrevia();
+  }
+
+  // ── a prévia e o download ──
+  function textoDoSub() {
+    var t = tamanhoAtual();
+    return (t.ok ? mm(t.l) + ' × ' + mm(t.a) + ' mm' : 'tamanho inválido') + ' · 4 furos de 3,5 mm · ' + (S.modo === 'clientes' ? 'placa de cliente (TAG PC-)' : 'placa da frota (TAG PL-)') + ' · selecione as máquinas na lista.';
+  }
+  function pintarPrevia5() {
+    var e = estado();
+    $$('subPlaca').textContent = textoDoSub();
+    if (e.padrao) { pintarAvisos(e.av); return false; }   // frota padrão: o DESENHO e o download são os da V4, intactos (aqui só aparecem os avisos, nunca barram)
+    pintarAvisos(e.av);
+    var lista = selecionadas();
+    $$('btnBaixarUma').disabled = !e.ok || lista.length !== 1;
+    $$('btnBaixarLote').disabled = !e.ok || !lista.length;
+    if (!e.ok) { $$('prevArea').innerHTML = '<div class="vazio">Corrija o tamanho da placa.</div>'; return true; }
+    if (!lista.length) { $$('prevArea').innerHTML = '<div class="vazio">Nenhuma máquina selecionada.</div>'; return true; }
+    var clara = $$('optPlaca').value === 'clara', re = S.modo === 'clientes' ? PC_RE : TAG_RE, padraoNome = S.modo === 'clientes' ? 'PC-' : 'PL-';
+    $$('prevArea').innerHTML = lista.slice(0, 6).map(function (m, i) {
+      return '<div><div class="frame' + (clara ? ' clara' : '') + '" id="pv' + i + '">⏳</div>' +
+        '<div class="qrtxt">QR → <a href="' + esc(urlDoQR(m.tag).toLowerCase()) + '" target="_blank" rel="noopener">' + esc(urlDoQR(m.tag)) + '</a>' +
+        (re.test(String(m.tag || '')) || m.id === '__manual' ? '' : ' <span class="pill am">TAG fora do padrão ' + padraoNome + '</span>') + '</div></div>';
+    }).join('') + (lista.length > 6 ? '<div class="sub">+ ' + (lista.length - 6) + ' placa(s) no lote</div>' : '');
+    var i = 0, L = e.L;
+    (function prox() {
+      if (i >= Math.min(lista.length, 6)) return;
+      var el = $$('pv' + i); if (!el) return;
+      try { el.innerHTML = PlacaDXF.preverSVG(L, dadosDe(lista[i]), { fundo_claro: clara }); }
+      catch (err) { el.innerHTML = '<div class="msg warn">Não desenhou: ' + esc(err.message) + '</div>'; }
+      i++; setTimeout(prox, 0);
+    })();
+    return true;
+  }
+  function notasDXF(m, e) {
+    return 'Proper - placa de patrimonio ' + (m ? m.tag : '(lote)') + ' - PLACAS_V5 - ' + (S.modo === 'clientes' ? 'cliente' : 'frota') + ' - ' + mm(e.t.l) + 'x' + mm(e.t.a) + ' mm\n' +
+      'Camadas: QR/TEXTO/LOGO = hachurar; MOLDURA/CAIXAS = linha; FUROS = furacao.\n' +
+      ($$('optPlaca').value === 'clara' ? 'Placa CLARA: a camada QR sao os modulos escuros.' : 'Placa ESCURA: a camada QR e o FUNDO claro (zona de silencio + modulos claros); os modulos escuros sao ilhas.');
+  }
+  async function confirmarBloqueio() {
+    if (!temBloqueio()) return true;
+    var r = await dialogo('A placa não cabe direito', '<p>Há problema(s) neste tamanho:</p><ul>' + S.avisos.filter(function (a) { return a.n === 'bloqueia'; }).map(function (a) { return '<li>' + esc(a.m) + '</li>'; }).join('') + '</ul><p>Baixar mesmo assim?</p>',
+      [{ t: 'Não, voltar', v: false }, { t: 'Baixar mesmo assim', p: true, v: true }]);
+    return !!r;
+  }
+  function nomeArq(s) { return String(s || '').normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^A-Za-z0-9-]+/g, '_').replace(/^_+|_+$/g, '').slice(0, 40); }
+  async function baixarUma5() {
+    var e = estado(); if (e.padrao) return false;
+    var m = selecionadas()[0]; if (!m || !e.ok) return true;
+    if (!(await confirmarBloqueio())) return true;
+    PWAIT_demorado(function () {
+      var dxf = PlacaDXF.gerar(e.L, dadosDe(m), { notas: notasDXF(m, e) });
+      PlacaDXF.baixar('PLACA_' + String(m.tag).replace(/[^A-Za-z0-9-]/g, '_') + '_' + mm(e.t.l).replace(',', '.') + 'x' + mm(e.t.a).replace(',', '.') + '.dxf', dxf);
+    }, 'Gerando o DXF…');
+    return true;
+  }
+  async function baixarLote5() {
+    var e = estado(); if (e.padrao) return false;
+    var lista = selecionadas(); if (!lista.length || !e.ok) return true;
+    if (!(await confirmarBloqueio())) return true;
+    var p = parseFloat(String($$('optPainel').value).replace(',', '.')) || 200;
+    var L = JSON.parse(JSON.stringify(e.L)); L.painel = { largura_mm: p, altura_mm: p, gap_mm: 4 };
+    var rot = S.modo === 'clientes' ? 'PLACAS_' + (nomeArq((S.clientes || []).filter(function (c) { return c.id === S.cliente; }).map(function (c) { return c.nome; })[0]) || 'CLIENTE') : 'PLACAS_FROTA';
+    PWAIT_demorado(function () {
+      var r = PlacaDXF.gerarPainel(L, lista.map(dadosDe), { notas: notasDXF(null, e) });
+      r.paineis.forEach(function (dxf, i) { PlacaDXF.baixar(rot + '_' + (i + 1) + 'de' + r.paineis.length + '.dxf', dxf); });
+    }, 'Gerando o lote…');
+    return true;
+  }
+
+  // ── o filtro Frota | Clientes ──
+  function modo(m, o) {
+    o = o || {};
+    if (m !== 'frota' && m !== 'clientes') m = 'frota';
+    var mudou = S.modo !== m;
+    S.modo = m; document.body.setAttribute('data-modo', m);
+    Array.prototype.forEach.call(document.querySelectorAll('#segModo [data-modo]'), function (b) { var on = b.getAttribute('data-modo') === m; b.classList.toggle('on', on); b.setAttribute('aria-selected', on ? 'true' : 'false'); });
+    $$('boxCliente').hidden = m !== 'clientes';
+    $$('tituloLista').textContent = m === 'clientes' ? 'Máquinas dos clientes' : 'Frota da Proper Locação';
+    $$('busca').placeholder = m === 'clientes' ? 'Buscar por TAG, máquina, série, unidade ou local…' : 'Buscar por TAG, máquina, série ou cliente…';
+    $$('btnGerarFaltam').textContent = m === 'clientes' ? '🏷 Gerar as TAGs PC- que faltam' : '🏷 Gerar as TAGs que faltam';
+    $$('avisoTopo').innerHTML = m === 'clientes'
+      ? 'TAG + QR Code gravados a laser. A TAG <b style="display:inline">PC-</b> do cliente é <b style="display:inline">definitiva</b>: depois de gravada numa placa ela não muda mais no sistema. O QR abre a máquina no Portal do cliente.'
+      : 'TAG + QR Code gravados a laser. A TAG é <b style="display:inline">definitiva</b>: depois de gravada numa placa ela não muda mais no sistema.';
+    if (mudou && !o.manter) { SEL.length = 0; MANUAL = null; }
+    montarTextos();
+    if (m === 'clientes') { if (!S.clientes) carregarClientes({}); else if (!mudou) pintarLista(); else carregarClientes({}); }
+    else { pintarLista(); if (mudou && !FROTA.length) { try { carregar(); } catch (e) {} } }
+    pintarPrevia();
+  }
+  function montarTextos() {
+    var a = textosAtuais();
+    $$('boxTextos').innerHTML = TEXTOS_ID.map(function (x) {
+      return '<label class="f"><span>' + esc(x[1]) + '</span><input type="text" data-txt="' + x[0] + '" maxlength="' + x[2] + '" autocomplete="off" value="' + esc(a[x[0]]) + '"></label>';
+    }).join('');
+    $$('rotDono').textContent = dono() === 'cliente' ? 'placa de CLIENTE (TAG PC-)' : 'placa da FROTA (TAG PL-)';
+  }
+  function gravarTextos() {
+    var o = {}; Array.prototype.forEach.call($$('boxTextos').querySelectorAll('[data-txt]'), function (el) { var v = String(el.value || '').trim(); if (v) o[el.getAttribute('data-txt')] = v; });
+    if (dono() === 'cliente') lsSet('pl5_txt_cliente', JSON.stringify(o)); else S.txtFrota = o;
+  }
+
+  function iniciar() {
+    // 1. tamanho: o último deste aparelho, senão 86 × 54
+    var ini = [86, 54];
+    $$('tamL').value = String(ini[0]).replace('.', ','); $$('tamA').value = String(ini[1]).replace('.', ',');
+    pintarTamanhos();
+    // 2. os botões e campos
+    Array.prototype.forEach.call(document.querySelectorAll('#segModo [data-modo]'), function (b) { b.onclick = function () { modo(b.getAttribute('data-modo')); }; });
+    $$('selCliente').onchange = function () { S.cliente = this.value; SEL.length = 0; S.maq = []; if (S.cliente) carregarClientes({}); else { pintarLista(); pintarPrevia(); } };
+    $$('optTam').onchange = function () { var l = tamanhosParaTela(), x = l[Number(this.value)]; if (x) { $$('tamL').value = String(x.largura_mm).replace('.', ','); $$('tamA').value = String(x.altura_mm).replace('.', ','); } aoMudarTamanho(); };
+    var tt = null; function deb() { clearTimeout(tt); tt = setTimeout(aoMudarTamanho, 220); }
+    $$('tamL').addEventListener('input', deb); $$('tamA').addEventListener('input', deb);
+    $$('btnSalvarTam').onclick = async function () {
+      var t = tamanhoAtual(); if (!t.ok) return;
+      var r = await rpc('pc_placa_tamanho_salvar', { p_largura: t.l, p_altura: t.a }, true);
+      if (r.erro) { await dialogo('Não salvou o tamanho', '<p>' + esc(r.erro) + '</p>', [{ t: 'Fechar', v: 0 }]); return; }
+      await carregarTamanhos();
+    };
+    $$('btnExcluirTam').onclick = async function () {
+      var l = tamanhosParaTela(), x = l[Number($$('optTam').value)]; if (!x || !x.id || x.padrao) return;
+      var ok = await dialogo('Excluir o tamanho salvo?', '<p>' + esc(x.nome) + ' deixa de aparecer na lista da equipe. As placas já gravadas não mudam.</p>', [{ t: 'Cancelar', v: false }, { t: 'Excluir', p: true, v: true }]);
+      if (!ok) return;
+      var r = await rpc('pc_placa_tamanho_excluir', { p_id: x.id }, true);
+      if (r.erro) { await dialogo('Não excluiu', '<p>' + esc(r.erro) + '</p>', [{ t: 'Fechar', v: 0 }]); return; }
+      await carregarTamanhos();
+    };
+    $$('boxTextos').addEventListener('input', function () { gravarTextos(); clearTimeout(tt); tt = setTimeout(pintarPrevia, 260); });
+    $$('btnTextosPadrao').onclick = function () { try { if (dono() === 'cliente') localStorage.removeItem('pl5_txt_cliente'); else S.txtFrota = null; } catch (e) {} montarTextos(); pintarPrevia(); };
+    // 3. os botões antigos passam a falar pelas funções que decidem o modo
+    $$('btnBaixarUma').onclick = function () { baixarUma(); };
+    $$('btnBaixarLote').onclick = function () { baixarLote(); };
+    $$('optPlaca').onchange = function () { pintarPrevia(); };
+    $$('optBase').onchange = function () { pintarPrevia(); };
+    $$('optPainel').addEventListener('input', function () { clearTimeout(tt); tt = setTimeout(pintarPrevia, 260); });
+    $$('btnGerarFaltam').onclick = function () {
+      if (S.modo === 'clientes') gerarTagsCliente(S.maq.filter(function (m) { return !m.tag_ok && !m.tag_pl && m.tipo_codigo; }).map(function (m) { return m.id; }));
+      else gerarTags(FROTA.filter(function (m) { return !m.tag_ok; }).map(function (m) { return m.id; }));
+    };
+    document.addEventListener('click', function (ev) {
+      var b = ev.target && ev.target.closest && ev.target.closest('[data-pl5-gerar]');
+      if (b) gerarTagsCliente([b.getAttribute('data-pl5-gerar')], b.getAttribute('data-trocar') === '1');
+    });
+    // 4. de onde veio: ?modo=clientes&cliente=…&id=…
+    var q = new URLSearchParams(location.search);
+    if (q.get('cliente')) S.cliente = q.get('cliente');
+    if (q.get('modo') === 'clientes') modo('clientes', { manter: true }); else modo('frota', { manter: true });
+    carregarTamanhos();
+  }
+
+  return { S: S, iniciar: iniciar, modo: modo, rpc: rpc, layoutPara: layoutPara, avaliar: avaliar, estado: estado, pintarPrevia5: pintarPrevia5,
+           baixarUma5: baixarUma5, baixarLote5: baixarLote5, pintarListaClientes: pintarListaClientes, carregarClientes: carregarClientes,
+           gerarTagsCliente: gerarTagsCliente, ehPadraoFrota: ehPadraoFrota, S_: S };
+})();
+
+// ── as funções da V4, reencaminhadas: a FROTA no tamanho padrão cai SEMPRE na função original ──
+(function () {
+  var _selecionadas = selecionadas, _pintarLista = pintarLista, _pintarPrevia = pintarPrevia, _baixarUma = baixarUma, _baixarLote = baixarLote,
+      _gerarTags = gerarTags, _carregar = carregar;
+  selecionadas = function () {
+    if (MANUAL) return [MANUAL];
+    if (PL5.S.modo === 'clientes') return SEL.map(function (id) { return PL5.S.maq.filter(function (m) { return m.id === id; })[0]; }).filter(function (m) { return m && m.tag_ok; });
+    return _selecionadas();
+  };
+  pintarLista = function () { if (PL5.S.modo === 'clientes') return PL5.pintarListaClientes(); return _pintarLista(); };
+  pintarPrevia = function () {
+    var feito = PL5.pintarPrevia5();           // false = frota padrão
+    if (!feito) { $('subPlaca').textContent = '86 × 54 mm · 4 furos de 3,5 mm · selecione as máquinas na lista.'; _pintarPrevia(); }
+  };
+  baixarUma = async function () { if (!(await PL5.baixarUma5())) _baixarUma(); };
+  baixarLote = async function () { if (!(await PL5.baixarLote5())) _baixarLote(); };
+  gerarTags = function (ids) { if (PL5.S.modo === 'clientes') return PL5.gerarTagsCliente(ids); return _gerarTags(ids); };
+  carregar = function (opts) { if (PL5.S.modo === 'clientes') return PL5.carregarClientes({ clientes: true }); return _carregar(opts); };
+  PL5.iniciar();
+})();
+</script>
+<!-- ████ FIM PL5 ████ -->
 
 <!-- ████ INICIO BLOCOS PADRAO UX (PWAIT + CFX) ████ -->
 <!-- ═══════════════════════════════════════════════════════════════════════════
