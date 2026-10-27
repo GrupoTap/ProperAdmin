@@ -100338,6 +100338,7 @@ html:not(.v311-off):has(>body.v292-alto #viewComercial.v292-on:not([style*="disp
 .v317-bal .v317-acoes{display:flex;gap:6px;justify-content:flex-end;margin-top:10px;flex-wrap:wrap}
 .v317-msg{font-size:13px;margin-top:6px}
 .v317-msg.er{color:#b42318}
+.v317-foi{flex-basis:100%;margin:2px 0 0 26px}
 @media (max-width:640px){.v317-bal{left:12px!important;right:12px;width:auto}}
 </style>
 <script>
@@ -100356,7 +100357,7 @@ html:not(.v311-off):has(>body.v292-alto #viewComercial.v292-on:not([style*="disp
 (function () {
   'use strict';
   if (window.V317) return;
-  var V317 = window.V317 = { versao: 'V317 · 27/10/2026', orig: {}, semSql: false, listas: {}, ed: null, bal: null, obsT: null };
+  var V317 = window.V317 = { versao: 'V317 · 27/10/2026', orig: {}, semSql: false, okSql: false, sonda: false, listas: {}, ed: null, bal: null, foi: {}, obsT: null };
   function off() { try { return localStorage.getItem('pcm_v317') === 'off'; } catch (e) { return false; } }
   function S(v) { return String(v == null ? '' : v); }
   function E(v) { return S(v).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;'); }
@@ -100388,8 +100389,9 @@ html:not(.v311-off):has(>body.v292-alto #viewComercial.v292-on:not([style*="disp
   function carregarLista(cliente, depois) {
     var k = S(cliente), L = V317.listas[k] || (V317.listas[k] = { d: null, em: 0, voo: null, erro: '' });
     if (L.d && Date.now() - L.em < 60000) { if (depois) depois(); return; }
+    if (!L.d && L.erro && Date.now() - L.em < 30000) { if (depois) depois(); return; }   // falhou há pouco: espera, não martela o banco
     if (L.voo) { L.voo.then(function () { if (depois) depois(); }); return; }
-    L.voo = rpc('omp_lista', { p_cliente: k || null }).then(function (d) { L.d = d || { lista: [] }; L.em = Date.now(); L.erro = ''; },
+    L.voo = rpc('omp_lista', { p_cliente: k || null }).then(function (d) { L.d = d || { lista: [] }; L.em = Date.now(); L.erro = ''; V317.okSql = true; },
                                                          function (e) { L.erro = e.message || S(e); L.em = Date.now(); })
       .then(function () { L.voo = null; if (depois) depois(); });
   }
@@ -100405,6 +100407,7 @@ html:not(.v311-off):has(>body.v292-alto #viewComercial.v292-on:not([style*="disp
         '<span>' + E(x.descricao || x.codigo) + '</span><small>' + E(x.codigo) + (Number(x.parcelas) > 1 ? ' · ' + E(x.parcelas) + ' parcelas' : '') + '</small></button>';
     }).join('') + (l.length > 60 ? '<div class="v317-dica">… mais ' + (l.length - 60) + ' — refine a busca.</div>' : '');
   }
+  function esquecerListas() { V317.listas = {}; }   // depois de gravar: a sugestão (última do cliente) muda
   function acharNaLista(L, cod) { var l = (L && L.lista) || []; for (var i = 0; i < l.length; i++) if (S(l[i].codigo) === S(cod)) return l[i]; return null; }
   function rotSug(s) { return s ? (s.origem === 'cliente' ? 'a última usada com este cliente' : 'a padrão da ⚙') : ''; }
 
@@ -100415,7 +100418,9 @@ html:not(.v311-off):has(>body.v292-alto #viewComercial.v292-on:not([style*="disp
     if (st && st.ED === ED && st.aberto) return st;
     var c = (ED.cab && ED.cab.condicoes) || {};
     var cod = S(c.pagamento_codigo).trim();
-    st = V317.ed = { ED: ED, aberto: true, cod: cod, desc: cod ? S(c.pagamento) : '', antigo: cod ? '' : S(c.pagamento).trim(), q: '', trocar: !cod, sugerida: false, tocou: false, cli: cliDoEditor(ED) };
+    var txt = S(c.pagamento).trim(), padraoTxt = S(ED.cfg && ED.cfg.condicoes && ED.cfg.condicoes.pagamento).trim();
+    var antigo = cod ? '' : (txt && txt !== padraoTxt ? txt : '');   // o texto padrão da ⚙ (proposta nova) não conta como escolha antiga
+    st = V317.ed = { ED: ED, aberto: true, cod: cod, desc: cod ? S(c.pagamento) : '', antigo: antigo, padraoTxt: (!cod && txt && txt === padraoTxt) ? txt : '', q: '', trocar: !cod, sugerida: false, tocou: false, cli: cliDoEditor(ED) };
     carregarLista(st.cli, function () { if (V317.semSql) { st.aberto = false; try { _v204Pintar(); } catch (e) { /* nada */ } return; } aplicarSugestao(st); repintarCond(); });
     return st;
   }
@@ -100428,13 +100433,13 @@ html:not(.v311-off):has(>body.v292-alto #viewComercial.v292-on:not([style*="disp
     var L = lista(st.cli), h = '';
     if (st.cod) {
       var it = acharNaLista(L, st.cod);
-      h += '<div class="v317-esc">✅ <b>' + E(st.desc || (it && it.descricao) || st.cod) + '</b> <small>(' + E(st.cod) + ')</small>' +
+      h += '<div class="v317-esc">✅ <b>' + E((it && it.descricao) || st.desc || st.cod) + '</b> <small>(' + E(st.cod) + ')</small>' +
         (L && !it ? ' <small style="color:#b42318">— não está mais na lista ativa do Omie; escolha outra</small>' : '') +
         ' <button type="button" class="btn btn-secondary btn-sm" data-v317="condTrocar" data-pw-off="1">Trocar</button>' +
         ' <button type="button" class="btn btn-secondary btn-sm" data-v317="condTirar" data-pw-off="1">Tirar</button></div>';
       if (st.sugerida) h += '<div class="v317-sug">Sugerida: ' + E(rotSug(L && L.sugerida)) + '. Confira antes de aplicar.</div>';
     } else if (st.antigo) {
-      h += '<div class="v317-antigo">Texto antigo (não vai ao Omie): "<b>' + E(st.antigo) + '</b>" — escolha a condição da lista. ' +
+      h += '<div class="v317-antigo">Texto livre (não vai ao Omie): "<b>' + E(st.antigo) + '</b>" — escolha a condição da lista. ' +
         (L && L.sugerida ? 'Sugestão: ' + E(L.sugerida.descricao) + ' (' + E(rotSug(L.sugerida)) + ').' : '') + '</div>';
     } else {
       h += '<div class="v317-nada">Nenhuma condição escolhida — o faturamento vai pedir antes do 📤.</div>';
@@ -100467,10 +100472,24 @@ html:not(.v311-off):has(>body.v292-alto #viewComercial.v292-on:not([style*="disp
     if (ta) ta.value = st.cod ? st.desc : st.antigo;
   }
   function avisoEmitir(ED) {
-    var c = (ED.cab && ED.cab.condicoes) || {};
-    if (S(c.pagamento_codigo).trim()) return '';
-    return '<div class="v317-aviso">⚠ A condição de pagamento não foi escolhida da lista do Omie' + (S(c.pagamento).trim() ? ' (o texto "' + E(S(c.pagamento).trim()) + '" não vai ao Omie)' : '') +
-      '. Dá para emitir, mas o faturamento vai pedir a condição antes do 📤. <button type="button" class="btn btn-secondary btn-sm" data-v204="painel" data-k="cond">Escolher agora</button></div>';
+    if (!V317.okSql) return '';   // sem saber se o SQL está no ar, não afirma nada (sem o SQL, a padrão da ⚙ É a que vai no pedido)
+    var c = (ED.cab && ED.cab.condicoes) || {}, cod = S(c.pagamento_codigo).trim();
+    var bt = ' <button type="button" class="btn btn-secondary btn-sm" data-v317="emitirCond" data-pw-off="1">Escolher</button></li>';
+    if (cod) {
+      var L = lista(cliDoEditor(ED)); if (!L || acharNaLista(L, cod)) return '';
+      return '<li class="v317-emitir" data-v317i="cond">⚠ A condição de pagamento ' + E(cod) + ' não está mais ativa na lista do Omie — escolha outra (o faturamento vai pedir antes do 📤)' + bt;
+    }
+    return '<li class="v317-emitir" data-v317i="cond">⚠ Pagamento sem condição da lista do Omie' + (S(c.pagamento).trim() ? ' ("' + E(S(c.pagamento).trim()) + '" é texto livre e não vai ao Omie)' : '') +
+      ' — dá para emitir; o faturamento vai pedir a condição antes do 📤' + bt;
+  }
+  // na emissão, código e texto têm de concordar (o PDF sai do texto, o Omie do código): o código vale e o texto vira a descrição da lista
+  function alinharTexto(ED) {
+    var c = (ED.cab && ED.cab.condicoes) || {}, cod = S(c.pagamento_codigo).trim(); if (!cod) return;
+    var it = acharNaLista(lista(cliDoEditor(ED)), cod);
+    if (it && S(it.descricao) && S(it.descricao) !== S(c.pagamento)) {
+      ED.cab.condicoes = Object.assign({}, c, { pagamento: S(it.descricao) });
+      setTimeout(function () { try { if (V204.ed === ED) { _v204Mudou(); _v204Pintar(); } } catch (e) { /* nada */ } }, 0);
+    }
   }
   V317.orig.painel = typeof _v204PainelHtml === 'function' ? _v204PainelHtml : null;
   if (V317.orig.painel) {
@@ -100479,11 +100498,52 @@ html:not(.v311-off):has(>body.v292-alto #viewComercial.v292-on:not([style*="disp
       try {
         if (off() || V317.semSql || typeof h !== 'string') return h;
         var ED = V204.ed; if (!ED) return h;
-        if (ED.painel !== 'cond') { if (V317.ed) V317.ed.aberto = false; return ED.painel === 'emitir' ? avisoEmitir(ED) + h : h; }
+        if (ED.painel !== 'cond') {
+          if (V317.ed) V317.ed.aberto = false;
+          if (ED.painel !== 'emitir') return h;
+          var sabia = V317.okSql, tinha = !!lista(cliDoEditor(ED));
+          carregarLista(cliDoEditor(ED), function () {
+            try { alinharTexto(ED); } catch (e) { /* nada */ }
+            if ((!sabia || !tinha) && V317.okSql && lista(cliDoEditor(ED)) && V204.ed === ED && ED.painel === 'emitir') setTimeout(function () { try { _v204Pintar(); } catch (e) { /* nada */ } }, 0);   // agora sabe (SQL e lista): pinta o aviso — 1 vez só, a próxima leitura vem do cache
+          });
+          var k = h.indexOf('<ul class="v204-chk">'); if (k < 0) return h;
+          k += '<ul class="v204-chk">'.length;
+          return h.slice(0, k) + avisoEmitir(ED) + h.slice(k);
+        }
         var i = h.indexOf('<label>Pagamento</label><textarea id="v204CondPag"'), j = i < 0 ? -1 : h.indexOf('</textarea>', i);
         if (i < 0 || j < 0) return h;
         return h.slice(0, i) + condHtml(iniciarCond(ED)) + h.slice(j + '</textarea>'.length);
       } catch (e) { console.warn('[V317] painel:', e); return h; }
+    };
+  }
+  V317.orig.usar = typeof _v238Usar === 'function' ? _v238Usar : null;
+  if (V317.orig.usar) {
+    _v238Usar = async function () {
+      var ED = V204.ed, c0 = Object.assign({}, (ED && ED.cab && ED.cab.condicoes) || {});
+      var r = await V317.orig.usar.apply(this, arguments);
+      try {
+        var ED2 = V204.ed, c = ED2 && ED2.cab && ED2.cab.condicoes;
+        if (!off() && !V317.semSql && ED2 === ED && c && S(c.pagamento_codigo).trim() && S(c.pagamento) !== S(c0.pagamento)) {
+          var novo = Object.assign({}, c); delete novo.pagamento_codigo; ED2.cab.condicoes = novo;
+          if (V317.ed) V317.ed.aberto = false;
+          try { _v204Mudou(); _v204Pintar(); } catch (e) { /* nada */ }
+          toastx('O modelo trocou o pagamento para "' + S(c.pagamento) + '" (texto livre): escolha a condição da lista do Omie em ✎ Condições.', 'warn');
+        }
+      } catch (e) { console.warn('[V317] modelo:', e); }
+      return r;
+    };
+  }
+  V317.orig.corr = typeof _v262Corrigir === 'function' ? _v262Corrigir : null;
+  if (V317.orig.corr) {
+    _v262Corrigir = function (k) {
+      var r = V317.orig.corr.apply(this, arguments);
+      try {
+        if (k === 'cond' && !off() && !V317.semSql) setTimeout(function () {
+          var q = document.getElementById('v317Q'), tb = document.querySelector('#v317Topo [data-v317="condTrocar"]');
+          var alvo = q && !q.closest('[hidden]') ? q : tb; if (alvo) { try { alvo.removeAttribute('readonly'); alvo.focus(); alvo.scrollIntoView({ block: 'center' }); } catch (e) { /* nada */ } }
+        }, 80);
+      } catch (e) { /* nada */ }
+      return r;
     };
   }
   function aplicarCond(ev) {
@@ -100492,12 +100552,12 @@ html:not(.v311-off):has(>body.v292-alto #viewComercial.v292-on:not([style*="disp
     var base = Object.assign({}, (ED.cab && ED.cab.condicoes) || {});
     base.ac = g('v204CondAc'); base.prazo = g('v204CondPrazo'); base.garantia = g('v204CondGar'); base.obs = g('v204CondObs');
     if (st.cod) { base.pagamento = st.desc; base.pagamento_codigo = st.cod; }
-    else { base.pagamento = st.antigo; delete base.pagamento_codigo; }
+    else { base.pagamento = st.antigo || st.padraoTxt || ''; delete base.pagamento_codigo; }
     ED.cab.condicoes = base; ED.painel = ''; st.aberto = false;
     ev.preventDefault(); ev.stopImmediatePropagation();
     try { _v204Mudou(); } catch (e) { /* nada */ }
     try { _v204Pintar(); } catch (e) { /* nada */ }
-    if (!st.cod) toastx('Sem condição escolhida da lista do Omie: o faturamento vai pedir antes do 📤.', 'warning');
+    if (!st.cod) toastx('Sem condição escolhida da lista do Omie: o faturamento vai pedir antes do 📤.', 'warn');
     return true;
   }
 
@@ -100505,20 +100565,42 @@ html:not(.v311-off):has(>body.v292-alto #viewComercial.v292-on:not([style*="disp
   function fichaAtual() { try { var O = V235.ov; return O && O.d && O.d.ficha && !O.carregando ? O.d.ficha : null; } catch (e) { return null; } }
   function reconferir() { try { var b = document.querySelector('#v235Jan [data-v304="enviar"]'); if (b) b.click(); } catch (e) { /* a ficha fechou */ } }
   function fecharBal() { var b = document.getElementById('v317Bal'); if (b) b.remove(); V317.bal = null; }
-  function abrirBal(ancora, fid) {
-    if (!ehFin()) { toastx('Só o Financeiro ou o administrador escolhe a condição de pagamento da ficha.', 'error'); return; }
-    fecharBal();
-    var f = fichaAtual();
-    V317.bal = { fid: S(fid || (f && f.id)), cli: S(f && f.cliente_id), q: '', sel: '', salvando: false, msg: null };
-    var d = document.createElement('div'); d.id = 'v317Bal'; d.className = 'v317-bal'; d.setAttribute('role', 'dialog'); d.setAttribute('aria-label', 'Condição de pagamento da ficha');
-    document.body.appendChild(d);
+  // a condição que a ficha tem AGORA (da linha ✅ "Condição de pagamento: … (CÓDIGO) — …" da conferência); '' = nenhuma
+  function codigoAtual() {
+    var r = '';
+    document.querySelectorAll('#v304Sec .v304-it.ok .t').forEach(function (t) { var m = /^Condição de pagamento: .*\(([^()]+)\) — /.exec(S(t.textContent)); if (m) r = m[1]; });
+    return r;
+  }
+  function ancoraAtual() {
+    var B = V317.bal; if (!B) return null;
+    return document.querySelector(B.anc === 'trocar' ? '#v304Sec [data-v317="trocar"]' : '#v304Sec button[data-v304="corrigir"][data-onde="ficha"][data-campo="parcela"]');
+  }
+  function posicionar(ancora) {
+    var d = document.getElementById('v317Bal'); if (!d) return;
     try {
       var r = ancora.getBoundingClientRect(), w = Math.min(380, window.innerWidth - 24), x = Math.max(12, Math.min(r.right - w, window.innerWidth - w - 12)), y = r.bottom + 6;
       if (y + 360 > window.innerHeight) y = Math.max(12, r.top - 366);
       d.style.left = x + 'px'; d.style.top = y + 'px';
     } catch (e) { d.style.left = '12px'; d.style.top = '80px'; }
+  }
+  // balão órfão (a ficha fechou, mudou de ficha ou a seção sumiu) fecha; com a âncora viva, acompanha a rolagem
+  function vigiarBal() {
+    var B = V317.bal; if (!B || B.salvando) return;
+    var f = fichaAtual(), a = ancoraAtual();
+    if (!f || S(f.id) !== B.fid || !document.getElementById('v304Sec')) { fecharBal(); return; }
+    if (a) posicionar(a);
+  }
+  function abrirBal(ancora, fid) {
+    if (!ehFin()) { toastx('Só o Financeiro ou o administrador escolhe a condição de pagamento da ficha.', 'error'); return; }
+    fecharBal();
+    var f = fichaAtual();
+    var atual = codigoAtual();
+    V317.bal = { fid: S(fid || (f && f.id)), cli: S(f && f.cliente_id), q: '', sel: atual, atual: atual, sug: false, salvando: false, msg: null, anc: ancora.getAttribute('data-v317') === 'trocar' ? 'trocar' : 'corrigir' };
+    var d = document.createElement('div'); d.id = 'v317Bal'; d.className = 'v317-bal mob-keep'; d.setAttribute('role', 'dialog'); d.setAttribute('aria-label', 'Condição de pagamento da ficha');
+    (document.getElementById('v235Ov') || document.body).appendChild(d);
+    posicionar(ancora);
     pintarBal();
-    carregarLista(V317.bal.cli, function () { var B = V317.bal; if (!B) return; var L = lista(B.cli); if (L && L.sugerida && !B.sel) B.sel = S(L.sugerida.codigo); pintarBal(); });
+    carregarLista(V317.bal.cli, function () { var B = V317.bal; if (!B) return; var L = lista(B.cli); if (L && L.sugerida && !B.sel) { B.sel = S(L.sugerida.codigo); B.sug = true; } pintarBal(); });
     setTimeout(function () { var q = document.getElementById('v317BQ'); if (q) { q.removeAttribute('readonly'); q.focus(); } }, 30);
   }
   function balListaHtml(B) {
@@ -100536,16 +100618,22 @@ html:not(.v311-off):has(>body.v292-alto #viewComercial.v292-on:not([style*="disp
         '<div class="v317-sug" id="v317BSug"></div>' +
         '<input type="text" id="v317BQ" class="v317-q" placeholder="Buscar condição (ex.: 28, vista, 30/60)" autocomplete="off" name="v317bq_nofill" data-lpignore="true" data-1p-ignore readonly onfocus="this.removeAttribute(\'readonly\')">' +
         '<div class="v317-lst" id="v317BLst"></div><div id="v317BMsg"></div>' +
-        '<div class="v317-acoes"><button type="button" class="btn btn-secondary btn-sm" data-v317="balProposta" data-pw-off="1" title="Volta a valer a condição da proposta aceita">Usar a da proposta</button>' +
+        '<div class="v317-acoes"><button type="button" class="btn btn-secondary btn-sm" data-v317="balProposta" title="Volta a valer a condição da proposta aceita">Usar a da proposta</button>' +
         '<button type="button" class="btn btn-secondary btn-sm" data-v317="balFechar" data-pw-off="1">Cancelar</button>' +
         '<button type="button" class="btn btn-primary btn-sm" data-v317="balAplicar">Aplicar</button></div>' +
         '<div class="v317-dica">Não achou? Cadastre NO OMIE e depois ⚙ › 🔌 › Ler as listas do Omie.</div>';
     }
     var sug = document.getElementById('v317BSug');
-    if (sug) sug.textContent = it ? 'Escolhida: ' + S(it.descricao) + ' (' + S(it.codigo) + ')' + (L && L.sugerida && S(L.sugerida.codigo) === S(B.sel) ? ' — sugerida: ' + rotSug(L.sugerida) : '') : 'Escolha uma condição na lista.';
+    var Lw = V317.listas[B.cli] || {};
+    if (sug) sug.textContent = !L ? (Lw.erro ? 'Não consegui ler a lista do Omie agora' + (B.atual ? ' (a atual é ' + B.atual + ')' : '') + '.' : '⏳ Lendo as condições do Omie…' + (B.atual ? ' (atual: ' + B.atual + ')' : ''))
+      : !it ? (B.atual ? 'Atual: ' + B.atual + ' (não está mais na lista ativa) — escolha outra.' : 'Escolha uma condição na lista.')
+      : S(B.sel) === S(B.atual) ? 'Atual: ' + S(it.descricao) + ' (' + S(it.codigo) + ') — escolha outra para trocar.'
+      : B.sug ? 'Sugestão (' + rotSug(L && L.sugerida) + '): ' + S(it.descricao) + ' (' + S(it.codigo) + ') — confira e clique em Aplicar.'
+      : 'Nova escolha: ' + S(it.descricao) + ' (' + S(it.codigo) + ')' + (B.atual ? ' — no lugar de ' + B.atual : '') + '.';
     var lst = document.getElementById('v317BLst'); if (lst) lst.innerHTML = balListaHtml(B);
     var m = document.getElementById('v317BMsg'); if (m) m.innerHTML = B.msg ? '<div class="v317-msg ' + (B.msg.er ? 'er' : '') + '">' + E(B.msg.txt) + '</div>' : '';
-    var ap = d.querySelector('[data-v317="balAplicar"]'); if (ap) { ap.disabled = B.salvando || !B.sel; if (B.salvando) ap.setAttribute('data-pcm-enviando', '1'); else ap.removeAttribute('data-pcm-enviando'); ap.textContent = B.salvando ? '⏳ Gravando…' : 'Aplicar'; }
+    var ap = d.querySelector('[data-v317="balAplicar"]'); if (ap) { ap.disabled = B.salvando || !B.sel || S(B.sel) === S(B.atual) || !it; if (B.salvando) ap.setAttribute('data-pcm-enviando', '1'); else ap.removeAttribute('data-pcm-enviando'); ap.textContent = B.salvando ? '⏳ Gravando…' : 'Aplicar'; }
+    var bp = d.querySelector('[data-v317="balProposta"]'); if (bp) { bp.disabled = B.salvando; if (B.salvando) bp.setAttribute('data-pcm-enviando', '1'); else bp.removeAttribute('data-pcm-enviando'); }
   }
   async function gravarBal(cod) {
     var B = V317.bal; if (!B || B.salvando) return;
@@ -100553,23 +100641,69 @@ html:not(.v311-off):has(>body.v292-alto #viewComercial.v292-on:not([style*="disp
     try {
       var r = await rpc('omp_ficha_definir', { p_ficha: B.fid, p_codigo: cod }, true);
       var c = (r && r.condicao) || {};
-      fecharBal();
-      toastx(c.codigo ? 'Condição da ficha: ' + S(c.descricao || c.codigo) + ' (' + S(c.codigo) + ')' + (c.origem === 'proposta' ? ' — a da proposta' : '') : 'A ficha volta a seguir a proposta — que não tem condição da lista: escolha uma.', c.codigo ? 'success' : 'warning');
+      esquecerListas(); fecharBal();
+      toastx(c.codigo ? 'Condição da ficha: ' + S(c.descricao || c.codigo) + ' (' + S(c.codigo) + ')' + (c.origem === 'proposta' ? ' — a da proposta' : '') : 'A ficha volta a seguir a proposta — que não tem condição da lista: escolha uma.', c.codigo ? 'success' : 'warn');
       reconferir();
     } catch (e) { if (V317.bal) { V317.bal.salvando = false; V317.bal.msg = { er: true, txt: e.message || S(e) }; pintarBal(); } }
   }
 
+  // ════ 2b · COMPLEMENTO: o pedido (ou a OS) já está no Omie — mostrar com que condição ELE foi (auditoria 2 do SQL, achado 5) ════════
+  //   O 1º documento pode ter ido antes desta entrega, com a condição padrão da ⚙ (ex.: o pedido 307). A conferência pede/mostra a condição
+  //   da OS que falta; aqui só se MOSTRA a do que já foi (lida da gravação real no Omie), para o financeiro decidir com o dado na frente.
+  function marcarComplemento(sec) {
+    var f = fichaAtual(); if (!f || !ehFin()) return;
+    var alvo = null, tipoFoi = '';
+    sec.querySelectorAll('.v304-it.ok .t').forEach(function (t) {
+      var x = S(t.textContent);
+      if (/^O pedido .* já está no Omie: vai só a OS/.test(x)) { alvo = t; tipoFoi = 'pedido'; }
+      else if (/^A OS .* já está no Omie: vai só o pedido/.test(x)) { alvo = t; tipoFoi = 'os'; }
+    });
+    if (!alvo || alvo.parentNode.querySelector('.v317-foi')) return;
+    var span = document.createElement('div'); span.className = 'v317-foi v317-sug'; span.setAttribute('data-ficha', S(f.id)); span.setAttribute('data-tipo', tipoFoi);
+    alvo.parentNode.appendChild(span);
+    pintarFoi(f);
+    var C = V317.foi[f.id];
+    if (C && (C.lendo || Date.now() - C.em < 60000)) { carregarLista(S(f.cliente_id), function () { pintarFoi(f); }); return; }
+    V317.foi[f.id] = { em: Date.now(), lendo: true, cod: '', erro: '', estado: '' };
+    carregarLista(S(f.cliente_id), function () { pintarFoi(f); });
+    rpc('omg_gravacoes', { p_limite: 300, p_ficha: f.id }).then(function (r) {
+      var gs = (r && r.gravacoes) || [], g = null;
+      for (var i = 0; i < gs.length; i++) { if (gs[i].modo === 'real' && gs[i].tipo === tipoFoi && (gs[i].estado === 'enviado' || gs[i].estado === 'ja_existia')) { g = gs[i]; break; } }
+      var pl = (g && g.payload) || {};
+      V317.foi[f.id] = { em: Date.now(), lendo: false, achou: !!g, estado: S(g && g.estado), erro: '',
+                         cod: S(tipoFoi === 'pedido' ? (pl.cabecalho && pl.cabecalho.codigo_parcela) : (pl.Cabecalho && pl.Cabecalho.cCodParc)) };
+      pintarFoi(f);
+    }, function (e) { V317.foi[f.id] = { em: Date.now(), lendo: false, cod: '', erro: e.message || S(e) }; pintarFoi(f); });
+  }
+  // pinta TODAS as notas desta ficha que estão na tela agora (a seção pode ter repintado enquanto a leitura voltava)
+  function pintarFoi(f) {
+    var c = V317.foi[f.id] || { lendo: true };
+    document.querySelectorAll('#v304Sec .v317-foi[data-ficha="' + S(f.id).replace(/"/g, '') + '"]').forEach(function (span) {
+      var tipo = span.getAttribute('data-tipo'), oDoc = tipo === 'pedido' ? 'o pedido' : 'a OS', ODoc = tipo === 'pedido' ? 'O pedido' : 'A OS';
+      if (c.lendo) { span.textContent = '⏳ lendo a condição com que ' + oDoc + ' foi…'; return; }
+      if (c.erro) { span.textContent = 'Não consegui ler a condição com que ' + oDoc + ' foi (' + c.erro + ') — confira no Omie.'; return; }
+      if (!c.achou) { span.textContent = 'O PCM não tem registro do envio d' + (tipo === 'pedido' ? 'o pedido' : 'a OS') + ' (foi lançado fora dele?) — confira a condição no Omie.'; return; }
+      if (!c.cod) { span.textContent = ODoc + (tipo === 'pedido' ? ' foi enviado' : ' foi enviada') + ' pelo PCM sem condição de pagamento no JSON — confira no Omie.'; return; }
+      var it = acharNaLista(lista(S(f.cliente_id)), c.cod), nome = it ? S(it.descricao) + ' (' + c.cod + ')' : c.cod;
+      span.textContent = c.estado === 'ja_existia'
+        ? ODoc + ' já existia no Omie quando o PCM tentou enviar; o PCM tinha mandado a condição ' + nome + ' — confira no Omie a que ficou.'
+        : ODoc + ' que já está no Omie foi com a condição ' + nome + '. A que vai agora é a da linha "Condição de pagamento".';
+    });
+  }
   // ════ 3 · AJUSTES DE TEXTO (um observador; tudo idempotente) ════════════════════════════════════════════════
   function ajustar() {
     if (off() || V317.semSql) return;
+    try { vigiarBal(); } catch (e) { /* nada */ }
     var cfg = document.querySelector('select[data-v304cfg="parcela_padrao"]');
-    if (cfg && !cfg.getAttribute('data-v317r')) {
+    if (cfg && !V317.okSql && !V317.sonda && Date.now() - (V317.sondaEm || 0) > 30000) { V317.sonda = true; V317.sondaEm = Date.now(); carregarLista('', function () { V317.sonda = false; if (V317.okSql) agendar(); }); }
+    if (cfg && V317.okSql && !cfg.getAttribute('data-v317r')) {
       cfg.setAttribute('data-v317r', '1');
       var lb = cfg.closest('label'); if (lb && lb.firstChild && lb.firstChild.nodeType === 3) lb.firstChild.nodeValue = 'Condição de pagamento SUGERIDA (só a sugestão da tela: a do pedido vem da proposta ou da ficha)';
     }
     var sec = document.getElementById('v304Sec'); if (!sec) return;
-    sec.querySelectorAll('button[data-v304="corrigir"][data-onde="ficha"]').forEach(function (b) { if (!b.getAttribute('data-v317l')) { b.setAttribute('data-v317l', '1'); b.textContent = 'Escolher'; } });
+    sec.querySelectorAll('button[data-v304="corrigir"][data-onde="ficha"][data-campo="parcela"]').forEach(function (b) { if (!b.getAttribute('data-v317l')) { b.setAttribute('data-v317l', '1'); b.textContent = 'Escolher'; } });
     if (!ehFin()) return;
+    try { marcarComplemento(sec); } catch (e) { console.warn('[V317] complemento:', e); }
     sec.querySelectorAll('.v304-it.ok').forEach(function (n) {
       var t = n.querySelector('.t'); if (!t || n.querySelector('[data-v317="trocar"]')) return;
       if (S(t.textContent).indexOf('Condição de pagamento:') !== 0) return;
@@ -100586,7 +100720,7 @@ html:not(.v311-off):has(>body.v292-alto #viewComercial.v292-on:not([style*="disp
   // ── os CLIQUES (um ouvinte em captura) ──
   document.addEventListener('click', function (ev) {
     if (off() || V317.semSql) return;
-    var t = ev.target && ev.target.closest && ev.target.closest('[data-v317],[data-v204="condOk"],button[data-v304="corrigir"][data-onde="ficha"]');
+    var t = ev.target && ev.target.closest && ev.target.closest('[data-v317],[data-v204="condOk"],button[data-v304="corrigir"][data-onde="ficha"][data-campo="parcela"]');
     if (!t) { if (V317.bal && !(ev.target && ev.target.closest && ev.target.closest('#v317Bal')) && !V317.bal.salvando) fecharBal(); return; }
     if (t.getAttribute('data-v204') === 'condOk') { if (document.getElementById('v317Cond')) aplicarCond(ev); return; }
     ev.preventDefault(); ev.stopPropagation();
@@ -100595,11 +100729,13 @@ html:not(.v311-off):has(>body.v292-alto #viewComercial.v292-on:not([style*="disp
     try {
       if (a === 'condEsc' && st) {
         var L = lista(st.cli), it = acharNaLista(L, t.getAttribute('data-cod'));
-        if (it) { st.cod = S(it.codigo); st.desc = S(it.descricao); st.sugerida = false; st.tocou = true; st.trocar = false; st.q = ''; var q0 = document.getElementById('v317Q'); if (q0) q0.value = ''; repintarCond(); }
+        if (it) { st.cod = S(it.codigo); st.desc = S(it.descricao); st.sugerida = false; st.tocou = true; st.trocar = false; st.q = ''; var q0 = document.getElementById('v317Q'); if (q0) q0.value = ''; repintarCond();
+                  var tb = document.querySelector('#v317Topo [data-v317="condTrocar"]'); if (tb) try { tb.focus(); } catch (e) { /* nada */ } }
       } else if (a === 'condTrocar' && st) { st.trocar = true; st.tocou = true; repintarCond(); var q1 = document.getElementById('v317Q'); if (q1) { q1.removeAttribute('readonly'); q1.focus(); } }
       else if (a === 'condTirar' && st) { st.cod = ''; st.desc = ''; st.sugerida = false; st.tocou = true; st.trocar = true; repintarCond(); }
       else if (a === 'trocar') { var f = fichaAtual(); if (f) abrirBal(t, f.id); }
-      else if (a === 'balEsc' && B) { B.sel = S(t.getAttribute('data-cod')); B.msg = null; pintarBal(); }
+      else if (a === 'emitirCond') { if (typeof _v262Corrigir === 'function' && document.getElementById('v262Painel')) _v262Corrigir('cond'); else { V204.ed.painel = 'cond'; _v204Pintar(); } }
+      else if (a === 'balEsc' && B) { B.sel = S(t.getAttribute('data-cod')); B.sug = false; B.msg = null; pintarBal(); }
       else if (a === 'balFechar') { if (!B || !B.salvando) fecharBal(); }
       else if (a === 'balAplicar' && B && B.sel && !t.disabled) gravarBal(B.sel);
       else if (a === 'balProposta' && B && !B.salvando) gravarBal('');
@@ -100610,8 +100746,15 @@ html:not(.v311-off):has(>body.v292-alto #viewComercial.v292-on:not([style*="disp
     if (id === 'v317Q' && V317.ed) { V317.ed.q = ev.target.value; var l = document.getElementById('v317Lst'); if (l) l.innerHTML = condListaHtml(V317.ed); }
     else if (id === 'v317BQ' && V317.bal) { V317.bal.q = ev.target.value; var l2 = document.getElementById('v317BLst'); if (l2) l2.innerHTML = balListaHtml(V317.bal); }
   }, true);
+  document.addEventListener('keydown', function (ev) {
+    if (off() || V317.semSql || ev.key !== 'Enter') return; var id = ev.target && ev.target.id;
+    var box = id === 'v317Q' ? document.getElementById('v317Lst') : id === 'v317BQ' ? document.getElementById('v317BLst') : null; if (!box) return;
+    var bs = box.querySelectorAll('.v317-it'); ev.preventDefault();
+    if (bs.length === 1) bs[0].click(); else if (bs.length) try { bs[0].focus(); } catch (e) { /* nada */ }
+  }, true);
+  window.addEventListener('scroll', function () { if (V317.bal) try { vigiarBal(); } catch (e) { /* nada */ } }, true);
   // Esc fecha só o balão (na JANELA em captura: chega antes do Esc da janela da ficha, que o seguraria)
-  window.addEventListener('keydown', function (ev) { if ((ev.key === 'Escape' || ev.key === 'Esc') && V317.bal && !V317.bal.salvando && !off()) { fecharBal(); ev.preventDefault(); ev.stopImmediatePropagation(); } }, true);
+  window.addEventListener('keydown', function (ev) { if ((ev.key === 'Escape' || ev.key === 'Esc') && V317.bal && !off()) { if (!V317.bal.salvando) fecharBal(); ev.preventDefault(); ev.stopImmediatePropagation(); } }, true);
 })();
 </script>
 <!-- ████ FIM PCM V317 ████ -->
