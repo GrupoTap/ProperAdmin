@@ -102168,7 +102168,7 @@ html:not(.v311-off):has(>body.v292-alto #viewComercial.v292-on:not([style*="disp
   async function rpc(fn, p, escrita) { return _v200Rpc(fn, { p: p || {} }, escrita); }
   function msgErro(e) {
     if (e && e.v200 === 'sem_sql') return 'O SQL 112_ALM_SEPARACAO_R2 ainda não rodou no Supabase — nada foi gravado.';
-    if (e && e.v200 === 'acesso') return 'O banco recusou: separar é do almoxarifado, do administrador ou de quem tem o acesso extra "PCM – Almoxarifado".';
+    if (e && e.v200 === 'acesso') return 'O banco recusou o seu acesso: separar é do almoxarifado, do administrador ou de quem tem o acesso extra "PCM – Almoxarifado"; mudar a conferência é só do administrador entrando pelo Hub com o PIN.';
     return String((e && e.message) || e || 'erro').replace(/^NÃO foi gravada: /, '').replace(/^Separação: /, '');
   }
   function aviso(m, tipo) { try { if (typeof toast === 'function') toast(m, tipo || ''); } catch (e) {} }
@@ -102243,7 +102243,8 @@ html:not(.v311-off):has(>body.v292-alto #viewComercial.v292-on:not([style*="disp
     if (S.semSql) { el.innerHTML = h + '<div class="v323-aviso erro">O SQL 112_ALM_SEPARACAO_R2 ainda não rodou no Supabase. Rode o SQL e aperte ↻ Atualizar.</div>'; return; }
     if (S.semAcesso) { el.innerHTML = h + '<div class="v323-vazio">A separação é do almoxarifado (perfil Almoxarifado/Estoque/Suprimentos), do administrador ou de quem tem o acesso extra "PCM – Almoxarifado". Peça ao administrador.</div>'; return; }
     if (S.erro) h += '<div class="v323-aviso erro">Não deu para ler a fila: ' + E(S.erro) + ' <button type="button" class="v323-bt mini" data-v323="reler">Tentar de novo</button></div>';
-    if (S.msg) h += '<div class="v323-aviso ' + (S.msg.erro ? 'erro' : 'ok') + '">' + E(S.msg.txt) + '</div>';
+    if (S.msg) h += '<div class="v323-aviso ' + (S.msg.erro ? 'erro' : 'ok') + '">' + E(S.msg.txt) +
+      (S.msg.etq && S.etqPend && S.etqPend.length ? ' <button type="button" class="v323-bt mini pri" data-v323="etqMarcar">✅ Já colei as etiquetas</button>' : '') + '</div>';
     if (S.d && S.d.conferencia === 'livre') h += '<div class="v323-aviso">⚠ A conferência do código está DESLIGADA pelo administrador (emergência): o 📦 Separar e comprar separa sem conferir. A 🧺 Separação continua conferindo.</div>';
     if (S.painel === 'end') h += painelEnderecos();
     if (S.painel === 'cfg') h += painelCfg();
@@ -102260,6 +102261,7 @@ html:not(.v311-off):has(>body.v292-alto #viewComercial.v292-on:not([style*="disp
     el.innerHTML = h;
     if (foco) { var nf = el.querySelector('[data-v323foco="' + foco + '"]'); if (nf) { nf.removeAttribute('readonly'); try { nf.focus({ preventScroll: true }); if (selIni != null && nf.setSelectionRange) nf.setSelectionRange(selIni, selIni); } catch (e) {} } }
     else if (S.bal) { var bi = el.querySelector('[data-v323foco="lido"]'); if (bi) try { bi.focus({ preventScroll: true }); } catch (e) {} }
+    if (V323.cam) religarVideo();
   }
   V323.pintar = pintar;
   function situacaoHtml(g) {
@@ -102289,7 +102291,7 @@ html:not(.v311-off):has(>body.v292-alto #viewComercial.v292-on:not([style*="disp
     var h = '<div class="v323-det"><div class="v323-detcab">' + (g.titulo ? '<span>📝 ' + E(g.card) + ' · ' + E(g.titulo) + '</span>' : '') +
       (g.os_id ? '<span>📍 Kit em: <input type="text" class="v323-in peq" data-v323foco="kit:' + E(g.chave) + '" list="v323Ends" placeholder="ex. K-02-1" value="' + E((S.kitDig || {})[g.chave] != null ? S.kitDig[g.chave] : (g.kit || '')) + '" autocomplete="off" name="v323_kit_nofill" data-lpignore="true" data-1p-ignore> ' +
         '<button type="button" class="v323-bt mini" data-v323="kitSalvar" data-g="' + E(g.chave) + '">Salvar</button></span>' +
-        '<button type="button" class="v323-bt mini" data-v323="etqKit" data-g="' + E(g.chave) + '">🏷 Etiqueta do kit</button>' : '<span>Este card ainda não tem OS: separe agora se quiser — a peça fica separada para ele.</span>') +
+        '<button type="button" class="v323-bt mini" data-v323="etqKit" data-g="' + E(g.chave) + '">🏷 Etiqueta do kit</button>' : '<span>Estas peças do card não estão numa OS (o card ainda não tem OS, ou a máquina da peça não está na OS): pode separar — fica separada para o card.</span>') +
       '<button type="button" class="v323-bt mini" data-v323="etqOs" data-g="' + E(g.chave) + '" title="Etiquetas de prateleira das peças desta OS">🏷 Etiquetas das peças</button></div>';
     h += (g.linhas || []).map(function (l) { return pecaHtml(g, l); }).join('');
     return h + datalist() + '</div>';
@@ -102328,9 +102330,9 @@ html:not(.v311-off):has(>body.v292-alto #viewComercial.v292-on:not([style*="disp
     var falta = Math.max(0, N(l.qtd) - N(l.separado));
     if (b.tipo === 'sep') {
       var cam = ('BarcodeDetector' in window) && navigator.mediaDevices && navigator.mediaDevices.getUserMedia;
-      return '<div class="v323-bal conf" data-v323bal="sep"><h5>✔ Separei ' + E(codigoDe(l)) + ' — confira o código da peça que está na sua mão</h5>' +
-        '<label>' + (b.final4 ? 'Digite os 4 ÚLTIMOS números do código da etiqueta da peça' : 'Leia o QR da etiqueta (ou bipe com o leitor) — ou digite o código da peça') + '</label>' +
-        '<input type="text" class="v323-in" data-v323foco="lido" inputmode="' + (b.final4 ? 'numeric' : 'text') + '" maxlength="' + (b.final4 ? 4 : 80) + '" value="' + E(b.lido || '') + '" placeholder="' + (b.final4 ? '0000' : 'código') + '" autocomplete="off" name="v323_lido_nofill" data-lpignore="true" data-1p-ignore spellcheck="false" autocapitalize="characters">' +
+      return '<div class="v323-bal conf" data-v323bal="sep"><h5>✔ Separei: ' + E(l.produto_desc || l.descricao || '') + '</h5><div class="v323-sub">Confira pela PEÇA (etiqueta ou embalagem) que está na sua mão — não pela tela.</div>' +
+        '<label>' + (b.final4 ? 'Digite os 4 ÚLTIMOS números do código ou da referência escrita na peça/embalagem' : 'Leia o QR da etiqueta (ou bipe com o leitor) — ou digite o código da peça') + '</label>' +
+        '<input type="text" class="v323-in" data-v323foco="lido" inputmode="' + (b.final4 ? 'numeric' : 'text') + '" maxlength="80" value="' + E(b.lido || '') + '" placeholder="' + (b.final4 ? '0000' : 'código') + '" autocomplete="off" name="v323_lido_nofill" data-lpignore="true" data-1p-ignore spellcheck="false" autocapitalize="characters">' +
         (cam ? ' <button type="button" class="v323-bt" data-v323="camera">📷 Ler QR</button>' : '') +
         (b.camera ? '<div class="v323-cam"><video playsinline muted></video><div class="v323-sub">Aponte para o QR da etiqueta…</div></div>' : '') +
         (l.etiqueta ? '' : '<label style="display:flex;gap:6px;align-items:center;cursor:pointer"><input type="checkbox" data-v323="final4"' + (b.final4 ? ' checked' : '') + '> A peça ainda não tem etiqueta: vou digitar só os 4 últimos números</label>') +
@@ -102416,10 +102418,10 @@ html:not(.v311-off):has(>body.v292-alto #viewComercial.v292-on:not([style*="disp
       var det = new window.BarcodeDetector({ formats: ['qr_code', 'code_128', 'ean_13', 'code_39'] });
       var st = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
       S.bal.camera = true; V323.cam = { stream: st, det: det }; pintarOnde();
-      var v = document.querySelector('[data-v323bal="sep"] video'); if (!v) { pararCamera(); return; }
-      v.srcObject = st; await v.play();
+      if (!religarVideo()) { pararCamera(); return; }
       var tenta = async function () {
         if (!V323.cam || !S.bal || S.bal.tipo !== 'sep') return pararCamera();
+        var v = religarVideo(); if (!v) { setTimeout(tenta, 250); return; }
         try {
           var cods = await det.detect(v);
           if (cods && cods.length && T(cods[0].rawValue)) { var lido = T(cods[0].rawValue); pararCamera(); S.bal.lido = lido; S.bal.modo = 'qr'; S.bal.final4 = false; pintarOnde(); return separarOk(); }
@@ -102429,11 +102431,19 @@ html:not(.v311-off):has(>body.v292-alto #viewComercial.v292-on:not([style*="disp
       tenta();
     } catch (e) { pararCamera(); if (S.bal) { S.bal.erro = 'Não deu para abrir a câmera (' + msgErro(e) + '). Use o leitor ou digite o código.'; pintarOnde(); } }
   }
-  function pintarOnde() { if (S.bal && S.bal.ctx === 'v299') decorar299(true); else pintar(); }
+  function pintarOnde() { if (S.bal && S.bal.ctx === 'v299') decorar299(true); else pintar(); religarVideo(); }
+  // AUDITORIA A5: a repintura troca o <video>; o fluxo da câmera é religado no vídeo que está na tela
+  function religarVideo() {
+    if (!V323.cam || !V323.cam.stream) return null;
+    var v = document.querySelector('[data-v323bal="sep"] video'); if (!v) return null;
+    if (v.srcObject !== V323.cam.stream) { try { v.srcObject = V323.cam.stream; var pr = v.play(); if (pr && pr.catch) pr.catch(function () {}); } catch (e) {} }
+    return v;
+  }
   async function separarOk(botao) {
     var b = S.bal; if (!b || b.tipo !== 'sep' || S.gravando) return;
     var ctx = b.ctx === 'v299' ? linha299(b.linha) : acharLinha(b.g, b.linha).l; if (!ctx) { b.erro = 'A peça mudou — atualize a tela.'; return pintarOnde(); }
     var lido = T(b.lido), modo = b.modo || (b.final4 ? 'final4' : 'codigo'); if (b.final4) modo = 'final4';
+    if (modo === 'final4' && lido.length > 4) modo = 'codigo';   // AUDITORIA A12: o leitor bipou o código inteiro com a caixa marcada
     if (!lido) { b.erro = 'Leia o QR da etiqueta ou digite o código da peça que você pegou.'; return pintarOnde(); }
     if (modo === 'final4' && !/^\d{4}$/.test(lido)) { b.erro = 'Digite os 4 ÚLTIMOS números do código (só números).'; return pintarOnde(); }
     var falta = Math.max(0, N(ctx.qtd) - N(ctx.separado)), q = falta;
@@ -102446,13 +102456,13 @@ html:not(.v311-off):has(>body.v292-alto #viewComercial.v292-on:not([style*="disp
       var p = { card: ctx.card || b.card, linha: b.linha, lido: lido, modo: modo, qtd: q, antes: N(ctx.separado), uid: b.uid };
       if (b.os) p.os = b.os; if (onde) p.endereco = onde;
       var r = await rpc('alm_separar', p, true);
-      var txt = '✅ ' + codigoDe(ctx) + ' conferida e separada' + (r && r.completa ? '' : ' (' + Q(r && r.separado) + ' de ' + Q(ctx.qtd) + ')') + (onde ? ' · 📍 ' + onde + ' guardado' : '') + '.';
+      var txt = '✅ ' + codigoDe(ctx) + ' conferida e separada' + (r && r.completa ? '' : ' (' + Q(r && r.separado) + ' de ' + Q(ctx.qtd) + ')') + (onde && !(r && r.repetido) ? ' · 📍 ' + onde + ' anotado' : '') + '.';
       S.bal = null; pararCamera();
       if (b.ctx === 'v299') { relerSeparar({ txt: txt }); }
       else { S.msg = { txt: txt }; S.gravando = false; await carregar(true); }
       aviso(txt, 'success');
     } catch (e) {
-      b.erro = msgErro(e); b.uid = null;   // recusou: o próximo envio é outro
+      b.erro = msgErro(e); if (!(e && e.v200 === 'rede')) b.uid = null;   // recusou: o próximo envio é outro (rede: talvez gravou — repete com o MESMO uid)
       if (/NÃO é a peça/.test(b.erro)) { b.lido = ''; try { if (navigator.vibrate) navigator.vibrate([120, 60, 120]); } catch (x) {} }
       pintarOnde();
     } finally { S.gravando = false; }
@@ -102522,6 +102532,7 @@ html:not(.v311-off):has(>body.v292-alto #viewComercial.v292-on:not([style*="disp
         S.msg = { txt: res === 'comprar' ? '🛒 Decidido comprar — a peça foi para o 📦 Compras do card.' : res === 'achou' ? 'Pendência fechada: separe a peça pelo ✔ Separei.' : 'Pendência resolvida.' };
         S.pend = null; S.gravando = false; await carregar(true); try { S.pend = await _v200Rpc('alm_pendencias', {}); } catch (e) {} return pintar();
       }
+      if (a === 'etqMarcar') { await rpc('alm_etiqueta_marcar', { chaves: S.etqPend || [] }, true); S.etqPend = null; S.msg = { txt: '🏷 Etiquetas marcadas como coladas: essas peças pedem o QR ou o código inteiro.' }; S.gravando = false; await carregar(true); return; }
       if (a === 'lista') return imprimirLista();
       if (a === 'etqTodas' || a === 'etqOs' || a === 'etqPeca') return imprimirEtiquetas(a, gk, lid);
       if (a === 'etqKit') return imprimirKit(gk);
@@ -102587,9 +102598,9 @@ html:not(.v311-off):has(>body.v292-alto #viewComercial.v292-on:not([style*="disp
     if (!ls.length) { S.msg = { erro: true, txt: 'Nenhuma peça com código para etiquetar neste filtro.' }; return pintar(); }
     ls.sort(function (x, y) { return String(x.endereco || '~').localeCompare(String(y.endereco || '~')) || codigoDe(x).localeCompare(codigoDe(y)); });
     imprimir('<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><title>Etiquetas de prateleira</title><style>' + CSS_ETQ + '</style></head><body>' + ls.map(etqPecaHtml).join('') + '</body></html>');
-    try { await rpc('alm_etiqueta_marcar', { chaves: ls.map(function (l) { return l.chave; }).slice(0, 300) }, true); } catch (e) {}
-    S.msg = { txt: '🏷 ' + ls.length + ' etiqueta' + (ls.length > 1 ? 's' : '') + ' de prateleira mandada' + (ls.length > 1 ? 's' : '') + ' para a impressora (100×40). Cole na prateleira: daí em diante o separar pede o QR ou o código inteiro.' };
-    carregar(true);
+    S.etqPend = ls.map(function (l) { return l.chave; }).slice(0, 300);
+    S.msg = { etq: true, txt: '🏷 ' + ls.length + ' etiqueta' + (ls.length > 1 ? 's' : '') + ' de prateleira mandada' + (ls.length > 1 ? 's' : '') + ' para a impressora (100×40). Depois de colar, aperte "Já colei": daí em diante essas peças pedem o QR ou o código inteiro.' };
+    pintar();
   }
   function imprimirKit(gk) {
     var g = acharLinha(gk, null).g; if (!g || !g.os_id) return;
@@ -102652,7 +102663,7 @@ html:not(.v311-off):has(>body.v292-alto #viewComercial.v292-on:not([style*="disp
       var l = linha299(S.bal.linha);
       if (l) { it.insertAdjacentHTML('beforeend', balHtml(S.bal, l, null)); mudou = true; var inp = it.querySelector('[data-v323foco="lido"]'); if (inp && forcar) try { inp.focus({ preventScroll: true }); } catch (e) {} }
     }
-    if (mudou) fimDoPasse();
+    if (mudou) { fimDoPasse(); if (V323.cam) religarVideo(); }
   }
   function relerSeparar(msg) {
     var Sx = window.V299 && V299.sc, jan = document.getElementById('v299Jan'); if (!Sx || !jan) return;
@@ -102690,11 +102701,12 @@ html:not(.v311-off):has(>body.v292-alto #viewComercial.v292-on:not([style*="disp
       var out = V323.orig.cards.apply(this, arguments);
       try {
         var r = V323.ini, rs = r && r.resumo;
-        if (!off() && Array.isArray(out) && rs && (N(rs.hoje_amanha) > 0 || N(rs.nao_achei) > 0)) {
+        if (!off() && Array.isArray(out) && rs && (N(rs.hoje_amanha) > 0 || N(rs.nao_achei) > 0 || N(rs.atrasadas) > 0)) {
           var partes = [];
           if (N(rs.hoje_amanha)) partes.push(N(rs.hoje_amanha) + ' OS de hoje/amanhã com peça a separar' + (N(rs.falta_hoje_amanha) ? ' (' + N(rs.falta_hoje_amanha) + ' com falta)' : ''));
+          if (N(rs.atrasadas)) partes.push(N(rs.atrasadas) + ' OS atrasada' + (N(rs.atrasadas) > 1 ? 's' : '') + ' com peça a separar');
           if (N(rs.nao_achei)) partes.push('⚠ ' + N(rs.nao_achei) + ' peça' + (N(rs.nao_achei) > 1 ? 's' : '') + ' não achada' + (N(rs.nao_achei) > 1 ? 's' : '') + ' na prateleira');
-          out.push({ k: 'alm:' + N(rs.hoje_amanha) + ':' + N(rs.nao_achei), g: 'alm', ordem: 1.6, t: 0,
+          out.push({ k: 'alm:' + N(rs.hoje_amanha) + ':' + N(rs.atrasadas) + ':' + N(rs.nao_achei), g: 'alm', ordem: 1.6, t: 0,
                      html: '<div class="v218-cab" data-v323ini="1"><span class="v218-tp">Separação</span><span>' + E(partes.join(' · ')) + '</span></div>' +
                            '<div data-v323ini="1" style="margin-top:6px"><button type="button" class="v323-bt pri" data-v323="iniAbrir">🧺 Abrir a Separação</button></div>' });
           out.sort(function (a, b) { return a.ordem - b.ordem || (a.t < b.t ? -1 : a.t > b.t ? 1 : 0); });
@@ -102708,7 +102720,7 @@ html:not(.v311-off):has(>body.v292-alto #viewComercial.v292-on:not([style*="disp
     _v218Carregar = async function () {
       var p = lerIni();
       var r = await V323.orig.v218Carregar.apply(this, arguments);
-      try { p.then(function (x) { if (x && x.resumo && (N(x.resumo.hoje_amanha) || N(x.resumo.nao_achei))) { try { _v218Pintar(); } catch (e) {} } }); } catch (e) {}
+      try { p.then(function (x) { if (x && x.resumo && (N(x.resumo.hoje_amanha) || N(x.resumo.nao_achei) || N(x.resumo.atrasadas))) { try { _v218Pintar(); } catch (e) {} } }); } catch (e) {}
       return r;
     };
   }
@@ -102745,7 +102757,7 @@ html:not(.v311-off):has(>body.v292-alto #viewComercial.v292-on:not([style*="disp
             else { if (!/^#separacao/.test(location.hash || '')) try { history.replaceState(null, '', location.pathname + location.search + '#separacao'); } catch (e) {} pintar(); carregar(); }
           } else {
             pararCamera(); if (S.bal && S.bal.ctx !== 'v299') S.bal = null;
-            if (v === 'inicio') lerIni().then(function (x) { if (x && x.resumo && (N(x.resumo.hoje_amanha) || N(x.resumo.nao_achei))) { try { _v218Pintar(); } catch (e) {} } });
+            if (v === 'inicio') lerIni().then(function (x) { if (x && x.resumo && (N(x.resumo.hoje_amanha) || N(x.resumo.nao_achei) || N(x.resumo.atrasadas))) { try { _v218Pintar(); } catch (e) {} } });
             if (/^#separacao/.test(location.hash || '')) try { history.replaceState(null, '', location.pathname + location.search); } catch (e) {}
           }
         } catch (e) { console.warn('[V323] trocar de tela:', e); }
