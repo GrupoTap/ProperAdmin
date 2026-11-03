@@ -102881,19 +102881,25 @@ html:not(.v311-off):has(>body.v292-alto #viewComercial.v292-on:not([style*="disp
   function Q(x) { return N(x).toLocaleString('pt-BR', { maximumFractionDigits: 3 }); }
   function R(x) { return x == null || x === '' ? '' : 'R$ ' + N(x).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
   function semAcento(s) { return String(s == null ? '' : s).normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase(); }
-  function numBr(t) { var s = T(t).replace(/\s/g, ''); if (!/^\d{1,6}([.,]\d{1,3})?$/.test(s)) return NaN; return Number(s.replace(',', '.')); }
+  function numBr(t) {   // "2", "1,5", "1.000", "1.000,5" (milhar com ponto) — auditoria A2
+    var s = T(t).replace(/\s/g, '');
+    if (/^\d{1,3}(\.\d{3})+(,\d{1,3})?$/.test(s)) s = s.replace(/\./g, '');
+    if (!/^\d{1,6}([.,]\d{1,3})?$/.test(s)) return NaN; return Number(s.replace(',', '.'));
+  }
+  V324.numBr = function (t) { return numBr(t); }; V324.Qin = function (x) { return Qin(x); };
+  function Qin(x) { return N(x).toLocaleString('pt-BR', { maximumFractionDigits: 3, useGrouping: false }); }   // valor de CAMPO: sem milhar
   function uid(p) { return (p || 'v324') + '-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 10); }
   function sess() { try { return window.PROPER_SESSION || JSON.parse(localStorage.getItem('proper_session') || 'null') || {}; } catch (e) { return {}; } }
   function mods() { var s = sess(); return (Array.isArray(s.modulos) ? s.modulos.join(',') : String(s.modulos || '')).toLowerCase(); }
   function ehComprasSessao() {
     var s = sess(); if (window._PCM_SO_AGENDA === true) return false;
-    return s.is_admin === true || /(^|[^a-z_])(pcm_completo|pcm_estoque|pcm_suprimentos|pcm_compras|pcm_financeiro)([^a-z_]|$)/.test(mods())
-      || /(estoq|suprim|almox|financ)/.test(semAcento(s.nome_perfil));
+    return s.is_admin === true || /(^|[^a-z_])(pcm_completo|pcm_suprimentos|pcm_compras|pcm_financeiro)([^a-z_]|$)/.test(mods())
+      || /(suprim|compra|financ)/.test(semAcento(s.nome_perfil));
   }
   function rpc(fn, args, escrita) { return _v200Rpc(fn, args || {}, escrita); }
   function msgErro(e) {
     if (e && e.v200 === 'sem_sql') return 'O SQL 113_COM_REQUISICAO_R3 ainda não rodou no Supabase — nada foi gravado.';
-    if (e && e.v200 === 'acesso') return 'O banco recusou o seu acesso: a fila e o pedido são de Compras (almoxarifado/suprimentos, Financeiro, acesso extra "PCM – Compras") e do administrador; requisitar é de quem monta proposta.';
+    if (e && e.v200 === 'acesso') return 'O banco recusou o seu acesso: a fila e o pedido são de Compras (Suprimentos, Financeiro, acesso extra "PCM – Compras") e do administrador; requisitar é de quem monta proposta.';
     return String((e && e.message) || e || 'erro').replace(/^NÃO foi gravada: /, '').replace(/^(Requisição|Compras): /, '');
   }
   function aviso(m, tipo) { try { if (typeof toast === 'function') toast(m, tipo || ''); } catch (e) {} }
@@ -102962,7 +102968,7 @@ html:not(.v311-off):has(>body.v292-alto #viewComercial.v292-on:not([style*="disp
     ls.forEach(function (l) {
       if (!livre(l)) { delete J.ui.marc[l.id]; delete J.ui.qtd[l.id]; return; }
       if (!(l.id in J.ui.marc)) J.ui.marc[l.id] = !!l.sugere;
-      if (!(l.id in J.ui.qtd)) J.ui.qtd[l.id] = Q(l.qtd_sugerida != null ? l.qtd_sugerida : l.qtd);
+      if (!(l.id in J.ui.qtd)) J.ui.qtd[l.id] = Qin(l.qtd_sugerida != null ? l.qtd_sugerida : l.qtd);
     });
     if (J.ui.pa == null) J.ui.pa = T(J.d && J.d.precisa_ate_sugerido);
   }
@@ -103102,7 +103108,7 @@ html:not(.v311-off):has(>body.v292-alto #viewComercial.v292-on:not([style*="disp
     var h = '<div class="v324-top"><h2>📥 Requisições e compras<small>Tudo o que os vendedores requisitaram e ainda não tem pedido, junto por fornecedor. Marque e gere UM pedido para vários cards — o número é o mesmo em todos.</small></h2>' +
       '<button type="button" class="v324-bt" data-v324="reler" title="Ler de novo do banco">↻ Atualizar</button></div>';
     if (F.semSql) { el.innerHTML = h + '<div class="v324-aviso erro">O SQL 113_COM_REQUISICAO_R3 ainda não rodou no Supabase. Rode o SQL e aperte ↻ Atualizar.</div>'; return; }
-    if (F.semAcesso) { el.innerHTML = h + '<div class="v324-vazio">A fila é de Compras (perfil Almoxarifado/Suprimentos, Financeiro ou o acesso extra "PCM – Compras") e do administrador. Peça ao administrador.</div>'; return; }
+    if (F.semAcesso) { el.innerHTML = h + '<div class="v324-vazio">A fila é de Compras (perfil Suprimentos, Financeiro ou o acesso extra "PCM – Compras") e do administrador. Peça ao administrador.</div>'; return; }
     if (F.erro) h += '<div class="v324-aviso erro">' + E(F.erro) + ' <button type="button" class="v324-bt mini" data-v324="reler">Tentar de novo</button></div>';
     if (F.msg) h += '<div class="v324-msg ' + (F.msg.erro ? 'erro' : 'ok') + '">' + F.msg.txt + '</div>';
     if (!d) { el.innerHTML = h + (F.erro ? '' : '<div class="v324-esq"></div><div class="v324-esq"></div><div class="v324-esq"></div>'); return; }
@@ -103189,7 +103195,7 @@ html:not(.v311-off):has(>body.v292-alto #viewComercial.v292-on:not([style*="disp
           '<td>' + E(x.fornecedor || '') + '</td><td class="n">' + N(x.itens) + '</td><td class="n">' + N(x.cards) + '</td>' +
           '<td>' + (x.entrega_prevista ? (x.atrasado ? '<span class="v324-tag verm">' + E(dia(x.entrega_prevista)) + ' atrasado</span>' : E(dia(x.entrega_prevista))) : '—') + '</td>' +
           (d.pode_custo ? '<td class="n">' + E(R(x.total)) + '</td>' : '') +
-          '<td><button type="button" class="v324-bt mini" data-v324="abrirPed" data-id="' + E(x.id) + '">Abrir o pedido</button></td></tr>';
+          '<td><button type="button" class="v324-bt mini" data-v324="abrirPed" data-id="' + E(x.id) + '" data-card="' + E(x.card || '') + '">Abrir o pedido</button></td></tr>';
       }).join('') + '</tbody></table>';
   }
   function pintarRever(d) {
@@ -103232,7 +103238,7 @@ html:not(.v311-off):has(>body.v292-alto #viewComercial.v292-on:not([style*="disp
       var p = r.pedido || {}, nc = (p.cards || []).length || 1;
       F.bal = null;
       F.msg = { txt: '📄 Pedido <b>' + E(p.id) + '</b> criado em rascunho para ' + E(g.fornecedor.nome) + ' — ' + its.length + ' ite' + (its.length > 1 ? 'ns' : 'm') + ' de ' + nc + ' card' + (nc > 1 ? 's' : '') +
-        ' (o mesmo número em todos). Confira os preços e envie: <button type="button" class="v324-bt mini pri" data-v324="abrirPed" data-id="' + E(p.id) + '">Abrir o pedido</button>' };
+        ' (o mesmo número em todos). Confira os preços e envie: <button type="button" class="v324-bt mini pri" data-v324="abrirPed" data-id="' + E(p.id) + '" data-card="' + E(p.oportunidade_id || '') + '">Abrir o pedido</button>' };
       await carregar(true);
     } catch (e) { F.msg = { erro: true, txt: E(msgErro(e)) }; pintar(); }
   }
@@ -103241,13 +103247,15 @@ html:not(.v311-off):has(>body.v292-alto #viewComercial.v292-on:not([style*="disp
     try { await rpc('com_req_cancelar', { p: { item: id, motivo: mot } }, true); F.bal = null; F.msg = { txt: 'Item cancelado.' }; await carregar(true); }
     catch (e) { F.msg = { erro: true, txt: E(msgErro(e)) }; pintar(); }
   }
-  function abrirPedido(id) {   // o pedido abre no lugar dele de sempre: Comercial › 📦 Compras, já aberto
+  async function abrirPedido(id, card) {   // o pedido abre na janela 📦 Compras do card principal, já aberto (Compras pode não ter o Comercial — auditoria M5)
+    if (!card) { aviso('Abra Comercial › 📦 Compras e procure ' + id, 'error'); return; }
     try {
-      if (typeof _v200 !== 'undefined') _v200.aba = 'compras';
-      if (typeof V238 !== 'undefined' && V238.tab) { V238.tab.q = id; V238.tab.dados = null; V238.tab.estados = []; }
-      showView('comercial');
-      setTimeout(function () { try { if (typeof _v238TabAbrirPed === 'function' && V238.tab.aberto !== id) _v238TabAbrirPed(id); } catch (e) {} }, 400);
-    } catch (e) { aviso('Abra Comercial › 📦 Compras e procure ' + id, 'error'); }
+      await _v238Abrir(card, '');
+      var O = V238.ov; if (!O || O.card !== card) return;
+      O.aberto = O.aberto || {}; O.aberto[id] = true; _v238OvPintar();
+      var el = document.querySelector('#v238Jan [data-v324junto="' + id + '"]') || document.querySelector('#v238Jan');
+      try { if (el && el.scrollIntoView) el.scrollIntoView({ block: 'start' }); } catch (e) {}
+    } catch (e) { aviso(msgErro(e), 'error'); }
   }
 
   // ═══ 3 · OUVINTES (um para a fila, um para a janela) ═════════════════════════════════════════════════════
@@ -103262,7 +103270,7 @@ html:not(.v311-off):has(>body.v292-alto #viewComercial.v292-on:not([style*="disp
     try {
       var J = V324.J, id = bt.getAttribute('data-id');
       if (a === 'abrirReq') { var de = bt.closest('#viewRequisicoes') ? 'fila' : bt.closest('#v200ModalBody') ? 'card' : bt.closest('#v238Ov') ? 'compras' : 'inicio'; return void abrirJ(bt.getAttribute('data-card'), de); }
-      if (a === 'iniFila') { showView('requisicoes'); return; }
+      if (a === 'iniFila') { try { if (typeof V238 !== 'undefined' && V238.ov) { V238.ov.volta = ''; _v238Fechar(true); } } catch (e) {} showView('requisicoes'); return; }
       if (a === 'irFila') { fecharJ(true); showView('requisicoes'); return; }
       if (a === 'jFechar') return fecharJ(false);
       if (a === 'jDescartar') return fecharJ(true);
@@ -103283,7 +103291,7 @@ html:not(.v311-off):has(>body.v292-alto #viewComercial.v292-on:not([style*="disp
       if (a === 'fornLimpar') return void await trocarForn(null, true);
       if (a === 'reverAbrir') { F.bal = { tipo: 'rever', id: id, mot: '' }; return pintar(); }
       if (a === 'reverOk') return void await cancelarRever(id);
-      if (a === 'abrirPed') return abrirPedido(id);
+      if (a === 'abrirPed') return void await abrirPedido(id, bt.getAttribute('data-card'));
     } catch (e) { console.warn('[V324] clique', a, e); aviso(msgErro(e), 'error'); }
     finally { if (esc) { V324.gravando = false; if (bt.isConnected) { bt.disabled = false; bt.removeAttribute('data-pcm-enviando'); bt.textContent = txt; } } }
   }, true);
@@ -103291,6 +103299,7 @@ html:not(.v311-off):has(>body.v292-alto #viewComercial.v292-on:not([style*="disp
     var t = ev.target; if (!t || !t.getAttribute) return; var k = t.getAttribute('data-v324c'); if (!k) return;
     var J = V324.J;
     if (t.closest('#v324Ov') && J) {
+      if (k === 'marc' || k === 'qtd') J.uid = null;   // mudou o que vai: é outro envio (auditoria B1)
       if (k === 'marc') { J.ui.marc[t.getAttribute('data-id')] = !!t.checked; J.ui.mexeu = true; return pintarJ(); }
       if (k === 'qtd') { J.ui.qtd[t.getAttribute('data-id')] = t.value; J.ui.mexeu = true; return; }
       if (k === 'pa') { if (ev.type === 'change') { J.ui.pa = t.value; J.ui.mexeu = true; } return; }
@@ -103301,6 +103310,7 @@ html:not(.v311-off):has(>body.v292-alto #viewComercial.v292-on:not([style*="disp
     }
     if (!t.closest('#viewRequisicoes')) return;
     if (k === 'busca') { F.busca = t.value; clearTimeout(V324.bT); V324.bT = setTimeout(pintar, 140); return; }
+    if ((k === 'sel' || k === 'selG') && F.bal) F.bal.uid = null;   // outra seleção = outro pedido (auditoria B1)
     if (k === 'sel') { F.sel[t.getAttribute('data-id')] = !!t.checked; return pintar(); }
     if (k === 'selG') { var g = ((F.d && F.d.grupos) || []).find(function (x) { return x.chave === t.getAttribute('data-g'); }); if (g) grupoVis(g).forEach(function (i) { F.sel[i.id] = !!t.checked; }); return pintar(); }
     if (k === 'ent' && F.bal) { F.bal.ent = t.value; return; }
@@ -103385,7 +103395,8 @@ html:not(.v311-off):has(>body.v292-alto #viewComercial.v292-on:not([style*="disp
       try {
         if (off() || !p || !p.junto || !Array.isArray(p.cards) || p.cards.length < 2) return h;
         return '<div class="v324-banda" data-v324junto="' + E(p.id) + '">🔗 Este pedido junta ' + p.cards.length + ' cards — o número ' + E(p.id) + ' é o mesmo em todos: ' +
-          p.cards.map(function (c) { return '<b>' + E(c.id) + '</b> ' + E(c.cliente || '') + ' (' + N(c.itens) + ' ite' + (N(c.itens) === 1 ? 'm' : 'ns') + ')'; }).join(' · ') + '</div>' + h;
+          p.cards.map(function (c) { return '<b>' + E(c.id) + '</b> ' + E(c.cliente || '') + ' (' + N(c.itens) + ' ite' + (N(c.itens) === 1 ? 'm' : 'ns') + ')'; }).join(' · ') + '</div>' +
+          h.replace(/o PDF ao fornecedor diz só (&quot;|")Card [^"&<]*(&quot;|")/, 'o PDF ao fornecedor não cita card nem cliente');
       } catch (e) { return h; }
     };
   }
