@@ -105748,13 +105748,17 @@ body.v329-proj-on .toast{z-index:10080!important;transition-property:opacity,tra
       var p = {}; if (S.reu) p.reuniao = S.reu; if (S.ref) p.ref = S.ref;
       var r = await rpc('pc_reuniao', p);
       if (g !== S.ger) return;
-      S.d = r; S.semSql = false; S.semAcesso = false;
+      S.d = r; S.semSql = false; S.semAcesso = false; if (S.vindo && r && r.reuniao === S.vindo) S.vindo = '';
       if (r && r.reuniao && r.reuniao !== S.reu) S.reu = r.reuniao;
       if (S.reu) lsSet('pcm_v329_reu', S.reu);
     } catch (e) {
       if (g !== S.ger) return;
       if (e && e.v200 === 'sem_sql') S.semSql = true;
-      else if (e && e.v200 === 'acesso' && S.reu && S.reu !== '') { S.reu = ''; S.carregando = false; return carregar(); }   // a reunião lembrada não é mais do perfil: a 1ª dele
+      else if (e && e.v200 === 'acesso' && S.reu && S.reu !== '') {
+        if (S.vindo === S.reu) S.aviso = 'O compromisso que você abriu na 🗂 Mesa é da reunião ' + (REUS.filter(function (x) { return x[0] === S.reu; })[0] || [0, S.reu])[1] +
+          ', que o seu perfil não abre. Para dar baixa, peça a quem o registrou ou ao administrador.';
+        S.vindo = ''; S.reu = ''; S.ref = ''; S.carregando = false; return carregar();
+      }   // a reunião lembrada não é mais do perfil: a 1ª dele
       else if (e && e.v200 === 'acesso') S.semAcesso = true;
       else S.erro = msgErro(e);
     }
@@ -105862,6 +105866,7 @@ body.v329-proj-on .toast{z-index:10080!important;transition-property:opacity,tra
       '<span>' + (pe.atual ? 'até hoje (' + E(dataBr(pe.ate)) + ') · comparado com ' + E(dataBr(pe.de_ant)) + ' a ' + E(dataBr(pe.ate_ant)) : 'comparado com ' + E(pe.rotulo_ant || '')) + '</span>' +
       '<button type="button" class="v329-bt" data-v329="per" data-f="1" title="Próximo período"' + (pe.atual ? ' disabled' : '') + '>›</button>' +
       (pe.atual ? '' : '<button type="button" class="v329-bt mini" data-v329="per" data-f="0">Hoje</button>') + '</div>';
+    if (S.aviso) h += '<div class="v329-aviso">' + E(S.aviso) + ' <button type="button" class="v329-bt mini" data-v329="avisoOk">Entendi</button></div>';
     if (Array.isArray(d.erros) && d.erros.length) h += '<div class="v329-aviso">⚠ Uma fonte não respondeu: ' + d.erros.map(function (x) { return E(x.bloco + ' — ' + x.msg); }).join(' · ') + '. O resto da reunião está completo.</div>';
     if (Array.isArray(d.avisos) && d.avisos.length) h += '<div class="v329-lido">ℹ ' + d.avisos.map(function (x) { return E(x.bloco + ': ' + x.msg); }).join(' · ') + '</div>';
     h += '<div class="v329-lido">Lido ' + E(hora(d.lido_em)) + ' · seta verde = melhorou, vermelha = piorou, "hoje" = foto de agora (sem comparação)</div>';
@@ -105917,14 +105922,16 @@ body.v329-proj-on .toast{z-index:10080!important;transition-property:opacity,tra
     if (S.gravando) return false;
     S.gravando = true;
     try { await rpc('pc_reu_compromisso', p, true); S.gravando = false; try { if (window.V328) V328.iniEm = 0; } catch (e) {} return true; }
-    catch (e) { S.gravando = false; onErr(msgErro(e)); if (e && e.v200 === '40001') { S.ed = null; carregar(); } return false; }
+    catch (e) { S.gravando = false; onErr(msgErro(e)); if (e && (e.v200 === 'PT409' || e.v200 === '40001')) { S.ed = null; carregar(); } return false; }
   }
   async function criar() {
     var fm = S.form, d = S.d || {};
     if (!fm.prazo) fm.prazo = somaDias(d.hoje || hojeSP(), 7);
     fm.err = '';
     if (T(fm.texto).length < 3) { fm.err = 'Escreva o que se decidiu (3 letras ou mais).'; return pintar(); }
-    if (!fm.resp) { fm.err = 'Escolha quem ficou com ele.'; return pintar(); }
+    // "Quem" tem de estar na lista DESTA reunião (a escolha de outra aba não vale; auditoria 2, B-3)
+    if (fm.resp && !((d.pessoas || []).some(function (u) { return String(u.id) === String(fm.resp); }))) fm.resp = '';
+    if (!fm.resp) { fm.err = 'Escolha quem ficou com ele (quem participa desta reunião).'; return pintar(); }
     if (!fm.uid) fm.uid = uid();                                   // o MESMO uid enquanto não gravar: repetir o envio não duplica
     var ok = await gravar({ acao: 'criar', reuniao: d.reuniao, ref: (d.periodo || {}).de, texto: fm.texto, resp_id: fm.resp, prazo: fm.prazo, client_uid: fm.uid },
                           function (m) { fm.err = m; pintar(); });
@@ -105956,7 +105963,8 @@ body.v329-proj-on .toast{z-index:10080!important;transition-property:opacity,tra
     var a = alvo.getAttribute('data-v329');
     if (a === 'reler') return carregar();
     if (a === 'proj') { S.proj = !S.proj; return pintar(); }
-    if (a === 'reu') { var r = alvo.getAttribute('data-f'); if (r !== S.reu) { S.reu = r; S.ref = ''; S.abertos = {}; S.ed = null; S.canc = null; S.form.err = ''; S.d = null; carregar(); } return; }
+    if (a === 'avisoOk') { S.aviso = ''; return pintar(); }
+    if (a === 'reu') { var r = alvo.getAttribute('data-f'); if (r !== S.reu) { S.reu = r; S.ref = ''; S.abertos = {}; S.ed = null; S.canc = null; S.form.err = ''; S.form.resp = ''; S.form.uid = ''; S.aviso = ''; S.d = null; carregar(); } return; }
     if (a === 'per') {
       var f = Number(alvo.getAttribute('data-f')), pe = (S.d && S.d.periodo) || {};
       if (f === 0) S.ref = ''; else if (f < 0) S.ref = somaDias(pe.de, -1); else S.ref = somaDias(pe.fim, 1) > (S.d.hoje || hojeSP()) ? '' : somaDias(pe.fim, 1);
@@ -105974,6 +105982,7 @@ body.v329-proj-on .toast{z-index:10080!important;transition-property:opacity,tra
     if (a === 'edSalvar') {
       if (!S.ed) return;
       if (T(S.ed.texto).length < 3) { S.ed.err = 'Escreva o que se decidiu (3 letras ou mais).'; return pintar(); }
+      if (!S.ed.resp || !S.ed.prazo) { S.ed.err = 'Escolha quem e até quando (nenhum dos dois fica vazio).'; return pintar(); }
       // só vai o que MUDOU (prazo antigo que não mudou não é conferido de novo; auditoria 1, M4)
       var c0 = compPorId(S.ed.id) || {}, ped = { versao: S.ed.versao };
       if (S.ed.texto !== c0.texto) ped.texto = S.ed.texto;
@@ -106021,7 +106030,7 @@ body.v329-proj-on .toast{z-index:10080!important;transition-property:opacity,tra
   // ═══ 5 · VINDO DA 🗂 MESA: o compromisso abre a reunião dele, no período dele ═══════════════════════
   V329.abrir = function (reu, ref) {
     if (off()) { try { toast('As 🗓 Reuniões estão desligadas neste navegador (pcm_v329 = off): o compromisso se resolve com elas ligadas.', 'info'); } catch (e) {} return; }
-    S.reu = reu || S.reu; S.ref = ref ? String(ref).slice(0, 10) : ''; S.abertos = {}; S.ed = null; S.canc = null; S.d = null;
+    S.reu = reu || S.reu; S.vindo = reu || ''; S.aviso = ''; S.ref = ref ? String(ref).slice(0, 10) : ''; S.abertos = {}; S.ed = null; S.canc = null; S.d = null;
     try { showView('reunioes'); } catch (e) {}
   };
 
