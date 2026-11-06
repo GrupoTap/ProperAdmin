@@ -107911,11 +107911,11 @@ html:not(.v331-off) #v238Jan input[data-v238sel], html:not(.v331-off) #v238Jan i
   }
   function uid() { return 'v334-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 10); }
   function toastSeguro(m, t) { try { if (typeof toast === 'function') toast(m, t || ''); } catch (e) {} }
-  // o endereço no formato do cadastro — a MESMA regra do banco (_alm_end_fmt): "b 4 2", "B.04.2", "B04-2" → "B-04-2"
+  // o endereço no formato do cadastro — a MESMA regra do banco (_alm_end_fmt): "b 4 2", "B.04.2", "B04-2", "B-04-02" → "B-04-2"
   function fmtEnd(t) {
     var s = String(t == null ? '' : t).toUpperCase().trim().replace(/[\s._\/\\-]+/g, '-').replace(/^-+|-+$/g, '');
     var m = /^([A-Z]{1,2})-?([0-9]{1,2})-([0-9]{1,2})$/.exec(s);
-    return m ? m[1] + '-' + (m[2].length === 1 ? '0' + m[2] : m[2]) + '-' + m[3] : '';
+    return m ? m[1] + '-' + (m[2].length === 1 ? '0' + m[2] : m[2]) + '-' + (m[3].replace(/^0+/, '') || '0') : '';
   }
   V334.fmtEnd = fmtEnd;
   async function rpc(fn, p, escrita) { return _v200Rpc(fn, { p: p || {} }, escrita); }
@@ -107923,7 +107923,7 @@ html:not(.v331-off) #v238Jan input[data-v238sel], html:not(.v331-off) #v238Jan i
     var c = e && e.v200;
     if (c === 'sem_sql') { try { console.warn('[V334] falta o SQL 122_ALM_ESTOQUE:', e && e.message); } catch (x) {} return 'Tela indisponível — avise o administrador.'; }
     if (c === 'acesso') return 'O estoque é do almoxarifado, do administrador ou de quem tem o acesso extra "PCM – Almoxarifado". Se você é do almoxarifado, entre de novo pelo Hub.';
-    if (c === 'rede') return escrita ? 'Sem conexão — nada foi gravado.' : 'Sem conexão — a lista não carregou.';
+    if (c === 'rede') return escrita ? 'Sem resposta do banco — não dá para saber se gravou. Clique de novo: não grava duas vezes.' : 'Sem conexão — a lista não carregou.';
     if (c === 'desligado') return 'O PCM está em modo só leitura (quadro desligado) — nada foi gravado.';
     var m = String((e && e.message) || '').replace(/^NÃO foi gravada:\s*/, '').replace(/^Estoque:\s*/, '').replace(/^Separação:\s*/, '');
     return m || (escrita ? 'Nada foi gravado. Tente de novo; se continuar, avise o administrador.' : 'A lista não carregou. Tente de novo.');
@@ -107968,15 +107968,23 @@ html:not(.v331-off) #v238Jan input[data-v238sel], html:not(.v331-off) #v238Jan i
 
   // ═══ 2 · OS DADOS (a busca e os filtros vão ao banco: o estoque inteiro não cabe numa página) ═══════════════════════
   function pedido(apos) { return { q: S.busca.trim(), filtro: S.filtro, rua: S.rua, ordem: S.ordem, limite: PAG, apos: apos || 0 }; }
+  // (auditoria 06/11) a página é por deslocamento: mudar um endereço na lista muda a ordem e a página seguinte pularia uma peça e
+  // repetiria outra. Depois de gravar aqui (S.sujo), "Mostrar mais" relê do começo com a lista inteira já vista (até 500); e o que
+  // chega de novo nunca repete uma peça que já está na tela.
   function carregar(mais) {
     if (typeof _v200Rpc !== 'function') { S.erro = 'Tela indisponível — avise o administrador.'; S.tipoErro = 'sem_sql'; pintar(); return Promise.resolve(); }
-    var g = ++S.ger, apos = mais ? S.itens.length : 0;
+    var reler = !!mais && S.sujo && S.itens.length + PAG <= 500;
+    var g = ++S.ger, apos = mais && !reler ? S.itens.length : 0, p = pedido(apos);
+    if (reler) p.limite = S.itens.length + PAG;
     S.carregando = true; S.carregandoMais = !!mais; pintar();
-    return rpc('alm_estoque_lista', pedido(apos), false).then(function (d) {
+    return rpc('alm_estoque_lista', p, false).then(function (d) {
       if (g !== S.ger) return;
       S.carregando = false; S.carregandoMais = false; S.erro = ''; S.tipoErro = '';
       d = d || {}; d.__lido = Date.now();
-      S.itens = mais ? S.itens.concat(d.itens || []) : (d.itens || []);
+      if (mais && !reler) {
+        var ja = {}; S.itens.forEach(function (x) { ja[x.chave] = 1; });
+        S.itens = S.itens.concat((d.itens || []).filter(function (x) { return !ja[x.chave]; }));
+      } else { S.itens = d.itens || []; S.sujo = false; }
       S.mais = !!d.mais; S.d = d;
       pintar();
     }, function (e) {
@@ -108064,7 +108072,7 @@ html:not(.v331-off) #v238Jan input[data-v238sel], html:not(.v331-off) #v238Jan i
       return '<tr><td>' + esc(l.nome || l.local || 'Local padrão') + (l.vendavel ? '' : ' <span class="v334-sub" style="display:inline">(não soma)</span>') + '</td><td class="n' + (N(l.saldo) < 0 ? ' v334-neg' : '') + '" style="text-align:right">' + esc(qtd(l.saldo)) + '</td></tr>';
     }).join('') + '</table>' : '<span class="v334-semnum">' + (it.fora ? 'Kit fora da conferência do estoque.' : it.tipo === 'ref' ? 'Peça sem código do Omie: o Omie não tem saldo dela.' : 'O Omie ainda não leu o estoque desta peça.') + '</span>';
     var e = it.ult_entrada, mov = [];
-    mov.push('📬 Última entrada: ' + (e ? 'NF ' + esc(e.numero || '?') + ' · ' + esc(data(e.data)) + ' · ' + esc(qtd(e.qtd) + ' ' + (it.unidade || '')) + (e.fornecedor ? ' · ' + esc(e.fornecedor) : '') : '—'));
+    mov.push('📬 Última entrada: ' + (e ? 'NF ' + esc(e.numero || '?') + ' · ' + esc(data(e.data)) + ' · ' + esc(qtd(e.qtd) + ' ' + (e.unidade || '')) + (e.fornecedor ? ' · ' + esc(e.fornecedor) : '') : '—'));
     mov.push('🧺 Última separação: ' + (it.ult_separacao ? esc(data(it.ult_separacao)) : '—'));
     if (it.etiqueta) mov.push('🏷 Tem etiqueta na prateleira');
     if (N(it.nao_achei)) mov.push('⚠ ' + N(it.nao_achei) + ' "não achei" aberto na 🧺 Separação');
@@ -108083,7 +108091,7 @@ html:not(.v331-off) #v238Jan input[data-v238sel], html:not(.v331-off) #v238Jan i
     if (S.busca.trim() || S.rua) return '<div class="v334-vazio"><b>Nada com essa busca</b>Tente outra palavra ou outra rua.<br><button type="button" class="v334-bt" data-v334="limpar">Limpar a busca</button></div>';
     if (S.filtro === 'sem_endereco') return '<div class="v334-vazio"><b>Toda peça com saldo tem endereço</b>As peças sem saldo não aparecem aqui.<br><button type="button" class="v334-bt" data-v334-f="todas">Ver todas</button></div>';
     if (S.filtro === 'negativas') return '<div class="v334-vazio"><b>Nenhuma peça negativa</b>O Omie não tem saldo abaixo de zero nos locais que somam.<br><button type="button" class="v334-bt" data-v334-f="todas">Ver todas</button></div>';
-    if (S.filtro === 'com_saldo') return '<div class="v334-vazio"><b>Nenhuma peça com saldo</b>O estoque do Omie ainda não foi lido.<br><button type="button" class="v334-bt" data-v334-f="todas">Ver todas</button></div>';
+    if (S.filtro === 'com_saldo') return '<div class="v334-vazio"><b>Nenhuma peça com saldo</b>' + (S.d && S.d.estoque_lido_em ? 'O Omie não tem saldo positivo nos locais que somam.' : 'O estoque do Omie ainda não foi lido.') + '<br><button type="button" class="v334-bt" data-v334-f="todas">Ver todas</button></div>';
     return '<div class="v334-vazio"><b>Nenhuma peça ainda</b>A lista de produtos do Omie ainda não foi lida.</div>';
   }
   function pintar() {
@@ -108128,7 +108136,8 @@ html:not(.v331-off) #v238Jan input[data-v238sel], html:not(.v331-off) #v238Jan i
     var p0 = -1; for (var k = 0; k < linhas.length; k++) if (linhas[k].trim()) { p0 = k; break; }
     if (p0 < 0) return { linhas: [], orig: [], cab: false };
     var c0 = cels(linhas[p0]).map(semAcento);
-    var cc = c0.findIndex(function (c) { return /cod/.test(c); }), ce = c0.findIndex(function (c) { return /ender|local|posic|prateleira/.test(c); });
+    var cc = c0.findIndex(function (c) { return /cod/.test(c); }), ce = c0.findIndex(function (c) { return /ender/.test(c); });
+    if (ce < 0) ce = c0.findIndex(function (c) { return /local|posic|prateleira/.test(c); });
     var cab = cc >= 0 || ce >= 0;
     if (cab) { ic = cc >= 0 ? cc : 0; ie = ce >= 0 ? ce : (ic === 0 ? 1 : 0); ini = p0 + 1; } else ini = p0;
     for (var i = ini; i < linhas.length; i++) {
@@ -108166,7 +108175,7 @@ html:not(.v331-off) #v238Jan input[data-v238sel], html:not(.v331-off) #v238Jan i
     var I = S.imp, r = I.prev.resumo || {}, h = '<div class="v334-lin" style="margin-top:10px">';
     sitsDaPrevia().forEach(function (k) { if (N(r[k])) h += '<span class="v334-sit ' + SITS[k][0] + '">' + esc(SITS[k][1]) + ' <b>' + N(r[k]) + '</b></span>'; });
     h += '</div>';
-    if (N(r.troca)) h += '<label class="v334-lin" style="font-size:13px;cursor:pointer"><input type="checkbox" data-v334="trocar"' + (I.trocar ? ' checked' : '') + '> ' + (N(r.troca) === 1 ? 'Trocar o endereço da peça que já tem outro (sem marcar, ela fica como está)' : 'Trocar o endereço das ' + N(r.troca) + ' peças que já têm outro (sem marcar, elas ficam como estão)') + '</label>';
+    if (N(r.troca)) h += '<label class="v334-lin" style="font-size:13px;cursor:pointer"><input type="checkbox" data-v334="trocar"' + (I.trocar ? ' checked' : '') + (I.pedindo || I.gravando ? ' disabled' : '') + '> ' + (N(r.troca) === 1 ? 'Trocar o endereço da peça que já tem outro (sem marcar, ela fica como está)' : 'Trocar o endereço das ' + N(r.troca) + ' peças que já têm outro (sem marcar, elas ficam como estão)') + '</label>';
     var probl = N(r.formato) + N(r.sem_produto) + N(r.ambiguo) + N(r.repetido) + N(r.desativado);
     var ls2 = (I.prev.linhas || []).filter(function (x) { return I.ver || (x.sit !== 'igual' && x.sit !== 'duplicada'); });
     ls2.sort(function (a, b) { var o = sitsDaPrevia(); var pa = ['formato', 'sem_produto', 'ambiguo', 'repetido', 'desativado'].indexOf(a.sit) >= 0 ? 0 : 1, pb = ['formato', 'sem_produto', 'ambiguo', 'repetido', 'desativado'].indexOf(b.sit) >= 0 ? 0 : 1; return pa - pb || o.indexOf(a.sit) - o.indexOf(b.sit) || a.n - b.n; });
@@ -108233,7 +108242,7 @@ html:not(.v331-off) #v238Jan input[data-v238sel], html:not(.v331-off) #v238Jan i
     rpc('alm_produto_endereco_definir', { chave: ch, endereco: f }, true).then(function (r) {
       S.salvando = '';
       it.endereco = (r && r.endereco) || f; it.end_origem = 'cadastro'; it.end_em = new Date().toISOString();
-      delete S.endDig[ch]; S.endMsg[ch] = { erro: false, txt: '✅ Endereço gravado: ' + it.endereco + '.' };
+      delete S.endDig[ch]; S.endMsg[ch] = { erro: false, txt: '✅ Endereço gravado: ' + it.endereco + '.' }; S.sujo = true;
       pintar();                                                 // a linha aberta fica à vista (a lista se reordena no próximo ⟳)
     }, function (e) { S.salvando = ''; S.endMsg[ch] = { erro: true, txt: msgErro(e, true) }; pintar(); });
   }
@@ -108279,11 +108288,21 @@ html:not(.v331-off) #v238Jan input[data-v238sel], html:not(.v331-off) #v238Jan i
       else if (t.id === 'v334Ordem') { S.ordem = t.value === 'descricao' ? 'descricao' : 'endereco'; S.aberto = ''; carregar(); }
       else if (t.getAttribute && t.getAttribute('data-v334') === 'trocar') { S.imp.trocar = !!t.checked; previa(); }   // a assinatura muda com "trocar": prévia de novo
       else if (t.getAttribute && t.getAttribute('data-v334') === 'arquivo' && t.files && t.files[0]) {
-        var fr = new FileReader(), arq = t.files[0];
+        var arq = t.files[0]; t.value = '';
         if (arq.size > 2 * 1024 * 1024) { S.imp.erro = 'Arquivo grande demais (até 2 MB).'; pintar(); return; }
-        fr.onload = function () { S.imp.txt = String(fr.result || ''); S.imp.prev = null; S.imp.ok = ''; S.imp.erro = ''; pintar(); previa(); };
-        fr.onerror = function () { S.imp.erro = 'Não deu para ler o arquivo.'; pintar(); };
-        fr.readAsText(arq, 'utf-8');
+        var ler = function (cod) {
+          var fr = new FileReader();
+          fr.onload = function () {
+            var txt = String(fr.result || '');
+            if (cod === 'utf-8' && txt.indexOf('\uFFFD') >= 0) { ler('windows-1252'); return; }   // .csv salvo pelo Excel em português
+            S.imp.txt = txt; S.imp.prev = null; S.imp.ok = ''; S.imp.erro = '';
+            var ta = document.getElementById('v334ImpTxt'); if (ta) ta.value = txt;
+            pintar(); previa();
+          };
+          fr.onerror = function () { S.imp.erro = 'Não deu para ler o arquivo.'; pintar(); };
+          fr.readAsText(arq, cod);
+        };
+        ler('utf-8');
       }
     });
     // repintura entre apertar e soltar trocaria a linha e o Chrome não mandaria o clique: segura a pintura até soltar
