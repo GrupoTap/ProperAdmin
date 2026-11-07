@@ -5399,9 +5399,14 @@ v50 — Resiliência de rede: retry/backoff em gsGet e syncToGS
   oportunidade, cliente, proposta, dono, valor, itens sem preco e dias parada. Uma leitura (rpc crm_orcamentos, regua do quadro).
   Clique na linha abre o editor de proposta de sempre (V204/V207); ao fechar, a lista se atualiza. O PCM abre nela para quem tem
   so o papel Orcamento. Sem GAS. Chave de volta: localStorage pcm_v335 = off.
+  PCM V336 — 07/11/2026 — ALMOXARIFADO > FRACIONAR (ProperCare-backlog#117, parte 1: produto derivado), sobre o V335.
+  SQL 124_PRODUTO_DERIVADO roda ANTES (com ele o galao que tem balde na prateleira deixa de aparecer a comprar em toda tela de
+  pecas). Aba nova no lugar Almoxarifado: o que falta lancar no Omie (Lancei no Omie, Desfazer), os pares pai > filho x fator
+  (Novo par escolhendo os dois produtos no cadastro do Omie) e os ultimos 30 dias. Na Separacao, a peca cujo produto e filho de um
+  par e que o Omie nao tem o bastante ganha Fracionar (balao na propria peca, rpc alm_fracionar). Sem GAS. Chave: localStorage pcm_v336 = off.
 -->
-<title>ProperCare Manager · Gestão PGP v4.03 (PCM V335)</title>
-<meta name="app-build" content="PCM_V335" data-date="2026-11-07">
+<title>ProperCare Manager · Gestão PGP v4.03 (PCM V336)</title>
+<meta name="app-build" content="PCM_V336" data-date="2026-11-07">
 <link rel="icon" type="image/jpeg" href="data:image/jpeg;base64,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">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -106289,7 +106294,7 @@ html.v330-on #viewTarefasAdm.v330-inv > #v328Pipe{display:block!important}
       { k: 'os', rot: 'Ordens de serviço', ico: 'os', abas: osAbas },
       { k: 'agenda', rot: 'Agenda', ico: 'calendar', abas: [[viewAgenda(), 'Agenda da equipe'], ['campo', 'Presença e locais']] },
       { k: 'compras', rot: 'Compras', ico: 'cart', abas: [['requisicoes', '📥 Requisições'], ['v330Pedidos', '🛒 Pedidos de compra'], ['pedidosAndamento', '📋 Pedidos em andamento'], ['notasEntrada', '🧾 Notas de entrada']] },
-      { k: 'almox', rot: 'Almoxarifado', ico: 'box', abas: [['separacao', '🧺 Separação'], ['recebimento', '📬 Recebimento'], ['v334Estoque', '📦 Estoque'], ['romaneio', 'Romaneio']] },   // PCM V334 (ProperCare-backlog#115): 📦 Estoque
+      { k: 'almox', rot: 'Almoxarifado', ico: 'box', abas: [['separacao', '🧺 Separação'], ['recebimento', '📬 Recebimento'], ['v334Estoque', '📦 Estoque'], ['v336Fracionar', '⚗ Fracionar'], ['romaneio', 'Romaneio']] },   // PCM V334 (ProperCare-backlog#115): 📦 Estoque · PCM V336 (ProperCare-backlog#117): ⚗ Fracionar
       { k: 'financeiro', rot: 'Financeiro', ico: 'cash', abas: [['v333AFaturar', '💵 A faturar'], ['v330Financeiro', 'Financeiro'], ['v330Notas', 'Notas fiscais']] },   // PCM V333 (ProperCare-backlog#112): 💵 A faturar
       { k: 'clientes', rot: 'Clientes', ico: 'users', abas: [['clients', 'Clientes'], ['unidades', 'Unidades do cliente']] },
       { k: 'maquinas', rot: 'Máquinas', ico: 'machine', abas: [['machines', 'Todas as máquinas'], ['preventivas', 'Preventivas'], ['estoque', 'Peças a vencer'], ['calibracao', 'Calibração'], [viewTags(), 'TAGs e placas'], ['frota', 'Frota fora de casa'], ['parqueOS', 'OS na locação']] },
@@ -108692,6 +108697,662 @@ html:not(.v331-off) #v238Jan input[data-v238sel], html:not(.v331-off) #v238Jan i
 })();
 </script>
 <!-- ████ FIM PCM V335 ████ -->
+<!-- ████ INICIO PCM V336 · ALMOXARIFADO › ⚗ FRACIONAR: O BALDE QUE VIRA GALÕES (PRODUTO DERIVADO) + ⚗ NA SEPARAÇÃO (ProperCare-backlog#117, parte 1) ████ -->
+<style id="v336-css">
+/* PCM V336 · Almoxarifado › ⚗ Fracionar */
+#viewV336Fracionar{padding:4px 2px 24px;color:#1D2939;font-family:var(--font-sans,Inter,system-ui,sans-serif)}
+#viewV336Fracionar h2{margin:0 0 10px;font-size:20px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+#viewV336Fracionar h3{margin:16px 0 8px;font-size:15px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.v336-dir{margin-left:auto;display:inline-flex;align-items:center;gap:6px;flex-wrap:wrap}
+.v336-bt{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:32px;padding:0 12px;border:1px solid #D0D5DD;border-radius:8px;background:#fff;color:#1D2939;font:600 13px var(--font-sans,Inter,system-ui,sans-serif);cursor:pointer;transition:background-color .15s,border-color .15s;white-space:nowrap}
+.v336-bt:hover,.v336-bt:focus-visible{background:#F9FAFB;border-color:#98A2B3;outline:none}
+.v336-bt.pri{background:#EE7625;border-color:#EE7625;color:#fff}
+.v336-bt.pri:hover,.v336-bt.pri:focus-visible{background:#D9661A;border-color:#D9661A}
+.v336-bt.ok{background:#12B76A;border-color:#12B76A;color:#fff}
+.v336-bt.ok:hover,.v336-bt.ok:focus-visible{background:#039855;border-color:#039855}
+.v336-bt.mini{min-height:28px;padding:0 9px;font-size:12px}
+.v336-bt.v336-ic{width:32px;padding:0;font-size:15px}
+.v336-bt[disabled]{opacity:.6;cursor:default}
+.v336-gira{display:inline-block;width:13px;height:13px;border:2px solid currentColor;border-right-color:transparent;border-radius:50%;animation:v336gira .7s linear infinite}
+@keyframes v336gira{to{transform:rotate(360deg)}}
+.v336-lido{font-size:12px;color:#475467;cursor:default}
+.v336-n{display:inline-block;min-width:20px;padding:0 7px;border-radius:999px;background:#F2F4F7;font-size:12px;font-weight:700;text-align:center}
+.v336-n.alerta{background:#FEF3F2;color:#B42318}
+.v336-aviso{margin:6px 0 10px;padding:9px 12px;border-radius:10px;border:1px solid #FEDF89;background:#FFFAEB;color:#7A4A00;font-size:13px;display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.v336-aviso.erro{border-color:#FDA29B;background:#FEF3F2;color:#912018}
+.v336-aviso.ok{border-color:#A6D8B8;background:#EEF7F1;color:#14532D}
+.v336-vazio{padding:20px 12px;text-align:center;color:#475467;border:1px dashed #D0D5DD;border-radius:12px;background:#FCFCFD}
+.v336-vazio b{display:block;color:#1D2939;font-size:14px;margin-bottom:4px}
+.v336-esq{height:40px;border-radius:8px;background:linear-gradient(90deg,#F2F4F7 25%,#E4E7EC 37%,#F2F4F7 63%);background-size:400% 100%;animation:v336esq 1.4s ease infinite;margin:6px 0}
+@keyframes v336esq{0%{background-position:100% 50%}100%{background-position:0 50%}}
+.v336-fr{border:1px solid #FEDF89;border-radius:12px;background:#fff;padding:10px 12px;margin:0 0 8px}
+.v336-fr.lancado{border-color:#B2DDFF}
+.v336-fr .v336-mov{font-size:14px;font-weight:600}
+.v336-fr .v336-omie{margin-top:6px;font-size:13px;background:#F9FAFB;border-radius:8px;padding:7px 9px}
+.v336-sub{display:block;font-size:12px;color:#475467;margin-top:3px}
+.v336-cod{font:600 12.5px ui-monospace,Consolas,monospace;white-space:nowrap}
+.v336-lin{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:8px}
+.v336-bal{border:2px solid #1D2939;border-radius:10px;padding:10px;background:#fff;margin-top:8px}
+.v336-bal label{display:block;font-size:12.5px;color:#344054;margin:6px 0 3px}
+.v336-in{border:1px solid #98A2B3;border-radius:8px;padding:6px 10px;font:14px var(--font-sans,Inter,system-ui,sans-serif);min-height:34px;box-sizing:border-box}
+.v336-in.num{width:100px;font:600 15px ui-monospace,Consolas,monospace}
+.v336-in.largo{width:100%;max-width:420px}
+.v336-msg{margin-top:6px;font-size:12.5px}.v336-msg.erro{color:#912018;font-weight:600}.v336-msg.ok{color:#05603A}
+.v336-wrap{overflow:auto;border:1px solid #E4E7EC;border-radius:12px;background:#fff}
+.v336-tab{width:100%;border-collapse:separate;border-spacing:0;font-size:13px}
+.v336-tab thead th{position:sticky;top:0;z-index:2;background:#F9FAFB;text-align:left;font-weight:600;color:#344054;padding:8px 10px;border-bottom:1px solid #E4E7EC;white-space:nowrap}
+.v336-tab tbody td{padding:8px 10px;border-bottom:1px solid #F2F4F7;vertical-align:top}
+.v336-tab td.n,.v336-tab th.n{text-align:right;white-space:nowrap}
+.v336-tab tr.inativo td{opacity:.55}
+.v336-neg{color:#B42318;font-weight:700}
+.v336-semnum{color:#98A2B3}
+.v336-novo{border:1px solid #E4E7EC;border-radius:12px;background:#fff;padding:12px;margin:0 0 10px}
+.v336-novo .v336-g{display:grid;grid-template-columns:minmax(220px,1fr) minmax(220px,1fr);gap:12px}
+.v336-res{margin-top:4px;border:1px solid #EAECF0;border-radius:8px;max-height:220px;overflow:auto;background:#fff}
+.v336-res button{display:block;width:100%;text-align:left;border:0;border-bottom:1px solid #F2F4F7;background:#fff;padding:7px 9px;font:13px var(--font-sans,Inter,system-ui,sans-serif);cursor:pointer;color:#1D2939}
+.v336-res button:hover,.v336-res button:focus-visible{background:#FFF7F0;outline:none}
+.v336-esc{display:flex;gap:8px;align-items:center;padding:7px 9px;border:1px solid #A6D8B8;background:#F6FEF9;border-radius:8px;font-size:13px}
+.v336-hist summary{cursor:pointer;font-size:13px;color:#344054;margin:12px 0 6px}
+.v336-hist .v336-hl{font-size:12.5px;padding:5px 0;border-bottom:1px dashed #EAECF0}
+/* ⚗ na 🧺 Separação (dentro da peça do V323) */
+.v336-sepnota{font-size:12.5px;color:#7A4A00;margin-top:4px}
+.v336-sepbal{grid-column:1 / -1;border:2px solid #EE7625;border-radius:10px;padding:10px;background:#fff;margin-top:4px}
+.v336-sepbal h5{margin:0 0 6px;font-size:14px}
+.v336-op{display:flex;gap:8px;align-items:flex-start;padding:6px 0;font-size:13px;cursor:pointer}
+@media (max-width:820px){.v336-novo .v336-g{grid-template-columns:1fr}.v336-bt{min-height:44px}}
+</style>
+<script>
+/* ═══════════════════════════════════════════════════════════════════════════════════════════════════════════════
+   PCM V336 — 07/11/2026 — parte 1 da ProperCare-backlog#117 (produto derivado: pai → filho × fator). Sobre o V335. SQL: 124_PRODUTO_DERIVADO
+   (roda ANTES). Prefixo V336 / v336- / data-v336. Nenhuma tela, função, rota ou endereço (#…) existente mudou.
+   · O saldo: com o SQL, o galão que tem balde na prateleira já não aparece "a comprar" em nenhuma tela de peças (o banco soma o que os
+     baldes rendem). Este bloco só dá as MÃOS para isso:
+   · Almoxarifado › ⚗ Fracionar (aba nova, depois do 📦 Estoque): o que falta lançar no Omie (✔ Lancei no Omie · ↩ Desfazer), os pares
+     (＋ Novo par escolhendo os dois produtos no cadastro do Omie — pc_produto_consultar —, fator, desativar) e os últimos 30 dias.
+   · 🧺 Separação (V323): a peça cujo produto é FILHO de um par e que o Omie não tem o bastante ganha "⚗ Fracionar" — balão ali mesmo
+     (qual pai, quantos abriu) → alm_fracionar. A pintura da Separação é interna do V323: o V336 decora DEPOIS dela (observador da tela,
+     idempotente: só escreve o que falta; disjuntor que conta escritas).
+   · No V330 (uma linha): a aba entra no lugar Almoxarifado. Quem vê = quem separa (a régua do banco: _alm_pode).
+   Chamadas: abrir a aba = 2 em paralelo (derivado_lista, alm_fracionamentos); 🧺 Separação = +1 por leitura da fila (derivado_lista dos
+   produtos da fila, só se houver par); busca do novo par = 1 por termo; o resto só no clique.
+   Só no computador (no modo celular o menu por área não existe; o ⚗ da Separação vale nos dois). Chave de volta: localStorage pcm_v336 = off.
+   ═══════════════════════════════════════════════════════════════════════════════════════════════════════════════ */
+(function () {
+  'use strict';
+  if (window.V336) return;
+  var V336 = window.V336 = { versao: 'V336 · 07/11/2026', orig: {} };
+  var VIEW = 'v336Fracionar';
+  var S = { d: null, f: null, erro: '', tipoErro: '', carregando: false, ger: 0, msg: null,
+            bal: null, gravando: '', edit: null, novo: { aberto: false, pai: null, filho: null, q: { pai: '', filho: '' }, res: { pai: null, filho: null }, fator: '', como: 'fracionar', erro: '', buscando: '' },
+            sep: { para: null, mapa: null, pares: null, lendo: false, bal: null, ok: {}, erro: {}, gravando: false }, escritas: 0, janela: 0, parado: false };
+  V336.S = S;
+  function ls(k, v) {
+    try { if (v === undefined) return localStorage.getItem(k); if (v === null) localStorage.removeItem(k); else localStorage.setItem(k, String(v)); }
+    catch (e) { return null; }
+    return null;
+  }
+  function off() { return ls('pcm_v336') === 'off'; }
+  function ligadoMenu() { try { return !off() && !!(window.V330 && typeof V330.ligado === 'function' && V330.ligado()); } catch (e) { return false; } }
+  V336.ligado = ligadoMenu;
+  function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+  function semAcento(s) { return String(s == null ? '' : s).normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase(); }
+  function cv() { try { return typeof currentView === 'string' ? currentView : ''; } catch (e) { return ''; } }
+  function sess() { try { return window.PROPER_SESSION || JSON.parse(localStorage.getItem('proper_session') || 'null') || {}; } catch (e) { return {}; } }
+  // a MESMA régua do banco (_alm_pode → _crm_est_pode_separar), do 📦 Estoque (V334) e da 🧺 Separação (V323)
+  function pode() {
+    var s = sess(); if (window._PCM_SO_AGENDA === true) return false;
+    var m = (Array.isArray(s.modulos) ? s.modulos.join(',') : String(s.modulos || '')).toLowerCase();
+    return s.is_admin === true || /(^|[^a-z_])(pcm_completo|pcm_estoque|pcm_suprimentos)([^a-z_]|$)/.test(m) || /(estoq|suprim|almox)/.test(semAcento(s.nome_perfil));
+  }
+  V336.pode = pode;
+  function N(x) { var n = Number(x); return isFinite(n) ? n : 0; }
+  function qtd(x) { return N(x).toLocaleString('pt-BR', { maximumFractionDigits: 3 }); }
+  function numBr(t) {
+    var s = String(t == null ? '' : t).trim().replace(/\s/g, '');
+    if (/^\d{1,3}(\.\d{3})+(,\d{1,3})?$/.test(s)) s = s.replace(/\./g, '');   // "1.000" e "1.000,5" (milhar com ponto) — auditoria B1
+    if (!/^\d{1,6}([.,]\d{1,3})?$/.test(s)) return NaN; return Number(s.replace(',', '.'));
+  }
+  function qtdCampo(x) { return N(x).toLocaleString('pt-BR', { maximumFractionDigits: 3, useGrouping: false }); }
+  function hora(v) {
+    if (!v) return ''; var d = new Date(v); if (isNaN(d)) return '';
+    return d.toLocaleDateString('pt-BR', { timeZone: 'America/Sao_Paulo' }) + ' ' + d.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit', timeZone: 'America/Sao_Paulo' });
+  }
+  function uid() { return 'v336-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 10); }
+  function toastSeguro(m, t) { try { if (typeof toast === 'function') toast(m, t || ''); } catch (e) {} }
+  async function rpc(fn, p, escrita) { return _v200Rpc(fn, { p: p || {} }, escrita); }
+  function msgErro(e, escrita) {
+    var c = e && e.v200;
+    if (c === 'sem_sql') { try { console.warn('[V336] falta o SQL 124_PRODUTO_DERIVADO:', e && e.message); } catch (x) {} return 'Tela indisponível — avise o administrador.'; }
+    if (c === 'acesso') return 'Fracionar é do almoxarifado, de Suprimentos, do administrador ou de quem tem o acesso extra "PCM – Almoxarifado".';
+    if (c === 'rede') return escrita ? 'Sem resposta do banco — não dá para saber se gravou. Clique de novo: não grava duas vezes.' : 'Sem conexão — a lista não carregou.';
+    if (c === 'desligado') return 'O PCM está em modo só leitura (quadro desligado) — nada foi gravado.';
+    var m = String((e && e.message) || '').replace(/^NÃO foi gravada:\s*/, '').replace(/^(Derivado|Fracionar):\s*/, '');
+    return m || (escrita ? 'Nada foi gravado. Tente de novo; se continuar, avise o administrador.' : 'A lista não carregou. Tente de novo.');
+  }
+  function un(p) { return (p && p.unidade) ? String(p.unidade) : ''; }
+  function prodTxt(p) { return '<span class="v336-cod">' + esc(p && p.codigo) + '</span> ' + esc((p && p.descricao) || ''); }
+  function verbo(como) { return como === 'desembalar' ? 'desembalar' : 'fracionar'; }
+
+  // ═══ 1 · O LUGAR (botão do menu antigo, escondido — é dele que o menu por área lê a permissão — e a caixa da tela) ═══
+  function garantir() {
+    if (!ligadoMenu()) return;
+    var grupos = document.querySelector('.nav-sidebar > .nav-groups') || document.querySelector('.nav-groups');
+    var b = document.getElementById('navV336Fracionar');
+    if (!b && grupos) {
+      b = document.createElement('button'); b.className = 'nav-item'; b.type = 'button'; b.tabIndex = -1; b.id = 'navV336Fracionar';
+      b.setAttribute('data-view', VIEW); b.innerHTML = '<span>⚗ Fracionar</span>'; b.style.display = 'none';
+      b.addEventListener('click', function () { showView(VIEW); });
+      grupos.appendChild(b);
+    }
+    if (b) { var d = pode() ? '' : 'none'; if (b.style.display !== d) b.style.display = d; }
+    if (!document.getElementById('viewV336Fracionar')) {
+      var ref = document.getElementById('viewSeparacao') || document.getElementById('viewDocs') || document.getElementById('viewInicio');
+      if (ref) {
+        var el = document.createElement('div'); el.id = 'viewV336Fracionar'; el.style.display = 'none';
+        el.innerHTML = '<h2>⚗ Fracionar<span class="v336-dir"><span id="v336Lido" class="v336-lido"></span>' +
+          '<button type="button" class="v336-bt v336-ic" data-v336="atualizar" id="v336Atu" title="Atualizar" aria-label="Atualizar">⟳</button></span></h2>' +
+          '<div id="v336Aviso"></div><div id="v336Corpo"></div>';
+        ref.parentNode.insertBefore(el, ref);
+        ligarTela(el);
+      }
+    }
+  }
+  V336.garantir = garantir;
+
+  // ═══ 2 · OS DADOS ═══════════════════════════════════════════════════════════════════════════════════════════════
+  function carregar() {
+    if (typeof _v200Rpc !== 'function') { S.erro = 'Tela indisponível — avise o administrador.'; S.tipoErro = 'sem_sql'; pintar(); return Promise.resolve(); }
+    var g = ++S.ger; S.carregando = true; pintar();
+    return Promise.all([rpc('derivado_lista', { todos: true }, false), rpc('alm_fracionamentos', {}, false)]).then(function (r) {
+      if (g !== S.ger) return;
+      S.carregando = false; S.erro = ''; S.tipoErro = ''; S.d = r[0] || {}; S.f = r[1] || {}; S.d.__lido = Date.now();
+      pintar();
+    }, function (e) {
+      if (g !== S.ger) return;
+      S.carregando = false; S.erro = msgErro(e, false); S.tipoErro = (e && e.v200) || 'erro';
+      if (S.tipoErro !== 'rede' && S.tipoErro !== 'sem_sql' && S.tipoErro !== 'acesso') { try { console.warn('[V336] carregar:', e && e.message); } catch (x) {} }
+      pintar();
+    });
+  }
+  V336.carregar = carregar;
+
+  // ═══ 3 · A PINTURA DA ABA ═══════════════════════════════════════════════════════════════════════════════════════
+  function omieTxt(f) {
+    return 'No Omie, ajuste de estoque: <b>saída de ' + esc(qtd(f.qtd_pai) + ' ' + un(f.pai)) + '</b> do ' + prodTxt(f.pai) +
+           ' e <b>entrada de ' + esc(qtd(f.qtd_filho) + ' ' + un(f.filho)) + '</b> do ' + prodTxt(f.filho) + ' (motivo: ' + (f.como === 'desembalar' ? 'desembalagem' : 'fracionamento') + ').';
+  }
+  function fracHtml(f) {
+    var b = S.bal && S.bal.id === f.id ? S.bal : null, grav = S.gravando === String(f.id);
+    var h = '<div class="v336-fr' + (f.estado === 'lancado' ? ' lancado' : '') + '" data-v336-fr="' + esc(f.id) + '" data-v336-est="' + esc(f.estado) + '">' +
+      '<div class="v336-mov">' + (f.como === 'desembalar' ? '📦 ' : '⚗ ') + esc(qtd(f.qtd_pai) + ' ' + un(f.pai)) + ' ' + esc((f.pai && f.pai.descricao) || (f.pai && f.pai.codigo)) +
+      ' → ' + esc(qtd(f.qtd_filho) + ' ' + un(f.filho)) + ' ' + esc((f.filho && f.filho.descricao) || (f.filho && f.filho.codigo)) + '</div>' +
+      '<span class="v336-sub">' + esc([f.por ? 'por ' + f.por : '', hora(f.em), f.card ? 'para ' + f.card : '', f.obs || ''].filter(Boolean).join(' · ')) + '</span>' +
+      '<div class="v336-omie">' + omieTxt(f) + '</div>';
+    if (f.estado === 'lancado') h += '<span class="v336-sub">✔ Lançado' + (f.lancado_por ? ' por ' + esc(f.lancado_por) : '') + ' em ' + esc(hora(f.lancado_em)) + (f.lancado_obs ? ' · ' + esc(f.lancado_obs) : '') + ' · esperando a leitura do Omie</span>';
+    if (f.estado === 'conferir') {
+      h += '<div class="v336-msg erro" style="font-weight:600">⚠ A leitura do Omie de ' + esc(hora(f.visto_em)) + ' não mostrou este ajuste. Confira no Omie.</div>' +
+           '<div class="v336-lin"><button type="button" class="v336-bt ok" data-v336="conferi" data-id="' + esc(f.id) + '"' + (grav ? ' disabled data-pcm-enviando="1"' : '') + '>✔ Está no Omie</button>' +
+           '<button type="button" class="v336-bt" data-v336="voltar" data-id="' + esc(f.id) + '"' + (grav ? ' disabled' : '') + '>↩ Ainda não lancei</button></div>';
+    }
+    if (f.estado === 'a_lancar' && !b) {
+      h += '<div class="v336-lin"><button type="button" class="v336-bt ok" data-v336="lancAbrir" data-id="' + esc(f.id) + '">✔ Lancei no Omie</button>' +
+           '<button type="button" class="v336-bt" data-v336="desfAbrir" data-id="' + esc(f.id) + '">↩ Desfazer</button></div>';
+    }
+    if (b) {
+      if (b.tipo === 'lanc') h += '<div class="v336-bal"><label for="v336Obs">Nº ou observação do ajuste no Omie (opcional)</label>' +
+        '<input type="text" class="v336-in largo" id="v336Obs" data-v336-in="obs" maxlength="300" value="' + esc(b.txt || '') + '" autocomplete="off" name="v336_obs_nofill" data-lpignore="true" data-1p-ignore>' +
+        '<div class="v336-lin"><button type="button" class="v336-bt ok" data-v336="lancOk" data-id="' + esc(f.id) + '"' + (grav ? ' disabled data-pcm-enviando="1"' : '') + '>' + (grav ? '<span class="v336-gira"></span>Gravando…' : 'Confirmar: lancei no Omie') + '</button>' +
+        '<button type="button" class="v336-bt" data-v336="balFechar">Cancelar</button></div>' + (b.erro ? '<div class="v336-msg erro" role="alert">' + esc(b.erro) + '</div>' : '') + '</div>';
+      else h += '<div class="v336-bal"><label for="v336Mot">Motivo</label>' +
+        '<input type="text" class="v336-in largo" id="v336Mot" data-v336-in="motivo" maxlength="300" value="' + esc(b.txt || '') + '" placeholder="ex. abri o balde errado" autocomplete="off" name="v336_mot_nofill" data-lpignore="true" data-1p-ignore>' +
+        '<div class="v336-lin"><button type="button" class="v336-bt pri" data-v336="desfOk" data-id="' + esc(f.id) + '"' + (grav ? ' disabled data-pcm-enviando="1"' : '') + '>' + (grav ? '<span class="v336-gira"></span>Gravando…' : 'Desfazer') + '</button>' +
+        '<button type="button" class="v336-bt" data-v336="balFechar">Cancelar</button></div>' + (b.erro ? '<div class="v336-msg erro" role="alert">' + esc(b.erro) + '</div>' : '') + '</div>';
+    }
+    return h + '</div>';
+  }
+  function saldoTd(p, num, sinal) {
+    if (!num) return '<span class="v336-semnum" title="Sem número de estoque do Omie agora">—</span>';
+    if (!p || p.saldo == null) return '<span class="v336-semnum" title="O Omie ainda não leu este produto (não é zero)">—</span>';
+    var n = N(p.saldo);
+    return '<span' + (n < 0 ? ' class="v336-neg" title="O Omie diz ' + esc(qtd(n)) + ': lance o fracionamento ou confira na prateleira"' : '') + '>' + esc(qtd(n)) + '</span> ' + esc(un(p)) +
+      (N(p.pendente) ? '<span class="v336-sub" title="Fracionado no PCM e ainda não visto no Omie">' + sinal + esc(qtd(p.pendente)) + ' a lançar</span>' : '');
+  }
+  function parHtml(it, num, podeEsc) {
+    var ed = S.edit && S.edit.id === it.id ? S.edit : null, grav = S.gravando === 'par:' + it.id;
+    var h = '<tr' + (it.ativo ? '' : ' class="inativo"') + ' data-v336-par="' + esc(it.id) + '">' +
+      '<td>' + prodTxt(it.filho) + (it.filho && it.filho.inativo ? '<span class="v336-sub">inativo no Omie</span>' : '') + '</td>' +
+      '<td>' + prodTxt(it.pai) + (it.pai && it.pai.inativo ? '<span class="v336-sub">inativo no Omie</span>' : '') + (it.obs ? '<span class="v336-sub">' + esc(it.obs) + '</span>' : '') + '</td>' +
+      '<td class="n">' + (ed ? '<input type="text" class="v336-in num" data-v336-in="fator" value="' + esc(ed.txt) + '" aria-label="Fator" inputmode="decimal" autocomplete="off">' : '1 ' + esc(un(it.pai)) + ' = <b>' + esc(qtd(it.fator)) + '</b> ' + esc(un(it.filho))) +
+        '<span class="v336-sub">' + (it.como === 'desembalar' ? 'desembalar' : 'fracionar') + '</span></td>' +
+      '<td class="n">' + saldoTd(it.pai, num, '−') + '</td><td class="n">' + saldoTd(it.filho, num, '+') + '</td><td>';
+    if (podeEsc) {
+      if (ed) h += '<button type="button" class="v336-bt mini pri" data-v336="fatorOk" data-id="' + esc(it.id) + '"' + (grav ? ' disabled data-pcm-enviando="1"' : '') + '>' + (grav ? '<span class="v336-gira"></span>' : 'Salvar') + '</button> <button type="button" class="v336-bt mini" data-v336="fatorFechar">Cancelar</button>' +
+                   (ed.erro ? '<div class="v336-msg erro" role="alert">' + esc(ed.erro) + '</div>' : '');
+      else if (it.ativo) h += '<button type="button" class="v336-bt mini" data-v336="avAbrir" data-id="' + esc(it.id) + '">' + (it.como === 'desembalar' ? '📦 Desembalar' : '⚗ Fracionar') + '</button> ' +
+                              '<button type="button" class="v336-bt mini" data-v336="fatorAbrir" data-id="' + esc(it.id) + '">✎ Fator</button> <button type="button" class="v336-bt mini" data-v336="ativo" data-id="' + esc(it.id) + '" data-a="0"' + (grav ? ' disabled' : '') + '>Desativar</button>';
+      else h += '<button type="button" class="v336-bt mini" data-v336="ativo" data-id="' + esc(it.id) + '" data-a="1"' + (grav ? ' disabled' : '') + '>Reativar</button>';
+    }
+    h += '</td></tr>';
+    var av = S.av && String(S.av.id) === String(it.id) ? S.av : null, ga = S.gravando === 'av:' + it.id;
+    if (av) h += '<tr data-v336-av="' + esc(it.id) + '"><td colspan="6"><div class="v336-bal" style="margin:0"><label for="v336Avq">Quantos ' + esc(un(it.pai) || '') + ' abriu?</label>' +
+      '<input type="text" class="v336-in num" id="v336Avq" data-v336-in="avq" value="' + esc(av.txt) + '" inputmode="decimal" autocomplete="off"> ' +
+      '<span class="v336-sub" style="display:inline">= ' + esc(qtd(numBr(av.txt) * N(it.fator) || 0) + ' ' + un(it.filho)) + '</span>' +
+      '<div class="v336-lin"><button type="button" class="v336-bt pri" data-v336="avOk" data-id="' + esc(it.id) + '"' + (ga ? ' disabled data-pcm-enviando="1"' : '') + '>' + (ga ? '<span class="v336-gira"></span>Gravando…' : 'Confirmar') + '</button>' +
+      '<button type="button" class="v336-bt" data-v336="avFechar">Cancelar</button></div>' + (av.erro ? '<div class="v336-msg erro" role="alert">' + esc(av.erro) + '</div>' : '') + '</div></td></tr>';
+    return h;
+  }
+  function novoHtml() {
+    var n = S.novo; if (!n.aberto) return '';
+    function lado(k, rot, dica) {
+      var esc1 = n[k];
+      var h = '<div><label class="v336-sub" style="margin:0 0 4px" for="v336Q' + k + '">' + rot + '</label>';
+      if (esc1) return h + '<div class="v336-esc">✅ ' + prodTxt(esc1) + ' ' + esc(un(esc1)) + ' <button type="button" class="v336-bt mini" data-v336="trocar" data-k="' + k + '">Trocar</button></div></div>';
+      h += '<input type="text" class="v336-in largo" id="v336Q' + k + '" data-v336-in="q" data-k="' + k + '" value="' + esc(n.q[k]) + '" placeholder="' + esc(dica) + '"' +
+           ' autocomplete="off" name="v336_q' + k + '_nofill" data-lpignore="true" data-1p-ignore readonly onfocus="this.removeAttribute(\'readonly\')">';
+      var r = n.res[k];
+      if (n.buscando === k) h += '<div class="v336-sub"><span class="v336-gira"></span> buscando no cadastro do Omie…</div>';
+      else if (r && r.length) h += '<div class="v336-res" role="listbox">' + r.map(function (x, i) {
+        return '<button type="button" role="option" data-v336="escolher" data-k="' + k + '" data-i="' + i + '">' + prodTxt(x) + ' <span class="v336-sub" style="display:inline">' + esc(x.unidade || '') + (x.inativo ? ' · inativo' : '') + '</span></button>';
+      }).join('') + '</div>';
+      else if (r && !r.length && n.q[k].trim().length >= 2) h += '<div class="v336-sub">Nada no cadastro do Omie com essa busca.</div>';
+      return h + '</div>';
+    }
+    var f = numBr(n.fator), prev = n.pai && n.filho && f > 0 ? '1 ' + esc(un(n.pai) || 'pai') + ' = ' + esc(qtd(f)) + ' ' + esc(un(n.filho) || 'filhos') : '';
+    return '<div class="v336-novo" role="region" aria-label="Novo par"><div class="v336-g">' +
+      lado('filho', 'O que se orça e se vende (o galão, o metro)', 'Buscar no cadastro do Omie… ex. 5L, galão') +
+      lado('pai', 'O que se compra (o balde, a caixa, o rolo)', 'Buscar no cadastro do Omie… ex. 20L, balde') + '</div>' +
+      '<div class="v336-lin"><label style="margin:0;font-size:13px">Quantos filhos saem de 1 pai? <input type="text" class="v336-in num" data-v336-in="nfator" value="' + esc(n.fator) + '" inputmode="decimal" placeholder="4" autocomplete="off"></label>' +
+      '<select class="v336-in" data-v336-in="como" aria-label="Como"><option value="fracionar"' + (n.como === 'fracionar' ? ' selected' : '') + '>⚗ fracionar (abre a embalagem)</option>' +
+      '<option value="desembalar"' + (n.como === 'desembalar' ? ' selected' : '') + '>📦 desembalar (caixa com galões)</option></select>' + (prev ? '<span class="v336-sub" style="margin:0">' + prev + '</span>' : '') + '</div>' +
+      '<div class="v336-lin"><button type="button" class="v336-bt pri" data-v336="novoOk"' + (S.gravando === 'novo' ? ' disabled data-pcm-enviando="1"' : '') + '>' + (S.gravando === 'novo' ? '<span class="v336-gira"></span>Gravando…' : 'Salvar o par') + '</button>' +
+      '<button type="button" class="v336-bt" data-v336="novoFechar">Cancelar</button></div>' + (n.erro ? '<div class="v336-msg erro" role="alert">' + esc(n.erro) + '</div>' : '') + '</div>';
+  }
+  function corpoHtml() {
+    if (!S.d) {
+      if (S.erro) return '<div class="v336-vazio" role="alert"><b>' + esc(S.erro) + '</b>' + (S.tipoErro === 'rede' || S.tipoErro === 'erro' ? '<button type="button" class="v336-bt" data-v336="atualizar">Tentar de novo</button>' : '') + '</div>';
+      return '<div aria-busy="true"><div class="v336-esq"></div><div class="v336-esq"></div><div class="v336-esq"></div></div>';
+    }
+    var fs = (S.f && S.f.itens) || [], abertos = fs.filter(function (f) { return f.estado === 'a_lancar' || f.estado === 'lancado' || f.estado === 'conferir'; });
+    var resolv = fs.filter(function (f) { return f.estado === 'no_omie' || f.estado === 'desfeito'; });
+    var nA = abertos.filter(function (f) { return f.estado === 'a_lancar' || f.estado === 'conferir'; }).length;
+    var h = '<h3>A lançar no Omie <span class="v336-n' + (nA ? ' alerta' : '') + '">' + nA + '</span></h3>';
+    h += abertos.length ? abertos.map(fracHtml).join('') :
+      '<div class="v336-vazio"><b>Nada a lançar no Omie</b>O que for fracionado aparece aqui.<br><button type="button" class="v336-bt" data-v336="irSep" style="margin-top:8px">🧺 Ir para a Separação</button></div>';
+    var itens = (S.d.itens || []), podeEsc = !!S.d.pode, num = !!S.d.numeros;
+    h += '<h3>Pares <span class="v336-n">' + itens.filter(function (x) { return x.ativo; }).length + '</span>' +
+         (podeEsc && !S.novo.aberto ? '<button type="button" class="v336-bt pri" data-v336="novoAbrir">＋ Novo par</button>' : '') + '</h3>';
+    h += novoHtml();
+    if (!itens.length) h += '<div class="v336-vazio"><b>Nenhum par ainda</b>Cadastre o balde que vira galões (ou o rolo que vira metros).' +
+                            (podeEsc && !S.novo.aberto ? '<br><button type="button" class="v336-bt" data-v336="novoAbrir" style="margin-top:8px">＋ Novo par</button>' : '') + '</div>';
+    else h += '<div class="v336-wrap"><table class="v336-tab"><thead><tr><th>Vende-se (filho)</th><th>Compra-se (pai)</th><th class="n">Fator</th>' +
+              '<th class="n" title="Saldo do Omie do pai nos locais que somam">Omie: pai</th><th class="n" title="Saldo do Omie do filho nos locais que somam">Omie: filho</th><th></th></tr></thead><tbody>' +
+              itens.map(function (it) { return parHtml(it, num, podeEsc); }).join('') + '</tbody></table></div>';
+    if (resolv.length) h += '<details class="v336-hist"><summary>Últimos ' + esc((S.f && S.f.dias) || 30) + ' dias (' + resolv.length + ')</summary>' +
+      resolv.map(function (f) {
+        return '<div class="v336-hl">' + (f.estado === 'desfeito' ? '↩ desfeito' : '✅ no Omie') + ' · ' + esc(qtd(f.qtd_pai) + ' ' + un(f.pai)) + ' ' + esc((f.pai && f.pai.codigo) || '') + ' → ' +
+          esc(qtd(f.qtd_filho) + ' ' + un(f.filho)) + ' ' + esc((f.filho && f.filho.codigo) || '') + ' · ' + esc(hora(f.em)) + (f.por ? ' · ' + esc(f.por) : '') +
+          (f.desfeito_motivo ? ' · ' + esc(f.desfeito_motivo) : '') + '</div>';
+      }).join('') + '</details>';
+    return h;
+  }
+  function pintar() {
+    var raiz = document.getElementById('viewV336Fracionar'); if (!raiz || cv() !== VIEW) return;
+    var lido = document.getElementById('v336Lido'), bt = document.getElementById('v336Atu');
+    if (bt) {
+      if (S.carregando && !bt.disabled) { bt.disabled = true; bt.setAttribute('data-pcm-enviando', '1'); bt.innerHTML = '<span class="v336-gira"></span>'; }
+      else if (!S.carregando && bt.disabled) { bt.disabled = false; bt.removeAttribute('data-pcm-enviando'); bt.textContent = '⟳'; }
+    }
+    if (lido) {
+      var t = S.d && S.d.__lido ? '●' : '', tit = S.d && S.d.__lido ? 'Lido às ' + hora(S.d.__lido) + (S.d.numeros ? '' : ' · sem número de estoque do Omie agora') : '';
+      if (lido.textContent !== t) lido.textContent = t; if (lido.title !== tit) lido.title = tit;
+    }
+    var av = document.getElementById('v336Aviso'), a = '';
+    if (S.msg) a = '<div class="v336-aviso ' + (S.msg.erro ? 'erro' : 'ok') + '" role="' + (S.msg.erro ? 'alert' : 'status') + '">' + esc(S.msg.txt) + '</div>';
+    else if (S.erro && S.d) a = '<div class="v336-aviso erro" role="alert">' + esc(S.erro) + ' <button type="button" class="v336-bt" data-v336="atualizar">Tentar de novo</button></div>';
+    if (av && av.innerHTML !== a) av.innerHTML = a;
+    var corpo = document.getElementById('v336Corpo'); if (!corpo) return;
+    var h = corpoHtml();
+    if (corpo.__v336 !== h) {
+      var foco = document.activeElement && corpo.contains(document.activeElement) ? document.activeElement : null;
+      var fk = foco && foco.getAttribute('data-v336-in') ? foco.getAttribute('data-v336-in') + '|' + (foco.getAttribute('data-k') || '') : null, sel = fk && foco.selectionStart;
+      corpo.innerHTML = h; corpo.__v336 = h;
+      if (fk) {
+        var p = fk.split('|'), ni = corpo.querySelector('[data-v336-in="' + p[0] + '"]' + (p[1] ? '[data-k="' + p[1] + '"]' : ''));
+        if (ni) try { ni.removeAttribute('readonly'); ni.focus({ preventScroll: true }); if (sel != null && ni.setSelectionRange) ni.setSelectionRange(sel, sel); } catch (e) {}
+      }
+    }
+  }
+  V336.pintar = pintar;
+
+  // ═══ 4 · OS GESTOS DA ABA ═══════════════════════════════════════════════════════════════════════════════════════
+  function buscar(k) {
+    var q = S.novo.q[k].trim(); clearTimeout(S.tq);
+    if (q.length < 2) { S.novo.res[k] = null; S.novo.buscando = ''; pintar(); return; }
+    S.tq = setTimeout(function () {
+      var g = (S.novo.gq = (S.novo.gq || 0) + 1); S.novo.buscando = k; pintar();
+      _v200Rpc('pc_produto_consultar', { p_q: q, p_limite: 30 }).then(function (r) {
+        if (g !== S.novo.gq) return;
+        S.novo.buscando = '';
+        S.novo.res[k] = ((r && r.itens) || []).filter(function (x) { return x.tipo === 'omie' && x.codigo; })
+          .map(function (x) { return { codigo: x.codigo, descricao: x.descricao, unidade: String(x.unidade || '').toUpperCase(), inativo: !!x.inativo }; });
+        pintar();
+      }, function (e) { if (g !== S.novo.gq) return; S.novo.buscando = ''; S.novo.res[k] = null; S.novo.erro = msgErro(e, false); pintar(); });
+    }, 300);
+  }
+  function salvarNovo() {
+    var n = S.novo; if (S.gravando) return;
+    n.erro = '';
+    if (!n.filho || !n.pai) { n.erro = 'Escolha os dois produtos na lista do Omie.'; pintar(); return; }
+    var f = numBr(n.fator);
+    if (!(f > 0)) { n.erro = 'Diga quantos filhos saem de 1 pai (ex. 4).'; pintar(); return; }
+    S.gravando = 'novo'; pintar();
+    rpc('derivado_salvar', { pai: n.pai.codigo, filho: n.filho.codigo, fator: f, como: n.como }, true).then(function (r) {
+      S.gravando = ''; S.novo = { aberto: false, pai: null, filho: null, q: { pai: '', filho: '' }, res: { pai: null, filho: null }, fator: '', como: 'fracionar', erro: '', buscando: '' };
+      if (r && r.dados) { S.d = r.dados; S.d.__lido = Date.now(); }
+      S.msg = { txt: '✅ Par gravado.' }; S.sep.para = null;
+      toastSeguro('Par gravado', 'success'); pintar();
+    }, function (e) { S.gravando = ''; n.erro = msgErro(e, true); pintar(); });
+  }
+  function salvarPar(id, campos, depois) {
+    var it = ((S.d && S.d.itens) || []).find(function (x) { return String(x.id) === String(id); }); if (!it || S.gravando) return;
+    S.gravando = 'par:' + id; pintar();
+    rpc('derivado_salvar', Object.assign({ id: it.id, versao: it.versao }, campos), true).then(function (r) {
+      S.gravando = ''; if (r && r.dados) { S.d = r.dados; S.d.__lido = Date.now(); } S.sep.para = null;
+      if (depois) depois(null); pintar();
+    }, function (e) { S.gravando = ''; if (depois) depois(msgErro(e, true)); else S.msg = { erro: true, txt: msgErro(e, true) }; pintar(); });
+  }
+  function fracAcao(tipo, id) {
+    var b = S.bal; if (!b || String(b.id) !== String(id) || S.gravando) return;
+    var inp = document.querySelector('#viewV336Fracionar [data-v336-in="' + (tipo === 'lanc' ? 'obs' : 'motivo') + '"]'); if (inp) b.txt = inp.value;
+    if (tipo === 'desf' && String(b.txt || '').trim().length < 3) { b.erro = 'Diga o motivo (ex. abri o balde errado).'; pintar(); return; }
+    S.gravando = String(id); b.erro = ''; pintar();
+    rpc(tipo === 'lanc' ? 'alm_fracionamento_lancado' : 'alm_fracionamento_desfazer', tipo === 'lanc' ? { id: id, obs: b.txt || '' } : { id: id, motivo: b.txt }, true).then(function () {
+      S.gravando = ''; S.bal = null;
+      S.msg = { txt: tipo === 'lanc' ? '✅ Marcado como lançado.' : '↩ Fracionamento desfeito.' };
+      S.sep.para = null; carregar();
+    }, function (e) { S.gravando = ''; b.erro = msgErro(e, true); pintar(); });
+  }
+  function conferir(id, acao) {
+    if (S.gravando) return;
+    S.gravando = String(id); pintar();
+    rpc('alm_fracionamento_lancado', { id: id, acao: acao }, true).then(function () {
+      S.gravando = ''; S.msg = { txt: acao === 'conferi' ? '✅ Conferido no Omie.' : '↩ Voltou para "a lançar".' }; S.sep.para = null; carregar();
+    }, function (e) { S.gravando = ''; S.msg = { erro: true, txt: msgErro(e, true) }; pintar(); });
+  }
+  // ⚗ fracionar fora da separação (balcão, adiantar, a 2ª linha do mesmo galão): na linha do par, sem oportunidade
+  function avulso(id) {
+    var a = S.av; if (!a || String(a.id) !== String(id) || S.gravando) return;
+    var inp = document.querySelector('#viewV336Fracionar [data-v336-in="avq"]'); if (inp) a.txt = inp.value;
+    var q = numBr(a.txt); if (!(q > 0)) { a.erro = 'Diga quantos abriu (ex. 1).'; pintar(); return; }
+    if (!a.uid) a.uid = uid();
+    S.gravando = 'av:' + id; a.erro = ''; pintar();
+    rpc('alm_fracionar', { derivado: Number(id), qtd_pai: q, uid: a.uid }, true).then(function (r) {
+      S.gravando = ''; S.av = null; var f = (r && r.fracionamento) || {};
+      S.msg = { txt: '✅ ' + qtd(f.qtd_pai) + ' ' + un(f.pai) + ' virou ' + qtd(f.qtd_filho) + ' ' + un(f.filho) + '. Falta lançar no Omie.' }; S.sep.para = null; carregar();
+    }, function (e) { S.gravando = ''; a.erro = msgErro(e, true); pintar(); });
+  }
+  function ligarTela(el) {
+    el.addEventListener('click', function (ev) {
+      var b = ev.target.closest && ev.target.closest('[data-v336]'); if (!b) return;
+      var a = b.getAttribute('data-v336'), id = b.getAttribute('data-id');
+      if (a !== 'atualizar') S.msg = null;
+      if (a === 'atualizar') { S.msg = null; carregar(); }
+      else if (a === 'lancAbrir' || a === 'desfAbrir') { S.bal = { tipo: a === 'lancAbrir' ? 'lanc' : 'desf', id: Number(id), txt: '' }; pintar(); setTimeout(function () { var x = el.querySelector('[data-v336-in="obs"],[data-v336-in="motivo"]'); if (x) try { x.focus(); } catch (e) {} }, 0); }
+      else if (a === 'balFechar') { S.bal = null; pintar(); }
+      else if (a === 'conferi' || a === 'voltar') conferir(Number(id), a);
+      else if (a === 'irSep') { try { showView('separacao'); } catch (e) {} }
+      else if (a === 'avAbrir') { S.av = { id: Number(id), txt: '1', uid: '' }; pintar(); setTimeout(function () { var x = el.querySelector('[data-v336-in="avq"]'); if (x) try { x.focus(); x.select(); } catch (e) {} }, 0); }
+      else if (a === 'avFechar') { S.av = null; pintar(); }
+      else if (a === 'avOk') avulso(Number(id));
+      else if (a === 'lancOk') fracAcao('lanc', Number(id));
+      else if (a === 'desfOk') fracAcao('desf', Number(id));
+      else if (a === 'novoAbrir') { S.novo.aberto = true; pintar(); setTimeout(function () { var x = document.getElementById('v336Qfilho'); if (x) try { x.removeAttribute('readonly'); x.focus(); } catch (e) {} }, 0); }
+      else if (a === 'novoFechar') { S.novo.aberto = false; S.novo.erro = ''; pintar(); }
+      else if (a === 'escolher') { var k = b.getAttribute('data-k'), r = S.novo.res[k] || [], x = r[Number(b.getAttribute('data-i'))]; if (x) { S.novo[k] = x; S.novo.res[k] = null; S.novo.erro = ''; pintar(); } }
+      else if (a === 'trocar') { S.novo[b.getAttribute('data-k')] = null; pintar(); }
+      else if (a === 'novoOk') salvarNovo();
+      else if (a === 'fatorAbrir') { var it = ((S.d && S.d.itens) || []).find(function (x) { return String(x.id) === String(id); }); if (it) { S.edit = { id: it.id, txt: qtdCampo(it.fator) }; pintar(); } }
+      else if (a === 'fatorFechar') { S.edit = null; pintar(); }
+      else if (a === 'fatorOk') {
+        var ed = S.edit; if (!ed) return; var f = numBr(ed.txt);
+        if (!(f > 0)) { ed.erro = 'O fator é maior que zero (ex. 4).'; pintar(); return; }
+        salvarPar(id, { fator: f }, function (err) { if (err) ed.erro = err; else { S.edit = null; S.msg = { txt: '✅ Fator gravado.' }; } });
+      }
+      else if (a === 'ativo') salvarPar(id, { ativo: b.getAttribute('data-a') === '1' }, function (err) { S.msg = err ? { erro: true, txt: err } : { txt: b.getAttribute('data-a') === '1' ? '✅ Par reativado.' : 'Par desativado.' }; });
+    });
+    el.addEventListener('input', function (ev) {
+      var t = ev.target, k = t && t.getAttribute && t.getAttribute('data-v336-in'); if (!k) return;
+      if (k === 'q') { var lado = t.getAttribute('data-k'); S.novo.q[lado] = t.value; buscar(lado); }
+      else if (k === 'nfator') { S.novo.fator = t.value; }
+      else if (k === 'fator' && S.edit) S.edit.txt = t.value;
+      else if ((k === 'obs' || k === 'motivo') && S.bal) S.bal.txt = t.value;
+      else if (k === 'avq' && S.av) { S.av.txt = t.value; S.av.uid = ''; }
+    });
+    el.addEventListener('change', function (ev) { var t = ev.target; if (t && t.getAttribute && t.getAttribute('data-v336-in') === 'como') { S.novo.como = t.value === 'desembalar' ? 'desembalar' : 'fracionar'; pintar(); } });
+    el.addEventListener('keydown', function (ev) {
+      var t = ev.target, k = t && t.getAttribute && t.getAttribute('data-v336-in'); if (ev.key !== 'Enter' || !k) return;
+      if (k === 'obs' && S.bal) { ev.preventDefault(); fracAcao('lanc', S.bal.id); }
+      else if (k === 'motivo' && S.bal) { ev.preventDefault(); fracAcao('desf', S.bal.id); }
+      else if (k === 'fator') { ev.preventDefault(); var bb = el.querySelector('[data-v336="fatorOk"]'); if (bb) bb.click(); }
+      else if (k === 'nfator') { ev.preventDefault(); salvarNovo(); }
+      else if (k === 'avq' && S.av) { ev.preventDefault(); avulso(S.av.id); }
+    });
+  }
+
+  // ═══ 5 · ⚗ NA 🧺 SEPARAÇÃO (decora a peça do V323 depois da pintura dele) ══════════════════════════════════════════
+  function sepDados() { try { return window.V323 && V323.S && V323.S.d; } catch (e) { return null; } }
+  function sepLinha(lid) {
+    var d = sepDados(); if (!d) return null;
+    for (var i = 0; i < (d.grupos || []).length; i++) { var g = d.grupos[i]; var l = (g.linhas || []).find(function (x) { return x.linha === lid; }); if (l) return { g: g, l: l }; }
+    return null;
+  }
+  // os pares dos produtos da fila: UMA leitura por leitura da fila (S.sep.para = o objeto da fila que ela respondeu)
+  // a fila acabou de chegar? o V323 pode estar trocando o objeto (leitura nova): espera 250 ms e lê os pares da fila que ficou
+  function sepLer() {
+    if (S.sep.tLer) return;
+    S.sep.tLer = setTimeout(function () { S.sep.tLer = 0; sepLer1(); }, 250);
+  }
+  function sepLer1() {
+    var d = sepDados(); if (!d || S.sep.lendo || S.sep.para === d || typeof _v200Rpc !== 'function' || cv() !== 'separacao') return;
+    var cods = {}; (d.grupos || []).forEach(function (g) { (g.linhas || []).forEach(function (l) { if (l.produto) cods[l.produto] = 1; }); });
+    var lista = Object.keys(cods).slice(0, 500);
+    S.sep.para = d;
+    if (!lista.length) { S.sep.mapa = {}; S.sep.pares = []; return; }
+    S.sep.lendo = true;
+    rpc('derivado_lista', { codigos: lista }, false).then(function (r) {
+      S.sep.lendo = false; S.sep.mapa = (r && r.filhos) || {}; S.sep.pares = (r && r.itens) || []; S.sep.num = !!(r && r.numeros);
+      if (S.sep.para !== sepDados()) sepLer();   // a fila mudou durante a leitura: lê de novo para a fila nova
+      sepDecorar();
+    }, function (e) {
+      S.sep.lendo = false; S.sep.mapa = {}; S.sep.pares = [];
+      if (!(e && (e.v200 === 'sem_sql' || e.v200 === 'acesso'))) { try { console.warn('[V336] pares da separação:', e && e.message); } catch (x) {} }
+    });
+  }
+  function escrever() {
+    var t = Date.now(); if (t - S.janela > 10000) { S.janela = t; S.escritas = 0; }
+    if (S.parado) return false;
+    if (++S.escritas > 80) { S.parado = true; try { console.warn('[V336] disjuntor: a decoração da Separação parou (escritas demais em 10 s)'); } catch (e) {} setTimeout(function () { S.parado = false; S.escritas = 0; try { sepDecorar(); } catch (e) {} }, 15000); return false; }
+    return true;
+  }
+  // quanto o filho tem sem abrir nada: o saldo dele no Omie + o fracionado ainda não visto no Omie
+  function proprio(m) { return N(m.saldo) + N(m.pendente); }
+  // quanto as linhas do MESMO produto que vêm ANTES na fila (a ordem do V323: por data da OS) ainda vão tirar da prateleira
+  function antesNaFila(l) {
+    var d = sepDados(), soma = 0, achou = false;
+    (d && d.grupos || []).forEach(function (g) {
+      (g.linhas || []).forEach(function (y) {
+        if (achou) return;
+        if (y.linha === l.linha) { achou = true; return; }
+        if (y.produto === l.produto && y.sit !== 'separada' && y.sit !== 'usada') soma += Math.max(0, N(y.qtd) - N(y.separado));
+      });
+    });
+    return soma;
+  }
+  function sepPrecisa(x) {
+    var l = x.l, m = S.sep.mapa && S.sep.mapa[l.produto];
+    if (!m || !(m.pais || []).length) return null;
+    if (l.sit === 'separada' || l.sit === 'usada') return null;
+    var falta = Math.max(0, N(l.qtd) - N(l.separado)); if (!falta) return null;
+    if (proprio(m) - antesNaFila(l) >= falta) return null;
+    if (!(m.pais || []).some(function (p) { return N(p.livre) > 0; }) && !(S.sep.bal && S.sep.bal.linha === l.linha)) return null;
+    return { m: m, falta: falta };
+  }
+  function sepBalHtml(x, nec) {
+    var l = x.l, b = S.sep.bal, ok = S.sep.ok[l.linha], er = S.sep.erro[l.linha];
+    if (ok) return '<div class="v336-sepbal" data-v336-sepbal="' + esc(l.linha) + '" role="status"><div class="v336-msg ok" style="margin:0">' + esc(ok) + '</div>' +
+      '<div class="v336-lin"><button type="button" class="v336-bt" data-v336s="fechar" data-l="' + esc(l.linha) + '">Entendi</button></div></div>';
+    var m = nec.m, pais = (m.pais || []);
+    var esc1 = pais.find(function (p) { return String(p.id) === String(b.par); }) || pais[0];
+    var q = b.qtd != null ? b.qtd : String(Math.max(1, Math.ceil((nec.falta - Math.max(0, proprio(m) - antesNaFila(l))) / N(esc1.fator || 1))));
+    var nq = numBr(q);
+    var h = '<div class="v336-sepbal" data-v336-sepbal="' + esc(l.linha) + '"><h5>' + (esc1.como === 'desembalar' ? '📦 Desembalar' : '⚗ Fracionar') + ' para separar ' + esc(qtd(nec.falta) + ' ' + (l.unidade || '')) + '</h5>';
+    h += pais.map(function (p) {
+      return '<label class="v336-op"><input type="radio" name="v336par_' + esc(l.linha) + '" data-v336s="par" data-l="' + esc(l.linha) + '" value="' + esc(p.id) + '"' + (String(p.id) === String(esc1.id) ? ' checked' : '') + '>' +
+        '<span><span class="v336-cod">' + esc(p.codigo) + '</span> ' + esc(p.descricao || '') + '<span class="v336-sub">1 ' + esc(p.unidade || '') + ' = ' + esc(qtd(p.fator)) + ' ' + esc(l.unidade || '') +
+        (S.sep.num ? ' · o Omie tem ' + esc(qtd(p.livre)) + ' ' + esc(p.unidade || '') : '') + '</span></span></label>';
+    }).join('');
+    h += '<label for="v336SepQ' + esc(l.linha) + '" style="display:block;font-size:12.5px;margin:6px 0 3px">Quantos abriu?' + (esc1.unidade ? ' (' + esc(esc1.unidade) + ')' : '') + '</label>' +
+         '<input type="text" class="v336-in num" id="v336SepQ' + esc(l.linha) + '" data-v336s="qtd" data-l="' + esc(l.linha) + '" value="' + esc(q) + '" inputmode="decimal" autocomplete="off">' +
+         ' <span class="v336-sub" style="display:inline" data-v336s-prev="1" data-fator="' + esc(N(esc1.fator)) + '" data-un="' + esc(l.unidade || '') + '">' + (nq > 0 ? '= ' + esc(qtd(nq * N(esc1.fator)) + ' ' + (l.unidade || '')) : '') + '</span>' +
+         '<div class="v336-msg erro" style="font-weight:400' + (S.sep.num && nq > N(esc1.livre) ? '' : ';display:none') + '" data-v336s-av="1" data-livre="' + esc(S.sep.num ? N(esc1.livre) : '') + '">O Omie mostra só ' + esc(qtd(esc1.livre)) + ' ' + esc(esc1.unidade || '') + ': grave se você tem na prateleira.</div>' +
+         '<div class="v336-lin"><button type="button" class="v336-bt pri" data-v336s="ok" data-l="' + esc(l.linha) + '"' + (S.sep.gravando ? ' disabled data-pcm-enviando="1"' : '') + '>' +
+         (S.sep.gravando ? '<span class="v336-gira"></span>Gravando…' : 'Confirmar') + '</button><button type="button" class="v336-bt" data-v336s="fechar" data-l="' + esc(l.linha) + '">Cancelar</button></div>' +
+         (er ? '<div class="v336-msg erro" role="alert">' + esc(er) + '</div>' : '') + '</div>';
+    return h;
+  }
+  function sepDecorar() {
+    if (off()) return;
+    var raiz = document.getElementById('viewSeparacao'); if (!raiz || raiz.style.display === 'none' || cv() !== 'separacao') return;   // só com a 🧺 à vista
+    if (!sepDados()) return;
+    if (S.sep.para !== sepDados()) sepLer();   // a fila mudou: lê os pares de novo, mas já decora com os que se conhece
+    if (!S.sep.mapa) return;
+    var pcs = raiz.querySelectorAll('.v323-pc[data-v323linha]');
+    for (var i = 0; i < pcs.length; i++) {
+      var pc = pcs[i], lid = pc.getAttribute('data-v323linha'), x = sepLinha(lid), nec = x && sepPrecisa(x);
+      var bt = pc.querySelector('[data-v336s="abrir"]'), nota = pc.querySelector('.v336-sepnota'), bal = pc.querySelector('.v336-sepbal');
+      var mostraOk = !!(x && S.sep.ok[lid] && S.sep.bal && S.sep.bal.linha === lid);
+      var querBal = !!((nec || mostraOk) && S.sep.bal && S.sep.bal.linha === lid);
+      if (!nec) {
+        if ((bt || nota) && escrever()) { if (bt) bt.remove(); if (nota) nota.remove(); }
+        if (mostraOk) {
+          var hk = sepBalHtml(x, null);
+          if ((!bal || bal.__v336 !== hk) && escrever()) { var wk = document.createElement('div'); wk.innerHTML = hk; var nk = wk.firstChild; nk.__v336 = hk; if (bal) bal.replaceWith(nk); else pc.appendChild(nk); }
+        } else if (bal && escrever()) bal.remove();
+        continue;
+      }
+      var p0 = (nec.m.pais || [])[0] || {};
+      var rot = (p0.como === 'desembalar' ? '📦 Desembalar' : '⚗ Fracionar');
+      var notaTxt = (S.sep.num ? 'O Omie tem ' + qtd(Math.max(0, proprio(nec.m))) + ' ' + (x.l.unidade || '') + ' deste; ' : '') + 'o resto sai de ' +
+                    (nec.m.pais || []).map(function (p) { return p.codigo + ' (' + (p.unidade || '') + ')'; }).join(' ou ') + '.';
+      var acs = pc.querySelector('.v323-acs');
+      if (acs && !bt && !querBal && escrever()) {
+        var b = document.createElement('button'); b.type = 'button'; b.className = 'v323-bt pri'; b.setAttribute('data-v336s', 'abrir'); b.setAttribute('data-l', lid);
+        b.textContent = rot; acs.appendChild(b);
+      } else if (bt && querBal && escrever()) bt.remove();
+      var alvoNota = pc.firstElementChild;
+      if (alvoNota && (!nota || nota.textContent !== '⚗ ' + notaTxt) && escrever()) {
+        if (!nota) { nota = document.createElement('div'); nota.className = 'v336-sepnota'; alvoNota.appendChild(nota); }
+        nota.textContent = '⚗ ' + notaTxt;
+      }
+      if (querBal) {
+        var hb = sepBalHtml(x, nec);
+        if (!bal || bal.__v336 !== hb) {
+          if (!escrever()) continue;
+          var foco = document.activeElement && bal && bal.contains(document.activeElement) ? document.activeElement.getAttribute('data-v336s') : null, sel = foco ? document.activeElement.selectionStart : null;
+          var w = document.createElement('div'); w.innerHTML = hb; var nb = w.firstChild; nb.__v336 = hb;
+          if (bal) bal.replaceWith(nb); else pc.appendChild(nb);
+          if (!foco && S.sep.focoQtd && (!document.activeElement || document.activeElement === document.body)) foco = 'qtd';
+          if (foco) { var ni = nb.querySelector('[data-v336s="' + foco + '"]'); if (ni) try { ni.focus({ preventScroll: true }); if (sel != null && ni.setSelectionRange) ni.setSelectionRange(sel, sel); } catch (e) {} }
+        }
+      } else if (bal && escrever()) bal.remove();
+    }
+  }
+  V336.sepDecorar = sepDecorar;
+  function sepConfirmar(lid) {
+    var x = sepLinha(lid), nec = x && sepPrecisa(x), b = S.sep.bal; if (!x || !nec || !b || S.sep.gravando) return;
+    var pais = nec.m.pais || [], p = pais.find(function (z) { return String(z.id) === String(b.par); }) || pais[0];
+    var q = numBr(b.qtd != null ? b.qtd : (document.getElementById('v336SepQ' + lid) || {}).value);
+    if (!(q > 0)) { S.sep.erro[lid] = 'Diga quantos ' + (p.unidade || '') + ' você abriu (ex. 1).'; sepDecorar(); return; }
+    if (!b.uid) b.uid = uid();
+    S.sep.gravando = true; S.sep.erro[lid] = ''; sepDecorar();
+    rpc('alm_fracionar', { derivado: p.id, qtd_pai: q, card: x.l.card || x.g.card, linha: lid, uid: b.uid }, true).then(function (r) {
+      S.sep.gravando = false;
+      var f = (r && r.fracionamento) || {};
+      S.sep.ok[lid] = '✅ ' + qtd(f.qtd_pai || q) + ' ' + (p.unidade || '') + ' virou ' + qtd(f.qtd_filho || q * N(p.fator)) + ' ' + (x.l.unidade || '') +
+        '. Agora separe pelo ✔ Separei e lance no Omie (Almoxarifado › ⚗ Fracionar).';
+      // o que acabou de gravar já vale na tela (a leitura nova dos pares chega por cima): o filho ganha, o pai perde
+      try { nec.m.pendente = N(nec.m.pendente) + N(f.qtd_filho || q * N(p.fator)); p.livre = Math.max(0, N(p.livre) - N(f.qtd_pai || q)); } catch (e2) {}
+      S.sep.para = null; sepDecorar(); toastSeguro('Fracionamento gravado — falta lançar no Omie', 'success');
+    }, function (e) { S.sep.gravando = false; S.sep.erro[lid] = msgErro(e, true); sepDecorar(); });
+  }
+  document.addEventListener('click', function (ev) {
+    var b = ev.target && ev.target.closest && ev.target.closest('[data-v336s]'); if (!b || off() || !b.closest('#viewSeparacao')) return;
+    var a = b.getAttribute('data-v336s'), lid = b.getAttribute('data-l');
+    if (a === 'abrir') { ev.preventDefault(); S.sep.bal = { linha: lid, par: null, qtd: null, uid: '' }; delete S.sep.ok[lid]; S.sep.erro[lid] = ''; sepDecorar(); setTimeout(function () { var x = document.getElementById('v336SepQ' + lid); if (x) try { x.focus(); x.select(); } catch (e) {} }, 0); }
+    else if (a === 'fechar') { ev.preventDefault(); if (S.sep.bal && S.sep.bal.linha === lid) S.sep.bal = null; delete S.sep.ok[lid]; sepDecorar(); }
+    else if (a === 'ok') { ev.preventDefault(); sepConfirmar(lid); }
+  }, true);
+  document.addEventListener('change', function (ev) {
+    var t = ev.target; if (!t || !t.getAttribute || t.getAttribute('data-v336s') !== 'par' || !S.sep.bal) return;
+    S.sep.bal.par = t.value; S.sep.bal.qtd = null; S.sep.bal.uid = ''; sepDecorar();
+  }, true);
+  document.addEventListener('input', function (ev) {
+    var t = ev.target; if (!t || !t.getAttribute || t.getAttribute('data-v336s') !== 'qtd' || !S.sep.bal) return;
+    S.sep.bal.qtd = t.value; S.sep.bal.uid = '';   // quantidade nova = envio novo (o uid só protege o MESMO pedido repetido)
+    // só a prévia e o aviso mudam (repintar o balão trocaria o Confirmar entre apertar e soltar — auditoria B4)
+    var bal = t.closest('.v336-sepbal'); if (!bal) return;
+    var pv = bal.querySelector('[data-v336s-prev]'), av = bal.querySelector('[data-v336s-av]'), q = numBr(t.value);
+    if (pv) pv.textContent = q > 0 ? '= ' + qtd(q * N(pv.getAttribute('data-fator'))) + ' ' + (pv.getAttribute('data-un') || '') : '';
+    if (av) { var lv = av.getAttribute('data-livre'); av.style.display = lv !== '' && q > N(lv) ? '' : 'none'; }
+  }, true);
+  document.addEventListener('focusin', function (ev) { var t = ev.target; S.sep.focoQtd = !!(t && t.getAttribute && t.getAttribute('data-v336s') === 'qtd'); }, true);
+  document.addEventListener('keydown', function (ev) {
+    var t = ev.target; if (ev.key !== 'Enter' || !t || !t.getAttribute || t.getAttribute('data-v336s') !== 'qtd') return;
+    ev.preventDefault(); ev.stopPropagation(); S.sep.bal && (S.sep.bal.qtd = t.value); sepConfirmar(t.getAttribute('data-l'));
+  }, true);
+  // o V323 repinta a tela inteira (innerHTML) a cada gesto: o observador decora de novo depois de cada pintura (só o que falta)
+  function vigiar() {
+    var raiz = document.getElementById('viewSeparacao'); if (!raiz || raiz.__v336obs || typeof MutationObserver !== 'function') return;
+    raiz.__v336obs = new MutationObserver(function () {
+      if (S.decorando) return;   // o que o próprio V336 escreveu
+      S.decorando = true;
+      try { sepDecorar(); } catch (e) { console.warn('[V336] decorar a Separação:', e); }
+      finally { raiz.__v336obs.takeRecords(); S.decorando = false; }
+    });
+    raiz.__v336obs.observe(raiz, { childList: true, subtree: true });
+  }
+
+  if (off()) return;
+  // a Separação existe com ou sem o menu por área (no celular também)
+  try { vigiar(); } catch (e) {}
+  [800, 2000, 4000].forEach(function (ms) { setTimeout(function () { try { vigiar(); sepDecorar(); } catch (e) {} }, ms); });
+
+  // chave desligada, celular ou sem o menu por área: a aba não entra no caminho de nada
+  if (!ligadoMenu()) return;
+
+  // ═══ 6 · A TROCA DE TELA ═════════════════════════════════════════════════════════════════════════════════════════
+  V336.orig.showView = showView;
+  // ⚠ SOBRESCREVE showView
+  showView = function (v) {
+    var r = V336.orig.showView.apply(this, arguments);
+    try {
+      garantir(); vigiar();
+      var el = document.getElementById('viewV336Fracionar'), nav = document.getElementById('navV336Fracionar'), sou = cv() === VIEW;
+      if (el) { var d = sou ? '' : 'none'; if (el.style.display !== d) el.style.display = d; }
+      if (nav) nav.classList.toggle('active', sou);
+      if (sou) { pintar(); carregar(); }
+      if (cv() === 'separacao') { S.sep.para = null; setTimeout(sepDecorar, 0); }
+    } catch (e) { console.warn('[V336] trocar de tela:', e); }
+    return r;
+  };
+
+  // ═══ 7 · LIGAR ═══════════════════════════════════════════════════════════════════════════════════════════════════
+  try { garantir(); if (window.V330 && V330.aplicar) V330.aplicar(); } catch (e) { console.warn('[V336] ligar:', e); }
+  [600, 1500, 2600, 6000].forEach(function (ms) { setTimeout(function () { try { garantir(); if (window.V330 && V330.aplicar) V330.aplicar(); } catch (e) {} }, ms); });
+  setTimeout(function () { try { if (/^#almoxfracionar$/i.test(location.hash || '') && pode() && cv() !== VIEW) showView(VIEW); } catch (e) {} }, 2700);
+})();
+</script>
+<!-- ████ FIM PCM V336 ████ -->
 
 </body>
 </html>
