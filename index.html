@@ -108349,7 +108349,7 @@ html:not(.v331-off) #v238Jan input[data-v238sel], html:not(.v331-off) #v238Jan i
     var E = S.est, ch = esc(it.chave);
     if (!E.d) {
       if (!E.carregando && !E.erro) setTimeout(carregarEst, 0);   // a 1ª linha aberta pede o cadastro (fora da pintura)
-      return E.erro ? '<div class="v334-msg erro" role="alert">' + esc(E.erro) + '</div>' : '<div class="v334-esq" style="height:34px" aria-busy="true"></div>';
+      return E.erro ? '<div class="v334-msg erro" role="alert">' + esc(E.erro) + ' <button type="button" class="v334-bt" data-v334="relerEst">Tentar de novo</button></div>' : '<div class="v334-esq" style="height:34px" aria-busy="true"></div>';
     }
     var at = ativas();
     if (!at.length) return '<div class="v334-sub" style="margin:0 0 6px">Nenhuma estante no cadastro ainda.</div>' +
@@ -108447,7 +108447,7 @@ html:not(.v331-off) #v238Jan input[data-v238sel], html:not(.v331-off) #v238Jan i
   }
   function abrirEst(rolar) {
     S.est.aberto = true; pintar();
-    if (!S.est.d && !S.est.carregando) carregarEst();
+    if (!S.est.carregando) carregarEst();   // abrir sempre relê: outra pessoa pode ter criado ou mudado estantes
     if (rolar) setTimeout(function () { var x = document.getElementById('v341Est'); if (x) try { x.scrollIntoView({ block: 'start', behavior: 'smooth' }); } catch (e) {} }, 0);
   }
   function criarEst() {
@@ -108468,13 +108468,13 @@ html:not(.v331-off) #v238Jan input[data-v238sel], html:not(.v331-off) #v238Jan i
   function salvarEst(cod, campo, valor) {
     var E = S.est; if (E.salvando) return;
     var e = lista().find(function (x) { return estCod(x) === cod; }); if (!e) return;
-    var p = { rua: e.rua, lado: e.lado, estante: e.estante }; p[campo] = valor;
+    var p = { rua: e.rua, lado: e.lado, estante: e.estante, atualizado_em: e.atualizado_em }; p[campo] = valor;   // a versão lida: o banco recusa se outro mudou
     E.salvando = cod; E.msg[cod] = null; pintar();
     rpc('alm_estante_salvar', p, true).then(function (r) {
       E.salvando = ''; var n = r && r.estante;
-      if (n) { e.andares = n.andares; e.colunas = n.colunas; e.ativo = n.ativo; }
+      if (n) { e.andares = n.andares; e.colunas = n.colunas; e.ativo = n.ativo; e.atualizado_em = n.atualizado_em; }
       E.msg[cod] = { erro: false, txt: '✅ Gravado' }; pintar();
-    }, function (er) { E.salvando = ''; E.msg[cod] = { erro: true, txt: msgErro(er, true) }; var pe = document.getElementById('v341Est'); if (pe) pe.__v = null; pintar(); });   // a lista volta ao que o banco tem
+    }, function (er) { E.salvando = ''; E.msg[cod] = { erro: true, txt: msgErro(er, true) }; var pe = document.getElementById('v341Est'); if (pe) pe.__v = null; pintar(); if (/outra pessoa mudou/.test(E.msg[cod].txt)) carregarEst(); });   // a lista volta ao que o banco tem
   }
   V334.salvarEst = salvarEst;
 
@@ -108504,7 +108504,7 @@ html:not(.v331-off) #v238Jan input[data-v238sel], html:not(.v331-off) #v238Jan i
       var b = t.closest && t.closest('[data-v334]');
       if (b) {
         var a = b.getAttribute('data-v334');
-        if (a === 'atualizar') carregar();
+        if (a === 'atualizar') { carregar(); if (S.est.d) carregarEst(); }   // PCM V341: o ⟳ relê também as estantes
         else if (a === 'mais') carregar(true);
         else if (a === 'limpar') { S.busca = ''; S.rua = ''; var i = document.getElementById('v334Busca'); if (i) i.value = ''; carregar(); }
         else if (a === 'importar') { S.imp.aberto = !S.imp.aberto; pintar(); if (S.imp.aberto) setTimeout(function () { var x = document.getElementById('v334ImpTxt'); if (x) try { x.focus(); } catch (e) {} }, 0); }
