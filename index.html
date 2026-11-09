@@ -5454,9 +5454,18 @@ v50 — Resiliência de rede: retry/backoff em gsGet e syncToGS
   Tambem (linhas pre-existentes, declaradas): a conferencia de formato da TELA na Separacao (V323: endereco da peca, lugar do kit,
   endereco novo da lista, "onde estava?") e no Recebimento (V325: "guardar em") aceita o formato novo — 5 regex e 5 mensagens;
   quem confere o cadastro de faces e o banco. As listas do formato novo nessas telas ficam para a parte 3.
+  PCM V343 — 09/11/2026 — ALMOXARIFADO > ESTOQUE > ETIQUETAS PARA QUALQUER PECA E PARA O ENDERECO (ProperCare-backlog#93, parte 3), sobre
+  o V342 no ar. Sem SQL, sem GAS. Botao novo "Etiquetas" no Estoque (depois do Importar): painel no lugar com dois modos. Pecas: monta uma
+  lista "da prateleira" (face > coluna > andar; coluna e andar opcionais) e/ou "por codigos" (colar do Excel; 2a coluna = copias) e imprime
+  com as copias de cada linha (1 a 50; no maximo 300 etiquetas por vez); a etiqueta e a MESMA da Separacao (100x40, QR = codigo do produto,
+  endereco embaixo) e o banco anota que a peca tem etiqueta (alm_etiqueta_marcar). Enderecos: a etiqueta do proprio endereco (QR = 2-A-3)
+  por face (ou todas), coluna e andar, com copias. Na linha aberta da peca: "Imprimir etiqueta" com as copias. Rpc usadas (todas ja no ar):
+  alm_faces, alm_estoque_lista, alm_endereco_importar (so a previa, gravar = nao), alm_etiqueta_marcar. Linha pre-existente alterada: UMA,
+  no detalhe da peca do bloco V334 (declarada nele). Chave de volta: localStorage pcm_v343 = off. Mais o <title>, o app-build, as reservas
+  do carimbo e este comentario.
 -->
-<title>ProperCare Manager · Gestão PGP v4.03 (PCM V342)</title>
-<meta name="app-build" content="PCM_V342" data-date="2026-11-09">
+<title>ProperCare Manager · Gestão PGP v4.03 (PCM V343)</title>
+<meta name="app-build" content="PCM_V343" data-date="2026-11-09">
 <link rel="icon" type="image/jpeg" href="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/4gHYSUNDX1BST0ZJTEUAAQEAAAHIAAAAAAQwAABtbnRyUkdCIFhZWiAH4AABAAEAAAAAAABhY3NwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlkZXNjAAAA8AAAACRyWFlaAAABFAAAABRnWFlaAAABKAAAABRiWFlaAAABPAAAABR3dHB0AAABUAAAABRyVFJDAAABZAAAAChnVFJDAAABZAAAAChiVFJDAAABZAAAAChjcHJ0AAABjAAAADxtbHVjAAAAAAAAAAEAAAAMZW5VUwAAAAgAAAAcAHMAUgBHAEJYWVogAAAAAAAAb6IAADj1AAADkFhZWiAAAAAAAABimQAAt4UAABjaWFlaIAAAAAAAACSgAAAPhAAAts9YWVogAAAAAAAA9tYAAQAAAADTLXBhcmEAAAAAAAQAAAACZmYAAPKnAAANWQAAE9AAAApbAAAAAAAAAABtbHVjAAAAAAAAAAEAAAAMZW5VUwAAACAAAAAcAEcAbwBvAGcAbABlACAASQBuAGMALgAgADIAMAAxADb/2wBDAAUDBAQEAwUEBAQFBQUGBwwIBwcHBw8LCwkMEQ8SEhEPERETFhwXExQaFRERGCEYGh0dHx8fExciJCIeJBweHx7/2wBDAQUFBQcGBw4ICA4eFBEUHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh7/wAARCAGGAc0DASIAAhEBAxEB/8QAHAABAAIDAQEBAAAAAAAAAAAAAAYHBAUIAwIB/8QATBAAAQMCAgMJCBAFBAMBAAAAAAECAwQFBhEHIUESFjFRVnSBk7EIFyJVYZHR0hMUIzI0NTY3QmJxc6GissEVM4KU8FJ1krNypMKE/8QAHAEBAAIDAQEBAAAAAAAAAAAAAAYHAQMEBQII/8QAOhEAAQMBAwgHCAMAAwEBAAAAAAECAwQFETEGFCFBU3GRsRMVUVJh0eESIjI0NXKSwTOB8CRC8SOh/9oADAMBAAIRAxEAPwAACqj9AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA+JpY4YXzTSNjjY1XPe5ckaicKqvEZxMKqIl6iaWOGF800jY42NVz3uXJGonCqrxFFaRtJ1fcLj7Uw5VzUdDA5fd413L514+NG8SdK8SeGlbSDJiCZ9ptMjo7Ux3hOTUtSqbV+rxJ0rsRK7JjZFjJEnTTp72pOzf48itMo8pnTuWnpHXNTFya93hz3Y7/fri3lDcevUb9cW8obj16mgB72bQ9xOCERz2p2juKm/wB+uLeUNx69Rv1xbyhuPXqaADNoe4nBBntTtHcVN/v1xbyhuPXqN+uLeUNx69TQAZtD3E4IM9qdo7ipv9+uLeUNx69Rv1xbyhuPXqaADNoe4nBBntTtHcVN/v1xbyhuPXqN+uLeUNx69TQAZtD3E4IM9qdo7ipv9+uLeUNx69Rv1xbyhuPXqaADNoe4nBBntTtHcVN/v1xbyhuPXqN+uLeUNx69TQAZtD3E4IM9qdo7ipv9+uLeUNx69TY4ZxRjW4YgoKKkvldLNLO1rWySK5q69e6RdmWar5CHlxdz5hzVUYmqY+OClzT/AJuT9P8AyOOvWClp3SKxPDQmJ6dkNq6+sZC2R3auldCJj/u0uEAFdlzgAAAAAAqTTXjivttwisVkrHU0rGeyVcseW6RV1tYi7NWtftQszEV1p7JZKu61S+5U0avyzy3S7Gp5VXJOk5UutdUXO5VNwq37ueokdI9fKq7PISGwKFJpFlel7W8/TyIblfazqWFtPE65ztK3YonqvJTbb9cW8obj16jfri3lDcevU0AJfm0PcTghW+e1O0dxU3+/XFvKG49eo364t5Q3Hr1NABm0PcTggz2p2juKm/364t5Q3Hr1G/XFvKG49epoAM2h7icEGe1O0dxU3+/XFvKG49eo364t5Q3Hr1NABm0PcTggz2p2juKm/wB+uLeUNx69Rv1xbyhuPXqaADNoe4nBBntTtHcVN/v1xbyhuPXqN+uLeUNx69TQAZtD3E4IM9qdo7ipv9+uLeUNx69T0p8dYugnZM2/1zlYue5kk3TV+1F1KRwBaaFf+icEMpXVKLekjuKnTGjnGlFiy3fRguMLU9sU+f5m8bV/DgXYqys5HtFxrbTcYbhb53QVMLt0x7exeNF4jo3RzjSixZbvowXGFqe2KfP8zeNq/hwLsVYda9kLTL0sXwcvQsrJzKNK5Ep6hbpEwXvev/qErAB4BLwAAAAAAAAAAAAAAAAfMj2Rxukke1jGornOcuSIicKqoCrcJHsjjdJI9rGNRXOc5ckRE4VVSg9LWP5L9UPtFplVtqjdk96alqXJt/8AFNibeHiy9NLGkJ98kks1mlcy2NXKWVNS1Cp/8eTaVsTKxrH6K6eZPe1J2evLeVnlLlJnF9LSr7mte3wTw57sQAJKQgAAAAAAAAAAAAAAAAAAAAAzLHbai73eltlI3OapkSNvkz4VXyIma9B1XZLdT2i00tspG7mGmjSNvGuXCq+VV19JVXc+Yc1VGJqmPjgpc0/5uT9P/IuEhOUFZ0syQtwbz9PMtHI6zM3plqXp7z8Pt9V08AACPEyAAAABrsS3ansViq7rUr7nTxq7c55bp3A1qeVVyTpPpjHPcjW4qfEkjYmK963ImlSqO6CxH7LU0+GqaTNsWU9Vkv0lTwGr9ia+lOIqQyLnW1FxuFRX1b93PUSOkkdxqq5+YxyyqKlbSwNiTVjv1lH2pXur6p87teHgmoAA6zzwAAAAAAAAAAAAAAAAAAZdouNbabjDcLfO6CphdumPb2LxovEYgMOajkuXAy1yscjmrcqHTGjnGlFiy3fRguMLU9sU+f5m8bV/DgXYqys5HtFxrbTcYbhb53QVMLt0x7exeNF4jo3RzjSixZbvowXGFqe2KfP8zeNq/hwLsVYRa9kLTL0sXwcvQtPJzKNK5Ep6hbpEwXvev/qErAB4BLwAAAAAAAAAAfMj2Rxukke1jGornOcuSIicKqoCrcJHsjjdJI9rGNRXOc5ckRE4VVSh9LGkJ98kks1mlcy2NXKWVNS1Cp/8eTaNLGkJ98kks1mlcy2NXKWVNS1Cp/8AHk2lbEysex+iunnT3tSdnry3lZ5S5S5xfS0q+5rXt8E8Oe7EACSkIAAAAAAAAAAAAAAAAAAAAABmWO21F3u9LbKRuc1TIkbfJnwqvkRM16DDLj7n3Daok+JqqP3yLBSZ/ncn6f8AkcdfVJSwOkXHVvPSsmz3WhVsgTBcfBEx/wB2lqWS3U9otNLbKRu5hpo0jbxrlwqvlVdfSZgBWznK5VcuKl3sY2NqNalyJoAAPk+gAAAUr3QWI/Zq2nw3TSeBBlNVZLwvVPBb0Iuf9ScRbOJbtT2KxVd1qV9zp41duc8t07ga1PKq5J0nKtzrai43Cor6t+7nqJHSSO41Vc/MSPJ6j6SVZ3YNw3+hCss7T6GBKVi6X6V3J5ryUxwATQrEAAAAAAAAAAAAAAAAAAAAAAAAGXaLjW2m4w3C3zugqYXbpj29i8aLxGIDDmo5LlwMtcrHI5q3Kh0xo5xpRYst30YLjC1PbFPn+ZvG1fw4F2KsrOR7Rca203GG4W+d0FTC7dMe3sXjReI6N0c40osWW76MFxhantinz/M3jav4cC7FWEWvZC0y9LF8HL0LTycyjSuRKeoW6RMF73r/AOoSsAHgEvAAAAB+Pc1jVe9yNa1M1VVyREAD3NY1XvcjWtTNVVckRCitLekNbw6Sx2SVUtzVynnbw1CpsT6nb9nC0taRHXd0tjscyttzV3M87VyWoXiT6nb9nDWRMbHsfo7p5006k7PFfHlvK1ylyl6e+lpV93Wvb4J4dvbuxAAkxBgAAAAAAAAAAAAAAAAAAAAAAADOsFsqLzeaS10iZzVMiMRctTU2uXyIma9B1XaKCntVrprdSN3MFPGkbE25InCvlXhKr7nzDm4iqMTVMet+cFLmmxPfuTp8HocW8QjKCs6WboW4N5+nmWlkdZmb0y1L095+H2+uPAAAj5MQAAAAa7Et2p7FYqu61K+508au3OeW6dwNanlVck6T6Yxz3I1uKnxJI2JivetyJpUqbugsR+zVtPhumk8CDKaqyXheqeC3oRc/6k4ipjIudbUXG4VFfVv3c9RI6SR3Gqrn5jHLKoqVtLA2JNXPWUdale6vqnzu14eCakAAOs4AAAAAAAAAAAAAAAAAAAAAAAAAAAAZdouNbabjDcLfO6CphdumPb2LxovEYgMOajkuXAy1yscjmrcqHTGjnGlFiy3fRguMLU9sU+f5m8bV/DgXYqys5HtFxrbTcYbhb53QVMLt0x7exeNF4jo3RzjSixZbvowXGFqe2KfP8zeNq/hwLsVYRa9kLTL0sXwcvQtPJzKNK5Ep6hbpEwXvev8A6hKwAeAS8EC071M9PgJ6QTPj9mqWRyblct01UcqtXyakJ6V7p/8AkI3nkfY477LS+sjv7TyLeVUs2ZU7qnPwALIKTAAAAAAAAAABIcC4TuGK7qlLSosdPHktRUKngxt/dy7E/Y1yysiYr3rciG2CCSokSONL3LggwLhO4YruqUtKix08eS1FQqeDG393LsT9i5qfRNg6JqJJT1c6omSq+oVM14/ByJXh2y2+wWqK222FI4Y+FV98921zl2qpsSD19tzzyf8AyVWtTD1LVsnJalpYf+Q1HvXG/SieCf7SQjvV4L8XTf3MnpHerwX4um/uZPSTcHD1jV7ReKnq9SWdsG8EIR3q8F+Lpv7mT0jvV4L8XTf3MnpJuB1jV7ReKjqSztg3ghCO9XgvxdN/cyekd6vBfi6b+5k9JNwOsavaLxUdSWdsG8EIR3q8F+Lpv7mT0n6mivBSL8WzL/8Apk9JNgOsavaLxUz1LZ2wbwQ8KGkpqGjio6OBkFPE3cxxsTJGoe4Bxqqqt6npNajURES5EAAMGQAAAUn3QGJFqK+HDdNJ7lT5S1OS8Mip4LehFz6fIWzim8QWGwVl2qMlbTxqrW5+/dwNb0rkhytcKuevrp62qesk88jpJHLtcq5qSTJ6j6SRZ3Jobhv9CE5Z2n0MCUjF0v0ru9V5HgACZlZAAAAAAAAl2ifDm+LFsDJo91RUvu9RmmpURdTelcujM1TTNhjWR2CG+lpn1MzYY8XLcWJgDRfY34bpqvEFFJU1tSxJVY6Z7EiautG5NVNeWWee0kHexwP4k/8Aam9cmIK8ltOqkerukVL9SKtxc1PYdBDE2PomrcmKtRVXxUh3exwP4k/9qb1z6j0aYIjdum2Nqr9aolcnmVxLwa8/qto7ipu6poNgz8U8iK97vBfiGDrH+sO93gvxDB1j/WJUDGfVO0dxUz1VQ7Fn4p5FZ440U2mrtr5sOU6UVdGmbY/ZFVkyf6darkvEvBx8aUZVQTUtRJT1ET4po3K17HpkrVThRUOvyBaU8Aw4lp3XG3NZFd426l4EqET6LvLxL0Lq4Pbsm2nRu6KoW9F1rq3+HIi2UOS7JWdPRtucmLUwXcnbz3488g9KqCalqJKeoifFNG5WvY9MlaqcKKh5kxRbytFRUW5QADIAAAAAABsMN19Xbb7R1tFM6KaOZuTmrwpnrReNFTUqGvPe3/D6f71vah8vRHNVFPuNytejmrcqHXgAKqP0ACvdP/yEbzyPscWEV7p/+QjeeR9jjvsv5yPeeRb/ANNm+1Tn4AFkFJgAAAAAAA3OC7BPibEVPaYZWwpJm6SRUz3DETNVy2rxeVT4ke2NqvctyIbIonzSJGxL1Vbk3qZGBcJ3DFd1SlpUWOnjyWoqFTwY2/u5difsdI4dstvsFqittthSOGPhVffPdtc5dqqMO2W32C1RW22wpHDHwqvvnu2ucu1VNiQG1LUfWvuTQxME/alu2BYMdmR+07TIuK9ngn+0gAHkkiAAAAAAAAAAAAAAAAAAABrMU3iCw2Csu1RkraeNVa3P37uBrelckPpjHPcjW4qa5ZWxMWR63IiXqVL3QOI/bNxgw5TSZxU2UtTkvDIqeC3oRc/6vIVSe9wq56+unrap6yTzyOkkcu1yrmp4Fl0VM2lgbEmrnrKPtOudX1T53a10eCakAAOo4AAAAAAAdH6HsOfwDCUT549zW12U8+aa2oqeA3oT8VUp7RPhzfFi2Bk0e6oqX3eozTUqIupvSuXRmdKkVyjrLkSnbvX9J++BYGRVmXq6teng39r+uIABEiwwAAAAAAAACBaU8Aw4lp3XG3NZFd426l4EqET6LvLxL0Lq4OfaqCalqJKeoifFNG5WvY9MlaqcKKh1+V9pdwPTX23TXmia2K500SvcqJqna1M9yv1sk1L0L5JJY1rrEqQTL7upez05EIymycSoRaumS56aVTt8d/Pfjz6ACZlZgAAAAAA97f8AD6f71vah4Hvb/h9P963tQwuBluKHXgAKpP0ECvdP/wAhG88j7HFhFe6f/kI3nkfY477L+cj3nkW/9Nm+1Tn4AFkFJgAAAAAAnugb5wIubS9iECJ7oG+cCLm0vYhxWj8pJuXkenYv1CD7m8zoYAFal4AAAAAAAAAAAAAAAAAAAAAApLugcR+2bjBhymkzipspanJeGRU8FvQi5/1eQtrFN4gsNgrLtUZK2njVWtz9+7ga3pXJDla4Vc9fXT1tU9ZJ55HSSOXa5VzUkmTtH0kizuwbhv8AQhOWdp9DAlIxdL9K7vVeR4AAmZWQAAAAAAAJjoiw5vgxbCs0e6o6LKefNNS5L4LelfwRTTPM2CN0jsEOilpn1UzYY8XLcW/ogw2uHsJxuqI9xW1uU8+aa2pl4LehPxVSZgFaVE7p5XSOxUvKjpWUkDYI8Gpd/t+IABpOkAAAAAAAAAGHe/iWu5vJ+lTMMO9/EtdzeT9KmyL427zVUfxO3KckAAtMoEAAAAAAHvb/AIfT/et7UPA97f8AD6f71vahhcDLcUOvAAVSfoIFe6f/AJCN55H2OLCK90//ACEbzyPscd9l/OR7zyLf+mzfapz8ACyCkwAAAAAAT3QN84EXNpexCBE90DfOBFzaXsQ4rR+Uk3LyPTsX6hB9zeZ0MACtS8AAAAAAAAAAAAAAAAAAAAazFV3jsOHa27yt3SU0Sua3/U5dTU6XKiH0xivcjW4qfEsjYmLI9bkRL13IVFp/xItVdIsOU0nuFJlJUZL76VU1J0Ivnd5CrD2rametrJqypkWSeeR0kj14XOVc1U8Sy6OmbSwtibq56yjbSrn19U+d2tdHgmpAADqOEAAAAAAHSeiPDm97CUKTR7msrMp6jNNaZp4LehPxVSndEWHN8GLYVmj3VHRZTz5pqXJfBb0r+CKdJEUyjrMKdu9f0n74Fg5FWZpdWvTwb+1/XEAAiZYQAAAAAAAAAAAAMO9/EtdzeT9KmYYd7+Ja7m8n6VNkXxt3mqo/iduU5IABaZQIAAAAAAPe3/D6f71vah4Hvb/h9P8Aet7UMLgZbih14ACqT9BArLuiZHtwnQxtcqNfWpuk48mOyLNK07olrVwbRPy8JLgxEXyLHJ6EPRshf+bHvPFyiRVsya7s/aFDgAsYpYAAAAAAE90DfOBFzaXsQgRPdA3zgRc2l7EOK0flJNy8j07F+oQfc3mdDAArUvAAAAAAAAAAAAAAAAAAAHjW0tNW0ktJVwsnglbuZI3pmjkPYGUVUW9DDmo5FRU0EV73eC/EMHWP9Yd7vBfiGDrH+sSoHTn1TtHcVOHqqh2LPxTyIr3u8F+IYOsf6w73eC/EMHWP9YlQGfVO0dxUdVUOxZ+KeRFe93gvxDB1j/WHe7wX4hg6x/rEqAz6p2juKjqqh2LPxTyIr3u8F+IYOsf6w73eC/EMHWP9YlQGfVO0dxUdVUOxZ+KeRr7JZbVZKZ1NaqGGkjcubkYmty8arwr0mwAOd73PX2nLep2RxsjajGJciak0IAAfJ9gAAAAAAAAAAAAw738S13N5P0qZhh3v4lrubyfpU2RfG3eaqj+J25TkgAFplAgAAAAAA97f8Pp/vW9qHge9v+H0/wB63tQwuBluKHXgAKpP0ECtu6I+RVH/ALiz/rlLJK27oj5FUf8AuLP+uU9CyvnI9542UH02bcUKACxylQAAAAAAT3QN84EXNpexCBE90DfOBFzaXsQ4rR+Uk3LyPTsX6hB9zeZ0MACtS8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAYd7+Ja7m8n6VMww738S13N5P0qbIvjbvNVR/E7cpyQAC0ygQAAAAAAe9v+H0/3re1DwPe3/D6f71vahhcDLcUOvAAVSfoIFbd0R8iqP/cWf9cpZJW3dEfIqj/3Fn/XKehZXzke88bKD6bNuKFABY5SoAAAAAAJ7oG+cCLm0vYhAie6BvnAi5tL2IcVo/KSbl5Hp2L9Qg+5vM6GABWpeAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMO9/EtdzeT9KmYYd7+Ja7m8n6VNkXxt3mqo/iduU5IABaZQIAAAAAAPe3/D6f71vah4Hvb/AIfT/et7UMLgZbih14ACqT9BArzugGtXAsaqiKra2NU8i7l6fuWGV7p/+QjeeR9jjvsv5yPeeRb/ANNm+1Tn4AFkFJgAAAAAAnugb5wIubS9iECJ7oG+cCLm0vYhxWj8pJuXkenYv1CD7m8zoYAFal4AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAw738S13N5P0qZhh3v4lrubyfpU2RfG3eaqj+J25TkgAFplAgAAAAAA97f8Pp/vW9qHge9v+H0/wB63tQwuBluKHXgAKpP0ECvdP8A8hG88j7HFhFe6f8A5CN55H2OO+y/nI955Fv/AE2b7VOfgAWQUmAAAAAACe6BvnAi5tL2IQInugb5wIubS9iHFaPykm5eR6di/UIPubzOhgAVqXgAAAAAAAAAAAAAAAfMj2RxukkcjWNRVc5VyRETac8Ys0lYirr5UyWu5zUdA16tp440RM2Iupy6s814fIWNp0xH/CcMpaqeTKquWbFyXW2JPfr06m9K8Rz+S2wLPasazyNvvwv5ldZYWxI2ZtLA5U9nS65btK4J/Saf7JLv9xhygrPOnoG/3GHKCs86egjQJFmsHcTghDM/qtq7ivmSXf7jDlBWedPQN/uMOUFZ509BGgM1g7icEGf1W1dxXzJLv9xhygrPOnoG/wBxhygrPOnoI0BmsHcTggz+q2ruK+ZJd/uMOUFZ509BtMJYvxtccTW6ihvFTO6WoaixvyVqtzzdnq4Ms1Ugxcvc+Yc3EVRiapj1vzgpc02J79ydPg9DjitDN6WndIrE8NCYnp2MtbXVjIWyuuvvXSuhEx/3aW8ACvS5QAAAAAAAAAAAAAAAAAAYd7+Ja7m8n6VMww738S13N5P0qbIvjbvNVR/E7cpyQAC0ygQAAAAAAe9v+H0/3re1DwPe3/D6f71vahhcDLcUOvAAVSfoIFe6f/kI3nkfY4sIr3T/APIRvPI+xx32X85HvPIt/wCmzfapz8ACyCkwAAAAAAT3QN84EXNpexCBE90DfOBFzaXsQ4rR+Uk3LyPTsX6hB9zeZ0MACtS8AAAAAAAAAAAAAfMj2RxukkcjWNRVc5VyRETafRXmnPEaWnDX8Jp5Mqu45sXJdbYk98vT73pXiOilp3VMzYm6zjtCtZRUz534NTiupP7Up/SFiB+JcVVVxRV9rovsVM1dkbeDz61+1VI+AWXFG2JiMbghRs8z55HSvW9VW9QADYagAAAAADPw7aqi93uktVKnutTIjEXLNGpwq5fIiZr0HVVooKe1Wumt1I3cwU8aRsTbkicK+VeEq7ufMOexU1RiWpj8KXOClzT6KL4bulUy6F4y2yEZQVvTTdC3BvP08y08j7MzemWpenvPw+3Vxx4AAEfJgAAAAAAAAAAAAAAAAAADDvfxLXc3k/SpmGHe/iWu5vJ+lTZF8bd5qqP4nblOSAAWmUCAAAAAAD3t/wAPp/vW9qHge9v+H0/3re1DC4GW4odeAAqk/QQK90//ACEbzyPscWEV7p/+QjeeR9jjvsv5yPeeRb/02b7VOfgAWQUmAAAAAACb6EKqnpdIFL7YlbGk0UkTFcuSK5U1J05echAaqtVHNVUVNaKmw01EKTROjVbr0VDpo6haWoZMiX+yqLwOwwVbok0iJckisV9mRK1Mm09Q9f5/E1y/6/Lt+3htIrirpJKWRY5E9S7LOtGG0IUmhXRrTWi9igAHKdwAAAAAAAAB8yyMiifLI9GMY1XOcq5IiJwqcuY+v78SYpq7mqr7CrvY6dq/Rib73z61Xyqpb+nbEf8AC8NttFPJlVXHNrsl1thT33n1N+zMoImOTtH7DFqHYroTd/uRWuWlp9JK2jYuhuld+pP6TmAASYgwAAAAAAM/DtqqL3e6S1Uqe61MiMzyz3KcKuXyIma9BgF0dz5hz2KmqMS1MfhS5wUuafRRfDd0qmXQvGcVoVaUlO6TXq3np2PZ62hVshTDFdyY+W8tK1UNPbLbT2+kZuIKeNsbE8iJlr8pkgFbOcrlvXEu5jUY1GtS5EAAMH0AAAAAAAAAAAAAAAAAADV4sraa34auNVVytiiZTvRVcvCqtVERONVXUiGTd7jRWm3TXC4TsgpoW7p73dicarsTac56Rsa1uLLjkm7gtsLl9r0+f53cbl/DgTaq+rZdnSVciLg1MV/RH7ftqKzoFaul7k0J+18OZEwAWEU4AAAAAAD3t/w+n+9b2oeB72/4fT/et7UMLgZbih14ACqT9BAr3T/8hG88j7HFhFe6f/kI3nkfY477L+cj3nkW/wDTZvtU5+ABZBSYAAAAAAAAAaqtVHNVUVNaKmwvHRJpES5JFYr7MiVqZNp6h6/z+Jrl/wBfl2/bw0cGqrVRzVVFTWipsOKuoY6yP2H/ANL2HpWVas1mz9LFhrTUqf7BTsMFW6JNIiXJIrFfZkStTJtPUPX+fxNcv+vy7ft4bSK/q6SSlkWORPUuOzrRhtCFJoV0a01ovYoAByncAAAD5lkZFE+WR6MYxquc5VyREThU+iudO2I/4Xhttop5Mqq45tdkutsKe+8+pv2ZnTSU7qmZsTdZxWjWsoaZ87/+qcV1J/alQY+v78SYpq7mqr7CrvY6dq/Rib73z61XyqpoQCy442xsRjcEKNmmfPI6R63qq3qAAfZrAAAAAAM/DtqqL3e6S1Uqe61MiMzyz3KcKuXyIma9B1XaqGntltp7fSM3EFPG2NieREy1+Uq3ufMOexU1RiWpj8KXOClzT6KL4bulUy6F4y2yEZQVnTTdC3BvP08y08j7MzelWoenvPw+3Vxx4AAEfJgAAAAAAAAAAAAAAAAAADEu9xorTbprhcJ2QU0Ld097uxONV2JtF3uNFabdNcLhOyCmhbunvd2JxquxNpznpGxrW4suOSbuC2wuX2vT5/ndxuX8OBNqr6lmWY+tf2NTFf0nieDbluRWXF2vXBP2vhzGkbGtbiy45Ju4LbC5fa9Pn+d3G5fw4E2qsTAJ9DCyFiMYlyIVDU1MtVKssq3uUAA2mgAAAAAAHvb/AIfT/et7UPA97f8AD6f71vahhcDLcUOvAAVSfoIGlxrh6nxPh6e1VEixK9UfFKiZ7h6cC5bU2KnEqm6B9xyOjej2rcqGqaFk8bo5EvaqXKcm4jstwsF2lttyhWOaPWipra9uxzV2ov8Ams1x1FjrClvxXalpapEjqI81p6hEzdE792rtT98lObsR2W4WC7S225QrHNHrRU1te3Y5q7UX/NZPrLtRlay5dD0xT9oVDb1gyWZJ7TdMa4L+l8eZrgAesR8AAAAAAAAANVWqjmqqKmtFTYSOLHWL442xtxBXblqZJun7pfOutSOA1viZJ8aIu82xTyw39G5Uv7FuJLv9xhygrPOnoG/3GHKCs86egjQNeawdxOCG7P6rau4r5kl3+4w5QVnnT0Df7jDlBWedPQRoDNYO4nBBn9VtXcV8yS7/AHGHKCs86eg0l0uNddKx1ZcauWqqHalkkdmuXF9nkMUH2yGNi3taif0a5aqaVPZkeqp4qqgAG00AAAAAAA2OGbRUX2/Ulppv5lRIjVdlnuG8LndCIq9Bri6+59w57BQ1GJKmP3Sozhpc04GIvhO6VTL+leM4bQq0pKd0mvVvPUsazltCsZDqxXcmPkWhbKKnt1vp6CkjSOCnjSONqbERO0yACt1VXLepdrWoxEa1LkQAAwfQAAAKG0j6Rr1JiWopLHcX0tDSuWJqxImcrk1Ocq5cGeaJsyTMszSviPe7hKeSGTc1lV7hTZLrRVTW7oTNftyOaSU5P0DXos8iXpgl/wD+r/vEgOWNsPic2khcqLi65btyfvgSXf7jDlBWedPQN/uMOUFZ509BGgSbNYO4nBCC5/VbV3FfMku/3GHKCs86egb/AHGHKCs86egjQGawdxOCDP6rau4r5kl3+4w5QVnnT0Df7jDlBWedPQRoDNYO4nBBn9VtXcV8yS7/AHGHKCs86egb/cYcoKzzp6CNAZrB3E4IM/qtq7ivmbS9Yivl6jZHdLpU1cbF3TWPf4KLx5cGflNWAbmsaxLmpchzySPkd7T1VV8QAD6PgAAAAAAAAAFi6JMAzXyqivVzY6K2QvR0bVTJahyLwJ9XPhXbwJty/NFOj6TEEzLtdo3R2pjvBaupalU2J9XjXoTaqX5DFHDCyGGNscbGo1jGpkjUTgRE4iN2xbHQ3wQr72tez15E2yaybWpVKqpT3NSdvivhz3Y/YAIYWaAAACPY6wpb8V2paWqRI6iPNaeoRM3RO/dq7U/fJSQg2RSviej2LcqGmop46iNYpUvauKHJuI7LcLBdpbbcoVjmj1oqa2vbsc1dqL/ms1x1FjrClvxXalpapEjqI81p6hEzdE792rtT98lObsR2W4WC7S225QrHNHrRU1te3Y5q7UX/ADWT2y7UZWsuXQ9MU/aFRW9YMlmSe03TGuC/pfHma4AHrEfAAAAAAAAAAAAAAAAAAAAAAAAAAANjhm0VF9v1Jaab+ZUSI1XZZ7hvC53QiKvQdVW2jp7db6ehpWbiCnjbHG3iREyQq/ufcOewUNRiSpj90qM4aXNOBiL4TulUy/pXjLYIPb9Z00/RNwbz9MC1Mj7Mzalzh6e8/lq448AADwCXgAAAAiOljEaYdwlO+GTc1tVnBTZLrRVTW7oTX9uXGboIXTyNjbipz1dSylgdNJg1LyntMWI/4/i2WOCTdUdBnBDkupyovhu6V1fYiELALLghbBG2NuCFGVdS+qndNJi5bwADcc4AAAAAAAAAAAAAAAAAAAAALE0U6PpMQTMu12jdHamO8Fq6lqVTYn1eNehNqo0U6PpMQTMu12jdHamO8Fq6lqVTYn1eNehNqpfkMUcMLIYY2xxsajWMamSNROBETiI3bFsdDfDCvva17PXkTbJrJpalUqqpPc1J2+K+HPdihijhhZDDG2ONjUaxjUyRqJwIicR9gENXSWYiIiXIAAYMgAAAAAAj2OsKW/FdqWlqkSOojzWnqETN0Tv3au1P3yUkINkUr4no9i3KhpqKeOojWKVL2rihybiOy3CwXaW23KFY5o9aKmtr27HNXai/5rNcdRY6wpb8V2paWqRI6iPNaeoRM3RO/dq7U/fJTm7EdluFgu0ttuUKxzR60VNbXt2Oau1F/wA1k9su1GVrLl0PTFP2hUVvWDJZkntN0xrgv6Xx5muAB6xHwAAAAAAAAAAAAAAAAAAAAAbHDNoqL7fqS0038yokRquyz3DeFzuhEVeg1xdnc/4bWnoZ8SVUeUlSixUuacEaL4TulUy6F4zhtGrSkp3Sa9W89SxrOW0KxkOrFdyY+X9ln22jp7db6ehpWbiCnjbHG3iREyQyACt1VXLepdrWo1Ea1NCAAGD6AAABzbpdxHvgxbMkMm6o6LOCDJdS5L4TulfwRC4tLmI972Eplhk3NZWZwU+S60zTwndCfiqHNhLMnKPGoduT9r+uJXuWtp6W0TF8XfpP3wAAJWV8AAAAAAAAAAAAAAAAAAAAACxNFOj6TEEzLtdo3R2pjvBaupalU2J9XjXoTaqNFOj6TEEzLtdo3R2pjvBaupalU2J9XjXoTaqX5DFHDCyGGNscbGo1jGpkjUTgRE4iN2xbHQ3wwr72tez15E2yayaWpVKqqT3NSdvivhz3YoYo4YWQwxtjjY1GsY1MkaicCInEfYBDV0lmIiIlyAAGDIAAAAAAAAAAAAI9jrClvxXalpapEjqI81p6hEzdE792rtT98lJCDZFK+J6PYtyoaainjqI1ilS9q4ocm4jstwsF2lttyhWOaPWipra9uxzV2ov+azXHUWOsKW/FdqWlqkSOojzWnqETN0Tv3au1P3yU5uxHZbhYLtLbblCsc0etFTW17djmrtRf81k9su1GVrLl0PTFP2hUVvWDJZkntN0xrgv6Xx5muAB6xHwAAAAAAAAAAAAAAAAADZ4Vs89/xBR2mnzR08iI5yJ7xia3O6EzOqaCkgoaGCipY0jggjbHG1NjUTJCse5/w57Wts+IqmPKWqzip804I0Xwl6VTL+nylqkGt+s6afom4N56/ItXJCzM2pM4envP5auOPAAA8ElwAAAAIfpcxCuH8ITugeraurX2vAqcLVVPCd0Jn05G6CF08jY24qc1XVMpIHTSYNS//byndLuI98GLZkhk3VHRZwQZLqXJfCd0r+CIQ4AsuCFsEbY24IUbVVL6qZ00mLlvAANxzgAAAAAAAAAAAAAAAAAAsTRTo+kxBMy7XaN0dqY7wWrqWpVNifV416E2qjRTo+kxBMy7XaN0dqY7wWrqWpVNifV416E2ql+QxRwwshhjbHGxqNYxqZI1E4EROIjdsWx0N8MK+9rXs9eRNsmsmlqVSqqk9zUnb4r4c92KGKOGFkMMbY42NRrGNTJGonAiJxH2AQ1dJZiIiJcgABgyAAAAAAAAAAAAAAAAAADWX6wWa+xxsu1vhq0jVdwr01tz4clTWhswfTHuY72mrcp8SRMlarJERUXUulCK97vBfiGDrH+sO93gvxDB1j/WJUDoz6p2juKnH1VQ7Fn4p5EV73eC/EMHWP8AWHe7wX4hg6x/rEqAz6p2juKjqqh2LPxTyIr3u8F+IYOsf6w73eC/EMHWP9YlQGfVO0dxUdVUOxZ+KeRFe93gvxDB1j/WHe7wX4hg6x/rEqAz6p2juKjqqh2LPxTyIr3u8F+IYOsf6w73eC/EMHWP9YlQGfVO0dxUdVUOxZ+KeRFe93gvxDB1j/WHe7wX4hg6x/rEqAz6p2juKjqqh2LPxTyIr3u8F+IYOsf6x+po8wYi5/wGD/m/1iUgZ9U7R3FR1VQ7Fn4p5HnTww08DIKeJkUUbUaxjGo1rUTgRETgQ9ADmVb9KnciIiXIAAYMgAAAwL5Z7Ze6NKS60cdVCj0ejX56nJtRU1pwqZ4Ppr3MX2mrcp8SRskarHpei6lIr3u8F+IYOsf6w73eC/EMHWP9YlQOjPqnaO4qcfVVDsWfinkRXvd4L8QwdY/1h3u8F+IYOsf6xKgM+qdo7io6qodiz8U8iK97vBfiGDrH+sO93gvxDB1j/WJUBn1TtHcVHVVDsWfinkRXvd4L8QwdY/1h3u8F+IYOsf6xKgM+qdo7io6qodiz8U8iK97vBfiGDrH+sO93gvxDB1j/AFiVAZ9U7R3FR1VQ7Fn4p5EV73eC/EMHWP8AWHe7wX4hg6x/rEqAz6p2juKjqqh2LPxTyIr3u8F+IYOsf6w73eC/EMHWP9YlQGfVO0dxUdVUOxZ+KeRFe93gvxDB1j/WP1ujzBiORUsNPmi563vX9yUgZ9U7R3FR1VQ7Fn4p5HxDFHDCyGGNscbGo1jGpkjUTgRE4j7AOZdJ3IiIlyAAGDIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB//2Q==">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -7106,7 +7115,7 @@ html.m1-on .m1-nav{display:flex;flex-direction:column;flex:1;min-height:0;paddin
        operacao/planejamento/campo/documentos/cadastros/admin). -->
   <div class="nav-brand">
     <span class="nav-brand-mark">PCM</span>
-    <span class="nav-brand-sub" data-carimbo="v4.03 · {v}">v4.03 · V342</span>
+    <span class="nav-brand-sub" data-carimbo="v4.03 · {v}">v4.03 · V343</span>
     <button type="button" class="nav-rail-btn" id="navRailBtn" onclick="_v179NavRailToggle()"
             title="Recolher o menu" aria-label="Recolher o menu" aria-expanded="true">
       <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path class="nav-rail-ico-in" d="M10 3.5L5.5 8 10 12.5"/><path class="nav-rail-ico-out" d="M6 3.5L10.5 8 6 12.5"/></svg>
@@ -19200,7 +19209,7 @@ function renderConfigStats(){
     <div class="card">
       <div style="font-size:13px;font-weight:600;margin-bottom:4px">Sobre o sistema</div>
       <div style="font-size:12px;color:var(--text2);line-height:1.8">
-        <strong>Catálogo Administrativo v3.43 · <span data-carimbo="PCM {v}">PCM V342</span></strong> — Proper Compressores<br>
+        <strong>Catálogo Administrativo v3.43 · <span data-carimbo="PCM {v}">PCM V343</span></strong> — Proper Compressores<br>
         Catálogo de modelos · Peças com similares · Fotos · Subsistemas nomeados · Máquinas PGP com dados completos de cliente<br>
         Detecção de duplicados em modelos e máquinas · Google Sheets como backend
       </div>
@@ -108135,6 +108144,8 @@ html:not(.v331-off) #v238Jan input[data-v238sel], html:not(.v331-off) #v238Jan i
    As faces: 1 chamada quando o painel abre ou a 1ª linha se abre (nunca ao abrir a tela).
    PCM V342 (09/11/2026, ProperCare-backlog#139 — SQL 128_ALM_KIT_CICLO): coluna 🧰 Kits na tabela das faces (alm_face_kits; D2: a área de
    kits são faces marcadas). Linhas alteradas: a linha da face, o cabeçalho da tabela, o salvarEst (a rpc da marca) e o change.
+   PCM V343 (09/11/2026, ProperCare-backlog#93, parte 3 — sem SQL): o detalhe da peça chama V343.linhaHtml (🖨 Imprimir etiqueta com as
+   cópias) no fim da caixa Movimento. Linha deste bloco alterada: só essa (a caixa Movimento do detalhe).
    ═══════════════════════════════════════════════════════════════════════════════════════════════════════════════ */
 (function () {
   'use strict';
@@ -108356,7 +108367,8 @@ html:not(.v331-off) #v238Jan input[data-v238sel], html:not(.v331-off) #v238Jan i
         (msg ? '<div class="v334-msg ' + (msg.erro ? 'erro' : 'ok') + '" role="' + (msg.erro ? 'alert' : 'status') + '">' + esc(msg.txt) + '</div>' : '') +
         (it.endereco ? '<div class="v334-sub">' + (it.end_origem === 'aprendido' ? 'Aprendido na separação' : 'Cadastrado') + (it.end_em ? ' em ' + esc(data(it.end_em)) : '') + '</div>' : '') + '</div>' +
       '<div class="v334-cx"><h4>Saldo por local do Omie</h4>' + loc + '</div>' +
-      '<div class="v334-cx"><h4>Movimento</h4>' + mov.map(function (x) { return '<div style="font-size:12.5px;margin:2px 0">' + x + '</div>'; }).join('') + '</div></div>';
+      '<div class="v334-cx"><h4>Movimento</h4>' + mov.map(function (x) { return '<div style="font-size:12.5px;margin:2px 0">' + x + '</div>'; }).join('') +
+        (window.V343 && V343.linhaHtml ? V343.linhaHtml(it) : '') + '</div></div>';   // PCM V343: 🖨 Imprimir etiqueta
   }
   function vazio() {
     if (S.busca.trim() || S.rua) return '<div class="v334-vazio"><b>Nada com essa busca</b>Tente outra palavra ou outra rua.<br><button type="button" class="v334-bt" data-v334="limpar">Limpar a busca</button></div>';
@@ -110758,6 +110770,464 @@ html.v337-on .cros-omie-topo [data-cros-o="filtro"][data-f="fornecedor"]{display
 })();
 </script>
 <!-- ████ FIM PCM V342 ████ -->
+<!-- ████ INICIO PCM V343 · 📦 ESTOQUE › 🏷 ETIQUETAS PARA QUALQUER PEÇA E PARA O ENDEREÇO (ProperCare-backlog#93, parte 3) ████ -->
+<style id="v343-css">
+/* PCM V343 · 📦 Estoque › 🏷 Etiquetas */
+.v343-modo{display:inline-flex;border:1px solid #D0D5DD;border-radius:8px;overflow:hidden;margin:0 0 8px}
+.v343-modo button{border:0;background:#fff;padding:0 14px;min-height:32px;font:600 13px var(--font-sans,Inter,system-ui,sans-serif);color:#344054;cursor:pointer;transition:background-color .15s}
+.v343-modo button+button{border-left:1px solid #D0D5DD}
+.v343-modo button:hover,.v343-modo button:focus-visible{background:#F2F4F7;outline:none}
+.v343-modo button[aria-pressed="true"]{background:#1D2939;color:#fff}
+.v343-cx{border:1px solid #EAECF0;border-radius:10px;padding:8px 10px;margin:0 0 8px;background:#FCFCFD}
+.v343-cx h4{margin:0 0 6px;font-size:13px;color:#344054}
+.v343-cx textarea{width:100%;min-height:70px;border:1px solid #98A2B3;border-radius:8px;padding:6px 8px;box-sizing:border-box;font:13px ui-monospace,Consolas,monospace}
+.v343-cop{border:1px solid #98A2B3;border-radius:8px;padding:4px 6px;width:64px;min-height:30px;box-sizing:border-box;font:600 13px var(--font-sans,Inter,system-ui,sans-serif)}
+.v343-x{border:0;background:none;color:#667085;font-size:16px;cursor:pointer;min-width:30px;min-height:30px;border-radius:6px}
+.v343-x:hover,.v343-x:focus-visible{background:#FEF3F2;color:#912018;outline:none}
+.v343-prob{margin:6px 0 0;font-size:12.5px;color:#912018}
+.v343-prob .v334-bt{min-height:26px;padding:0 8px;font-size:12px}
+.v343-lin{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:8px}
+@media (max-width:820px){.v343-modo button{min-height:44px}.v343-cop{min-height:44px}}
+</style>
+<script>
+/* ═══════════════════════════════════════════════════════════════════════════════════════════════════════════════
+   PCM V343 — 09/11/2026 — ProperCare-backlog#93, parte 3 (🏷 Etiquetas para qualquer peça). Sobre o V342 no ar. Sem SQL, sem GAS.
+   Desenho: decisão do Fernando de 09/11 (19h18) na issue. Prefixo V343 / v343- / data-v343. Nenhuma tela, função, rota ou endereço
+   (#…) existente mudou; no bloco V334 entra UMA linha (o detalhe da peça chama V343.linhaHtml, declarada lá).
+   · 📦 Estoque ganha o botão 🏷 Etiquetas (depois do 📥 Importar endereços): um painel no lugar com dois modos.
+     Peças — monta uma lista e imprime: "Da prateleira" (face › coluna › andar — coluna e andar opcionais: a face inteira, a coluna ou o
+     andar) lê alm_estoque_lista (rua = a face, até 4 páginas de 500) e filtra o endereço; "Por códigos" cola códigos do Omie (a 2ª coluna,
+     se houver, é o número de cópias) e confere no banco pela prévia de alm_endereco_importar (gravar = não — só lê: o mesmo jeito de achar o
+     produto da importação, inclusive os zeros que o Excel come). Cada linha da lista tem as cópias (1 a 50: peça grande = uma etiqueta por
+     peça; caixa = uma). Imprimir: no máximo 300 etiquetas por vez.
+     Endereços — a etiqueta do próprio endereço (QR = o endereço, ex. 2-A-3): a face (ou todas), a coluna e o andar (opcionais), cópias.
+   · Na linha aberta da peça: 🖨 Imprimir etiqueta com as cópias.
+   · A etiqueta é a MESMA da 🧺 Separação (100×40, QR = o código do produto, o endereço embaixo). Depois de imprimir etiqueta de peça,
+     o banco anota que ela tem etiqueta (alm_etiqueta_marcar, a função de sempre do 📬 Recebimento): a Separação passa a pedir o QR ou o
+     código inteiro dela.
+   Chamadas: abrir o painel = 1 (alm_faces); "Pôr na lista" = 1 a 4 (prateleira) ou 1 (códigos); imprimir peça = 1 (alm_etiqueta_marcar).
+   Quem vê = quem vê o 📦 Estoque. Chave de volta: localStorage pcm_v343 = off.
+   ═══════════════════════════════════════════════════════════════════════════════════════════════════════════════ */
+(function () {
+  'use strict';
+  if (window.V343) return;
+  var V343 = window.V343 = { versao: 'V343 · 09/11/2026' };
+  var MAX_ETQ = 300, MAX_COP = 50, PAG = 500, MAX_PAG = 4;
+  var S = { aberto: false, modo: 'pecas', fd: null, lendoFaces: false, facesErro: '', gerF: 0,
+            lugar: { face: '', col: '', and: '' }, ends: { face: '', col: '', and: '', cop: '1' },
+            codTxt: '', lista: [], probs: [], lendo: '', msg: null, linhaCop: {}, linhaMsg: {}, segurando: false, pend: false };
+  V343.S = S;
+  function off() { try { return localStorage.getItem('pcm_v343') === 'off'; } catch (e) { return false; } }
+  function ligado() { try { return !off() && !!(window.V334 && V334.ligado && V334.ligado() && V334.pode && V334.pode()); } catch (e) { return false; } }
+  V343.ligado = ligado;
+  function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+  function T(x) { return String(x == null ? '' : x).trim(); }
+  function N(x) { var n = Number(x); return isFinite(n) ? n : 0; }
+  function cssEsc(s) { try { return CSS.escape(s); } catch (e) { return String(s).replace(/["\\]/g, '\\$&'); } }
+  function copias(v) { var s = T(v); if (!/^\d{1,3}$/.test(s)) return 0; var n = parseInt(s, 10); return n >= 1 && n <= MAX_COP ? n : 0; }
+  async function rpc(fn, p, escrita) { return _v200Rpc(fn, { p: p || {} }, escrita); }
+  function msgErro(e, escrita) {
+    var c = e && e.v200;
+    if (c === 'sem_sql') { try { console.warn('[V343] falta uma função no banco:', e && e.message); } catch (x) {} return 'Tela indisponível — avise o administrador.'; }
+    if (c === 'acesso') return 'As etiquetas são do almoxarifado, do administrador ou de quem tem o acesso extra "PCM – Almoxarifado".';
+    if (c === 'desligado') return 'O PCM está em modo só leitura (quadro desligado) — nada foi anotado.';
+    if (c === 'rede') return escrita ? 'Sem resposta do banco — não deu para anotar a etiqueta. Imprima de novo se precisar.' : 'Sem conexão — nada foi lido. Tente de novo.';
+    var m = String((e && e.message) || '').replace(/^NÃO foi gravada:\s*/, '').replace(/^(Estoque|Separação|Faces):\s*/, '');
+    return m || 'Não deu certo. Tente de novo; se continuar, avise o administrador.';
+  }
+
+  // ═══ 1 · O LUGAR (o botão no cabeçalho do 📦 Estoque e a caixa do painel, ao lado das do 🗄 Faces e do 📥 Importar) ═══
+  function garantir() {
+    var v = document.getElementById('viewV334Estoque'); if (!v) return;
+    var bt = document.getElementById('v343Bt'), cx = document.getElementById('v343Etq');
+    if (!ligado()) { if (bt) bt.style.display = 'none'; if (cx) cx.style.display = 'none'; return; }
+    if (bt) bt.style.display = ''; if (cx) cx.style.display = '';
+    var imp = document.getElementById('v334BtImp');
+    if (!bt && imp && imp.parentNode) {
+      bt = document.createElement('button'); bt.type = 'button'; bt.className = 'v334-bt'; bt.id = 'v343Bt';
+      bt.setAttribute('data-v343', 'abrir'); bt.setAttribute('aria-expanded', 'false'); bt.textContent = '🏷 Etiquetas';
+      imp.parentNode.insertBefore(bt, imp.nextSibling);   // depois do 📥 Importar (o 🗄 Faces continua colado nele)
+    }
+    var ref = document.getElementById('v334Imp');
+    if (!cx && ref && ref.parentNode) { cx = document.createElement('div'); cx.id = 'v343Etq'; ref.parentNode.insertBefore(cx, ref); }
+  }
+  V343.garantir = garantir;
+
+  // ═══ 2 · AS FACES (o cadastro do 🗄 Faces: só as ativas) ═════════════════════════════════════════════════════════
+  function carregarFaces() {
+    if (typeof _v200Rpc !== 'function') { S.facesErro = 'Tela indisponível — avise o administrador.'; pintar(); return Promise.resolve(); }
+    var g = ++S.gerF; S.lendoFaces = true; S.facesErro = ''; pintar();
+    return rpc('alm_faces', {}, false).then(function (d) {
+      if (g !== S.gerF) return; S.lendoFaces = false; S.fd = d || { faces: [] }; pintar();
+    }, function (e) { if (g !== S.gerF) return; S.lendoFaces = false; S.facesErro = msgErro(e, false); pintar(); });
+  }
+  function faces() { return ((S.fd && S.fd.faces) || []).filter(function (f) { return f.ativo; }); }
+  function acharFace(n) { return faces().find(function (f) { return String(f.face) === String(n); }) || null; }
+  function rotFace(f) { return 'Face ' + f.face + (f.prateleira != null && f.prateleira !== '' ? ' · prat. ' + f.prateleira : '') + (f.observacao ? ' · ' + f.observacao : ''); }
+  function colsDe(f) { var c = [], i; for (i = 1; i <= (Number(f.colunas) || 1); i++) c.push(String.fromCharCode(64 + i)); return c; }
+  function andsDe(f) { var a = [], i; for (i = 1; i <= Number(f.andares); i++) a.push(String(i)); return a; }
+  // as três listas: face (obrigatória nas peças; "todas" nos endereços), coluna e andar (vazio = todas / todos)
+  function listas(alvo, todasFaces) {
+    var s = S[alvo], f = acharFace(s.face);
+    if (s.face && !f) { s.face = ''; s.col = ''; s.and = ''; }
+    var cols = f ? colsDe(f) : [], ands = f ? andsDe(f) : [];
+    if (s.col && cols.indexOf(s.col) < 0) s.col = '';
+    if (s.and && ands.indexOf(s.and) < 0) s.and = '';
+    var o = function (v, sel, rot) { return '<option value="' + esc(v) + '"' + (String(v) === String(sel) ? ' selected' : '') + '>' + esc(rot) + '</option>'; };
+    return '<select class="v334-sel" data-v343-s="face" data-alvo="' + alvo + '" aria-label="Face">' + o('', s.face, todasFaces ? 'Todas as faces' : 'Face…') +
+        faces().map(function (x) { return o(x.face, s.face, rotFace(x) + (alvo === 'lugar' ? ' (' + N(x.pecas) + (N(x.pecas) === 1 ? ' peça)' : ' peças)') : '')); }).join('') + '</select>' +
+      '<select class="v334-sel" data-v343-s="col" data-alvo="' + alvo + '" aria-label="Coluna"' + (f ? '' : ' disabled') + '>' + o('', s.col, 'Todas as colunas') +
+        cols.map(function (c) { return o(c, s.col, 'Coluna ' + c); }).join('') + '</select>' +
+      '<select class="v334-sel" data-v343-s="and" data-alvo="' + alvo + '" aria-label="Andar (1 = o do piso)" title="1 = o do piso"' + (f ? '' : ' disabled') + '>' + o('', s.and, 'Todos os andares') +
+        ands.map(function (a) { return o(a, s.and, a + 'º andar'); }).join('') + '</select>';
+  }
+  // o endereço da peça casa com a escolha? (face-coluna-andar; coluna/andar vazios = qualquer um)
+  function casa(end, s) {
+    var m = /^([1-9][0-9]?)-([A-D])-([1-9][0-9]?)$/.exec(String(end || ''));
+    return !!m && m[1] === String(Number(s.face)) && (!s.col || m[2] === s.col) && (!s.and || m[3] === String(Number(s.and)));
+  }
+  V343.casa = casa;
+  function endsDaEscolha() {
+    var s = S.ends, out = [], fs = s.face ? [acharFace(s.face)].filter(Boolean) : faces();
+    fs.slice().sort(function (a, b) { return N(a.face) - N(b.face); }).forEach(function (f) {
+      colsDe(f).forEach(function (c) { if (s.col && s.face && c !== s.col) return;
+        andsDe(f).forEach(function (a) { if (s.and && s.face && a !== s.and) return; out.push({ end: f.face + '-' + c + '-' + a, face: f, col: c, and: a }); }); });
+    });
+    return out;
+  }
+  V343.endsDaEscolha = endsDaEscolha;
+
+  // ═══ 3 · A LISTA DAS PEÇAS ════════════════════════════════════════════════════════════════════════════════════
+  function total() { return S.lista.reduce(function (t, x) { return t + (copias(x.cop) || 0); }, 0); }
+  function invalidas() { return S.lista.filter(function (x) { return !copias(x.cop); }).length; }
+  function por(itens, onde) {
+    var ja = {}, novas = 0, rep = 0, sobra = []; S.lista.forEach(function (x) { ja[x.chave] = 1; });
+    itens.forEach(function (it) {
+      if (!T(it.chave)) return;
+      if (ja[it.chave]) { rep++; return; }
+      if (S.lista.length >= MAX_ETQ) { sobra.push(it); return; }
+      ja[it.chave] = 1; novas++;
+      S.lista.push({ chave: T(it.chave), codigo: T(it.codigo), descricao: T(it.descricao), ref: T(it.ref), endereco: T(it.endereco), cop: String(it.cop || 1) });
+    });
+    var fora = itens.length - novas - rep;
+    if (fora > 0 && !novas) S.msg = { erro: true, txt: 'A lista já tem ' + MAX_ETQ + ' peças (o máximo de uma impressão): imprima e limpe antes.' };
+    else if (novas || rep) S.msg = { txt: '✅ ' + novas + (novas === 1 ? ' peça' : ' peças') + ' na lista' + (onde ? ' (' + onde + ')' : '') +
+                                   (rep ? ' · ' + rep + (rep === 1 ? ' já estava' : ' já estavam') : '') + (fora > 0 ? ' · ' + fora + ' ficaram fora: a lista vai até ' + MAX_ETQ + ' peças' : '') + '.' };
+    else S.msg = onde ? { erro: true, txt: 'Nenhuma peça com endereço: ' + onde + '.' } : null;
+    return sobra;   // as que não couberam (a lista vai até MAX_ETQ peças)
+  }
+  async function daPrateleira(botao) {
+    var s = S.lugar; if (S.lendo) return;
+    if (!acharFace(s.face)) { S.msg = { erro: true, txt: 'Escolha a face.' }; return pintar(); }
+    S.lendo = 'lugar'; S.msg = null; pintar();
+    try {
+      var itens = [], apos = 0, d, pag = 0;
+      do {
+        d = await rpc('alm_estoque_lista', { rua: String(Number(s.face)), filtro: 'todas', ordem: 'endereco', limite: PAG, apos: apos }, false) || {};
+        (d.itens || []).forEach(function (it) { if (casa(it.endereco, s)) itens.push(it); });
+        apos += PAG; pag++;
+      } while (d.mais && pag < MAX_PAG);
+      S.lendo = '';
+      por(itens, s.col && s.and ? s.face + '-' + s.col + '-' + s.and : s.col ? s.face + '-' + s.col : 'face ' + s.face + (s.and ? ', ' + s.and + 'º andar' : ''));
+      if (d.mais) S.msg.txt += ' A face tem mais de ' + (PAG * MAX_PAG) + ' peças: escolha a coluna ou o andar.';
+    } catch (e) { S.lendo = ''; S.msg = { erro: true, txt: msgErro(e, false) }; }
+    pintar();
+  }
+  // "código [Tab] cópias", um por linha (Excel, ; ou ,): a 2ª coluna só vale se for um número de 1 a 50
+  function lerCodigos(txt) {
+    var out = [], vistos = {};
+    String(txt || '').split(/\r?\n/).forEach(function (l, i) {
+      if (!l.trim()) return;
+      var c = l.split(l.indexOf('\t') >= 0 ? '\t' : l.indexOf(';') >= 0 ? ';' : ',').map(function (x) { return x.replace(/^\s*"|"\s*$/g, '').trim(); });
+      if (!c[0] || (i === 0 && /c[oó]d/i.test(c[0]))) return;           // o cabeçalho
+      var k = c[0].toUpperCase(); if (vistos[k]) return; vistos[k] = 1;
+      var cr = T(c[1]);   // a 2ª coluna: vazia = 1 cópia; número de 1 a 50 = as cópias; outra coisa = problema (nunca vira 1 calado)
+      out.push({ codigo: c[0].slice(0, 60), cop: copias(cr) || 1, copErr: cr !== '' && !copias(cr) ? cr.slice(0, 12) : '' });
+    });
+    return out;
+  }
+  V343.lerCodigos = lerCodigos;
+  async function porCodigos() {
+    if (S.lendo) return;
+    var cs = lerCodigos(S.codTxt);
+    if (!cs.length) { S.msg = { erro: true, txt: 'Cole os códigos do Omie, um por linha.' }; return pintar(); }
+    if (cs.length > MAX_ETQ) { S.msg = { erro: true, txt: 'No máximo ' + MAX_ETQ + ' códigos por vez (vieram ' + cs.length + ').' }; return pintar(); }
+    S.lendo = 'codigos'; S.msg = null; S.probs = []; pintar();
+    try {
+      var r = await rpc('alm_endereco_importar', { gravar: false, linhas: cs.map(function (x) { return { codigo: x.codigo, endereco: '' }; }) }, false) || {};
+      var itens = [], probs = [];
+      (r.linhas || []).forEach(function (l) {
+        var x = cs[N(l.n) - 1] || { cop: 1, copErr: '' };
+        if (x.copErr) probs.push({ codigo: l.codigo, sit: 'copias', copErr: x.copErr, cop: 1, candidatos: [] });
+        else if (l.produto) itens.push({ chave: l.produto, codigo: l.produto, descricao: l.descricao, endereco: l.atual, cop: x.cop, _cod: l.codigo });
+        else probs.push({ codigo: l.codigo, sit: l.sit, candidatos: l.candidatos || [], cop: x.cop });
+      });
+      S.lendo = ''; var sobra = por(itens, ''); S.probs = probs;
+      // ficam na caixa só os que faltam: os problemas e os que não couberam na lista
+      S.codTxt = probs.map(function (p) { return p.codigo + (p.copErr ? '\t' + p.copErr : p.cop > 1 ? '\t' + p.cop : ''); })
+        .concat(sobra.map(function (it) { return it._cod + (it.cop > 1 ? '\t' + it.cop : ''); })).join('\n');
+    } catch (e) { S.lendo = ''; S.msg = { erro: true, txt: msgErro(e, false) }; }
+    pintar();
+  }
+  // o candidato escolhido entra direto (a prévia acharia "dois produtos" de novo no número sem zero): o código EXATO na lista do estoque
+  async function candidato(c, de, cop) {
+    if (S.lendo) return;
+    S.lendo = 'codigos'; S.msg = null; pintar();
+    try {
+      var d = await rpc('alm_estoque_lista', { q: c, filtro: 'todas', ordem: 'endereco', limite: 50, apos: 0 }, false) || {};
+      var it = (d.itens || []).find(function (x) { return x.codigo === c; });
+      S.lendo = '';
+      if (!it) S.msg = { erro: true, txt: 'Não achei o produto ' + c + ' na lista do estoque.' };
+      else {
+        por([{ chave: it.chave, codigo: it.codigo, descricao: it.descricao, ref: it.ref, endereco: it.endereco, cop: copias(cop) || 1 }], '');
+        S.probs = S.probs.filter(function (p) { return p.codigo !== de; });
+        S.codTxt = S.codTxt.split(/\r?\n/).filter(function (l) { return T(l.split(/[\t;,]/)[0]).toUpperCase() !== T(de).toUpperCase(); }).join('\n');
+      }
+    } catch (e) { S.lendo = ''; S.msg = { erro: true, txt: msgErro(e, false) }; }
+    pintar();
+  }
+  function probHtml(p) {
+    if (p.sit === 'ambiguo') return '<div class="v343-prob">' + esc(p.codigo) + ': dois produtos com esse número — ' +
+      p.candidatos.map(function (c) { return '<button type="button" class="v334-bt" data-v343="cand" data-c="' + esc(c) + '" data-de="' + esc(p.codigo) + '" data-cop="' + esc(p.cop) + '">＋ ' + esc(c) + '</button>'; }).join(' ') + '</div>';
+    return '<div class="v343-prob">' + esc(p.codigo) + ': ' + (p.sit === 'copias' ? 'as cópias vão de 1 a ' + MAX_COP + ' (veio ' + esc(p.copErr) + ')' : p.sit === 'sem_produto' ? 'código não existe no Omie' : 'não achei o produto') + '</div>';
+  }
+
+  // ═══ 4 · A ETIQUETA (a MESMA da 🧺 Separação: 100×40, a folha é o papel do driver) ═════════════════════════════
+  function imprimir(html) {
+    V343.ultimaImpressao = html; V343.nImp = (V343.nImp || 0) + 1;
+    var f = document.getElementById('v343Print');
+    if (!f) { f = document.createElement('iframe'); f.id = 'v343Print'; f.setAttribute('aria-hidden', 'true'); f.style.cssText = 'position:fixed;right:0;bottom:0;width:0;height:0;border:0;visibility:hidden'; document.body.appendChild(f); }
+    var d = f.contentWindow.document; d.open(); d.write(html); d.close();
+    setTimeout(function () { try { if (window.__v343SemPrint) return; f.contentWindow.focus(); f.contentWindow.print(); } catch (e) {} }, 250);
+  }
+  function qr(txt) { try { return typeof etqQrSvg === 'function' ? etqQrSvg(String(txt), { ec: 'M', quiet: 1 }) : ''; } catch (e) { return ''; } }
+  var CSS_ETQ = '@page{size:100mm 40mm;margin:0}html,body{margin:0;padding:0}body{font-family:Arial,sans-serif;color:#000;background:#fff}' +
+    '.e{width:100mm;height:40mm;box-sizing:border-box;padding:2.5mm 3mm;display:flex;gap:3mm;align-items:center;overflow:hidden;page-break-after:always;break-after:page}' +
+    '.e:last-child{page-break-after:auto;break-after:auto}.q{width:31mm;height:31mm;flex:0 0 31mm}.q svg{width:31mm;height:31mm;display:block}.t{flex:1;min-width:0}' +
+    '.c{font:900 7.2mm/1 "Courier New",monospace;letter-spacing:.2mm;white-space:nowrap;overflow:hidden;text-overflow:clip}.d{font-size:3.3mm;line-height:1.15;margin-top:1.2mm;max-height:7.8mm;overflow:hidden}' +
+    '.r{font-size:2.9mm;margin-top:.8mm;white-space:nowrap;overflow:hidden}.n{font:800 5.4mm/1 "Courier New",monospace;margin-top:1.4mm}';
+  function folha(titulo, corpo) { return '<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><title>' + esc(titulo) + '</title><style>' + CSS_ETQ + '</style></head><body>' + corpo + '</body></html>'; }
+  function etqPeca(x) {
+    var cod = x.codigo || x.ref || x.chave;   // como o codigoDe da 🧺 Separação
+    return '<div class="e"><div class="q">' + qr(x.chave) + '</div><div class="t"><div class="c">' + esc(cod) + '</div><div class="d">' + esc(x.descricao || '') + '</div>' +
+      (x.codigo && x.ref ? '<div class="r">ref. ' + esc(x.ref) + '</div>' : '') + '<div class="n">' + (x.endereco ? '📍 ' + esc(x.endereco) : '&nbsp;') + '</div></div></div>';
+  }
+  function etqEnd(e) {
+    var f = e.face, extra = [];
+    if (f.prateleira != null && f.prateleira !== '') extra.push('prateleira ' + f.prateleira);
+    if (f.observacao) extra.push(f.observacao);
+    return '<div class="e"><div class="q">' + qr(e.end) + '</div><div class="t"><div class="c" style="font-size:11mm">' + esc(e.end) + '</div>' +
+      '<div class="d">Face ' + esc(f.face) + ' · coluna ' + esc(e.col) + ' · ' + esc(e.and) + 'º andar</div>' + (extra.length ? '<div class="r">' + esc(extra.join(' · ')) + '</div>' : '') + '</div></div>';
+  }
+  V343.etqPeca = etqPeca; V343.etqEnd = etqEnd;
+  function repetir(html, n) { var s = ''; for (var i = 0; i < n; i++) s += html; return s; }
+  // a peça passa a "ter etiqueta": a Separação pede o QR ou o código inteiro (a função de sempre, até 300 por vez)
+  async function marcar(chaves) {
+    var us = chaves.filter(function (c, i) { return c && chaves.indexOf(c) === i; });
+    try { await _v200Rpc('alm_etiqueta_marcar', { p: { chaves: us } }, true); }
+    catch (e) { try { console.warn('[V343] alm_etiqueta_marcar:', e && e.message); } catch (x) {} return false; }
+    try { (window.V334 && V334.S && V334.S.itens || []).forEach(function (it) { if (us.indexOf(it.chave) >= 0) it.etiqueta = true; }); } catch (e) {}
+    return true;
+  }
+  async function imprimirLista(botao) {
+    if (S.lendo) return;
+    if (!S.lista.length) { S.msg = { erro: true, txt: 'A lista está vazia: ponha as peças primeiro.' }; return pintar(); }
+    if (invalidas()) { S.msg = { erro: true, txt: 'As cópias vão de 1 a ' + MAX_COP + ' em cada linha.' }; return pintar(); }
+    var n = total(); if (n > MAX_ETQ) { S.msg = { erro: true, txt: 'São ' + n + ' etiquetas: no máximo ' + MAX_ETQ + ' por vez. Tire peças ou diminua as cópias.' }; return pintar(); }
+    S.lendo = 'imprimir'; S.msg = null; pintar();
+    imprimir(folha('Etiquetas de peça', S.lista.map(function (x) { return repetir(etqPeca(x), copias(x.cop)); }).join('')));
+    var ok = await marcar(S.lista.map(function (x) { return x.chave; }));
+    S.lendo = '';
+    S.msg = { erro: !ok, txt: '🏷 ' + n + (n === 1 ? ' etiqueta mandada' : ' etiquetas mandadas') + ' para a impressora (100×40).' +
+                              (ok ? '' : ' Não deu para anotar no banco que elas têm etiqueta.') };
+    pintar(); try { if (window.V334 && V334.pintar) V334.pintar(); } catch (e) {}
+  }
+  function imprimirEnds() {
+    if (S.imprimindo) return;
+    var es = endsDaEscolha(), c = copias(S.ends.cop);
+    if (!faces().length) { S.msg = { erro: true, txt: 'Nenhuma face no cadastro: cadastre no 🗄 Faces.' }; return pintar(); }
+    if (!c) { S.msg = { erro: true, txt: 'As cópias vão de 1 a ' + MAX_COP + '.' }; return pintar(); }
+    var n = es.length * c; if (n > MAX_ETQ) { S.msg = { erro: true, txt: 'São ' + n + ' etiquetas: no máximo ' + MAX_ETQ + ' por vez. Escolha a face, a coluna ou o andar.' }; return pintar(); }
+    S.imprimindo = true; setTimeout(function () { S.imprimindo = false; }, 1500);   // trava de duplo clique (o diálogo do Chrome ainda nem abriu)
+    imprimir(folha('Etiquetas de endereço', es.map(function (e) { return repetir(etqEnd(e), c); }).join('')));
+    S.msg = { txt: '🏷 ' + n + (n === 1 ? ' etiqueta de endereço mandada' : ' etiquetas de endereço mandadas') + ' para a impressora (100×40).' };
+    pintar();
+  }
+  // a linha aberta da peça no 📦 Estoque (chamada pelo detalhe do V334)
+  function linhaHtml(it) {
+    if (!ligado() || !it || !T(it.chave)) return '';
+    var ch = esc(it.chave), m = S.linhaMsg[it.chave], v = S.linhaCop[it.chave] != null ? S.linhaCop[it.chave] : '1';
+    return '<div class="v343-lin"><label style="font-size:12.5px;display:inline-flex;gap:6px;align-items:center">Cópias <input type="number" class="v343-cop" min="1" max="' + MAX_COP + '" value="' + esc(v) + '" data-v343-lcop="' + ch + '" aria-label="Cópias da etiqueta" autocomplete="off" name="v343_lcop_nofill" data-lpignore="true" data-1p-ignore></label>' +
+      '<button type="button" class="v334-bt" data-v343="linha" data-ch="' + ch + '">🖨 Imprimir etiqueta</button></div>' +
+      (m && Date.now() - (m.em || 0) < 120000 ? '<div class="v334-msg ' + (m.erro ? 'erro' : 'ok') + '" role="' + (m.erro ? 'alert' : 'status') + '">' + esc(m.txt) + '</div>' : '');
+  }
+  V343.linhaHtml = linhaHtml;
+  async function imprimirLinha(ch) {
+    if (S.imprimindo) return;
+    var it = ((window.V334 && V334.S && V334.S.itens) || []).find(function (x) { return x.chave === ch; }); if (!it) return;
+    var c = copias(S.linhaCop[ch] != null ? S.linhaCop[ch] : '1');
+    if (!c) { S.linhaMsg[ch] = { em: Date.now(), erro: true, txt: 'As cópias vão de 1 a ' + MAX_COP + '.' }; return V334.pintar(); }
+    S.imprimindo = true; setTimeout(function () { S.imprimindo = false; }, 1500);
+    imprimir(folha('Etiqueta de peça', repetir(etqPeca({ chave: it.chave, codigo: it.codigo, descricao: it.descricao, ref: it.ref, endereco: it.endereco }), c)));
+    var ok = await marcar([it.chave]);
+    S.linhaMsg[ch] = { em: Date.now(), erro: !ok, txt: '🏷 ' + c + (c === 1 ? ' etiqueta mandada' : ' etiquetas mandadas') + ' para a impressora.' + (ok ? '' : ' Não deu para anotar no banco que ela tem etiqueta.') };
+    try { V334.pintar(); } catch (e) {}
+  }
+  V343.imprimirLinha = imprimirLinha;
+
+  // ═══ 5 · A PINTURA ═══════════════════════════════════════════════════════════════════════════════════════════════
+  function painelPecas() {
+    var ocup = !!S.lendo, h = '';
+    h += '<div class="v343-cx"><h4>Da prateleira</h4><div class="v341-ends" role="group" aria-label="De onde">' + listas('lugar', false) +
+      '<button type="button" class="v334-bt" data-v343="lugar"' + (ocup ? ' disabled' : '') + (S.lendo === 'lugar' ? ' data-pcm-enviando="1"' : '') + '>' +
+      (S.lendo === 'lugar' ? '<span class="v334-gira"></span>Lendo…' : '＋ Pôr na lista') + '</button></div></div>';
+    h += '<div class="v343-cx"><h4>Por códigos</h4><textarea id="v343Cod" placeholder="006165&#10;3474&#9;4" spellcheck="false" autocomplete="off" name="v343_cod_nofill" data-lpignore="true" data-1p-ignore' +
+      ' title="Um código do Omie por linha; a 2ª coluna (opcional) é o número de cópias">' + esc(S.codTxt) + '</textarea>' +
+      '<div class="v334-lin"><button type="button" class="v334-bt" data-v343="codigos"' + (ocup ? ' disabled' : '') + (S.lendo === 'codigos' ? ' data-pcm-enviando="1"' : '') + '>' +
+      (S.lendo === 'codigos' ? '<span class="v334-gira"></span>Conferindo…' : '＋ Pôr na lista') + '</button></div>' + S.probs.map(probHtml).join('') + '</div>';
+    if (!S.lista.length) h += '<div class="v334-vazio" style="padding:14px"><b>Lista vazia</b>Escolha a prateleira ou cole os códigos e clique ＋ Pôr na lista.</div>';
+    else {
+      h += '<div class="v334-pv" style="max-height:320px"><table><thead><tr><th>📍</th><th>Código</th><th>Peça</th><th title="Peça grande: uma por peça · caixa: uma">Cópias</th><th></th></tr></thead><tbody>' +
+        S.lista.map(function (x, i) {
+          return '<tr><td><span class="v334-end' + (x.endereco ? '' : ' sem') + '">' + esc(x.endereco || 'sem endereço') + '</span></td><td class="v334-cod">' + esc(x.codigo || x.ref || x.chave) + '</td><td>' + esc(x.descricao || '—') + '</td>' +
+            '<td><input type="number" class="v343-cop" min="1" max="' + MAX_COP + '" value="' + esc(x.cop) + '" data-v343-cop="' + i + '" aria-label="Cópias de ' + esc(x.codigo || x.chave) + '" autocomplete="off" name="v343_cop_nofill" data-lpignore="true" data-1p-ignore' + (ocup ? ' disabled' : '') + '></td>' +
+            '<td><button type="button" class="v343-x" data-v343="tirar" data-i="' + i + '" aria-label="Tirar da lista" title="Tirar da lista"' + (ocup ? ' disabled' : '') + '>×</button></td></tr>';
+        }).join('') + '</tbody></table></div>';
+    }
+    var n = total();
+    h += '<div class="v334-lin"><button type="button" class="v334-bt pri" data-v343="imprimir"' + (!S.lista.length || ocup ? ' disabled' : '') + (S.lendo === 'imprimir' ? ' data-pcm-enviando="1"' : '') + '>' +
+      (S.lendo === 'imprimir' ? '<span class="v334-gira"></span>Imprimindo…' : '<span>🖨 Imprimir <span id="v343Tot">' + n + (n === 1 ? ' etiqueta' : ' etiquetas') + '</span></span>') + '</button>' +
+      (S.lista.length ? '<button type="button" class="v334-bt" data-v343="limpar"' + (ocup ? ' disabled' : '') + '>Limpar a lista</button>' : '') +
+      '<button type="button" class="v334-bt" data-v343="fechar">Fechar</button></div>';
+    return h;
+  }
+  function painelEnds() {
+    var es = endsDaEscolha(), c = copias(S.ends.cop), n = es.length * (c || 0);
+    var h = '<div class="v343-cx"><div class="v341-ends" role="group" aria-label="Que endereços">' + listas('ends', true) +
+      '<label style="font-size:13px;display:inline-flex;gap:6px;align-items:center">Cópias <input type="number" class="v343-cop" min="1" max="' + MAX_COP + '" value="' + esc(S.ends.cop) + '" data-v343-ecop="1" aria-label="Cópias de cada endereço" autocomplete="off" name="v343_ecop_nofill" data-lpignore="true" data-1p-ignore></label></div>' +
+      '<div class="v334-sub" id="v343EndPrev" aria-live="polite">' + esc(prevEnds(es, c)) + '</div></div>';
+    h += '<div class="v334-lin"><button type="button" class="v334-bt pri" data-v343="imprimirEnds"' + (n ? '' : ' disabled') + '><span>🖨 Imprimir <span id="v343TotE">' + n + (n === 1 ? ' etiqueta' : ' etiquetas') + '</span></span></button>' +
+      '<button type="button" class="v334-bt" data-v343="fechar">Fechar</button></div>';
+    return h;
+  }
+  function prevEnds(es, c) {
+    if (!es.length) return '';
+    return es.length + (es.length === 1 ? ' endereço' : ' endereços') + ' (' + es[0].end + (es.length > 1 ? ' … ' + es[es.length - 1].end : '') + ')' + (c > 1 ? ' × ' + c + ' cópias' : '') + ' · QR = o endereço.';
+  }
+  function pintar() {
+    garantir();
+    var el = document.getElementById('v343Etq'), bt = document.getElementById('v343Bt');
+    if (bt) bt.setAttribute('aria-expanded', String(!!S.aberto));
+    if (!el) return;
+    if (S.segurando) { S.pend = true; return; }
+    S.pend = false;
+    var h = '';
+    if (S.aberto && ligado()) {
+      h = '<div class="v334-imp" role="region" aria-label="Etiquetas"><h3>🏷 Etiquetas</h3>' +
+        '<div class="v343-modo" role="group" aria-label="Etiqueta de">' +
+          '<button type="button" data-v343="modo" data-m="pecas" aria-pressed="' + (S.modo === 'pecas') + '">Peças</button>' +
+          '<button type="button" data-v343="modo" data-m="ends" aria-pressed="' + (S.modo === 'ends') + '">Endereços</button></div>';
+      if (S.msg) h += '<div class="v334-aviso ' + (S.msg.erro ? 'erro' : 'ok') + '" role="' + (S.msg.erro ? 'alert' : 'status') + '">' + esc(S.msg.txt) + '</div>';
+      if (S.facesErro) h += '<div class="v334-aviso erro" role="alert">' + esc(S.facesErro) + ' <button type="button" class="v334-bt" data-v343="relerFaces">Tentar de novo</button></div>';
+      if (!S.fd) h += S.facesErro ? '' : '<div aria-busy="true"><div class="v334-esq"></div></div>';
+      else if (!faces().length && S.modo === 'ends') h += '<div class="v334-vazio" style="padding:14px"><b>Nenhuma face ainda</b>O endereço vem do cadastro de faces.<br><button type="button" class="v334-bt" data-v334="faces">🗄 Cadastrar faces</button></div>';
+      else h += S.modo === 'ends' ? painelEnds() : painelPecas();
+      h += '</div>';
+    }
+    if (el.__v !== h) {
+      var foco = document.activeElement && el.contains(document.activeElement) ? document.activeElement : null, sel = null, chave = null;
+      if (foco) {
+        ['data-v343-s', 'data-v343-cop', 'data-v343-ecop', 'data-v343'].some(function (a) { var v = foco.getAttribute(a); if (v != null) { chave = '[' + a + '="' + cssEsc(v) + '"]' + (a === 'data-v343-s' ? '[data-alvo="' + cssEsc(foco.getAttribute('data-alvo')) + '"]' : '') +
+            ['data-m', 'data-i', 'data-c'].map(function (b) { var w = foco.getAttribute(b); return w == null ? '' : '[' + b + '="' + cssEsc(w) + '"]'; }).join(''); return true; } return false; });
+        if (!chave && foco.id === 'v343Cod') { chave = '#v343Cod'; try { sel = foco.selectionStart; } catch (e) {} }
+      }
+      el.innerHTML = h; el.__v = h;
+      if (chave) { var nf = el.querySelector(chave); if (nf) try { nf.focus({ preventScroll: true }); if (sel != null) nf.setSelectionRange(sel, sel); } catch (e) {} }
+    }
+  }
+  V343.pintar = pintar;
+  function atualizarTotais() {
+    var a = document.getElementById('v343Tot'); if (a) { var n = total(); a.textContent = n + (n === 1 ? ' etiqueta' : ' etiquetas'); }
+    var b = document.getElementById('v343TotE'), p = document.getElementById('v343EndPrev');
+    if (b || p) {
+      var es = endsDaEscolha(), c = copias(S.ends.cop), m = es.length * (c || 0);
+      if (b) { b.textContent = m + (m === 1 ? ' etiqueta' : ' etiquetas'); var bb = b.closest && b.closest('button'); if (bb) bb.disabled = !m; }
+      if (p) p.textContent = prevEnds(es, c);
+    }
+  }
+
+  // ═══ 6 · OS GESTOS ═══════════════════════════════════════════════════════════════════════════════════════════════
+  function abrir() {
+    S.aberto = !S.aberto; S.msg = null;
+    if (S.aberto && !S.lendoFaces) carregarFaces();   // abrir sempre relê: outra pessoa pode ter mudado as faces
+    pintar();
+    if (S.aberto) setTimeout(function () { var x = document.getElementById('v343Etq'); if (x) try { x.scrollIntoView({ block: 'nearest' }); } catch (e) {} }, 0);
+  }
+  V343.abrir = abrir;
+  function dentro(t) { var v = document.getElementById('viewV334Estoque'); return !!(v && t && v.contains(t)); }
+  document.addEventListener('click', function (ev) {
+    var b = ev.target && ev.target.closest && ev.target.closest('[data-v343]'); if (!b || !dentro(b) || !ligado()) return;
+    var a = b.getAttribute('data-v343'); ev.preventDefault();
+    if (b.disabled) return;
+    if (a === 'abrir') abrir();
+    else if (a === 'fechar') { S.aberto = false; pintar(); }
+    else if (a === 'modo') { S.modo = b.getAttribute('data-m') === 'ends' ? 'ends' : 'pecas'; S.msg = null; pintar(); }
+    else if (a === 'relerFaces') carregarFaces();
+    else if (a === 'lugar') daPrateleira(b);
+    else if (a === 'codigos') { var ta = document.getElementById('v343Cod'); if (ta) S.codTxt = ta.value; porCodigos(); }
+    else if (a === 'cand') { var ta2 = document.getElementById('v343Cod'); if (ta2) S.codTxt = ta2.value; candidato(b.getAttribute('data-c'), b.getAttribute('data-de'), b.getAttribute('data-cop')); }
+    else if (a === 'tirar') { S.lista.splice(N(b.getAttribute('data-i')), 1); S.msg = null; pintar(); }
+    else if (a === 'limpar') { S.lista = []; S.msg = null; pintar(); }
+    else if (a === 'imprimir') imprimirLista(b);
+    else if (a === 'imprimirEnds') imprimirEnds();
+    else if (a === 'linha') imprimirLinha(b.getAttribute('data-ch'));
+  });
+  document.addEventListener('input', function (ev) {
+    var t = ev.target; if (!t || !t.getAttribute || !dentro(t)) return;
+    if (t.id === 'v343Cod') S.codTxt = t.value;
+    else if (t.getAttribute('data-v343-cop') != null) { var x = S.lista[N(t.getAttribute('data-v343-cop'))]; if (x) x.cop = t.value; atualizarTotais(); }
+    else if (t.getAttribute('data-v343-ecop') != null) { S.ends.cop = t.value; atualizarTotais(); }
+    else if (t.getAttribute('data-v343-lcop') != null) S.linhaCop[t.getAttribute('data-v343-lcop')] = t.value;
+  });
+  document.addEventListener('change', function (ev) {
+    var t = ev.target; if (!t || !t.getAttribute || !dentro(t)) return;
+    var k = t.getAttribute('data-v343-s'); if (!k) return;
+    S.segurando = false; clearTimeout(S.tSeg);   // o soltar do mouse pode ter ido para a lista aberta do select
+    var s = S[t.getAttribute('data-alvo') === 'ends' ? 'ends' : 'lugar'];
+    s[k] = t.value; if (k === 'face') { s.col = ''; s.and = ''; }   // a face de cima limpa as de baixo
+    S.msg = null; pintar();
+  });
+  document.addEventListener('keydown', function (ev) {
+    var t = ev.target; if (ev.key !== 'Enter' || !t || !t.getAttribute || !dentro(t)) return;
+    if (t.getAttribute('data-v343-lcop') != null) { ev.preventDefault(); if (ev.repeat) return; imprimirLinha(t.getAttribute('data-v343-lcop')); }
+  });
+  // repintura entre apertar e soltar trocaria o botão e o Chrome não mandaria o clique: segura a pintura até soltar
+  document.addEventListener('pointerdown', function (ev) {
+    var lb = ev.target && ev.target.closest && ev.target.closest('#viewV334Estoque .v334-det [data-v343]');
+    if (lb && window.V334 && V334.S) {   // o botão da linha mora na pintura do V334: segura a dela até soltar
+      V334.S.segurando = true; clearTimeout(S.tSeg334);
+      S.tSeg334 = setTimeout(function () { if (V334.S.segurando) { V334.S.segurando = false; if (V334.S.pend) V334.pintar(); } }, 4000);
+      return;
+    }
+    if (!(ev.target && ev.target.closest && ev.target.closest('#v343Etq [data-v343],#v343Etq select'))) return;
+    S.segurando = true; clearTimeout(S.tSeg); S.tSeg = setTimeout(soltar, 4000);
+  }, true);
+  var soltar = function () { clearTimeout(S.tSeg); if (!S.segurando) return; S.segurando = false; if (S.pend) setTimeout(pintar, 0); };
+  document.addEventListener('pointerup', soltar, true);
+  document.addEventListener('pointercancel', soltar, true);
+  window.addEventListener('blur', soltar);
+
+  // ═══ 7 · LIGAR (o 📦 Estoque nasce no showView do V334; o botão entra quando a tela existe) ════════════════════════
+  if (off()) return;
+  try {
+    var sv0 = showView;
+    // ⚠ SOBRESCREVE showView
+    showView = function () { var r = sv0.apply(this, arguments); try { garantir(); } catch (e) {} return r; };
+  } catch (e) { try { console.warn('[V343] ligar:', e); } catch (x) {} }
+  [0, 700, 1600, 2800, 6000].forEach(function (ms) { setTimeout(function () { try { garantir(); } catch (e) {} }, ms); });
+})();
+</script>
+<!-- ████ FIM PCM V343 ████ -->
 
 </body>
 </html>
