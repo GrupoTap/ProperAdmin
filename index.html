@@ -102630,7 +102630,8 @@ html:not(.v311-off):has(>body.v292-alto #viewComercial.v292-on:not([style*="disp
     var b = S.devBal && S.devBal.linha === it.linha ? S.devBal : null;
     var h = '<div class="v323-pc" data-v342dev="' + E(it.linha) + '"><div><div class="v323-cod">' + E(it.codigo || '—') + '</div><div class="v323-desc">' + E(it.descricao || '') + '</div>' +
       '<div class="v323-sub">OS ' + E(it.numero_os || it.os_id) + (it.cliente ? ' · ' + E(it.cliente) : '') + (it.fim ? ' · concluída ' + E(diaBr(it.fim)) : '') +
-        (it.equivalente ? ' · trocada por equivalente' + (it.ref_usada ? ' (' + E(it.ref_usada) + ')' : '') + ': a orçada volta inteira' : N(it.usado) ? ' · trocou ' + Q(it.usado) + ' de ' + Q(it.separado) : ' · não trocada') + '</div>' +
+        (it.equivalente ? ' · trocada por equivalente' + (it.ref_usada ? ' (' + E(it.ref_usada) + ')' : '') + ': a orçada volta inteira' : N(it.usado) ? ' · trocou ' + Q(it.usado) + ' de ' + Q(it.separado) : ' · não trocada') +
+        (it.sem_resposta ? ' · <b style="color:#93370D">⚠ o técnico não respondeu esta peça na OS — confira se ela voltou</b>' : '') + '</div>' +
       (it.endereco ? '<span class="v323-end">📍 ' + E(it.endereco) + '</span>' : '<span class="v323-end sem">📍 sem endereço</span>') +
       ' <span class="v323-tag ' + (it.vencida ? 'verm' : 'ambar') + '">' + (it.vencida ? '⚠ prazo vencido ' : 'devolver até ') + E(diaBr(it.prazo)) + '</span></div>' +
       '<div class="v323-qtd"><b>' + Q(it.devolver) + '</b>' + E(it.unidade || 'un') + '<br>a devolver</div>';
@@ -102663,7 +102664,7 @@ html:not(.v311-off):has(>body.v292-alto #viewComercial.v292-on:not([style*="disp
     b.uid = b.uid || uid();
     try {
       var r = await rpc('alm_devolvi', { linha: b.linha, qtd: q, lido: lido, modo: /^ref:/i.test(lido) ? 'qr' : 'codigo', estado: b.estado, endereco: end, obs: T(b.obs) || null, uid: b.uid }, true);
-      var txt = b.estado === 'boa' ? '↩ ' + (it.codigo || '') + ' devolvida (' + Q(r && r.qtd) + ') em ' + (r && r.endereco || end) + ' — volta a ficar livre no estoque do PCM.'
+      var txt = b.estado === 'boa' ? '↩ ' + (it.codigo || '') + ' devolvida (' + Q(r && r.qtd) + ') — de volta em ' + (r && r.endereco || end) + '.'
                                    : '⚠ ' + (it.codigo || '') + ' devolvida AVARIADA — Compras/garantia decidem (abaixo).';
       S.devBal = null; delete S.kitSel.dv; S.msg = { txt: txt }; S.gravando = false;
       await lerDev(); pintar(); aviso(txt, 'success');
