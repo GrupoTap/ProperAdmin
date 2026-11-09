@@ -5430,9 +5430,22 @@ v50 — Resiliência de rede: retry/backoff em gsGet e syncToGS
   Linhas pre-existentes alteradas: TRES, declaradas — o aviso do modal Reabrir (bloco V192, perde o <span>) e as RESERVAS dos
   dois outros data-carimbo (barra lateral e Sobre o sistema, paradas no V223; so aparecem se o bloco CARIMBO falhar), que
   passam a dizer V340. Mais o <title>, o app-build e este comentario.
+  PCM V341 — 09/11/2026 — ALMOXARIFADO > ESTOQUE > FACES: O ENDERECO FACE-COLUNA-ANDAR (ProperCare-backlog#138, parte 1), sobre o
+  V340 no ar. SQL 127_ALM_ESTANTES roda ANTES. O endereco novo e Face-Coluna-Andar (ex. 2-A-3): face = o numero de cada lado de
+  uma prateleira (cadastro livre: so as faces que existem), coluna A..D, andar 1 = o do piso. Botao novo "Faces" no Estoque: o
+  cadastro das faces (cria varias de uma vez — faces de/ate, andares, colunas — e muda prateleira, observacao, andares, colunas e
+  ativa de cada uma; o banco recusa a mudanca que deixaria peca sem lugar). Na linha aberta da peca o endereco deixa de ser
+  digitado: listas encadeadas (face > coluna > andar) que so oferecem o que existe no cadastro. Importar enderecos aceita o formato
+  novo e mostra "Fora do cadastro de faces" com o motivo (nao grava). O formato antigo (B-04-2) continua valendo ate a conversao
+  (parte 2). Linhas pre-existentes alteradas: so no bloco V334 (declaradas no comentario dele). Rpc novas: alm_faces,
+  alm_face_salvar. Sem GAS.
+  Chave de volta: a mesma do Estoque (pcm_v334 = off). Mais o <title>, o app-build, as reservas do carimbo e este comentario.
+  Tambem (linhas pre-existentes, declaradas): a conferencia de formato da TELA na Separacao (V323: endereco da peca, lugar do kit,
+  endereco novo da lista, "onde estava?") e no Recebimento (V325: "guardar em") aceita o formato novo — 5 regex e 5 mensagens;
+  quem confere o cadastro de faces e o banco. As listas do formato novo nessas telas ficam para a parte 3.
 -->
-<title>ProperCare Manager · Gestão PGP v4.03 (PCM V340)</title>
-<meta name="app-build" content="PCM_V340" data-date="2026-11-09">
+<title>ProperCare Manager · Gestão PGP v4.03 (PCM V341)</title>
+<meta name="app-build" content="PCM_V341" data-date="2026-11-09">
 <link rel="icon" type="image/jpeg" href="data:image/jpeg;base64,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">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -7082,7 +7095,7 @@ html.m1-on .m1-nav{display:flex;flex-direction:column;flex:1;min-height:0;paddin
        operacao/planejamento/campo/documentos/cadastros/admin). -->
   <div class="nav-brand">
     <span class="nav-brand-mark">PCM</span>
-    <span class="nav-brand-sub" data-carimbo="v4.03 · {v}">v4.03 · V340</span>
+    <span class="nav-brand-sub" data-carimbo="v4.03 · {v}">v4.03 · V341</span>
     <button type="button" class="nav-rail-btn" id="navRailBtn" onclick="_v179NavRailToggle()"
             title="Recolher o menu" aria-label="Recolher o menu" aria-expanded="true">
       <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path class="nav-rail-ico-in" d="M10 3.5L5.5 8 10 12.5"/><path class="nav-rail-ico-out" d="M6 3.5L10.5 8 6 12.5"/></svg>
@@ -19176,7 +19189,7 @@ function renderConfigStats(){
     <div class="card">
       <div style="font-size:13px;font-weight:600;margin-bottom:4px">Sobre o sistema</div>
       <div style="font-size:12px;color:var(--text2);line-height:1.8">
-        <strong>Catálogo Administrativo v3.43 · <span data-carimbo="PCM {v}">PCM V340</span></strong> — Proper Compressores<br>
+        <strong>Catálogo Administrativo v3.43 · <span data-carimbo="PCM {v}">PCM V341</span></strong> — Proper Compressores<br>
         Catálogo de modelos · Peças com similares · Fotos · Subsistemas nomeados · Máquinas PGP com dados completos de cliente<br>
         Detecção de duplicados em modelos e máquinas · Google Sheets como backend
       </div>
@@ -102539,7 +102552,7 @@ html:not(.v311-off):has(>body.v292-alto #viewComercial.v292-on:not([style*="disp
     var falta = Math.max(0, N(ctx.qtd) - N(ctx.separado)), q = falta;
     if (falta > 1 && b.qtd != null && T(b.qtd) !== '') { q = numBr(b.qtd); if (!(q > 0) || q > falta) { b.erro = 'A quantidade tem de ficar entre 1 e ' + Q(falta) + '.'; return pintarOnde(); } }
     var onde = T(b.onde).toUpperCase();
-    if (onde && !/^[A-Z]{1,2}-\d{2}-\d{1,2}$/.test(onde)) { b.erro = 'O endereço é Rua-Estante-Prateleira, ex. B-04-2.'; return pintarOnde(); }
+    if (onde && !/^([A-Z]{1,2}-\d{2}-\d{1,2}|[1-9]\d?-[A-D]-[1-9]\d?)$/.test(onde)) { b.erro = 'O endereço é Face-Coluna-Andar (ex. 2-A-3) ou, no antigo, Rua-Estante-Prateleira (ex. B-04-2).'; return pintarOnde(); }
     S.gravando = true; b.erro = ''; if (botao) { botao.disabled = true; botao.setAttribute('data-pcm-enviando', '1'); botao.textContent = '⏳ Conferindo…'; }
     b.uid = b.uid || uid();
     try {
@@ -102590,7 +102603,7 @@ html:not(.v311-off):has(>body.v292-alto #viewComercial.v292-on:not([style*="disp
           S.msg = { txt: '↩ Separado de ' + codigoDe(x.l) + ' desfeito — o motivo está na trilha da oportunidade.' };
         } else {
           var ev = T(b.endv != null ? b.endv : x.l.endereco).toUpperCase();
-          if (ev && !/^[A-Z]{1,2}-\d{2}-\d{1,2}$/.test(ev)) { b.erro = 'O endereço é Rua-Estante-Prateleira, ex. B-04-2.'; return pintar(); }
+          if (ev && !/^([A-Z]{1,2}-\d{2}-\d{1,2}|[1-9]\d?-[A-D]-[1-9]\d?)$/.test(ev)) { b.erro = 'O endereço é Face-Coluna-Andar (ex. 2-A-3) ou, no antigo, Rua-Estante-Prateleira (ex. B-04-2).'; return pintar(); }
           await rpc('alm_produto_endereco_definir', { chave: x.l.chave, endereco: ev || null }, true);
           S.msg = { txt: ev ? '📍 ' + codigoDe(x.l) + ' mora em ' + ev + '.' : '📍 Endereço de ' + codigoDe(x.l) + ' retirado.' }; S.end = null;
         }
@@ -102598,13 +102611,13 @@ html:not(.v311-off):has(>body.v292-alto #viewComercial.v292-on:not([style*="disp
       }
       if (a === 'kitSalvar') {
         var gg = acharLinha(gk, null).g, kv = T((S.kitDig || {})[gk] != null ? S.kitDig[gk] : gg && gg.kit).toUpperCase();
-        if (kv && !/^[A-Z]{1,2}-\d{2}-\d{1,2}$/.test(kv)) { S.msg = { erro: true, txt: 'O lugar da separação é um endereço Rua-Estante-Prateleira, ex. K-02-1.' }; return pintar(); }
+        if (kv && !/^([A-Z]{1,2}-\d{2}-\d{1,2}|[1-9]\d?-[A-D]-[1-9]\d?)$/.test(kv)) { S.msg = { erro: true, txt: 'O lugar da separação é um endereço Face-Coluna-Andar (ex. 9-A-1) ou, no antigo, Rua-Estante-Prateleira (ex. K-02-1).' }; return pintar(); }
         await rpc('alm_kit_definir', { os: gg.os_id, endereco: kv || null }, true);
         if (S.kitDig) delete S.kitDig[gk]; S.msg = { txt: kv ? '📍 Separação da OS ' + (gg.numero_os || '') + ' em ' + kv + '.' : 'Lugar da separação retirado.' }; S.end = null; S.gravando = false; await carregar(true); return;
       }
       if (a === 'endNovo') {
         var nc = T(S.novoEnd).toUpperCase();
-        if (!/^[A-Z]{1,2}-\d{2}-\d{1,2}$/.test(nc)) { S.end.msg = 'O endereço é Rua-Estante-Prateleira, ex. B-04-2.'; S.end.msgErro = true; return pintar(); }
+        if (!/^([A-Z]{1,2}-\d{2}-\d{1,2}|[1-9]\d?-[A-D]-[1-9]\d?)$/.test(nc)) { S.end.msg = 'O endereço é Face-Coluna-Andar (ex. 2-A-3) ou, no antigo, Rua-Estante-Prateleira (ex. B-04-2).'; S.end.msgErro = true; return pintar(); }
         await rpc('alm_endereco_salvar', { codigo: nc, descricao: T(S.novoEndDesc) || null }, true);
         S.novoEnd = ''; S.novoEndDesc = ''; await lerEnderecos(true); S.end.msg = '📍 ' + nc + ' criado.'; return pintar();
       }
@@ -104005,7 +104018,7 @@ html:not(.v311-off):has(>body.v292-alto #viewComercial.v292-on:not([style*="disp
     if (q < N(it.qtd) && !b.div) { b.erro = 'Chegou menos que a NF: escolha o que houve (faltou, avariada, veio errada ou outro).'; return pintar(); }
     if (q < N(it.qtd) && b.div === 'outro' && !T(b.obs)) { b.erro = 'Diga o que aconteceu (observação).'; return pintar(); }
     var onde = T(b.onde != null ? b.onde : '').toUpperCase();
-    if (onde && !/^[A-Z]{1,2}-\d{2}-\d{1,2}$/.test(onde)) { b.erro = 'O endereço é Rua-Estante-Prateleira, ex. B-04-2.'; return pintar(); }
+    if (onde && !/^([A-Z]{1,2}-\d{2}-\d{1,2}|[1-9]\d?-[A-D]-[1-9]\d?)$/.test(onde)) { b.erro = 'O endereço é Face-Coluna-Andar (ex. 2-A-3) ou, no antigo, Rua-Estante-Prateleira (ex. B-04-2).'; return pintar(); }
     if (!b.uid) b.uid = uid();
     var p = { nota: Number(b.nota), n: N(b.n), qtd: q, lido: q > 0 ? lido : '', modo: q > 0 ? modo : null, uid: b.uid };
     if (q < N(it.qtd)) { p.divergencia = b.div; if (T(b.obs)) p.obs = T(b.obs); }
@@ -107888,6 +107901,14 @@ html:not(.v331-off) #v238Jan input[data-v238sel], html:not(.v331-off) #v238Jan i
 .v334-pv table{width:100%;border-collapse:separate;border-spacing:0;font-size:12.5px}
 .v334-pv th{position:sticky;top:0;background:#F9FAFB;text-align:left;padding:6px 8px;border-bottom:1px solid #EAECF0;font-weight:600}
 .v334-pv td{padding:5px 8px;border-bottom:1px solid #F2F4F7}
+/* PCM V341 (ProperCare-backlog#138): 🗄 Faces e o endereço por listas */
+.v341-lote{gap:10px}.v341-lote label{display:inline-flex;align-items:center;gap:6px;font-size:13px;color:#344054}
+.v341-in{border:1px solid #98A2B3;border-radius:8px;padding:6px 8px;font:600 14px ui-monospace,Consolas,monospace;width:56px;min-height:34px;box-sizing:border-box;text-transform:uppercase}
+.v341-obs{width:200px;text-transform:none;font-family:var(--font-sans,Inter,system-ui,sans-serif);font-weight:500}
+.v341-num{width:68px;font-family:var(--font-sans,Inter,system-ui,sans-serif);font-weight:500;text-transform:none}
+.v341-ends{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-bottom:6px}
+.v341-ends .v334-sel{min-width:70px}
+.v341-est td{vertical-align:middle}.v341-est .v334-sel{min-height:30px;padding:3px 6px}
 @media (max-width:820px){.v334-detg{grid-template-columns:1fr}.v334-bt,.v334-chip{min-height:44px}}
 @media print{#viewV334Estoque .v334-chips,#viewV334Estoque .v334-filtros,#viewV334Estoque .v334-dir,#viewV334Estoque .v334-imp{display:none}.v334-wrap{max-height:none;overflow:visible}}
 </style>
@@ -107906,6 +107927,12 @@ html:not(.v331-off) #v238Jan input[data-v238sel], html:not(.v331-off) #v238Jan i
      Almoxarifado/Estoque/Suprimentos, PCM completo ou o acesso extra pcm_estoque/pcm_suprimentos.
    Chamadas: abrir a tela = 1 (alm_estoque_lista); a busca, os filtros e "Mostrar mais" = 1 cada; o resto só no clique.
    Só no computador (no modo celular o menu por área não existe). Chave de volta: localStorage pcm_v334 = off.
+   PCM V341 (09/11/2026, ProperCare-backlog#138, parte 1 — SQL 127_ALM_ESTANTES): botão 🗄 Faces (o cadastro: lote de faces e a
+   mudança de prateleira, observação, andares, colunas e ativa, rpc alm_faces/alm_face_salvar); o 📍 endereço da linha aberta passa a
+   ser ESCOLHIDO em listas encadeadas (face › coluna › andar) do cadastro; a importação mostra "Fora do cadastro de faces".
+   Linhas deste bloco alteradas: o cabeçalho (botão e caixa), a busca (exemplo), o msgErro (prefixos), o detalhe (a caixa do
+   endereço), o salvarEnd (lê as listas), a pintura (foco das listas), a prévia (situação nova) e os gestos (listas e faces); o filtro de rua lista as faces.
+   As faces: 1 chamada quando o painel abre ou a 1ª linha se abre (nunca ao abrir a tela).
    ═══════════════════════════════════════════════════════════════════════════════════════════════════════════════ */
 (function () {
   'use strict';
@@ -107915,11 +107942,16 @@ html:not(.v331-off) #v238Jan input[data-v238sel], html:not(.v331-off) #v238Jan i
   var FILT = [['todas', 'Todas'], ['com_saldo', 'Com saldo'], ['sem_endereco', 'Sem endereço'], ['negativas', 'Negativas']];
   var SITS = { novo: ['novo', 'Novo'], igual: ['igual', 'Já está assim'], troca: ['troca', 'Já tem outro'], formato: ['erro', 'Endereço fora do formato'],
                sem_produto: ['erro', 'Código não existe no Omie'], ambiguo: ['aviso', 'Dois produtos com esse número'], repetido: ['erro', 'Mesma peça com 2 endereços'],
-               duplicada: ['igual', 'Linha repetida'], desativado: ['aviso', 'Endereço desativado'] };
+               duplicada: ['igual', 'Linha repetida'], desativado: ['aviso', 'Endereço desativado'],
+               fora_cadastro: ['erro', 'Fora do cadastro de faces'] };   // PCM V341
   var S = { d: null, itens: [], erro: '', tipoErro: '', carregando: false, mais: false, ger: 0, filtro: 'todas', busca: '', rua: '', ordem: 'endereco',
             aberto: '', endDig: {}, endMsg: {}, salvando: '', segurando: false, pend: false,
             imp: { aberto: false, txt: '', linhas: null, orig: [], prev: null, trocar: false, uid: '', ver: false, gravando: false, pedindo: false, erro: '', ok: '' } };
   V334.S = S;
+  // PCM V341: o cadastro de faces e a escolha do endereço por listas (uma por peça aberta)
+  S.est = { aberto: false, d: null, carregando: false, erro: '', ger: 0, criando: false, salvando: '', msg: {}, loteMsg: null,
+            lote: { de: '1', ate: '', andares: '6', colunas: '2' } };
+  S.endSel = {};
   function ls(k, v) {
     try { if (v === undefined) return localStorage.getItem(k); if (v === null) localStorage.removeItem(k); else localStorage.setItem(k, String(v)); }
     catch (e) { return null; }
@@ -107962,7 +107994,7 @@ html:not(.v331-off) #v238Jan input[data-v238sel], html:not(.v331-off) #v238Jan i
     if (c === 'acesso') return 'O estoque é do almoxarifado, do administrador ou de quem tem o acesso extra "PCM – Almoxarifado". Se você é do almoxarifado, entre de novo pelo Hub.';
     if (c === 'rede') return escrita ? 'Sem resposta do banco — não dá para saber se gravou. Clique de novo: não grava duas vezes.' : 'Sem conexão — a lista não carregou.';
     if (c === 'desligado') return 'O PCM está em modo só leitura (quadro desligado) — nada foi gravado.';
-    var m = String((e && e.message) || '').replace(/^NÃO foi gravada:\s*/, '').replace(/^Estoque:\s*/, '').replace(/^Separação:\s*/, '');
+    var m = String((e && e.message) || '').replace(/^NÃO foi gravada:\s*/, '').replace(/^Estoque:\s*/, '').replace(/^Separação:\s*/, '').replace(/^Faces:\s*/, '');   // PCM V341: + Faces
     return m || (escrita ? 'Nada foi gravado. Tente de novo; se continuar, avise o administrador.' : 'A lista não carregou. Tente de novo.');
   }
 
@@ -107992,13 +108024,14 @@ html:not(.v331-off) #v238Jan input[data-v238sel], html:not(.v331-off) #v238Jan i
   // a casca fica; só os pedaços que mudam são repintados (a busca nunca perde o foco nem o que foi digitado)
   function casca() {
     return '<h2>📦 Estoque<span id="v334Faixa"></span><span class="v334-dir"><span id="v334Lido" class="v334-lido"></span>' +
+      '<button type="button" class="v334-bt" data-v334="faces" id="v341BtEst" aria-expanded="false">🗄 Faces</button>' +   // PCM V341
       '<button type="button" class="v334-bt" data-v334="importar" id="v334BtImp" aria-expanded="false">📥 Importar endereços</button>' +
       '<button type="button" class="v334-bt v334-ic" data-v334="atualizar" id="v334Atu" title="Atualizar a lista" aria-label="Atualizar a lista">⟳</button></span></h2>' +
-      '<div id="v334Imp"></div>' +
+      '<div id="v341Est"></div><div id="v334Imp"></div>' +
       '<div class="v334-chips" id="v334Chips" role="group" aria-label="Filtro"></div>' +
-      '<div class="v334-filtros"><input type="text" class="v334-busca" id="v334Busca" placeholder="Buscar código, peça, referência ou endereço (ex. B-04)…" autocomplete="off"' +
+      '<div class="v334-filtros"><input type="text" class="v334-busca" id="v334Busca" placeholder="Buscar código, peça, referência ou endereço (ex. 5-A)…" autocomplete="off"' +
       ' name="v334_busca_nofill" data-lpignore="true" data-1p-ignore readonly onfocus="this.removeAttribute(\'readonly\')">' +
-      '<select class="v334-sel" id="v334Rua" title="Rua do almoxarifado"><option value="">Todas as ruas</option></select>' +
+      '<select class="v334-sel" id="v334Rua" title="Face (ou rua antiga)"><option value="">Todas as faces</option></select>' +
       '<select class="v334-sel" id="v334Ordem" title="Ordem da lista"><option value="endereco">Ordem da prateleira</option><option value="descricao">Ordem da descrição</option></select>' +
       '</div><div id="v334Aviso"></div><div id="v334Corpo"></div>';
   }
@@ -108059,6 +108092,7 @@ html:not(.v331-off) #v238Jan input[data-v238sel], html:not(.v331-off) #v238Jan i
       if (el.title !== tit) el.title = tit;
     }
     var bi = document.getElementById('v334BtImp'); if (bi) bi.setAttribute('aria-expanded', String(!!S.imp.aberto));
+    var be = document.getElementById('v341BtEst'); if (be) be.setAttribute('aria-expanded', String(!!S.est.aberto));   // PCM V341
   }
   function pintarChips() {
     var el = document.getElementById('v334Chips'); if (!el) return;
@@ -108071,7 +108105,7 @@ html:not(.v331-off) #v238Jan input[data-v238sel], html:not(.v331-off) #v238Jan i
     if (el.innerHTML !== h) el.innerHTML = h;
     var sr = document.getElementById('v334Rua');
     if (sr && S.d) {
-      var opc = '<option value="">Todas as ruas</option>' + (S.d.ruas || []).map(function (r) { return '<option value="' + esc(r.rua) + '">Rua ' + esc(r.rua) + '</option>'; }).join('') +
+      var opc = '<option value="">Todas as faces</option>' + ordRuas(S.d.ruas).map(function (r) { return '<option value="' + esc(r.rua) + '">' + (/^\d+$/.test(String(r.rua)) ? 'Face ' : 'Rua ') + esc(r.rua) + '</option>'; }).join('') +   // PCM V341: faces antes das ruas antigas
                 (S.rua && !(S.d.ruas || []).some(function (r) { return r.rua === S.rua; }) ? '<option value="' + esc(S.rua) + '">' + esc(S.rua) + '</option>' : '');
       if (sr.__v !== opc) { sr.innerHTML = opc; sr.__v = opc; }
       if (sr.value !== S.rua) sr.value = S.rua;
@@ -108116,9 +108150,7 @@ html:not(.v331-off) #v238Jan input[data-v238sel], html:not(.v331-off) #v238Jan i
     var sv = S.salvando === it.chave;
     return '<div class="v334-detg">' +
       '<div class="v334-cx"><h4>📍 Endereço</h4>' +
-        '<input type="text" class="v334-in" data-v334-end="' + esc(it.chave) + '" value="' + esc(dig) + '" placeholder="ex. B-04-2" maxlength="12" aria-label="Endereço da peça"' +
-        ' autocomplete="off" name="v334_end_nofill" data-lpignore="true" data-1p-ignore> ' +
-        '<button type="button" class="v334-bt pri" data-v334="salvarEnd" data-ch="' + esc(it.chave) + '"' + (sv ? ' disabled data-pcm-enviando="1"' : '') + '>' + (sv ? '<span class="v334-gira"></span>Salvando…' : 'Salvar endereço') + '</button>' +
+        enderecoHtml(it, sv) +   // PCM V341: escolher nas listas do cadastro de faces (era um campo digitado)
         (msg ? '<div class="v334-msg ' + (msg.erro ? 'erro' : 'ok') + '" role="' + (msg.erro ? 'alert' : 'status') + '">' + esc(msg.txt) + '</div>' : '') +
         (it.endereco ? '<div class="v334-sub">' + (it.end_origem === 'aprendido' ? 'Aprendido na separação' : 'Cadastrado') + (it.end_em ? ' em ' + esc(data(it.end_em)) : '') + '</div>' : '') + '</div>' +
       '<div class="v334-cx"><h4>Saldo por local do Omie</h4>' + loc + '</div>' +
@@ -108135,7 +108167,7 @@ html:not(.v331-off) #v238Jan input[data-v238sel], html:not(.v331-off) #v238Jan i
     var raiz = document.getElementById('viewV334Estoque'); if (!raiz || cv() !== VIEW) return;
     if (S.segurando) { S.pend = true; return; }                // o dedo está na linha: repintar agora engoliria o clique
     S.pend = false;
-    pintarTopo(); pintarChips(); pintarImp();
+    pintarTopo(); pintarChips(); pintarEst(); pintarImp();   // PCM V341: + pintarEst
     var av = document.getElementById('v334Aviso'), corpo = document.getElementById('v334Corpo'); if (!corpo) return;
     var a = '';
     if (S.erro && S.d) a = '<div class="v334-aviso erro" role="alert">' + esc(S.erro) + ' <button type="button" class="v334-bt" data-v334="atualizar">Tentar de novo</button></div>';
@@ -108156,8 +108188,10 @@ html:not(.v331-off) #v238Jan input[data-v238sel], html:not(.v331-off) #v238Jan i
     if (corpo.__v334 !== h) {
       var foco = document.activeElement && corpo.contains(document.activeElement) ? document.activeElement : null;
       var fEnd = foco && foco.getAttribute('data-v334-end'), fSel = fEnd ? foco.selectionStart : null, fLin = foco && foco.getAttribute('data-v334-ch');
+      var fLis = foco && foco.getAttribute('data-v341-s'), fLisCh = fLis ? foco.getAttribute('data-ch') : null;   // PCM V341: a lista do endereço
       corpo.innerHTML = h; corpo.__v334 = h;
-      if (fEnd) { var ni = corpo.querySelector('[data-v334-end="' + cssEsc(fEnd) + '"]'); if (ni) try { ni.focus({ preventScroll: true }); if (fSel != null) ni.setSelectionRange(fSel, fSel); } catch (e) {} }
+      if (fLis) { var nls = corpo.querySelector('[data-v341-s="' + fLis + '"][data-ch="' + cssEsc(fLisCh) + '"]'); if (nls) try { nls.focus({ preventScroll: true }); } catch (e) {} }
+      else if (fEnd) { var ni = corpo.querySelector('[data-v334-end="' + cssEsc(fEnd) + '"]'); if (ni) try { ni.focus({ preventScroll: true }); if (fSel != null) ni.setSelectionRange(fSel, fSel); } catch (e) {} }
       else if (fLin) { var nl = corpo.querySelector('tr[data-v334-ch="' + cssEsc(fLin) + '"]'); if (nl) try { nl.focus({ preventScroll: true }); } catch (e) {} }
     }
   }
@@ -108184,7 +108218,7 @@ html:not(.v331-off) #v238Jan input[data-v238sel], html:not(.v331-off) #v238Jan i
     return { linhas: out, orig: orig, cab: cab };
   }
   V334.lerPlanilha = lerPlanilha;
-  function sitsDaPrevia() { return ['novo', 'troca', 'igual', 'formato', 'sem_produto', 'ambiguo', 'repetido', 'desativado', 'duplicada']; }
+  function sitsDaPrevia() { return ['novo', 'troca', 'igual', 'formato', 'fora_cadastro', 'sem_produto', 'ambiguo', 'repetido', 'desativado', 'duplicada']; }   // PCM V341: + fora_cadastro
   function aGravar() { var r = (S.imp.prev && S.imp.prev.resumo) || {}; return N(r.novo) + (S.imp.trocar ? N(r.troca) : 0); }
   function pintarImp() {
     var el = document.getElementById('v334Imp'); if (!el) return;
@@ -108192,7 +108226,7 @@ html:not(.v331-off) #v238Jan input[data-v238sel], html:not(.v331-off) #v238Jan i
     if (I.aberto) {
       h = '<div class="v334-imp" role="region" aria-label="Importar endereços"><h3>📥 Importar endereços</h3>' +
         '<label for="v334ImpTxt" class="v334-sub" style="margin:0 0 4px">Copie do Excel as colunas <b>Código do Omie</b> e <b>Endereço</b> e cole aqui (cabeçalho opcional).</label>' +
-        '<textarea id="v334ImpTxt" placeholder="006165&#9;B-04-2&#10;3474&#9;B-04-3" spellcheck="false" autocomplete="off" name="v334_imp_nofill" data-lpignore="true" data-1p-ignore></textarea>' +
+        '<textarea id="v334ImpTxt" placeholder="006165&#9;5-A-2&#10;3474&#9;5-B-3" spellcheck="false" autocomplete="off" name="v334_imp_nofill" data-lpignore="true" data-1p-ignore></textarea>' +
         '<div class="v334-lin"><button type="button" class="v334-bt pri" data-v334="previa"' + (I.pedindo ? ' disabled data-pcm-enviando="1"' : '') + '>' + (I.pedindo ? '<span class="v334-gira"></span>Conferindo…' : 'Ver a prévia') + '</button>' +
         '<label class="v334-bt" style="cursor:pointer">Abrir um .csv<input type="file" accept=".csv,.txt,text/csv,text/plain" data-v334="arquivo" style="display:none"></label>' +
         '<button type="button" class="v334-bt" data-v334="fecharImp">Fechar</button></div>';
@@ -108213,13 +108247,13 @@ html:not(.v331-off) #v238Jan input[data-v238sel], html:not(.v331-off) #v238Jan i
     sitsDaPrevia().forEach(function (k) { if (N(r[k])) h += '<span class="v334-sit ' + SITS[k][0] + '">' + esc(SITS[k][1]) + ' <b>' + N(r[k]) + '</b></span>'; });
     h += '</div>';
     if (N(r.troca)) h += '<label class="v334-lin" style="font-size:13px;cursor:pointer"><input type="checkbox" data-v334="trocar"' + (I.trocar ? ' checked' : '') + (I.pedindo || I.gravando ? ' disabled' : '') + '> ' + (N(r.troca) === 1 ? 'Trocar o endereço da peça que já tem outro (sem marcar, ela fica como está)' : 'Trocar o endereço das ' + N(r.troca) + ' peças que já têm outro (sem marcar, elas ficam como estão)') + '</label>';
-    var probl = N(r.formato) + N(r.sem_produto) + N(r.ambiguo) + N(r.repetido) + N(r.desativado);
+    var probl = N(r.formato) + N(r.fora_cadastro) + N(r.sem_produto) + N(r.ambiguo) + N(r.repetido) + N(r.desativado);   // PCM V341: + fora_cadastro
     var ls2 = (I.prev.linhas || []).filter(function (x) { return I.ver || (x.sit !== 'igual' && x.sit !== 'duplicada'); });
-    ls2.sort(function (a, b) { var o = sitsDaPrevia(); var pa = ['formato', 'sem_produto', 'ambiguo', 'repetido', 'desativado'].indexOf(a.sit) >= 0 ? 0 : 1, pb = ['formato', 'sem_produto', 'ambiguo', 'repetido', 'desativado'].indexOf(b.sit) >= 0 ? 0 : 1; return pa - pb || o.indexOf(a.sit) - o.indexOf(b.sit) || a.n - b.n; });
+    ls2.sort(function (a, b) { var o = sitsDaPrevia(); var pa = ['formato', 'fora_cadastro', 'sem_produto', 'ambiguo', 'repetido', 'desativado'].indexOf(a.sit) >= 0 ? 0 : 1, pb = ['formato', 'fora_cadastro', 'sem_produto', 'ambiguo', 'repetido', 'desativado'].indexOf(b.sit) >= 0 ? 0 : 1; return pa - pb || o.indexOf(a.sit) - o.indexOf(b.sit) || a.n - b.n; });
     h += '<div class="v334-pv"><table><thead><tr><th>Linha</th><th>Código</th><th>Endereço</th><th>Peça</th><th>Situação</th></tr></thead><tbody>' +
       ls2.slice(0, 500).map(function (x) {
         var s = SITS[x.sit] || ['', x.sit], nl = I.orig[x.n - 1] || x.n;
-        var det = x.sit === 'troca' ? ' (hoje ' + x.atual + ')' : x.sit === 'ambiguo' ? ': ' + (x.candidatos || []).join(' ou ') + ' — escreva com os zeros' : x.sit === 'formato' ? ': use Rua-Estante-Prateleira, ex. B-04-2' : '';
+        var det = x.sit === 'troca' ? ' (hoje ' + x.atual + ')' : x.sit === 'ambiguo' ? ': ' + (x.candidatos || []).join(' ou ') + ' — escreva com os zeros' : x.sit === 'formato' ? ': use Face-Coluna-Andar, ex. 2-A-3' : x.sit === 'fora_cadastro' ? (x.motivo ? ': ' + x.motivo : '') : '';   // PCM V341
         return '<tr><td>' + esc(nl) + '</td><td class="v334-cod">' + esc(x.codigo || '—') + '</td><td>' + esc(x.endereco || x.endereco_digitado || '—') + '</td><td>' + esc(x.descricao || '—') + '</td>' +
                '<td><span class="v334-sit ' + s[0] + '">' + esc(s[1] + det) + '</span></td></tr>';
       }).join('') + (ls2.length ? '' : '<tr><td colspan="5" class="v334-semnum">Nada a mostrar.</td></tr>') + '</tbody></table></div>';
@@ -108228,7 +108262,8 @@ html:not(.v331-off) #v238Jan input[data-v238sel], html:not(.v331-off) #v238Jan i
     h += '<div class="v334-lin"><button type="button" class="v334-bt pri" data-v334="gravar"' + (n && !I.gravando ? '' : ' disabled') + (I.gravando ? ' data-pcm-enviando="1"' : '') + '>' +
          (I.gravando ? '<span class="v334-gira"></span>Gravando…' : 'Gravar ' + n + (n === 1 ? ' endereço' : ' endereços')) + '</button>' +
          '<button type="button" class="v334-bt" data-v334="verTudo" aria-pressed="' + I.ver + '">' + (I.ver ? 'Só o que muda e os problemas' : 'Ver também as que já estão certas') + '</button>' +
-         (probl ? '<span class="v334-sub" style="margin:0">As linhas com problema não gravam: corrija na planilha e veja a prévia de novo.</span>' : '') + '</div>';
+         (probl ? '<span class="v334-sub" style="margin:0">As linhas com problema não gravam: corrija na planilha e veja a prévia de novo.</span>' : '') +
+         (N(r.fora_cadastro) ? '<button type="button" class="v334-bt" data-v334="faces">🗄 Abrir as faces</button>' : '') + '</div>';   // PCM V341
     return h;
   }
   function previa() {
@@ -108266,20 +108301,209 @@ html:not(.v331-off) #v238Jan input[data-v238sel], html:not(.v331-off) #v238Jan i
   }
   V334.gravar = gravar;
 
+  // ═══ 4b · 🗄 FACES (PCM V341, ProperCare-backlog#138): o cadastro que dá o endereço novo ═════════════════════════════
+  // Endereço novo = Face-Coluna-Andar (ex. 2-A-3): face = o número de cada lado de uma prateleira (só as que existem), coluna A..D,
+  // andar 1 = o do piso. A régua mora no banco (_alm_end_motivo): aqui só se oferece o que existe no cadastro.
+  // (os nomes internos S.est / carregarEst / salvarEst ficaram do 1º desenho; a tela diz "face")
+  var COLS = [[1, 'A'], [2, 'A–B'], [3, 'A–C'], [4, 'A–D']];
+  function estCod(e) { return String(Number(e.face)); }
+  function colTxt(n) { n = Number(n) || 1; return n === 1 ? 'só A' : 'A–' + String.fromCharCode(64 + n); }
+  function ordRuas(rs) {   // as faces (número) em ordem numérica, depois as ruas antigas (letra)
+    return (rs || []).slice().sort(function (a, b2) {
+      var na = /^\d+$/.test(String(a.rua)), nb = /^\d+$/.test(String(b2.rua));
+      if (na && nb) return Number(a.rua) - Number(b2.rua);
+      if (na !== nb) return na ? -1 : 1;
+      return String(a.rua) < String(b2.rua) ? -1 : String(a.rua) > String(b2.rua) ? 1 : 0;
+    });
+  }
+  function carregarEst() {
+    var E = S.est;
+    if (typeof _v200Rpc !== 'function') { E.erro = 'Tela indisponível — avise o administrador.'; pintar(); return Promise.resolve(); }
+    var g = ++E.ger; E.carregando = true; pintar();
+    return rpc('alm_faces', {}, false).then(function (d) {
+      if (g !== E.ger) return;
+      E.carregando = false; E.erro = ''; E.d = d || { faces: [] }; pintar();
+    }, function (e) {
+      if (g !== E.ger) return;
+      E.carregando = false; E.erro = msgErro(e, false); pintar();
+    });
+  }
+  V334.carregarEst = carregarEst;
+  function lista() { return (S.est.d && S.est.d.faces) || []; }
+  function ativas() { return lista().filter(function (e) { return e.ativo; }); }
+  function acharEst(s) { return ativas().find(function (e) { return String(e.face) === String(s.face); }) || null; }
+  // o endereço que as listas formam ('' = falta escolher)
+  function codDe(s) {
+    var e = acharEst(s); if (!e || !s.and || Number(s.and) > Number(e.andares)) return '';
+    var nc = Number(e.colunas) || 1;
+    if (!(s.col && s.col.charCodeAt(0) - 64 >= 1 && s.col.charCodeAt(0) - 64 <= nc)) return '';
+    return estCod(e) + '-' + s.col + '-' + Number(s.and);
+  }
+  V334.codDe = codDe;
+  function partesEnd(cod) {
+    var m = /^([1-9][0-9]?)-([A-D])-([1-9][0-9]?)$/.exec(String(cod || ''));
+    return m ? { face: m[1], col: m[2], and: m[3] } : null;
+  }
+  function selDe(it) {
+    if (!S.endSel[it.chave]) S.endSel[it.chave] = partesEnd(it.endereco) || { face: '', col: '', and: '' };
+    return S.endSel[it.chave];
+  }
+  function opcoes(vals, sel, rot, vazio) {
+    return '<option value="">' + esc(vazio) + '</option>' + vals.map(function (v) {
+      return '<option value="' + esc(v) + '"' + (String(v) === String(sel) ? ' selected' : '') + '>' + esc(rot ? rot(v) : v) + '</option>';
+    }).join('');
+  }
+  function rotFace(e) {
+    return 'Face ' + e.face + (e.prateleira != null && e.prateleira !== '' ? ' · prat. ' + e.prateleira : '') + (e.observacao ? ' · ' + e.observacao : '');
+  }
+  function enderecoHtml(it, sv) {
+    var E = S.est, ch = esc(it.chave);
+    if (!E.d) {
+      if (!E.carregando && !E.erro) setTimeout(carregarEst, 0);   // a 1ª linha aberta pede o cadastro (fora da pintura)
+      return E.erro ? '<div class="v334-msg erro" role="alert">' + esc(E.erro) + ' <button type="button" class="v334-bt" data-v334="relerEst">Tentar de novo</button></div>' : '<div class="v334-esq" style="height:34px" aria-busy="true"></div>';
+    }
+    var at = ativas();
+    if (!at.length) return '<div class="v334-sub" style="margin:0 0 6px">Nenhuma face no cadastro ainda.</div>' +
+      '<button type="button" class="v334-bt" data-v334="faces">🗄 Cadastrar faces</button>';
+    var s = selDe(it);
+    if (s.face && !acharEst(s)) { s.face = ''; s.col = ''; s.and = ''; }   // a face escolhida saiu do cadastro (desativada)
+    var e = acharEst(s), nc = e ? Number(e.colunas) || 1 : 0, cols = [], ands = [], i;
+    for (i = 1; i <= nc; i++) cols.push(String.fromCharCode(64 + i));
+    if (e && !s.col && nc === 1) s.col = 'A';   // face só com a coluna A: já vem escolhida
+    if (e) for (i = 1; i <= Number(e.andares); i++) ands.push(String(i));
+    var dis = function (ok) { return ok && !sv ? '' : ' disabled'; };
+    var cod = codDe(s);
+    var h = '<div class="v341-ends" role="group" aria-label="Endereço da peça">' +
+      '<select class="v334-sel" data-v341-s="face" data-ch="' + ch + '" aria-label="Face"' + dis(true) + '>' +
+        '<option value="">Face…</option>' + at.map(function (f) { return '<option value="' + esc(f.face) + '"' + (String(f.face) === String(s.face) ? ' selected' : '') + '>' + esc(rotFace(f)) + '</option>'; }).join('') + '</select>' +
+      '<select class="v334-sel" data-v341-s="col" data-ch="' + ch + '" aria-label="Coluna"' + dis(!!e) + '>' + opcoes(cols, s.col, function (v) { return 'Coluna ' + v; }, 'Coluna…') + '</select>' +
+      '<select class="v334-sel" data-v341-s="and" data-ch="' + ch + '" aria-label="Andar (1 = o do piso)" title="1 = o do piso"' + dis(!!e) + '>' + opcoes(ands, s.and, function (v) { return v + 'º andar'; }, 'Andar…') + '</select>' +
+      '</div>' +
+      '<button type="button" class="v334-bt pri" data-v334="salvarEnd" data-ch="' + ch + '"' + (sv ? ' disabled data-pcm-enviando="1"' : (cod && cod !== it.endereco ? '' : ' disabled')) + '>' +
+      (sv ? '<span class="v334-gira"></span>Salvando…' : cod ? 'Gravar ' + esc(cod) : 'Salvar endereço') + '</button>';
+    if (it.endereco && !partesEnd(it.endereco)) h += '<div class="v334-sub">Hoje em ' + esc(it.endereco) + ' (formato antigo): escolha o lugar novo.</div>';
+    return h;
+  }
+  V334.enderecoHtml = enderecoHtml;
+  function escolher(ch, k, v) {
+    var s = S.endSel[ch] || (S.endSel[ch] = { face: '', col: '', and: '' });
+    var ord = ['face', 'col', 'and'], i = ord.indexOf(k); if (i < 0) return;
+    s[k] = v; for (var j = i + 1; j < ord.length; j++) s[ord[j]] = '';   // a escolha de cima limpa as de baixo
+    S.endMsg[ch] = null; pintar();
+  }
+  V334.escolher = escolher;
+
+  function lotePrev() {
+    var L = S.est.lote, de = /^\d+$/.test(String(L.de).trim()) ? parseInt(L.de, 10) : NaN, ate = /^\d+$/.test(String(L.ate).trim()) ? parseInt(L.ate, 10) : NaN;
+    if (!(de >= 1 && de <= 99) || !(ate >= 1 && ate <= 99) || ate < de) return { erro: 'Diga de que face a que face (1 a 99).' };
+    if (ate - de + 1 > 60) return { erro: 'No máximo 60 faces por vez.' };
+    var n = ate - de + 1;
+    return { de: de, ate: ate, txt: 'Cria ' + (n === 1 ? 'a face ' + de : 'as faces ' + de + ' a ' + ate) + ' · ' + n + (n === 1 ? ' face' : ' faces') + ' · ' + L.andares + ' andares · colunas ' + colTxt(L.colunas) + '. As que já existem ficam como estão.' };
+  }
+  function pintarLotePrev() {
+    var el = document.getElementById('v341LotePrev'); if (!el) return;
+    var p = lotePrev(), t = S.est.lote.ate ? (p.erro || p.txt) : '';   // só depois do "até": antes disso não há o que dizer
+    if (el.textContent !== t) el.textContent = t;
+  }
+  function linhaEst(e) {
+    var E = S.est, cod = estCod(e), sv = E.salvando === cod, ocup = !!E.salvando, m = E.msg[cod], dis = ocup ? ' disabled' : '', aa = [], i;
+    for (i = 1; i <= 12; i++) aa.push(String(i));
+    var nf = ' autocomplete="off" data-lpignore="true" data-1p-ignore';
+    return '<tr data-v341-e="' + esc(cod) + '"' + (e.ativo ? '' : ' style="color:#98A2B3"') + '><td><span class="v334-end">Face ' + esc(cod) + '</span></td>' +
+      '<td><input type="number" class="v341-in v341-num" min="1" max="999" data-v341-c="prateleira" data-cod="' + esc(cod) + '" value="' + esc(e.prateleira == null ? '' : e.prateleira) + '" aria-label="Prateleira da face ' + esc(cod) + '" name="v341_prat_nofill"' + nf + dis + '></td>' +
+      '<td><input type="text" class="v341-in v341-obs" maxlength="80" data-v341-c="observacao" data-cod="' + esc(cod) + '" value="' + esc(e.observacao || '') + '" aria-label="Observação da face ' + esc(cod) + '" name="v341_obs_nofill"' + nf + dis + '></td>' +
+      '<td><select class="v334-sel" data-v341-c="andares" data-cod="' + esc(cod) + '" aria-label="Andares da face ' + esc(cod) + '"' + dis + '>' +
+        aa.map(function (v) { return '<option value="' + v + '"' + (Number(v) === Number(e.andares) ? ' selected' : '') + '>' + v + '</option>'; }).join('') + '</select></td>' +
+      '<td><select class="v334-sel" data-v341-c="colunas" data-cod="' + esc(cod) + '" aria-label="Colunas da face ' + esc(cod) + '"' + dis + '>' +
+        COLS.map(function (c) { return '<option value="' + c[0] + '"' + (Number(c[0]) === Number(e.colunas) ? ' selected' : '') + '>' + esc(c[1]) + '</option>'; }).join('') + '</select></td>' +
+      '<td class="n">' + N(e.pecas) + (N(e.kits) ? ' <span class="v334-sub" style="display:inline">+ ' + N(e.kits) + ' kit' + (N(e.kits) === 1 ? '' : 's') + '</span>' : '') + '</td>' +
+      '<td><label style="cursor:pointer;display:inline-flex;gap:6px;align-items:center"><input type="checkbox" data-v341-c="ativo" data-cod="' + esc(cod) + '"' + (e.ativo ? ' checked' : '') + dis + '> ' + (e.ativo ? 'Ativa' : 'Desativada') + '</label></td>' +
+      '<td>' + (sv ? '<span class="v334-gira" role="status" aria-label="Gravando"></span>' : m ? '<span class="v334-msg ' + (m.erro ? 'erro' : 'ok') + '" role="' + (m.erro ? 'alert' : 'status') + '" style="margin:0">' + esc(m.txt) + '</span>' : '') + '</td></tr>';
+  }
+  function pintarEst() {
+    var el = document.getElementById('v341Est'); if (!el) return;
+    var E = S.est, L = E.lote, h = '';
+    if (E.aberto) {
+      var aa = [], i; for (i = 1; i <= 12; i++) aa.push(String(i));
+      var p = lotePrev(), ls2 = lista();
+      h = '<div class="v334-imp v341-est" role="region" aria-label="Faces"><h3>🗄 Faces</h3>' +
+        '<div class="v334-sub" style="margin:0 0 8px">Endereço: Face-Coluna-Andar (ex. 2-A-3). Andar 1 = o do piso; confira a etiqueta na prateleira.</div>' +
+        '<div class="v334-lin v341-lote">' +
+          '<label>Faces <input type="number" class="v341-in v341-num" data-v341-l="de" min="1" max="99" value="' + esc(L.de) + '" aria-label="Da face" autocomplete="off" name="v341_de_nofill" data-lpignore="true" data-1p-ignore> a ' +
+            '<input type="number" class="v341-in v341-num" data-v341-l="ate" min="1" max="99" value="' + esc(L.ate) + '" aria-label="Até a face" autocomplete="off" name="v341_ate_nofill" data-lpignore="true" data-1p-ignore></label>' +
+          '<label>Andares <select class="v334-sel" data-v341-l="andares" aria-label="Andares">' + aa.map(function (v) { return '<option value="' + v + '"' + (v === String(L.andares) ? ' selected' : '') + '>' + v + '</option>'; }).join('') + '</select></label>' +
+          '<label>Colunas <select class="v334-sel" data-v341-l="colunas" aria-label="Colunas">' + COLS.map(function (c) { return '<option value="' + c[0] + '"' + (String(c[0]) === String(L.colunas) ? ' selected' : '') + '>' + esc(c[1]) + '</option>'; }).join('') + '</select></label>' +
+          '<button type="button" class="v334-bt pri" data-v334="criarEst"' + (E.criando ? ' disabled data-pcm-enviando="1"' : '') + '>' + (E.criando ? '<span class="v334-gira"></span>Criando…' : 'Criar faces') + '</button>' +
+          '<button type="button" class="v334-bt" data-v334="fecharEst">Fechar</button></div>' +
+        '<div class="v334-sub" id="v341LotePrev" aria-live="polite">' + esc(L.ate ? (p.erro || p.txt) : '') + '</div>';
+      if (E.loteMsg) h += '<div class="v334-aviso ' + (E.loteMsg.erro ? 'erro' : 'ok') + '" role="' + (E.loteMsg.erro ? 'alert' : 'status') + '" style="margin-top:8px">' + esc(E.loteMsg.txt) + '</div>';
+      if (E.erro) h += '<div class="v334-aviso erro" role="alert" style="margin-top:8px">' + esc(E.erro) + ' <button type="button" class="v334-bt" data-v334="relerEst">Tentar de novo</button></div>';
+      if (!E.d) h += E.erro ? '' : '<div aria-busy="true"><div class="v334-esq"></div></div>';
+      else if (!ls2.length) h += '<div class="v334-vazio" style="margin-top:8px"><b>Nenhuma face ainda</b>Crie as primeiras faces acima: de que face a que face, andares e colunas.</div>';
+      else h += '<div class="v334-pv" style="max-height:360px"><table><thead><tr><th>Face</th><th title="Só informativo">Prateleira</th><th>Observação</th><th>Andares</th><th>Colunas</th><th class="n" title="Peças com endereço nesta face">Peças</th><th>Situação</th><th></th></tr></thead><tbody>' +
+        ls2.map(linhaEst).join('') + '</tbody></table></div>';
+      h += '</div>';
+    }
+    if (el.__v !== h) {
+      var foco = document.activeElement && el.contains(document.activeElement) ? document.activeElement : null;
+      var fl = foco && foco.getAttribute('data-v341-l'), fc = foco && foco.getAttribute('data-v341-c'), fcod = fc ? foco.getAttribute('data-cod') : null, sel = null;
+      try { if ((fl || fc) && foco.type === 'text') sel = foco.selectionStart; } catch (e) {}
+      el.innerHTML = h; el.__v = h;
+      var nf = fl ? el.querySelector('[data-v341-l="' + fl + '"]') : fc ? el.querySelector('[data-v341-c="' + fc + '"][data-cod="' + cssEsc(fcod) + '"]') : null;
+      if (nf) try { nf.focus({ preventScroll: true }); if (sel != null) nf.setSelectionRange(sel, sel); } catch (e) {}
+    }
+  }
+  function abrirEst(rolar) {
+    S.est.aberto = true; pintar();
+    if (!S.est.carregando) carregarEst();   // abrir sempre relê: outra pessoa pode ter criado ou mudado faces
+    if (rolar) setTimeout(function () { var x = document.getElementById('v341Est'); if (x) try { x.scrollIntoView({ block: 'start', behavior: 'smooth' }); } catch (e) {} }, 0);
+  }
+  function criarEst() {
+    var E = S.est, L = E.lote; if (E.criando) return;
+    var p = lotePrev();
+    if (p.erro) { E.loteMsg = { erro: true, txt: p.erro }; pintar(); return; }
+    E.criando = true; E.loteMsg = null; pintar();
+    rpc('alm_face_salvar', { lote: { de: p.de, ate: p.ate, andares: Number(L.andares), colunas: Number(L.colunas) } }, true).then(function (r) {
+      E.criando = false; r = r || {};
+      var ja = (r.ja_existiam || []).length, c = N(r.criadas);
+      E.loteMsg = { erro: false, txt: '✅ ' + (String(r.de) === String(r.ate) ? 'Face ' + r.de : 'Faces ' + r.de + ' a ' + r.ate) + ' no cadastro: ' + c + (c === 1 ? ' nova' : ' novas') +
+                    (ja ? ' · ' + ja + (ja === 1 ? ' já existia e ficou como estava' : ' já existiam e ficaram como estavam') : '') + '.' };
+      E.lote.de = String(p.ate + 1 <= 99 ? p.ate + 1 : p.ate); E.lote.ate = '';
+      toastSeguro(E.loteMsg.txt, 'success'); carregarEst();
+    }, function (e) { E.criando = false; E.loteMsg = { erro: true, txt: msgErro(e, true) }; pintar(); });
+  }
+  V334.criarEst = criarEst;
+  function salvarEst(cod, campo, valor) {
+    var E = S.est; if (E.salvando) return;
+    var e = lista().find(function (x) { return estCod(x) === cod; }); if (!e) return;
+    if (campo === 'prateleira' && valor != null && !(valor >= 1 && valor <= 999 && Math.floor(valor) === valor)) {
+      E.msg[cod] = { erro: true, txt: 'A prateleira é um número (ou vazio).' }; var pe0 = document.getElementById('v341Est'); if (pe0) pe0.__v = null; pintar(); return; }
+    var atual = campo === 'observacao' ? (e.observacao || '') : e[campo];
+    if (String(atual == null ? '' : atual) === String(valor == null ? '' : valor)) return;   // nada mudou (sair do campo sem mexer)
+    var p = { face: e.face, atualizado_em: e.atualizado_em }; p[campo] = valor;   // a versão lida: o banco recusa se outro mudou
+    E.salvando = cod; E.msg[cod] = null; pintar();
+    rpc('alm_face_salvar', p, true).then(function (r) {
+      E.salvando = ''; var n = r && r.face;
+      if (n) { e.andares = n.andares; e.colunas = n.colunas; e.ativo = n.ativo; e.prateleira = n.prateleira; e.observacao = n.observacao; e.atualizado_em = n.atualizado_em; }
+      E.msg[cod] = { erro: false, txt: '✅ Gravado' }; pintar();
+    }, function (er) { E.salvando = ''; E.msg[cod] = { erro: true, txt: msgErro(er, true) }; var pe = document.getElementById('v341Est'); if (pe) pe.__v = null; pintar(); if (/outra pessoa mudou/.test(E.msg[cod].txt)) carregarEst(); });   // a lista volta ao que o banco tem
+  }
+  V334.salvarEst = salvarEst;
+
   // ═══ 5 · OS GESTOS ═══════════════════════════════════════════════════════════════════════════════════════════════
   function abrirLinha(ch) { S.aberto = S.aberto === ch ? '' : ch; pintar(); }
   function salvarEnd(ch) {
     if (S.salvando) return;
     var it = S.itens.find(function (x) { return x.chave === ch; }); if (!it) return;
-    var inp = document.querySelector('#viewV334Estoque [data-v334-end="' + cssEsc(ch) + '"]'), dig = inp ? inp.value : (S.endDig[ch] || '');
-    var f = fmtEnd(dig);
-    if (!f) { S.endMsg[ch] = { erro: true, txt: 'Use Rua-Estante-Prateleira, ex. B-04-2.' }; pintar(); return; }
+    var f = codDe(S.endSel[ch] || {});   // PCM V341: o endereço vem das listas do cadastro de faces
+    if (!f) { S.endMsg[ch] = { erro: true, txt: 'Escolha a face, a coluna e o andar.' }; pintar(); return; }
     if (f === it.endereco) { S.endMsg[ch] = { erro: false, txt: 'Já está em ' + f + '.' }; S.endDig[ch] = f; pintar(); return; }
     S.salvando = ch; S.endMsg[ch] = null; pintar();
     rpc('alm_produto_endereco_definir', { chave: ch, endereco: f }, true).then(function (r) {
       S.salvando = '';
       it.endereco = (r && r.endereco) || f; it.end_origem = 'cadastro'; it.end_em = new Date().toISOString();
       delete S.endDig[ch]; S.endMsg[ch] = { erro: false, txt: '✅ Endereço gravado: ' + it.endereco + '.' }; S.sujo = true;
+      if (S.est.d) carregarEst();   // PCM V341: a contagem de peças por face mudou
       pintar();                                                 // a linha aberta fica à vista (a lista se reordena no próximo ⟳)
     }, function (e) { S.salvando = ''; S.endMsg[ch] = { erro: true, txt: msgErro(e, true) }; pintar(); });
   }
@@ -108292,7 +108516,7 @@ html:not(.v331-off) #v238Jan input[data-v238sel], html:not(.v331-off) #v238Jan i
       var b = t.closest && t.closest('[data-v334]');
       if (b) {
         var a = b.getAttribute('data-v334');
-        if (a === 'atualizar') carregar();
+        if (a === 'atualizar') { carregar(); if (S.est.d) carregarEst(); }   // PCM V341: o ⟳ relê também as faces
         else if (a === 'mais') carregar(true);
         else if (a === 'limpar') { S.busca = ''; S.rua = ''; var i = document.getElementById('v334Busca'); if (i) i.value = ''; carregar(); }
         else if (a === 'importar') { S.imp.aberto = !S.imp.aberto; pintar(); if (S.imp.aberto) setTimeout(function () { var x = document.getElementById('v334ImpTxt'); if (x) try { x.focus(); } catch (e) {} }, 0); }
@@ -108301,6 +108525,10 @@ html:not(.v331-off) #v238Jan input[data-v238sel], html:not(.v331-off) #v238Jan i
         else if (a === 'gravar') gravar();
         else if (a === 'verTudo') { S.imp.ver = !S.imp.ver; pintar(); }
         else if (a === 'salvarEnd') salvarEnd(b.getAttribute('data-ch'));
+        else if (a === 'faces') { if (S.est.aberto && b.id === 'v341BtEst') { S.est.aberto = false; pintar(); } else abrirEst(b.id !== 'v341BtEst'); }   // PCM V341
+        else if (a === 'fecharEst') { S.est.aberto = false; pintar(); }
+        else if (a === 'criarEst') criarEst();
+        else if (a === 'relerEst') carregarEst();
         return;
       }
       if (t.closest && t.closest('.v334-det')) return;
@@ -108318,12 +108546,19 @@ html:not(.v331-off) #v238Jan input[data-v238sel], html:not(.v331-off) #v238Jan i
       if (t.id === 'v334Busca') { S.busca = t.value; clearTimeout(S.tb); S.tb = setTimeout(function () { S.aberto = ''; carregar(); }, 350); }
       else if (t.id === 'v334ImpTxt') { S.imp.txt = t.value; if (S.imp.prev || S.imp.ok) { S.imp.prev = null; S.imp.ok = ''; pintar(); } }   // mudou a planilha: a prévia não vale mais
       else if (t.getAttribute && t.getAttribute('data-v334-end')) { S.endDig[t.getAttribute('data-v334-end')] = t.value; }
+      else if (t.getAttribute && t.getAttribute('data-v341-l')) { S.est.lote[t.getAttribute('data-v341-l')] = t.value; pintarLotePrev(); }   // PCM V341: sem repintar (o foco fica)
     });
     el.addEventListener('change', function (ev) {
       var t = ev.target; if (!t) return;
       if (t.id === 'v334Rua') { S.rua = t.value; S.aberto = ''; carregar(); }
       else if (t.id === 'v334Ordem') { S.ordem = t.value === 'descricao' ? 'descricao' : 'endereco'; S.aberto = ''; carregar(); }
       else if (t.getAttribute && t.getAttribute('data-v334') === 'trocar') { S.imp.trocar = !!t.checked; previa(); }   // a assinatura muda com "trocar": prévia de novo
+      else if (t.getAttribute && t.getAttribute('data-v341-s')) escolher(t.getAttribute('data-ch'), t.getAttribute('data-v341-s'), t.value);   // PCM V341
+      else if (t.getAttribute && t.getAttribute('data-v341-l')) { S.est.lote[t.getAttribute('data-v341-l')] = t.value; pintarLotePrev(); }
+      else if (t.getAttribute && t.getAttribute('data-v341-c')) {
+        var cc = t.getAttribute('data-v341-c');
+        salvarEst(t.getAttribute('data-cod'), cc, cc === 'ativo' ? !!t.checked : cc === 'observacao' ? String(t.value || '').trim() : cc === 'prateleira' ? (String(t.value || '').trim() === '' ? null : Number(t.value)) : Number(t.value));
+      }
       else if (t.getAttribute && t.getAttribute('data-v334') === 'arquivo' && t.files && t.files[0]) {
         var arq = t.files[0]; t.value = '';
         if (arq.size > 2 * 1024 * 1024) { S.imp.erro = 'Arquivo grande demais (até 2 MB).'; pintar(); return; }
@@ -108344,7 +108579,7 @@ html:not(.v331-off) #v238Jan input[data-v238sel], html:not(.v331-off) #v238Jan i
     });
     // repintura entre apertar e soltar trocaria a linha e o Chrome não mandaria o clique: segura a pintura até soltar
     el.addEventListener('pointerdown', function (ev) {
-      if (!(ev.target && ev.target.closest && ev.target.closest('tr[data-v334-ch],[data-v334],[data-v334-f]'))) return;
+      if (!(ev.target && ev.target.closest && ev.target.closest('tr[data-v334-ch],[data-v334],[data-v334-f],[data-v341-c],[data-v341-s]'))) return;
       S.segurando = true; clearTimeout(S.tSeg);
       S.tSeg = setTimeout(soltar, 4000);
     }, true);
