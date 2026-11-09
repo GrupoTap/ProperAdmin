@@ -5409,8 +5409,14 @@ v50 — Resiliência de rede: retry/backoff em gsGet e syncToGS
   fora do Omie e quem aparece em pedido, nota ou "quem vende") com itens que vende, pedidos abertos e atrasados, ultima compra, notas
   em 12 meses e prazo medio. Clique abre a ficha embaixo da linha (contato, o que vende, pedidos, notas). Uma leitura por vez (rpc
   com_fornecedores, regua de Compras). O filtro "So fornecedores" sai de Clientes > Do Omie. Sem GAS. Chave de volta: pcm_v337 = off.
+  PCM V338 — 08/11/2026 — CATALOGO > PENDENCIAS DE CADASTRO (ProperCare-backlog#124, parte 8 da #98), sobre o V337 no ar. SQL
+  126_CAD_PENDENCIAS roda ANTES. Aba nova no fim do lugar Catalogo: uma fila so com o cadastro que ficou pela metade — item que
+  o tecnico digitou na OS, peca sem par no Omie, produto que ainda nao existe no Omie, correcao pedida pelo tecnico e maquina com
+  marca ou modelo fora do cadastro. Cada linha tem o botao que abre a tela que RESOLVE (a OS, Pecas x Omie, o produto, Clientes >
+  Correcoes sugeridas, a ficha da maquina). Cada tipo aparece so para quem pode resolve-lo, pela regua da tela dele. A busca vai ao
+  banco (a fila corta em 60 por tipo; com um tipo escolhido, 300). Nada e gravado aqui. Sem GAS. Chave de volta: pcm_v338 = off.
   PCM V339 — 09/11/2026 — O ROTULO DE VERSAO SAI DO TITULO DA JANELA "GRAVAR NO OMIE" (ProperCare-backlog#130, achado A1 da #125),
-  sobre o V337 no ar. So TEXTO de tela: o titulo da janela de configuracao do 📤 Gravar no Omie trazia escrito a mao "(PCM V308)",
+  sobre o V338 no ar. So TEXTO de tela: o titulo da janela de configuracao do 📤 Gravar no Omie trazia escrito a mao "(PCM V308)",
   que o bloco V310 reescrevia para "(PCM V310)" — rotulo de "em que versao o recurso nasceu", que desmentia o carimbo verdadeiro
   (regras/telas.md 5.2: literal de versao na tela que discorde do carimbo reprova a checagem 8 da varredura de paridade). A versao
   na tela continua vindo SO do carimbo derivado (<meta app-build> / data-carimbo). Sem SQL, sem GAS, sem chave de volta.
@@ -106310,7 +106316,7 @@ html.v330-on #viewTarefasAdm.v330-inv > #v328Pipe{display:block!important}
       { k: 'financeiro', rot: 'Financeiro', ico: 'cash', abas: [['v333AFaturar', '💵 A faturar'], ['v330Financeiro', 'Financeiro'], ['v330Notas', 'Notas fiscais']] },   // PCM V333 (ProperCare-backlog#112): 💵 A faturar
       { k: 'clientes', rot: 'Clientes', ico: 'users', abas: [['clients', 'Clientes'], ['unidades', 'Unidades do cliente']] },
       { k: 'maquinas', rot: 'Máquinas', ico: 'machine', abas: [['machines', 'Todas as máquinas'], ['preventivas', 'Preventivas'], ['estoque', 'Peças a vencer'], ['calibracao', 'Calibração'], [viewTags(), 'TAGs e placas'], ['frota', 'Frota fora de casa'], ['parqueOS', 'OS na locação']] },
-      { k: 'catalogo', rot: 'Catálogo', ico: 'book', abas: [['catalog', 'Modelos e peças'], ['v330Produtos', 'Produtos e serviços'], ['itensCampo', 'Itens adicionados em campo'], ['conciliacao', 'Peças × Omie']] },
+      { k: 'catalogo', rot: 'Catálogo', ico: 'book', abas: [['catalog', 'Modelos e peças'], ['v330Produtos', 'Produtos e serviços'], ['itensCampo', 'Itens adicionados em campo'], ['conciliacao', 'Peças × Omie'], ['v338Pendencias', '🧹 Pendências de cadastro']] },   // PCM V338 (ProperCare-backlog#124): 🧹 Pendências de cadastro
       { k: 'gestao', rot: 'Gestão', ico: 'chart', abas: [['reunioes', '🗓 Reuniões'], ['v330Resultados', '📊 Resultados comerciais'], [r2a() ? 'osRelatorios' : 'termometro', '📈 Produção, prazos e espera']] },
       { k: 'docs', rot: 'Documentos', ico: 'file', abas: [['docs', 'Documentos']] }
     ];
@@ -109840,6 +109846,385 @@ html.v337-on .cros-omie-topo [data-cros-o="filtro"][data-f="fornecedor"]{display
 })();
 </script>
 <!-- ████ FIM PCM V337 ████ -->
+<!-- ████ INICIO PCM V338 · CATÁLOGO › 🧹 PENDÊNCIAS DE CADASTRO: A FILA PARA ARRUMAR CADASTRO (ProperCare-backlog#124, parte 8 da #98) ████ -->
+<style id="v338-css">
+/* PCM V338 · Catálogo › 🧹 Pendências de cadastro */
+#viewV338Pendencias{padding:4px 2px 24px;color:#1D2939;font-family:var(--font-sans,Inter,system-ui,sans-serif)}
+#viewV338Pendencias h2{margin:0 0 10px;font-size:20px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.v338-lido{margin-left:auto;display:inline-flex;align-items:center;gap:6px}
+.v338-bt{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:32px;padding:0 12px;border:1px solid #D0D5DD;border-radius:8px;background:#fff;color:#1D2939;font:600 13px var(--font-sans,Inter,system-ui,sans-serif);cursor:pointer;transition:background-color .15s,border-color .15s}
+.v338-bt:hover,.v338-bt:focus-visible{background:#F9FAFB;border-color:#98A2B3;outline:none}
+.v338-bt.v338-ic{width:32px;padding:0;font-size:15px}
+.v338-bt.mini{min-height:26px;padding:0 9px;font-size:12px}
+.v338-bt[disabled]{opacity:.6;cursor:wait}
+.v338-gira{display:inline-block;width:13px;height:13px;border:2px solid currentColor;border-right-color:transparent;border-radius:50%;animation:v338gira .7s linear infinite}
+@keyframes v338gira{to{transform:rotate(360deg)}}
+.v338-chips{display:flex;flex-wrap:wrap;gap:6px;margin:4px 0 8px;align-items:center}
+.v338-chip{border:1px solid #D0D5DD;background:#fff;border-radius:999px;padding:5px 12px;font:13px var(--font-sans,Inter,system-ui,sans-serif);cursor:pointer;min-height:32px;color:#344054;transition:background-color .15s,border-color .15s}
+.v338-chip b{margin-left:4px}
+.v338-chip:hover,.v338-chip:focus-visible{background:#F2F4F7;outline:none}
+.v338-chip[aria-pressed="true"]{background:#1D2939;border-color:#1D2939;color:#fff}
+.v338-filtros{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:0 0 8px}
+.v338-busca{flex:1 1 220px;max-width:360px;border:1px solid #D0D5DD;border-radius:8px;padding:6px 10px;font-size:14px;min-height:34px;box-sizing:border-box}
+.v338-aviso{margin:6px 0 10px;padding:9px 12px;border-radius:10px;border:1px solid #FEDF89;background:#FFFAEB;color:#7A4A00;font-size:13px;display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.v338-aviso.erro{border-color:#FDA29B;background:#FEF3F2;color:#912018}
+.v338-vazio{padding:28px 12px;text-align:center;color:#475467;border:1px dashed #D0D5DD;border-radius:12px;background:#FCFCFD}
+.v338-vazio b{display:block;color:#1D2939;font-size:14px;margin-bottom:4px}
+.v338-vazio .v338-bt{margin-top:10px}
+.v338-esq{height:40px;border-radius:8px;background:linear-gradient(90deg,#F2F4F7 25%,#E4E7EC 37%,#F2F4F7 63%);background-size:400% 100%;animation:v338esq 1.4s ease infinite;margin:6px 0}
+@keyframes v338esq{0%{background-position:100% 50%}100%{background-position:0 50%}}
+.v338-wrap{overflow:auto;max-height:calc(100vh - 250px);border:1px solid #E4E7EC;border-radius:12px;background:#fff}
+.v338-tab{width:100%;border-collapse:separate;border-spacing:0;font-size:13px}
+.v338-tab thead th{position:sticky;top:0;z-index:2;background:#F9FAFB;text-align:left;font-weight:600;color:#344054;padding:8px 10px;border-bottom:1px solid #E4E7EC;white-space:nowrap}
+.v338-tab tbody td{padding:8px 10px;border-bottom:1px solid #F2F4F7;vertical-align:top}
+.v338-tab td.n,.v338-tab th.n{text-align:right;white-space:nowrap}
+.v338-tab td.acao{text-align:right;white-space:nowrap}
+.v338-tipo{display:inline-block;padding:1px 8px;border-radius:10px;font-size:11.5px;border:1px solid #D0D5DD;background:#F9FAFB;color:#344054;white-space:nowrap}
+.v338-tipo.item_campo{background:#EFF8FF;border-color:#B2DDFF;color:#175CD3}
+.v338-tipo.peca_omie{background:#FFFAEB;border-color:#FEDF89;color:#93370D}
+.v338-tipo.provisorio{background:#F4F3FF;border-color:#D9D6FE;color:#5925DC}
+.v338-tipo.correcao{background:#ECFDF3;border-color:#ABEFC6;color:#067647}
+.v338-tipo.maquina{background:#FEF3F2;border-color:#FDA29B;color:#B42318}
+.v338-nome{font-weight:700}
+.v338-sub{display:block;font-size:12px;color:#475467;margin-top:2px}
+.v338-dias{white-space:nowrap}
+.v338-dias.velho{color:#B42318;font-weight:700}
+.v338-zero{color:#98A2B3}
+@media print{#viewV338Pendencias .v338-chips,#viewV338Pendencias .v338-filtros,#viewV338Pendencias .v338-lido,#viewV338Pendencias .acao{display:none}.v338-wrap{max-height:none;overflow:visible}}
+</style>
+<script>
+/* ═══════════════════════════════════════════════════════════════════════════════════════════════════════════════
+   PCM V338 — 08/11/2026 — parte 8 do #98 — ProperCare-backlog#124 (estudo #98 seção 6). Sobre o V337 no ar.
+   SQL: 126_CAD_PENDENCIAS (roda ANTES). Prefixo V338 / v338- / data-v338. Nenhuma tela, função, rota ou endereço (#…) existente mudou.
+   · Catálogo › 🧹 Pendências de cadastro (aba nova, no fim do lugar Catálogo): uma fila só com o cadastro que ficou pela metade —
+     item que o técnico digitou na OS, peça sem par no Omie, produto que ainda não existe no Omie, correção pedida pelo técnico e
+     máquina com marca ou modelo fora do cadastro. Uma leitura (rpc cad_pendencias, a régua do cadastro — o banco decide).
+   · Cada linha tem o botão que abre a tela que RESOLVE aquela pendência: a OS (R2A.abrirOS), Peças × Omie (_v240IrRef),
+     o produto (V327.irPara), Clientes › Correções sugeridas (V222) e a ficha da máquina (openModalMachine).
+   · Cada TIPO aparece só para quem pode resolvê-lo — a régua é a da tela de cada um e quem decide é o banco (campo "pode").
+   · A busca vai ao BANCO (não filtra só o que está à vista): a fila corta em 60 linhas por tipo e o que a busca acha pode estar
+     fora do corte. Com um tipo escolhido o corte vai a 300.
+   · Nada é gravado por esta tela: ela só mostra e leva ao lugar certo.
+   · No V330 (uma linha): a aba entra no lugar Catálogo. Quem vê = quem vê Modelos e peças (o mesmo botão do menu decide).
+   Só no computador (no modo celular o menu por área não existe). Chave de volta: localStorage pcm_v338 = off.
+   ═══════════════════════════════════════════════════════════════════════════════════════════════════════════════ */
+(function () {
+  'use strict';
+  if (window.V338) return;
+  var V338 = window.V338 = { versao: 'V338 · 08/11/2026', orig: {} };
+  var VIEW = 'v338Pendencias';
+  var TIPOS = [['item_campo', '🔎 Digitado na OS'], ['peca_omie', '⚠ Peça × Omie'], ['provisorio', '⚠ Produto fora do Omie'],
+               ['correcao', '✍ Correção sugerida'], ['maquina', '⚠ Marca ou modelo']];
+  var S = { d: null, erro: '', tipoErro: '', carregando: false, ger: 0, tipo: '', busca: '', segurando: false, pend: false, tb: null, tSeg: null };
+  V338.S = S;
+  function ls(k, v) {
+    try { if (v === undefined) return localStorage.getItem(k); if (v === null) localStorage.removeItem(k); else localStorage.setItem(k, String(v)); }
+    catch (e) { return null; }
+    return null;
+  }
+  function off() { return ls('pcm_v338') === 'off'; }
+  function ligado() { try { return !off() && !!(window.V330 && typeof V330.ligado === 'function' && V330.ligado()); } catch (e) { return false; } }
+  V338.ligado = ligado;
+  function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+  function cv() { try { return typeof currentView === 'string' ? currentView : ''; } catch (e) { return ''; } }
+  // quem vê = quem vê Modelos e peças (o botão do menu antigo do lugar Catálogo decide); o banco confere de novo (_pc_cad_exigir)
+  function pode() {
+    var b = document.querySelector('.nav-groups .nav-item[data-view="catalog"]');
+    return !!(b && !b.hidden && !(b.style && b.style.display === 'none'));
+  }
+  function N(x) { var n = Number(x); return isFinite(n) ? n : 0; }
+  function hora(v) {
+    if (!v) return ''; var d = new Date(v); if (isNaN(d)) return '';
+    return d.toLocaleDateString('pt-BR', { timeZone: 'America/Sao_Paulo' }) + ' ' + d.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit', timeZone: 'America/Sao_Paulo' });
+  }
+  function cssEsc(s) { try { return CSS.escape(s); } catch (e) { return String(s).replace(/["\\]/g, '\\$&'); } }
+  function toastSeguro(m, t) { try { if (typeof toast === 'function') toast(m, t || ''); } catch (e) {} }
+  function podeTipo(t) { try { return !!(S.d && S.d.pode && S.d.pode[t]); } catch (e) { return false; } }
+  function meus() { return TIPOS.filter(function (t) { return podeTipo(t[0]); }); }
+
+  // ═══ 1 · O LUGAR (botão do menu antigo, escondido — é dele que o menu por área lê a permissão — e a caixa da tela) ═══
+  function garantir() {
+    if (!ligado()) return;
+    var grupos = document.querySelector('.nav-sidebar > .nav-groups') || document.querySelector('.nav-groups');
+    var b = document.getElementById('navV338Pendencias');
+    if (!b && grupos) {
+      b = document.createElement('button'); b.className = 'nav-item'; b.type = 'button'; b.tabIndex = -1; b.id = 'navV338Pendencias';
+      b.setAttribute('data-view', VIEW); b.innerHTML = '<span>🧹 Pendências de cadastro</span>'; b.style.display = 'none';
+      b.addEventListener('click', function () { showView(VIEW); });
+      grupos.appendChild(b);
+    }
+    if (b) { var d = pode() ? '' : 'none'; if (b.style.display !== d) b.style.display = d; }
+    if (!document.getElementById('viewV338Pendencias')) {
+      var ref = document.getElementById('viewComercial') || document.getElementById('viewDocs') || document.getElementById('viewInicio');
+      if (ref) {
+        var el = document.createElement('div'); el.id = 'viewV338Pendencias'; el.style.display = 'none';
+        el.innerHTML = casca(); ref.parentNode.insertBefore(el, ref.nextSibling);
+        ligarTela(el);
+      }
+    }
+  }
+  V338.garantir = garantir;
+
+  function casca() {
+    return '<h2>🧹 Pendências de cadastro<span class="v338-lido"><span id="v338Lido" class="v338-sub" style="margin:0"></span>' +
+      '<button type="button" class="v338-bt v338-ic" data-v338="atualizar" id="v338Atu" title="Atualizar a fila" aria-label="Atualizar a fila">⟳</button></span></h2>' +
+      '<div class="v338-chips" id="v338Chips" role="group" aria-label="Tipo de pendência"></div>' +
+      '<div class="v338-filtros"><input type="text" class="v338-busca" id="v338Busca" placeholder="Buscar cliente, OS, referência, marca…" autocomplete="off"' +
+      ' name="v338_busca_nofill" maxlength="80" data-lpignore="true" data-1p-ignore readonly onfocus="this.removeAttribute(\'readonly\')"></div>' +
+      '<div id="v338Aviso"></div><div id="v338Corpo"></div>';
+  }
+
+  // ═══ 2 · OS DADOS (uma leitura por fila; a busca e o tipo vão ao banco) ══════════════════════════════════════════
+  function msgErro(e) {
+    var c = e && e.v200;
+    if (c === 'sem_sql') { try { console.warn('[V338] falta o SQL 126_CAD_PENDENCIAS ou a função cad_pendencias:', e && e.message); } catch (x) {} return ['sem_sql', 'Tela indisponível — avise o administrador.']; }
+    if (c === 'acesso') return ['acesso', 'Sem acesso ao cadastro. Se você deveria ver, entre de novo pelo Hub.'];
+    if (c === 'rede') return ['rede', 'Sem conexão — a fila não carregou.'];
+    // recusa do próprio banco (busca longa, tipo que não existe): o texto é DELE e o front não o reescreve (§5.9)
+    if (c === 'P0001' && e && e.message) return ['pedido', String(e.message)];
+    try { console.warn('[V338] cad_pendencias:', e && e.message); } catch (x) {}
+    return ['erro', 'A fila não carregou. Tente de novo; se continuar, avise o administrador.'];   // o texto do banco vai só para o console
+  }
+  function carregar() {
+    if (typeof _v200Rpc !== 'function') { S.erro = 'Tela indisponível — avise o administrador.'; S.tipoErro = 'sem_sql'; pintar(); return Promise.resolve(); }
+    var g = ++S.ger, p = { max: S.tipo ? 300 : 60 };
+    if (S.tipo) p.tipo = S.tipo;
+    if (S.busca) p.busca = S.busca;
+    S.carregando = true; pintar();
+    return _v200Rpc('cad_pendencias', { p: p }, false).then(function (d) {
+      if (g !== S.ger) return;
+      S.carregando = false; S.erro = ''; S.tipoErro = '';
+      S.d = d || {}; S.d.__lido = Date.now();
+      // o tipo escolhido deixou de ser meu (o perfil mudou entre duas leituras): volta para Tudo em vez de mostrar fila vazia
+      if (S.tipo && !podeTipo(S.tipo)) { S.tipo = ''; pintar(); carregar(); return; }
+      pintar();
+    }, function (e) {
+      if (g !== S.ger) return;
+      var m = msgErro(e); S.carregando = false; S.erro = m[1]; S.tipoErro = m[0];
+      pintar();
+    });
+  }
+  V338.carregar = carregar;
+  // a busca e o tipo mudam o PEDIDO ao banco (a fila corta por tipo: filtrar só o que está à vista esconderia o resto)
+  function pedirDeNovo() { clearTimeout(S.tb); S.tb = setTimeout(carregar, 350); }
+
+  // ═══ 3 · A PINTURA ═══════════════════════════════════════════════════════════════════════════════════════════════
+  function contar(t) {
+    try {
+      var c = (S.d && S.d.contagem) || {};
+      if (!t) return N(c.todos);
+      return N(c[t]);
+    } catch (e) { return 0; }
+  }
+  function rotuloTipo(t) { for (var i = 0; i < TIPOS.length; i++) if (TIPOS[i][0] === t) return TIPOS[i][1]; return t; }
+  function dias(x) {
+    var n = x.dias;
+    if (n === null || n === undefined || n === '') return '<span class="v338-zero" title="Sem data de origem no cadastro">—</span>';
+    return '<span class="v338-dias' + (N(n) >= 7 ? ' velho' : '') + '">' + N(n) + '</span>';
+  }
+  function linha(x) {
+    var dst = x.destino || {};
+    return '<tr data-v338-k="' + esc(x.tipo + '|' + (x.chave == null ? '' : x.chave)) + '">' +
+      '<td><span class="v338-tipo ' + esc(x.tipo) + '">' + esc(rotuloTipo(x.tipo)) + '</span></td>' +
+      '<td><span class="v338-nome">' + esc(x.titulo || '—') + '</span>' + (x.sub ? '<span class="v338-sub">' + esc(x.sub) + '</span>' : '') + '</td>' +
+      '<td>' + esc(x.quem || '') + '</td>' +
+      // o filtro do título lê o data-cfx-val: com ele a coluna Dias ordena como NÚMERO (sem ele, "10" vinha antes de "9")
+      // e a linha sem data vai para o fim (-1), em vez de cair no meio dos números
+      '<td class="n" data-cfx-val="' + (x.dias === null || x.dias === undefined || x.dias === '' ? '-1' : N(x.dias)) + '">' + dias(x) + '</td>' +
+      '<td class="acao">' + (dst.k ? '<button type="button" class="v338-bt mini" data-v338="ir" data-k="' + esc(dst.k) + '" data-v="' + esc(dst.valor == null ? '' : dst.valor) + '">' +
+        esc(dst.rotulo || 'Abrir') + '</button>' : '') + '</td></tr>';
+  }
+  function pintarChips() {
+    var el = document.getElementById('v338Chips'); if (!el) return;
+    var h = '', m = meus();
+    if (S.d && m.length) {
+      h += '<button type="button" class="v338-chip" data-v338-t="" aria-pressed="' + (S.tipo === '') + '">Tudo<b>' + contar('') + '</b></button>';
+      m.forEach(function (t) {
+        h += '<button type="button" class="v338-chip" data-v338-t="' + t[0] + '" aria-pressed="' + (S.tipo === t[0]) + '">' + esc(t[1]) + '<b>' + contar(t[0]) + '</b></button>';
+      });
+    }
+    if (el.innerHTML !== h) el.innerHTML = h;
+  }
+  function pintarLido() {
+    var el = document.getElementById('v338Lido'), bt = document.getElementById('v338Atu');
+    if (bt) {
+      if (S.carregando && !bt.disabled) { bt.disabled = true; bt.setAttribute('data-pcm-enviando', '1'); bt.innerHTML = '<span class="v338-gira"></span>'; }
+      else if (!S.carregando && bt.disabled) { bt.disabled = false; bt.removeAttribute('data-pcm-enviando'); bt.textContent = '⟳'; }
+    }
+    if (!el) return;
+    var t = S.d && S.d.__lido ? '●' : '', tit = S.d && S.d.__lido ? 'Fila lida às ' + hora(S.d.__lido) : '';
+    if (el.textContent !== t) el.textContent = t;
+    if (el.title !== tit) el.title = tit;
+  }
+  // o banco só devolve "cortado" dos tipos que esta pessoa pode resolver (é ele que decide): aqui só se lê o que ele mandou
+  function cortado() {
+    try {
+      var c = (S.d && S.d.cortado) || {}, fora = [];
+      Object.keys(c).forEach(function (k) { if (c[k]) fora.push(rotuloTipo(k)); });
+      return fora;
+    } catch (e) { return []; }
+  }
+  function vazio() {
+    if (S.d && !meus().length)
+      return '<div class="v338-vazio"><b>Nada aqui para o seu perfil</b>Esta fila mostra o cadastro que o seu perfil pode arrumar.<br>' +
+             '<button type="button" class="v338-bt" data-v338="catalogo">Ver Modelos e peças</button></div>';
+    if (S.busca)
+      return '<div class="v338-vazio"><b>Nada com essa busca</b>Tente outra palavra, o número da OS ou a referência.<br>' +
+             '<button type="button" class="v338-bt" data-v338="limpar">Limpar a busca</button></div>';
+    if (S.tipo)
+      return '<div class="v338-vazio"><b>Nada pendente desse tipo</b>Os outros tipos estão em Tudo.<br>' +
+             '<button type="button" class="v338-bt" data-v338-t="">Ver tudo</button></div>';
+    return '<div class="v338-vazio"><b>Cadastro em ordem</b>Nada pendente agora.<br>' +
+           '<button type="button" class="v338-bt" data-v338="atualizar">Atualizar</button></div>';
+  }
+  function pintar() {
+    var raiz = document.getElementById('viewV338Pendencias'); if (!raiz || cv() !== VIEW) return;
+    if (S.segurando) { S.pend = true; return; }                // o dedo está na linha: repintar agora engoliria o clique
+    S.pend = false;
+    pintarChips(); pintarLido();
+    var av = document.getElementById('v338Aviso'), corpo = document.getElementById('v338Corpo'); if (!corpo) return;
+    var a = '', fora = cortado(), caiu = (S.d && Array.isArray(S.d.falhou) ? S.d.falhou : []).map(rotuloTipo);
+    if (S.erro && S.d) a = '<div class="v338-aviso erro" role="alert">' + esc(S.erro) + ' <button type="button" class="v338-bt" data-v338="atualizar">Tentar de novo</button></div>';
+    else if (caiu.length) a = '<div class="v338-aviso erro" role="alert">' + esc(caiu.join(', ')) + ': o banco não respondeu agora. O resto da fila está aqui. <button type="button" class="v338-bt" data-v338="atualizar">Tentar de novo</button></div>';
+    else if (fora.length) a = '<div class="v338-aviso">A fila mostra as ' + N(S.d.max) + ' primeiras de ' + esc(fora.join(', ')) +
+      '. Use a busca ou escolha o tipo para ver o resto.' + (S.tipo ? '' : ' <button type="button" class="v338-bt" data-v338-t="' +
+      esc(Object.keys((S.d && S.d.cortado) || {}).filter(function (k) { return S.d.cortado[k]; })[0] || '') + '">Abrir esse tipo</button>') + '</div>';
+    if (av && av.innerHTML !== a) av.innerHTML = a;
+    var h;
+    if (!S.d) {
+      if (S.erro) h = '<div class="v338-vazio" role="alert"><b>' + esc(S.erro) + '</b>' + (S.tipoErro === 'rede' || S.tipoErro === 'erro' ? '<button type="button" class="v338-bt" data-v338="atualizar">Tentar de novo</button>' : '') + '</div>';
+      else h = '<div aria-busy="true"><div class="v338-esq"></div><div class="v338-esq"></div><div class="v338-esq"></div></div>';
+    } else {
+      var ls2 = S.d.linhas || [];
+      if (!ls2.length) h = vazio();
+      else h = '<div class="v338-wrap"><table class="v338-tab"><thead><tr><th>Tipo</th><th>O que falta arrumar</th><th>Quem pediu</th>' +
+               '<th class="n" title="Dias desde que a pendência apareceu">Dias</th><th class="acao">Resolver</th></tr></thead><tbody>' +
+               ls2.map(linha).join('') + '</tbody></table></div>';
+    }
+    if (corpo.__v338 !== h) {
+      // o botão Resolver em foco volta ao foco depois da repintura (quem recebe foco é ELE, não a linha)
+      var ae = document.activeElement, kf = '';
+      try { if (ae && corpo.contains(ae) && ae.closest) { var tr0 = ae.closest('tr[data-v338-k]'); if (tr0) kf = tr0.getAttribute('data-v338-k'); } } catch (e) {}
+      corpo.innerHTML = h; corpo.__v338 = h;
+      if (kf) {
+        var f = corpo.querySelector('tr[data-v338-k="' + cssEsc(kf) + '"] [data-v338="ir"]');
+        if (f) try { f.focus({ preventScroll: true }); } catch (e) {}
+      }
+    }
+  }
+  V338.pintar = pintar;
+
+  // ═══ 4 · LEVAR À TELA QUE RESOLVE (cada destino pelo caminho que aquela tela já oferece) ═════════════════════════
+  function ir(k, v) {
+    try {
+      if (k === 'os') {
+        if (window.R2A && typeof R2A.abrirOS === 'function') { R2A.abrirOS(v); return; }
+        location.hash = '#os/' + encodeURIComponent(v); return;
+      }
+      // a OS ainda não veio no espelho (ou não tem número): o id interno não abre a OS — vai para a lista
+      if (k === 'os_lista') { showView('os'); toastSeguro('Essa OS ainda não tem número no sistema — procure por ela na lista.', 'info'); return; }
+      if (k === 'conciliacao') {
+        if (typeof _v240IrRef === 'function') { _v240IrRef(v || ''); return; }
+        toastSeguro('Abra Catálogo › Peças × Omie e procure ' + (v || 'a referência') + '.', 'error'); return;
+      }
+      if (k === 'produto') {
+        if (window.V327 && typeof V327.irPara === 'function') { V327.irPara(v || ''); return; }
+        toastSeguro('Abra Catálogo › Produtos e serviços e procure ' + (v || 'o produto') + '.', 'error'); return;
+      }
+      if (k === 'correcoes') { correcoes(); return; }
+      if (k === 'maquina') {
+        // a ficha da máquina lê a lista local do PCM (db.machines): sem a máquina nela ela abriria vazia (ou derrubaria a tela),
+        // porque a fila vem do BANCO e pode trazer máquina que a lista local ainda não carregou
+        var achou = null;
+        try { achou = (window.db && Array.isArray(db.machines)) ? db.machines.filter(function (m) { return m && String(m.id) === String(v); })[0] : null; } catch (e) { achou = null; }
+        if (achou && typeof openModalMachine === 'function') { openModalMachine(v); return; }
+        try { showView('machines'); } catch (e) {}
+        toastSeguro('Procure a máquina em Máquinas › Todas as máquinas (a lista de máquinas ainda não carregou).', 'error'); return;
+      }
+    } catch (e) { try { console.warn('[V338] ir(' + k + '):', e); } catch (x) {} toastSeguro('A tela não abriu. Tente de novo.', 'error'); }
+  }
+  V338.ir = ir;
+  // Clientes › Correções sugeridas: a tela do V222 com o filtro dela (o MESMO caminho do botão de lá), depois da troca de tela
+  function correcoes() {
+    try { if (cv() !== 'clients') showView('clients'); } catch (e) {}
+    var t0 = Date.now();
+    (function tentar() {
+      try {
+        // o botão de lá, quando já está pintado: o caminho de Clientes roda inteiro (filtro + rolagem), sem 2ª cópia aqui
+        var bt = document.querySelector('#viewClients [data-v222="pedidos"]');
+        if (bt && bt.offsetParent) { bt.click(); return; }
+        if (window.V222 && typeof _v222Pintar === 'function' && document.getElementById('viewClients')) {
+          V222.filtro = 'pedidos'; _v222Pintar(true);
+          var w = document.getElementById('solicCadastroWrap');
+          if (w && w.offsetParent) { try { w.scrollIntoView({ block: 'start' }); } catch (e) {} }
+          return;
+        }
+      } catch (e) {}
+      if (Date.now() - t0 < 4000) setTimeout(tentar, 120);
+      else toastSeguro('Abra Clientes e escolha "Correções sugeridas".', 'error');
+    })();
+  }
+
+  // ═══ 5 · OS GESTOS ═══════════════════════════════════════════════════════════════════════════════════════════════
+  function ligarTela(el) {
+    el.addEventListener('click', function (ev) {
+      var t = ev.target;
+      var f = t.closest && t.closest('[data-v338-t]');
+      if (f) { var nt = f.getAttribute('data-v338-t') || ''; if (nt !== S.tipo) { S.tipo = nt; pintar(); carregar(); } return; }
+      var b = t.closest && t.closest('[data-v338]');
+      if (b) {
+        var a = b.getAttribute('data-v338');
+        if (a === 'atualizar') carregar();
+        else if (a === 'limpar') { S.busca = ''; var i = document.getElementById('v338Busca'); if (i) i.value = ''; carregar(); }
+        else if (a === 'catalogo') showView('catalog');
+        else if (a === 'ir') ir(b.getAttribute('data-k'), b.getAttribute('data-v'));
+        return;
+      }
+    });
+    el.addEventListener('input', function (ev) {
+      if (ev.target && ev.target.id === 'v338Busca') { S.busca = ev.target.value; pedirDeNovo(); }
+    });
+    el.addEventListener('keydown', function (ev) {
+      if (ev.key === 'Enter' && ev.target && ev.target.id === 'v338Busca') { ev.preventDefault(); clearTimeout(S.tb); carregar(); }
+    });
+    // repintura entre apertar e soltar trocaria o botão e o Chrome não mandaria o clique: segura a pintura até soltar
+    el.addEventListener('pointerdown', function (ev) {
+      if (!(ev.target && ev.target.closest && ev.target.closest('[data-v338],[data-v338-t],tr[data-v338-k]'))) return;
+      S.segurando = true; clearTimeout(S.tSeg);
+      S.tSeg = setTimeout(soltar, 4000);                       // soltou fora da janela (o pointerup não chega): a pintura não fica presa
+    }, true);
+    var soltar = function () { clearTimeout(S.tSeg); if (!S.segurando) return; S.segurando = false; if (S.pend) setTimeout(pintar, 0); };
+    document.addEventListener('pointerup', soltar, true);
+    document.addEventListener('pointercancel', soltar, true);
+    window.addEventListener('blur', soltar);
+  }
+
+  // chave desligada, celular ou sem o menu por área: o V338 não entra no caminho de nada
+  if (!ligado()) return;
+
+  // ═══ 6 · A TROCA DE TELA ═════════════════════════════════════════════════════════════════════════════════════════
+  V338.orig.showView = showView;
+  // ⚠ SOBRESCREVE showView
+  showView = function (v) {
+    var r = V338.orig.showView.apply(this, arguments);
+    try {
+      garantir();
+      var el = document.getElementById('viewV338Pendencias'), nav = document.getElementById('navV338Pendencias'), sou = cv() === VIEW;
+      if (el) { var d = sou ? '' : 'none'; if (el.style.display !== d) el.style.display = d; }
+      if (nav) { nav.classList.toggle('active', sou); }
+      if (sou) { pintar(); carregar(); }                       // o que está guardado aparece já; a leitura nova chega por cima
+    } catch (e) { console.warn('[V338] trocar de tela:', e); }
+    return r;
+  };
+
+  // ═══ 7 · LIGAR ═══════════════════════════════════════════════════════════════════════════════════════════════════
+  try { garantir(); if (window.V330 && V330.aplicar) V330.aplicar(); garantir(); } catch (e) { console.warn('[V338] ligar:', e); }
+  // as permissões chegam depois (sessão, blocos que decidem aos 2,5 s): o botão do menu antigo acompanha o de Modelos e peças
+  [600, 1500, 2600, 6000].forEach(function (ms) { setTimeout(function () { try { garantir(); if (window.V330 && V330.aplicar) V330.aplicar(); } catch (e) {} }, ms); });
+  setTimeout(function () { try { if (/^#pendencias$/i.test(location.hash || '') && pode() && cv() !== VIEW) showView(VIEW); } catch (e) {} }, 2700);
+})();
+</script>
+<!-- ████ FIM PCM V338 ████ -->
 
 </body>
 </html>
