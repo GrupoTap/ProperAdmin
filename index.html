@@ -102549,10 +102549,12 @@ html:not(.v311-off):has(>body.v292-alto #viewComercial.v292-on:not([style*="disp
     if (dono === 'dv') return ((S.fc && S.fc.faces) || []).filter(function (f) { return f.ativo && !f.area_kits; });
     return (S.kl && S.kl.faces) || [];
   }
-  function kitPre(dono, atual) {   // já escolhido: o lugar de hoje (se é da área de kits) ou o 1º livre
-    if (S.kitSel[dono]) return '';
-    var fs = facesDe(dono), m = /^(\d+)-([A-D])-(\d+)$/.exec(T(atual)) || /^(\d+)-([A-D])-(\d+)$/.exec(T(S.kl && S.kl.sugerido));
+  function kitPre(dono, atual) {   // já escolhido: o lugar de hoje (se é da área de kits); no ✔ Separei sem lugar, o 1º livre
+    var s0 = S.kitSel[dono]; if (s0 && (s0.mexeu || s0.de === T(atual))) return '';   // escolhido pela pessoa, ou o lugar não mudou
+    if (dono !== 'dv' && (!S.kl || S.kl.erro)) return '';   // a área de kits ainda não chegou: escolhe quando chegar
+    var fs = facesDe(dono), m = /^(\d+)-([A-D])-(\d+)$/.exec(T(atual)) || (dono === 'bal' ? /^(\d+)-([A-D])-(\d+)$/.exec(T(S.kl && S.kl.sugerido)) : null);
     S.kitSel[dono] = m && fs.some(function (f) { return String(f.face) === m[1]; }) ? { f: m[1], c: m[2], a: m[3] } : {};
+    S.kitSel[dono].de = T(atual);
     return '';
   }
   function kitVal(dono) {
@@ -102581,7 +102583,7 @@ html:not(.v311-off):has(>body.v292-alto #viewComercial.v292-on:not([style*="disp
     var p = k.slice(3), i = p.lastIndexOf('|'), dono = p.slice(0, i), parte = p.slice(i + 1);
     var s = S.kitSel[dono] = S.kitSel[dono] || {};
     if (parte === 'f' && s.f !== v) { s.c = ''; s.a = ''; var fa = facesDe(dono).filter(function (f) { return String(f.face) === String(v); })[0]; if (fa && N(fa.colunas) === 1) s.c = 'A'; }
-    s[parte] = v;
+    s[parte] = v; s.mexeu = true;
     if (S.devBal && dono === 'dv') S.devBal.erro = ''; if (S.bal && dono === 'bal') S.bal.erro = '';
     if (dono === 'bal') pintarOnde(); else pintar();   // o balão do Separei também mora na janela do 📦 Separar e comprar
   }
