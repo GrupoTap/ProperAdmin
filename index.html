@@ -5430,18 +5430,19 @@ v50 — Resiliência de rede: retry/backoff em gsGet e syncToGS
   Linhas pre-existentes alteradas: TRES, declaradas — o aviso do modal Reabrir (bloco V192, perde o <span>) e as RESERVAS dos
   dois outros data-carimbo (barra lateral e Sobre o sistema, paradas no V223; so aparecem se o bloco CARIMBO falhar), que
   passam a dizer V340. Mais o <title>, o app-build e este comentario.
-  PCM V341 — 09/11/2026 — ALMOXARIFADO > ESTOQUE > ESTANTES: O ENDERECO POR SEGMENTOS (ProperCare-backlog#138, parte 1), sobre o
-  V340 no ar. SQL 127_ALM_ESTANTES roda ANTES. O endereco novo e Rua-Lado-Estante-Andar (A-E-05-3) ou, na estante com colunas,
-  Rua-Lado-Estante-Coluna-Andar (A-E-05-B-3). Botao novo "Estantes" no Estoque: o cadastro das estantes (cria uma rua inteira de uma
-  vez — rua, lado, estantes de/ate, andares, colunas — e muda andares, colunas e ativa de cada uma; o banco recusa a mudanca que
-  deixaria peca sem lugar). Na linha aberta da peca o endereco deixa de ser digitado: listas encadeadas (rua > lado > estante >
-  coluna > andar) que so oferecem o que existe no cadastro. Importar enderecos aceita o formato novo e mostra "Fora do cadastro de
-  estantes" com o motivo (nao grava). O formato antigo (B-04-2) continua valendo ate a conversao (parte 2). Linhas pre-existentes
-  alteradas: so no bloco V334 (declaradas no comentario dele). Rpc novas: alm_estantes, alm_estante_salvar. Sem GAS.
+  PCM V341 — 09/11/2026 — ALMOXARIFADO > ESTOQUE > FACES: O ENDERECO FACE-COLUNA-ANDAR (ProperCare-backlog#138, parte 1), sobre o
+  V340 no ar. SQL 127_ALM_ESTANTES roda ANTES. O endereco novo e Face-Coluna-Andar (ex. 2-A-3): face = o numero de cada lado de
+  uma prateleira (cadastro livre: so as faces que existem), coluna A..D, andar 1 = o do piso. Botao novo "Faces" no Estoque: o
+  cadastro das faces (cria varias de uma vez — faces de/ate, andares, colunas — e muda prateleira, observacao, andares, colunas e
+  ativa de cada uma; o banco recusa a mudanca que deixaria peca sem lugar). Na linha aberta da peca o endereco deixa de ser
+  digitado: listas encadeadas (face > coluna > andar) que so oferecem o que existe no cadastro. Importar enderecos aceita o formato
+  novo e mostra "Fora do cadastro de faces" com o motivo (nao grava). O formato antigo (B-04-2) continua valendo ate a conversao
+  (parte 2). Linhas pre-existentes alteradas: so no bloco V334 (declaradas no comentario dele). Rpc novas: alm_faces,
+  alm_face_salvar. Sem GAS.
   Chave de volta: a mesma do Estoque (pcm_v334 = off). Mais o <title>, o app-build, as reservas do carimbo e este comentario.
   Tambem (linhas pre-existentes, declaradas): a conferencia de formato da TELA na Separacao (V323: endereco da peca, lugar do kit,
   endereco novo da lista, "onde estava?") e no Recebimento (V325: "guardar em") aceita o formato novo — 5 regex e 5 mensagens;
-  quem confere o cadastro de estantes e o banco. As listas do formato novo nessas telas ficam para a parte 3.
+  quem confere o cadastro de faces e o banco. As listas do formato novo nessas telas ficam para a parte 3.
 -->
 <title>ProperCare Manager · Gestão PGP v4.03 (PCM V341)</title>
 <meta name="app-build" content="PCM_V341" data-date="2026-11-09">
@@ -102551,7 +102552,7 @@ html:not(.v311-off):has(>body.v292-alto #viewComercial.v292-on:not([style*="disp
     var falta = Math.max(0, N(ctx.qtd) - N(ctx.separado)), q = falta;
     if (falta > 1 && b.qtd != null && T(b.qtd) !== '') { q = numBr(b.qtd); if (!(q > 0) || q > falta) { b.erro = 'A quantidade tem de ficar entre 1 e ' + Q(falta) + '.'; return pintarOnde(); } }
     var onde = T(b.onde).toUpperCase();
-    if (onde && !/^([A-Z]{1,2}-\d{2}-\d{1,2}|[A-Z]{1,2}-[ED]-\d{2}(-[A-D])?-[1-9]\d?)$/.test(onde)) { b.erro = 'O endereço é Rua-Lado-Estante-Andar (ex. A-E-05-3) ou, no antigo, Rua-Estante-Prateleira (ex. B-04-2).'; return pintarOnde(); }
+    if (onde && !/^([A-Z]{1,2}-\d{2}-\d{1,2}|[1-9]\d?-[A-D]-[1-9]\d?)$/.test(onde)) { b.erro = 'O endereço é Face-Coluna-Andar (ex. 2-A-3) ou, no antigo, Rua-Estante-Prateleira (ex. B-04-2).'; return pintarOnde(); }
     S.gravando = true; b.erro = ''; if (botao) { botao.disabled = true; botao.setAttribute('data-pcm-enviando', '1'); botao.textContent = '⏳ Conferindo…'; }
     b.uid = b.uid || uid();
     try {
@@ -102602,7 +102603,7 @@ html:not(.v311-off):has(>body.v292-alto #viewComercial.v292-on:not([style*="disp
           S.msg = { txt: '↩ Separado de ' + codigoDe(x.l) + ' desfeito — o motivo está na trilha da oportunidade.' };
         } else {
           var ev = T(b.endv != null ? b.endv : x.l.endereco).toUpperCase();
-          if (ev && !/^([A-Z]{1,2}-\d{2}-\d{1,2}|[A-Z]{1,2}-[ED]-\d{2}(-[A-D])?-[1-9]\d?)$/.test(ev)) { b.erro = 'O endereço é Rua-Lado-Estante-Andar (ex. A-E-05-3) ou, no antigo, Rua-Estante-Prateleira (ex. B-04-2).'; return pintar(); }
+          if (ev && !/^([A-Z]{1,2}-\d{2}-\d{1,2}|[1-9]\d?-[A-D]-[1-9]\d?)$/.test(ev)) { b.erro = 'O endereço é Face-Coluna-Andar (ex. 2-A-3) ou, no antigo, Rua-Estante-Prateleira (ex. B-04-2).'; return pintar(); }
           await rpc('alm_produto_endereco_definir', { chave: x.l.chave, endereco: ev || null }, true);
           S.msg = { txt: ev ? '📍 ' + codigoDe(x.l) + ' mora em ' + ev + '.' : '📍 Endereço de ' + codigoDe(x.l) + ' retirado.' }; S.end = null;
         }
@@ -102610,13 +102611,13 @@ html:not(.v311-off):has(>body.v292-alto #viewComercial.v292-on:not([style*="disp
       }
       if (a === 'kitSalvar') {
         var gg = acharLinha(gk, null).g, kv = T((S.kitDig || {})[gk] != null ? S.kitDig[gk] : gg && gg.kit).toUpperCase();
-        if (kv && !/^([A-Z]{1,2}-\d{2}-\d{1,2}|[A-Z]{1,2}-[ED]-\d{2}(-[A-D])?-[1-9]\d?)$/.test(kv)) { S.msg = { erro: true, txt: 'O lugar da separação é um endereço Rua-Lado-Estante-Andar (ex. K-E-02-1) ou, no antigo, Rua-Estante-Prateleira (ex. K-02-1).' }; return pintar(); }
+        if (kv && !/^([A-Z]{1,2}-\d{2}-\d{1,2}|[1-9]\d?-[A-D]-[1-9]\d?)$/.test(kv)) { S.msg = { erro: true, txt: 'O lugar da separação é um endereço Face-Coluna-Andar (ex. 9-A-1) ou, no antigo, Rua-Estante-Prateleira (ex. K-02-1).' }; return pintar(); }
         await rpc('alm_kit_definir', { os: gg.os_id, endereco: kv || null }, true);
         if (S.kitDig) delete S.kitDig[gk]; S.msg = { txt: kv ? '📍 Separação da OS ' + (gg.numero_os || '') + ' em ' + kv + '.' : 'Lugar da separação retirado.' }; S.end = null; S.gravando = false; await carregar(true); return;
       }
       if (a === 'endNovo') {
         var nc = T(S.novoEnd).toUpperCase();
-        if (!/^([A-Z]{1,2}-\d{2}-\d{1,2}|[A-Z]{1,2}-[ED]-\d{2}(-[A-D])?-[1-9]\d?)$/.test(nc)) { S.end.msg = 'O endereço é Rua-Lado-Estante-Andar (ex. A-E-05-3) ou, no antigo, Rua-Estante-Prateleira (ex. B-04-2).'; S.end.msgErro = true; return pintar(); }
+        if (!/^([A-Z]{1,2}-\d{2}-\d{1,2}|[1-9]\d?-[A-D]-[1-9]\d?)$/.test(nc)) { S.end.msg = 'O endereço é Face-Coluna-Andar (ex. 2-A-3) ou, no antigo, Rua-Estante-Prateleira (ex. B-04-2).'; S.end.msgErro = true; return pintar(); }
         await rpc('alm_endereco_salvar', { codigo: nc, descricao: T(S.novoEndDesc) || null }, true);
         S.novoEnd = ''; S.novoEndDesc = ''; await lerEnderecos(true); S.end.msg = '📍 ' + nc + ' criado.'; return pintar();
       }
@@ -104017,7 +104018,7 @@ html:not(.v311-off):has(>body.v292-alto #viewComercial.v292-on:not([style*="disp
     if (q < N(it.qtd) && !b.div) { b.erro = 'Chegou menos que a NF: escolha o que houve (faltou, avariada, veio errada ou outro).'; return pintar(); }
     if (q < N(it.qtd) && b.div === 'outro' && !T(b.obs)) { b.erro = 'Diga o que aconteceu (observação).'; return pintar(); }
     var onde = T(b.onde != null ? b.onde : '').toUpperCase();
-    if (onde && !/^([A-Z]{1,2}-\d{2}-\d{1,2}|[A-Z]{1,2}-[ED]-\d{2}(-[A-D])?-[1-9]\d?)$/.test(onde)) { b.erro = 'O endereço é Rua-Lado-Estante-Andar (ex. A-E-05-3) ou, no antigo, Rua-Estante-Prateleira (ex. B-04-2).'; return pintar(); }
+    if (onde && !/^([A-Z]{1,2}-\d{2}-\d{1,2}|[1-9]\d?-[A-D]-[1-9]\d?)$/.test(onde)) { b.erro = 'O endereço é Face-Coluna-Andar (ex. 2-A-3) ou, no antigo, Rua-Estante-Prateleira (ex. B-04-2).'; return pintar(); }
     if (!b.uid) b.uid = uid();
     var p = { nota: Number(b.nota), n: N(b.n), qtd: q, lido: q > 0 ? lido : '', modo: q > 0 ? modo : null, uid: b.uid };
     if (q < N(it.qtd)) { p.divergencia = b.div; if (T(b.obs)) p.obs = T(b.obs); }
@@ -107900,9 +107901,10 @@ html:not(.v331-off) #v238Jan input[data-v238sel], html:not(.v331-off) #v238Jan i
 .v334-pv table{width:100%;border-collapse:separate;border-spacing:0;font-size:12.5px}
 .v334-pv th{position:sticky;top:0;background:#F9FAFB;text-align:left;padding:6px 8px;border-bottom:1px solid #EAECF0;font-weight:600}
 .v334-pv td{padding:5px 8px;border-bottom:1px solid #F2F4F7}
-/* PCM V341 (ProperCare-backlog#138): 🗄 Estantes e o endereço por listas */
+/* PCM V341 (ProperCare-backlog#138): 🗄 Faces e o endereço por listas */
 .v341-lote{gap:10px}.v341-lote label{display:inline-flex;align-items:center;gap:6px;font-size:13px;color:#344054}
 .v341-in{border:1px solid #98A2B3;border-radius:8px;padding:6px 8px;font:600 14px ui-monospace,Consolas,monospace;width:56px;min-height:34px;box-sizing:border-box;text-transform:uppercase}
+.v341-obs{width:200px;text-transform:none;font-family:var(--font-sans,Inter,system-ui,sans-serif);font-weight:500}
 .v341-num{width:68px;font-family:var(--font-sans,Inter,system-ui,sans-serif);font-weight:500;text-transform:none}
 .v341-ends{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-bottom:6px}
 .v341-ends .v334-sel{min-width:70px}
@@ -107925,12 +107927,12 @@ html:not(.v331-off) #v238Jan input[data-v238sel], html:not(.v331-off) #v238Jan i
      Almoxarifado/Estoque/Suprimentos, PCM completo ou o acesso extra pcm_estoque/pcm_suprimentos.
    Chamadas: abrir a tela = 1 (alm_estoque_lista); a busca, os filtros e "Mostrar mais" = 1 cada; o resto só no clique.
    Só no computador (no modo celular o menu por área não existe). Chave de volta: localStorage pcm_v334 = off.
-   PCM V341 (09/11/2026, ProperCare-backlog#138, parte 1 — SQL 127_ALM_ESTANTES): botão 🗄 Estantes (o cadastro: lote por rua e a
-   mudança de andares, colunas e ativa, rpc alm_estantes/alm_estante_salvar); o 📍 endereço da linha aberta passa a ser ESCOLHIDO em
-   listas encadeadas (rua › lado › estante › coluna › andar) do cadastro; a importação mostra "Fora do cadastro de estantes".
+   PCM V341 (09/11/2026, ProperCare-backlog#138, parte 1 — SQL 127_ALM_ESTANTES): botão 🗄 Faces (o cadastro: lote de faces e a
+   mudança de prateleira, observação, andares, colunas e ativa, rpc alm_faces/alm_face_salvar); o 📍 endereço da linha aberta passa a
+   ser ESCOLHIDO em listas encadeadas (face › coluna › andar) do cadastro; a importação mostra "Fora do cadastro de faces".
    Linhas deste bloco alteradas: o cabeçalho (botão e caixa), a busca (exemplo), o msgErro (prefixos), o detalhe (a caixa do
-   endereço), o salvarEnd (lê as listas), a pintura (foco das listas), a prévia (situação nova) e os gestos (listas e estantes).
-   As estantes: 1 chamada quando o painel abre ou a 1ª linha se abre (nunca ao abrir a tela).
+   endereço), o salvarEnd (lê as listas), a pintura (foco das listas), a prévia (situação nova) e os gestos (listas e faces); o filtro de rua lista as faces.
+   As faces: 1 chamada quando o painel abre ou a 1ª linha se abre (nunca ao abrir a tela).
    ═══════════════════════════════════════════════════════════════════════════════════════════════════════════════ */
 (function () {
   'use strict';
@@ -107941,14 +107943,14 @@ html:not(.v331-off) #v238Jan input[data-v238sel], html:not(.v331-off) #v238Jan i
   var SITS = { novo: ['novo', 'Novo'], igual: ['igual', 'Já está assim'], troca: ['troca', 'Já tem outro'], formato: ['erro', 'Endereço fora do formato'],
                sem_produto: ['erro', 'Código não existe no Omie'], ambiguo: ['aviso', 'Dois produtos com esse número'], repetido: ['erro', 'Mesma peça com 2 endereços'],
                duplicada: ['igual', 'Linha repetida'], desativado: ['aviso', 'Endereço desativado'],
-               fora_cadastro: ['erro', 'Fora do cadastro de estantes'] };   // PCM V341
+               fora_cadastro: ['erro', 'Fora do cadastro de faces'] };   // PCM V341
   var S = { d: null, itens: [], erro: '', tipoErro: '', carregando: false, mais: false, ger: 0, filtro: 'todas', busca: '', rua: '', ordem: 'endereco',
             aberto: '', endDig: {}, endMsg: {}, salvando: '', segurando: false, pend: false,
             imp: { aberto: false, txt: '', linhas: null, orig: [], prev: null, trocar: false, uid: '', ver: false, gravando: false, pedindo: false, erro: '', ok: '' } };
   V334.S = S;
-  // PCM V341: o cadastro de estantes e a escolha do endereço por listas (uma por peça aberta)
+  // PCM V341: o cadastro de faces e a escolha do endereço por listas (uma por peça aberta)
   S.est = { aberto: false, d: null, carregando: false, erro: '', ger: 0, criando: false, salvando: '', msg: {}, loteMsg: null,
-            lote: { rua: '', lado: 'E', de: '1', ate: '', andares: '6', colunas: '0' } };
+            lote: { de: '1', ate: '', andares: '6', colunas: '2' } };
   S.endSel = {};
   function ls(k, v) {
     try { if (v === undefined) return localStorage.getItem(k); if (v === null) localStorage.removeItem(k); else localStorage.setItem(k, String(v)); }
@@ -107992,7 +107994,7 @@ html:not(.v331-off) #v238Jan input[data-v238sel], html:not(.v331-off) #v238Jan i
     if (c === 'acesso') return 'O estoque é do almoxarifado, do administrador ou de quem tem o acesso extra "PCM – Almoxarifado". Se você é do almoxarifado, entre de novo pelo Hub.';
     if (c === 'rede') return escrita ? 'Sem resposta do banco — não dá para saber se gravou. Clique de novo: não grava duas vezes.' : 'Sem conexão — a lista não carregou.';
     if (c === 'desligado') return 'O PCM está em modo só leitura (quadro desligado) — nada foi gravado.';
-    var m = String((e && e.message) || '').replace(/^NÃO foi gravada:\s*/, '').replace(/^Estoque:\s*/, '').replace(/^Separação:\s*/, '').replace(/^Estantes:\s*/, '');   // PCM V341: + Estantes
+    var m = String((e && e.message) || '').replace(/^NÃO foi gravada:\s*/, '').replace(/^Estoque:\s*/, '').replace(/^Separação:\s*/, '').replace(/^Faces:\s*/, '');   // PCM V341: + Faces
     return m || (escrita ? 'Nada foi gravado. Tente de novo; se continuar, avise o administrador.' : 'A lista não carregou. Tente de novo.');
   }
 
@@ -108022,14 +108024,14 @@ html:not(.v331-off) #v238Jan input[data-v238sel], html:not(.v331-off) #v238Jan i
   // a casca fica; só os pedaços que mudam são repintados (a busca nunca perde o foco nem o que foi digitado)
   function casca() {
     return '<h2>📦 Estoque<span id="v334Faixa"></span><span class="v334-dir"><span id="v334Lido" class="v334-lido"></span>' +
-      '<button type="button" class="v334-bt" data-v334="estantes" id="v341BtEst" aria-expanded="false">🗄 Estantes</button>' +   // PCM V341
+      '<button type="button" class="v334-bt" data-v334="faces" id="v341BtEst" aria-expanded="false">🗄 Faces</button>' +   // PCM V341
       '<button type="button" class="v334-bt" data-v334="importar" id="v334BtImp" aria-expanded="false">📥 Importar endereços</button>' +
       '<button type="button" class="v334-bt v334-ic" data-v334="atualizar" id="v334Atu" title="Atualizar a lista" aria-label="Atualizar a lista">⟳</button></span></h2>' +
       '<div id="v341Est"></div><div id="v334Imp"></div>' +
       '<div class="v334-chips" id="v334Chips" role="group" aria-label="Filtro"></div>' +
-      '<div class="v334-filtros"><input type="text" class="v334-busca" id="v334Busca" placeholder="Buscar código, peça, referência ou endereço (ex. A-E-05)…" autocomplete="off"' +
+      '<div class="v334-filtros"><input type="text" class="v334-busca" id="v334Busca" placeholder="Buscar código, peça, referência ou endereço (ex. 5-A)…" autocomplete="off"' +
       ' name="v334_busca_nofill" data-lpignore="true" data-1p-ignore readonly onfocus="this.removeAttribute(\'readonly\')">' +
-      '<select class="v334-sel" id="v334Rua" title="Rua do almoxarifado"><option value="">Todas as ruas</option></select>' +
+      '<select class="v334-sel" id="v334Rua" title="Face (ou rua antiga)"><option value="">Todas as faces</option></select>' +
       '<select class="v334-sel" id="v334Ordem" title="Ordem da lista"><option value="endereco">Ordem da prateleira</option><option value="descricao">Ordem da descrição</option></select>' +
       '</div><div id="v334Aviso"></div><div id="v334Corpo"></div>';
   }
@@ -108103,7 +108105,7 @@ html:not(.v331-off) #v238Jan input[data-v238sel], html:not(.v331-off) #v238Jan i
     if (el.innerHTML !== h) el.innerHTML = h;
     var sr = document.getElementById('v334Rua');
     if (sr && S.d) {
-      var opc = '<option value="">Todas as ruas</option>' + (S.d.ruas || []).map(function (r) { return '<option value="' + esc(r.rua) + '">Rua ' + esc(r.rua) + '</option>'; }).join('') +
+      var opc = '<option value="">Todas as faces</option>' + ordRuas(S.d.ruas).map(function (r) { return '<option value="' + esc(r.rua) + '">' + (/^\d+$/.test(String(r.rua)) ? 'Face ' : 'Rua ') + esc(r.rua) + '</option>'; }).join('') +   // PCM V341: faces antes das ruas antigas
                 (S.rua && !(S.d.ruas || []).some(function (r) { return r.rua === S.rua; }) ? '<option value="' + esc(S.rua) + '">' + esc(S.rua) + '</option>' : '');
       if (sr.__v !== opc) { sr.innerHTML = opc; sr.__v = opc; }
       if (sr.value !== S.rua) sr.value = S.rua;
@@ -108148,7 +108150,7 @@ html:not(.v331-off) #v238Jan input[data-v238sel], html:not(.v331-off) #v238Jan i
     var sv = S.salvando === it.chave;
     return '<div class="v334-detg">' +
       '<div class="v334-cx"><h4>📍 Endereço</h4>' +
-        enderecoHtml(it, sv) +   // PCM V341: escolher nas listas do cadastro de estantes (era um campo digitado)
+        enderecoHtml(it, sv) +   // PCM V341: escolher nas listas do cadastro de faces (era um campo digitado)
         (msg ? '<div class="v334-msg ' + (msg.erro ? 'erro' : 'ok') + '" role="' + (msg.erro ? 'alert' : 'status') + '">' + esc(msg.txt) + '</div>' : '') +
         (it.endereco ? '<div class="v334-sub">' + (it.end_origem === 'aprendido' ? 'Aprendido na separação' : 'Cadastrado') + (it.end_em ? ' em ' + esc(data(it.end_em)) : '') + '</div>' : '') + '</div>' +
       '<div class="v334-cx"><h4>Saldo por local do Omie</h4>' + loc + '</div>' +
@@ -108224,7 +108226,7 @@ html:not(.v331-off) #v238Jan input[data-v238sel], html:not(.v331-off) #v238Jan i
     if (I.aberto) {
       h = '<div class="v334-imp" role="region" aria-label="Importar endereços"><h3>📥 Importar endereços</h3>' +
         '<label for="v334ImpTxt" class="v334-sub" style="margin:0 0 4px">Copie do Excel as colunas <b>Código do Omie</b> e <b>Endereço</b> e cole aqui (cabeçalho opcional).</label>' +
-        '<textarea id="v334ImpTxt" placeholder="006165&#9;A-E-05-2&#10;3474&#9;A-E-05-B-3" spellcheck="false" autocomplete="off" name="v334_imp_nofill" data-lpignore="true" data-1p-ignore></textarea>' +
+        '<textarea id="v334ImpTxt" placeholder="006165&#9;5-A-2&#10;3474&#9;5-B-3" spellcheck="false" autocomplete="off" name="v334_imp_nofill" data-lpignore="true" data-1p-ignore></textarea>' +
         '<div class="v334-lin"><button type="button" class="v334-bt pri" data-v334="previa"' + (I.pedindo ? ' disabled data-pcm-enviando="1"' : '') + '>' + (I.pedindo ? '<span class="v334-gira"></span>Conferindo…' : 'Ver a prévia') + '</button>' +
         '<label class="v334-bt" style="cursor:pointer">Abrir um .csv<input type="file" accept=".csv,.txt,text/csv,text/plain" data-v334="arquivo" style="display:none"></label>' +
         '<button type="button" class="v334-bt" data-v334="fecharImp">Fechar</button></div>';
@@ -108251,7 +108253,7 @@ html:not(.v331-off) #v238Jan input[data-v238sel], html:not(.v331-off) #v238Jan i
     h += '<div class="v334-pv"><table><thead><tr><th>Linha</th><th>Código</th><th>Endereço</th><th>Peça</th><th>Situação</th></tr></thead><tbody>' +
       ls2.slice(0, 500).map(function (x) {
         var s = SITS[x.sit] || ['', x.sit], nl = I.orig[x.n - 1] || x.n;
-        var det = x.sit === 'troca' ? ' (hoje ' + x.atual + ')' : x.sit === 'ambiguo' ? ': ' + (x.candidatos || []).join(' ou ') + ' — escreva com os zeros' : x.sit === 'formato' ? ': use Rua-Lado-Estante-Andar, ex. A-E-05-3' : x.sit === 'fora_cadastro' ? (x.motivo ? ': ' + x.motivo : '') : '';   // PCM V341
+        var det = x.sit === 'troca' ? ' (hoje ' + x.atual + ')' : x.sit === 'ambiguo' ? ': ' + (x.candidatos || []).join(' ou ') + ' — escreva com os zeros' : x.sit === 'formato' ? ': use Face-Coluna-Andar, ex. 2-A-3' : x.sit === 'fora_cadastro' ? (x.motivo ? ': ' + x.motivo : '') : '';   // PCM V341
         return '<tr><td>' + esc(nl) + '</td><td class="v334-cod">' + esc(x.codigo || '—') + '</td><td>' + esc(x.endereco || x.endereco_digitado || '—') + '</td><td>' + esc(x.descricao || '—') + '</td>' +
                '<td><span class="v334-sit ' + s[0] + '">' + esc(s[1] + det) + '</span></td></tr>';
       }).join('') + (ls2.length ? '' : '<tr><td colspan="5" class="v334-semnum">Nada a mostrar.</td></tr>') + '</tbody></table></div>';
@@ -108261,7 +108263,7 @@ html:not(.v331-off) #v238Jan input[data-v238sel], html:not(.v331-off) #v238Jan i
          (I.gravando ? '<span class="v334-gira"></span>Gravando…' : 'Gravar ' + n + (n === 1 ? ' endereço' : ' endereços')) + '</button>' +
          '<button type="button" class="v334-bt" data-v334="verTudo" aria-pressed="' + I.ver + '">' + (I.ver ? 'Só o que muda e os problemas' : 'Ver também as que já estão certas') + '</button>' +
          (probl ? '<span class="v334-sub" style="margin:0">As linhas com problema não gravam: corrija na planilha e veja a prévia de novo.</span>' : '') +
-         (N(r.fora_cadastro) ? '<button type="button" class="v334-bt" data-v334="estantes">🗄 Abrir as estantes</button>' : '') + '</div>';   // PCM V341
+         (N(r.fora_cadastro) ? '<button type="button" class="v334-bt" data-v334="faces">🗄 Abrir as faces</button>' : '') + '</div>';   // PCM V341
     return h;
   }
   function previa() {
@@ -108299,51 +108301,60 @@ html:not(.v331-off) #v238Jan input[data-v238sel], html:not(.v331-off) #v238Jan i
   }
   V334.gravar = gravar;
 
-  // ═══ 4b · 🗄 ESTANTES (PCM V341, ProperCare-backlog#138): o cadastro que dá o endereço novo ═════════════════════════
-  // Endereço novo = Rua-Lado-Estante-Andar (A-E-05-3) ou, na estante com colunas, Rua-Lado-Estante-Coluna-Andar (A-E-05-B-3).
-  // A régua mora no banco (_alm_end_motivo): aqui só se oferece o que existe no cadastro.
-  var COLS = [[0, 'sem colunas'], [2, 'A–B'], [3, 'A–C'], [4, 'A–D']];
-  function dois(n) { n = Number(n); return (n < 10 ? '0' : '') + n; }
-  function estCod(e) { return e.rua + '-' + e.lado + '-' + dois(e.estante); }
-  function colTxt(n) { n = Number(n) || 0; return n ? 'A–' + String.fromCharCode(64 + n) : 'sem colunas'; }
+  // ═══ 4b · 🗄 FACES (PCM V341, ProperCare-backlog#138): o cadastro que dá o endereço novo ═════════════════════════════
+  // Endereço novo = Face-Coluna-Andar (ex. 2-A-3): face = o número de cada lado de uma prateleira (só as que existem), coluna A..D,
+  // andar 1 = o do piso. A régua mora no banco (_alm_end_motivo): aqui só se oferece o que existe no cadastro.
+  // (os nomes internos S.est / carregarEst / salvarEst ficaram do 1º desenho; a tela diz "face")
+  var COLS = [[1, 'A'], [2, 'A–B'], [3, 'A–C'], [4, 'A–D']];
+  function estCod(e) { return String(Number(e.face)); }
+  function colTxt(n) { n = Number(n) || 1; return n === 1 ? 'só A' : 'A–' + String.fromCharCode(64 + n); }
+  function ordRuas(rs) {   // as faces (número) em ordem numérica, depois as ruas antigas (letra)
+    return (rs || []).slice().sort(function (a, b2) {
+      var na = /^\d+$/.test(String(a.rua)), nb = /^\d+$/.test(String(b2.rua));
+      if (na && nb) return Number(a.rua) - Number(b2.rua);
+      if (na !== nb) return na ? -1 : 1;
+      return String(a.rua) < String(b2.rua) ? -1 : String(a.rua) > String(b2.rua) ? 1 : 0;
+    });
+  }
   function carregarEst() {
     var E = S.est;
     if (typeof _v200Rpc !== 'function') { E.erro = 'Tela indisponível — avise o administrador.'; pintar(); return Promise.resolve(); }
     var g = ++E.ger; E.carregando = true; pintar();
-    return rpc('alm_estantes', {}, false).then(function (d) {
+    return rpc('alm_faces', {}, false).then(function (d) {
       if (g !== E.ger) return;
-      E.carregando = false; E.erro = ''; E.d = d || { estantes: [] }; pintar();
+      E.carregando = false; E.erro = ''; E.d = d || { faces: [] }; pintar();
     }, function (e) {
       if (g !== E.ger) return;
       E.carregando = false; E.erro = msgErro(e, false); pintar();
     });
   }
   V334.carregarEst = carregarEst;
-  function lista() { return (S.est.d && S.est.d.estantes) || []; }
+  function lista() { return (S.est.d && S.est.d.faces) || []; }
   function ativas() { return lista().filter(function (e) { return e.ativo; }); }
-  function acharEst(s) { return ativas().find(function (e) { return e.rua === s.rua && e.lado === s.lado && String(e.estante) === String(s.est); }) || null; }
-  function colunasDe(s) { var e = acharEst(s); return e ? Number(e.colunas) || 0 : 0; }
+  function acharEst(s) { return ativas().find(function (e) { return String(e.face) === String(s.face); }) || null; }
   // o endereço que as listas formam ('' = falta escolher)
   function codDe(s) {
     var e = acharEst(s); if (!e || !s.and || Number(s.and) > Number(e.andares)) return '';
-    var nc = Number(e.colunas) || 0;
-    if (nc && !(s.col && s.col.charCodeAt(0) - 64 <= nc)) return '';
-    return estCod(e) + (nc ? '-' + s.col : '') + '-' + Number(s.and);
+    var nc = Number(e.colunas) || 1;
+    if (!(s.col && s.col.charCodeAt(0) - 64 >= 1 && s.col.charCodeAt(0) - 64 <= nc)) return '';
+    return estCod(e) + '-' + s.col + '-' + Number(s.and);
   }
   V334.codDe = codDe;
   function partesEnd(cod) {
-    var m = /^([A-Z]{1,2})-([ED])-([0-9]{2})(?:-([A-D]))?-([0-9]{1,2})$/.exec(String(cod || ''));
-    return m ? { rua: m[1], lado: m[2], est: String(Number(m[3])), col: m[4] || '', and: m[5] } : null;
+    var m = /^([1-9][0-9]?)-([A-D])-([1-9][0-9]?)$/.exec(String(cod || ''));
+    return m ? { face: m[1], col: m[2], and: m[3] } : null;
   }
   function selDe(it) {
-    if (!S.endSel[it.chave]) S.endSel[it.chave] = partesEnd(it.endereco) || { rua: '', lado: '', est: '', col: '', and: '' };
+    if (!S.endSel[it.chave]) S.endSel[it.chave] = partesEnd(it.endereco) || { face: '', col: '', and: '' };
     return S.endSel[it.chave];
   }
-  function uniq(a) { var v = {}, o = []; a.forEach(function (x) { if (!v[x]) { v[x] = 1; o.push(x); } }); return o; }
   function opcoes(vals, sel, rot, vazio) {
     return '<option value="">' + esc(vazio) + '</option>' + vals.map(function (v) {
       return '<option value="' + esc(v) + '"' + (String(v) === String(sel) ? ' selected' : '') + '>' + esc(rot ? rot(v) : v) + '</option>';
     }).join('');
+  }
+  function rotFace(e) {
+    return 'Face ' + e.face + (e.prateleira != null && e.prateleira !== '' ? ' · prat. ' + e.prateleira : '') + (e.observacao ? ' · ' + e.observacao : '');
   }
   function enderecoHtml(it, sv) {
     var E = S.est, ch = esc(it.chave);
@@ -108352,24 +108363,21 @@ html:not(.v331-off) #v238Jan input[data-v238sel], html:not(.v331-off) #v238Jan i
       return E.erro ? '<div class="v334-msg erro" role="alert">' + esc(E.erro) + ' <button type="button" class="v334-bt" data-v334="relerEst">Tentar de novo</button></div>' : '<div class="v334-esq" style="height:34px" aria-busy="true"></div>';
     }
     var at = ativas();
-    if (!at.length) return '<div class="v334-sub" style="margin:0 0 6px">Nenhuma estante no cadastro ainda.</div>' +
-      '<button type="button" class="v334-bt" data-v334="estantes">🗄 Cadastrar estantes</button>';
+    if (!at.length) return '<div class="v334-sub" style="margin:0 0 6px">Nenhuma face no cadastro ainda.</div>' +
+      '<button type="button" class="v334-bt" data-v334="faces">🗄 Cadastrar faces</button>';
     var s = selDe(it);
-    var ruas = uniq(at.map(function (e) { return e.rua; })).sort();
-    var lados = uniq(at.filter(function (e) { return e.rua === s.rua; }).map(function (e) { return e.lado; })).sort(function (a, b2) { return a === 'E' ? -1 : b2 === 'E' ? 1 : 0; });
-    if (s.rua && !s.lado && lados.length === 1) s.lado = lados[0];
-    var ests = at.filter(function (e) { return e.rua === s.rua && e.lado === s.lado; }).map(function (e) { return e.estante; });
-    var e = acharEst(s), nc = e ? Number(e.colunas) || 0 : 0, cols = [], ands = [], i;
+    if (s.face && !acharEst(s)) { s.face = ''; s.col = ''; s.and = ''; }   // a face escolhida saiu do cadastro (desativada)
+    var e = acharEst(s), nc = e ? Number(e.colunas) || 1 : 0, cols = [], ands = [], i;
     for (i = 1; i <= nc; i++) cols.push(String.fromCharCode(64 + i));
+    if (e && !s.col && nc === 1) s.col = 'A';   // face só com a coluna A: já vem escolhida
     if (e) for (i = 1; i <= Number(e.andares); i++) ands.push(String(i));
     var dis = function (ok) { return ok && !sv ? '' : ' disabled'; };
     var cod = codDe(s);
     var h = '<div class="v341-ends" role="group" aria-label="Endereço da peça">' +
-      '<select class="v334-sel" data-v341-s="rua" data-ch="' + ch + '" aria-label="Rua"' + dis(true) + '>' + opcoes(ruas, s.rua, function (v) { return 'Rua ' + v; }, 'Rua…') + '</select>' +
-      '<select class="v334-sel" data-v341-s="lado" data-ch="' + ch + '" aria-label="Lado"' + dis(!!s.rua) + '>' + opcoes(lados, s.lado, function (v) { return v === 'E' ? 'E (esquerdo)' : 'D (direito)'; }, 'Lado…') + '</select>' +
-      '<select class="v334-sel" data-v341-s="est" data-ch="' + ch + '" aria-label="Estante"' + dis(!!s.lado) + '>' + opcoes(ests, s.est, function (v) { return 'Estante ' + dois(v); }, 'Estante…') + '</select>' +
-      (nc ? '<select class="v334-sel" data-v341-s="col" data-ch="' + ch + '" aria-label="Coluna"' + dis(!!e) + '>' + opcoes(cols, s.col, function (v) { return 'Coluna ' + v; }, 'Coluna…') + '</select>' : '') +
-      '<select class="v334-sel" data-v341-s="and" data-ch="' + ch + '" aria-label="Andar (1 = o de baixo)" title="1 = o de baixo"' + dis(!!e) + '>' + opcoes(ands, s.and, function (v) { return v + 'º andar'; }, 'Andar…') + '</select>' +
+      '<select class="v334-sel" data-v341-s="face" data-ch="' + ch + '" aria-label="Face"' + dis(true) + '>' +
+        '<option value="">Face…</option>' + at.map(function (f) { return '<option value="' + esc(f.face) + '"' + (String(f.face) === String(s.face) ? ' selected' : '') + '>' + esc(rotFace(f)) + '</option>'; }).join('') + '</select>' +
+      '<select class="v334-sel" data-v341-s="col" data-ch="' + ch + '" aria-label="Coluna"' + dis(!!e) + '>' + opcoes(cols, s.col, function (v) { return 'Coluna ' + v; }, 'Coluna…') + '</select>' +
+      '<select class="v334-sel" data-v341-s="and" data-ch="' + ch + '" aria-label="Andar (1 = o do piso)" title="1 = o do piso"' + dis(!!e) + '>' + opcoes(ands, s.and, function (v) { return v + 'º andar'; }, 'Andar…') + '</select>' +
       '</div>' +
       '<button type="button" class="v334-bt pri" data-v334="salvarEnd" data-ch="' + ch + '"' + (sv ? ' disabled data-pcm-enviando="1"' : (cod && cod !== it.endereco ? '' : ' disabled')) + '>' +
       (sv ? '<span class="v334-gira"></span>Salvando…' : cod ? 'Gravar ' + esc(cod) : 'Salvar endereço') + '</button>';
@@ -108378,20 +108386,19 @@ html:not(.v331-off) #v238Jan input[data-v238sel], html:not(.v331-off) #v238Jan i
   }
   V334.enderecoHtml = enderecoHtml;
   function escolher(ch, k, v) {
-    var s = S.endSel[ch] || (S.endSel[ch] = { rua: '', lado: '', est: '', col: '', and: '' });
-    var ord = ['rua', 'lado', 'est', 'col', 'and'], i = ord.indexOf(k); if (i < 0) return;
+    var s = S.endSel[ch] || (S.endSel[ch] = { face: '', col: '', and: '' });
+    var ord = ['face', 'col', 'and'], i = ord.indexOf(k); if (i < 0) return;
     s[k] = v; for (var j = i + 1; j < ord.length; j++) s[ord[j]] = '';   // a escolha de cima limpa as de baixo
     S.endMsg[ch] = null; pintar();
   }
   V334.escolher = escolher;
 
   function lotePrev() {
-    var L = S.est.lote, rua = String(L.rua || '').trim().toUpperCase(), de = parseInt(L.de, 10), ate = parseInt(L.ate, 10);
-    if (!/^[A-Z]{1,2}$/.test(rua)) return { erro: 'A rua é uma ou duas letras (A, B, … AA).' };
-    if (!(de >= 1 && de <= 99) || !(ate >= 1 && ate <= 99) || ate < de) return { erro: 'Diga de que estante a que estante (1 a 99).' };
-    if (ate - de + 1 > 60) return { erro: 'No máximo 60 estantes por vez.' };
-    var n = ate - de + 1, a = rua + '-' + L.lado + '-' + dois(de), z = rua + '-' + L.lado + '-' + dois(ate);
-    return { rua: rua, de: de, ate: ate, txt: 'Cria ' + (n === 1 ? a : a + ' a ' + z) + ' · ' + n + (n === 1 ? ' estante' : ' estantes') + ' · ' + L.andares + ' andares · ' + colTxt(L.colunas) + '. As que já existem ficam como estão.' };
+    var L = S.est.lote, de = /^\d+$/.test(String(L.de).trim()) ? parseInt(L.de, 10) : NaN, ate = /^\d+$/.test(String(L.ate).trim()) ? parseInt(L.ate, 10) : NaN;
+    if (!(de >= 1 && de <= 99) || !(ate >= 1 && ate <= 99) || ate < de) return { erro: 'Diga de que face a que face (1 a 99).' };
+    if (ate - de + 1 > 60) return { erro: 'No máximo 60 faces por vez.' };
+    var n = ate - de + 1;
+    return { de: de, ate: ate, txt: 'Cria ' + (n === 1 ? 'a face ' + de : 'as faces ' + de + ' a ' + ate) + ' · ' + n + (n === 1 ? ' face' : ' faces') + ' · ' + L.andares + ' andares · colunas ' + colTxt(L.colunas) + '. As que já existem ficam como estão.' };
   }
   function pintarLotePrev() {
     var el = document.getElementById('v341LotePrev'); if (!el) return;
@@ -108401,10 +108408,13 @@ html:not(.v331-off) #v238Jan input[data-v238sel], html:not(.v331-off) #v238Jan i
   function linhaEst(e) {
     var E = S.est, cod = estCod(e), sv = E.salvando === cod, ocup = !!E.salvando, m = E.msg[cod], dis = ocup ? ' disabled' : '', aa = [], i;
     for (i = 1; i <= 12; i++) aa.push(String(i));
-    return '<tr data-v341-e="' + esc(cod) + '"' + (e.ativo ? '' : ' style="color:#98A2B3"') + '><td><span class="v334-end">' + esc(cod) + '</span></td>' +
-      '<td><select class="v334-sel" data-v341-c="andares" data-cod="' + esc(cod) + '" aria-label="Andares da ' + esc(cod) + '"' + dis + '>' +
+    var nf = ' autocomplete="off" data-lpignore="true" data-1p-ignore';
+    return '<tr data-v341-e="' + esc(cod) + '"' + (e.ativo ? '' : ' style="color:#98A2B3"') + '><td><span class="v334-end">Face ' + esc(cod) + '</span></td>' +
+      '<td><input type="number" class="v341-in v341-num" min="1" max="999" data-v341-c="prateleira" data-cod="' + esc(cod) + '" value="' + esc(e.prateleira == null ? '' : e.prateleira) + '" aria-label="Prateleira da face ' + esc(cod) + '" name="v341_prat_nofill"' + nf + dis + '></td>' +
+      '<td><input type="text" class="v341-in v341-obs" maxlength="80" data-v341-c="observacao" data-cod="' + esc(cod) + '" value="' + esc(e.observacao || '') + '" aria-label="Observação da face ' + esc(cod) + '" name="v341_obs_nofill"' + nf + dis + '></td>' +
+      '<td><select class="v334-sel" data-v341-c="andares" data-cod="' + esc(cod) + '" aria-label="Andares da face ' + esc(cod) + '"' + dis + '>' +
         aa.map(function (v) { return '<option value="' + v + '"' + (Number(v) === Number(e.andares) ? ' selected' : '') + '>' + v + '</option>'; }).join('') + '</select></td>' +
-      '<td><select class="v334-sel" data-v341-c="colunas" data-cod="' + esc(cod) + '" aria-label="Colunas da ' + esc(cod) + '"' + dis + '>' +
+      '<td><select class="v334-sel" data-v341-c="colunas" data-cod="' + esc(cod) + '" aria-label="Colunas da face ' + esc(cod) + '"' + dis + '>' +
         COLS.map(function (c) { return '<option value="' + c[0] + '"' + (Number(c[0]) === Number(e.colunas) ? ' selected' : '') + '>' + esc(c[1]) + '</option>'; }).join('') + '</select></td>' +
       '<td class="n">' + N(e.pecas) + (N(e.kits) ? ' <span class="v334-sub" style="display:inline">+ ' + N(e.kits) + ' kit' + (N(e.kits) === 1 ? '' : 's') + '</span>' : '') + '</td>' +
       '<td><label style="cursor:pointer;display:inline-flex;gap:6px;align-items:center"><input type="checkbox" data-v341-c="ativo" data-cod="' + esc(cod) + '"' + (e.ativo ? ' checked' : '') + dis + '> ' + (e.ativo ? 'Ativa' : 'Desativada') + '</label></td>' +
@@ -108416,30 +108426,28 @@ html:not(.v331-off) #v238Jan input[data-v238sel], html:not(.v331-off) #v238Jan i
     if (E.aberto) {
       var aa = [], i; for (i = 1; i <= 12; i++) aa.push(String(i));
       var p = lotePrev(), ls2 = lista();
-      h = '<div class="v334-imp v341-est" role="region" aria-label="Estantes"><h3>🗄 Estantes</h3>' +
-        '<div class="v334-sub" style="margin:0 0 8px">Endereço: Rua-Lado-Estante-Andar (A-E-05-3) ou, com coluna, A-E-05-B-3. Lado visto de quem entra na rua pelo corredor principal; andar 1 = o de baixo.</div>' +
+      h = '<div class="v334-imp v341-est" role="region" aria-label="Faces"><h3>🗄 Faces</h3>' +
+        '<div class="v334-sub" style="margin:0 0 8px">Endereço: Face-Coluna-Andar (ex. 2-A-3). Andar 1 = o do piso; confira a etiqueta na prateleira.</div>' +
         '<div class="v334-lin v341-lote">' +
-          '<label>Rua <input type="text" class="v341-in" data-v341-l="rua" value="' + esc(L.rua) + '" maxlength="2" aria-label="Rua (letra)" autocomplete="off" name="v341_rua_nofill" data-lpignore="true" data-1p-ignore></label>' +
-          '<label>Lado <select class="v334-sel" data-v341-l="lado" aria-label="Lado">' + [['E', 'E (esquerdo)'], ['D', 'D (direito)']].map(function (o) { return '<option value="' + o[0] + '"' + (L.lado === o[0] ? ' selected' : '') + '>' + o[1] + '</option>'; }).join('') + '</select></label>' +
-          '<label>Estantes <input type="number" class="v341-in v341-num" data-v341-l="de" min="1" max="99" value="' + esc(L.de) + '" aria-label="Da estante"> a ' +
-            '<input type="number" class="v341-in v341-num" data-v341-l="ate" min="1" max="99" value="' + esc(L.ate) + '" aria-label="Até a estante"></label>' +
+          '<label>Faces <input type="number" class="v341-in v341-num" data-v341-l="de" min="1" max="99" value="' + esc(L.de) + '" aria-label="Da face" autocomplete="off" name="v341_de_nofill" data-lpignore="true" data-1p-ignore> a ' +
+            '<input type="number" class="v341-in v341-num" data-v341-l="ate" min="1" max="99" value="' + esc(L.ate) + '" aria-label="Até a face" autocomplete="off" name="v341_ate_nofill" data-lpignore="true" data-1p-ignore></label>' +
           '<label>Andares <select class="v334-sel" data-v341-l="andares" aria-label="Andares">' + aa.map(function (v) { return '<option value="' + v + '"' + (v === String(L.andares) ? ' selected' : '') + '>' + v + '</option>'; }).join('') + '</select></label>' +
           '<label>Colunas <select class="v334-sel" data-v341-l="colunas" aria-label="Colunas">' + COLS.map(function (c) { return '<option value="' + c[0] + '"' + (String(c[0]) === String(L.colunas) ? ' selected' : '') + '>' + esc(c[1]) + '</option>'; }).join('') + '</select></label>' +
-          '<button type="button" class="v334-bt pri" data-v334="criarEst"' + (E.criando ? ' disabled data-pcm-enviando="1"' : '') + '>' + (E.criando ? '<span class="v334-gira"></span>Criando…' : 'Criar estantes') + '</button>' +
+          '<button type="button" class="v334-bt pri" data-v334="criarEst"' + (E.criando ? ' disabled data-pcm-enviando="1"' : '') + '>' + (E.criando ? '<span class="v334-gira"></span>Criando…' : 'Criar faces') + '</button>' +
           '<button type="button" class="v334-bt" data-v334="fecharEst">Fechar</button></div>' +
         '<div class="v334-sub" id="v341LotePrev" aria-live="polite">' + esc(L.ate ? (p.erro || p.txt) : '') + '</div>';
       if (E.loteMsg) h += '<div class="v334-aviso ' + (E.loteMsg.erro ? 'erro' : 'ok') + '" role="' + (E.loteMsg.erro ? 'alert' : 'status') + '" style="margin-top:8px">' + esc(E.loteMsg.txt) + '</div>';
       if (E.erro) h += '<div class="v334-aviso erro" role="alert" style="margin-top:8px">' + esc(E.erro) + ' <button type="button" class="v334-bt" data-v334="relerEst">Tentar de novo</button></div>';
       if (!E.d) h += E.erro ? '' : '<div aria-busy="true"><div class="v334-esq"></div></div>';
-      else if (!ls2.length) h += '<div class="v334-vazio" style="margin-top:8px"><b>Nenhuma estante ainda</b>Crie a primeira rua acima: rua, lado, de que estante a que estante, andares e colunas.</div>';
-      else h += '<div class="v334-pv" style="max-height:360px"><table><thead><tr><th>Estante</th><th>Andares</th><th>Colunas</th><th class="n" title="Peças com endereço nesta estante">Peças</th><th>Situação</th><th></th></tr></thead><tbody>' +
+      else if (!ls2.length) h += '<div class="v334-vazio" style="margin-top:8px"><b>Nenhuma face ainda</b>Crie as primeiras faces acima: de que face a que face, andares e colunas.</div>';
+      else h += '<div class="v334-pv" style="max-height:360px"><table><thead><tr><th>Face</th><th title="Só informativo">Prateleira</th><th>Observação</th><th>Andares</th><th>Colunas</th><th class="n" title="Peças com endereço nesta face">Peças</th><th>Situação</th><th></th></tr></thead><tbody>' +
         ls2.map(linhaEst).join('') + '</tbody></table></div>';
       h += '</div>';
     }
     if (el.__v !== h) {
       var foco = document.activeElement && el.contains(document.activeElement) ? document.activeElement : null;
       var fl = foco && foco.getAttribute('data-v341-l'), fc = foco && foco.getAttribute('data-v341-c'), fcod = fc ? foco.getAttribute('data-cod') : null, sel = null;
-      try { if (fl && foco.type === 'text') sel = foco.selectionStart; } catch (e) {}
+      try { if ((fl || fc) && foco.type === 'text') sel = foco.selectionStart; } catch (e) {}
       el.innerHTML = h; el.__v = h;
       var nf = fl ? el.querySelector('[data-v341-l="' + fl + '"]') : fc ? el.querySelector('[data-v341-c="' + fc + '"][data-cod="' + cssEsc(fcod) + '"]') : null;
       if (nf) try { nf.focus({ preventScroll: true }); if (sel != null) nf.setSelectionRange(sel, sel); } catch (e) {}
@@ -108447,7 +108455,7 @@ html:not(.v331-off) #v238Jan input[data-v238sel], html:not(.v331-off) #v238Jan i
   }
   function abrirEst(rolar) {
     S.est.aberto = true; pintar();
-    if (!S.est.carregando) carregarEst();   // abrir sempre relê: outra pessoa pode ter criado ou mudado estantes
+    if (!S.est.carregando) carregarEst();   // abrir sempre relê: outra pessoa pode ter criado ou mudado faces
     if (rolar) setTimeout(function () { var x = document.getElementById('v341Est'); if (x) try { x.scrollIntoView({ block: 'start', behavior: 'smooth' }); } catch (e) {} }, 0);
   }
   function criarEst() {
@@ -108455,10 +108463,10 @@ html:not(.v331-off) #v238Jan input[data-v238sel], html:not(.v331-off) #v238Jan i
     var p = lotePrev();
     if (p.erro) { E.loteMsg = { erro: true, txt: p.erro }; pintar(); return; }
     E.criando = true; E.loteMsg = null; pintar();
-    rpc('alm_estante_salvar', { lote: { rua: p.rua, lado: L.lado, de: p.de, ate: p.ate, andares: Number(L.andares), colunas: Number(L.colunas) } }, true).then(function (r) {
+    rpc('alm_face_salvar', { lote: { de: p.de, ate: p.ate, andares: Number(L.andares), colunas: Number(L.colunas) } }, true).then(function (r) {
       E.criando = false; r = r || {};
       var ja = (r.ja_existiam || []).length, c = N(r.criadas);
-      E.loteMsg = { erro: false, txt: '✅ ' + (r.de === r.ate ? r.de : r.de + ' a ' + r.ate) + ' no cadastro: ' + c + (c === 1 ? ' nova' : ' novas') +
+      E.loteMsg = { erro: false, txt: '✅ ' + (String(r.de) === String(r.ate) ? 'Face ' + r.de : 'Faces ' + r.de + ' a ' + r.ate) + ' no cadastro: ' + c + (c === 1 ? ' nova' : ' novas') +
                     (ja ? ' · ' + ja + (ja === 1 ? ' já existia e ficou como estava' : ' já existiam e ficaram como estavam') : '') + '.' };
       E.lote.de = String(p.ate + 1 <= 99 ? p.ate + 1 : p.ate); E.lote.ate = '';
       toastSeguro(E.loteMsg.txt, 'success'); carregarEst();
@@ -108468,11 +108476,15 @@ html:not(.v331-off) #v238Jan input[data-v238sel], html:not(.v331-off) #v238Jan i
   function salvarEst(cod, campo, valor) {
     var E = S.est; if (E.salvando) return;
     var e = lista().find(function (x) { return estCod(x) === cod; }); if (!e) return;
-    var p = { rua: e.rua, lado: e.lado, estante: e.estante, atualizado_em: e.atualizado_em }; p[campo] = valor;   // a versão lida: o banco recusa se outro mudou
+    if (campo === 'prateleira' && valor != null && !(valor >= 1 && valor <= 999 && Math.floor(valor) === valor)) {
+      E.msg[cod] = { erro: true, txt: 'A prateleira é um número (ou vazio).' }; var pe0 = document.getElementById('v341Est'); if (pe0) pe0.__v = null; pintar(); return; }
+    var atual = campo === 'observacao' ? (e.observacao || '') : e[campo];
+    if (String(atual == null ? '' : atual) === String(valor == null ? '' : valor)) return;   // nada mudou (sair do campo sem mexer)
+    var p = { face: e.face, atualizado_em: e.atualizado_em }; p[campo] = valor;   // a versão lida: o banco recusa se outro mudou
     E.salvando = cod; E.msg[cod] = null; pintar();
-    rpc('alm_estante_salvar', p, true).then(function (r) {
-      E.salvando = ''; var n = r && r.estante;
-      if (n) { e.andares = n.andares; e.colunas = n.colunas; e.ativo = n.ativo; e.atualizado_em = n.atualizado_em; }
+    rpc('alm_face_salvar', p, true).then(function (r) {
+      E.salvando = ''; var n = r && r.face;
+      if (n) { e.andares = n.andares; e.colunas = n.colunas; e.ativo = n.ativo; e.prateleira = n.prateleira; e.observacao = n.observacao; e.atualizado_em = n.atualizado_em; }
       E.msg[cod] = { erro: false, txt: '✅ Gravado' }; pintar();
     }, function (er) { E.salvando = ''; E.msg[cod] = { erro: true, txt: msgErro(er, true) }; var pe = document.getElementById('v341Est'); if (pe) pe.__v = null; pintar(); if (/outra pessoa mudou/.test(E.msg[cod].txt)) carregarEst(); });   // a lista volta ao que o banco tem
   }
@@ -108483,15 +108495,15 @@ html:not(.v331-off) #v238Jan input[data-v238sel], html:not(.v331-off) #v238Jan i
   function salvarEnd(ch) {
     if (S.salvando) return;
     var it = S.itens.find(function (x) { return x.chave === ch; }); if (!it) return;
-    var f = codDe(S.endSel[ch] || {});   // PCM V341: o endereço vem das listas do cadastro de estantes
-    if (!f) { S.endMsg[ch] = { erro: true, txt: 'Escolha a rua, o lado, a estante' + (colunasDe(S.endSel[ch] || {}) ? ', a coluna' : '') + ' e o andar.' }; pintar(); return; }
+    var f = codDe(S.endSel[ch] || {});   // PCM V341: o endereço vem das listas do cadastro de faces
+    if (!f) { S.endMsg[ch] = { erro: true, txt: 'Escolha a face, a coluna e o andar.' }; pintar(); return; }
     if (f === it.endereco) { S.endMsg[ch] = { erro: false, txt: 'Já está em ' + f + '.' }; S.endDig[ch] = f; pintar(); return; }
     S.salvando = ch; S.endMsg[ch] = null; pintar();
     rpc('alm_produto_endereco_definir', { chave: ch, endereco: f }, true).then(function (r) {
       S.salvando = '';
       it.endereco = (r && r.endereco) || f; it.end_origem = 'cadastro'; it.end_em = new Date().toISOString();
       delete S.endDig[ch]; S.endMsg[ch] = { erro: false, txt: '✅ Endereço gravado: ' + it.endereco + '.' }; S.sujo = true;
-      if (S.est.d) carregarEst();   // PCM V341: a contagem de peças por estante mudou
+      if (S.est.d) carregarEst();   // PCM V341: a contagem de peças por face mudou
       pintar();                                                 // a linha aberta fica à vista (a lista se reordena no próximo ⟳)
     }, function (e) { S.salvando = ''; S.endMsg[ch] = { erro: true, txt: msgErro(e, true) }; pintar(); });
   }
@@ -108504,7 +108516,7 @@ html:not(.v331-off) #v238Jan input[data-v238sel], html:not(.v331-off) #v238Jan i
       var b = t.closest && t.closest('[data-v334]');
       if (b) {
         var a = b.getAttribute('data-v334');
-        if (a === 'atualizar') { carregar(); if (S.est.d) carregarEst(); }   // PCM V341: o ⟳ relê também as estantes
+        if (a === 'atualizar') { carregar(); if (S.est.d) carregarEst(); }   // PCM V341: o ⟳ relê também as faces
         else if (a === 'mais') carregar(true);
         else if (a === 'limpar') { S.busca = ''; S.rua = ''; var i = document.getElementById('v334Busca'); if (i) i.value = ''; carregar(); }
         else if (a === 'importar') { S.imp.aberto = !S.imp.aberto; pintar(); if (S.imp.aberto) setTimeout(function () { var x = document.getElementById('v334ImpTxt'); if (x) try { x.focus(); } catch (e) {} }, 0); }
@@ -108513,7 +108525,7 @@ html:not(.v331-off) #v238Jan input[data-v238sel], html:not(.v331-off) #v238Jan i
         else if (a === 'gravar') gravar();
         else if (a === 'verTudo') { S.imp.ver = !S.imp.ver; pintar(); }
         else if (a === 'salvarEnd') salvarEnd(b.getAttribute('data-ch'));
-        else if (a === 'estantes') { if (S.est.aberto && b.id === 'v341BtEst') { S.est.aberto = false; pintar(); } else abrirEst(b.id !== 'v341BtEst'); }   // PCM V341
+        else if (a === 'faces') { if (S.est.aberto && b.id === 'v341BtEst') { S.est.aberto = false; pintar(); } else abrirEst(b.id !== 'v341BtEst'); }   // PCM V341
         else if (a === 'fecharEst') { S.est.aberto = false; pintar(); }
         else if (a === 'criarEst') criarEst();
         else if (a === 'relerEst') carregarEst();
@@ -108545,7 +108557,7 @@ html:not(.v331-off) #v238Jan input[data-v238sel], html:not(.v331-off) #v238Jan i
       else if (t.getAttribute && t.getAttribute('data-v341-l')) { S.est.lote[t.getAttribute('data-v341-l')] = t.value; pintarLotePrev(); }
       else if (t.getAttribute && t.getAttribute('data-v341-c')) {
         var cc = t.getAttribute('data-v341-c');
-        salvarEst(t.getAttribute('data-cod'), cc, cc === 'ativo' ? !!t.checked : Number(t.value));
+        salvarEst(t.getAttribute('data-cod'), cc, cc === 'ativo' ? !!t.checked : cc === 'observacao' ? String(t.value || '').trim() : cc === 'prateleira' ? (String(t.value || '').trim() === '' ? null : Number(t.value)) : Number(t.value));
       }
       else if (t.getAttribute && t.getAttribute('data-v334') === 'arquivo' && t.files && t.files[0]) {
         var arq = t.files[0]; t.value = '';
