@@ -102594,7 +102594,8 @@ html:not(.v311-off):has(>body.v292-alto #viewComercial.v292-on:not([style*="disp
     var fs = facesDe(dono), s = S.kitSel[dono] || {}, fa = fs.filter(function (f) { return String(f.face) === String(s.f); })[0], oc = {};
     if (kitDono(dono)) ((S.kl && S.kl.ocupados) || []).forEach(function (o) { oc[o.endereco] = o.numero_os || o.os_id; });   // PCM V345: só a área de kits
     if (!kitDono(dono) && !S.fc) { lerFaces(); return '<span class="v323-sub" style="display:inline">Lendo as faces…</span>'; }   // PCM V345
-    if (!fs.length && !s.velho) return '<span class="v323-sub" style="display:inline">' + (!kitDono(dono) && S.fc && S.fc.erro ? E(S.fc.erro) + ' <button type="button" class="v323-bt mini" data-v323="facesReler">Tentar de novo</button>' : !kitDono(dono) ? 'Nenhuma face de peças no cadastro — 📦 Estoque › 🗄 Faces.' : (S.kl && S.kl.erro ? E(S.kl.erro) : S.kl ? 'Nenhuma face 🧰 Kits ativa — marque no 📦 Estoque › 🗄 Faces.' : 'Lendo a área de kits…')) + '</span>';
+    if (!kitDono(dono) && S.fc && S.fc.erro && !fs.length) return (s.velho ? '<b class="v323-end" style="margin:0">' + E(s.velho) + '</b> ' : '') + '<span class="v323-sub" style="display:inline">' + E(S.fc.erro) + ' <button type="button" class="v323-bt mini" data-v323="facesReler">Tentar de novo</button></span>';   // PCM V345: sem as faces, o de hoje fica e a saída é reler
+    if (!fs.length && !s.velho) return '<span class="v323-sub" style="display:inline">' + (!kitDono(dono) ? 'Nenhuma face de peças no cadastro — 📦 Estoque › 🗄 Faces.' : (S.kl && S.kl.erro ? E(S.kl.erro) : S.kl ? 'Nenhuma face 🧰 Kits ativa — marque no 📦 Estoque › 🗄 Faces.' : 'Lendo a área de kits…')) + '</span>';
     function sel(parte, ops, dis, rot) {
       return '<select data-v323foco="kl|' + E(dono) + '|' + parte + '" aria-label="' + rot + '"' + (dis ? ' disabled' : '') + '>' +
         ops.map(function (o) { return '<option value="' + E(o[0]) + '"' + (String(s[parte] == null ? '' : s[parte]) === String(o[0]) ? ' selected' : '') + '>' + E(o[1]) + '</option>'; }).join('') + '</select>';
@@ -102642,7 +102643,7 @@ html:not(.v311-off):has(>body.v292-alto #viewComercial.v292-on:not([style*="disp
   // ─── ↩ A devolver ───────────────────────────────────────────────────────────────────────────────────────────────
   async function lerDev() {
     try {
-      var rr = await Promise.all([rpc('alm_devolver_fila', {}), S.fc ? Promise.resolve(S.fc) : rpc('alm_faces', {}).catch(function () { return { faces: [] }; })]);
+      var rr = await Promise.all([rpc('alm_devolver_fila', {}), S.fc ? Promise.resolve(S.fc) : S.fcP ? S.fcP.then(function () { return S.fc; }) : rpc('alm_faces', {}).catch(function () { return { faces: [] }; })]);
       S.dev = rr[0]; S.fc = rr[1];
       if (S.d && S.dev && S.dev.resumo) S.d.devolver = { n: N(S.dev.resumo.n), vencidas: N(S.dev.resumo.vencidas) };
     } catch (e) { S.dev = { erro: msgErro(e).replace(/^Devolução:\s*/, '') }; }
@@ -102798,7 +102799,7 @@ html:not(.v311-off):has(>body.v292-alto #viewComercial.v292-on:not([style*="disp
   }
   async function acao(bt) {
     var a = bt.getAttribute('data-v323'), gk = bt.getAttribute('data-g'), lid = bt.getAttribute('data-l');
-    if (a === 'reler') { if (!off345() && !S.fcP) S.fc = null; return carregar(); }   // PCM V345: ⟳ relê também as faces (quando a lista aparecer)
+    if (a === 'reler') { if (!off345() && S.fc && !S.fcP) lerFaces(); return carregar(); }   // PCM V345: ⟳ relê também as faces (a lista velha fica até a nova chegar)
     if (a === 'facesReler') { S.fc = null; return pintarOnde(); }   // PCM V345
     if (a === 'filtro') { S.filtro = bt.getAttribute('data-f'); return pintar(); }
     if (a === 'abrir') { S.aberto[gk] = !S.aberto[gk]; if (!S.aberto[gk] && S.bal && S.bal.g === gk) { S.bal = null; pararCamera(); } if (S.aberto[gk] && !S.end) lerEnderecos().then(pintar); return pintar(); }
@@ -102992,7 +102993,7 @@ html:not(.v311-off):has(>body.v292-alto #viewComercial.v292-on:not([style*="disp
   }
   function abrir299(bt) {
     var lid = bt.getAttribute('data-linha'), l = linha299(lid); if (!l) return;
-    pararCamera(); S.bal = { tipo: 'sep', ctx: 'v299', linha: lid, card: l.card };
+    pararCamera(); S.bal = { tipo: 'sep', ctx: 'v299', linha: lid, card: l.card }; delete S.kitSel.onde;   // PCM V345 (auditoria M1)
     decorar299(true);
     var f = document.querySelector('#v299Jan [data-v323bal] input'); if (f) try { f.focus(); } catch (e) {}
   }
@@ -104243,7 +104244,8 @@ html:not(.v311-off):has(>body.v292-alto #viewComercial.v292-on:not([style*="disp
     if (!V325.fc) { lerFaces(); return '<span class="v325-sub" style="display:inline">Lendo as faces…</span>'; }
     ondePre(b, it);
     var fs = faces345(), s = b.sel || {}, fa = fs.filter(function (f) { return String(f.face) === String(s.f); })[0], i;
-    if (!fs.length && s.f !== '@') return '<span class="v325-sub" style="display:inline">' + (V325.fc.erro ? E(V325.fc.erro) : 'Nenhuma face de peças no cadastro — 📦 Estoque › 🗄 Faces.') + '</span>';
+    if (!fs.length && s.f !== '@') return '<span class="v325-sub" style="display:inline">' + (V325.fc.erro ? E(V325.fc.erro) + ' <button type="button" class="v325-bt" data-v325="facesReler">Tentar de novo</button>' : 'Nenhuma face de peças no cadastro — 📦 Estoque › 🗄 Faces.') + '</span>';
+    if (V325.fc.erro && !fs.length) return '<b class="v325-end">' + E(s.velho) + '</b> <span class="v325-sub" style="display:inline">' + E(V325.fc.erro) + ' <button type="button" class="v325-bt" data-v325="facesReler">Tentar de novo</button></span>';
     function sel(p, ops, dis, rot) {
       return '<select data-v325foco="l' + p + '" aria-label="' + rot + '"' + (dis ? ' disabled' : '') + '>' + ops.map(function (o) {
         return '<option value="' + E(o[0]) + '"' + (String(s[p] == null ? '' : s[p]) === String(o[0]) ? ' selected' : '') + '>' + E(o[1]) + '</option>'; }).join('') + '</select>';
@@ -104427,6 +104429,7 @@ html:not(.v311-off):has(>body.v292-alto #viewComercial.v292-on:not([style*="disp
       return pintar();
     }
     if (a === 'balFechar') { pararCamera(); S.bal = null; return pintar(); }
+    if (a === 'facesReler') { V325.fc = null; return pintar(); }   // PCM V345
     if (a === 'camera') return ligarCamera();
     if (a === 'confOk') return conferirOk(bt);
     if (a === 'desfOk') return desfazerOk(bt);
