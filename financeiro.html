@@ -12,8 +12,9 @@
     · trava própria: acao() marca o botão com data-pcm-enviando enquanto grava (dono único: a guarda do
       PWAIT não toma o botão que a tela já trava);
     · sem rede no aparelho, a gravação nem sai: "Sem conexão — a alteração NÃO foi gravada.";
-    · tabela de TRABALHO (marcar, digitar, importar) leva data-cfx-off: o filtro esconderia linha
-      que o botão grava mesmo assim.
+    · tabela de TRABALHO (marcar, digitar, importar) e a prévia do extrato levam data-cfx-off: o filtro
+      esconderia linha que o botão grava mesmo assim;
+    · o erro que a tela lança vira Error com .msg (falha()): se escapar sem catch, o ERRO mostra a frase.
   FINANCEIRO_V1 — 11/10/2026 (rodada 2026-10-11_financeiro_base)
   Página NOVA e separada do PCM (não toca no index.html de 5,8 MB). Fala só com as funções fin_* do Supabase
   (FINANCEIRO_BASE + FINANCEIRO_CADASTROS) usando o crachá do login com PIN (proper_session.supa_token).
@@ -524,6 +525,9 @@ var PCFIN = (function () {
   function jwt(t) { try { return JSON.parse(atob(String(t).split('.')[1].replace(/-/g, '+').replace(/_/g, '/'))) || {}; } catch (e) { return {}; } }
   function sessao() { try { return JSON.parse(localStorage.getItem('proper_session') || 'null'); } catch (e) { return null; } }
 
+  // V2 (#131): o erro que a tela lança vira Error de verdade (com .msg): se escapar sem catch, o tratador
+  // global (ERRO_V1) lê a frase, e não "[object Object]". acao() continua lendo e.msg.
+  function falha(o) { var e = new Error((o && o.msg) || 'erro'); for (var k in o) e[k] = o[k]; return e; }
   // ── o banco ──────────────────────────────────────────────────────────────────────
   function erroDe(status, j, txt) {
     var msg = (j && (j.message || j.error || j.hint)) || '';
@@ -535,21 +539,21 @@ var PCFIN = (function () {
   async function rpc(nome, corpo, opts) {
     opts = opts || {};
     var tok = (sessao() || {}).supa_token || '';
-    if (!tok) throw { msg: 'Sem login. Entre pelo Hub (PIN) e volte aqui.', fatal: true };
+    if (!tok) throw falha({ msg: 'Sem login. Entre pelo Hub (PIN) e volte aqui.', fatal: true });
     // V2 (#131): aparelho sem rede = o pedido nem sai; aí dá para afirmar que NÃO gravou
     if (typeof navigator !== 'undefined' && navigator.onLine === false)
-      throw { msg: opts.escrita ? 'Sem conexão — a alteração NÃO foi gravada.' : 'Sem conexão — não deu para ler o banco.' };
+      throw falha({ msg: opts.escrita ? 'Sem conexão — a alteração NÃO foi gravada.' : 'Sem conexão — não deu para ler o banco.' });
     var c = typeof AbortController !== 'undefined' ? new AbortController() : null, t = c ? setTimeout(function () { c.abort(); }, CFG.prazo) : null, r, txt;
     try {
       r = await fetch(CFG.url + '/rest/v1/rpc/' + nome, { method: 'POST', signal: c ? c.signal : undefined, body: JSON.stringify(corpo || {}),
         headers: { apikey: CFG.anon, Authorization: 'Bearer ' + tok, 'Content-Type': 'application/json' } });
       txt = await r.text();
     } catch (e) {
-      throw { msg: (e && e.name === 'AbortError' ? 'O banco não respondeu em ' + CFG.prazo / 1000 + ' s.' : 'Sem conexão com o banco.') +
-        (opts.escrita ? ' Pode ter gravado mesmo assim — confira em Detalhe/Lista antes de repetir.' : ''), incerto: !!opts.escrita };
+      throw falha({ msg: (e && e.name === 'AbortError' ? 'O banco não respondeu em ' + CFG.prazo / 1000 + ' s.' : 'Sem conexão com o banco.') +
+        (opts.escrita ? ' Pode ter gravado mesmo assim — confira em Detalhe/Lista antes de repetir.' : ''), incerto: !!opts.escrita });
     } finally { if (t) clearTimeout(t); }
     var j = null; try { j = txt ? JSON.parse(txt) : null; } catch (e) {}
-    if (!r.ok) throw erroDe(r.status, j, txt);
+    if (!r.ok) throw falha(erroDe(r.status, j, txt));
     return j;
   }
   // funções SQL com parâmetro jsonb chamado p: o PostgREST espera {"p": {...}}
@@ -1191,7 +1195,7 @@ var PCFIN = (function () {
     if (r.ok) {
       html += '<div class="f2" style="margin-bottom:8px">' + cel('Banco / conta', (r.banco_id || '?') + ' / ' + (r.conta_banco || '?')) + cel('Período', dBR(r.periodo_de) + ' a ' + dBR(r.periodo_ate)) + cel('Linhas', String(rs.linhas)) +
         cel('Entradas', brl(rs.entradas)) + cel('Saídas', brl(rs.saidas)) + cel('Movimento do período', brl(rs.saldo_do_periodo)) + '</div>' +
-        '<div class="tw"><table><thead><tr><th>Data</th><th>Texto</th><th class="n">Valor</th></tr></thead><tbody>' + r.linhas.slice(0, 8).map(function (l) { return '<tr><td>' + esc(dBR(l.data)) + '</td><td>' + esc(l.memo || '') + '</td><td class="n">' + brl(l.valor) + '</td></tr>'; }).join('') + '</tbody></table></div>' +
+        '<div class="tw"><table data-cfx-off="prévia: o botão importa TODAS as linhas do arquivo, não só as que aparecem"><thead><tr><th>Data</th><th>Texto</th><th class="n">Valor</th></tr></thead><tbody>' + r.linhas.slice(0, 8).map(function (l) { return '<tr><td>' + esc(dBR(l.data)) + '</td><td>' + esc(l.memo || '') + '</td><td class="n">' + brl(l.valor) + '</td></tr>'; }).join('') + '</tbody></table></div>' +
         (r.linhas.length > 8 ? '<p class="mut">… e mais ' + (r.linhas.length - 8) + ' linhas.</p>' : '');
     }
     html += '<div id="msg"></div><div class="rod"><button type="button" class="b" data-act="fechar">Cancelar</button>' + (r.ok ? '<button class="b pri" id="cxImp">Importar ' + rs.linhas + ' linhas</button>' : '') + '</div>';

@@ -11,6 +11,8 @@
     · trava própria: acao() marca o botão com data-pcm-enviando enquanto grava (a guarda do PWAIT não o toma);
     · sem rede no aparelho, a gravação e a emissão nem saem: "Sem conexão — … NÃO foi …";
     · os itens e as parcelas da nota são tabela de TRABALHO e levam data-cfx-off.
+    · o erro que a tela lança vira Error com .msg (falha()): a busca que falha sem rede mostra a frase, não
+      "[object Object]" (o ERRO lê .message).
   EMITIR_NOTA_V1 — 21/10/2026 · página NOVA e separada do PCM (Fase 3: a Notaas ligada no ProperCare).
   Fala com as funções fis_* do Supabase (07_FISCAL_EMISSAO) e com a função do servidor "notaas" (que guarda a chave da Notaas),
   sempre com o crachá do login com PIN (proper_session.supa_token), como a financeiro.html e a estoque.html.
@@ -314,29 +316,32 @@ var PCNOTA = (function () {
   function toast(m) { var d = document.createElement('div'); d.textContent = m; $('toast').appendChild(d); setTimeout(function () { d.remove(); }, 4500); }
   function sessao() { try { return JSON.parse(localStorage.getItem('proper_session') || 'null'); } catch (e) { return null; } }
   function jwt(t) { try { return JSON.parse(atob(String(t).split('.')[1].replace(/-/g, '+').replace(/_/g, '/'))) || {}; } catch (e) { return {}; } }
-  function token() { var tok = (sessao() || {}).supa_token || ''; if (!tok) throw { msg: 'Sem login. Entre pelo Hub (PIN) e volte aqui.', fatal: true }; return tok; }
+  function token() { var tok = (sessao() || {}).supa_token || ''; if (!tok) throw falha({ msg: 'Sem login. Entre pelo Hub (PIN) e volte aqui.', fatal: true }); return tok; }
   function msgLimpa(m) { return String(m || '').replace(/^Fiscal:\s*/, '').replace(/^Financeiro:\s*/, ''); }
 
+  // V2 (#131): o erro que a tela lança vira Error de verdade (com .msg): se escapar sem catch, o tratador
+  // global (ERRO_V1) lê a frase, e não "[object Object]". acao() continua lendo e.msg.
+  function falha(o) { var e = new Error((o && o.msg) || 'erro'); for (var k in o) e[k] = o[k]; return e; }
   // ── o banco ──────────────────────────────────────────────────────────────────────
   async function rpc(nome, corpo, opts) {
     if (DEMO) return demo(nome, corpo || {});
     opts = opts || {};
     // V2 (#131): aparelho sem rede = o pedido nem sai; aí dá para afirmar que NÃO gravou
     if (typeof navigator !== 'undefined' && navigator.onLine === false)
-      throw { msg: opts.escrita ? 'Sem conexão — a alteração NÃO foi gravada.' : 'Sem conexão — não deu para ler o banco.' };
+      throw falha({ msg: opts.escrita ? 'Sem conexão — a alteração NÃO foi gravada.' : 'Sem conexão — não deu para ler o banco.' });
     var tok = token(), c = typeof AbortController !== 'undefined' ? new AbortController() : null, t = c ? setTimeout(function () { c.abort(); }, CFG.prazo) : null, r, txt;
     try {
       r = await fetch(CFG.url + '/rest/v1/rpc/' + nome, { method: 'POST', signal: c ? c.signal : undefined, body: JSON.stringify(corpo || {}),
         headers: { apikey: CFG.anon, Authorization: 'Bearer ' + tok, 'Content-Type': 'application/json' } });
       txt = await r.text();
-    } catch (e) { throw { msg: (e && e.name === 'AbortError' ? 'O banco não respondeu.' : 'Sem conexão.') + (opts.escrita ? ' Pode ter gravado: confira antes de repetir.' : '') }; }
+    } catch (e) { throw falha({ msg: (e && e.name === 'AbortError' ? 'O banco não respondeu.' : 'Sem conexão.') + (opts.escrita ? ' Pode ter gravado: confira antes de repetir.' : '') }); }
     finally { if (t) clearTimeout(t); }
     var j = null; try { j = txt ? JSON.parse(txt) : null; } catch (e) {}
     if (!r.ok) {
       var m = (j && (j.message || j.hint)) || ('HTTP ' + r.status);
-      if (r.status === 401 || /JWT|expired/i.test(m)) throw { msg: 'O crachá do login venceu. Entre de novo pelo Hub (PIN).', fatal: true };
-      if (r.status === 404 && /PGRST202|Could not find/.test(m + (j && j.code))) throw { msg: 'O banco ainda não tem as funções de nota fiscal (07_FISCAL_EMISSAO não rodou).', fatal: true };
-      throw { msg: msgLimpa(m) };
+      if (r.status === 401 || /JWT|expired/i.test(m)) throw falha({ msg: 'O crachá do login venceu. Entre de novo pelo Hub (PIN).', fatal: true });
+      if (r.status === 404 && /PGRST202|Could not find/.test(m + (j && j.code))) throw falha({ msg: 'O banco ainda não tem as funções de nota fiscal (07_FISCAL_EMISSAO não rodou).', fatal: true });
+      throw falha({ msg: msgLimpa(m) });
     }
     return j;
   }
@@ -345,16 +350,16 @@ var PCNOTA = (function () {
   async function servidor(corpo) {
     if (DEMO) return demoServidor(corpo);
     if (typeof navigator !== 'undefined' && navigator.onLine === false)
-      throw { msg: 'Sem conexão — o pedido NÃO foi enviado à Notaas. Ligue a rede e toque de novo.' };
+      throw falha({ msg: 'Sem conexão — o pedido NÃO foi enviado à Notaas. Ligue a rede e toque de novo.' });
     var tok = token(), c = new AbortController(), t = setTimeout(function () { c.abort(); }, CFG.prazoEmissao), r, txt;
     try {
       r = await fetch(CFG.url + CFG.funcao, { method: 'POST', signal: c.signal, body: JSON.stringify(corpo),
         headers: { apikey: CFG.anon, Authorization: 'Bearer ' + tok, 'Content-Type': 'application/json' } });
       txt = await r.text();
-    } catch (e) { throw { msg: 'A Notaas/servidor não respondeu a tempo. NÃO emita de novo: abra "Notas" e toque em Atualizar para ver se saiu.' }; }
+    } catch (e) { throw falha({ msg: 'A Notaas/servidor não respondeu a tempo. NÃO emita de novo: abra "Notas" e toque em Atualizar para ver se saiu.' }); }
     finally { clearTimeout(t); }
     var j = null; try { j = JSON.parse(txt); } catch (e) {}
-    if (!r.ok && !(j && j.estado)) throw { msg: msgLimpa((j && j.erro) || ('Servidor: HTTP ' + r.status)) };
+    if (!r.ok && !(j && j.estado)) throw falha({ msg: msgLimpa((j && j.erro) || ('Servidor: HTTP ' + r.status)) });
     return j;
   }
   async function acao(btn, fn) {
@@ -500,8 +505,8 @@ var PCNOTA = (function () {
   async function conferir(btn) {
     await acao(btn, async function () {
       var p = montarEntrada();
-      if (!p.cliente_id && !(S.tipo === 'nfe' && operacao().entrada_propria)) throw { msg: 'Escolha o cliente.' };
-      if (S.tipo === 'nfe' && !p.itens.length) throw { msg: 'Adicione pelo menos uma peça.' };
+      if (!p.cliente_id && !(S.tipo === 'nfe' && operacao().entrada_propria)) throw falha({ msg: 'Escolha o cliente.' });
+      if (S.tipo === 'nfe' && !p.itens.length) throw falha({ msg: 'Adicione pelo menos uma peça.' });
       var r = await rpcJ(S.tipo === 'nfse' ? 'fis_nfse_preparar' : 'fis_nfe_preparar', p, { escrita: true });
       S.edita = Object.assign({}, S.edita || {}, { id: r.id, estado: r.estado, entrada: p, operacao: p.operacao, motivo: null });
       desenhaPrevia(r);
@@ -537,8 +542,8 @@ var PCNOTA = (function () {
       if (!n.xml) return { ok: false, msg: 'O XML ainda não chegou da Notaas. Em "Notas", toque em "Financeiro" daqui a pouco.' };
       if (n.ambiente !== 'producao') return { ok: true, msg: 'Nota de homologação: fica fora do financeiro (sem valor fiscal).' };
       if (n.fin_nota_id) return { ok: true, msg: 'Já está no financeiro.' };
-      var L = (typeof PCFiscal !== 'undefined' && PCFiscal) || null; if (!L) throw { msg: 'Leitor de XML não carregou.' };
-      var lido = L.ler(n.xml); if (!lido.ok) throw { msg: 'O leitor não aceitou o XML: ' + (lido.erros || []).join('; ') };
+      var L = (typeof PCFiscal !== 'undefined' && PCFiscal) || null; if (!L) throw falha({ msg: 'Leitor de XML não carregou.' });
+      var lido = L.ler(n.xml); if (!lido.ok) throw falha({ msg: 'O leitor não aceitou o XML: ' + (lido.erros || []).join('; ') });
       lido.xml = n.xml; lido.titulos = n.titulos && n.titulos.gerar ? n.titulos : { gerar: false };
       if (n.tipo === 'nfse' && n.titulos && n.titulos.parcelas && n.titulos.parcelas.length > 1) lido.titulos = { gerar: false };   // NFS-e não tem duplicatas no XML: as parcelas nascem no vincular (NF-e: o importador lê as duplicatas do XML)
       var imp = await rpcJ('fin_nota_importar', lido, { escrita: true });
@@ -644,10 +649,10 @@ var PCNOTA = (function () {
     if (DEMO) return { razao_social: 'EMPRESA DE DEMONSTRACAO LTDA', cep: '35500000', descricao_tipo_de_logradouro: 'RUA', logradouro: 'GOIAS', numero: '100', bairro: 'CENTRO', municipio: 'DIVINOPOLIS', uf: 'MG', codigo_municipio_ibge: 3122306, descricao_situacao_cadastral: 'ATIVA' };
     var ult = 0;
     for (var u of ['https://minhareceita.org/', 'https://brasilapi.com.br/api/cnpj/v1/']) {
-      try { var r = await fetch(u + d); if (r.ok) return r.json(); if (r.status === 404) throw { msg: 'CNPJ não encontrado na Receita.' }; ult = r.status; }
+      try { var r = await fetch(u + d); if (r.ok) return r.json(); if (r.status === 404) throw falha({ msg: 'CNPJ não encontrado na Receita.' }); ult = r.status; }
       catch (e) { if (e && e.msg) throw e; }
     }
-    throw { msg: 'A consulta da Receita não respondeu' + (ult ? ' (' + ult + ')' : '') + '; preencha à mão.' };
+    throw falha({ msg: 'A consulta da Receita não respondeu' + (ult ? ' (' + ult + ')' : '') + '; preencha à mão.' });
   }
 
   // ── % ICMS DO PGDAS (admin) ──────────────────────────────────────────────────────
