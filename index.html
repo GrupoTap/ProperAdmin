@@ -111335,7 +111335,8 @@ html.v337-on .cros-omie-topo [data-cros-o="filtro"][data-f="fornecedor"]{display
   function lerInfo() {
     S.infoLendo = true;
     return rpc('alm_conversao', {}, false).then(function (d) { S.infoLendo = false; guardarInfo(d); garantir(); },
-      function () { S.infoLendo = false; S.info = { formato_antigo: 'desconhecido', antigos: 0 }; garantir(); });
+      function (e) { S.infoLendo = false; if (e && e.v200 === 'rede') { S.info = null; return; }   // (auditoria A10) sem conexão: tenta de novo ao voltar ao 📦 Estoque
+                     S.info = { formato_antigo: 'desconhecido', antigos: 0 }; garantir(); });
   }
   function guardarInfo(d) { d = d || {}; S.info = { formato_antigo: d.formato_antigo || 'desconhecido', antigos: N(d.total && d.total.antigos) }; }
 
@@ -111382,7 +111383,7 @@ html.v337-on .cros-omie-topo [data-cros-o="filtro"][data-f="fornecedor"]{display
       await rpc('alm_conversao_salvar', { itens: [{ antigo: antigo, novo: novo }] }, true);
       S.gravando = ''; delete S.esc[antigo];
       await reler();
-    } catch (e) { S.gravando = ''; S.msg = { erro: true, txt: antigo + ': ' + msgErro(e, true) }; pintar(); }
+    } catch (e) { S.gravando = ''; delete S.esc[antigo]; S.msg = { erro: true, txt: antigo + ': ' + msgErro(e, true) }; pintar(); }   // (auditoria A1) a linha volta a mostrar o que o banco tem
   }
   async function preencherEstante() {
     var es = S.est;
@@ -111441,8 +111442,12 @@ html.v337-on .cros-omie-topo [data-cros-o="filtro"][data-f="fornecedor"]{display
       '<select class="v334-sel" data-v344-s="and" data-a="' + a + '" aria-label="Andar (1 = o do piso)" title="1 = o do piso"' + (f && !ocup ? '' : ' disabled') + '>' + o('', s.and, 'Andar…') +
         (s.and && ands.indexOf(s.and) < 0 ? o(s.and, s.and, s.and + 'º andar') : '') + ands.map(function (x) { return o(x, s.and, x + 'º andar'); }).join('') + '</select></div>';
   }
+  // (auditoria A1) escolha pela metade: a situação é a do BANCO, que pode ser outra — a tela diz, e o Converter espera
+  function pendentes() { return Object.keys(S.esc).filter(function (a) { return linhas().some(function (l) { return l.antigo === a; }); }); }
+  V344.pendentes = pendentes;
   function sitHtml(l) {
     if (S.gravando === 'linha:' + l.antigo) return '<span class="v344-sit sn"><span class="v334-gira"></span>Gravando…</span>';
+    if (S.esc[l.antigo]) return '<span class="v344-sit pr">⏳ Pela metade — escolha os três' + (T(l.novo) ? ' (vale ' + esc(l.novo) + ' até lá)' : '') + '</span>';
     if (l.sit === 'pronto') return '<span class="v344-sit ok">✅ Pronto</span>';
     if (l.sit === 'problema') return '<span class="v344-sit pr">⚠ ' + esc(l.motivo || 'não serve') + '</span>';
     return '<span class="v344-sit sn">Escolha o novo</span>';
@@ -111487,7 +111492,8 @@ html.v337-on .cros-omie-topo [data-cros-o="filtro"][data-f="fornecedor"]{display
         var quando = (function () { try { return new Date(x.em).toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo', day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' }); } catch (e) { return ''; } })();
         var acao = x.desfeito_em ? '<span class="v344-sit sn">desfeita' + (x.desfeito_por ? ' por ' + esc(x.desfeito_por) : '') + '</span>' :
           S.desf === x.id ? '<button type="button" class="v334-bt" data-v344="desfazerSim" data-id="' + esc(x.id) + '"' + (S.gravando ? ' disabled' : '') + (S.gravando === 'desfazer' ? ' data-pcm-enviando="1"' : '') + '>' +
-              (S.gravando === 'desfazer' ? '<span class="v334-gira"></span>Desfazendo…' : 'Sim, desfazer') + '</button> <button type="button" class="v334-bt" data-v344="desfazerNao">Não</button>' :
+              (S.gravando === 'desfazer' ? '<span class="v334-gira"></span>Desfazendo…' : 'Sim, desfazer') + '</button> <button type="button" class="v334-bt" data-v344="desfazerNao">Não</button>' +
+              (S.d && S.d.formato_antigo === 'recusado' ? '<span class="v344-sit sn"> o formato antigo volta a valer</span>' : '') :
             '<button type="button" class="v334-bt" data-v344="desfazer" data-id="' + esc(x.id) + '"' + (S.gravando ? ' disabled' : '') + ' title="As peças que ainda estão no novo voltam para o antigo">↩ Desfazer</button>';
         return '<tr><td><span class="v334-end">' + esc(x.antigo) + '</span></td><td><span class="v334-end">' + esc(x.novo) + '</span></td><td>' + N(x.pecas) + (N(x.kits) ? ' + ' + pl(N(x.kits), 'kit', 'kits') : '') + '</td>' +
           '<td>' + esc(quando) + (x.por ? ' · ' + esc(x.por) : '') + '</td><td>' + acao + '</td></tr>';
@@ -111514,14 +111520,14 @@ html.v337-on .cros-omie-topo [data-cros-o="filtro"][data-f="fornecedor"]{display
       h += '<div class="v334-vazio" style="padding:14px"><b>Nenhuma peça no formato antigo</b>Encerre o formato antigo para que só valha Face-Coluna-Andar.</div>';
     }
     if (S.conf) {
-      h += '<div class="v344-conf" role="alert">' + (S.conf.n ? 'Converter ' + pl(S.conf.n, 'endereço', 'endereços') + ' (' + pl(S.conf.pecas, 'peça', 'peças') + ', ' + pl(S.conf.kits, 'kit', 'kits') + ')? O endereço das peças muda; cada um pode ser desfeito no histórico.' +
-             (S.conf.ultimo ? ' São os últimos: o formato antigo deixa de ser aceito.' : '') : 'Encerrar o formato antigo? Daqui em diante só vale Face-Coluna-Andar.') +
+      h += '<div class="v344-conf" role="alert">' + (S.conf.n ? 'Converter ' + pl(S.conf.n, 'endereço', 'endereços') + ' (' + pl(S.conf.pecas, 'peça', 'peças') + ', ' + pl(S.conf.kits, 'kit', 'kits') + ')? ' + esc(S.conf.pares) + '. O endereço das peças muda; cada um pode ser desfeito no histórico.' +
+             (S.conf.ultimo ? ' São os últimos: o formato antigo deixa de ser aceito.' : '') : 'Encerrar o formato antigo? Daqui em diante só vale Face-Coluna-Andar. Não tem volta pela tela.') +
         '<div class="v334-lin"><button type="button" class="v334-bt pri" data-v344="converterSim"' + (ocup ? ' disabled' : '') + (S.gravando === 'converter' ? ' data-pcm-enviando="1"' : '') + '>' +
           (S.gravando === 'converter' ? '<span class="v334-gira"></span>Convertendo…' : S.conf.n ? 'Sim, converter' : 'Sim, encerrar') + '</button>' +
         '<button type="button" class="v334-bt" data-v344="converterNao"' + (ocup ? ' disabled' : '') + '>Cancelar</button></div></div>';
     }
     h += '<div class="v334-lin">' + (nTot ?
-        '<button type="button" class="v334-bt pri" data-v344="converter"' + (nPr && !ocup && !S.conf ? '' : ' disabled') + ' title="' + (nPr ? 'Muda o endereço das peças dos prontos' : 'Escolha o novo de pelo menos um') + '">🔁 Converter ' + pl(nPr, 'pronto', 'prontos') + '</button>' :
+        '<button type="button" class="v334-bt pri" data-v344="converter"' + (nPr && !ocup && !S.conf && !pendentes().length ? '' : ' disabled') + ' title="' + (nPr ? 'Muda o endereço das peças dos prontos' : 'Escolha o novo de pelo menos um') + '">🔁 Converter ' + pl(nPr, 'pronto', 'prontos') + '</button>' :
         '<button type="button" class="v334-bt pri" data-v344="converter"' + (ocup || S.conf ? ' disabled' : '') + '>Encerrar o formato antigo</button>') +
       '<button type="button" class="v334-bt" data-v344="fechar">Fechar</button></div>';
     h += historico();
@@ -111566,8 +111572,10 @@ html.v337-on .cros-omie-topo [data-cros-o="filtro"][data-f="fornecedor"]{display
   function pedirConverter() {
     if (!S.d || S.gravando) return;
     var pr = linhas().filter(function (l) { return l.sit === 'pronto'; }), t = S.d.total || {};
+    if (pendentes().length) { S.msg = { erro: true, txt: 'Termine a escolha de ' + pendentes().join(', ') + ' (face, coluna e andar) antes de converter.' }; return pintar(); }
     if (N(t.antigos) && !pr.length) { S.msg = { erro: true, txt: 'Nenhum endereço pronto: escolha o novo de pelo menos um.' }; return pintar(); }
     S.conf = { imp: S.d.impressao, n: pr.length, ultimo: !!pr.length && pr.length === N(t.antigos),
+               pares: pr.slice(0, 8).map(function (l) { return l.antigo + ' → ' + l.novo; }).join(' · ') + (pr.length > 8 ? ' · +' + (pr.length - 8) : ''),
                pecas: pr.reduce(function (s, l) { return s + N(l.pecas); }, 0), kits: pr.reduce(function (s, l) { return s + N(l.kits); }, 0) };
     S.msg = null; pintar();
   }
