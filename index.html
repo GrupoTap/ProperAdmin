@@ -5463,9 +5463,16 @@ v50 — Resiliência de rede: retry/backoff em gsGet e syncToGS
   alm_faces, alm_estoque_lista, alm_endereco_importar (so a previa, gravar = nao), alm_etiqueta_marcar. Linha pre-existente alterada: UMA,
   no detalhe da peca do bloco V334 (declarada nele). Chave de volta: localStorage pcm_v343 = off. Mais o <title>, o app-build, as reservas
   do carimbo e este comentario.
+  PCM V344 — 10/11/2026 — ALMOXARIFADO > ESTOQUE > CONVERTER ENDERECOS: O ANTIGO (B-04-2) VIRA FACE-COLUNA-ANDAR (ProperCare-backlog#138,
+  parte 2), sobre o V343 no ar. SQL 129_ALM_CONVERTER roda ANTES. Botao novo "Converter enderecos" no Estoque (so enquanto o formato antigo
+  vale): cada endereco antigo em uso com as pecas/kits, o novo escolhido nas listas face > coluna > andar (grava o rascunho na hora), a
+  situacao que o banco da (pronto, sem novo, o motivo de nao servir), o atalho da estante inteira (andar = a prateleira antiga), a
+  confirmacao no lugar e o historico com Desfazer. Quando o ultimo sai, o formato antigo deixa de ser aceito (no banco). Rpc novas:
+  alm_conversao, alm_conversao_salvar, alm_conversao_gravar, alm_conversao_desfazer. Linhas pre-existentes alteradas: nenhuma. Sem GAS.
+  Chave de volta: localStorage pcm_v344 = off. Mais o <title>, o app-build, as reservas do carimbo e este comentario.
 -->
-<title>ProperCare Manager · Gestão PGP v4.03 (PCM V343)</title>
-<meta name="app-build" content="PCM_V343" data-date="2026-11-09">
+<title>ProperCare Manager · Gestão PGP v4.03 (PCM V344)</title>
+<meta name="app-build" content="PCM_V344" data-date="2026-11-10">
 <link rel="icon" type="image/jpeg" href="data:image/jpeg;base64,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">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -7115,7 +7122,7 @@ html.m1-on .m1-nav{display:flex;flex-direction:column;flex:1;min-height:0;paddin
        operacao/planejamento/campo/documentos/cadastros/admin). -->
   <div class="nav-brand">
     <span class="nav-brand-mark">PCM</span>
-    <span class="nav-brand-sub" data-carimbo="v4.03 · {v}">v4.03 · V343</span>
+    <span class="nav-brand-sub" data-carimbo="v4.03 · {v}">v4.03 · V344</span>
     <button type="button" class="nav-rail-btn" id="navRailBtn" onclick="_v179NavRailToggle()"
             title="Recolher o menu" aria-label="Recolher o menu" aria-expanded="true">
       <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path class="nav-rail-ico-in" d="M10 3.5L5.5 8 10 12.5"/><path class="nav-rail-ico-out" d="M6 3.5L10.5 8 6 12.5"/></svg>
@@ -19209,7 +19216,7 @@ function renderConfigStats(){
     <div class="card">
       <div style="font-size:13px;font-weight:600;margin-bottom:4px">Sobre o sistema</div>
       <div style="font-size:12px;color:var(--text2);line-height:1.8">
-        <strong>Catálogo Administrativo v3.43 · <span data-carimbo="PCM {v}">PCM V343</span></strong> — Proper Compressores<br>
+        <strong>Catálogo Administrativo v3.43 · <span data-carimbo="PCM {v}">PCM V344</span></strong> — Proper Compressores<br>
         Catálogo de modelos · Peças com similares · Fotos · Subsistemas nomeados · Máquinas PGP com dados completos de cliente<br>
         Detecção de duplicados em modelos e máquinas · Google Sheets como backend
       </div>
@@ -111228,6 +111235,398 @@ html.v337-on .cros-omie-topo [data-cros-o="filtro"][data-f="fornecedor"]{display
 })();
 </script>
 <!-- ████ FIM PCM V343 ████ -->
+
+<!-- ████ INICIO PCM V344 · 📦 ESTOQUE › 🔁 CONVERTER ENDEREÇOS ANTIGOS (ProperCare-backlog#138, parte 2) ████ -->
+<style id="v344-css">
+/* PCM V344 · 📦 Estoque › 🔁 Converter endereços */
+.v344-res{font-size:13px;color:#344054;margin:0 0 8px}
+.v344-res b{font-weight:700}
+.v344-cx{border:1px solid #EAECF0;border-radius:10px;padding:8px 10px;margin:0 0 8px;background:#FCFCFD}
+.v344-cx h4{margin:0 0 6px;font-size:13px;color:#344054}
+.v344-ex{display:block;font-size:11.5px;color:#667085;margin-top:2px;max-width:260px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.v344-sit{font-size:12.5px}
+.v344-sit.ok{color:#05603A}
+.v344-sit.pr{color:#912018}
+.v344-sit.sn{color:#667085}
+.v344-chips{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 8px}
+.v344-chips button{border:1px solid #D0D5DD;background:#fff;border-radius:999px;padding:0 12px;min-height:30px;font:600 12.5px var(--font-sans,Inter,system-ui,sans-serif);color:#344054;cursor:pointer;transition:background-color .15s}
+.v344-chips button:hover,.v344-chips button:focus-visible{background:#F2F4F7;outline:none}
+.v344-chips button[aria-pressed="true"]{background:#1D2939;color:#fff;border-color:#1D2939}
+.v344-conf{border:1px solid #FEC84B;background:#FFFAEB;border-radius:10px;padding:8px 10px;margin:8px 0;font-size:13px;color:#7A2E0E}
+.v344-hist summary{cursor:pointer;font-size:13px;font-weight:600;color:#344054;padding:4px 0}
+.v344-hist td{font-size:12.5px}
+@media (max-width:820px){.v344-chips button{min-height:44px}.v344-ex{max-width:180px}}
+</style>
+<script>
+/* ═══════════════════════════════════════════════════════════════════════════════════════════════════════════════
+   PCM V344 — 10/11/2026 — ProperCare-backlog#138, parte 2 (🔁 Converter os endereços antigos). Sobre o V343 no ar. SQL
+   129_ALM_CONVERTER roda ANTES. Sem GAS. Desenho: rascunho aprovado na issue em 10/11 (de-para POR ENDEREÇO; o formato antigo
+   deixa de ser aceito quando o último sai). Prefixo V344 / v344- / data-v344. Nenhuma tela, função, rota ou endereço (#…)
+   existente mudou; nenhuma linha pré-existente alterada (o bloco só ACRESCENTA o botão e a caixa no 📦 Estoque).
+   · 📦 Estoque ganha o botão 🔁 Converter endereços (com o nº de endereços antigos em uso), só enquanto o formato antigo é aceito.
+     Painel no lugar: cada endereço antigo em uso (B-04-2) com as peças/kits e 3 exemplos; o novo é ESCOLHIDO nas listas face ›
+     coluna › andar (só faces ativas) e grava o rascunho na hora; a situação vem do banco (pronto · sem novo · o motivo de não servir).
+     Atalho "estante inteira": escolhe a estante antiga (B-04), a face e a coluna — o andar = a prateleira antiga; o que já tem novo
+     fica, a menos que marque "trocar o que já tem".
+     🔁 Converter N prontos: confirmação no lugar → o banco confere a impressão digital da prévia (mudou ⇒ recusa e nada grava),
+     muda peças e kits, desativa o antigo e guarda o histórico. Quando o último sai, o formato antigo deixa de ser aceito. Sem nada a
+     converter, o mesmo botão vira "Encerrar o formato antigo". Histórico com ↩ Desfazer (confirmação no lugar).
+   Chamadas: abrir o painel = 2 em paralelo (alm_conversao, alm_faces); ao abrir o 📦 Estoque, 1 por carga da página (alm_conversao,
+   para o botão: o nº de antigos e se o formato antigo ainda vale); escolher o novo = 2 (alm_conversao_salvar, alm_conversao);
+   converter/desfazer = 2 (+ a lista do 📦 Estoque relida).
+   Quem vê = quem vê o 📦 Estoque (o banco decide: _alm_pode). Chave de volta: localStorage pcm_v344 = off.
+   ═══════════════════════════════════════════════════════════════════════════════════════════════════════════════ */
+(function () {
+  'use strict';
+  if (window.V344) return;
+  var V344 = window.V344 = { versao: 'V344 · 10/11/2026' };
+  var S = { aberto: false, d: null, fd: null, lendo: false, ger: 0, erro: '', msg: null, filtro: 'todos', conf: null, desf: null,
+            gravando: '', esc: {}, est: { antigo: '', face: '', col: '', sob: false }, info: null, infoLendo: false, segurando: false, pend: false };
+  V344.S = S;
+  function off() { try { return localStorage.getItem('pcm_v344') === 'off'; } catch (e) { return false; } }
+  function ligado() { try { return !off() && !!(window.V334 && V334.ligado && V334.ligado() && V334.pode && V334.pode()); } catch (e) { return false; } }
+  V344.ligado = ligado;
+  function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+  function T(x) { return String(x == null ? '' : x).trim(); }
+  function N(x) { var n = Number(x); return isFinite(n) ? n : 0; }
+  function cssEsc(s) { try { return CSS.escape(s); } catch (e) { return String(s).replace(/["\\]/g, '\\$&'); } }
+  function pl(n, um, varios) { return n + ' ' + (n === 1 ? um : varios); }
+  async function rpc(fn, p, escrita) { return _v200Rpc(fn, { p: p || {} }, escrita); }
+  function msgErro(e, escrita) {
+    var c = e && e.v200;
+    if (c === 'sem_sql') { try { console.warn('[V344] falta uma função no banco:', e && e.message); } catch (x) {} return 'Tela indisponível — avise o administrador.'; }
+    if (c === 'acesso') return 'A conversão é do almoxarifado, do administrador ou de quem tem o acesso extra "PCM – Almoxarifado".';
+    if (c === 'desligado') return 'O PCM está em modo só leitura (quadro desligado) — nada foi gravado.';
+    if (c === 'rede') return escrita ? 'Sem conexão — a alteração NÃO foi gravada. Tente de novo.' : 'Sem conexão — nada foi lido. Tente de novo.';
+    var m = String((e && e.message) || '').replace(/^NÃO foi gravada:\s*/, '').replace(/^(Converter|Estoque|Faces):\s*/, '');
+    return m || 'Não deu certo. Tente de novo; se continuar, avise o administrador.';
+  }
+
+  // ═══ 1 · O LUGAR (o botão no cabeçalho do 📦 Estoque e a caixa do painel) ═══════════════════════════════════════
+  function mostrarBotao() {
+    if (S.aberto) return true;
+    var i = S.info; if (!i) return false;
+    return i.formato_antigo === 'aceito';
+  }
+  function garantir() {
+    var v = document.getElementById('viewV334Estoque'); if (!v) return;
+    var bt = document.getElementById('v344Bt'), cx = document.getElementById('v344Conv');
+    if (!ligado()) { if (bt) bt.style.display = 'none'; if (cx) cx.style.display = 'none'; return; }
+    // só com o 📦 Estoque À VISTA (abrir o PCM não paga esta leitura)
+    if (!S.info && !S.infoLendo && typeof _v200Rpc === 'function' && v.style.display !== 'none' && v.offsetParent !== null) lerInfo();
+    var ancora = document.getElementById('v343Bt') || document.getElementById('v334BtImp');
+    if (!bt && ancora && ancora.parentNode) {
+      bt = document.createElement('button'); bt.type = 'button'; bt.className = 'v334-bt'; bt.id = 'v344Bt';
+      bt.setAttribute('data-v344', 'abrir'); bt.setAttribute('aria-expanded', 'false');
+      ancora.parentNode.insertBefore(bt, ancora.nextSibling);
+    }
+    if (bt) {
+      var d = mostrarBotao() ? '' : 'none'; if (bt.style.display !== d) bt.style.display = d;
+      var n = S.info ? N(S.info.antigos) : 0, txt = '🔁 Converter endereços' + (n ? ' (' + n + ')' : '');
+      if (bt.textContent !== txt) bt.textContent = txt;
+      bt.setAttribute('aria-expanded', String(!!S.aberto));
+    }
+    var ref = document.getElementById('v343Etq') || document.getElementById('v334Imp');
+    if (!cx && ref && ref.parentNode) { cx = document.createElement('div'); cx.id = 'v344Conv'; ref.parentNode.insertBefore(cx, ref); }
+    if (cx) cx.style.display = '';
+  }
+  V344.garantir = garantir;
+  // o botão: o nº de antigos e se o formato antigo ainda vale (1 leitura por carga da página; o painel relê sempre que abre)
+  function lerInfo() {
+    S.infoLendo = true;
+    return rpc('alm_conversao', {}, false).then(function (d) { S.infoLendo = false; guardarInfo(d); garantir(); },
+      function () { S.infoLendo = false; S.info = { formato_antigo: 'desconhecido', antigos: 0 }; garantir(); });
+  }
+  function guardarInfo(d) { d = d || {}; S.info = { formato_antigo: d.formato_antigo || 'desconhecido', antigos: N(d.total && d.total.antigos) }; }
+
+  // ═══ 2 · OS DADOS ═══════════════════════════════════════════════════════════════════════════════════════════════
+  function carregar() {
+    if (typeof _v200Rpc !== 'function') { S.erro = 'Tela indisponível — avise o administrador.'; pintar(); return Promise.resolve(); }
+    var g = ++S.ger; S.lendo = true; S.erro = ''; pintar();
+    return Promise.all([rpc('alm_conversao', {}, false), rpc('alm_faces', {}, false)]).then(function (r) {
+      if (g !== S.ger) return;
+      S.lendo = false; S.d = r[0] || {}; S.fd = r[1] || { faces: [] }; guardarInfo(S.d);
+      S.esc = {};   // as escolhas pela metade (só a face) são da pintura anterior; o que vale é o rascunho do banco
+      if (S.conf && S.conf.imp !== S.d.impressao) S.conf = null;   // a prévia mudou: a confirmação pede de novo
+      pintar(); garantir();
+    }, function (e) { if (g !== S.ger) return; S.lendo = false; S.erro = msgErro(e, false); pintar(); });
+  }
+  function reler() {   // a prévia sozinha (depois de gravar o rascunho)
+    var g = ++S.ger;
+    return rpc('alm_conversao', {}, false).then(function (d) {
+      if (g !== S.ger) return; S.d = d || {}; guardarInfo(S.d);
+      if (S.conf && S.conf.imp !== S.d.impressao) S.conf = null;
+      pintar(); garantir();
+    }, function (e) { if (g !== S.ger) return; S.msg = { erro: true, txt: msgErro(e, false) }; pintar(); });
+  }
+  function faces() { return ((S.fd && S.fd.faces) || []).filter(function (f) { return f.ativo; }); }
+  function acharFace(n) { return faces().find(function (f) { return String(f.face) === String(n); }) || null; }
+  function colsDe(f) { var c = [], i; for (i = 1; i <= (Number(f.colunas) || 1); i++) c.push(String.fromCharCode(64 + i)); return c; }
+  function andsDe(f) { var a = [], i; for (i = 1; i <= Number(f.andares); i++) a.push(String(i)); return a; }
+  function rotFace(f) { return 'Face ' + f.face + (f.area_kits ? ' 🧰' : '') + (f.prateleira != null && f.prateleira !== '' ? ' · prat. ' + f.prateleira : ''); }
+  function linhas() { return (S.d && S.d.antigos) || []; }
+  V344.linhas = linhas;
+  // a escolha de uma linha: a pela metade (S.esc) ou a do rascunho do banco
+  function escolha(l) {
+    if (S.esc[l.antigo]) return S.esc[l.antigo];
+    var m = /^([1-9][0-9]?)-([A-D])-([1-9][0-9]?)$/.exec(T(l.novo));
+    return m ? { face: m[1], col: m[2], and: m[3] } : { face: '', col: '', and: '' };
+  }
+  function estantes() { var v = {}, out = []; linhas().forEach(function (l) { var e = l.antigo.split('-').slice(0, 2).join('-'); if (!v[e]) { v[e] = 1; out.push(e); } }); return out; }
+
+  // ═══ 3 · GRAVAR ═══════════════════════════════════════════════════════════════════════════════════════════════════
+  async function salvarNovo(antigo, novo) {
+    if (S.gravando) return;
+    S.gravando = 'linha:' + antigo; S.msg = null; pintar();
+    try {
+      await rpc('alm_conversao_salvar', { itens: [{ antigo: antigo, novo: novo }] }, true);
+      S.gravando = ''; delete S.esc[antigo];
+      await reler();
+    } catch (e) { S.gravando = ''; S.msg = { erro: true, txt: antigo + ': ' + msgErro(e, true) }; pintar(); }
+  }
+  async function preencherEstante() {
+    var es = S.est;
+    if (S.gravando) return;
+    if (!es.antigo) { S.msg = { erro: true, txt: 'Escolha a estante antiga.' }; return pintar(); }
+    if (!acharFace(es.face)) { S.msg = { erro: true, txt: 'Escolha a face.' }; return pintar(); }
+    if (!es.col) { S.msg = { erro: true, txt: 'Escolha a coluna.' }; return pintar(); }
+    S.gravando = 'estante'; S.msg = null; pintar();
+    try {
+      var r = await rpc('alm_conversao_salvar', { estante: { antigo: es.antigo, face: Number(es.face), coluna: es.col, sobrescrever: !!es.sob } }, true) || {};
+      S.gravando = ''; S.esc = {};
+      S.msg = { txt: '✅ ' + es.antigo + ': ' + pl(N(r.preenchidos), 'endereço preenchido', 'endereços preenchidos') +
+                     (N(r.ja_tinham) ? ' · ' + pl(N(r.ja_tinham), 'já tinha o novo (ficou)', 'já tinham o novo (ficaram)') : '') +
+                     (N(r.sem_andar) ? ' · ' + pl(N(r.sem_andar), 'na prateleira 0 fica para escolher', 'na prateleira 0 ficam para escolher') : '') + '. Confira a situação de cada um.' };
+      await reler();
+    } catch (e) { S.gravando = ''; S.msg = { erro: true, txt: msgErro(e, true) }; pintar(); }
+  }
+  async function converter() {
+    if (S.gravando || !S.conf || !S.d) return;
+    S.gravando = 'converter'; S.msg = null; pintar();
+    try {
+      var r = await rpc('alm_conversao_gravar', { impressao: S.conf.imp }, true) || {};
+      S.gravando = ''; S.conf = null;
+      S.msg = { txt: r.encerrou && !N(r.convertidos) ? '✅ Formato antigo encerrado: daqui em diante só vale Face-Coluna-Andar.' :
+        '✅ ' + pl(N(r.convertidos), 'endereço convertido', 'endereços convertidos') + ' (' + pl(N(r.pecas), 'peça', 'peças') + ', ' + pl(N(r.kits), 'kit', 'kits') + ').' +
+        (r.encerrou ? ' Era o último: o formato antigo deixou de ser aceito.' : ' ' + (N(r.restam) === 1 ? 'Falta 1.' : 'Faltam ' + N(r.restam) + '.')) };
+      await carregar(); depoisDeMudar();
+    } catch (e) { S.gravando = ''; S.conf = null; S.msg = { erro: true, txt: msgErro(e, true) }; pintar(); reler(); }
+  }
+  async function desfazer(id) {
+    if (S.gravando) return;
+    S.gravando = 'desfazer'; S.msg = null; pintar();
+    try {
+      var r = await rpc('alm_conversao_desfazer', { id: id }, true) || {};
+      S.gravando = ''; S.desf = null;
+      S.msg = { txt: '↩ ' + r.antigo + ' → ' + r.novo + ' desfeita: ' + pl(N(r.pecas) + N(r.kits), 'voltou', 'voltaram') + ' para ' + r.antigo +
+                     (N(r.ficaram) ? '; ' + pl(N(r.ficaram), 'já tinha mudado de lugar e ficou', 'já tinham mudado de lugar e ficaram') : '') + '.' };
+      await carregar(); depoisDeMudar();
+    } catch (e) { S.gravando = ''; S.desf = null; S.msg = { erro: true, txt: msgErro(e, true) }; pintar(); }
+  }
+  // a lista do 📦 Estoque (e as faces, se abertas) mostram o endereço novo
+  function depoisDeMudar() {
+    try { if (window.V334 && V334.carregar) V334.carregar(); if (window.V334 && V334.S && V334.S.est && V334.S.est.d && V334.carregarEst) V334.carregarEst(); } catch (e) {}
+  }
+
+  // ═══ 4 · A PINTURA ═══════════════════════════════════════════════════════════════════════════════════════════════
+  function o(v, sel, rot) { return '<option value="' + esc(v) + '"' + (String(v) === String(sel) ? ' selected' : '') + '>' + esc(rot) + '</option>'; }
+  function listas(l, ocup) {
+    var s = escolha(l), f = acharFace(s.face), a = esc(l.antigo), dis = ocup ? ' disabled' : '';
+    var cols = f ? colsDe(f) : [], ands = f ? andsDe(f) : [];
+    return '<div class="v341-ends" role="group" aria-label="Endereço novo de ' + a + '">' +
+      '<select class="v334-sel" data-v344-s="face" data-a="' + a + '" aria-label="Face"' + dis + '>' + o('', s.face, 'Face…') +
+        (s.face && !f ? o(s.face, s.face, 'Face ' + s.face + ' (fora do cadastro)') : '') + faces().map(function (x) { return o(x.face, s.face, rotFace(x)); }).join('') + '</select>' +
+      '<select class="v334-sel" data-v344-s="col" data-a="' + a + '" aria-label="Coluna"' + (f && !ocup ? '' : ' disabled') + '>' + o('', s.col, 'Coluna…') +
+        (s.col && cols.indexOf(s.col) < 0 ? o(s.col, s.col, 'Coluna ' + s.col) : '') + cols.map(function (c) { return o(c, s.col, 'Coluna ' + c); }).join('') + '</select>' +
+      '<select class="v334-sel" data-v344-s="and" data-a="' + a + '" aria-label="Andar (1 = o do piso)" title="1 = o do piso"' + (f && !ocup ? '' : ' disabled') + '>' + o('', s.and, 'Andar…') +
+        (s.and && ands.indexOf(s.and) < 0 ? o(s.and, s.and, s.and + 'º andar') : '') + ands.map(function (x) { return o(x, s.and, x + 'º andar'); }).join('') + '</select></div>';
+  }
+  function sitHtml(l) {
+    if (S.gravando === 'linha:' + l.antigo) return '<span class="v344-sit sn"><span class="v334-gira"></span>Gravando…</span>';
+    if (l.sit === 'pronto') return '<span class="v344-sit ok">✅ Pronto</span>';
+    if (l.sit === 'problema') return '<span class="v344-sit pr">⚠ ' + esc(l.motivo || 'não serve') + '</span>';
+    return '<span class="v344-sit sn">Escolha o novo</span>';
+  }
+  function exHtml(l) {
+    var ex = (l.exemplos || []).map(function (x) { return T(x.codigo) + (T(x.descricao) ? ' ' + T(x.descricao) : ''); });
+    (l.oses || []).forEach(function (x) { ex.push('kit da OS ' + x); });
+    var resto = N(l.pecas) + N(l.kits) - ex.length;
+    if (!ex.length) return '';
+    var t = ex.join(' · ') + (resto > 0 ? ' · +' + resto : '');
+    return '<span class="v344-ex" title="' + esc(t) + '">' + esc(t) + '</span>';
+  }
+  function tabela() {
+    var ls = linhas().filter(function (l) { return S.filtro === 'todos' || l.sit === S.filtro; }), ocup = !!S.gravando;
+    if (!ls.length) return '<div class="v334-vazio" style="padding:14px"><b>Nada neste filtro</b>Escolha outro filtro acima.</div>';
+    return '<div class="v334-pv" style="max-height:420px"><table><thead><tr><th>Antigo</th><th>Peças</th><th>Novo (face › coluna › andar)</th><th>Situação</th></tr></thead><tbody>' +
+      ls.map(function (l) {
+        return '<tr data-v344-l="' + esc(l.antigo) + '"><td><span class="v334-end">' + esc(l.antigo) + '</span>' + exHtml(l) + '</td>' +
+          '<td>' + N(l.pecas) + (N(l.kits) ? ' + ' + pl(N(l.kits), 'kit', 'kits') : '') + '</td><td>' + listas(l, ocup) + '</td><td>' + sitHtml(l) + '</td></tr>';
+      }).join('') + '</tbody></table></div>';
+  }
+  function atalho() {
+    var es = S.est, f = acharFace(es.face), ests = estantes(), ocup = !!S.gravando;
+    if (es.antigo && ests.indexOf(es.antigo) < 0) es.antigo = '';
+    if (es.face && !f) { es.face = ''; es.col = ''; }
+    if (es.col && f && colsDe(f).indexOf(es.col) < 0) es.col = '';
+    return '<details class="v344-cx"' + (S.estAberto ? ' open' : '') + ' data-v344-det="est"><summary><b>Estante inteira</b> — o andar = a prateleira antiga</summary>' +
+      '<div class="v341-ends" role="group" aria-label="Estante inteira" style="margin-top:6px">' +
+      '<select class="v334-sel" data-v344-e="antigo" aria-label="Estante antiga">' + o('', es.antigo, 'Estante antiga…') + ests.map(function (e) { return o(e, es.antigo, e); }).join('') + '</select>' +
+      '<span style="font-size:13px">→</span>' +
+      '<select class="v334-sel" data-v344-e="face" aria-label="Face">' + o('', es.face, 'Face…') + faces().map(function (x) { return o(x.face, es.face, rotFace(x)); }).join('') + '</select>' +
+      '<select class="v334-sel" data-v344-e="col" aria-label="Coluna"' + (f ? '' : ' disabled') + '>' + o('', es.col, 'Coluna…') + (f ? colsDe(f) : []).map(function (c) { return o(c, es.col, 'Coluna ' + c); }).join('') + '</select>' +
+      '<label style="font-size:12.5px;display:inline-flex;gap:6px;align-items:center"><input type="checkbox" data-v344-e="sob"' + (es.sob ? ' checked' : '') + '> trocar o que já tem novo</label>' +
+      '<button type="button" class="v334-bt" data-v344="estante"' + (ocup ? ' disabled' : '') + (S.gravando === 'estante' ? ' data-pcm-enviando="1"' : '') + '>' +
+        (S.gravando === 'estante' ? '<span class="v334-gira"></span>Preenchendo…' : 'Preencher') + '</button></div></details>';
+  }
+  function historico() {
+    var h = (S.d && S.d.historico) || [];
+    if (!h.length) return '';
+    return '<details class="v344-hist"' + (S.histAberto ? ' open' : '') + ' data-v344-det="hist"><summary>Histórico (' + h.length + ')</summary><div class="v334-pv" style="max-height:260px"><table><thead><tr><th>Antigo</th><th>Novo</th><th>Peças</th><th>Quando</th><th></th></tr></thead><tbody>' +
+      h.map(function (x) {
+        var quando = (function () { try { return new Date(x.em).toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo', day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' }); } catch (e) { return ''; } })();
+        var acao = x.desfeito_em ? '<span class="v344-sit sn">desfeita' + (x.desfeito_por ? ' por ' + esc(x.desfeito_por) : '') + '</span>' :
+          S.desf === x.id ? '<button type="button" class="v334-bt" data-v344="desfazerSim" data-id="' + esc(x.id) + '"' + (S.gravando ? ' disabled' : '') + (S.gravando === 'desfazer' ? ' data-pcm-enviando="1"' : '') + '>' +
+              (S.gravando === 'desfazer' ? '<span class="v334-gira"></span>Desfazendo…' : 'Sim, desfazer') + '</button> <button type="button" class="v334-bt" data-v344="desfazerNao">Não</button>' :
+            '<button type="button" class="v334-bt" data-v344="desfazer" data-id="' + esc(x.id) + '"' + (S.gravando ? ' disabled' : '') + ' title="As peças que ainda estão no novo voltam para o antigo">↩ Desfazer</button>';
+        return '<tr><td><span class="v334-end">' + esc(x.antigo) + '</span></td><td><span class="v334-end">' + esc(x.novo) + '</span></td><td>' + N(x.pecas) + (N(x.kits) ? ' + ' + pl(N(x.kits), 'kit', 'kits') : '') + '</td>' +
+          '<td>' + esc(quando) + (x.por ? ' · ' + esc(x.por) : '') + '</td><td>' + acao + '</td></tr>';
+      }).join('') + '</tbody></table></div></details>';
+  }
+  function corpo() {
+    var d = S.d, t = d.total || {}, h = '', ocup = !!S.gravando, nPr = N(t.prontos), nTot = N(t.antigos);
+    if (d.formato_antigo === 'recusado' && !nTot) {
+      return '<div class="v334-vazio" style="padding:14px"><b>✅ Formato antigo encerrado</b>Só vale Face-Coluna-Andar (ex. 2-A-3).</div>' + historico() +
+        '<div class="v334-lin"><button type="button" class="v334-bt" data-v344="fechar">Fechar</button></div>';
+    }
+    if (!faces().length && nTot) {
+      return '<div class="v334-vazio" style="padding:14px"><b>Nenhuma face ainda</b>O endereço novo vem do cadastro de faces.<br><button type="button" class="v334-bt" data-v334="faces">🗄 Cadastrar faces</button></div>' +
+        '<div class="v334-lin"><button type="button" class="v334-bt" data-v344="fechar">Fechar</button></div>';
+    }
+    if (nTot) {
+      h += '<div class="v344-res" role="status"><b>' + pl(nTot, 'endereço antigo', 'endereços antigos') + '</b> com ' + pl(N(t.pecas), 'peça', 'peças') + (N(t.kits) ? ' e ' + pl(N(t.kits), 'kit', 'kits') : '') +
+        ' · ' + nPr + (nPr === 1 ? ' pronto' : ' prontos') + ' · ' + N(t.sem_novo) + ' sem novo · ' + N(t.problemas) + ' com problema</div>';
+      h += atalho();
+      h += '<div class="v344-chips" role="group" aria-label="Mostrar">' + [['todos', 'Todos', nTot], ['sem_novo', 'Sem novo', N(t.sem_novo)], ['pronto', 'Prontos', nPr], ['problema', 'Com problema', N(t.problemas)]].map(function (c) {
+        return '<button type="button" data-v344="filtro" data-f="' + c[0] + '" aria-pressed="' + (S.filtro === c[0]) + '">' + c[1] + ' ' + c[2] + '</button>'; }).join('') + '</div>';
+      h += tabela();
+    } else {
+      h += '<div class="v334-vazio" style="padding:14px"><b>Nenhuma peça no formato antigo</b>Encerre o formato antigo para que só valha Face-Coluna-Andar.</div>';
+    }
+    if (S.conf) {
+      h += '<div class="v344-conf" role="alert">' + (S.conf.n ? 'Converter ' + pl(S.conf.n, 'endereço', 'endereços') + ' (' + pl(S.conf.pecas, 'peça', 'peças') + ', ' + pl(S.conf.kits, 'kit', 'kits') + ')? O endereço das peças muda; cada um pode ser desfeito no histórico.' +
+             (S.conf.ultimo ? ' São os últimos: o formato antigo deixa de ser aceito.' : '') : 'Encerrar o formato antigo? Daqui em diante só vale Face-Coluna-Andar.') +
+        '<div class="v334-lin"><button type="button" class="v334-bt pri" data-v344="converterSim"' + (ocup ? ' disabled' : '') + (S.gravando === 'converter' ? ' data-pcm-enviando="1"' : '') + '>' +
+          (S.gravando === 'converter' ? '<span class="v334-gira"></span>Convertendo…' : S.conf.n ? 'Sim, converter' : 'Sim, encerrar') + '</button>' +
+        '<button type="button" class="v334-bt" data-v344="converterNao"' + (ocup ? ' disabled' : '') + '>Cancelar</button></div></div>';
+    }
+    h += '<div class="v334-lin">' + (nTot ?
+        '<button type="button" class="v334-bt pri" data-v344="converter"' + (nPr && !ocup && !S.conf ? '' : ' disabled') + ' title="' + (nPr ? 'Muda o endereço das peças dos prontos' : 'Escolha o novo de pelo menos um') + '">🔁 Converter ' + pl(nPr, 'pronto', 'prontos') + '</button>' :
+        '<button type="button" class="v334-bt pri" data-v344="converter"' + (ocup || S.conf ? ' disabled' : '') + '>Encerrar o formato antigo</button>') +
+      '<button type="button" class="v334-bt" data-v344="fechar">Fechar</button></div>';
+    h += historico();
+    return h;
+  }
+  function pintar() {
+    garantir();
+    var el = document.getElementById('v344Conv');
+    if (!el) return;
+    if (S.segurando) { S.pend = true; return; }
+    S.pend = false;
+    var h = '';
+    if (S.aberto && ligado()) {
+      h = '<div class="v334-imp" role="region" aria-label="Converter endereços"><h3>🔁 Converter endereços</h3>';
+      if (S.msg) h += '<div class="v334-aviso ' + (S.msg.erro ? 'erro' : 'ok') + '" role="' + (S.msg.erro ? 'alert' : 'status') + '">' + esc(S.msg.txt) + '</div>';
+      if (S.erro) h += '<div class="v334-aviso erro" role="alert">' + esc(S.erro) + ' <button type="button" class="v334-bt" data-v344="reler">Tentar de novo</button></div>';
+      if (!S.d) h += S.erro ? '' : '<div aria-busy="true"><div class="v334-esq"></div></div>';
+      else h += corpo();
+      h += '</div>';
+    }
+    if (el.__v !== h) {
+      var foco = document.activeElement && el.contains(document.activeElement) ? document.activeElement : null, chave = null;
+      if (foco) {
+        ['data-v344-s', 'data-v344-e', 'data-v344'].some(function (a) { var v = foco.getAttribute(a); if (v != null) { chave = '[' + a + '="' + cssEsc(v) + '"]' +
+            ['data-a', 'data-f', 'data-id'].map(function (b) { var w = foco.getAttribute(b); return w == null ? '' : '[' + b + '="' + cssEsc(w) + '"]'; }).join(''); return true; } return false; });
+      }
+      var pv = el.querySelector('.v334-pv'), rol = pv ? pv.scrollTop : 0;
+      el.innerHTML = h; el.__v = h;
+      var pv2 = el.querySelector('.v334-pv'); if (pv2 && rol) pv2.scrollTop = rol;   // a tabela não volta ao topo a cada escolha
+      if (chave) { var nf = el.querySelector(chave); if (nf) try { nf.focus({ preventScroll: true }); } catch (e) {} }
+    }
+  }
+  V344.pintar = pintar;
+
+  // ═══ 5 · OS GESTOS ═══════════════════════════════════════════════════════════════════════════════════════════════
+  function abrir() {
+    S.aberto = !S.aberto; S.msg = null; S.conf = null; S.desf = null;
+    if (S.aberto) carregar(); else pintar();
+    if (S.aberto) setTimeout(function () { var x = document.getElementById('v344Conv'); if (x) try { x.scrollIntoView({ block: 'nearest' }); } catch (e) {} }, 0);
+  }
+  V344.abrir = abrir;
+  function pedirConverter() {
+    if (!S.d || S.gravando) return;
+    var pr = linhas().filter(function (l) { return l.sit === 'pronto'; }), t = S.d.total || {};
+    if (N(t.antigos) && !pr.length) { S.msg = { erro: true, txt: 'Nenhum endereço pronto: escolha o novo de pelo menos um.' }; return pintar(); }
+    S.conf = { imp: S.d.impressao, n: pr.length, ultimo: !!pr.length && pr.length === N(t.antigos),
+               pecas: pr.reduce(function (s, l) { return s + N(l.pecas); }, 0), kits: pr.reduce(function (s, l) { return s + N(l.kits); }, 0) };
+    S.msg = null; pintar();
+  }
+  function dentro(t) { var v = document.getElementById('viewV334Estoque'); return !!(v && t && v.contains(t)); }
+  document.addEventListener('click', function (ev) {
+    var b = ev.target && ev.target.closest && ev.target.closest('[data-v344]'); if (!b || !dentro(b) || !ligado()) return;
+    var a = b.getAttribute('data-v344'); ev.preventDefault();
+    if (b.disabled) return;
+    if (a === 'abrir') abrir();
+    else if (a === 'fechar') { S.aberto = false; S.conf = null; S.desf = null; pintar(); }
+    else if (a === 'reler') carregar();
+    else if (a === 'filtro') { S.filtro = b.getAttribute('data-f') || 'todos'; pintar(); }
+    else if (a === 'estante') preencherEstante();
+    else if (a === 'converter') pedirConverter();
+    else if (a === 'converterNao') { S.conf = null; pintar(); }
+    else if (a === 'converterSim') converter();
+    else if (a === 'desfazer') { S.desf = Number(b.getAttribute('data-id')); S.msg = null; pintar(); }
+    else if (a === 'desfazerNao') { S.desf = null; pintar(); }
+    else if (a === 'desfazerSim') desfazer(Number(b.getAttribute('data-id')));
+  });
+  document.addEventListener('toggle', function (ev) {
+    var t = ev.target; if (!t || !t.getAttribute || !dentro(t)) return;
+    var k = t.getAttribute('data-v344-det'); if (k === 'est') S.estAberto = t.open; else if (k === 'hist') S.histAberto = t.open;
+  }, true);
+  document.addEventListener('change', function (ev) {
+    var t = ev.target; if (!t || !t.getAttribute || !dentro(t)) return;
+    var k = t.getAttribute('data-v344-s'), e = t.getAttribute('data-v344-e');
+    if (!k && !e) return;
+    S.segurando = false; clearTimeout(S.tSeg);   // o soltar do mouse pode ter ido para a lista aberta do select
+    if (e) { if (e === 'sob') S.est.sob = !!t.checked; else { S.est[e] = t.value; if (e === 'face') S.est.col = ''; } S.msg = null; return pintar(); }
+    var ant = t.getAttribute('data-a'), l = linhas().find(function (x) { return x.antigo === ant; }); if (!l) return;
+    var s = Object.assign({}, escolha(l)); s[k] = t.value;
+    if (k === 'face') { var f = acharFace(s.face); if (!f || colsDe(f).indexOf(s.col) < 0) s.col = f && colsDe(f).length === 1 ? 'A' : ''; if (!f || andsDe(f).indexOf(s.and) < 0) s.and = ''; }
+    S.msg = null;
+    if (!s.face) { delete S.esc[ant]; if (T(l.novo)) return salvarNovo(ant, ''); return pintar(); }   // tirou a face: sai do rascunho
+    if (s.face && s.col && s.and) { S.esc[ant] = s; return salvarNovo(ant, s.face + '-' + s.col + '-' + s.and); }
+    S.esc[ant] = s; pintar();   // pela metade: só na tela até escolher as três
+  });
+  // repintura entre apertar e soltar trocaria o botão e o Chrome não mandaria o clique: segura a pintura até soltar
+  document.addEventListener('pointerdown', function (ev) {
+    if (!(ev.target && ev.target.closest && ev.target.closest('#v344Conv [data-v344],#v344Conv select,#v344Conv summary'))) return;
+    S.segurando = true; clearTimeout(S.tSeg); S.tSeg = setTimeout(soltar, 4000);
+  }, true);
+  var soltar = function () { clearTimeout(S.tSeg); if (!S.segurando) return; S.segurando = false; if (S.pend) setTimeout(pintar, 0); };
+  document.addEventListener('pointerup', soltar, true);
+  document.addEventListener('pointercancel', soltar, true);
+  window.addEventListener('blur', soltar);
+
+  // ═══ 6 · LIGAR (o 📦 Estoque nasce no showView do V334; o botão entra quando a tela existe) ════════════════════════
+  if (off()) return;
+  try {
+    var sv0 = showView;
+    // ⚠ SOBRESCREVE showView
+    showView = function () { var r = sv0.apply(this, arguments); try { garantir(); } catch (e) {} return r; };
+  } catch (e) { try { console.warn('[V344] ligar:', e); } catch (x) {} }
+  [0, 700, 1600, 2800, 6000].forEach(function (ms) { setTimeout(function () { try { garantir(); } catch (e) {} }, ms); });
+})();
+</script>
+<!-- ████ FIM PCM V344 ████ -->
 
 </body>
 </html>
