@@ -111306,7 +111306,8 @@ html.v337-on .cros-omie-topo [data-cros-o="filtro"][data-f="fornecedor"]{display
   function mostrarBotao() {
     if (S.aberto) return true;
     var i = S.info; if (!i) return false;
-    return i.formato_antigo === 'aceito';
+    // (2ª auditoria, B2) com o formato antigo encerrado, o botão fica enquanto houver conversão que ainda dá para desfazer
+    return i.formato_antigo === 'aceito' || (i.formato_antigo === 'recusado' && i.desfaziveis > 0);
   }
   function garantir() {
     var v = document.getElementById('viewV334Estoque'); if (!v) return;
@@ -111322,7 +111323,7 @@ html.v337-on .cros-omie-topo [data-cros-o="filtro"][data-f="fornecedor"]{display
     }
     if (bt) {
       var d = mostrarBotao() ? '' : 'none'; if (bt.style.display !== d) bt.style.display = d;
-      var n = S.info ? N(S.info.antigos) : 0, txt = '🔁 Converter endereços' + (n ? ' (' + n + ')' : '');
+      var n = S.info ? N(S.info.antigos) : 0, txt = S.info && S.info.formato_antigo === 'recusado' ? '🔁 Conversões (histórico)' : '🔁 Converter endereços' + (n ? ' (' + n + ')' : '');
       if (bt.textContent !== txt) bt.textContent = txt;
       bt.setAttribute('aria-expanded', String(!!S.aberto));
     }
@@ -111338,7 +111339,11 @@ html.v337-on .cros-omie-topo [data-cros-o="filtro"][data-f="fornecedor"]{display
       function (e) { S.infoLendo = false; if (e && e.v200 === 'rede') { S.info = null; return; }   // (auditoria A10) sem conexão: tenta de novo ao voltar ao 📦 Estoque
                      S.info = { formato_antigo: 'desconhecido', antigos: 0 }; garantir(); });
   }
-  function guardarInfo(d) { d = d || {}; S.info = { formato_antigo: d.formato_antigo || 'desconhecido', antigos: N(d.total && d.total.antigos) }; }
+  function guardarInfo(d) {
+    d = d || {};
+    S.info = { formato_antigo: d.formato_antigo || 'desconhecido', antigos: N(d.total && d.total.antigos),
+               desfaziveis: (d.historico || []).filter(function (x) { return !x.desfeito_em; }).length };
+  }
 
   // ═══ 2 · OS DADOS ═══════════════════════════════════════════════════════════════════════════════════════════════
   function carregar() {
@@ -111403,6 +111408,7 @@ html.v337-on .cros-omie-topo [data-cros-o="filtro"][data-f="fornecedor"]{display
   }
   async function converter() {
     if (S.gravando || !S.conf || !S.d) return;
+    if (pendentes().length) { S.conf = null; S.msg = { erro: true, txt: 'Termine a escolha de ' + pendentes().join(', ') + ' (face, coluna e andar) antes de converter.' }; return pintar(); }   // (2ª auditoria, B1)
     S.gravando = 'converter'; S.msg = null; pintar();
     try {
       var r = await rpc('alm_conversao_gravar', { impressao: S.conf.imp }, true) || {};
@@ -111607,6 +111613,7 @@ html.v337-on .cros-omie-topo [data-cros-o="filtro"][data-f="fornecedor"]{display
     S.segurando = false; clearTimeout(S.tSeg);   // o soltar do mouse pode ter ido para a lista aberta do select
     if (e) { if (e === 'sob') S.est.sob = !!t.checked; else { S.est[e] = t.value; if (e === 'face') S.est.col = ''; } S.msg = null; return pintar(); }
     var ant = t.getAttribute('data-a'), l = linhas().find(function (x) { return x.antigo === ant; }); if (!l) return;
+    S.conf = null;   // (2ª auditoria, B1) mexeu numa linha: a confirmação aberta perde a validade
     var s = Object.assign({}, escolha(l)); s[k] = t.value;
     if (k === 'face') { var f = acharFace(s.face); if (!f || colsDe(f).indexOf(s.col) < 0) s.col = f && colsDe(f).length === 1 ? 'A' : ''; if (!f || andsDe(f).indexOf(s.and) < 0) s.and = ''; }
     S.msg = null;
