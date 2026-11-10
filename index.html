@@ -5480,7 +5480,7 @@ v50 — Resiliência de rede: retry/backoff em gsGet e syncToGS
   PCM V346 — 10/11/2026 — ETIQUETAS DE PECA NO MESMO MOLDE DA ETIQUETA DE MAQUINA (ProperCare-backlog#161), sobre o V345 no ar.
   Sem SQL, sem GAS. As tres CSS_ETQ (blocos V323 Separacao, V325 Recebimento, V343 Estoque) desenhavam a etiqueta nos 100 mm
   inteiros do papel; a de maquina (V220) usa folha 100x40 com a area escrita de 85 mm centralizada. Agora: .e com 85 mm e
-  margin auto, body com 100 mm, QR 31->28 mm e codigo 7,2->6,4 mm para caber. Linhas pre-existentes alteradas: as tres CSS_ETQ.
+  margin auto, body com 100 mm, QR 31->28 mm, codigo 7,2->6,4 mm e auto-ajuste (FIT346) que encolhe codigo/descricao que nao couber. Linhas pre-existentes alteradas: as tres CSS_ETQ e as tres imprimir().
   Mais o <title>, o app-build, as reservas do carimbo e este comentario.
 -->
 <title>ProperCare Manager · Gestão PGP v4.03 (PCM V346)</title>
@@ -102935,7 +102935,9 @@ html:not(.v311-off):has(>body.v292-alto #viewComercial.v292-on:not([style*="disp
   });
 
   // ═══ 3 · IMPRESSÃO (A4 e etiquetas 100×40 — a folha é o papel do driver) ══════════════════════════════
+  var FIT346 = '<script>(function(){var a=document.querySelectorAll(".c,.d");for(var i=0;i<a.length;i++){var e=a[i],f=parseFloat(getComputedStyle(e).fontSize),g=0;while((e.scrollWidth>e.clientWidth+1||e.scrollHeight>e.clientHeight+1)&&f>7&&g++<40){f-=0.5;e.style.fontSize=f+"px";}}})();<\/script>';   // PCM V346: encolhe o código/descrição que não coube nos 85 mm
   function imprimir(html) {
+    html = String(html).replace('</body>', FIT346 + '</body>');   // PCM V346
     V323.ultimaImpressao = html;
     var f = document.getElementById('v323Print');
     if (!f) { f = document.createElement('iframe'); f.id = 'v323Print'; f.setAttribute('aria-hidden', 'true'); f.style.cssText = 'position:fixed;right:0;bottom:0;width:0;height:0;border:0;visibility:hidden'; document.body.appendChild(f); }
@@ -104372,7 +104374,9 @@ html:not(.v311-off):has(>body.v292-alto #viewComercial.v292-on:not([style*="disp
   }
 
   // ═══ 3 · ETIQUETAS (100×40, a régua da 🧺 Separação) ═══════════════════════════════════════════════════
+  var FIT346 = '<script>(function(){var a=document.querySelectorAll(".c,.d");for(var i=0;i<a.length;i++){var e=a[i],f=parseFloat(getComputedStyle(e).fontSize),g=0;while((e.scrollWidth>e.clientWidth+1||e.scrollHeight>e.clientHeight+1)&&f>7&&g++<40){f-=0.5;e.style.fontSize=f+"px";}}})();<\/script>';   // PCM V346: encolhe o código/descrição que não coube nos 85 mm
   function imprimir(html) {
+    html = String(html).replace('</body>', FIT346 + '</body>');   // PCM V346
     V325.ultimaImpressao = html;
     var f = document.getElementById('v325Print');
     if (!f) { f = document.createElement('iframe'); f.id = 'v325Print'; f.setAttribute('aria-hidden', 'true'); f.style.cssText = 'position:fixed;right:0;bottom:0;width:0;height:0;border:0;visibility:hidden'; document.body.appendChild(f); }
@@ -111082,7 +111086,9 @@ html.v337-on .cros-omie-topo [data-cros-o="filtro"][data-f="fornecedor"]{display
   }
 
   // ═══ 4 · A ETIQUETA (a MESMA da 🧺 Separação: 100×40, a folha é o papel do driver) ═════════════════════════════
+  var FIT346 = '<script>(function(){var a=document.querySelectorAll(".c,.d");for(var i=0;i<a.length;i++){var e=a[i],f=parseFloat(getComputedStyle(e).fontSize),g=0;while((e.scrollWidth>e.clientWidth+1||e.scrollHeight>e.clientHeight+1)&&f>7&&g++<40){f-=0.5;e.style.fontSize=f+"px";}}})();<\/script>';   // PCM V346: encolhe o código/descrição que não coube nos 85 mm
   function imprimir(html) {
+    html = String(html).replace('</body>', FIT346 + '</body>');   // PCM V346
     V343.ultimaImpressao = html; V343.nImp = (V343.nImp || 0) + 1;
     var f = document.getElementById('v343Print');
     if (!f) { f = document.createElement('iframe'); f.id = 'v343Print'; f.setAttribute('aria-hidden', 'true'); f.style.cssText = 'position:fixed;right:0;bottom:0;width:0;height:0;border:0;visibility:hidden'; document.body.appendChild(f); }
