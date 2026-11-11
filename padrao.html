@@ -1,0 +1,1899 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="app-build" content="PADRAO_V1">
+<meta name="robots" content="noindex">
+<title>Padrão de Telas ProperCare (PADRAO V1)</title>
+<!--
+  GERADO por ferramentas/padrao_telas.py do ProperCare-backlog (#128). NÃO EDITE À MÃO: o portão
+  confere este arquivo contra o gerador. Mudou um bloco, a varredura ou a §5.2? Regere e abra a PR.
+-->
+<style>
+:root{--fundo:#f6f7f9;--cartao:#fff;--texto:#18181b;--mudo:#5b6170;--linha:#e3e6eb;--acento:#f07725;
+  --ok:#15803d;--av:#b45309;--olho:#475569;--raio:12px}
+*{box-sizing:border-box}
+body{margin:0;background:var(--fundo);color:var(--texto);font:14px/1.5 Inter,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+header.topo{background:var(--cartao);border-bottom:1px solid var(--linha);padding:18px 22px}
+header.topo h1{margin:0 0 4px;font-size:20px}
+header.topo p{margin:4px 0;color:var(--mudo);max-width:980px}
+nav.ancoras{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+nav.ancoras a{color:var(--texto);text-decoration:none;border:1px solid var(--linha);border-radius:999px;padding:4px 12px;background:var(--fundo)}
+main{padding:8px 22px 40px;max-width:1280px}
+.sec{margin-top:26px}
+.sec h2{font-size:17px;margin:0 0 6px}
+.lead{color:var(--mudo);margin:0 0 12px;max-width:980px}
+.resumo{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+.resumo span{border-radius:10px;padding:6px 12px;background:var(--fundo);border:1px solid var(--linha)}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:14px}
+.card{background:var(--cartao);border:1px solid var(--linha);border-radius:var(--raio);padding:14px 16px;min-width:0}
+.card h3{margin:0 0 8px;font-size:15px}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px}
+.selo{display:inline-block;font-size:11.5px;font-weight:600;border-radius:999px;padding:2px 9px;border:1px solid}
+.selo-reprova{color:var(--ok);border-color:#86efac;background:#f0fdf4}
+.selo-avisa{color:var(--av);border-color:#fcd34d;background:#fffbeb}
+.selo-olho{color:var(--olho);border-color:#cbd5e1;background:#f8fafc}
+.regra{margin:6px 0;font-weight:500}
+.licao,.onde{margin:4px 0;color:var(--mudo);font-size:13px}
+.onde.sem{color:#9a3412}
+.previa{margin-top:10px;border-top:1px dashed var(--linha);padding-top:10px}
+.previa.vazia{color:var(--mudo);font-size:13px;font-style:italic}
+.mini{font-size:12px;color:var(--mudo);margin:6px 0 0}
+.btn{font:inherit;cursor:pointer;border:1px solid var(--linha);background:var(--cartao);color:var(--texto);border-radius:8px;padding:8px 12px;min-height:40px}
+.btn.pri{background:var(--acento);border-color:var(--acento);color:#fff;font-weight:600}
+.linha-btn{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.tab{border-collapse:collapse;width:100%;background:var(--cartao);border:1px solid var(--linha);border-radius:var(--raio);overflow:hidden;font-size:13px}
+.tab th,.tab td{border-bottom:1px solid var(--linha);padding:7px 9px;text-align:left;vertical-align:top}
+.tab thead th{position:sticky;top:0;background:#f1f3f6;font-size:12px;color:var(--mudo)}
+.sw{display:inline-block;width:16px;height:16px;border-radius:4px;border:1px solid rgba(0,0,0,.15);vertical-align:-3px;margin-right:6px}
+.rolar{height:200px;overflow:auto;border:1px solid var(--linha);border-radius:8px;background:var(--cartao)}
+.rolar .it{display:flex;justify-content:space-between;align-items:center;padding:8px 10px;border-bottom:1px solid var(--linha)}
+.rolar .it.aberto{background:#fff7ed}
+.estado{font-size:12.5px;color:var(--mudo);margin-top:6px}
+code{font-size:12.5px;background:#f1f3f6;border-radius:5px;padding:1px 5px}
+.falhou{color:#b42318}
+footer{color:var(--mudo);font-size:12px;padding:20px 22px;border-top:1px solid var(--linha)}
+@media (max-width:420px){.cards{grid-template-columns:1fr}main,header.topo{padding-left:12px;padding-right:12px}}
+</style>
+</head>
+<body>
+<script>
+/* rede SIMULADA para as prévias (ProperCare-backlog#128): só endereços "padrao-demo:" — o resto segue para a rede de verdade */
+(function(){
+  try{
+    var orig=window.fetch;
+    if(!orig) return;
+    window.fetch=function(u){
+      var s=String((u&&u.url)||u||'');
+      var m=/^padrao-demo:espera\/(\d+)$/.exec(s);
+      if(m) return new Promise(function(ok){ setTimeout(function(){ ok(new Response('{"ok":true}',{headers:{'Content-Type':'application/json'}})); },+m[1]); });
+      if(s==='padrao-demo:sem-conexao') return new Promise(function(_ok,falha){ setTimeout(function(){ falha(new TypeError('Failed to fetch')); },700); });
+      return orig.apply(window,arguments);
+    };
+  }catch(e){}
+})();
+</script>
+<!-- ████ INICIO BLOCOS PADRAO UX · copiados BYTE A BYTE de ferramentas/blocos/ (ProperCare-backlog#128) ████ -->
+<!-- ═══════════════════════════════════════════════════════════════════════════
+     PWAIT v1 — A ESPERA FICA VISÍVEL, SEMPRE (+ GUARDA DE BOTÃO)   · hoje: v4
+     Pedido do Fernando em 17/09/2026: "sempre programar pensando em otimizar
+     tempo de abertura das telas e spinner sempre que for necessário aguardar, ou
+     mensagens avisando e deixando o usuário ciente da espera".
+     O problema que ele resolve: o `_comLoadingBtn_` (PCM v77 / PCF v55) só cobre
+     o BOTÃO que alguém se lembrou de embrulhar. Toda chamada disparada por
+     troca de tela, por refresh de 2º plano ou por um botão esquecido acontecia
+     em silêncio — e no GAS cada chamada custa ~3,5 s fixos (medição de 28/08).
+     Como funciona: PWAIT não pede wiring por tela. Ele CONTA as chamadas em voo
+     (fetch, XMLHttpRequest e o <script> do JSONP dos formulários) e mostra:
+       · barra viva no topo enquanto houver qualquer chamada;
+       · aos 3,5 s, um aviso discreto "aguardando o servidor…";
+       · aos 9 s, o aviso vira explicação ("o Google Sheets às vezes demora…").
+     NUNCA bloqueia a tela e NUNCA interfere na resposta: o wrapper devolve a
+     mesma promessa e repropaga o mesmo erro.
+     ADITIVO: nenhum id, função ou classe existente muda. Tudo em try/catch.
+     ── A GUARDA DE BOTÃO (mesma sentada, antes de qualquer publicação) ────
+     A varredura de paridade mediu **46 botões que gravam sem trava de duplo
+     clique** em 19 arquivos. Consertar 46 call sites é trabalho que envelhece:
+     o 47º nasce sem trava. Então a trava passou a ser MECANISMO, não hábito.
+     `PWAIT.guarda()` escuta clique e submit na fase de CAPTURA e, 130 ms depois
+     do clique, pergunta uma coisa só: **o número de chamadas em voo SUBIU?**
+     Se subiu, aquele clique gerou rede — o botão fica ocupado (⏳ no texto,
+     desabilitado) até a contagem voltar ao que era antes dele. Um 2º clique
+     nesse meio-tempo é ENGOLIDO na captura, antes de chegar ao app.
+     🔑 A atribuição é por DELTA, não por "tem chamada em voo": senão um
+        refresh de 2º plano (o PCM faz vários) desabilitaria botão à toa.
+     ⚠ Fora da guarda, de propósito: pílula/chip/toggle/olho/burger, botão com
+       `aria-pressed` ou `role=switch`, botão de rótulo curto (ícone, seta) e
+       qualquer um com `data-pw-off`. Marcar Ok/NOK/N.A. batendo o dedo não
+       pode esperar por nada.
+     ── v2 · 21/09/2026 · 🕳 O BOTÃO QUE MORRIA DE "⏳ PROCESSANDO…" ──────────
+     Fernando, 21/09: "estou tentando editar OS mas fica só processando e não
+     abre pra salvar; pelo que vi é toda OS". Reproduzido no Chrome dele e na
+     bancada: o servidor gravava em ~15 s, a rede ia e voltava — quem travava
+     era ESTA guarda.
+     A guarda tirava a foto do botão (texto e `disabled`) **130 ms depois do
+     clique** — e nesse instante o `_comLoadingBtn_` do app JÁ tinha posto o
+     botão em "⏳ Processando…" e `disabled=true`. Quando a resposta chegava, o
+     `finally` do app devolvia "Salvar"/habilitado corretamente e, até 140 ms
+     depois, a guarda **devolvia a foto velha por cima**: "⏳ Processando…" e
+     desabilitado — para sempre, porque botão desabilitado não recebe clique.
+     Um clique matava o Salvar do modal de OS até o F5; como o elemento é o
+     mesmo para toda OS, virava "não consigo editar OS nenhuma".
+     🔑 A regra que nasce daqui, e vale para qualquer guarda global:
+        **SÓ DESFAÇA O QUE VOCÊ FEZ, E NUNCA PRENDA NA VOLTA.**
+        v2: (a) a foto é tirada na CAPTURA do clique, antes do handler do app;
+            (b) botão que já tem dono (`_comLoadingBtn_`/`is-busy`/
+                `data-pcm-enviando`) a guarda NÃO TOMA — dois donos, um sobra;
+            (c) na volta, o texto só é restaurado se ainda for o que a guarda
+                escreveu, e `disabled` só é SOLTO (nunca reposto em true).
+     ⚠ Dois mecanismos mexendo no mesmo atributo precisam de dono único. Isto
+       não é "esquisitice do PCM": qualquer front com trava própria cairia.
+     ── v3 · 26/09/2026 · A ESPERA APARECE, MAS NÃO ATRAPALHA ────────────────
+     Fernando, 24/09 (prints 1 e 11 do PCF): "carregamento longo e mensagens
+     PWAIT irritantes, cortadas". A pílula ficava NO TOPO, por cima do cabeçalho
+     (justo onde estão o número da OS e o botão de voltar), com uma frase longa
+     cortada em duas linhas — e aparecia até para o refresh de 2º plano que
+     ninguém pediu.
+     v3: (a) a pílula desce para o RODAPÉ, uma linha só (reticências), sem
+             receber toque (`pointer-events:none`), acima da barra fixa de baixo
+             quando houver (`--pw-bottom` no :root, ou `data-pw-dock` / #dock /
+             .dock detectados sozinhos);
+         (b) mensagem SÓ para a espera que alguém PEDIU: a chamada que começa
+             até 1,5 s depois de um toque/tecla. Refresh de 2º plano fica só na
+             barra fina do topo — que continua dizendo "tem rede em andamento";
+         (c) `PWAIT.silencioso(fn)`: o que fn dispara de forma síncrona não conta
+             nem para a barra (pré-carga do PCF, pings);
+         (d) frases curtas: "aguardando o servidor…" (3,5 s) e "servidor lento —
+             aguarde, não feche" (9 s).
+     A guarda de botão NÃO mudou (regras do v2 intactas).
+     ── v4 · 27/09/2026 · 🕳 O "SALVAR" QUE JÁ ABRIA CARREGANDO ──────────────
+     Fernando, 27/09 (PCM, "Editar peça"): "isso está acontecendo logo ao abrir
+     essa janela, não faz sentido o botão salvar ficar carregando sendo que não
+     digitei nenhuma modificação". Reproduzido no PCM V198 real, na bancada.
+     O "Salvar peça" usa a trava do app (`_semDuploEnvio_`), mas o savePart é
+     SÍNCRONO: grava local, FECHA a janela e manda o modelo ao servidor em 2º
+     plano (saveModel + 1 chamada por peça + equivalências + reconcile — num
+     modelo de 10 peças passa de um minuto). O app solta o botão no mesmo
+     instante. 130 ms depois a guarda via "a rede subiu", o botão sem dono, e o
+     TOMAVA — escondido dentro de uma janela já fechada — até a fila acabar ou
+     60 s. A próxima peça aberta reusa o MESMO botão: Salvar girando sem nada
+     digitado. Mesmo desenho em Salvar modelo / subsistema / máquina / peças da
+     máquina / subsistema da biblioteca, "Confirmar" do editor de tarefa e todo
+     botão que fecha a janela e grava depois.
+     🔑 A regra que nasce daqui: **A GUARDA SÓ PROTEGE O QUE O USUÁRIO VÊ, E
+        NUNCA SEGURA O QUE NINGUÉM CONSEGUE CLICAR.**
+        v4: botão que NÃO ESTÁ À VISTA (janela fechada, fora do DOM) nunca é
+            tomado — e o que a guarda tomou é SOLTO no instante em que some
+            (a janela fecha). Ninguém clica duas vezes num botão escondido, e
+            reabrir a janela nunca herda a espera de antes.
+     ⚠ O 1º desenho do v4 tinha uma 2ª regra ("clique que a trava do app
+       tocou é do app, mesmo que ela já o tenha soltado"). A auditoria
+       independente derrubou: no "💾 Salvar peças" da máquina (função
+       síncrona, janela que CONTINUA aberta) ela deixava o 2º toque passar
+       entre 130 ms e o fim da rede — 2 gravações onde o v3 fazia 1. Saiu.
+       Botão À VISTA continua protegido exatamente como no v3.
+     As regras do v2 (foto na captura, dono único, só soltar) e do v3 (pílula
+     no rodapé, só espera pedida fala) continuam intactas.
+     ⚠ BLOCO ÚNICO: copiado BYTE A BYTE nos fronts; a varredura reprova divergência.
+     ═══════════════════════════════════════════════════════════════════════════ -->
+<style>
+#pwBar{position:fixed;top:0;left:0;height:3px;width:0;z-index:99500;pointer-events:none;
+  background:linear-gradient(90deg,var(--pw-a),var(--pw-b));box-shadow:0 0 8px var(--pw-a);
+  transition:width .22s ease,opacity .3s ease;opacity:0;border-radius:0 3px 3px 0}
+#pwBar.pw-on{opacity:1}
+#pwMsg{position:fixed;z-index:99501;left:50%;transform:translateX(-50%);top:auto;
+  bottom:calc(var(--pw-bottom,14px) + env(safe-area-inset-bottom,0px));max-width:calc(100vw - 32px);
+  background:var(--pw-bg);color:var(--pw-fg);border:1px solid var(--pw-line);border-radius:999px;
+  padding:5px 12px;font-size:12px;font-family:inherit;box-shadow:0 6px 18px rgba(0,0,0,.28);
+  display:none;align-items:center;gap:8px;line-height:1.3;pointer-events:none;opacity:.94;white-space:nowrap}
+#pwMsg [data-pw-txt]{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+#pwMsg.pw-on{display:flex}
+#pwMsg .pw-sp{width:13px;height:13px;flex:none;border-radius:50%;border:2px solid var(--pw-line);
+  border-top-color:var(--pw-a);animation:pwSpin .8s linear infinite}
+@keyframes pwSpin{to{transform:rotate(360deg)}}
+#pwOv{position:fixed;inset:0;z-index:99400;background:rgba(0,0,0,.42);display:none;
+  align-items:center;justify-content:center;padding:20px}
+#pwOv.pw-on{display:flex}
+#pwOv .pw-cx{background:var(--pw-bg);color:var(--pw-fg);border:1px solid var(--pw-line);border-radius:14px;
+  padding:22px 26px;text-align:center;max-width:340px;font-family:inherit;box-shadow:0 18px 50px rgba(0,0,0,.4)}
+#pwOv .pw-sp2{width:30px;height:30px;margin:0 auto 12px;border-radius:50%;
+  border:3px solid var(--pw-line);border-top-color:var(--pw-a);animation:pwSpin .8s linear infinite}
+#pwOv .pw-t{font-size:14px;font-weight:600}
+#pwOv .pw-s{font-size:12px;opacity:.75;margin-top:6px}
+button.is-busy{opacity:.72;cursor:progress}
+button[data-pw-busy="1"]{opacity:.72;cursor:progress}
+.pw-esq{padding:10px 0}
+.pw-esq i{display:block;height:13px;border-radius:6px;margin:8px 0;
+  background:linear-gradient(90deg,var(--pw-line) 25%,var(--pw-hov) 50%,var(--pw-line) 75%);
+  background-size:400% 100%;animation:pwShim 1.3s linear infinite}
+@keyframes pwShim{0%{background-position:100% 0}100%{background-position:0 0}}
+@media print{#pwBar,#pwMsg,#pwOv{display:none!important}}
+</style>
+<script>
+(function(){
+'use strict';
+try{
+  if(window.PWAIT) return;
+  var VER='PWAIT_V4';
+  var T_AVISO=3500;      // a espera PEDIDA deixa de ser invisível
+  var T_EXPLICA=9000;    // a espera PEDIDA passa a ser explicada
+  var T_GESTO=1500;      // v3: chamada que nasce até 1,5 s depois de um toque = alguém está esperando por ela
+  var voo=0, vooG=0, mudo=0, gesto=0, t0=0, bar=null, msg=null, ov=null, tA=null, tE=null, raf=null, prog=0;
+
+  function tokens(){
+    try{
+      var cs=getComputedStyle(document.body);
+      var m=/rgba?\(\s*(\d+)[,\s]+(\d+)[,\s]+(\d+)/.exec(cs.backgroundColor||'');
+      var lum=m? (0.299*+m[1]+0.587*+m[2]+0.114*+m[3]) : 255;
+      var claro=lum>=140, r=document.documentElement.style;
+      r.setProperty('--pw-a', claro?'#2563eb':'#f58220');
+      r.setProperty('--pw-b', claro?'#22c55e':'#fbbf24');
+      r.setProperty('--pw-bg', claro?'#ffffff':(m?'rgb('+Math.min(255,+m[1]+16)+','+Math.min(255,+m[2]+18)+','+Math.min(255,+m[3]+24)+')':'#1e293b'));
+      r.setProperty('--pw-fg', cs.color||'inherit');
+      r.setProperty('--pw-line', claro?'#dfe3ea':'rgba(255,255,255,.2)');
+      r.setProperty('--pw-hov', claro?'#f4f6f9':'rgba(255,255,255,.08)');
+    }catch(e){}
+  }
+  function el(id,cls,html){
+    var d=document.getElementById(id);
+    if(d) return d;
+    d=document.createElement('div'); d.id=id; if(cls)d.className=cls; if(html)d.innerHTML=html;
+    (document.body||document.documentElement).appendChild(d);
+    return d;
+  }
+  function montar(){
+    tokens();
+    bar=el('pwBar');
+    msg=el('pwMsg','','<span class="pw-sp"></span><span data-pw-txt>aguardando o servidor…</span>');
+    ov=el('pwOv','','<div class="pw-cx"><div class="pw-sp2"></div><div class="pw-t" data-pw-ovt>Aguarde…</div><div class="pw-s" data-pw-ovs></div></div>');
+  }
+  function pinta(){
+    if(!bar) return;
+    if(voo>0){
+      bar.classList.add('pw-on');
+      prog=prog+ (92-prog)*0.06 + 0.4;           // nunca chega a 100 sozinha
+      if(prog>93) prog=93;
+      bar.style.width=prog.toFixed(1)+'%';
+      raf=requestAnimationFrame(pinta);
+    }else{
+      bar.style.width='100%';
+      setTimeout(function(){ if(voo===0){ bar.classList.remove('pw-on'); bar.style.width='0'; prog=0; } },240);
+    }
+  }
+  // v3 — a pílula fica ACIMA da barra fixa de baixo, se houver. O front pode
+  // mandar (--pw-bottom no :root); se não mandar, procura a barra sozinho.
+  function rodape(){
+    try{
+      var r=document.documentElement;
+      if(String(getComputedStyle(r).getPropertyValue('--pw-bottom')||'').trim()) return;
+      var d=document.querySelector('[data-pw-dock],#dock,.dock');
+      var h=0;
+      if(d && d.getClientRects().length){                 // (offsetParent é null em position:fixed)
+        var cs=getComputedStyle(d), bb=d.getBoundingClientRect();
+        if((cs.position==='fixed'||cs.position==='sticky') && bb.bottom>=window.innerHeight-4) h=Math.round(bb.height);
+      }
+      if(msg) msg.style.bottom = h ? ('calc(' + (h+10) + 'px + env(safe-area-inset-bottom,0px))') : '';
+    }catch(e){}
+  }
+  function aviso(txt){
+    if(!msg) return;
+    var s=msg.querySelector('[data-pw-txt]'); if(s) s.textContent=txt;
+    rodape();
+    msg.classList.add('pw-on');
+  }
+  function some(){ if(msg) msg.classList.remove('pw-on'); }
+
+  // v3 — sobe() devolve se a chamada é PEDIDA (nasceu logo depois de um gesto);
+  // quem chama guarda e devolve o mesmo valor ao desce(). Só as pedidas falam.
+  function agendarAvisos(){
+    clearTimeout(tA); clearTimeout(tE);
+    tA=setTimeout(function(){ if(vooG>0) aviso('aguardando o servidor…'); },T_AVISO);
+    tE=setTimeout(function(){ if(vooG>0) aviso('servidor lento — aguarde, não feche'); },T_EXPLICA);
+  }
+  function sobe(){
+    var pedida = (Date.now()-gesto) <= T_GESTO;
+    voo++;
+    if(voo===1){
+      t0=Date.now(); prog=2;
+      if(!bar) montar();
+      cancelAnimationFrame(raf); raf=requestAnimationFrame(pinta);
+    }
+    if(pedida){ vooG++; if(vooG===1) agendarAvisos(); }
+    return pedida;
+  }
+  function desce(pedida){
+    voo=Math.max(0,voo-1);
+    if(pedida){ vooG=Math.max(0,vooG-1); if(vooG===0){ clearTimeout(tA); clearTimeout(tE); some(); } }
+    if(voo===0){ clearTimeout(tA); clearTimeout(tE); vooG=0; some(); pinta(); }
+  }
+  // o gesto que torna a próxima chamada "pedida" (captura: antes do app)
+  try{
+    ['pointerdown','keydown','submit'].forEach(function(tp){
+      document.addEventListener(tp,function(){ gesto=Date.now(); },true);
+    });
+  }catch(e){}
+
+  // ── 1) fetch ──
+  try{
+    if(window.fetch && !window.fetch.__pw){
+      var f0=window.fetch.bind(window);
+      var f1=function(){
+        if(mudo>0) return f0.apply(null,arguments);          // v3: PWAIT.silencioso
+        var pd=sobe();
+        var p;
+        try{ p=f0.apply(null,arguments); }catch(e){ desce(pd); throw e; }
+        return p.then(function(r){ desce(pd); return r; }, function(e){ desce(pd); throw e; });
+      };
+      f1.__pw=1; window.fetch=f1;
+    }
+  }catch(e){}
+
+  // ── 2) XMLHttpRequest ──
+  try{
+    var XP=window.XMLHttpRequest && window.XMLHttpRequest.prototype;
+    if(XP && !XP.__pw){
+      var s0=XP.send;
+      XP.send=function(){
+        var fim=false, self=this, pd=false;
+        if(mudo>0) return s0.apply(self,arguments);          // v3: PWAIT.silencioso
+        function ok(){ if(!fim){ fim=true; desce(pd); } }
+        try{
+          pd=sobe();
+          self.addEventListener('loadend',ok);
+        }catch(e){ ok(); }
+        try{ return s0.apply(self,arguments); }catch(e){ ok(); throw e; }
+      };
+      XP.__pw=1;
+    }
+  }catch(e){}
+
+  // ── 3) JSONP dos formulários: <script src="…/exec?…"> ──
+  // Os forms falam com o GAS por tag <script>, não por fetch. Sem isto, o
+  // "Salvar" de um formulário em campo ficaria exatamente como está hoje:
+  // 20 s de espera com um botão cinza e nenhuma palavra na tela.
+  try{
+    var mo=new MutationObserver(function(recs){
+      for(var i=0;i<recs.length;i++){
+        var ns=recs[i].addedNodes;
+        for(var j=0;j<ns.length;j++){
+          var n=ns[j];
+          if(!n||n.tagName!=='SCRIPT'||!n.src||n.__pw) continue;
+          if(!/script\.google\.com|googleusercontent|supabase/.test(n.src)) continue;
+          n.__pw=1;
+          if(mudo>0) continue;                                  // v3: PWAIT.silencioso
+          var pd=sobe();
+          var fim=false;
+          var pronto=(function(pd0){ return function(){ if(!fim){ fim=true; desce(pd0); } }; })(pd);
+          n.addEventListener('load',pronto); n.addEventListener('error',pronto);
+          setTimeout(pronto,120000);          // rede que nunca responde não deixa a barra presa
+        }
+      }
+    });
+    mo.observe(document.documentElement,{childList:true,subtree:true});
+  }catch(e){}
+
+
+  // ── 4) GUARDA DE BOTÃO: spinner + trava de duplo clique, sem tocar em call site ──
+  function podeGuardar(b){
+    try{
+      if(!b||!b.tagName) return false;
+      if(b.hasAttribute('data-pw-off')) return false;
+      if(b.closest&&b.closest('[data-pw-off]')) return false;
+      var c=' '+String(b.className||'')+' ';
+      if(/pill|chip|toggle|olho|burger|ecard|-tab|tab-/i.test(c)) return false;
+      if(b.hasAttribute('aria-pressed')) return false;
+      if(String(b.getAttribute('role')||'')==='switch') return false;
+      var t=(b.textContent||'').trim();
+      if(b.type!=='submit' && t.length<4) return false;    // ícone, pílula, seta
+      return true;
+    }catch(e){ return false; }
+  }
+  // v4 — o botão está À VISTA? Janela fechada (display:none num ancestral),
+  // fora do DOM ou visibility:hidden = não. Na dúvida (API ausente/erro): sim,
+  // para não afrouxar a trava de quem está na tela.
+  function visivel(b){
+    try{
+      if(!b.isConnected) return false;
+      if(typeof b.checkVisibility==='function')
+        return b.checkVisibility({visibilityProperty:true, checkVisibilityCSS:true});
+      return b.getClientRects().length>0;
+    }catch(e){ return true; }
+  }
+  // v2 — o botão já tem dono? (`_comLoadingBtn_` do PCM v77 / PCF v55, ou trava
+  // própria do call site). Dois donos mexendo em `disabled` = botão preso.
+  function donoApp(b){
+    try{
+      return b.dataset.loadingOriginalText!==undefined ||
+             b.dataset.pcmEnviando!==undefined ||
+             b.dataset.pfEnviando!==undefined;
+    }catch(e){ return true; }                 // na dúvida, NÃO tomo o botão
+  }
+  function temDono(b){
+    try{ return donoApp(b) || !!(b.classList && b.classList.contains('is-busy')); }
+    catch(e){ return true; }
+  }
+  // txt0/dis0 vêm da CAPTURA do clique — antes de o app mexer no botão.
+  function ocupar(b,base,txt0,dis0){
+    if(b.dataset.pwBusy==='1') return;
+    if(!visivel(b)) return;                   // v4: escondido não se toma
+    if(temDono(b)) return;                    // o app já cuida deste botão
+    var filhos=!!b.querySelector('*');
+    var escrito=null, euPrendi=false;
+    b.dataset.pwBusy='1';
+    b.classList.add('is-busy');
+    if(!filhos && txt0 && txt0.trim().length>3){ escrito='⏳ '+txt0.trim(); b.textContent=escrito; }
+    if(!dis0){ try{ b.disabled=true; euPrendi=true; }catch(e){} }
+    var t0=Date.now();
+    var iv=setInterval(function(){
+      if(voo<=base || Date.now()-t0>60000 || !visivel(b)){      // v4: sumiu da tela = solta já
+        clearInterval(iv);
+        try{
+          if(!donoApp(b)) b.classList.remove('is-busy');
+          // só desfaço o que EU escrevi: se outro mudou o texto, o dele fica
+          if(escrito!==null && b.textContent===escrito) b.textContent=txt0;
+          // e só SOLTO: repor disabled=true é o que matava o Salvar do modal
+          if(euPrendi && b.disabled) b.disabled=false;
+        }catch(e){}
+        delete b.dataset.pwBusy;
+      }
+    },140);
+  }
+  function vigiar(b){
+    var base=voo, txt0=b.textContent, dis0=!!b.disabled;   // foto ANTES do handler do app
+    setTimeout(function(){ if(voo>base && visivel(b)) ocupar(b,base,txt0,dis0); },130);   // só se ESTE clique gerou rede · v4: e se o botão ainda está À VISTA
+  }
+  function noClique(ev){
+    try{
+      var el=ev.target; if(!el||!el.closest) return;
+      var b=el.closest('button,input[type=submit]'); if(!b) return;
+      if(b.dataset.pwBusy==='1'){                                  // 2º clique: engolido aqui
+        ev.preventDefault(); ev.stopImmediatePropagation();
+        aviso('já está processando — aguarde');
+        setTimeout(function(){ if(vooG===0) some(); },2500);   // v3: não fica pendurado por causa de refresh de 2º plano
+        return;
+      }
+      if(podeGuardar(b)) vigiar(b);
+    }catch(e){}
+  }
+  function noSubmit(ev){
+    try{
+      var f=ev.target; if(!f||f.tagName!=='FORM') return;
+      var b=f.querySelector('button[type=submit],input[type=submit],button:not([type])');
+      if(!b) return;
+      if(b.dataset.pwBusy==='1'){ ev.preventDefault(); ev.stopImmediatePropagation(); return; }
+      vigiar(b);
+    }catch(e){}
+  }
+
+  window.PWAIT={
+    versao:VER,
+    guarda:function(){ try{ document.addEventListener('click',noClique,true); document.addEventListener('submit',noSubmit,true); }catch(e){} },
+    podeGuardar:podeGuardar,
+    emVoo:function(){ return voo; },
+    // v3 — o que fn dispara de forma SÍNCRONA não conta (nem barra, nem aviso):
+    // pré-carga, ping, refresh que o usuário não pediu. Continuações assíncronas
+    // (um fetch dentro de um .then) NÃO herdam o silêncio — embrulhe-as também.
+    // ⚠ O JSONP (<script> dos formulários) também não: quem o conta é um
+    //   MutationObserver, que roda depois de fn já ter voltado.
+    silencioso:function(fn){
+      mudo++;
+      try{ return fn(); } finally{ mudo=Math.max(0,mudo-1); }
+    },
+    emVooPedidas:function(){ return vooG; },
+    // espera com mensagem própria, para trecho que NÃO é chamada de rede
+    // (gerar PDF, desenhar canvas, montar 2.000 linhas)
+    tela:function(titulo,sub){
+      if(!ov) montar();
+      var a=ov.querySelector('[data-pw-ovt]'), b=ov.querySelector('[data-pw-ovs]');
+      if(a) a.textContent=titulo||'Aguarde…';
+      if(b) b.textContent=sub||'';
+      ov.classList.add('pw-on');
+      return function(){ ov.classList.remove('pw-on'); };
+    },
+    fim:function(){ if(ov) ov.classList.remove('pw-on'); },
+    // só mostra a tela de espera se o trecho passar de `atraso` ms (sem piscada)
+    demorado:function(fn,titulo,sub,atraso){
+      var fechar=null, tt=setTimeout(function(){ fechar=window.PWAIT.tela(titulo,sub); },atraso==null?350:atraso);
+      var pronto=function(){ clearTimeout(tt); if(fechar) fechar(); };
+      var r;
+      try{ r=fn(); }catch(e){ pronto(); throw e; }
+      if(r&&typeof r.then==='function') return r.then(function(v){ pronto(); return v; },function(e){ pronto(); throw e; });
+      pronto(); return r;
+    },
+    // par do _comLoadingBtn_ do PCM/PCF, para os fronts que não têm o helper
+    btn:function(btnEl,fn){
+      if(!btnEl) return fn();
+      var txt=btnEl.textContent, dis=btnEl.disabled;
+      btnEl.disabled=true; btnEl.classList.add('is-busy'); btnEl.textContent='⏳ Processando…';
+      var volta=function(){ btnEl.disabled=dis; btnEl.classList.remove('is-busy'); btnEl.textContent=txt; };
+      var r;
+      try{ r=fn(); }catch(e){ volta(); throw e; }
+      if(r&&typeof r.then==='function') return r.then(function(v){ volta(); return v; },function(e){ volta(); throw e; });
+      volta(); return r;
+    },
+    // esqueleto: a tela mostra a FORMA do conteúdo antes do dado chegar
+    esqueleto:function(alvo,linhas){
+      var t=typeof alvo==='string'? document.getElementById(alvo)||document.querySelector(alvo) : alvo;
+      if(!t) return;
+      var n=linhas||6, h='<div class="pw-esq">';
+      for(var i=0;i<n;i++) h+='<i style="width:'+(96-(i%4)*13)+'%"></i>';
+      t.innerHTML=h+'</div>';
+    }
+  };
+
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',montar);
+  else montar();
+  window.PWAIT.guarda();
+}catch(e){ try{ console.error('[PWAIT] nao iniciou; a espera segue invisivel',e); }catch(_){} }
+})();
+</script>
+
+<!-- ═══════════════════════════════════════════════════════════════════════════
+     ERRO v1 — ERRO NUNCA ACONTECE EM SILÊNCIO
+     Par do PCM V108 (item 8), que criou este tratador no PCM depois do incidente
+     v39: um ReferenceError no boot deixava o app quebrado SEM DEIXAR RASTRO.
+     Em 17/09/2026 a varredura de paridade mostrou que a lição nunca viajou:
+     PCM, PCF e Hub tinham o tratador; **Portal do Cliente, Mural, Ficha de
+     Rotores e os 14 formulários não tinham nenhum** — e o Portal é a tela que
+     o CLIENTE olha.
+     O que faz:
+       · `window.onerror` e `unhandledrejection`, os dois, com anti-repetição
+         (o mesmo erro não aparece duas vezes em 15 s, no máximo 1 aviso / 4 s);
+       · traduz falha de rede para a frase que importa:
+         "Sem conexão — a alteração NÃO foi gravada.";
+       · usa o `toast()` do app quando existe; quando não existe, desenha o
+         próprio aviso (Portal e Mural não têm toast).
+     ⚠ NÃO entra em front que já tem tratador próprio (PCM, PCF, Hub): dois
+       tratadores = aviso em dobro. Quem controla isso é a lista do aplicador,
+       e a varredura confere que TODO front tem UM.
+     ⚠ BLOCO ÚNICO: copiado BYTE A BYTE; a varredura reprova divergência.
+     ═══════════════════════════════════════════════════════════════════════════ -->
+<style>
+#perrToast{position:fixed;z-index:99600;left:50%;transform:translateX(-50%);bottom:20px;
+  max-width:calc(100vw - 28px);background:#b42318;color:#fff;border-radius:10px;padding:11px 16px;
+  font:13.5px/1.45 inherit;box-shadow:0 10px 32px rgba(0,0,0,.35);display:none;text-align:left}
+#perrToast.perr-on{display:block}
+@media print{#perrToast{display:none!important}}
+</style>
+<script>
+(function(){
+'use strict';
+try{
+  if(window.__PERR) return;
+  window.__PERR='ERRO_V1';
+  var vistos={}, ultimo=0;
+
+  function proprio(txt){
+    var el=document.getElementById('perrToast');
+    if(!el){
+      el=document.createElement('div'); el.id='perrToast';
+      (document.body||document.documentElement).appendChild(el);
+    }
+    el.textContent=txt;
+    el.className='perr-on';
+    setTimeout(function(){ if(el.textContent===txt) el.className=''; },7000);
+  }
+  function mostrar(tipo,msg,detalhe){
+    try{
+      var agora=Date.now();
+      var chave=tipo+'|'+String(msg).slice(0,120);
+      if(vistos[chave] && agora-vistos[chave]<15000) return;   // não repete o mesmo em 15 s
+      vistos[chave]=agora;
+      try{ console.error('[ERRO_V1]['+tipo+']',msg,detalhe||''); }catch(e){}
+      if(agora-ultimo<4000) return;                            // no máx. 1 aviso a cada 4 s
+      ultimo=agora;
+      var t=String(msg||'erro desconhecido');
+      if(/OFFLINE|Failed to fetch|NetworkError|Load failed|Sem conex/i.test(t))
+        t='Sem conexão — a alteração NÃO foi gravada.';
+      if(typeof window.toast==='function'){ try{ window.toast('⚠ '+t,'error'); return; }catch(e){} }
+      proprio('⚠ '+t);
+    }catch(e){ /* o tratador de erro nunca pode ser a causa de um erro */ }
+  }
+  window.addEventListener('error',function(ev){
+    if(ev && ev.target && ev.target!==window && ev.target.tagName) return;   // 404 de <img>/<script>
+    mostrar('erro',(ev&&ev.message)||'falha no script',
+            ev&&ev.filename? (ev.filename+':'+ev.lineno):'');
+  });
+  window.addEventListener('unhandledrejection',function(ev){
+    var r=ev&&ev.reason;
+    mostrar('promessa',(r&&r.message)||String(r||'promessa rejeitada'), r&&r.stack);
+  });
+  window.__perrUltimos=function(){ return vistos; };
+}catch(e){}
+})();
+</script>
+
+<!-- ═══════════════════════════════════════════════════════════════════════════
+     CFX v1 — FILTRO DE COLUNA (estilo Excel) EM QUALQUER TABELA
+     Pedido do Fernando em 17/09/2026: "toda tela que contém lista de máquinas,
+     clientes, peças etc, os títulos de cada coluna devem ser dotados de filtros".
+     Motivo de existir: o motor XF (V94) resolve isso, mas exige configuração
+     tela por tela — e por isso só 5 das 36 tabelas do PCM tinham filtro. A tela
+     de Inventário (V190) nasceu sem, como toda tela nova nasceria.
+     O CFX não substitui o XF: ele se acopla ao DOM JÁ RENDERIDO, leia quem
+     renderizou. Tabela com `class="xf-table"` é ignorada de propósito.
+     ADITIVO por construção: nenhum id, função, classe ou render existente muda.
+     Tudo dentro de try/catch — o motor NUNCA pode ser a causa de um erro de boot.
+     ⚠ BLOCO ÚNICO: este arquivo é copiado BYTE A BYTE nos fronts. Se divergir
+     entre eles, a varredura NEWFILE_VARREDURA_PARIDADE_UX.py reprova.
+     ═══════════════════════════════════════════════════════════════════════════ -->
+<style>
+.cfx-b{all:unset;cursor:pointer;display:inline-block;margin-left:5px;padding:0 3px;font-size:10px;line-height:1;
+  opacity:.45;border-radius:4px;vertical-align:middle;font-family:inherit}
+.cfx-b:hover{opacity:1;background:var(--cfx-hov)}
+.cfx-b.cfx-act{opacity:1;color:var(--cfx-acc);font-weight:700}
+.cfx-menu{position:fixed;z-index:99000;width:262px;max-width:calc(100vw - 16px);background:var(--cfx-bg);
+  color:var(--cfx-fg);border:1px solid var(--cfx-line);border-radius:10px;box-shadow:0 14px 40px rgba(0,0,0,.28);
+  display:none;flex-direction:column;overflow:hidden;font-size:12px;font-family:inherit}
+.cfx-menu.cfx-on{display:flex}
+.cfx-h{padding:8px 11px;font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
+  color:var(--cfx-mut);background:var(--cfx-hov);border-bottom:1px solid var(--cfx-line);
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cfx-row{display:flex;gap:6px;padding:7px 9px;border-bottom:1px solid var(--cfx-line)}
+.cfx-row button{flex:1;cursor:pointer;background:var(--cfx-bg);color:var(--cfx-fg);border:1px solid var(--cfx-line);
+  border-radius:7px;padding:6px 4px;font-size:11.5px;font-family:inherit}
+.cfx-row button:hover{border-color:var(--cfx-acc);color:var(--cfx-acc)}
+.cfx-row button.cfx-cur{border-color:var(--cfx-acc);color:var(--cfx-acc);font-weight:700}
+.cfx-menu input{width:100%;box-sizing:border-box;background:var(--cfx-bg);color:var(--cfx-fg);
+  border:1px solid var(--cfx-line);border-radius:7px;padding:6px 9px;font-size:12px;outline:none;font-family:inherit}
+.cfx-menu input:focus{border-color:var(--cfx-acc)}
+.cfx-rg{display:flex;gap:6px;padding:7px 9px;border-bottom:1px solid var(--cfx-line);align-items:center}
+.cfx-rg span{font-size:10px;color:var(--cfx-mut);font-weight:700}
+.cfx-list{max-height:238px;overflow:auto;padding:3px 0}
+.cfx-it{display:flex;align-items:center;gap:8px;padding:5px 11px;cursor:pointer;user-select:none;line-height:1.3}
+.cfx-it:hover{background:var(--cfx-hov)}
+.cfx-it input{width:auto;accent-color:var(--cfx-acc);flex:none;padding:0}
+.cfx-it span.cfx-v{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cfx-it b.cfx-n{margin-left:auto;font-size:10px;color:var(--cfx-mut);font-weight:600;flex:none}
+.cfx-it.cfx-all{position:sticky;top:0;background:var(--cfx-bg);border-bottom:1px solid var(--cfx-line);font-weight:700}
+.cfx-foot{display:flex;gap:7px;padding:8px 9px;border-top:1px solid var(--cfx-line);background:var(--cfx-hov)}
+.cfx-foot button{flex:1;cursor:pointer;border-radius:7px;padding:6px 4px;font-size:11.5px;font-family:inherit;
+  border:1px solid var(--cfx-line);background:var(--cfx-bg);color:var(--cfx-fg)}
+.cfx-foot button.cfx-pri{background:var(--cfx-acc);border-color:var(--cfx-acc);color:#fff;font-weight:700}
+.cfx-bar{display:none;align-items:center;gap:8px;flex-wrap:wrap;padding:6px 2px;font-size:11.5px;color:var(--cfx-mut)}
+.cfx-bar.cfx-on{display:flex}
+.cfx-bar b{color:var(--cfx-fg)}
+.cfx-chip{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--cfx-acc);color:var(--cfx-acc);
+  border-radius:999px;padding:2px 9px;font-size:11px;font-weight:600;max-width:260px}
+.cfx-chip span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cfx-chip button{all:unset;cursor:pointer;font-size:12px;line-height:1}
+.cfx-clr{all:unset;cursor:pointer;color:var(--cfx-acc);font-weight:700;font-size:11.5px;text-decoration:underline}
+.cfx-hide{display:none!important}
+tr.cfx-vazio td{padding:14px 12px!important;text-align:center;color:var(--cfx-mut);font-style:italic}
+@media print{.cfx-b,.cfx-bar,.cfx-menu{display:none!important}}
+</style>
+<script>
+(function(){
+'use strict';
+try{
+  if(window.CFX) return;
+  var VER='CFX_V1';
+  var MIN_LINHAS=3;          // tabela de 1 ou 2 linhas não ganha filtro (ruído)
+  var MAX_VALORES=400;       // teto de valores distintos listados no menu
+  var MAX_LINHAS=4000;       // acima disso o motor se recusa (e diz por quê)
+  var CAB_IGNORAR={'':1,'#':1,'ações':1,'acoes':1,'ação':1,'acao':1,'ver':1,'abrir':1,'sel':1,' ':1};
+
+  var S={};                  // chave da tabela -> estado {f:{}, sort:null}
+  var vivos=(typeof WeakSet==='function')? new WeakSet() : null;  // botões com handler de verdade
+  var menu=null, mAlvo=null, mCol=-1, mBusca='';
+  var mo=null, timer=null, proprio=0;
+
+  function norm(v){
+    return String(v==null?'':v).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/\s+/g,' ').trim();
+  }
+  function txt(el){
+    if(!el) return '';
+    var d=el.getAttribute&&el.getAttribute('data-cfx-val');
+    if(d!=null) return String(d).trim();
+    return (el.textContent||'').replace(/\s+/g,' ').trim();
+  }
+  function esc(s){
+    return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+  function dataBR(s){
+    var m=/^(\d{2})\/(\d{2})\/(\d{4})/.exec(String(s).trim());
+    return m? (m[3]+m[2]+m[1]) : null;
+  }
+  function numDe(s){
+    var t=String(s).trim();
+    if(!t) return null;
+    if(!/\d/.test(t)) return null;
+    // aceita  1.234,56  ·  1234  ·  R$ 1.200,00  ·  5.614 h  ·  -3  ·  12%
+    if(!/^[-+]?[\sR$€]*[\d.,]+\s*(h|hs|horas|dias|d|%|km|kg|un|pç|pcs|m|mm|min)?$/i.test(t)) return null;
+    var x=t.replace(/[^\d,.\-+]/g,'');
+    if(x.indexOf(',')>=0) x=x.replace(/\./g,'').replace(',','.');
+    // 🕳 achado da bancada: '1.200' ordenava como 1,2 e ia para ANTES de '90'.
+    // Em pt-BR o ponto é milhar quando os grupos depois dele têm 3 dígitos.
+    else if(/^[-+]?\d{1,3}(\.\d{3})+$/.test(x)) x=x.replace(/\./g,'');
+    else if((x.match(/\./g)||[]).length>1) x=x.replace(/\./g,'');
+    var n=parseFloat(x);
+    return isNaN(n)? null : n;
+  }
+
+  // ── tokens de cor derivados do próprio app (um bloco, seis temas) ──
+  function tokens(){
+    try{
+      var cs=getComputedStyle(document.body);
+      var bg=cs.backgroundColor, fg=cs.color;
+      var m=/rgba?\(\s*(\d+)[,\s]+(\d+)[,\s]+(\d+)/.exec(bg||'');
+      var lum=m? (0.299*+m[1]+0.587*+m[2]+0.114*+m[3]) : 255;
+      var claro=lum>=140;
+      var r=document.documentElement.style;
+      r.setProperty('--cfx-bg', claro?'#ffffff':(m?'rgb('+Math.min(255,+m[1]+14)+','+Math.min(255,+m[2]+16)+','+Math.min(255,+m[3]+22)+')':'#1e293b'));
+      r.setProperty('--cfx-fg', fg||'inherit');
+      r.setProperty('--cfx-mut', claro?'#64748b':'#9aa8bf');
+      r.setProperty('--cfx-line', claro?'#dfe3ea':'rgba(255,255,255,.16)');
+      r.setProperty('--cfx-hov', claro?'#f4f6f9':'rgba(255,255,255,.07)');
+      if(!r.getPropertyValue('--cfx-acc')) r.setProperty('--cfx-acc', claro?'#2563eb':'#f58220');
+    }catch(e){}
+  }
+
+  // ── anatomia da tabela ──
+  function cabecalho(t){
+    if(!t.tHead||!t.tHead.rows.length) return null;
+    var tr=t.tHead.rows[t.tHead.rows.length-1];
+    for(var i=0;i<tr.cells.length;i++) if(tr.cells[i].colSpan>1) return null;  // cabeçalho agrupado: não é grade
+    return tr;
+  }
+  function linhas(t,n){
+    var out=[];
+    for(var b=0;b<t.tBodies.length;b++){
+      var rs=t.tBodies[b].rows;
+      for(var i=0;i<rs.length;i++){
+        var r=rs[i];
+        if(r.hasAttribute('data-cfx-skip')||r.classList.contains('cfx-vazio')) continue;
+        if(r.cells.length!==n) continue;                   // linha de grupo / colspan / "nenhum item"
+        var ok=true;
+        for(var c=0;c<r.cells.length;c++) if(r.cells[c].colSpan>1||r.cells[c].rowSpan>1){ok=false;break;}
+        if(ok) out.push(r);
+      }
+    }
+    return out;
+  }
+  function chave(t,cab){
+    if(t.dataset.cfxKey) return t.dataset.cfxKey;
+    var a=t.parentElement, id='';
+    while(a&&a!==document.body){ if(a.id){id=a.id;break;} a=a.parentElement; }
+    var h=[];
+    for(var i=0;i<cab.cells.length;i++) h.push(norm(txt(cab.cells[i])));
+    return (t.id||id||'raiz')+'#'+h.join('|').slice(0,180);
+  }
+  function est(k){ if(!S[k]) S[k]={f:{},sort:null}; return S[k]; }
+  function temEstado(k){ var e=S[k]; return !!(e&&(e.sort||Object.keys(e.f).length)); }
+
+  // ── colunas que não ganham menu: ação, seleção, só botões ──
+  function filtravel(cab,i,rs){
+    var h=norm(txt(cab.cells[i]));
+    if(CAB_IGNORAR[h]) return false;
+    var n=Math.min(rs.length,12), comCtrl=0, vis=0;
+    for(var k=0;k<n;k++){
+      var td=rs[k].cells[i]; if(!td) continue;
+      vis++;
+      if(td.querySelector&&td.querySelector('button,input,select,textarea,a[onclick]')) comCtrl++;
+    }
+    return !(vis&&comCtrl/vis>0.6);
+  }
+
+  function tipoCol(rs,i){
+    var d=0,nu=0,tot=0;
+    for(var k=0;k<rs.length&&k<60;k++){
+      var v=txt(rs[k].cells[i]); if(!v||v==='—'||v==='-') continue;
+      tot++;
+      if(dataBR(v)) d++; else if(numDe(v)!=null) nu++;
+    }
+    if(!tot) return 'txt';
+    if(d/tot>=0.7) return 'data';
+    if(nu/tot>=0.7) return 'num';
+    return 'txt';
+  }
+  function valOrd(v,tp){
+    if(tp==='data'){ var d=dataBR(v); return d==null?null:+d; }
+    if(tp==='num'){ return numDe(v); }
+    return null;
+  }
+
+  // ── acoplagem ──
+  function acoplar(t){
+    if(t.dataset.cfx) return;
+    if(t.classList.contains('xf-table')) { t.dataset.cfx='xf'; return; }      // motor XF já filtra
+    if(t.getAttribute('data-cfx-off')!=null||t.closest('[data-cfx-off]')){ t.dataset.cfx='off'; return; }
+    var cab=cabecalho(t);
+    if(!cab){ t.dataset.cfx='sem-cabecalho'; return; }
+    var rs=linhas(t,cab.cells.length);
+    if(rs.length<MIN_LINHAS) return;                       // sem marca: volta a ser avaliada quando crescer
+    if(rs.length>MAX_LINHAS){ t.dataset.cfx='grande'; return; }
+    var k=chave(t,cab);
+    t.dataset.cfx='on'; t.dataset.cfxK=k;
+    menusDaTabela(t,cab,rs);
+    barraDaTabela(t,k);
+    aplicar(t);
+  }
+
+  // 🕳 Achado da bancada: `cloneNode`/`outerHTML` COPIA o botão ▾ mas NÃO copia o
+  // handler — a tabela reaparecia com a setinha morta, e clicar nela não fazia nada
+  // (sem erro nenhum no console). Por isso o botão só vale se estiver no WeakSet
+  // de botões que ESTE motor criou nesta página; um clone é descartado e refeito.
+  function menusDaTabela(t,cab,rs){
+    for(var i=0;i<cab.cells.length;i++){
+      var th=cab.cells[i];
+      var velho=th.querySelector('.cfx-b');
+      if(velho){
+        if(!vivos||vivos.has(velho)) continue;
+        velho.parentNode.removeChild(velho);
+      }
+      if(!filtravel(cab,i,rs)) continue;
+      var b=document.createElement('button');
+      b.className='cfx-b'; b.type='button'; b.textContent='▾';
+      b.title='Filtrar e ordenar por esta coluna';
+      b.setAttribute('data-cfx-i',String(i));
+      b.onclick=(function(tab,idx){return function(ev){ ev.preventDefault(); ev.stopPropagation(); abrir(tab,idx,this); };})(t,i);
+      th.appendChild(b);
+      if(vivos) vivos.add(b);
+    }
+  }
+
+  // uma barra por tabela, sempre: re-render deixava a barra velha para trás e o
+  // "limpar tudo" da barra órfã mexia num nó que já não estava na tela.
+  function barraDaTabela(t,k){
+    var orf=document.querySelectorAll('[data-cfx-bar="'+String(k).replace(/"/g,'\\"')+'"]');
+    for(var i=0;i<orf.length;i++) if(orf[i].parentNode) orf[i].parentNode.removeChild(orf[i]);
+    var bar=document.createElement('div');
+    bar.className='cfx-bar';
+    bar.setAttribute('data-cfx-bar',k);
+    (t.parentNode||document.body).insertBefore(bar,t);
+    t._cfxBar=bar;
+    return bar;
+  }
+
+  // ── filtro + ordenação ──
+  function passa(e,r,cab,pular){
+    for(var k in e.f){
+      if(String(k)===String(pular)) continue;
+      var i=+k, f=e.f[k], td=r.cells[i]; if(!td) return false;
+      var v=txt(td);
+      if(f.tipo==='vals'){ if(!f.set[v]) return false; }
+      else if(f.tipo==='fx'){
+        var tp=f.cmp||'txt', x=valOrd(v,tp);
+        if(x==null) return false;
+        if(f.min!=null&&x<f.min) return false;
+        if(f.max!=null&&x>f.max) return false;
+      }
+      else if(f.tipo==='txt'){ if(norm(v).indexOf(f.q)<0) return false; }
+    }
+    return true;
+  }
+
+  function aplicar(t,silencio){
+    var cab=cabecalho(t); if(!cab) return;
+    var rs=linhas(t,cab.cells.length);
+    var e=est(t.dataset.cfxK||chave(t,cab));
+    var vis=0;
+    for(var i=0;i<rs.length;i++){
+      var ok=passa(e,rs[i],cab,null);
+      rs[i].classList.toggle('cfx-hide',!ok);
+      if(ok) vis++;
+    }
+    if(e.sort){
+      var i2=e.sort.i, dir=e.sort.dir, tp=e.sort.tp||'txt';
+      var arr=rs.slice();
+      arr.forEach(function(r,n){ r._cfxN=n; });
+      arr.sort(function(a,b){
+        var va=txt(a.cells[i2]), vb=txt(b.cells[i2]), c;
+        if(tp==='txt'){ c=va.localeCompare(vb,'pt-BR',{numeric:true,sensitivity:'base'}); }
+        else{
+          var xa=valOrd(va,tp), xb=valOrd(vb,tp);
+          if(xa==null&&xb==null) c=0; else if(xa==null) c=1; else if(xb==null) c=-1; else c=xa-xb;
+        }
+        if(c===0) return a._cfxN-b._cfxN;                  // estável
+        return dir==='desc'? -c : c;
+      });
+      var tb=arr.length? arr[0].parentNode : null;
+      if(tb){
+        proprio++;
+        try{ arr.forEach(function(r){ tb.appendChild(r); }); }
+        finally{ if(mo) mo.takeRecords(); proprio--; }
+      }
+    }
+    // linha "nada passou"
+    var antiga=t.querySelector('tr.cfx-vazio'); if(antiga) antiga.remove();
+    if(!vis&&rs.length){
+      var tr=document.createElement('tr'); tr.className='cfx-vazio';
+      var td=document.createElement('td'); td.colSpan=cab.cells.length;
+      td.textContent='Nenhuma linha passa pelos filtros desta tela.';
+      tr.appendChild(td); (rs[0].parentNode||t.tBodies[0]).appendChild(tr);
+    }
+    marcarCab(t,cab,e);
+    barra(t,e,cab,vis,rs.length);
+    t._cfxSig=assinatura(t,cab);
+  }
+
+  function assinatura(t,cab){
+    var rs=linhas(t,cab.cells.length);
+    return rs.length+'/'+(t.tBodies[0]?t.tBodies[0].childElementCount:0)+'/'+(rs[0]?txt(rs[0].cells[0]).length:0);
+  }
+  function marcarCab(t,cab,e){
+    for(var i=0;i<cab.cells.length;i++){
+      var b=cab.cells[i].querySelector('.cfx-b'); if(!b) continue;
+      var f=e.f[i], so=e.sort&&e.sort.i===i;
+      b.classList.toggle('cfx-act',!!f||!!so);
+      b.textContent = f? '▼' : (so? (e.sort.dir==='desc'?'↓':'↑') : '▾');
+    }
+  }
+  function rotulo(cab,i){ var s=txt(cab.cells[i]).replace('▾','').replace('▼','').replace('↑','').replace('↓','').trim(); return s||('coluna '+(i+1)); }
+
+  function barra(t,e,cab,vis,tot){
+    var bar=t._cfxBar; if(!bar||!bar.parentNode) return;
+    var chips=[], n=0;
+    for(var k in e.f){
+      n++;
+      var f=e.f[k], d='';
+      if(f.tipo==='vals') d=Object.keys(f.set).length===1? Object.keys(f.set)[0] : (Object.keys(f.set).length+' valores');
+      else if(f.tipo==='fx') d=(f.min!=null?f.min:'')+'…'+(f.max!=null?f.max:'');
+      else d='contém "'+f.q+'"';
+      chips.push('<span class="cfx-chip"><span>'+esc(rotulo(cab,+k))+': '+esc(d)+'</span><button type="button" title="tirar este filtro" data-cfx-x="'+k+'">✕</button></span>');
+    }
+    if(!n&&!e.sort){ bar.className='cfx-bar'; bar.innerHTML=''; return; }
+    bar.className='cfx-bar cfx-on';
+    bar.innerHTML='🔎 <b>'+vis+'</b> de <b>'+tot+'</b> '+(tot===1?'linha':'linhas')+
+      (e.sort? ' · ordenado por <b>'+esc(rotulo(cab,e.sort.i))+'</b> '+(e.sort.dir==='desc'?'↓':'↑'):'')+
+      (chips.length? ' · '+chips.join(' ') : '')+
+      ' <button type="button" class="cfx-clr" data-cfx-clr="1">limpar tudo</button>';
+    bar.onclick=function(ev){
+      var x=ev.target.closest&&ev.target.closest('[data-cfx-x]');
+      if(x){ delete e.f[x.getAttribute('data-cfx-x')]; aplicar(t); return; }
+      if(ev.target.closest&&ev.target.closest('[data-cfx-clr]')){ e.f={}; e.sort=null; aplicar(t); }
+    };
+  }
+
+  // ── menu ──
+  function fechar(){ if(menu) menu.className='cfx-menu'; mAlvo=null; mCol=-1; mBusca=''; }
+  function abrir(t,i,btn){
+    tokens();
+    if(!menu){
+      menu=document.createElement('div'); menu.className='cfx-menu';
+      document.body.appendChild(menu);
+      menu.addEventListener('click',function(ev){ ev.stopPropagation(); });
+    }
+    if(mAlvo===t&&mCol===i&&menu.classList.contains('cfx-on')){ fechar(); return; }
+    mAlvo=t; mCol=i; mBusca='';
+    pintarMenu();
+    menu.className='cfx-menu cfx-on';
+    var r=btn.getBoundingClientRect();
+    var w=menu.offsetWidth||262, h=menu.offsetHeight||300;
+    var L=Math.max(6,Math.min(r.left, (window.innerWidth||800)-w-6));
+    var T=r.bottom+4;
+    if(T+h>(window.innerHeight||600)-6) T=Math.max(6,r.top-h-4);
+    menu.style.left=L+'px'; menu.style.top=T+'px';
+    var bu=menu.querySelector('[data-cfx-q]'); if(bu) try{bu.focus();}catch(e){}
+  }
+
+  function pintarMenu(){
+    var t=mAlvo, i=mCol; if(!t||i<0) return;
+    var cab=cabecalho(t); if(!cab) return;
+    var rs=linhas(t,cab.cells.length);
+    var e=est(t.dataset.cfxK||chave(t,cab));
+    var tp=tipoCol(rs,i);
+    var f=e.f[i];
+    // contagem estilo Excel: conta o que passa pelos filtros DAS OUTRAS colunas
+    var cont={}, ordem=[];
+    for(var k=0;k<rs.length;k++){
+      if(!passa(e,rs[k],cab,i)) continue;
+      var v=txt(rs[k].cells[i]);
+      if(cont[v]==null){ cont[v]=0; ordem.push(v); }
+      cont[v]++;
+    }
+    if(tp==='data') ordem.sort(function(a,b){ var A=dataBR(a),B=dataBR(b); return (A==null?1:B==null?-1:(A<B?-1:A>B?1:0)); });
+    else if(tp==='num') ordem.sort(function(a,b){ var A=numDe(a),B=numDe(b); return (A==null?1:B==null?-1:A-B); });
+    else ordem.sort(function(a,b){ return String(a).localeCompare(String(b),'pt-BR',{numeric:true,sensitivity:'base'}); });
+
+    var q=norm(mBusca);
+    var mostra=q? ordem.filter(function(v){ return norm(v).indexOf(q)>=0; }) : ordem;
+    var corte=mostra.length>MAX_VALORES;
+    if(corte) mostra=mostra.slice(0,MAX_VALORES);
+    var sel=(f&&f.tipo==='vals')? f.set : null;
+    var todos=mostra.length&&mostra.every(function(v){ return !sel||sel[v]; });
+
+    var h='';
+    h+='<div class="cfx-h" title="'+esc(rotulo(cab,i))+'">'+esc(rotulo(cab,i))+'</div>';
+    h+='<div class="cfx-row">'+
+       '<button type="button" data-cfx-s="asc"'+(e.sort&&e.sort.i===i&&e.sort.dir==='asc'?' class="cfx-cur"':'')+'>'+(tp==='txt'?'↑ A→Z':'↑ menor')+'</button>'+
+       '<button type="button" data-cfx-s="desc"'+(e.sort&&e.sort.i===i&&e.sort.dir==='desc'?' class="cfx-cur"':'')+'>'+(tp==='txt'?'↓ Z→A':'↓ maior')+'</button>'+
+       '</div>';
+    if(tp!=='txt'){
+      var fx=(f&&f.tipo==='fx')?f:{};
+      var ph=tp==='data'?'dd/mm/aaaa':'nº';
+      h+='<div class="cfx-rg"><span>DE</span><input data-cfx-min value="'+esc(fx.minTxt||'')+'" placeholder="'+ph+'" '+
+         'readonly onfocus="this.removeAttribute(\'readonly\')" autocomplete="off" name="cfxmin_nofill" data-lpignore="true" data-1p-ignore>'+
+         '<span>ATÉ</span><input data-cfx-max value="'+esc(fx.maxTxt||'')+'" placeholder="'+ph+'" '+
+         'readonly onfocus="this.removeAttribute(\'readonly\')" autocomplete="off" name="cfxmax_nofill" data-lpignore="true" data-1p-ignore></div>';
+    }
+    h+='<div class="cfx-row" style="border-bottom:none;padding-bottom:4px"><input data-cfx-q value="'+esc(mBusca)+'" placeholder="buscar valor nesta coluna" '+
+       'readonly onfocus="this.removeAttribute(\'readonly\')" autocomplete="off" name="cfxq_nofill" data-lpignore="true" data-1p-ignore></div>';
+    h+='<div class="cfx-list">';
+    h+='<label class="cfx-it cfx-all"><input type="checkbox" data-cfx-todos'+(todos?' checked':'')+'><span class="cfx-v">(Selecionar tudo)</span><b class="cfx-n">'+mostra.length+'</b></label>';
+    for(var n=0;n<mostra.length;n++){
+      var v=mostra[n];
+      h+='<label class="cfx-it"><input type="checkbox" data-cfx-v="'+esc(v)+'"'+((!sel||sel[v])?' checked':'')+'>'+
+         '<span class="cfx-v" title="'+esc(v)+'">'+esc(v===''?'(vazio)':v)+'</span><b class="cfx-n">'+cont[v]+'</b></label>';
+    }
+    if(corte) h+='<div class="cfx-it" style="cursor:default;color:var(--cfx-mut)">…só os '+MAX_VALORES+' primeiros. Use a busca acima.</div>';
+    h+='</div>';
+    h+='<div class="cfx-foot"><button type="button" data-cfx-lim>Limpar coluna</button><button type="button" class="cfx-pri" data-cfx-ok>Fechar</button></div>';
+    menu.innerHTML=h;
+
+    menu.querySelectorAll('[data-cfx-s]').forEach(function(b){
+      b.onclick=function(){
+        var dir=b.getAttribute('data-cfx-s');
+        if(e.sort&&e.sort.i===i&&e.sort.dir===dir) e.sort=null; else e.sort={i:i,dir:dir,tp:tp};
+        aplicar(t); pintarMenu();
+      };
+    });
+    var qi=menu.querySelector('[data-cfx-q]');
+    if(qi) qi.oninput=function(){ mBusca=qi.value; var p=qi.selectionStart; pintarMenu(); var n2=menu.querySelector('[data-cfx-q]'); if(n2){ n2.focus(); try{n2.setSelectionRange(p,p);}catch(_){} } };
+    var lo=menu.querySelector('[data-cfx-min]'), hi=menu.querySelector('[data-cfx-max]');
+    function faixa(){
+      var a=lo?lo.value.trim():'', b=hi?hi.value.trim():'';
+      if(!a&&!b){ delete e.f[i]; }
+      else e.f[i]={tipo:'fx',cmp:tp,minTxt:a,maxTxt:b,min:a?valOrd(a,tp):null,max:b?valOrd(b,tp):null};
+      aplicar(t);
+    }
+    if(lo){ lo.onchange=faixa; lo.oninput=faixa; }
+    if(hi){ hi.onchange=faixa; hi.oninput=faixa; }
+    var tds=menu.querySelector('[data-cfx-todos]');
+    if(tds) tds.onchange=function(){
+      if(tds.checked){ delete e.f[i]; }
+      else { var s={}; e.f[i]={tipo:'vals',set:s}; }                 // desmarcar tudo = nada passa
+      aplicar(t); pintarMenu();
+    };
+    menu.querySelectorAll('[data-cfx-v]').forEach(function(cb){
+      cb.onchange=function(){
+        var atual=(e.f[i]&&e.f[i].tipo==='vals')? e.f[i].set : null;
+        var s={};
+        if(atual) for(var kk in atual) s[kk]=1;
+        else ordem.forEach(function(v){ s[v]=1; });                  // primeiro clique parte de "todos"
+        var v=cb.getAttribute('data-cfx-v');
+        if(cb.checked) s[v]=1; else delete s[v];
+        var faltam=ordem.some(function(v2){ return !s[v2]; });
+        if(!faltam) delete e.f[i]; else e.f[i]={tipo:'vals',set:s};
+        aplicar(t); pintarMenu();
+      };
+    });
+    var lim=menu.querySelector('[data-cfx-lim]');
+    if(lim) lim.onclick=function(){ delete e.f[i]; if(e.sort&&e.sort.i===i) e.sort=null; aplicar(t); pintarMenu(); };
+    var ok=menu.querySelector('[data-cfx-ok]');
+    if(ok) ok.onclick=fechar;
+  }
+
+  // ── varredura: acopla tabela nova, reaplica estado após re-render ──
+  function varrer(){
+    try{
+      proprio++;
+      tokens();
+      var todas=document.querySelectorAll('table');
+      for(var i=0;i<todas.length;i++){
+        var t=todas[i];
+        if(!t.dataset.cfx){ acoplar(t); continue; }
+        if(t.dataset.cfx!=='on') continue;
+        var cab=cabecalho(t); if(!cab) continue;
+        if(!t._cfxBar||!t._cfxBar.parentNode||t._cfxBar.nextSibling!==t) barraDaTabela(t,t.dataset.cfxK||chave(t,cab));
+        if(assinatura(t,cab)!==t._cfxSig){
+          menusDaTabela(t,cab,linhas(t,cab.cells.length));
+          aplicar(t);
+        }
+      }
+    }catch(e){ try{console.error('[CFX] varredura',e);}catch(_){} }
+    finally{ if(mo) mo.takeRecords(); proprio--; }
+  }
+  function agenda(){ clearTimeout(timer); timer=setTimeout(varrer,160); }
+
+  function iniciar(){
+    tokens();
+    varrer();
+    try{
+      mo=new MutationObserver(function(){ if(proprio>0) return; agenda(); });
+      mo.observe(document.documentElement,{childList:true,subtree:true});
+    }catch(e){}
+    document.addEventListener('click',function(ev){
+      if(menu&&menu.classList.contains('cfx-on')&&!menu.contains(ev.target)&&!(ev.target.closest&&ev.target.closest('.cfx-b'))) fechar();
+    },true);
+    document.addEventListener('keydown',function(ev){ if(ev.key==='Escape') fechar(); });
+    window.addEventListener('resize',fechar);
+  }
+
+  window.CFX={
+    versao:VER,
+    varrer:varrer,
+    limpar:function(sel){ var t=typeof sel==='string'?document.querySelector(sel):sel; if(!t) return; var e=est(t.dataset.cfxK||''); e.f={}; e.sort=null; aplicar(t); },
+    desligar:function(sel){ var t=typeof sel==='string'?document.querySelector(sel):sel; if(t) t.setAttribute('data-cfx-off',''); },
+    estado:function(){ return S; },
+    diag:function(){
+      var o={versao:VER,tabelas:[]};
+      document.querySelectorAll('table').forEach(function(t){
+        o.tabelas.push({cfx:t.dataset.cfx||'(nao avaliada)',chave:t.dataset.cfxK||'',menus:t.querySelectorAll('.cfx-b').length,linhas:(t.tBodies[0]?t.tBodies[0].rows.length:0)});
+      });
+      return o;
+    }
+  };
+
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',iniciar);
+  else iniciar();
+}catch(e){ try{ console.error('[CFX] nao iniciou; tabelas seguem sem filtro',e); }catch(_){} }
+})();
+</script>
+
+<!-- ═══════════════════════════════════════════════════════════════════════════
+     CARIMBO v1 — A VERSÃO NA TELA É DERIVADA, NUNCA DIGITADA
+     Achado do Fernando em 17/09/2026, com o PCM V191 JÁ PUBLICADO: a barra
+     lateral continuava dizendo `v4.03 · V190`. O `<title>` estava certo (é o
+     que o manifesto lê), mas o rodapé da barra é um literal escrito à mão que
+     ninguém bumpa. E não era um: o card "Sobre o sistema" dizia **PCM V118** —
+     28 versões atrás. No ProperHub, o subtítulo dizia **v6** num app v22.
+     🕳 Esta é a TERCEIRA vez que o mesmo defeito aparece: o V132 já tinha
+        consertado o rodapé que dizia `v3.53 · V129`, e o próprio CLAUDE.md já
+        registrava a lição ("carimbo duplicado à mão é carimbo que vai
+        divergir"). Consertar a ocorrência nunca cura a classe — o que cura é
+        não haver segundo lugar para esquecer.
+     ⇒ Regra: o texto de versão que o humano lê sai do `<meta name="app-build">`
+       (e, se ele faltar, do `<title>`). O elemento declara o formato em
+       `data-carimbo`, com `{v}` = versão curta (V192) e `{V}` = a completa
+       (PCM_V192). O PCF já fazia isso desde o V97 (`pcfCarimbarVersao`); este
+       bloco é a mesma ideia, genérica, para os fronts que não faziam.
+     ⚠ Silencioso e defensivo de propósito: sem fonte, ele NÃO INVENTA — deixa
+       o texto que está no HTML. Carimbo errado é pior que carimbo velho.
+     ⚠ BLOCO ÚNICO: copiado BYTE A BYTE; a varredura reprova divergência, e
+       reprova também literal de versão na tela que discorde do `<title>`.
+     ═══════════════════════════════════════════════════════════════════════════ -->
+<script>
+(function(){
+'use strict';
+try{
+  if(window.CARIMBO) return;
+
+  function daMeta(){
+    var m=document.querySelector('meta[name="app-build"]');
+    return m? String(m.getAttribute('content')||'').trim() : '';
+  }
+  function doTitle(){
+    var t=String(document.title||'');
+    var m=/\(([^()]*\bV\d+[^()]*)\)/.exec(t);              // "… (PCM V192)"
+    if(m) return m[1].trim();
+    m=/build\s+([A-Za-z]*_?V?\d+[\w.]*)/i.exec(t);          // "… build PCF_V110"
+    if(m) return m[1].trim();
+    m=/·\s*(v\d+(?:\.\d+)*)\s*$/i.exec(t);                  // "ProperHub · v23"
+    if(m) return m[1].trim();
+    return '';
+  }
+  function versao(){ return daMeta() || doTitle(); }
+  function curto(v){
+    return String(v).replace(/^(PCM|PCF|PORTAL|MURAL|HUB)[\s_-]*/i,'').trim();
+  }
+  function pintar(){
+    var v=versao();
+    if(!v) return 0;                                        // sem fonte, não inventa
+    var els=document.querySelectorAll('[data-carimbo]'), n=0;
+    for(var i=0;i<els.length;i++){
+      var tpl=els[i].getAttribute('data-carimbo')||'{v}';
+      var txt=tpl.split('{v}').join(curto(v)).split('{V}').join(v);
+      if(els[i].textContent!==txt){ els[i].textContent=txt; }
+      n++;
+    }
+    window.CARIMBO.versao=v;
+    window.CARIMBO.pintados=n;
+    return n;
+  }
+
+  window.CARIMBO={ bloco:'CARIMBO_V1', versao:'', pintados:0, pintar:pintar, lida:versao };
+
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',pintar);
+  else pintar();
+  // a barra lateral e o card "Sobre o sistema" são repintados pelo app;
+  // o observador garante que o carimbo volte junto, sem custo perceptível.
+  try{
+    var mo=new MutationObserver(function(){
+      clearTimeout(window.CARIMBO._t);
+      window.CARIMBO._t=setTimeout(pintar,200);
+    });
+    mo.observe(document.documentElement,{childList:true,subtree:true});
+  }catch(e){}
+}catch(e){ try{ console.error('[CARIMBO] nao iniciou; a tela mantem o texto do HTML',e); }catch(_){} }
+})();
+</script>
+
+<!-- ████ FIM BLOCOS PADRAO UX ████ -->
+<!-- ████ INICIO ROLAGEM_V1 · A TELA NAO PULA PARA O TOPO ████ -->
+<script>
+/* ═════════════════════════════════════════════════════════════════════════════════════════════════════════════════════
+   ROLAGEM_V1 — 21/10/2026 — rodada 2026-10-21_FERNANDO_rolagem_e_gavetas. O MESMO bloco, byte a byte, no PCM (V295) e no PCF (V141).
+   Pedido do Fernando (21/10): "clico em uma demanda e a tela sobe sozinha pro topo… acontece em outras telas também (desconto na
+   proposta)… no PCF, clico em Assumir tarefa e a tela sobe pro topo".
+   A causa é sempre a mesma família: a tela se REDESENHA (innerHTML) e, no meio, a área que rola fica curta por um instante (o
+   navegador zera a rolagem) ou é trocada por outra área igual, que nasce no topo. Medido na bancada: Agenda 600 → 0 px ao abrir a
+   demanda; PCF 623 → 0 px no Assumir (o "Carregando pipeline…" curto entre as duas pinturas).
+   O GUARDIÃO (mecanismo, não conserto de tela — os consertos de raiz estão nos blocos PCM V295 / PCF V141):
+   1 · a cada gesto de verdade (toque/clique, Enter/Espaço, troca de valor de campo) fotografa as áreas que estão roladas e, em cada
+       uma, ÂNCORAS: o próprio elemento tocado (e os pais dele com identidade: id, data-*, onclick) e o que está visível no alto,
+       com a distância de cada um ao topo da área;
+   2 · por 2,5 s (até 8 s enquanto a área ainda está curta demais para voltar), se uma área PERDEU rolagem (30 px ou mais) sem a mão
+       da pessoa (roda, dedo, barra de rolagem, teclas de rolar) e sem o código ter pedido (scrollTop menor, scrollTo, scrollBy,
+       scrollIntoView), devolve: a âncora volta para o mesmo lugar; sem âncora, o mesmo número — só na MESMA área, ou numa área
+       com altura parecida (±25%);
+   3 · trocou de tela (ROLAGEM_V1.tela(), que cada app define) ⇒ não faz nada.
+   Regras de mecanismo (núcleo §4.1): o que o código pede explicitamente vale — o guardião não disputa com o dono da tela; só
+   desfaz o que o redesenho desfez e nunca prende (prazo fixo; a mão da pessoa encerra na hora). Inteiro em try/catch.
+   Opt-out: atributo data-rolagem-livre no elemento tocado (ou num pai). Chave de volta: localStorage rolagem_v1 = off.
+   ═════════════════════════════════════════════════════════════════════════════════════════════════════════════════════ */
+(function () {
+  if (window.ROLAGEM_V1) return;
+  var R = window.ROLAGEM_V1 = { versao: 'ROLAGEM_V1', devolvidas: 0, gestos: 0, log: [], janela: null,
+    tela: function () { try { return typeof currentView !== 'undefined' ? String(currentView) : ''; } catch (e) { return ''; } } };
+  function off() { try { return localStorage.getItem('rolagem_v1') === 'off'; } catch (e) { return false; } }
+  R.off = off;
+  function agora() { try { return performance.now(); } catch (e) { return Date.now(); } }
+  function doc() { return document.scrollingElement || document.documentElement; }
+  function alvoDe(el) { return (el === document.documentElement || el === document.body) ? doc() : el; }
+  function anotar(o) { try { o.q = Date.now(); R.log.push(o); if (R.log.length > 40) R.log.shift(); } catch (e) {} }
+
+  // ── 1 · o que o CÓDIGO pediu (vale sempre) ─────────────────────────────────────────────────────────────────────────
+  var pedidos = (typeof WeakMap === 'function') ? new WeakMap() : null;
+  var proprio = false;
+  function marcar(el, v) { try { if (!proprio && pedidos && el) pedidos.set(alvoDe(el), { t: agora(), v: v }); } catch (e) {} }
+  R._marcar = marcar;
+  function rolavel(el) {
+    try {
+      if (!el || el.nodeType !== 1) return false;
+      if (el === doc()) return el.scrollHeight > el.clientHeight + 1;
+      if (el.scrollHeight <= el.clientHeight + 1) return false;
+      var oy = getComputedStyle(el).overflowY;
+      return oy === 'auto' || oy === 'scroll' || oy === 'overlay';
+    } catch (e) { return false; }
+  }
+  try {
+    var dTop = Object.getOwnPropertyDescriptor(Element.prototype, 'scrollTop');
+    if (dTop && dTop.set && dTop.configurable) {
+      Object.defineProperty(Element.prototype, 'scrollTop', { configurable: true, enumerable: dTop.enumerable,
+        get: function () { return dTop.get.call(this); },
+        set: function (v) { marcar(this, Number(v)); return dTop.set.call(this, v); } });
+      R._setTop = function (el, v) { proprio = true; try { dTop.set.call(el, v); } finally { proprio = false; } };
+    }
+  } catch (e) {}
+  if (!R._setTop) R._setTop = function (el, v) { proprio = true; try { el.scrollTop = v; } finally { proprio = false; } };
+  function vDe(el, args, soma) {
+    try {
+      var a = args[0], top;
+      if (a && typeof a === 'object') top = a.top; else if (args.length > 1) top = args[1];
+      if (top === undefined || top === null || isNaN(Number(top))) return null;
+      return soma ? (alvoDe(el).scrollTop + Number(top)) : Number(top);
+    } catch (e) { return -1; }
+  }
+  function embrulhar(dono, nome, fn) {
+    try { var o = dono[nome]; if (typeof o !== 'function' || o.__rolagemV1) return; var n = fn(o); n.__rolagemV1 = true; dono[nome] = n; } catch (e) {}
+  }
+  ['scrollTo', 'scroll', 'scrollBy'].forEach(function (nm) {
+    embrulhar(Element.prototype, nm, function (o) { return function () { var v = vDe(this, arguments, nm === 'scrollBy'); if (v !== null) marcar(this, v); return o.apply(this, arguments); }; });
+    embrulhar(window, nm, function (o) { return function () { var v = vDe(doc(), arguments, nm === 'scrollBy'); if (v !== null) marcar(doc(), v); return o.apply(this, arguments); }; });
+  });
+  // focus() sem preventScroll que ROLOU alguma área também é pedido do código: o navegador rolou até o campo (a validação que mostra
+  //   o campo errado — auditoria 1, A2). Só marca a área que de fato mudou (auditoria 1, O1: foco em coisa já visível não desliga o guardião).
+  embrulhar(HTMLElement.prototype, 'focus', function (o) {
+    return function (op) {
+      var antes = null;
+      try {
+        if (!(op && op.preventScroll)) {
+          antes = [];
+          for (var n = this.parentElement; n; n = n.parentElement) if (n === doc() || rolavel(n)) antes.push([n, n.scrollTop]);
+          antes.push([doc(), doc().scrollTop]);
+        }
+      } catch (e) { antes = null; }
+      var r = o.apply(this, arguments);
+      try { if (antes) antes.forEach(function (x) { if (Math.abs(x[0].scrollTop - x[1]) > 1) marcar(x[0], -1); }); } catch (e) {}
+      return r;
+    };
+  });
+  embrulhar(Element.prototype, 'scrollIntoView', function (o) {
+    return function () {
+      try { for (var n = this.parentElement; n; n = n.parentElement) if (n === doc() || rolavel(n)) marcar(n, -1); marcar(doc(), -1); } catch (e) {}
+      return o.apply(this, arguments);
+    };
+  });
+
+  // ── 2 · a MÃO da pessoa (vale sempre: encerra a janela na hora) ─────────────────────────────────────────────────────
+  R.mao = 0;
+  function mao() { R.mao = agora(); }
+  try {
+    window.addEventListener('wheel', mao, { capture: true, passive: true });
+    window.addEventListener('touchmove', mao, { capture: true, passive: true });
+    // teclado: tudo que não é "apertar" (Enter, ou Espaço num botão) é a pessoa agindo — rolar, Tab até outro campo, Ctrl+Home num texto
+    //   longo… o navegador rola por causa dela, e o guardião não devolve (auditoria 1, A3)
+    window.addEventListener('keydown', function (ev) {
+      try {
+        if (!ev.isTrusted) return;
+        var k = ev.key, t = ev.target;
+        if (k === 'Enter' || k === 'Escape' || k === 'Esc' || k === 'Shift' || k === 'Control' || k === 'Alt' || k === 'Meta') return;
+        if ((k === ' ' || k === 'Spacebar') && t && t.closest && t.closest('button,a,[role="button"],summary,[role="checkbox"],[role="radio"]')) return;
+        mao();
+      } catch (e) {}
+    }, true);
+    window.addEventListener('mousedown', function (ev) {
+      try {
+        if (ev.button === 1) { mao(); return; }
+        var t = ev.target; if (!t || t.nodeType !== 1) return;
+        var el = alvoDe(t);
+        if (el === doc()) { if (ev.clientX >= document.documentElement.clientWidth || ev.clientY >= document.documentElement.clientHeight) mao(); return; }
+        if ((ev.offsetX >= t.clientWidth && t.offsetWidth > t.clientWidth) || (ev.offsetY >= t.clientHeight && t.offsetHeight > t.clientHeight)) mao();   // na barra de rolagem
+      } catch (e) {}
+    }, true);
+  } catch (e) {}
+
+  // ── 3 · a fotografia do gesto ───────────────────────────────────────────────────────────────────────────────────────
+  function caminho(el) {      // endereço estável da área: #id, ou o caminho a partir do 1º pai com id (tag + posição)
+    try {
+      if (el === doc()) return 'doc';
+      if (el.id) return '#' + el.id;
+      var p = [], n = el;
+      while (n && n.nodeType === 1 && !n.id && n !== document.body) {
+        var i = 1, s = n; while ((s = s.previousElementSibling)) if (s.tagName === n.tagName) i++;
+        p.unshift(n.tagName + ':' + i); n = n.parentElement;
+      }
+      return (n && n.id ? '#' + n.id : 'body') + '>' + p.join('>');
+    } catch (e) { return ''; }
+  }
+  function acharCaminho(c) {
+    try {
+      if (!c) return null;
+      if (c === 'doc') return doc();
+      var partes = c.split('>'), raiz = partes.shift();
+      var n = raiz === 'body' ? document.body : document.getElementById(raiz.slice(1));
+      for (var k = 0; n && k < partes.length; k++) {
+        var x = partes[k].split(':'), tag = x[0], i = Number(x[1]), m = null, c2 = 0;
+        for (var f = n.firstElementChild; f; f = f.nextElementSibling) if (f.tagName === tag && ++c2 === i) { m = f; break; }
+        n = m;
+      }
+      return n || null;
+    } catch (e) { return null; }
+  }
+  function chave(n) {         // identidade de um elemento para achá-lo de novo depois do redesenho
+    try {
+      if (!n || n.nodeType !== 1) return null;
+      if (n.id && !/^[0-9]/.test(n.id)) return { id: n.id };
+      var a = [];
+      for (var i = 0; i < n.attributes.length; i++) {
+        var at = n.attributes[i], nm = at.name;
+        if (/^data-/.test(nm) && !/^data-(pw|pcm-enviando|v230-tot|j1|cfx)/.test(nm) && at.value.length < 120) a.push([nm, at.value]);
+        else if (nm === 'onclick' && at.value.length < 240) a.push([nm, at.value]);
+      }
+      if (!a.length) return null;
+      return { tag: n.tagName, at: a };
+    } catch (e) { return null; }
+  }
+  function acharChave(area, k) {
+    try {
+      if (!k) return null;
+      if (k.id) { var e = document.getElementById(k.id); return e && (area === doc() || area.contains(e)) && e.getClientRects().length ? e : null; }
+      var sel = k.tag.toLowerCase() + '[' + k.at[0][0] + ']';
+      var cs = (area === doc() ? document : area).querySelectorAll(sel);
+      for (var i = 0; i < cs.length; i++) {
+        var c = cs[i], ok = true;
+        for (var j = 0; j < k.at.length && ok; j++) if (c.getAttribute(k.at[j][0]) !== k.at[j][1]) ok = false;
+        if (ok && c.getClientRects().length) return c;
+      }
+      return null;
+    } catch (e) { return null; }
+  }
+  function topoDa(area) { try { return area === doc() ? 0 : area.getBoundingClientRect().top; } catch (e) { return 0; } }
+  function ancoras(area, alvo) {
+    var out = [], visto = [];
+    function por(n) {
+      for (var x = n; x && x !== area && x !== document.body && out.length < 6; x = x.parentElement) {
+        if (visto.indexOf(x) >= 0) return;
+        visto.push(x);
+        var k = chave(x); if (k) { out.push({ k: k, off: x.getBoundingClientRect().top - topoDa(area) }); return; }
+      }
+    }
+    try {
+      if (alvo && (area === doc() || area.contains(alvo))) {
+        for (var n = alvo, c = 0; n && n !== area && c < 4; n = n.parentElement) {
+          var k = chave(n); if (k && visto.indexOf(n) < 0) { visto.push(n); out.push({ k: k, off: n.getBoundingClientRect().top - topoDa(area) }); c++; }
+        }
+      }
+      var r = area === doc() ? { left: 0, top: 0, width: innerWidth, height: innerHeight } : area.getBoundingClientRect();
+      [0.15, 0.45].forEach(function (f) {
+        var y = Math.max(r.top + 4, Math.min(r.top + r.height * f, innerHeight - 4)), x = Math.max(4, Math.min(r.left + r.width / 2, innerWidth - 4));
+        var e = document.elementFromPoint(x, y); if (e && (area === doc() || area.contains(e))) por(e);
+      });
+    } catch (e) {}
+    return out;
+  }
+  function fotografar(alvo) {
+    var areas = [], vistas = [];
+    function poe(el) {
+      try {
+        el = alvoDe(el);
+        if (!el || vistas.indexOf(el) >= 0 || !rolavel(el) || el.scrollTop < 40) return;
+        if (el !== doc() && !el.getClientRects().length) return;
+        vistas.push(el);
+        areas.push({ el: el, cam: caminho(el), top: el.scrollTop, alt: el.scrollHeight, anc: ancoras(el, alvo), parou: false });
+      } catch (e) {}
+    }
+    try { for (var n = alvo; n && n.nodeType === 1; n = n.parentElement) poe(n); } catch (e) {}
+    poe(doc());
+    try { R.rolados.forEach(function (el) { if (areas.length < 12 && el.isConnected) poe(el); }); } catch (e) {}
+    return areas;
+  }
+  R.rolados = [];
+  try {
+    document.addEventListener('scroll', function (ev) {
+      try {
+        var el = ev.target === document ? doc() : ev.target; if (!el || el.nodeType !== 1) return;
+        var i = R.rolados.indexOf(el); if (i >= 0) R.rolados.splice(i, 1);
+        R.rolados.unshift(el); if (R.rolados.length > 16) R.rolados.length = 16;
+      } catch (e) {}
+    }, true);
+  } catch (e) {}
+
+  function armar(ev) {
+    try {
+      if (!ev || !ev.isTrusted || off()) return;
+      var t = ev.target; if (!t || t.nodeType !== 1) t = t && t.parentElement; if (!t) return;
+      if (t.closest && t.closest('[data-rolagem-livre],a[href^="#"]')) return;
+      try { R.rolados = R.rolados.filter(function (e) { return e.isConnected; }); } catch (e) {}   // sem guardar nó desligado (auditoria 1, O4)
+      var areas = fotografar(t);
+      R.gestos++;
+      if (!areas.length) { R.janela = null; return; }
+      R.janela = { t: agora(), ate: agora() + 2500, teto: agora() + 8000, tela: R.tela(), areas: areas, tipo: ev.type };
+      girar();
+    } catch (e) {}
+  }
+  R._armar = armar;
+  try {
+    document.addEventListener('pointerdown', function (ev) { if (ev.button === 0 || ev.pointerType === 'touch') armar(ev); }, true);
+    document.addEventListener('keydown', function (ev) { if (ev.key === 'Enter' || ev.key === ' ') armar(ev); }, true);
+    document.addEventListener('change', armar, true);
+  } catch (e) {}
+
+  // ── 4 · a vigia (só durante a janela do gesto) ─────────────────────────────────────────────────────────────────────
+  var girando = 0;
+  function girar() { if (!girando) girando = requestAnimationFrame(vigiar); }
+  function vigiar() {
+    girando = 0;
+    var J = R.janela; if (!J) return;
+    try {
+      var t = agora();
+      if (R.mao > J.t || t > J.ate || R.tela() !== J.tela || off()) { R.janela = null; return; }
+      J.areas.forEach(function (a) {
+        if (a.parou) return;
+        var el = a.el.isConnected ? a.el : acharCaminho(a.cam);
+        if (!el) return;
+        var p = pedidos && pedidos.get(el);
+        if (p && p.t >= J.t && (p.v < 0 || p.v < a.top - 30)) { a.parou = true; return; }   // o código pediu: vale
+        var cur = el.scrollTop;
+        if (cur >= a.top - 30) return;
+        var alvo = null, como = '';
+        for (var i = 0; i < a.anc.length; i++) {
+          var n = acharChave(el, a.anc[i].k);
+          if (n) { alvo = cur + (n.getBoundingClientRect().top - topoDa(el)) - a.anc[i].off; como = 'âncora'; break; }
+        }
+        if (alvo === null && Math.abs(el.scrollHeight - a.alt) <= Math.max(80, a.alt * 0.25)) { alvo = a.top; como = 'número'; }   // conteúdo de altura parecida (auditoria 1, O2)
+        if (alvo === null || alvo <= cur + 30) return;
+        var max = el.scrollHeight - el.clientHeight;
+        if (max < alvo - 2) { J.ate = Math.min(J.teto, Math.max(J.ate, t + 600)); return; }   // ainda curta: espera o resto chegar
+        R._setTop(el, Math.round(alvo));
+        R.devolvidas++;
+        anotar({ area: a.cam, de: cur, para: Math.round(alvo), como: como, gesto: J.tipo });
+      });
+    } catch (e) {}
+    if (R.janela) girar();
+  }
+})();
+</script>
+<!-- ████ FIM ROLAGEM_V1 ████ -->
+<header class="topo">
+<h1>Padrão de Telas ProperCare <small style="font-weight:400;color:var(--mudo)" data-carimbo="· {V}">· PADRAO_V1</small></h1>
+<p>A vitrine do padrão. <b>A fonte é o código</b> em <code>ferramentas/</code> do ProperCare-backlog (D1): os 5 motores desta
+página são os mesmos arquivos, byte a byte; os tokens são lidos agora do PCM, do PCF e do Hub no ar; o selo de cada obrigatório
+sai do código da varredura. Esta página não guarda cópia de nada que possa divergir.</p>
+<div class="resumo"><span><b>25</b> obrigatórios de 17/09</span><span>5 <span class="selo selo-reprova">Medido · reprova</span></span><span>5 <span class="selo selo-avisa">Medido · avisa</span></span><span>15 <span class="selo selo-olho">Só o olho</span></span></div>
+<nav class="ancoras"><a href="#tokens">1 · Tokens</a><a href="#componentes">2 · Componentes</a><a href="#medido">3 · Medido × olho</a><a href="#checagens">Checagens</a></nav>
+</header>
+<main>
+<section id="tokens" class="sec"><h2>1 · Tokens — lidos do ar agora</h2>
+<p class="lead">"Quem vence hoje" = o último <code>:root</code> simples fora de @-regras, na ordem do CSS (não pesa <code>!important</code> nem seletor mais forte). Nada desta seção está gravado na página: ao abrir, ela lê o <code>index.html</code> do PCM, do PCF e do Hub
+(mesmo endereço do GitHub Pages) e mostra o que está publicado. Os conflitos aparecem como estão, com quem vence hoje.
+<b>Nenhuma paleta é unificada aqui</b>: trocar o tema de um front é mudança no ar e tem issue própria.</p>
+<div id="tkEstado" class="estado">lendo os fronts no ar…</div>
+<h3>Laranjas e acentos × o Manual de Marca</h3>
+<table class="tab" id="tkPaletas"><thead><tr><th>Front</th><th>Token</th><th>Valor que vence hoje</th></tr></thead>
+<tbody><tr><td>Manual de Marca</td><td>(referência)</td><td><span class="sw" style="background:#EE7625"></span>#EE7625</td></tr></tbody></table>
+<h3>Conflitos dentro do PCM</h3>
+<table class="tab" id="tkConflitos"><thead><tr><th>Token</th><th>Definições (na ordem do CSS)</th><th>Quem vence hoje</th><th>Decisão</th></tr></thead><tbody></tbody></table>
+<h3>Medidas do PCM</h3>
+<table class="tab" id="tkMedidas"><thead><tr><th>Medida</th><th>Valor</th><th>Como foi medido</th></tr></thead><tbody></tbody></table>
+</section>
+<section id="componentes" class="sec"><h2>2 · Componentes</h2><p class="lead">Prévia viva só onde existe o arquivo. Cada selo sai do código da varredura (checagem citada); o motor em si é conferido byte a byte pela checagem 1 em todo front que o declara — inclusive esta página.</p><div class="cards"><article class="card" id="c-cfx" data-componente="cfx">
+<h3>Tabela com filtro de coluna</h3>
+<div class="chips"><span class="selo selo-reprova">Medido · reprova · checagem 1: o motor byte a byte</span><span class="selo selo-olho">Só o olho · A1</span><span class="selo selo-olho">Só o olho · A2</span></div>
+<p class="regra">Toda tabela de consulta ganha o ▾ no título sozinha; opt-out só com data-cfx-off e motivo; formulário não leva.</p>
+<p class="licao"><b>De onde veio:</b> 17/09: só 5 das 36 tabelas do PCM tinham filtro, e toda tela nova nascia sem (regras/telas.md §5.2).</p>
+<p class="onde"><b>Fonte:</b> <code>ferramentas/blocos/CFX_V1.html</code> (md5 f092f38a) · declarado em 11 linha(s) da COMPOSICAO.tsv: ProperAdmin/index.html, ProperAdmin/placas.html, ProperAdmin/maquina.html, ProperAdmin/mural.html, ProperAdmin/financeiro.html, ProperAdmin/emitir_nota.html, ProperAdmin/padrao.html, ProperTech/index.html, ProperHub/index.html, ProperRotores/index.html, ProperPortal/index.html</p>
+<div class="previa"><table class="tab" id="demoCfx"><thead><tr><th>TAG</th><th>Máquina</th><th>Situação</th><th>Horímetro</th></tr></thead>
+<tbody><tr><td>C-101</td><td>Compressor parafuso 15 hp</td><td>Em uso</td><td>12.480</td></tr>
+<tr><td>C-102</td><td>Compressor parafuso 20 hp</td><td>Na oficina</td><td>8.115</td></tr>
+<tr><td>S-201</td><td>Secador por refrigeração</td><td>Em uso</td><td>3.902</td></tr>
+<tr><td>C-103</td><td>Compressor pistão 10 hp</td><td>Parado</td><td>21.006</td></tr>
+<tr><td>R-301</td><td>Reservatório 500 L</td><td>Em uso</td><td>—</td></tr></tbody></table>
+<p class="mini">Exemplo fictício. O ▾ no título apareceu sozinho: o CFX se acopla a toda tabela que encontra.</p></div>
+</article><article class="card" id="c-pwait" data-componente="pwait">
+<h3>Barra de espera nos três momentos</h3>
+<div class="chips"><span class="selo selo-reprova">Medido · reprova · checagem 1: o motor byte a byte</span><span class="selo selo-olho">Só o olho · B1</span><span class="selo selo-olho">Só o olho · B2</span><span class="selo selo-olho">Só o olho · B3</span><span class="selo selo-reprova">Medido · reprova · B4 · checagem 4</span><span class="selo selo-olho">Só o olho · B7</span></div>
+<p class="regra">Conta sozinho as chamadas em voo: barra já, aviso aos 3,5 s, explicação aos 9 s; nunca bloqueia; o 2º clique é engolido.</p>
+<p class="licao"><b>De onde veio:</b> 21/09: a guarda devolvia a foto velha e o Salvar morria em &quot;⏳ Processando…&quot; (PWAIT v2, no cabeçalho do bloco).</p>
+<p class="onde"><b>Fonte:</b> <code>ferramentas/blocos/PWAIT_V4.html</code> (md5 1bc3d46f) · declarado em 13 linha(s) da COMPOSICAO.tsv: ProperAdmin/index.html, ProperAdmin/placas.html, ProperAdmin/maquina.html, ProperAdmin/mural.html, ProperAdmin/financeiro.html, ProperAdmin/emitir_nota.html, ProperAdmin/padrao.html, ProperTech/index.html, ProperHub/index.html, ProperRotores/index.html, ProperPortal/index.html, ProperForms/assinar.html, todos os formulários</p>
+<div class="previa"><div class="linha-btn"><button class="btn pri" id="demoEspera" type="button">Simular uma gravação de 12 segundos</button>
+<button class="btn" id="demoRapida" type="button">Simular uma leitura de 1 segundo</button></div>
+<p class="mini">A rede é simulada; a barra no topo, o aviso aos 3,5 s ("aguardando o servidor…"), a explicação aos 9 s e o botão ocupado
+são o motor de verdade. Clique duas vezes: o 2º clique é engolido.</p><div class="estado" id="demoEsperaEstado"></div></div>
+</article><article class="card" id="c-erro" data-componente="erro">
+<h3>Aviso de erro e &quot;Sem conexão&quot;</h3>
+<div class="chips"><span class="selo selo-reprova">Medido · reprova · checagem 1: o motor byte a byte</span><span class="selo selo-reprova">Medido · reprova · C1 · checagem 5</span><span class="selo selo-avisa">Medido · avisa · C2 · checagem 9</span><span class="selo selo-avisa">Medido · avisa · C3 · checagem 9</span></div>
+<p class="regra">Erro nunca acontece em silêncio: falha de rede vira &quot;Sem conexão — a alteração NÃO foi gravada.&quot;</p>
+<p class="licao"><b>De onde veio:</b> PCM V108: um ReferenceError no boot quebrava o app sem deixar rastro; em 17/09 o Portal e 14 formulários não tinham tratador.</p>
+<p class="onde"><b>Fonte:</b> <code>ferramentas/blocos/ERRO_V1.html</code> (md5 c99512b9) · declarado em 10 linha(s) da COMPOSICAO.tsv: ProperAdmin/placas.html, ProperAdmin/maquina.html, ProperAdmin/mural.html, ProperAdmin/financeiro.html, ProperAdmin/emitir_nota.html, ProperAdmin/padrao.html, ProperRotores/index.html, ProperPortal/index.html, ProperForms/assinar.html, todos os formulários</p>
+<div class="previa"><div class="linha-btn"><button class="btn" id="demoSemConexao" type="button">Simular gravação sem conexão</button></div>
+<p class="mini">A chamada falha com "Failed to fetch" e ninguém a trata: o motor ERRO traduz para a frase que importa, no rodapé da tela.</p></div>
+</article><article class="card" id="c-carimbo" data-componente="carimbo">
+<h3>Versão na tela derivada</h3>
+<div class="chips"><span class="selo selo-reprova">Medido · reprova · checagem 1: o motor byte a byte</span><span class="selo selo-reprova">Medido · reprova · D4 · checagem 8</span></div>
+<p class="regra">A versão que o olho lê sai do &lt;meta app-build&gt;/&lt;title&gt; (data-carimbo); nunca é digitada.</p>
+<p class="licao"><b>De onde veio:</b> 17/09: a barra dizia V190 num PCM V191 — a terceira vez do mesmo defeito; e a #130 (o &quot;(PCM V308)&quot; à mão).</p>
+<p class="onde"><b>Fonte:</b> <code>ferramentas/blocos/CARIMBO_V1.html</code> (md5 d3e4f00b) · declarado em 3 linha(s) da COMPOSICAO.tsv: ProperAdmin/index.html, ProperAdmin/padrao.html, ProperHub/index.html</p>
+<div class="previa"><p>Versão desta página, derivada do <code>&lt;meta app-build&gt;</code>: <b data-carimbo="{V}" id="demoCarimbo">(o motor escreve aqui)</b></p>
+<p class="mini">Ninguém digitou o texto acima: o CARIMBO o escreve ao abrir. Sem fonte, ele não inventa.</p></div>
+</article><article class="card" id="c-rolagem" data-componente="rolagem">
+<h3>Guardião de rolagem</h3>
+<div class="chips"><span class="selo selo-reprova">Medido · reprova · checagem 1: o motor byte a byte</span></div>
+<p class="regra">Depois de um gesto, a área que perdeu a rolagem sem a mão da pessoa volta para onde estava.</p>
+<p class="licao"><b>De onde veio:</b> 21/10: &quot;clico numa demanda e a tela sobe sozinha pro topo&quot; (Agenda 600 → 0 px; PCF no Assumir).</p>
+<p class="onde"><b>Fonte:</b> <code>ferramentas/blocos/ROLAGEM_V1.html</code> (md5 a83d44bd) · declarado em 3 linha(s) da COMPOSICAO.tsv: ProperAdmin/index.html, ProperAdmin/padrao.html, ProperTech/index.html</p>
+<div class="previa"><div class="rolar" id="demoRolar"></div>
+<p class="mini">Role até o meio e toque em "Abrir": a lista se redesenha (passa por "Carregando…" curto) — sem o guardião, voltaria ao topo.</p>
+<div class="estado" id="demoRolarEstado"></div></div>
+</article><article class="card" id="c-janela" data-componente="janela">
+<h3>Guardião de janela (&quot;nada se perde&quot;)</h3>
+<div class="chips"><span class="selo selo-reprova">Medido · reprova · checagem 1: o motor byte a byte</span></div>
+<p class="regra">Janela mexida não fecha pelo fundo nem pelo Esc; fechou com coisa digitada, o rascunho volta.</p>
+<p class="licao"><b>De onde veio:</b> regras/telas.md: &quot;nada se perde&quot; trava a janela MEXIDA, não a que TEM campo — e botão de opção conta.</p>
+<p class="onde"><b>Fonte:</b> <code>ferramentas/blocos/JANELA_V1.html</code> (md5 9bb8bf40) · declarado em 1 linha(s) da COMPOSICAO.tsv: ProperAdmin/index.html</p>
+<div class="previa vazia">O motor é um trecho do bloco PCM V215 (depende do PCM) e não roda fora dele: a prévia é o próprio PCM.</div>
+</article><article class="card" id="c-pin" data-componente="pin">
+<h3>PIN mascarado</h3>
+<div class="chips"><span class="selo selo-reprova">Medido · reprova · checagem 11</span></div>
+<p class="regra">PIN é type=text com .pin-mask; type=password só no login de verdade (o Chrome oferece SALVAR).</p>
+<p class="licao"><b>De onde veio:</b> 07/10: o &quot;Salvar senha?&quot; do Chrome aparecia no PIN do técnico.</p>
+<p class="onde sem"><b>Sem fonte</b> em <code>ferramentas/blocos/</code> · no PCM agora: <span data-conta="pin">contando…</span></p>
+<div class="previa"><div class="ar" data-css-ar="pin" data-amostra="&lt;input type=&quot;text&quot; class=&quot;pin-mask&quot; inputmode=&quot;numeric&quot; autocomplete=&quot;off&quot; aria-label=&quot;PIN de exemplo&quot; placeholder=&quot;PIN&quot; value=&quot;1234&quot;&gt;"><i>lendo o CSS do PCM no ar…</i></div><p class="mini">Prévia com o CSS lido agora do PCM (.pin-mask) — não é cópia: se o PCM mudar, esta prévia muda.</p></div>
+</article><article class="card" id="c-vazio" data-componente="vazio">
+<h3>Estado vazio que explica</h3>
+<div class="chips"><span class="selo selo-olho">Só o olho · C5</span></div>
+<p class="regra">Título até 6 palavras + 1 frase + 1 botão: o único texto didático permanente (§5.10).</p>
+<p class="licao"><b>De onde veio:</b> #102: o didatismo mora no lugar certo — o estado vazio é um deles.</p>
+<p class="onde sem"><b>Sem fonte</b> em <code>ferramentas/blocos/</code> · no PCM agora: <span data-conta="vazio">contando…</span></p>
+<div class="previa"><div class="ar" data-css-ar="vazio" data-amostra="&lt;div class=&quot;empty&quot;&gt;&lt;div class=&quot;empty-icon&quot;&gt;📭&lt;/div&gt;&lt;div class=&quot;empty-title&quot;&gt;Nenhuma OS aberta&lt;/div&gt;&lt;div class=&quot;empty-sub&quot;&gt;Quando uma OS for aberta, ela aparece aqui.&lt;/div&gt;&lt;/div&gt;"><i>lendo o CSS do PCM no ar…</i></div><p class="mini">Prévia com o CSS lido agora do PCM (.empty, .empty-icon, .empty-title, .empty-sub) — não é cópia: se o PCM mudar, esta prévia muda.</p></div>
+</article><article class="card" id="c-toast" data-componente="toast">
+<h3>Aviso na tela (toast)</h3>
+<div class="chips"><span class="selo selo-avisa">Medido · avisa · C2 · checagem 9</span></div>
+<p class="regra">Aviso curto na tela em vez de alert(); erro diz o que não aconteceu e o que fazer.</p>
+<p class="licao"><b>De onde veio:</b> P1 da #125: 14 implementações de aviso só no PCM, uma com os parâmetros trocados.</p>
+<p class="onde sem"><b>Sem fonte</b> em <code>ferramentas/blocos/</code> · no PCM agora: <span data-conta="toast">contando…</span></p>
+<div class="previa vazia">Sem prévia: não há arquivo para mostrar. Vira prévia viva quando virar bloco em <code>ferramentas/blocos/</code> (D3).</div>
+</article><article class="card" id="c-esqueleto" data-componente="esqueleto">
+<h3>Esqueleto</h3>
+<div class="chips"><span class="selo selo-olho">Só o olho · B5</span></div>
+<p class="regra">Enquanto carrega, a forma da tela aparece no lugar — nunca a tela em branco.</p>
+<p class="licao"><b>De onde veio:</b> P1 da #125: só o PCM tem (xfSkeletonHtml), sem nome comum.</p>
+<p class="onde sem"><b>Sem fonte</b> em <code>ferramentas/blocos/</code> · no PCM agora: <span data-conta="esqueleto">contando…</span></p>
+<div class="previa vazia">Sem prévia: não há arquivo para mostrar. Vira prévia viva quando virar bloco em <code>ferramentas/blocos/</code> (D3).</div>
+</article><article class="card" id="c-confirmacao" data-componente="confirmacao">
+<h3>Confirmação antes de destruir</h3>
+<div class="chips"><span class="selo selo-olho">Só o olho · C6</span></div>
+<p class="regra">Uma pergunta + o que muda, sem a história da regra (§5.10).</p>
+<p class="licao"><b>De onde veio:</b> P1 da #125: 23 funções de confirmação no PCM e diálogos do navegador ainda vivos.</p>
+<p class="onde sem"><b>Sem fonte</b> em <code>ferramentas/blocos/</code> · no PCM agora: <span data-conta="confirmacao">contando…</span></p>
+<div class="previa vazia">Sem prévia: não há arquivo para mostrar. Vira prévia viva quando virar bloco em <code>ferramentas/blocos/</code> (D3).</div>
+</article><article class="card" id="c-balao" data-componente="balao">
+<h3>Balão ancorado</h3>
+<div class="chips"><span class="selo selo-olho">Só o olho · nenhuma checagem cita este componente</span></div>
+<p class="regra">Só aparece com o botão à vista e por cima; nunca abre por baixo nem no vazio.</p>
+<p class="licao"><b>De onde veio:</b> #104: o balão abria por baixo da gaveta.</p>
+<p class="onde sem"><b>Sem fonte</b> em <code>ferramentas/blocos/</code> · no PCM agora: <span data-conta="balao">contando…</span></p>
+<div class="previa vazia">Sem prévia: não há arquivo para mostrar. Vira prévia viva quando virar bloco em <code>ferramentas/blocos/</code> (D3).</div>
+</article><article class="card" id="c-painel" data-componente="painel">
+<h3>Painel lateral com endereço próprio</h3>
+<div class="chips"><span class="selo selo-olho">Só o olho · nenhuma checagem cita este componente</span></div>
+<p class="regra">O painel tem endereço (#…) próprio: voltar e recarregar trazem o mesmo painel.</p>
+<p class="licao"><b>De onde veio:</b> P1 da #125: 59 funções com &quot;painel&quot; no nome, de rodadas diferentes.</p>
+<p class="onde sem"><b>Sem fonte</b> em <code>ferramentas/blocos/</code> · no PCM agora: <span data-conta="painel">contando…</span></p>
+<div class="previa vazia">Sem prévia: não há arquivo para mostrar. Vira prévia viva quando virar bloco em <code>ferramentas/blocos/</code> (D3).</div>
+</article><article class="card" id="c-linha" data-componente="linha">
+<h3>Linha que se abre</h3>
+<div class="chips"><span class="selo selo-olho">Só o olho · nenhuma checagem cita este componente</span></div>
+<p class="regra">A linha vira cartão sem perder ids nem cliques; medida e toque vão no &lt;tbody&gt; do cartão.</p>
+<p class="licao"><b>De onde veio:</b> #61: display:contents tira a caixa do &lt;tr&gt; — scrollIntoView e toque nele não fazem nada.</p>
+<p class="onde sem"><b>Sem fonte</b> em <code>ferramentas/blocos/</code> · no PCM agora: <span data-conta="linha">contando…</span></p>
+<div class="previa vazia">Sem prévia: não há arquivo para mostrar. Vira prévia viva quando virar bloco em <code>ferramentas/blocos/</code> (D3).</div>
+</article><article class="card" id="c-ajuda" data-componente="ajuda">
+<h3>ⓘ da tela</h3>
+<div class="chips"><span class="selo selo-olho">Só o olho · nenhuma checagem cita este componente</span></div>
+<p class="regra">O &quot;como funciona&quot; mora no ⓘ (tabela pc_ajuda), nunca no corpo da tela.</p>
+<p class="licao"><b>De onde veio:</b> #104: o ⓘ existe desde o PCM V332; texto que sai do corpo entra no ⓘ na mesma PR.</p>
+<p class="onde sem"><b>Sem fonte</b> em <code>ferramentas/blocos/</code> · no PCM agora: <span data-conta="ajuda">contando…</span></p>
+<div class="previa vazia">Sem prévia: não há arquivo para mostrar. Vira prévia viva quando virar bloco em <code>ferramentas/blocos/</code> (D3).</div>
+</article><article class="card" id="c-novidade" data-componente="novidade">
+<h3>Faixa de novidade</h3>
+<div class="chips"><span class="selo selo-olho">Só o olho · nenhuma checagem cita este componente</span></div>
+<p class="regra">Mudança de botão ou de lugar se anuncia uma vez (pc_novidade), com &quot;Entendi&quot;.</p>
+<p class="licao"><b>De onde veio:</b> #115: o balão da novidade cobria a linha que a pessoa ia tocar.</p>
+<p class="onde sem"><b>Sem fonte</b> em <code>ferramentas/blocos/</code> · no PCM agora: <span data-conta="novidade">contando…</span></p>
+<div class="previa vazia">Sem prévia: não há arquivo para mostrar. Vira prévia viva quando virar bloco em <code>ferramentas/blocos/</code> (D3).</div>
+</article><article class="card" id="c-dinheiro" data-componente="dinheiro">
+<h3>Campo de dinheiro pt-BR</h3>
+<div class="chips"><span class="selo selo-olho">Só o olho · nenhuma checagem cita este componente</span></div>
+<p class="regra">Dinheiro digitado é campo de TEXTO com parse e prévia — nunca type=number.</p>
+<p class="licao"><b>De onde veio:</b> regras/telas.md: &quot;3.500&quot; num type=number virava 3,50.</p>
+<p class="onde sem"><b>Sem fonte</b> em <code>ferramentas/blocos/</code> · no PCM agora: <span data-conta="dinheiro">contando…</span></p>
+<div class="previa vazia">Sem prévia: não há arquivo para mostrar. Vira prévia viva quando virar bloco em <code>ferramentas/blocos/</code> (D3).</div>
+</article></div></section><section id="medido" class="sec"><h2>3 · Medido × olho — os obrigatórios de 17/09</h2>
+<p class="lead">A lista vem de <code>regras/telas.md</code> §5.2; o selo, do código da <code>VARREDURA_PARIDADE_UX.py</code>. Ninguém escreve o selo à mão.</p>
+<table class="tab" id="tabObrig"><thead><tr><th>Código</th><th>Obrigatório</th><th>Selo</th><th>Quem confere</th></tr></thead><tbody>
+<tr data-codigo="A1" data-selo="olho"><td><b>A1</b></td><td>filtro no título</td><td><span class="selo selo-olho">Só o olho</span></td><td>ninguém mede: o olho de quem revisa a tela</td></tr>
+<tr data-codigo="A2" data-selo="olho"><td><b>A2</b></td><td>ordenar com tipo certo</td><td><span class="selo selo-olho">Só o olho</span></td><td>ninguém mede: o olho de quem revisa a tela</td></tr>
+<tr data-codigo="A3" data-selo="avisa"><td><b>A3</b></td><td>busca sem acento/maiúscula</td><td><span class="selo selo-avisa">Medido · avisa</span></td><td>checagem 9 — O PADRÃO DECIDIDO EM 17/09 — o que dá para conferir no arquivo</td></tr>
+<tr data-codigo="A6" data-selo="avisa"><td><b>A6</b></td><td>cabeçalho fixo</td><td><span class="selo selo-avisa">Medido · avisa</span></td><td>checagem 9 — O PADRÃO DECIDIDO EM 17/09 — o que dá para conferir no arquivo</td></tr>
+<tr data-codigo="A7" data-selo="avisa"><td><b>A7</b></td><td>guard anti-autofill</td><td><span class="selo selo-avisa">Medido · avisa</span></td><td>checagem 3 — GUARD ANTI-AUTOFILL NOS CAMPOS DE BUSCA</td></tr>
+<tr data-codigo="A8" data-selo="olho"><td><b>A8</b></td><td>String()</td><td><span class="selo selo-olho">Só o olho</span></td><td>ninguém mede: o olho de quem revisa a tela</td></tr>
+<tr data-codigo="B1" data-selo="olho"><td><b>B1</b></td><td>barra de espera</td><td><span class="selo selo-olho">Só o olho</span></td><td>ninguém mede: o olho de quem revisa a tela</td></tr>
+<tr data-codigo="B2" data-selo="olho"><td><b>B2</b></td><td>aviso 3,5 s/9 s</td><td><span class="selo selo-olho">Só o olho</span></td><td>ninguém mede: o olho de quem revisa a tela</td></tr>
+<tr data-codigo="B3" data-selo="olho"><td><b>B3</b></td><td>botão com spinner</td><td><span class="selo selo-olho">Só o olho</span></td><td>ninguém mede: o olho de quem revisa a tela</td></tr>
+<tr data-codigo="B4" data-selo="reprova"><td><b>B4</b></td><td>trava de duplo clique</td><td><span class="selo selo-reprova">Medido · reprova</span></td><td>checagem 4 — TRAVA DE DUPLO CLIQUE</td></tr>
+<tr data-codigo="B5" data-selo="olho"><td><b>B5</b></td><td>esqueleto</td><td><span class="selo selo-olho">Só o olho</span></td><td>ninguém mede: o olho de quem revisa a tela</td></tr>
+<tr data-codigo="B7" data-selo="olho"><td><b>B7</b></td><td>espera longa que não é rede avisa (PWAIT.demorado)</td><td><span class="selo selo-olho">Só o olho</span></td><td>ninguém mede: o olho de quem revisa a tela</td></tr>
+<tr data-codigo="C1" data-selo="reprova"><td><b>C1</b></td><td>tratador global</td><td><span class="selo selo-reprova">Medido · reprova</span></td><td>checagem 5 — ERRO NUNCA EM SILÊNCIO</td></tr>
+<tr data-codigo="C2" data-selo="avisa"><td><b>C2</b></td><td>toast em vez de alert()</td><td><span class="selo selo-avisa">Medido · avisa</span></td><td>checagem 9 — O PADRÃO DECIDIDO EM 17/09 — o que dá para conferir no arquivo</td></tr>
+<tr data-codigo="C3" data-selo="avisa"><td><b>C3</b></td><td>&quot;Sem conexão…&quot;</td><td><span class="selo selo-avisa">Medido · avisa</span></td><td>checagem 9 — O PADRÃO DECIDIDO EM 17/09 — o que dá para conferir no arquivo</td></tr>
+<tr data-codigo="C4" data-selo="olho"><td><b>C4</b></td><td>dado ausente nunca aparece como fato</td><td><span class="selo selo-olho">Só o olho</span></td><td>ninguém mede: o olho de quem revisa a tela</td></tr>
+<tr data-codigo="C5" data-selo="olho"><td><b>C5</b></td><td>estado vazio que explica</td><td><span class="selo selo-olho">Só o olho</span></td><td>ninguém mede: o olho de quem revisa a tela</td></tr>
+<tr data-codigo="C6" data-selo="olho"><td><b>C6</b></td><td>confirmação antes de destruir</td><td><span class="selo selo-olho">Só o olho</span></td><td>ninguém mede: o olho de quem revisa a tela</td></tr>
+<tr data-codigo="D1" data-selo="olho"><td><b>D1</b></td><td>retorno visual em tudo que é clicável</td><td><span class="selo selo-olho">Só o olho</span></td><td>ninguém mede: o olho de quem revisa a tela</td></tr>
+<tr data-codigo="D4" data-selo="reprova"><td><b>D4</b></td><td>versão visível</td><td><span class="selo selo-reprova">Medido · reprova</span></td><td>checagem 8 — A VERSÃO NA TELA × O &lt;title&gt;</td></tr>
+<tr data-codigo="F1" data-selo="olho"><td><b>F1</b></td><td>varredura na abertura e no fim</td><td><span class="selo selo-olho">Só o olho</span></td><td>ninguém mede: o olho de quem revisa a tela</td></tr>
+<tr data-codigo="F2" data-selo="olho"><td><b>F2</b></td><td>varredura na abertura e no fim</td><td><span class="selo selo-olho">Só o olho</span></td><td>ninguém mede: o olho de quem revisa a tela</td></tr>
+<tr data-codigo="F3" data-selo="reprova"><td><b>F3</b></td><td>exceção com motivo e data</td><td><span class="selo selo-reprova">Medido · reprova</span></td><td>checagem 7 — EXCEÇÕES</td></tr>
+<tr data-codigo="F4" data-selo="reprova"><td><b>F4</b></td><td>motor byte a byte</td><td><span class="selo selo-reprova">Medido · reprova</span></td><td>checagem 1 — OS MOTORES, BYTE A BYTE</td></tr>
+<tr data-codigo="F5" data-selo="olho"><td><b>F5</b></td><td>tela nova nasce com filtro, espera e erro por construção</td><td><span class="selo selo-olho">Só o olho</span></td><td>ninguém mede: o olho de quem revisa a tela</td></tr>
+</tbody></table></section><section id="checagens" class="sec"><h2>As checagens da varredura</h2>
+<table class="tab" id="tabChec"><thead><tr><th>#</th><th>O que confere</th><th>Faz</th><th>Obrigatórios</th></tr></thead><tbody>
+<tr><td>0</td><td>BLOCOS CANÔNICOS (ferramentas/blocos/)</td><td>reprova</td><td>—</td></tr>
+<tr><td>1</td><td>OS MOTORES, BYTE A BYTE (um bloco em dois lugares é bug esperando data)</td><td>reprova</td><td>F4</td></tr>
+<tr><td>2</td><td>＋ ADICIONAR ITEM EM TODO FORMULÁRIO DE COLETA</td><td>reprova</td><td>—</td></tr>
+<tr><td>3</td><td>GUARD ANTI-AUTOFILL NOS CAMPOS DE BUSCA (lição das 3 ocorrências do &quot;REcebimento&quot;)</td><td>só avisa</td><td>A7</td></tr>
+<tr><td>4</td><td>TRAVA DE DUPLO CLIQUE (a guarda do PWAIT, em todo front)</td><td>reprova</td><td>B4</td></tr>
+<tr><td>5</td><td>ERRO NUNCA EM SILÊNCIO (tratador global em todo front)</td><td>reprova</td><td>C1</td></tr>
+<tr><td>6</td><td>UM ÚNICO LITERAL DE 64 HEX POR FRONT (regra da chave, 05/09/2026)</td><td>reprova</td><td>—</td></tr>
+<tr><td>7</td><td>EXCEÇÕES (cada uma com motivo e data)</td><td>reprova</td><td>F3</td></tr>
+<tr><td>8</td><td>A VERSÃO NA TELA × O &lt;title&gt; (o defeito do V190 na barra lateral)</td><td>reprova</td><td>D4</td></tr>
+<tr><td>9</td><td>O PADRÃO DECIDIDO EM 17/09 — o que dá para conferir no arquivo</td><td>só avisa</td><td>A3, A6, C2, C3</td></tr>
+<tr><td>10</td><td>A ESTRUTURA DO DOCUMENTO (o defeito do título da aba, 21/09)</td><td>reprova</td><td>—</td></tr>
+<tr><td>11</td><td>NENHUM CAMPO DE SENHA FORA DO LOGIN (o &quot;Salvar senha?&quot; do Chrome, 07/10)</td><td>reprova</td><td>—</td></tr>
+</tbody></table></section></main>
+<footer>Gerado por <code>ferramentas/padrao_telas.py</code> (ProperCare-backlog#128, parte P3 da #125) · motores: PWAIT 1bc3d46f · ERRO c99512b9 · CFX f092f38a · CARIMBO d3e4f00b · ROLAGEM_V1 a83d44bd · JANELA_V1 9bb8bf40 ·
+não edite este arquivo: o portão o confere contra o gerador.</footer>
+<script>
+window.PADRAO_CATALOGO=[{"id": "cfx", "css": [], "contar": []}, {"id": "pwait", "css": [], "contar": []}, {"id": "erro", "css": [], "contar": []}, {"id": "carimbo", "css": [], "contar": []}, {"id": "rolagem", "css": [], "contar": []}, {"id": "janela", "css": [], "contar": []}, {"id": "pin", "css": [".pin-mask"], "contar": [["usos de .pin-mask", "pin-mask"]]}, {"id": "vazio", "css": [".empty", ".empty-icon", ".empty-title", ".empty-sub"], "contar": [["títulos .empty-title", "empty-title"], [".mob-empty", "mob-empty"], [".gos-kempty", "gos-kempty"]]}, {"id": "toast", "css": [], "contar": [["funções toast…", "function\\s+toast\\w*\\s*\\("], ["toast… = function", "\\btoast\\w*\\s*=\\s*function"]]}, {"id": "esqueleto", "css": [], "contar": [["xfSkeletonHtml", "xfSkeletonHtml"], ["skel…", "skel"]]}, {"id": "confirmacao", "css": [], "contar": [["funções …confirm…", "function\\s+\\w*confirm\\w*\\s*\\("], ["chamadas confirm( (inclui o diálogo do navegador)", "\\bconfirm\\s*\\("]]}, {"id": "balao", "css": [], "contar": [["funções …balao…", "function\\s+\\w*balao\\w*\\s*\\("]]}, {"id": "painel", "css": [], "contar": [["funções …painel…", "function\\s+\\w*[Pp]ainel\\w*\\s*\\("]]}, {"id": "linha", "css": [], "contar": [["display:contents", "display:\\s*contents"]]}, {"id": "ajuda", "css": [], "contar": [["pc_ajuda", "pc_ajuda"]]}, {"id": "novidade", "css": [], "contar": [["pc_novidade", "pc_novidade"]]}, {"id": "dinheiro", "css": [], "contar": [["funções brl(", "function\\s+brl\\s*\\("], ["toLocaleString('pt-BR')", "toLocaleString\\(\\s*['\\\"]pt-BR['\\\"]"]]}];
+</script>
+<script>
+/* Padrão de Telas — o que a página faz ao abrir (ProperCare-backlog#128). Lê os fronts no ar; não grava nada. */
+(function(){
+'use strict';
+var $=function(id){ return document.getElementById(id); };
+function esc(s){ return String(s==null?'':s).replace(/[&<>"]/g,function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
+function linha(tb,cols){ var tr=document.createElement('tr'); tr.innerHTML=cols.map(function(c){ return '<td>'+c+'</td>'; }).join(''); tb.appendChild(tr); return tr; }
+
+/* ── leitura do CSS de um HTML, com a POSIÇÃO preservada (comentário vira espaço) ── */
+function semComentHtml(h){ return h.replace(/<!--[\s\S]*?-->/g,function(s){ return s.replace(/[^\n]/g,' '); }); }
+function semComentCss(c){ return c.replace(/\/\*[\s\S]*?\*\//g,function(s){ return s.replace(/[^\n]/g,' '); }); }
+function linhaDe(txt,pos){ var n=1; for(var i=0;i<pos;i++) if(txt.charCodeAt(i)===10) n++; return n; }
+function estilos(h){
+  var limpo=semComentHtml(h), out=[], re=/<style\b[^>]*>([\s\S]*?)<\/style>/gi, m;
+  while((m=re.exec(limpo))){ out.push({css:semComentCss(m[1]), pos:m.index+m[0].indexOf('>')+1}); }
+  return out;
+}
+/* a } que fecha o corpo de uma regra, pulando string, parêntese e chave aninhada */
+function fecha(css,i){
+  var q='', par=0, ch=0;
+  for(;i<css.length;i++){
+    var c=css[i];
+    if(q){ if(c==='\\'){ i++; continue; } if(c===q) q=''; continue; }
+    if(c==='"'||c==="'"){ q=c; continue; }
+    if(c==='('){ par++; continue; }
+    if(c===')'){ if(par) par--; continue; }
+    if(par) continue;
+    if(c==='{'){ ch++; continue; }
+    if(c==='}'){ if(ch){ ch--; continue; } return i; }
+  }
+  return -1;
+}
+/* regras de nível de bloco: {sel, corpo, media, pos} — percorre as chaves e guarda o @media em volta */
+function regras(css,base){
+  var out=[], pilha=[], i=0, ini=0, n=css.length;
+  while(i<n){
+    var ch=css[i];
+    if(ch==='{'){
+      var pre=css.slice(ini,i).trim();
+      if(pre.charAt(0)==='@' && !/^@(font-face|page)/i.test(pre)){ pilha.push(pre); ini=i+1; i++; continue; }
+      var f=fecha(css,i+1); if(f<0) break;
+      out.push({sel:pre, corpo:css.slice(i+1,f), media:pilha.join(' › '), pos:base+i});
+      i=f+1; ini=i; continue;
+    }
+    if(ch==='}'){ pilha.pop(); i++; ini=i; continue; }
+    if(ch===';' && css.slice(ini,i).trim().charAt(0)==='@'){ i++; ini=i; continue; }
+    i++;
+  }
+  return out;
+}
+function decls(corpo){ var o=[], re=/(--[\w-]+)\s*:\s*([^;]+)/g, m; while((m=re.exec(corpo))) o.push([m[1],m[2].trim()]); return o; }
+function raizes(h){
+  var out=[];
+  estilos(h).forEach(function(st){
+    regras(st.css,st.pos).forEach(function(r){
+      var sels=r.sel.split(',').map(function(s){ return s.trim(); });
+      if(sels.indexOf(':root')<0) return;
+      out.push({linha:linhaDe(h,r.pos), media:r.media, tokens:decls(r.corpo)});
+    });
+  });
+  return out;
+}
+function vencedores(rz){ var v={}; rz.forEach(function(b,ix){ if(b.media) return; b.tokens.forEach(function(t){ v[t[0]]={valor:t[1],bloco:ix+1,linha:b.linha}; }); }); return v; }
+function versaoDe(h){ var m=/<title>([^<]*)<\/title>/i.exec(semComentHtml(h)); return m? m[1].trim() : '(sem título)'; }
+
+/* ── 1 · tokens ── */
+var FRONTS=[['PCM','./index.html'],['PCF','../ProperTech/index.html'],['Hub','../ProperHub/index.html']];
+var ACENTO=/accent|brand|primary|laranja|orange/i;
+function lerTudo(){
+  var est=$('tkEstado');
+  return Promise.all(FRONTS.map(function(f){
+    return fetch(f[1],{cache:'no-cache'}).then(function(r){ if(!r.ok) throw new Error('HTTP '+r.status); return r.text(); })
+      .then(function(t){ return {nome:f[0],url:f[1],html:t}; }, function(e){ return {nome:f[0],url:f[1],erro:String(e&&e.message||e)}; });
+  })).then(function(lidos){
+    var ok=lidos.filter(function(l){ return l.html; });
+    est.innerHTML=lidos.map(function(l){ return l.html? '✔ '+esc(l.nome)+': <b>'+esc(versaoDe(l.html))+'</b>' : '<span class="falhou">✖ '+esc(l.nome)+' não foi lido ('+esc(l.erro)+')</span>'; }).join(' · ')
+      + (ok.length? '' : ' — abra esta página pelo endereço do GitHub Pages (grupotap.github.io/ProperAdmin/padrao.html).');
+    window.PADRAO_LIDOS=lidos;
+    function etapa(nome,f){ try{ f(); }catch(e){ console.error('[padrao] '+nome,e); est.insertAdjacentHTML('beforeend',' · <span class="falhou">✖ '+esc(nome)+' falhou (detalhe no console)</span>'); } }
+    lidos.forEach(function(l){ if(l.html) etapa('paleta do '+l.nome,function(){ paleta(l); }); });
+    var pcm=lidos[0];
+    if(pcm.html){
+      etapa('conflitos',function(){ conflitos(pcm.html); }); etapa('medidas',function(){ medidas(pcm.html); });
+      etapa('contagens',function(){ contagens(pcm.html); }); etapa('prévias do ar',function(){ previasDoAr(pcm.html); });
+    } else { semPcm(); }
+    document.body.setAttribute('data-tokens-lidos', String(ok.length));
+    return lidos;
+  }).catch(function(e){ console.error('[padrao] leitura',e); est.innerHTML='<span class="falhou">✖ a leitura dos fronts falhou (detalhe no console)</span>'; document.body.setAttribute('data-tokens-lidos','0'); });
+}
+function paleta(l){
+  var tb=$('tkPaletas').tBodies[0], v=vencedores(raizes(l.html)), n=0;
+  Object.keys(v).forEach(function(k){
+    if(!ACENTO.test(k) || /^--(cfx|pw)-/.test(k)) return;
+    var val=v[k].valor, cor=/^#[0-9a-f]{3,8}$/i.test(val)||/^rgb/i.test(val)? '<span class="sw" style="background:'+esc(val)+'"></span>' : '';
+    linha(tb,[esc(l.nome),'<code>'+esc(k)+'</code>',cor+esc(val)]).setAttribute('data-front',l.nome); n++;
+  });
+  if(!n) linha(tb,[esc(l.nome),'—','nenhum token de acento no :root']).setAttribute('data-front',l.nome);
+}
+function conflitos(h){
+  var rz=raizes(h), tb=$('tkConflitos').tBodies[0], defs={};
+  rz.forEach(function(b,ix){ b.tokens.forEach(function(t){ (defs[t[0]]=defs[t[0]]||[]).push({valor:t[1],bloco:ix+1,linha:b.linha,media:b.media}); }); });
+  var v=vencedores(rz), n=0;
+  Object.keys(defs).sort().forEach(function(k){
+    var d=defs[k], valores={};
+    d.forEach(function(x){ valores[x.valor.toLowerCase()]=1; });
+    if(d.length<2 || Object.keys(valores).length<2) return;
+    var w=v[k];
+    linha(tb,['<code>'+esc(k)+'</code>',
+      d.map(function(x){ return 'bloco '+x.bloco+' (linha '+x.linha.toLocaleString('pt-BR')+(x.media?', só em '+esc(x.media):'')+'): <code>'+esc(x.valor)+'</code>'; }).join('<br>'),
+      w? '<code>'+esc(w.valor)+'</code> — o último <code>:root</code> simples fora de @-regras (bloco '+w.bloco+')' : 'só dentro de @-regra: depende da tela',
+      'em aberto — tema é issue própria']).setAttribute('data-token',k);
+    n++;
+  });
+  // dois nomes, um valor (raio)
+  var raio={}; Object.keys(v).forEach(function(k){ if(/radius|raio/i.test(k)) (raio[v[k].valor]=raio[v[k].valor]||[]).push(k); });
+  Object.keys(raio).forEach(function(val){ if(raio[val].length>1){ linha(tb,[raio[val].map(function(k){ return '<code>'+esc(k)+'</code>'; }).join(' = '),'dois nomes com o mesmo valor: <code>'+esc(val)+'</code>','os dois (mesmo valor)','em aberto — um nome só?']).setAttribute('data-token','raio'); n++; } });
+  // prefixo paralelo
+  var mob=Object.keys(defs).filter(function(k){ return /^--mob-/.test(k); });
+  if(mob.length){ linha(tb,['<code>--mob-*</code>',mob.length+' tokens com prefixo próprio do celular: '+mob.slice(0,8).map(function(k){ return '<code>'+esc(k)+'</code>'; }).join(' ')+(mob.length>8?' …':''),'cada um vale só para o seu nome','em aberto — repetem os principais?']).setAttribute('data-token','--mob-'); n++; }
+  linha($('tkMedidas').tBodies[0],['Blocos <code>:root</code>', String(rz.length), rz.map(function(b,ix){ return 'bloco '+(ix+1)+': linha '+b.linha.toLocaleString('pt-BR')+', '+b.tokens.length+' tokens'+(b.media?' (só em '+esc(b.media)+')':''); }).join('<br>')]);
+  if(!n) linha(tb,['—','nenhum token definido com valores diferentes','—','—']);
+  document.body.setAttribute('data-conflitos', String(n));
+}
+function conta(h,re){ var m=h.match(re); return m? m.length : 0; }
+function medidas(h){
+  var tb=$('tkMedidas').tBodies[0];
+  var hex=h.match(/#(?:[0-9a-fA-F]{6}|[0-9a-fA-F]{3})(?![0-9a-zA-Z_-])/g)||[], dist={};
+  hex.forEach(function(x){ dist[x.toLowerCase()]=1; });
+  linha(tb,['Cores hexadecimais distintas',Object.keys(dist).length.toLocaleString('pt-BR'),'no arquivo inteiro, como escritas (#abc e #aabbcc contam separado)']);
+  linha(tb,['<span class="sw" style="background:#EE7625"></span>#EE7625 escrito à mão',conta(h,/#ee7625(?![0-9a-z])/gi).toLocaleString('pt-BR')+' vezes','o laranja do Manual de Marca, fora de token']);
+  linha(tb,['Usos de <code>var(--…)</code>',conta(h,/var\(--/g).toLocaleString('pt-BR'),'no arquivo inteiro']);
+  linha(tb,['<code>style="…"</code> no HTML',conta(h,/\sstyle="/g).toLocaleString('pt-BR'),'atributo de estilo escrito na marcação']);
+  var fam={}, rf=/font-family\s*:\s*([^;}"]+)/gi, m; while((m=rf.exec(h))) fam[m[1].trim().toLowerCase()]=1;
+  linha(tb,['Declarações <code>font-family</code> distintas',String(Object.keys(fam).length),Object.keys(fam).slice(0,4).map(function(f){ return '<code>'+esc(f)+'</code>'; }).join(' · ')+(Object.keys(fam).length>4?' …':'')]);
+  var bp={}, rb=/@media[^{]*?(max|min)-width\s*:\s*(\d+)px/gi; while((m=rb.exec(h))){ var k=m[1]+' '+m[2]; bp[k]=(bp[k]||0)+1; }
+  var bps=Object.keys(bp).sort(function(a,b){ return bp[b]-bp[a]; });
+  linha(tb,['Larguras de corte (@media)',String(bps.length),bps.slice(0,6).map(function(k){ return esc(k)+'px ×'+bp[k]; }).join(' · ')]);
+  linha(tb,['Alvo de toque 52 px',conta(h,/(min-)?height\s*:\s*52px/gi).toLocaleString('pt-BR')+' declarações','height/min-height: 52px (D2 da §5.2: toque 52 px)']);
+}
+function semPcm(){ document.body.setAttribute('data-conflitos','-1'); }
+
+/* ── 2 · contagens e prévias com o CSS do ar ── */
+function contagens(h){
+  (window.PADRAO_CATALOGO||[]).forEach(function(c){
+    var el=document.querySelector('[data-conta="'+c.id+'"]'); if(!el) return;
+    var partes=c.contar.map(function(x){ var n=conta(h,new RegExp(x[1],'g')); return '<b>'+n+'</b> '+esc(x[0]); });
+    el.innerHTML=partes.join(' · ') || '—';
+  });
+}
+function cssDe(h,seletores){
+  var out=[];
+  estilos(h).forEach(function(st){
+    regras(st.css,st.pos).forEach(function(r){
+      if(r.media) return;
+      var sels=r.sel.split(',').map(function(s){ return s.trim(); });
+      if(sels.some(function(s){ return seletores.some(function(x){ return s===x || s.indexOf(x+':')===0 || s.indexOf(x+' ')===0 || s.indexOf(x+'.')===0; }); }))
+        out.push(r.sel+'{'+r.corpo+'}');
+    });
+  });
+  return out;
+}
+function previasDoAr(h){
+  var raiz=vencedores(raizes(h)), vars=Object.keys(raiz).map(function(k){ return k+':'+raiz[k].valor; }).join(';');
+  (window.PADRAO_CATALOGO||[]).forEach(function(c){
+    if(!c.css.length) return;
+    var box=document.querySelector('[data-css-ar="'+c.id+'"]'); if(!box) return;
+    var r=cssDe(h,c.css);
+    box.innerHTML='';
+    var sh=box.attachShadow? box.attachShadow({mode:'open'}) : box;
+    sh.innerHTML='<style>:host{display:block;'+vars+';font:14px/1.5 Inter,system-ui,sans-serif}'+r.join('\n')+'</style>'+box.getAttribute('data-amostra');
+    box.setAttribute('data-regras',String(r.length));
+    if(!r.length) box.insertAdjacentHTML('afterend','<p class="mini falhou">Nenhuma regra '+esc(c.css.join(', '))+' no PCM de agora: a amostra aparece sem estilo.</p>');
+  });
+}
+
+/* ── prévias dos motores ── */
+function demos(){
+  var b=$('demoEspera'), est=$('demoEsperaEstado');
+  if(b) b.addEventListener('click',function(){
+    var t0=Date.now(); if(est) est.textContent='gravando…';
+    fetch('padrao-demo:espera/12000').then(function(){ if(est) est.textContent='gravou em '+((Date.now()-t0)/1000).toFixed(1).replace('.',',')+' s'; });
+  });
+  var r=$('demoRapida');
+  if(r) r.addEventListener('click',function(){ fetch('padrao-demo:espera/1000'); });
+  var s=$('demoSemConexao');
+  if(s) s.addEventListener('click',function(){ fetch('padrao-demo:sem-conexao'); /* sem catch, de propósito */ });
+  var box=$('demoRolar'), aberto=-1;
+  function pintar(){
+    var h=''; for(var i=1;i<=40;i++){ h+='<div class="it'+(i===aberto?' aberto':'')+'" data-i="'+i+'"><span>Demanda '+i+(i===aberto?' — aberta':'')+'</span><button class="btn" type="button" data-abrir="'+i+'">Abrir</button></div>'; }
+    box.innerHTML=h;
+  }
+  if(box){
+    pintar();
+    box.addEventListener('click',function(ev){
+      var bt=ev.target.closest&&ev.target.closest('[data-abrir]'); if(!bt) return;
+      aberto=+bt.getAttribute('data-abrir');
+      box.innerHTML='<div class="it">Carregando…</div>';
+      setTimeout(function(){ pintar(); setTimeout(function(){ var R=window.ROLAGEM_V1; $('demoRolarEstado').textContent='rolagem agora: '+box.scrollTop+' px · o guardião devolveu '+(R?R.devolvidas:0)+' vez(es)'; },400); },60);
+    });
+  }
+}
+
+function iniciar(){ try{ demos(); }catch(e){ console.error(e); } lerTudo(); }
+if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',iniciar); else iniciar();
+})();
+</script>
+</body>
+</html>
