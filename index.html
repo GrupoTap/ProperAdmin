@@ -113891,11 +113891,11 @@ body.v349-nadm [data-v200="config"]{display:none!important}
   V353.ler = ler;
   async function conferi(bt) {
     var d = S.d; if (S.gravando || S.lendo || !d || !d.pode_retirar) return;
-    if (d.pessoas && !S.levou) { S.msg = { er: true, txt: 'Escolha quem está levando as peças.' }; return pintar(); }
+    if (d.pessoas && !d.pessoas.some(function (x) { return x.id === S.levou; })) { S.levou = ''; S.msg = { er: true, txt: 'Escolha quem está levando as peças.' }; return pintar(); }
     S.gravando = true; S.msg = null;
     if (bt) { bt.disabled = true; bt.setAttribute('data-pcm-enviando', '1'); bt.textContent = '⏳ Gravando…'; }
     S.uid = S.uid || uid();
-    var p = { os: d.os, lido: S.lido, modo: modoDe(S.lido), visto: { sep: N(d.volumes && d.volumes.sep), tot: N(d.volumes && d.volumes.tot) }, uid: S.uid };
+    var p = { os: d.os, lido: S.lido, modo: modoDe(S.lido), visto: { sep: N(d.volumes && d.volumes.sep), tot: N(d.volumes && d.volumes.tot), assin: d.assinatura || '' }, uid: S.uid };
     if (S.levou && d.eu && S.levou !== d.eu.id) p.levou = S.levou;
     var r = null, falhou = null;
     try { r = await _v200Rpc('alm_kit_conferi', { p: p }, true); } catch (e) { falhou = e; }
@@ -113926,7 +113926,7 @@ body.v349-nadm [data-v200="config"]{display:none!important}
   }
   function corpoHtml() {
     var h = '<label for="v353Lido">Bipe o QR da 🏷 Etiqueta da separação ou digite o número da OS</label><div class="v353-lin">' +
-      '<input type="text" id="v353Lido" class="v353-in" data-v353foco="lido" value="' + E(S.dig) + '" placeholder="ex. PGP-2026-0122" readonly onfocus="this.removeAttribute(\'readonly\')" autocomplete="off" name="v353_lido_nofill" data-lpignore="true" data-1p-ignore>' +
+      '<input type="text" id="v353Lido" class="v353-in" data-v353foco="lido" value="' + E(S.dig) + '" placeholder="QR da etiqueta ou nº da OS" readonly onfocus="this.removeAttribute(\'readonly\')" autocomplete="off" name="v353_lido_nofill" data-lpignore="true" data-1p-ignore>' +
       '<button type="button" class="v323-bt pri" data-v353="ler">Abrir a lista</button></div>';
     if (S.erro) h += '<div class="v353-erro" role="alert">' + E(S.erro) + '</div>';
     if (S.msg) h += '<div class="' + (S.msg.er ? 'v353-erro' : 'v353-ok') + '" role="status">' + E(S.msg.txt) + '</div>';
@@ -113977,16 +113977,16 @@ body.v349-nadm [data-v200="config"]{display:none!important}
       '<div class="v353-corpo">' + corpoHtml() + '</div>' + (S.d ? '<div class="v353-pe">' + peHtml() + '</div>' : '');
     corpo = el.querySelector('.v353-corpo'); if (corpo && rol) corpo.scrollTop = rol;
     var f = foco ? document.getElementById(foco) : null;
-    if (!f && !S.d) f = document.getElementById('v353Lido');
+    if (!f) f = document.getElementById('v353Lido');   // o leitor digita no campo: depois de cada botão o foco volta para ele
     if (f) { f.removeAttribute('readonly'); try { f.focus({ preventScroll: true }); } catch (e) {} }
   }
   V353.pintar = pintar;
   function abrir(lido) {
     if (off()) return;
-    S.aberta = true; S.erro = ''; S.msg = null; S.d = null; S.dig = ''; S.uid = null; pintar();
+    S.aberta = true; S.erro = ''; S.msg = null; S.d = null; S.dig = ''; S.uid = null; S.lendo = false; S.ger++; pintar();
     if (T(lido)) ler(lido);
   }
-  function fechar() { if (S.gravando) return; S.aberta = false; S.d = null; S.erro = ''; S.msg = null; S.ger++; pintar(); }
+  function fechar() { if (S.gravando) return; S.aberta = false; S.d = null; S.erro = ''; S.msg = null; S.lendo = false; S.ger++; pintar(); }
   V353.abrir = abrir; V353.fechar = fechar;
 
   // ═══ 3 · OS GESTOS ═══════════════════════════════════════════════════════════════════════════════════
@@ -113998,7 +113998,7 @@ body.v349-nadm [data-v200="config"]{display:none!important}
     if (a === 'abrir') return abrir();
     if (a === 'fechar') return fechar();
     if (a === 'ler') { var i = document.getElementById('v353Lido'); return ler(i ? i.value : S.dig); }
-    if (a === 'outra') { S.d = null; S.msg = null; S.erro = ''; S.dig = ''; S.uid = null; S.ger++; pintar(); var i2 = document.getElementById('v353Lido'); if (i2) try { i2.focus(); } catch (e) {} return; }
+    if (a === 'outra') { S.d = null; S.msg = null; S.erro = ''; S.dig = ''; S.uid = null; S.lendo = false; S.ger++; pintar(); var i2 = document.getElementById('v353Lido'); if (i2) try { i2.focus(); } catch (e) {} return; }
     if (a === 'conferi') return conferi(bt);
   });
   document.addEventListener('input', function (ev) {
@@ -114013,7 +114013,7 @@ body.v349-nadm [data-v200="config"]{display:none!important}
     if (off()) return;
     var t = ev.target, jan = document.getElementById('v353Jan');
     if (jan && t && t.id === 'v353Lido' && ev.key === 'Enter') { ev.preventDefault(); return ler(t.value); }
-    if (jan && ev.key === 'Escape') { var dg = document.getElementById('v353Lido'); if (!S.gravando && !(dg && T(dg.value) && !S.d)) { ev.preventDefault(); ev.stopImmediatePropagation(); fechar(); } return; }
+    if (jan && ev.key === 'Escape') { ev.preventDefault(); ev.stopImmediatePropagation(); var dg = document.getElementById('v353Lido'); if (!S.gravando && !(dg && T(dg.value) && !S.d)) fechar(); return; }
     if (jan) return;
     // o leitor de mão "digita" o QR na página: com a 🧺 Separação aberta e nenhum campo em foco, o endereço …#os/<nº> + Enter abre o painel
     var vs = document.getElementById('viewSeparacao');
