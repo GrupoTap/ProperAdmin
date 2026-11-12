@@ -5515,9 +5515,20 @@ v50 — Resiliência de rede: retry/backoff em gsGet e syncToGS
   Linhas pre-existentes alteradas: so no bloco V323 (funcoes novas depois do codigoDe, a barra da OS, a quantidade da peca, o rotulo e
   a quantidade do balao do Separei, o separarOk, a camera, o Enter e a etiqueta da separacao). Chave de volta: localStorage
   pcm_v351 = off (volta tudo ao V350).
+  PCM V352 — 11/11/2026 — NA NF: N. DO PEDIDO DO CLIENTE, OBSERVACAO E CONTATO (ProperCare-backlog#136), sobre o V351 no ar.
+  SQL 133_OMIE_NF_PEDIDO_CLIENTE roda ANTES (o banco monta o pedido de venda e a OS com numero_pedido_cliente/cNumPedido,
+  dados_adicionais_nf/cDadosAdicNF, contato/cContato e, por item, numero_pedido_compra + item_pedido_compra). Na ficha de faturamento,
+  a conferencia do 📤 diz o que vai na NF e ganha "Trocar"/"Informar"/"Escolher" (balao: o n. do pedido ate 15 caracteres, os n.
+  diferentes dos PDFs para tocar, "Sem numero", "Usar o do aceite/PDF"; a observacao ate 2000, "Nenhuma", "Usar a da proposta"; com
+  texto digitado o balao segura Esc, Enviar e Fechar; rpc omn_ficha_nf, Financeiro/administrador). Na
+  oportunidade, cada PDF "Pedido de compra do cliente" da lista de documentos mostra ou pede o n. do pedido (crm_pedido_cliente_lista /
+  crm_pedido_cliente_numero) e o formulario do pedido (sem OS) ganha o campo do n. Em ⚙ > 🔌 > Gravar no Omie, dois interruptores
+  (omn_cfg_salvar): travar o 📤 com PDF sem n. e mandar o n. em cada item. Bloco novo V352; nenhuma linha pre-existente alterada
+  (embrulha _v273DocLinha, _v273Docs, _v273PintarDocs, _v273PedHtml, _v273PintarPed e _v273PedEnviar). Sem GAS.
+  Chave de volta: localStorage pcm_v352 = off. Mais o <title>, o app-build, as reservas do carimbo e este comentario.
 -->
-<title>ProperCare Manager · Gestão PGP v4.03 (PCM V351)</title>
-<meta name="app-build" content="PCM_V351" data-date="2026-11-11">
+<title>ProperCare Manager · Gestão PGP v4.03 (PCM V352)</title>
+<meta name="app-build" content="PCM_V352" data-date="2026-11-11">
 <link rel="icon" type="image/jpeg" href="data:image/jpeg;base64,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">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -7167,7 +7178,7 @@ html.m1-on .m1-nav{display:flex;flex-direction:column;flex:1;min-height:0;paddin
        operacao/planejamento/campo/documentos/cadastros/admin). -->
   <div class="nav-brand">
     <span class="nav-brand-mark">PCM</span>
-    <span class="nav-brand-sub" data-carimbo="v4.03 · {v}">v4.03 · V351</span>
+    <span class="nav-brand-sub" data-carimbo="v4.03 · {v}">v4.03 · V352</span>
     <button type="button" class="nav-rail-btn" id="navRailBtn" onclick="_v179NavRailToggle()"
             title="Recolher o menu" aria-label="Recolher o menu" aria-expanded="true">
       <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path class="nav-rail-ico-in" d="M10 3.5L5.5 8 10 12.5"/><path class="nav-rail-ico-out" d="M6 3.5L10.5 8 6 12.5"/></svg>
@@ -19261,7 +19272,7 @@ function renderConfigStats(){
     <div class="card">
       <div style="font-size:13px;font-weight:600;margin-bottom:4px">Sobre o sistema</div>
       <div style="font-size:12px;color:var(--text2);line-height:1.8">
-        <strong>Catálogo Administrativo v3.43 · <span data-carimbo="PCM {v}">PCM V351</span></strong> — Proper Compressores<br>
+        <strong>Catálogo Administrativo v3.43 · <span data-carimbo="PCM {v}">PCM V352</span></strong> — Proper Compressores<br>
         Catálogo de modelos · Peças com similares · Fotos · Subsistemas nomeados · Máquinas PGP com dados completos de cliente<br>
         Detecção de duplicados em modelos e máquinas · Google Sheets como backend
       </div>
@@ -113379,6 +113390,406 @@ body.v349-nadm [data-v200="config"]{display:none!important}
 .v351-conta .v351-aviso{margin-top:6px;font-size:13px;color:#B54708;font-weight:600}
 </style>
 <!-- ████ FIM PCM V351 ████ -->
+<!-- ████ INICIO PCM V352 · 📤 NA NF: Nº DO PEDIDO DO CLIENTE, OBSERVAÇÃO E CONTATO (ProperCare-backlog#136) ████ -->
+<style id="v352-css">
+/* PCM V352 · o que vai na NF (pedido do cliente, observação) — balão na ficha, nº no PDF do card, interruptores da ⚙ */
+.v352-bal{position:fixed;z-index:100061;width:400px;max-width:calc(100vw - 24px);background:var(--surface,#fff);border:1px solid var(--border,#d0d7de);border-radius:10px;box-shadow:0 10px 30px rgba(0,0,0,.25);padding:12px;font-size:13px;color:#1D2939}
+.v352-bal h5{margin:0 0 6px;font-size:14px}
+.v352-bal .v352-atual{color:#475467;margin:0 0 8px}
+.v352-bal input[type=text],.v352-bal textarea{width:100%;box-sizing:border-box;border:1px solid #98A2B3;border-radius:8px;padding:7px 9px;font:500 14px var(--font-sans,Inter,system-ui,sans-serif);min-height:36px}
+.v352-bal textarea{min-height:110px;resize:vertical}
+.v352-bal .v352-conta{font-size:12px;color:#667085;text-align:right;margin-top:2px}
+.v352-bal .v352-acoes{display:flex;gap:6px;justify-content:flex-end;margin-top:10px;flex-wrap:wrap}
+.v352-msg{font-size:13px;margin-top:6px}
+.v352-msg.er{color:#B42318}
+.v352-falta .t{color:#475467}
+.v352-num{display:inline-flex;align-items:center;gap:6px;flex-wrap:wrap;margin-left:6px}
+.v352-num input{width:150px;border:1px solid #98A2B3;border-radius:8px;padding:4px 8px;font-size:13px;min-height:30px;box-sizing:border-box}
+.v352-num b{font-variant-numeric:tabular-nums}
+.v352-cfg{margin:10px 0 4px;padding:8px 0 0;border-top:1px dashed #E4E7EC}
+.v352-cfg label{display:flex;align-items:flex-start;gap:8px;margin:6px 0;cursor:pointer;font-size:13px}
+.v352-cfg .v352-tit{font-weight:700;font-size:13px;margin:0 0 2px}
+.v352-cfg input[type=checkbox]{width:18px;height:18px;margin:1px 0 0;accent-color:#1D2939;cursor:pointer;flex:0 0 auto}
+@media (max-width:640px){.v352-bal{left:12px!important;right:12px;width:auto}.v352-num input{width:120px}}
+</style>
+<script>
+/* ════════════════════════════════════════════════════════════════════════════════════════════════════════════
+   PCM V352 (bloco v352) · 11/11/2026 — ProperCare-backlog#136. Precisa do SQL 133_OMIE_NF_PEDIDO_CLIENTE (roda ANTES).
+   1) Ficha de faturamento › 📤 conferência: o que vai na NF — "Pedido do cliente nº …" e "Observação para a NF: …" ganham "Trocar";
+      o PDF de pedido sem nº ganha "Informar"; sem nada, a conferência mostra as duas linhas para informar. O balão grava pela
+      omn_ficha_nf (Financeiro/administrador): o nº (até 15, limite da NF-e), "Sem número", "Voltar ao do aceite"; a observação
+      (até 2000), "Nenhuma", "Voltar à da proposta". Depois confere de novo.
+   2) Oportunidade › 📎 Documentos: cada PDF "Pedido de compra do cliente" mostra o nº (crm_pedido_cliente_lista, em paralelo com a
+      lista) ou pede o nº ali mesmo (crm_pedido_cliente_numero); o formulário do pedido (oportunidade sem OS) ganha o campo do nº, que
+      é guardado junto com o PDF.
+   3) ⚙ › 🔌 › Gravar no Omie: dois interruptores (omn_cfg_salvar) — travar o 📤 com PDF sem nº; mandar o nº também em cada item.
+   Sem o SQL, nada aparece (fica o V351). Chave de volta: localStorage pcm_v352 = off.
+   ════════════════════════════════════════════════════════════════════════════════════════════════════════════ */
+(function () {
+  'use strict';
+  if (window.V352) return;
+  var V352 = window.V352 = { versao: 'V352 · 11/11/2026', orig: {}, semSql: false, bal: null, nums: {}, edita: {}, dig: {}, pedNum: {}, obsT: null, escritas: 0, cfgSalvando: {} };
+  function off() { try { return localStorage.getItem('pcm_v352') === 'off'; } catch (e) { return false; } }
+  function S(v) { return String(v == null ? '' : v); }
+  function E(v) { return S(v).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;'); }
+  function toastx(t, k) { try { toast(t, k || 'success'); } catch (e) { /* sem toast */ } }
+  function sessao() { try { return typeof _v235Sessao === 'function' ? (_v235Sessao() || {}) : (window.PROPER_SESSION || {}); } catch (e) { return {}; } }
+  function ehAdmin() { return sessao().is_admin === true; }
+  function ehFin() { try { return _v235Financeiro(); } catch (e) { return ehAdmin(); } }
+  var MAX = { pedido_cliente: 15, obs_nf: 2000 };
+
+  async function rpc(fn, args, escrita, ja) {
+    var tok = await _v200Token(false), r;
+    try {
+      r = await fetch(SUPA_URL + '/rest/v1/rpc/' + fn, { method: 'POST', signal: _pcmSinalTimeout_(!!escrita),
+        headers: { apikey: SUPA_ANON, Authorization: 'Bearer ' + tok, 'Content-Type': 'application/json' }, body: JSON.stringify(args || {}) });
+    } catch (e) { throw new Error(escrita ? 'Sem resposta do banco — NÃO sei se gravou. Confira antes de tentar de novo.' : 'Sem conexão com o banco.'); }
+    var txt = ''; try { txt = await r.text(); } catch (e) { /* vazio */ }
+    var j = null; try { j = txt ? JSON.parse(txt) : null; } catch (e) { j = null; }
+    if (r.ok) return j;
+    if (r.status === 401 && !ja) { try { _v200Tok = null; } catch (e) { /* nada */ } return rpc(fn, args, escrita, true); }
+    var cod = (j && j.code) || '';
+    if (cod === 'PGRST202' || (r.status === 404 && /function|rpc/i.test(txt))) { V352.semSql = true; console.warn('[V352] falta a função do banco:', fn); throw new Error('Tela indisponível — avise o administrador.'); }
+    var msg = (j && (j.message || j.hint)) || txt || ('HTTP ' + r.status);
+    throw new Error(S(msg).replace(/^Faturamento: /, '').replace(/^CRM: /, '').replace(/^Gravar no Omie: /, ''));
+  }
+
+  // ════ 1 · FICHA DE FATURAMENTO › 📤 — o que vai na NF ═══════════════════════════════════════════════════════
+  function fichaAtual() { try { var O = V235.ov; return O && O.d && O.d.ficha && !O.carregando ? O.d.ficha : null; } catch (e) { return null; } }
+  function confDe(fid) { try { var u = window.V304 && V304.ui && V304.ui[fid]; return u && u.conf && u.conf.d && !u.conf.carregando ? u.conf.d : null; } catch (e) { return null; } }
+  function nfDe(fid) { var c = confDe(fid); return c && c.nf ? c.nf : null; }
+  function reconferir() { try { var b = document.querySelector('#v235Jan [data-v304="enviar"]'); if (b) b.click(); } catch (e) { /* a ficha fechou */ } }
+  var PFX = [['Pedido do cliente nº ', 'pedido_cliente', 'Trocar'], ['A oportunidade tem PDF de pedido de compra do cliente', 'pedido_cliente', 'Informar'],
+             ['Os PDFs de pedido do cliente têm nº diferentes', 'pedido_cliente', 'Escolher'], ['O nº do pedido do cliente "', 'pedido_cliente', 'Corrigir'],
+             ['Observação para a NF: ', 'obs_nf', 'Trocar'], ['A observação da proposta tem ', 'obs_nf', 'Escrever']];
+  function campoDoTexto(t) { for (var i = 0; i < PFX.length; i++) if (S(t).indexOf(PFX[i][0]) === 0) return PFX[i]; return null; }
+  function rotulo(campo) { return campo === 'pedido_cliente' ? 'Nº do pedido do cliente' : 'Observação para a NF'; }
+
+  function fecharBal() { var b = document.getElementById('v352Bal'); if (b) b.remove(); V352.bal = null; }
+  function ancoraAtual() {
+    var B = V352.bal; if (!B) return null;
+    return document.querySelector('#v304Sec [data-v352="abrir"][data-campo="' + B.campo + '"]') ||
+           document.querySelector('#v304Sec button[data-v304="corrigir"][data-onde="ficha"][data-campo="' + B.campo + '"]');
+  }
+  function posicionar(ancora) {
+    var d = document.getElementById('v352Bal'); if (!d || !ancora) return;
+    try {
+      var r = ancora.getBoundingClientRect(), w = Math.min(400, window.innerWidth - 24), h = d.offsetHeight || 260;
+      var x = Math.max(12, Math.min(r.right - w, window.innerWidth - w - 12)), y = r.bottom + 6;
+      if (y + h > window.innerHeight - 8) y = Math.max(12, r.top - h - 6);
+      d.style.left = x + 'px'; d.style.top = y + 'px';
+    } catch (e) { d.style.left = '12px'; d.style.top = '80px'; }
+  }
+  function vigiarBal() {
+    var B = V352.bal; if (!B || B.salvando) return;
+    var f = fichaAtual();
+    if (!f || S(f.id) !== B.fid || !document.getElementById('v304Sec')) { fecharBal(); return; }
+    var a = ancoraAtual(); if (a) posicionar(a);
+  }
+  function abrirBal(ancora, campo) {
+    if (!ehFin()) { toastx('Só o Financeiro ou o administrador muda o que vai na NF.', 'error'); return; }
+    var f = fichaAtual(); if (!f) return;
+    var nf = nfDe(f.id) || {}, at = campo === 'pedido_cliente' ? (nf.pedido_cliente || {}) : (nf.obs_nf || {});
+    var atual = S(campo === 'pedido_cliente' ? at.numero : at.texto);
+    fecharBal();
+    V352.bal = { fid: S(f.id), campo: campo, atual: atual, origem: S(at.origem), valor: atual, mexido: false, salvando: false, msg: null,
+                 varios: campo === 'pedido_cliente' && Array.isArray(at.varios) ? at.varios.map(S) : [] };
+    var d = document.createElement('div'); d.id = 'v352Bal'; d.className = 'v352-bal mob-keep'; d.setAttribute('role', 'dialog'); d.setAttribute('aria-label', rotulo(campo));
+    (document.getElementById('v235Ov') || document.body).appendChild(d);
+    pintarBal(); posicionar(ancora);
+    setTimeout(function () { var q = document.getElementById('v352BV'); if (q) { q.removeAttribute('readonly'); q.focus(); try { q.setSelectionRange(q.value.length, q.value.length); } catch (e) { /* nada */ } } }, 30);
+  }
+  function origemTxt(campo, o) {
+    if (campo === 'pedido_cliente') return o === 'ficha' ? 'escrito na ficha' : o === 'aceite' ? 'do aceite' : o === 'anexo' ? 'do PDF anexado' : '';
+    return o === 'ficha' ? 'escrita na ficha' : o === 'proposta' ? 'da proposta aceita' : '';
+  }
+  function pintarBal() {
+    var B = V352.bal, d = document.getElementById('v352Bal'); if (!B || !d) return;
+    var ped = B.campo === 'pedido_cliente';
+    if (!document.getElementById('v352BV')) {
+      var guard = ' autocomplete="off" name="v352bv_nofill" data-lpignore="true" data-1p-ignore readonly onfocus="this.removeAttribute(\'readonly\')"';
+      d.innerHTML = '<h5>' + E(rotulo(B.campo)) + ' — ficha ' + E(B.fid) + '</h5><div class="v352-atual" id="v352BAt"></div>' +
+        (ped && B.varios.length ? '<div class="v352-atual">' + B.varios.map(function (x) { return '<button type="button" class="btn btn-secondary btn-xs" data-v352="usar" data-v="' + E(x) + '">' + E(x) + '</button>'; }).join(' ') + '</div>' : '') +
+        (ped ? '<input type="text" id="v352BV" maxlength="15" placeholder="ex.: 4512"' + guard + ' value="' + E(B.valor) + '">'
+             : '<textarea id="v352BV" maxlength="2000" placeholder="ex.: Entregar na portaria 2"' + guard + '>' + E(B.valor) + '</textarea><div class="v352-conta" id="v352BConta"></div>') +
+        '<div id="v352BMsg"></div><div class="v352-acoes">' +
+        (B.origem === 'ficha' ? '<button type="button" class="btn btn-secondary btn-sm" data-v352="herdar">' + (ped ? 'Usar o do aceite/PDF' : 'Usar a da proposta') + '</button>' : '') +
+        (B.atual ? '<button type="button" class="btn btn-secondary btn-sm" data-v352="vazio">' + (ped ? 'Sem número' : 'Nenhuma') + '</button>' : '') +
+        '<button type="button" class="btn btn-secondary btn-sm" data-v352="fechar" data-pw-off="1">Cancelar</button>' +
+        '<button type="button" class="btn btn-primary btn-sm" data-v352="salvar">Salvar</button></div>';
+    }
+    var at = document.getElementById('v352BAt');
+    if (at) at.textContent = B.atual ? 'Hoje vai: ' + (ped ? B.atual : (B.atual.length > 80 ? B.atual.slice(0, 80) + '…' : B.atual)) + (origemTxt(B.campo, B.origem) ? ' (' + origemTxt(B.campo, B.origem) + ')' : '')
+                                     : (B.origem === 'ficha' ? (ped ? 'Hoje: sem número (escolhido na ficha).' : 'Hoje: nenhuma (escolhido na ficha).')
+                                        : B.varios.length ? 'Os PDFs têm nº diferentes: toque no que vai na NF.' : (ped ? 'Hoje nenhum nº vai na NF.' : 'Hoje nenhuma observação vai na NF.'));
+    var ct = document.getElementById('v352BConta'); if (ct) ct.textContent = B.valor.length + ' / 2000';
+    var m = document.getElementById('v352BMsg'); if (m) m.innerHTML = B.msg ? '<div class="v352-msg ' + (B.msg.er ? 'er' : '') + '">' + E(B.msg.txt) + '</div>' : '';
+    d.querySelectorAll('[data-v352="salvar"],[data-v352="vazio"],[data-v352="herdar"]').forEach(function (b) {
+      b.disabled = B.salvando || (b.getAttribute('data-v352') === 'salvar' && (!B.valor.trim() || B.valor.trim() === B.atual));
+      if (B.salvando) b.setAttribute('data-pcm-enviando', '1'); else b.removeAttribute('data-pcm-enviando');
+    });
+    var sv = d.querySelector('[data-v352="salvar"]'); if (sv) sv.textContent = B.salvando ? '⏳ Gravando…' : 'Salvar';
+  }
+  async function gravarBal(valor) {   // valor: texto, '' (sem/nenhuma) ou null (volta a herdar)
+    var B = V352.bal; if (!B || B.salvando) return;
+    if (valor != null && valor.trim().length > MAX[B.campo]) { B.msg = { er: true, txt: 'Passa do limite da NF (' + MAX[B.campo] + ' caracteres).' }; pintarBal(); return; }
+    B.salvando = true; B.msg = null; pintarBal();
+    try {
+      var r = await rpc('omn_ficha_nf', { p_ficha: B.fid, p_campo: B.campo, p_valor: valor }, true);
+      var nf = (r && r.nf) || {}, x = B.campo === 'pedido_cliente' ? (nf.pedido_cliente || {}) : (nf.obs_nf || {}), v = S(B.campo === 'pedido_cliente' ? x.numero : x.texto);
+      var campo = B.campo; fecharBal();
+      toastx(campo === 'pedido_cliente' ? (v ? 'Na NF vai o pedido do cliente nº ' + v + '.' : 'Nenhum nº de pedido do cliente vai na NF.')
+                                        : (v ? 'Observação para a NF guardada.' : 'Nenhuma observação vai na NF.'));
+      reconferir();
+    } catch (e) { if (V352.bal) { V352.bal.salvando = false; V352.bal.msg = { er: true, txt: e.message || S(e) }; pintarBal(); } }
+  }
+  // a conferência: "Trocar"/"Informar" nas linhas da NF; sem nenhuma, as duas linhas para informar (só Financeiro/administrador)
+  function ajustarFicha() {
+    var sec = document.getElementById('v304Sec'); if (!sec) return;
+    var conf = sec.querySelector('.v304-conf'); if (!conf) return;
+    var f = fichaAtual(); if (!f) return;
+    var c = confDe(f.id); if (!c || !c.nf) return;
+    if (!ehFin()) return;
+    var tem = { pedido_cliente: false, obs_nf: false };
+    conf.querySelectorAll('.v304-it').forEach(function (n) {
+      var t = n.querySelector('.t'); if (!t) return;
+      var p = campoDoTexto(t.textContent);
+      if (!p) { if (n.querySelector('[data-v304="corrigir"][data-campo="pedido_cliente"]')) tem.pedido_cliente = true; if (n.querySelector('[data-v304="corrigir"][data-campo="obs_nf"]')) tem.obs_nf = true; return; }
+      tem[p[1]] = true;
+      if (n.querySelector('[data-v352="abrir"]') || n.querySelector('[data-v304="corrigir"]')) return;
+      var b = document.createElement('button'); b.type = 'button'; b.className = 'v235-mini az'; b.setAttribute('data-v352', 'abrir'); b.setAttribute('data-campo', p[1]); b.textContent = p[2];
+      n.appendChild(b); V352.escritas++;
+    });
+    var acoes = conf.querySelector('.v304-acoes'); if (!acoes) return;
+    [['pedido_cliente', 'Nº do pedido do cliente: nenhum (não vai na NF).', 'Informar'], ['obs_nf', 'Observação para a NF: nenhuma.', 'Escrever']].forEach(function (x) {
+      if (tem[x[0]] || conf.querySelector('[data-v352-falta="' + x[0] + '"]')) return;
+      var d = document.createElement('div'); d.className = 'v304-it ok v352-falta'; d.setAttribute('data-v352-falta', x[0]);
+      d.innerHTML = '<span>➖</span><span class="t">' + E(x[1]) + '</span><button type="button" class="v235-mini az" data-v352="abrir" data-campo="' + x[0] + '">' + E(x[2]) + '</button>';
+      acoes.parentNode.insertBefore(d, acoes); V352.escritas++;
+    });
+  }
+
+  // ════ 2 · OPORTUNIDADE › 📎 DOCUMENTOS — o nº de cada PDF de pedido do cliente ════════════════════════════════
+  function cardVivo(card) { try { return typeof _v273Vivo === 'function' && _v273Vivo(card); } catch (e) { return false; } }
+  function carregarNums(card) {
+    if (V352.semSql || !card) return Promise.resolve(null);
+    var N = V352.nums[card];
+    if (N && N.voo) return N.voo;
+    var ger = V352.ger = (V352.ger || 0) + 1, gravou0 = (N && N.gravou) || 0;   // (auditoria 1, A7b) leitura que saiu antes de um Salvar não apaga o nº gravado
+    var p = rpc('crm_pedido_cliente_lista', { p_card: card }).then(function (r) {
+      var A = V352.nums[card] || {};
+      if ((A.gravou || 0) !== gravou0) { A.voo = null; return; }
+      var mapa = {}; ((r && r.numeros) || []).forEach(function (x) { mapa[S(x.attachment_id)] = S(x.numero); });
+      V352.nums[card] = { ok: true, mapa: mapa, aceite: S(r && r.aceite), em: Date.now(), gravou: gravou0, ger: ger };
+    }, function (e) { var A = V352.nums[card] || {}; if ((A.gravou || 0) !== gravou0 && A.ok) { A.voo = null; return; } V352.nums[card] = { ok: false, erro: e.message || S(e), em: Date.now(), gravou: gravou0 }; })
+      .then(function () { if (cardVivo(card)) try { _v273PintarDocs(); } catch (e) { /* nada */ } return V352.nums[card]; });
+    V352.nums[card] = { ok: N && N.ok, mapa: (N && N.mapa) || {}, aceite: N && N.aceite, voo: p, em: (N && N.em) || 0, gravou: gravou0 };
+    return p;
+  }
+  function numHtml(d, o) {
+    var N = V352.nums[o.id]; if (!N || !N.ok) return '';
+    var att = S(d.attachment_id), num = S(N.mapa[att]);
+    if (num && !V352.edita[att]) return '<span class="v352-num" data-v352-att="' + E(att) + '">nº do pedido <b>' + E(num) + '</b>' +
+      '<button type="button" class="btn btn-secondary btn-xs" data-v352="numEditar" data-att="' + E(att) + '" title="Trocar o nº deste pedido">✎</button></span>';
+    var v = V352.dig[att] != null ? V352.dig[att] : num;
+    return '<span class="v352-num" data-v352-att="' + E(att) + '"><input type="text" maxlength="15" data-v352-in="' + E(att) + '" value="' + E(v) + '" placeholder="nº do pedido"' +
+      ' aria-label="Nº do pedido do cliente deste PDF" autocomplete="off" name="v352num_nofill" data-lpignore="true" data-1p-ignore readonly onfocus="this.removeAttribute(\'readonly\')">' +
+      '<button type="button" class="btn btn-secondary btn-xs" data-v352="numSalvar" data-att="' + E(att) + '"' + (V352.edita[att] === 'salvando' ? ' disabled data-pcm-enviando="1"' : '') + '>' +
+      (V352.edita[att] === 'salvando' ? '⏳' : 'Salvar nº') + '</button>' +
+      (num ? '<button type="button" class="btn btn-secondary btn-xs" data-v352="numCancelar" data-att="' + E(att) + '" data-pw-off="1">Cancelar</button>' : '') + '</span>';
+  }
+  async function salvarNum(att, btn) {
+    var o = null; try { o = _v273CardDoModal(); } catch (e) { o = null; } if (!o || !att) return;
+    var inp = document.querySelector('[data-v352-in="' + att.replace(/"/g, '') + '"]');
+    var v = S(inp ? inp.value : V352.dig[att]).trim();
+    if (v.length > 15) { toastx('O nº do pedido tem até 15 caracteres (limite da NF-e).', 'error'); return; }
+    if (V352.edita[att] === 'salvando') return;
+    V352.edita[att] = 'salvando'; try { _v273PintarDocs(); } catch (e) { /* nada */ }
+    var card = o.id;
+    try {
+      var r = await rpc('crm_pedido_cliente_numero', { p_card: card, p_att: att, p_numero: v }, true);
+      var N = V352.nums[card] || (V352.nums[card] = { ok: true, mapa: {} });
+      N.ok = true; N.gravou = (N.gravou || 0) + 1;
+      if (r && r.numero) N.mapa[att] = S(r.numero); else delete N.mapa[att];
+      delete V352.edita[att]; delete V352.dig[att];
+      toastx(r && r.numero ? 'Nº do pedido ' + r.numero + ' guardado — vai na NF.' : 'Nº do pedido tirado deste PDF.');
+    } catch (e) { V352.edita[att] = true; var em = S(e.message || e); toastx('O nº NÃO foi guardado: ' + (/ainda não chegou/.test(em) ? 'o PDF ainda não apareceu no banco — tente em instantes.' : em), 'error'); }
+    if (cardVivo(card)) try { _v273PintarDocs(); } catch (e) { /* nada */ }
+  }
+  function instalarCard() {
+    if (typeof _v273DocLinha !== 'function' || typeof _v273Docs !== 'function' || V352.orig.docLinha) return;
+    V352.orig.docLinha = _v273DocLinha;
+    _v273DocLinha = function (d, o) {
+      var h = V352.orig.docLinha.apply(this, arguments);
+      try {
+        if (off() || V352.semSql || !o || String((d && d.categoria) || '').indexOf('pdf_pedido_cliente') !== 0) return h;
+        var x = numHtml(d, o); if (!x) return h;
+        var i = h.lastIndexOf('</div>'); return i < 0 ? h + x : h.slice(0, i) + x + h.slice(i);
+      } catch (e) { console.warn('[V352] doc:', e); return h; }
+    };
+    V352.orig.docs = _v273Docs;
+    _v273Docs = function (card, forcar) {
+      var p = V352.orig.docs.apply(this, arguments);
+      try { if (!off() && !V352.semSql && card) { var N = V352.nums[card]; if (forcar || !N || (!N.voo && Date.now() - (N.em || 0) > 20000)) carregarNums(card); } } catch (e) { /* nada */ }
+      return p;
+    };
+    // a lista repinta (innerHTML): o que estava sendo digitado no nº volta e o foco também
+    V352.orig.pintarDocs = _v273PintarDocs;
+    _v273PintarDocs = function () {
+      var ae = document.activeElement, att = ae && ae.getAttribute && ae.getAttribute('data-v352-in');
+      var r = V352.orig.pintarDocs.apply(this, arguments);
+      if (att) { var n = document.querySelector('[data-v352-in="' + att.replace(/"/g, '') + '"]'); if (n) { n.removeAttribute('readonly'); n.focus(); try { n.setSelectionRange(n.value.length, n.value.length); } catch (e) { /* nada */ } } }
+      return r;
+    };
+    // o formulário do pedido (oportunidade sem OS): o nº entra junto com o PDF
+    V352.orig.pedHtml = _v273PedHtml;
+    _v273PedHtml = function (o) {
+      var h = V352.orig.pedHtml.apply(this, arguments);
+      try {
+        if (off() || V352.semSql || !o) return h;
+        var P = V273.ped || {}, ancora = '<div style="margin-top:10px;display:flex;gap:6px;flex-wrap:wrap">', i = h.indexOf(ancora); if (i < 0) return h;
+        h = h.replace('placeholder="ex.: pedido nº 4512"', 'placeholder="ex.: entrega parcial"');
+        var campo = '<label for="v352PedNum">Nº do pedido do cliente (vai na NF)</label><input type="text" id="v352PedNum" maxlength="15" value="' + E(V352.pedNum[o.id] || '') + '" placeholder="ex.: 4512"' +
+          ' autocomplete="off" name="v352_ped_nofill" data-lpignore="true" data-1p-ignore readonly onfocus="this.removeAttribute(\'readonly\')"' + (P.enviando ? ' disabled' : '') + '>';
+        return h.slice(0, i) + campo + h.slice(i);
+      } catch (e) { console.warn('[V352] form:', e); return h; }
+    };
+    V352.orig.pedPintar = _v273PintarPed;
+    _v273PintarPed = function () {
+      var foco = document.activeElement && document.activeElement.id === 'v352PedNum';
+      var r = V352.orig.pedPintar.apply(this, arguments);
+      if (foco) { var n = document.getElementById('v352PedNum'); if (n) { n.removeAttribute('readonly'); n.focus(); try { n.setSelectionRange(n.value.length, n.value.length); } catch (e) { /* nada */ } } }
+      return r;
+    };
+    V352.orig.pedEnviar = _v273PedEnviar;
+    _v273PedEnviar = async function () {
+      if (off() || V352.semSql) return V352.orig.pedEnviar.apply(this, arguments);
+      var o = null; try { o = _v273CardDoModal(); } catch (e) { o = null; }
+      var P = V273.ped; if (!o || !P || P.card !== o.id || P.enviando) return V352.orig.pedEnviar.apply(this, arguments);
+      var card = o.id, inp = document.getElementById('v352PedNum'), num = S(inp ? inp.value : V352.pedNum[card]).trim();
+      if (num.length > 15) { P.msg = { cls: 'vm', html: 'O nº do pedido tem até 15 caracteres (limite da NF-e). Nada foi enviado.' }; return _v273PintarPed(); }
+      V352.pedNum[card] = num;
+      var cap = null, antes = _v178Post;
+      var meu = function (action, params) {
+        var p = antes.apply(this, arguments);
+        if (action === 'salvarPdfDrive' && params && params.categoria === 'pdf_pedido_cliente' && params.pasta_comercial === card) {
+          return Promise.resolve(p).then(function (r) { if (r && r.status === 'ok' && r.attachment_id && r.pasta_comercial === card) cap = S(r.attachment_id); return r; });
+        }
+        return p;
+      };
+      _v178Post = meu;
+      try { await V352.orig.pedEnviar.apply(this, arguments); }
+      finally { if (_v178Post === meu) _v178Post = antes; }
+      if (!cap || !num) return;
+      var ok = false, motivo = '';
+      try { await rpc('crm_pedido_cliente_numero', { p_card: card, p_att: cap, p_numero: num }, true); ok = true; } catch (e) { motivo = e.message || S(e); }
+      if (ok) { delete V352.pedNum[card]; var N = V352.nums[card] || (V352.nums[card] = { ok: true, mapa: {} }); N.ok = true; N.gravou = (N.gravou || 0) + 1; N.mapa[cap] = num; }
+      if (!ok && /ainda não chegou/.test(motivo)) motivo = 'o PDF ainda não apareceu no banco';   // (auditoria 1, A7c) sem id técnico na tela
+      var P2 = V273.ped;
+      if (P2 && P2.card === card && P2.msg) P2.msg = { cls: ok ? P2.msg.cls : 'am', html: P2.msg.html + (ok ? ' Nº do pedido <b>' + E(num) + '</b> guardado — vai na NF.' : ' ⚠ O nº do pedido NÃO foi guardado (' + E(motivo) + ') — informe na lista "📎 Documentos da oportunidade".') };
+      if (cardVivo(card)) { try { _v273PintarPed(); } catch (e) { /* nada */ } carregarNums(card); }
+      else toastx(ok ? 'Nº do pedido ' + num + ' guardado — vai na NF.' : 'O nº do pedido NÃO foi guardado: ' + motivo, ok ? 'success' : 'warn');
+    };
+  }
+
+  // ════ 3 · ⚙ › 🔌 › GRAVAR NO OMIE — os dois interruptores ═════════════════════════════════════════════════════
+  var CFG = [['nf_pedido_trava', 'Travar o 📤 com PDF de pedido sem nº', 'Desligado: só avisa na conferência do 📤'],
+             ['nf_pedido_por_item', 'Nº do pedido também em cada item', 'O nº vai em cada item da NF (no cabeçalho vai sempre)']];
+  function ajustarCfg() {
+    var box = document.getElementById('v304Cfg'); if (!box || !window.V304 || !V304.cfg || !V304.cfg.cfg) return;
+    var cfg = V304.cfg.cfg; if (!('nf_pedido_trava' in cfg)) return;   // sem o SQL a chave não existe: nada aparece
+    var el = document.getElementById('v352Cfg');
+    var assin = CFG.map(function (c) { return c[0] + '=' + (cfg[c[0]] === true) + (V352.cfgSalvando[c[0]] ? '…' : ''); }).join('|');
+    if (el && el.getAttribute('data-assin') === assin) return;
+    var h = '<div class="v352-tit">Na NF</div>' +
+      CFG.map(function (c) {
+        return '<label title="' + E(c[2]) + '"><input type="checkbox" data-v352cfg="' + c[0] + '"' + (cfg[c[0]] === true ? ' checked' : '') + (V352.cfgSalvando[c[0]] ? ' disabled' : '') + '><span>' + E(c[1]) + '</span></label>';
+      }).join('');
+    if (!el) {
+      el = document.createElement('div'); el.id = 'v352Cfg'; el.className = 'v352-cfg';
+      var ref = box.querySelector('[data-v304="gravacoes"]'); ref = ref && ref.closest('div');
+      if (ref && ref.parentNode === box) box.insertBefore(el, ref); else box.appendChild(el);
+    }
+    el.innerHTML = h; el.setAttribute('data-assin', assin); V352.escritas++;
+  }
+  async function salvarCfg(inp) {
+    var k = inp.getAttribute('data-v352cfg'), v = !!inp.checked;
+    if (V352.cfgSalvando[k]) return;
+    V352.cfgSalvando[k] = true; ajustarCfg();
+    try {
+      await rpc('omn_cfg_salvar', { p_chave: k, p_valor: v }, true);
+      if (window.V304 && V304.cfg && V304.cfg.cfg) V304.cfg.cfg[k] = v;
+      toastx(k === 'nf_pedido_trava' ? (v ? 'O 📤 trava com PDF de pedido sem nº.' : 'PDF de pedido sem nº só avisa.') : (v ? 'O nº do pedido vai em cada item.' : 'O nº do pedido vai só no cabeçalho.'));
+    } catch (e) { toastx('NÃO foi guardado: ' + (e.message || e), 'error'); }
+    delete V352.cfgSalvando[k]; ajustarCfg();
+  }
+
+  // ════ 4 · UM OBSERVADOR (tudo idempotente) E OS GESTOS ═══════════════════════════════════════════════════════
+  function ajustar() {
+    if (off() || V352.semSql) return;
+    try { vigiarBal(); } catch (e) { /* nada */ }
+    try { ajustarFicha(); } catch (e) { console.warn('[V352] ficha:', e); }
+    try { ajustarCfg(); } catch (e) { console.warn('[V352] ⚙:', e); }
+  }
+  function agendar() { clearTimeout(V352.obsT); V352.obsT = setTimeout(function () { var n0 = V352.escritas; ajustar(); V352.ultimas = V352.escritas - n0; }, 40); }
+  try { instalarCard(); } catch (e) { console.warn('[V352] card:', e); }
+  try {
+    var mo = new MutationObserver(function (ms) { if (off() || V352.semSql) return; for (var i = 0; i < ms.length; i++) { if (ms[i].addedNodes && ms[i].addedNodes.length) { agendar(); break; } } });
+    mo.observe(document.body, { childList: true, subtree: true });
+  } catch (e) { /* sem observador */ }
+
+  document.addEventListener('click', function (ev) {
+    if (off() || V352.semSql) return;
+    var B0 = V352.bal;
+    if (B0 && B0.mexido && !B0.salvando && ev.target && ev.target.closest && !ev.target.closest('#v352Bal')
+        && ev.target.closest('#v235Jan [data-v304="confirmar"],#v235Jan [data-v304="enviar"],#v235Jan [data-v304="confNao"],#v235Jan [data-v235="fechar"],[data-v352="abrir"],#v235Jan [data-v304="corrigir"]')) {
+      // (auditoria 2, M4) com texto digitado no balão, enviar ao Omie, fechar a ficha ou abrir outro balão perderia o que foi digitado
+      ev.preventDefault(); ev.stopPropagation(); ev.stopImmediatePropagation();
+      B0.msg = { er: true, txt: 'Há texto digitado: Salvar ou Cancelar.' }; pintarBal(); return;
+    }
+    var t = ev.target && ev.target.closest && ev.target.closest('[data-v352],button[data-v304="corrigir"][data-onde="ficha"][data-campo="pedido_cliente"],button[data-v304="corrigir"][data-onde="ficha"][data-campo="obs_nf"]');
+    if (!t) { if (V352.bal && !V352.bal.salvando && !V352.bal.mexido && !(ev.target && ev.target.closest && ev.target.closest('#v352Bal'))) fecharBal(); return; }
+    ev.preventDefault(); ev.stopPropagation();
+    var a = t.getAttribute('data-v352') || 'abrir', B = V352.bal;
+    try {
+      if (a === 'abrir') abrirBal(t, t.getAttribute('data-campo'));
+      else if (a === 'fechar') { if (!B || !B.salvando) fecharBal(); }
+      else if (a === 'salvar' && B && !t.disabled) gravarBal(S(document.getElementById('v352BV') && document.getElementById('v352BV').value).trim());
+      else if (a === 'vazio' && B && !t.disabled) gravarBal('');
+      else if (a === 'herdar' && B && !t.disabled) gravarBal(null);
+      else if (a === 'usar' && B) { var vi = document.getElementById('v352BV'); if (vi) { vi.value = S(t.getAttribute('data-v')); B.valor = vi.value; B.mexido = true; B.msg = null; pintarBal(); try { vi.focus(); } catch (e2) { /* nada */ } } }
+      else if (a === 'numSalvar' && !t.disabled) salvarNum(t.getAttribute('data-att'), t);
+      else if (a === 'numEditar') { V352.edita[t.getAttribute('data-att')] = true; _v273PintarDocs(); var n = document.querySelector('[data-v352-in="' + S(t.getAttribute('data-att')).replace(/"/g, '') + '"]'); if (n) { n.removeAttribute('readonly'); n.focus(); } }
+      else if (a === 'numCancelar') { var at2 = t.getAttribute('data-att'); delete V352.edita[at2]; delete V352.dig[at2]; _v273PintarDocs(); }
+    } catch (e) { console.warn('[V352] clique', a, e); toastx(e.message || S(e), 'error'); }
+  }, true);
+  document.addEventListener('input', function (ev) {
+    if (off() || V352.semSql) return; var el = ev.target; if (!el) return;
+    if (el.id === 'v352BV' && V352.bal) { V352.bal.valor = S(el.value); V352.bal.mexido = true; V352.bal.msg = null; pintarBal(); }
+    else if (el.getAttribute && el.getAttribute('data-v352-in')) V352.dig[el.getAttribute('data-v352-in')] = S(el.value);
+    else if (el.id === 'v352PedNum') { try { var o = _v273CardDoModal(); if (o) V352.pedNum[o.id] = S(el.value); } catch (e) { /* nada */ } }
+  }, true);
+  document.addEventListener('change', function (ev) {
+    if (off() || V352.semSql) return; var el = ev.target;
+    if (el && el.getAttribute && el.getAttribute('data-v352cfg')) salvarCfg(el);
+  }, true);
+  document.addEventListener('keydown', function (ev) {
+    if (off() || V352.semSql || ev.key !== 'Enter') return; var el = ev.target; if (!el) return;
+    if (el.id === 'v352BV' && el.tagName === 'INPUT' && V352.bal) { ev.preventDefault(); var b = document.querySelector('#v352Bal [data-v352="salvar"]'); if (b && !b.disabled) b.click(); }
+    else if (el.getAttribute && el.getAttribute('data-v352-in')) { ev.preventDefault(); salvarNum(el.getAttribute('data-v352-in')); }
+  }, true);
+  window.addEventListener('scroll', function () { if (V352.bal) try { vigiarBal(); } catch (e) { /* nada */ } }, true);
+  window.addEventListener('keydown', function (ev) {
+    if ((ev.key === 'Escape' || ev.key === 'Esc') && V352.bal && !off()) {
+      var B = V352.bal;   // (auditoria 1, A7a) balão MEXIDO não descarta o digitado no Esc: pede Salvar ou Cancelar
+      if (B.mexido && !B.salvando) { B.msg = { er: true, txt: 'Há texto digitado: Salvar ou Cancelar.' }; pintarBal(); }
+      else if (!B.salvando) fecharBal();
+      ev.preventDefault(); ev.stopImmediatePropagation();
+    }
+  }, true);
+})();
+</script>
+<!-- ████ FIM PCM V352 ████ -->
 
 </body>
 </html>
