@@ -113812,11 +113812,11 @@ body.v349-nadm [data-v200="config"]{display:none!important}
 #v353Jan .v353-in{border:2px solid #98A2B3;border-radius:8px;padding:8px 10px;font:600 17px ui-monospace,Consolas,monospace;flex:1;min-width:220px;box-sizing:border-box}
 #v353Jan .v353-erro{margin-top:10px;padding:8px 10px;border-radius:8px;background:#FEF3F2;border:1px solid #FDA29B;color:#912018;font-weight:600}
 #v353Jan .v353-ok{margin-top:10px;padding:8px 10px;border-radius:8px;background:#ECFDF3;border:1px solid #A6D8B8;color:#05603A}
-#v353Jan .v353-os{margin:14px 0 6px;font-size:15px}#v353Jan .v353-os small{color:#475467}
+#v353Jan .v353-os{margin:14px 0 6px;font-size:15px}#v353Jan .v353-tec{font-size:12.5px;color:#475467}#v353Jan .v353-mq{display:block;font-size:12px;color:#667085}
 #v353Jan .v353-ver{display:flex;align-items:baseline;gap:10px;padding:12px 14px;border-radius:10px;font-size:20px;font-weight:800;margin:6px 0 8px}
 #v353Jan .v353-ver.verde{background:#ECFDF3;border:2px solid #32D583;color:#05603A}
 #v353Jan .v353-ver.ambar{background:#FFFAEB;border:2px solid #FDB022;color:#93370D}
-#v353Jan .v353-ver small{font-size:13px;font-weight:500;color:#475467}
+#v353Jan .v353-ver .v353-it{font-size:13px;font-weight:500;color:#475467}
 #v353Jan .v353-kit{font-size:13px;color:#344054;margin:2px 0}
 #v353Jan table{width:100%;border-collapse:collapse;margin-top:10px;font-size:13.5px}
 #v353Jan th,#v353Jan td{border-bottom:1px solid #EAECF0;padding:6px 6px;text-align:left;vertical-align:top}
@@ -113921,7 +113921,7 @@ body.v349-nadm [data-v200="config"]{display:none!important}
     var saiu = N(l.retirado) > 0 && N(l.retirado) >= N(l.vol_sep);
     return '<tr class="' + E(l.conf) + '" data-v353linha="' + E(l.linha) + '"><td class="v353-sit">' + (l.conf === 'falta' ? '⚠ ' : '') + E(l.rotulo || '') +   // o rótulo do banco já traz ☑ 🛒 🚚
       (saiu ? '<span class="v353-saiu" title="Já saiu numa retirada anterior">já saiu</span>' : '') + '</td>' +
-      '<td class="cod">' + E(l.codigo || '—') + '</td><td>' + E(l.descricao || '') + (l.maquina ? '<br><small style="color:#667085">' + E(l.maquina) + '</small>' : '') + '</td>' +
+      '<td class="cod">' + E(l.codigo || '—') + '</td><td>' + E(l.descricao || '') + (l.maquina ? '<span class="v353-mq">' + E(l.maquina) + '</span>' : '') + '</td>' +
       '<td class="q">' + Q(l.qtd) + ' ' + E(l.unidade || '') + '</td><td class="q">' + Q(l.separado) + '</td><td>' + (l.endereco ? '📍 ' + E(l.endereco) : '<span style="color:#98A2B3">—</span>') + '</td></tr>';
   }
   function corpoHtml() {
@@ -113933,7 +113933,7 @@ body.v349-nadm [data-v200="config"]{display:none!important}
     if (S.lendo && !S.d) return h + '<div class="v353-esq"></div><div class="v353-esq"></div><div class="v353-esq"></div>';
     var d = S.d; if (!d) return h;
     h += '<div class="v353-os"><b>OS ' + E(d.numero_os || d.os) + '</b>' + (d.cliente ? ' · ' + E(d.cliente) : '') +
-      ' <small>' + (d.tecnico ? '👷 ' + E(d.tecnico) : '') + (d.dia ? ' · ' + E(dia(d.dia)) + (d.hora ? ' ' + E(d.hora) : '') : '') + '</small></div>';
+      ' <span class="v353-tec">' + (d.tecnico ? '👷 ' + E(d.tecnico) : '') + (d.dia ? ' · ' + E(dia(d.dia)) + (d.hora ? ' ' + E(d.hora) : '') : '') + '</span></div>';
     var k = d.kit || {};
     if (d.sem_acesso) {
       return h + '<div class="v353-kit">' + (k.endereco ? '🧰 Kit em 📍 ' + E(k.endereco) : k.retirado_em ? '🧰 Kit retirado' + (k.retirado_por ? ' por ' + E(k.retirado_por) : '') + ' em ' + E(quando(k.retirado_em)) : 'Sem kit separado.') + '</div>' +
@@ -113941,7 +113941,7 @@ body.v349-nadm [data-v200="config"]{display:none!important}
     }
     var v = d.volumes || {};
     h += '<div class="v353-ver ' + (d.nivel === 'verde' ? 'verde' : 'ambar') + '" data-v353="veredito">' + (d.nivel === 'verde' ? '✅ ' : '⚠ ') + E(d.veredito || '') +
-      '<small>' + N(d.itens) + ' ite' + (N(d.itens) === 1 ? 'm' : 'ns') + '</small></div>';
+      '<span class="v353-it">' + N(d.itens) + ' ite' + (N(d.itens) === 1 ? 'm' : 'ns') + '</span></div>';
     if (k.endereco) h += '<div class="v353-kit">🧰 Kit em <b>📍 ' + E(k.endereco) + '</b></div>';
     if (d.retirada) h += '<div class="v353-kit">🧰 Última retirada: ' + N(d.retirada.vol_sep) + ' de ' + N(d.retirada.vol_tot) + ' volumes, levadas por <b>' + E(d.retirada.levou || '') + '</b> em ' + E(quando(d.retirada.em)) +
       (d.retirada.por && d.retirada.por !== d.retirada.levou ? ' (registrado por ' + E(d.retirada.por) + ')' : '') + '</div>';
