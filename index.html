@@ -114673,7 +114673,7 @@ body.v355-on .gos-ribbon-tab[onclick="gosSetTab('fila')"],body.v355-on .gos-ribb
      (só quando tem máquina) + a faixa ⛔ Paradas. A estação vem do BANCO (pc_oficina_quadro, SQL OFICINA_ESTACAO): ninguém escolhe a
      coluna e o nome da fase do roteiro não muda nada. Cada cartão: há quantos dias úteis está na estação × a meta (vermelho = passou),
      o que falta para andar (✓ feito · ○ falta) e com quem está a bola. Toque = abre a OS (a gaveta da Oficina).
-   · ⚙ Metas (só administrador; o banco confere): a meta em dias úteis e o relógio de cada estação (pc_oficina_estacao_salvar).
+   · ⚙ Editar metas (só administrador; o banco confere): a meta em dias úteis e o relógio de cada estação (pc_oficina_estacao_salvar).
    · D11: em "Outras vistas" ficam Serviços externos e Por técnico; Ordem de chegada, Por etapa e Técnico × etapa saem (e somem também
      da tela de OS de antes). O quadro de antes continua a um clique ("Ver o quadro de antes", só neste navegador).
    Chamadas: abrir = 1 (pc_oficina_quadro; a leitura que já está na memória pinta antes da rede) · atualiza sozinho a cada minuto ·
@@ -114698,7 +114698,7 @@ body.v355-on .gos-ribbon-tab[onclick="gosSetTab('fila')"],body.v355-on .gos-ribb
   var RELOGIO = { proper: 'Proper', cliente: 'cliente', fornecedor: 'fornecedor' };
   function msgErro(e) {
     if (e && e.v200 === 'sem_sql') return 'Tela indisponível — avise o administrador.';
-    if (e && e.v200 === 'acesso') return 'O banco recusou: só um administrador altera as metas (e ler o quadro pede o login com PIN pelo ProperHub).';
+    if (e && e.v200 === 'acesso') return 'Só um administrador altera as metas. Para ler o quadro, entre de novo pelo ProperHub.';
     var m = String((e && e.message) || e || 'erro').replace(/^NÃO foi gravada: /, '').replace(/^Metas da oficina:\s*/, '');
     return m.charAt(0).toUpperCase() + m.slice(1);
   }
@@ -114783,7 +114783,7 @@ body.v355-on .gos-ribbon-tab[onclick="gosSetTab('fila')"],body.v355-on .gos-ribb
           '<td><input type="text" inputmode="decimal" data-qof-campo="meta" value="' + E(m) + '" placeholder="sem meta" autocomplete="off" name="qof_meta_nofill" data-lpignore="true" data-1p-ignore></td>' +
           '<td><select data-qof-campo="rel" name="qof_rel_nofill">' + ['proper', 'cliente', 'fornecedor'].map(function (k) {
             return '<option value="' + k + '"' + (r === k ? ' selected' : '') + '>' + RELOGIO[k] + '</option>'; }).join('') + '</select></td>' +
-          '<td><button type="button" class="qof-btn" data-qof="salvar-meta">Salvar</button></td></tr>';
+          '<td><button type="button" class="qof-btn" data-qof="salvar-meta">Salvar meta</button></td></tr>';
       }).join('') + '</tbody></table></div>';
   }
   function pintar(forcar) {
@@ -114803,7 +114803,7 @@ body.v355-on .gos-ribbon-tab[onclick="gosSetTab('fila')"],body.v355-on .gos-ribb
       '<span class="qof-sp"></span>' +
       '<select id="qofTec" class="qof-sel" data-qof="tec" aria-label="Filtrar por pessoa" autocomplete="off" name="qof_tec_nofill"><option value="">Todas as pessoas</option>' +
       lista.map(function (n) { return '<option value="' + E(n) + '"' + (QOF.tec === n ? ' selected' : '') + '>' + E(n) + '</option>'; }).join('') + '</select>' +
-      (d && d.admin ? '<button type="button" class="qof-btn" data-qof="metas" aria-pressed="' + (QOF.metas ? 'true' : 'false') + '">⚙ Metas</button>' : '') +
+      (d && d.admin ? '<button type="button" class="qof-btn" data-qof="metas" aria-pressed="' + (QOF.metas ? 'true' : 'false') + '">⚙ Editar metas</button>' : '') +
       '<button type="button" class="qof-btn" data-qof="recarregar" title="Atualizar agora" aria-label="Atualizar agora">' + (QOF.carregando ? '⏳' : '↻') + '</button></div>';
     if (!d) {
       if (QOF.erro) h += '<div class="qof-aviso verm">Não consegui montar o quadro: ' + E(QOF.erro) + ' <button type="button" class="qof-btn" data-qof="recarregar">Tentar de novo</button></div>';
@@ -114839,7 +114839,10 @@ body.v355-on .gos-ribbon-tab[onclick="gosSetTab('fila')"],body.v355-on .gos-ribb
     h += '<div class="qof-rodape"><span>Atualizado às ' + E(hora(QOF.em)) + ' · atualiza sozinho a cada minuto</span>' +
       '<button type="button" class="qof-lnk" data-qof="antigo" title="Só neste navegador">Ver o quadro de antes</button>' +
       '<span data-carimbo="PCM {v}">PCM</span></div>';
+    var q0 = r.querySelector('.qof-quadro'), rol = q0 ? [q0.scrollLeft, q0.scrollTop] : null;   // a repintura devolve a rolagem do quadro
     r.innerHTML = h;
+    var q1 = r.querySelector('.qof-quadro');
+    if (q1 && rol && (rol[0] || rol[1])) { try { q1.scrollLeft = rol[0]; q1.scrollTop = rol[1]; } catch (e) {} }
     try { if (window.CARIMBO && CARIMBO.pintar) CARIMBO.pintar(); } catch (e) {}
   }
   QOF.pintar = pintar;
@@ -114852,7 +114855,7 @@ body.v355-on .gos-ribbon-tab[onclick="gosSetTab('fila')"],body.v355-on .gos-ribb
     if (!QOF.d || Date.now() - QOF.em > 20000) carregar(!!QOF.d);
     if (!QOF.timer) QOF.timer = setInterval(function () {
       if (!raiz()) { clearInterval(QOF.timer); QOF.timer = 0; return; }
-      if (document.hidden || QOF.carregando || Date.now() - QOF.em < 55000) return;
+      if (document.hidden || !QOF.el.getClientRects().length || QOF.carregando || Date.now() - QOF.em < 55000) return;   // a aba escondida não lê
       carregar(true);
     }, 15000);
   }
