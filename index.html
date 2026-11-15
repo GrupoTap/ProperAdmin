@@ -114964,7 +114964,7 @@ body.v355-on .gos-ribbon-tab[onclick="gosSetTab('fila')"],body.v355-on .gos-ribb
 (function () {
   'use strict';
   if (window.V356) return;
-  var V356 = window.V356 = { versao: 'V356', marcas: {}, carregando: {}, semSql: false, cancelado: {}, log: [] };
+  var V356 = window.V356 = { versao: 'V356', marcas: {}, carregando: {}, semSql: false, cancelado: {}, furou: {}, log: [] };
   function off() { try { return localStorage.getItem('pcm_v356') === 'off'; } catch (e) { return false; } }
   V356.off = off;
   function T(x) { return String(x == null ? '' : x).trim(); }
@@ -114982,7 +114982,11 @@ body.v355-on .gos-ribbon-tab[onclick="gosSetTab('fila')"],body.v355-on .gos-ribb
       var r = await _v200Rpc('pc_roteiro_trava_ler', { p: { template_id: tpl } }, false);
       var m = {}; (r && Array.isArray(r.marcas) ? r.marcas : []).forEach(function (x) { m[T(x.tarefa)] = { kit: !!x.kit, terceiro: !!x.terceiro }; });
       V356.marcas[tpl] = { m: m, admin: !!(r && r.admin), em: Date.now() };
-    } catch (e) { if (semSql(e)) V356.semSql = true; nota(e, 'marcas'); }
+    } catch (e) {
+      if (semSql(e)) V356.semSql = true;
+      V356.marcas[tpl] = { m: {}, admin: false, erro: true, em: Date.now() };   // falhou: espera 30 s antes de tentar de novo (nunca em laço)
+      nota(e, 'marcas');
+    }
     finally { delete V356.carregando[tpl]; decorar(); }
   }
   function tplAtual() { try { return (typeof _editorTemplate !== 'undefined' && _editorTemplate) ? T(_editorTemplate.template_id) : ''; } catch (e) { return ''; } }
@@ -114990,13 +114994,13 @@ body.v355-on .gos-ribbon-tab[onclick="gosSetTab('fila')"],body.v355-on .gos-ribb
     if (off() || V356.semSql) return;
     var cont = document.getElementById('tplFasesContainer'); if (!cont) return;
     var tpl = tplAtual(), dados = tpl ? V356.marcas[tpl] : null;
-    if (tpl && !dados) { carregarMarcas(tpl); }
+    if (tpl && (!dados || (dados.erro && Date.now() - dados.em > 30000))) { carregarMarcas(tpl); }
     Array.prototype.forEach.call(cont.querySelectorAll('.tpl-tarefa-card'), function (card) {
       var mm = /_editarTarefa\((\d+),(\d+)\)/.exec(card.getAttribute('onclick') || ''); if (!mm) return;
       var t = null; try { t = _editorTemplate.fases[+mm[1]].tarefas[+mm[2]]; } catch (e) { t = null; }
       var tid = T(t && t.id), mk = (dados && dados.m[tid]) || {};
       var pode = !!(tpl && tid && dados && dados.admin);
-      var tit = !tpl || !tid ? 'Salve o roteiro antes de marcar' : (!dados ? 'Lendo as marcas…' : (dados.admin ? '' : 'Só o administrador marca'));
+      var tit = !tpl || !tid ? 'Salve o roteiro antes de marcar' : (!dados ? 'Lendo as marcas…' : (dados.erro ? 'Marcas indisponíveis agora (sem conexão com o banco) — reabra o roteiro em instantes' : (dados.admin ? '' : 'Só o administrador marca')));
       var html = '<button type="button" class="v356-chip' + (mk.kit ? ' on' : '') + '" data-v356="kit" title="' + E(tit || 'Precisa do kit: espera as peças da OS separadas') + '"' + (pode ? '' : ' disabled') + '>📦 kit</button>'
                + '<button type="button" class="v356-chip' + (mk.terceiro ? ' on' : '') + '" data-v356="terceiro" title="' + E(tit || 'Precisa do serviço de terceiro: espera o pedido do serviço recebido') + '"' + (pode ? '' : ' disabled') + '>🔧 terceiro</button>';
       var host = card.querySelector('.v356-trv');
@@ -115057,7 +115061,11 @@ body.v355-on .gos-ribbon-tab[onclick="gosSetTab('fila')"],body.v355-on .gos-ribb
     var oss = []; itens.forEach(function (x) { if (oss.indexOf(x.os_id) < 0) oss.push(x.os_id); });
     var r;
     try { r = await _v200Rpc('pc_oficina_prontidao', { p: { os: oss.slice(0, 400) } }, false); }
-    catch (e) { if (semSql(e)) V356.semSql = true; nota(e, 'prontidão'); return; }   // sem o banco: segue como hoje
+    catch (e) {                                       // sem o banco: segue como hoje (o GAS também não trava sem ele) — mas AVISA
+      if (semSql(e)) V356.semSql = true;
+      else aviso('Não consegui conferir no banco se a tarefa espera peças — a designação segue; se ela estiver 🔒, o técnico não vai conseguir assumir.', 'warning');
+      nota(e, 'prontidão'); return;
+    }
     var porOs = {}; (r && Array.isArray(r.itens) ? r.itens : []).forEach(function (x) { porOs[T(x.os_id)] = x; });
     var trav = [];
     itens.forEach(function (it) {
@@ -115066,6 +115074,7 @@ body.v355-on .gos-ribbon-tab[onclick="gosSetTab('fila')"],body.v355-on .gos-ribb
         if (T(t.tarefa_id) !== it.tarefa_id || !t.travada) return;
         var lib = T(t.liberada_para).toLowerCase(), libN = T(t.liberada_nome).toLowerCase(), d = designado.toLowerCase();
         if (lib && (lib === d || libN === d)) return;   // já liberada para ele
+        var fu = V356.furou[ch(it)]; if (fu && Date.now() - fu < 120000) return;   // o motivo acabou de ir ao banco (a outra porta, gsPost → syncToGS, não pergunta de novo)
         var pv = x.previsao ? 'chegam ' + dm(x.previsao) : '';
         trav.push({ os_id: it.os_id, tarefa_id: it.tarefa_id, nome: t.nome, motivo: t.motivo, prev: pv });
       });
@@ -115075,6 +115084,7 @@ body.v355-on .gos-ribbon-tab[onclick="gosSetTab('fila')"],body.v355-on .gos-ribb
     if (!mot) { trav.forEach(function (x) { V356.cancelado[ch(x)] = Date.now(); }); throw new Error('Designação cancelada: a tarefa espera peças.'); }
     for (var i = 0; i < trav.length; i++) {
       await _v200Rpc('pc_trava_furar', { p: { os: trav[i].os_id, tarefa: trav[i].tarefa_id, usuario: designado, motivo: mot } }, true);
+      V356.furou[ch(trav[i])] = Date.now();
     }
   }
   V356.guardar = guardar;
