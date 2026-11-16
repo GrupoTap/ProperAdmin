@@ -1566,6 +1566,9 @@ try{
   function ajustar(q) {
     try {
       if (!q || !q.isConnected) return;
+      var t = Date.now();                                             // disjuntor: área que encolhe junto com o quadro faria
+      if (!q.__qv1 || t - q.__qv1.t > 1000) q.__qv1 = { t: t, n: 0 }; // um laço de 1 px por quadro; mais de 20 escritas num
+      if (q.__qv1.n > 20) return;                                     // segundo = para até a janela mudar de tamanho
       if (estreita()) { if (q.style.height) q.style.height = ''; return; }
       if (!q.getClientRects().length) return;                        // escondido (outra aba): mede quando aparecer
       var sp = rolador(q), doc = ehDoc(sp);
@@ -1575,7 +1578,7 @@ try{
       var topo = q.getBoundingClientRect().top - spTop + st;          // onde o quadro começa no conteúdo da área que rola
       var h = Math.max(MIN, Math.floor(visivel - topo - depoisDe(q, sp)) - 1);
       var antes = parseFloat(q.style.height) || 0;
-      if (Math.abs(antes - h) > 1) { q.style.height = h + 'px'; Q.ajustes++; }
+      if (Math.abs(antes - h) > 1) { q.style.height = h + 'px'; Q.ajustes++; q.__qv1.n++; }
     } catch (e) {}
   }
   Q.ajustar = function (raiz) { quadros(raiz).forEach(ajustar); vigiar(raiz); };
@@ -1612,7 +1615,15 @@ try{
   // reajuste: a janela, a área que rola e o que está em volta do quadro mudam de tamanho (o ajuste vai para o próximo quadro de
   // animação: mexer na altura dentro do aviso de tamanho reacende o aviso no mesmo quadro)
   var vigiados = [], ro = null, pedido = 0;
-  function todos() { pedido = 0; vigiados = vigiados.filter(function (q) { return q.isConnected; }); vigiados.forEach(ajustar); }
+  function todos() {
+    pedido = 0;
+    vigiados = vigiados.filter(function (q) {
+      if (q.isConnected) return true;
+      try { if (ro && q.__qv1pai) ro.unobserve(q.__qv1pai); } catch (e) {}           // a tela que saiu deixa de ser vigiada
+      return false;
+    });
+    vigiados.forEach(ajustar);
+  }
   function pedir() { if (!pedido) pedido = (window.requestAnimationFrame || setTimeout)(todos); }
   function vigiar(raiz) {
     try {
@@ -1623,13 +1634,13 @@ try{
           if (!ro) ro = new ResizeObserver(pedir);
           var sp = rolador(q);
           if (!ehDoc(sp)) ro.observe(sp);
-          if (q.parentElement) ro.observe(q.parentElement);
+          if (q.parentElement) { q.__qv1pai = q.parentElement; ro.observe(q.parentElement); }
         }
       });
     } catch (e) {}
   }
   Q.todos = todos;
-  try { window.addEventListener('resize', pedir); } catch (e) {}
+  try { window.addEventListener('resize', function () { vigiados.forEach(function (q) { q.__qv1 = null; }); pedir(); }); } catch (e) {}
 })();
 </script>
 <!-- ████ FIM QUADRO_V1 ████ -->
@@ -1680,7 +1691,7 @@ try{
   function E(x) { return String(x == null ? '' : x).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
   function norm(x) { try { return String(x == null ? '' : x).normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase(); } catch (e) { return String(x == null ? '' : x).toLowerCase(); } }
   function copia(o) { var r = {}; Object.keys(VAZIO).forEach(function (k) { r[k] = o && o[k] !== undefined ? o[k] : VAZIO[k]; }); return r; }
-  function inteiro(x) { var n = parseInt(String(x == null ? '' : x).replace(/\D/g, ''), 10); return isFinite(n) ? n : null; }
+  function inteiro(x) { x = T(x); return /^\d+$/.test(x) ? parseInt(x, 10) : null; }   // "1,5", "-2", "a3" = vazio, nunca outro número
   function criar(cfg) {
     cfg = cfg || {};
     var chave = 'filtro_os_v1:' + (cfg.chave || 'os'), campos = cfg.campos || ['busca'], ids = cfg.ids || {};
@@ -1703,10 +1714,11 @@ try{
         if (s.maquina && T(x.maquina) !== s.maquina) return false;
         if (s.pessoa && (x.pessoas || []).map(T).indexOf(s.pessoa) < 0) return false;
         if (s.de || s.ate) {
-          var d = T(x.entrada).slice(0, 10);
+          var d = T(x.entrada).slice(0, 10), de = s.de, ate = s.ate;
+          if (de && ate && de > ate) { de = s.ate; ate = s.de; }           // de/até trocados valem pelo período
           if (!d) return false;
-          if (s.de && d < s.de) return false;
-          if (s.ate && d > s.ate) return false;
+          if (de && d < de) return false;
+          if (ate && d > ate) return false;
         }
         var n = inteiro(s.dias);
         if (n !== null && !(Number(x.dias) > n)) return false;
@@ -1771,7 +1783,7 @@ try{
         var b = ev.target.closest && ev.target.closest('[data-fos]'); if (!b || !no.contains(b)) return;
         var a = b.getAttribute('data-fos');
         if (a === 'mais') { f.mais = !f.mais; salvar(); f.pintar(); return; }
-        if (a === 'limpar') { f.limpar(); }
+        if (a === 'limpar') { f.limpar(); try { var q = no.querySelector('[data-fos-campo="q"]'); if (q) q.focus(); } catch (e) {} }   // o botão some: o foco vai à busca
       });
     }
     f.limpar = function () {
@@ -1902,7 +1914,7 @@ são o motor de verdade. Clique duas vezes: o 2º clique é engolido.</p><div cl
 <div class="chips"><span class="selo selo-reprova">Medido · reprova · checagem 1: o motor byte a byte</span><span class="selo selo-avisa">Medido · avisa · A6 · checagem 9</span></div>
 <p class="regra">O quadro cabe na tela (altura medida): cada coluna rola sozinha com o título fixo, a barra de lado fica no pé e a repintura não perde a rolagem.</p>
 <p class="licao"><b>De onde veio:</b> #227: &quot;não consigo rolar colunas isoladas, a rolagem horizontal não aparece se não rolar vertical&quot; (Quadro da Oficina).</p>
-<p class="onde"><b>Fonte:</b> <code>ferramentas/blocos/QUADRO_V1.html</code> (md5 228b3c94) · declarado em 2 linha(s) da COMPOSICAO.tsv: ProperAdmin/index.html, ProperAdmin/padrao.html</p>
+<p class="onde"><b>Fonte:</b> <code>ferramentas/blocos/QUADRO_V1.html</code> (md5 d32b20ca) · declarado em 2 linha(s) da COMPOSICAO.tsv: ProperAdmin/index.html, ProperAdmin/padrao.html</p>
 <div class="previa"><div class="quadro-caixa" id="demoQuadroCaixa"><div id="demoQuadroRaiz"></div></div>
 <p class="mini">Exemplo fictício numa caixa de 300 px: o quadro mede a altura que sobra, a rodinha sobre uma coluna rola só ela
 (Shift + rodinha anda de lado) e "Repintar" troca tudo sem perder as rolagens.</p>
@@ -1912,7 +1924,7 @@ são o motor de verdade. Clique duas vezes: o 2º clique é engolido.</p><div cl
 <div class="chips"><span class="selo selo-reprova">Medido · reprova · checagem 1: o motor byte a byte</span><span class="selo selo-avisa">Medido · avisa · A3 · checagem 9</span><span class="selo selo-avisa">Medido · avisa · A7 · checagem 3</span></div>
 <p class="regra">Uma faixa só vale para tudo o que a vista mostra: busca sem acento, escolher (não digitar), contador X de Y, Limpar; fica guardada no computador.</p>
 <p class="licao"><b>De onde veio:</b> #227: &quot;não consigo pesquisar ou filtrar por OS, clientes, máquinas, datas&quot; — o #228 leva a faixa às outras vistas de OS.</p>
-<p class="onde"><b>Fonte:</b> <code>ferramentas/blocos/FILTRO_OS_V1.html</code> (md5 2a65de65) · declarado em 2 linha(s) da COMPOSICAO.tsv: ProperAdmin/index.html, ProperAdmin/padrao.html</p>
+<p class="onde"><b>Fonte:</b> <code>ferramentas/blocos/FILTRO_OS_V1.html</code> (md5 6fd86e66) · declarado em 2 linha(s) da COMPOSICAO.tsv: ProperAdmin/index.html, ProperAdmin/padrao.html</p>
 <div class="previa"><div id="demoFiltroLugar"></div><div class="estado" id="demoFiltroEstado"></div>
 <p class="mini">A faixa filtra o quadro do exemplo acima. Busque "metal" ou "maria" (sem acento); o que você escolher fica guardado
 neste navegador.</p></div>
@@ -2036,7 +2048,7 @@ neste navegador.</p></div>
 <tr><td>10</td><td>A ESTRUTURA DO DOCUMENTO (o defeito do título da aba, 21/09)</td><td>reprova</td><td>—</td></tr>
 <tr><td>11</td><td>NENHUM CAMPO DE SENHA FORA DO LOGIN (o &quot;Salvar senha?&quot; do Chrome, 07/10)</td><td>reprova</td><td>—</td></tr>
 </tbody></table></section></main>
-<footer>Gerado por <code>ferramentas/padrao_telas.py</code> (ProperCare-backlog#128, parte P3 da #125) · motores: PWAIT 1bc3d46f · ERRO c99512b9 · CFX f092f38a · CARIMBO d3e4f00b · ROLAGEM_V1 a83d44bd · JANELA_V1 9bb8bf40 · QUADRO_V1 228b3c94 · FILTRO_OS_V1 2a65de65 ·
+<footer>Gerado por <code>ferramentas/padrao_telas.py</code> (ProperCare-backlog#128, parte P3 da #125) · motores: PWAIT 1bc3d46f · ERRO c99512b9 · CFX f092f38a · CARIMBO d3e4f00b · ROLAGEM_V1 a83d44bd · JANELA_V1 9bb8bf40 · QUADRO_V1 d32b20ca · FILTRO_OS_V1 6fd86e66 ·
 não edite este arquivo: o portão o confere contra o gerador.</footer>
 <script>
 window.PADRAO_CATALOGO=[{"id": "cfx", "css": [], "contar": []}, {"id": "pwait", "css": [], "contar": []}, {"id": "erro", "css": [], "contar": []}, {"id": "carimbo", "css": [], "contar": []}, {"id": "rolagem", "css": [], "contar": []}, {"id": "janela", "css": [], "contar": []}, {"id": "quadro", "css": [], "contar": []}, {"id": "filtro-os", "css": [], "contar": []}, {"id": "pin", "css": [".pin-mask"], "contar": [["usos de .pin-mask", "pin-mask"]]}, {"id": "vazio", "css": [".empty", ".empty-icon", ".empty-title", ".empty-sub"], "contar": [["títulos .empty-title", "empty-title"], [".mob-empty", "mob-empty"], [".gos-kempty", "gos-kempty"]]}, {"id": "toast", "css": [], "contar": [["funções toast…", "function\\s+toast\\w*\\s*\\("], ["toast… = function", "\\btoast\\w*\\s*=\\s*function"]]}, {"id": "esqueleto", "css": [], "contar": [["xfSkeletonHtml", "xfSkeletonHtml"], ["skel…", "skel"]]}, {"id": "confirmacao", "css": [], "contar": [["funções …confirm…", "function\\s+\\w*confirm\\w*\\s*\\("], ["chamadas confirm( (inclui o diálogo do navegador)", "\\bconfirm\\s*\\("]]}, {"id": "balao", "css": [], "contar": [["funções …balao…", "function\\s+\\w*balao\\w*\\s*\\("]]}, {"id": "painel", "css": [], "contar": [["funções …painel…", "function\\s+\\w*[Pp]ainel\\w*\\s*\\("]]}, {"id": "linha", "css": [], "contar": [["display:contents", "display:\\s*contents"]]}, {"id": "ajuda", "css": [], "contar": [["pc_ajuda", "pc_ajuda"]]}, {"id": "novidade", "css": [], "contar": [["pc_novidade", "pc_novidade"]]}, {"id": "dinheiro", "css": [], "contar": [["funções brl(", "function\\s+brl\\s*\\("], ["toLocaleString('pt-BR')", "toLocaleString\\(\\s*['\\\"]pt-BR['\\\"]"]]}];

@@ -114878,7 +114878,8 @@ body.v355-on .gos-ribbon-tab[onclick="gosSetTab('fila')"],body.v355-on .gos-ribb
         .sort(function (a, b) { return (b.atrasada ? 1 : 0) - (a.atrasada ? 1 : 0) || N(b.dias) - N(a.dias); });
       var rel = e.relogio !== 'proper' ? 'relógio do ' + RELOGIO[e.relogio] + ' · ' : '';
       return '<section class="qof-col' + (e.relogio !== 'proper' ? ' cli' : '') + (N(e.n) === 0 ? ' dev' : '') + (v1 ? ' quadro-v1-col' : '') +
-        (v1 && filtrando && !cs.length ? ' quadro-v1-recolhida' : '') + '" data-qof-col="' + N(e.n) + '" data-quadro-col="' + N(e.n) + '" aria-label="' + E(e.nome) + '">' +
+        (v1 && filtrando && !cs.length ? ' quadro-v1-recolhida" title="' + E(e.nome + ' · ' + metaTxt(e.meta_dias) + ' · nada com esses filtros') : '') +
+        '" data-qof-col="' + N(e.n) + '" data-quadro-col="' + N(e.n) + '" aria-label="' + E(e.nome) + '">' +
         (v1 ? '<div class="quadro-v1-cab">' : '') + '<div class="qof-col-h"><span title="' + E((e.dono ? 'Quem cuida: ' + e.dono : '')) + '">' + (N(e.n) ? N(e.n) + ' · ' : '↩ ') + E(e.nome) + '</span><span class="n">' + cs.length + '</span></div>' +
         '<div class="qof-col-sub" title="' + E(rel + metaTxt(e.meta_dias) + (e.dono ? ' · ' + e.dono : '')) + '">' + E(rel + metaTxt(e.meta_dias)) + '</div>' + (v1 ? '</div><div class="quadro-v1-corpo">' : '') +
         (cs.length ? cs.map(cardHtml).join('') : '<div class="qof-vazio">—</div>') + (v1 ? '</div>' : '') + '</section>';
@@ -116241,6 +116242,9 @@ body.v357-on #qofRaiz .qof-card[data-qof-est="9"]::after,body.v357-on #qofRaiz .
   function ajustar(q) {
     try {
       if (!q || !q.isConnected) return;
+      var t = Date.now();                                             // disjuntor: área que encolhe junto com o quadro faria
+      if (!q.__qv1 || t - q.__qv1.t > 1000) q.__qv1 = { t: t, n: 0 }; // um laço de 1 px por quadro; mais de 20 escritas num
+      if (q.__qv1.n > 20) return;                                     // segundo = para até a janela mudar de tamanho
       if (estreita()) { if (q.style.height) q.style.height = ''; return; }
       if (!q.getClientRects().length) return;                        // escondido (outra aba): mede quando aparecer
       var sp = rolador(q), doc = ehDoc(sp);
@@ -116250,7 +116254,7 @@ body.v357-on #qofRaiz .qof-card[data-qof-est="9"]::after,body.v357-on #qofRaiz .
       var topo = q.getBoundingClientRect().top - spTop + st;          // onde o quadro começa no conteúdo da área que rola
       var h = Math.max(MIN, Math.floor(visivel - topo - depoisDe(q, sp)) - 1);
       var antes = parseFloat(q.style.height) || 0;
-      if (Math.abs(antes - h) > 1) { q.style.height = h + 'px'; Q.ajustes++; }
+      if (Math.abs(antes - h) > 1) { q.style.height = h + 'px'; Q.ajustes++; q.__qv1.n++; }
     } catch (e) {}
   }
   Q.ajustar = function (raiz) { quadros(raiz).forEach(ajustar); vigiar(raiz); };
@@ -116287,7 +116291,15 @@ body.v357-on #qofRaiz .qof-card[data-qof-est="9"]::after,body.v357-on #qofRaiz .
   // reajuste: a janela, a área que rola e o que está em volta do quadro mudam de tamanho (o ajuste vai para o próximo quadro de
   // animação: mexer na altura dentro do aviso de tamanho reacende o aviso no mesmo quadro)
   var vigiados = [], ro = null, pedido = 0;
-  function todos() { pedido = 0; vigiados = vigiados.filter(function (q) { return q.isConnected; }); vigiados.forEach(ajustar); }
+  function todos() {
+    pedido = 0;
+    vigiados = vigiados.filter(function (q) {
+      if (q.isConnected) return true;
+      try { if (ro && q.__qv1pai) ro.unobserve(q.__qv1pai); } catch (e) {}           // a tela que saiu deixa de ser vigiada
+      return false;
+    });
+    vigiados.forEach(ajustar);
+  }
   function pedir() { if (!pedido) pedido = (window.requestAnimationFrame || setTimeout)(todos); }
   function vigiar(raiz) {
     try {
@@ -116298,13 +116310,13 @@ body.v357-on #qofRaiz .qof-card[data-qof-est="9"]::after,body.v357-on #qofRaiz .
           if (!ro) ro = new ResizeObserver(pedir);
           var sp = rolador(q);
           if (!ehDoc(sp)) ro.observe(sp);
-          if (q.parentElement) ro.observe(q.parentElement);
+          if (q.parentElement) { q.__qv1pai = q.parentElement; ro.observe(q.parentElement); }
         }
       });
     } catch (e) {}
   }
   Q.todos = todos;
-  try { window.addEventListener('resize', pedir); } catch (e) {}
+  try { window.addEventListener('resize', function () { vigiados.forEach(function (q) { q.__qv1 = null; }); pedir(); }); } catch (e) {}
 })();
 </script>
 <!-- ████ FIM QUADRO_V1 ████ -->
@@ -116355,7 +116367,7 @@ body.v357-on #qofRaiz .qof-card[data-qof-est="9"]::after,body.v357-on #qofRaiz .
   function E(x) { return String(x == null ? '' : x).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
   function norm(x) { try { return String(x == null ? '' : x).normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase(); } catch (e) { return String(x == null ? '' : x).toLowerCase(); } }
   function copia(o) { var r = {}; Object.keys(VAZIO).forEach(function (k) { r[k] = o && o[k] !== undefined ? o[k] : VAZIO[k]; }); return r; }
-  function inteiro(x) { var n = parseInt(String(x == null ? '' : x).replace(/\D/g, ''), 10); return isFinite(n) ? n : null; }
+  function inteiro(x) { x = T(x); return /^\d+$/.test(x) ? parseInt(x, 10) : null; }   // "1,5", "-2", "a3" = vazio, nunca outro número
   function criar(cfg) {
     cfg = cfg || {};
     var chave = 'filtro_os_v1:' + (cfg.chave || 'os'), campos = cfg.campos || ['busca'], ids = cfg.ids || {};
@@ -116378,10 +116390,11 @@ body.v357-on #qofRaiz .qof-card[data-qof-est="9"]::after,body.v357-on #qofRaiz .
         if (s.maquina && T(x.maquina) !== s.maquina) return false;
         if (s.pessoa && (x.pessoas || []).map(T).indexOf(s.pessoa) < 0) return false;
         if (s.de || s.ate) {
-          var d = T(x.entrada).slice(0, 10);
+          var d = T(x.entrada).slice(0, 10), de = s.de, ate = s.ate;
+          if (de && ate && de > ate) { de = s.ate; ate = s.de; }           // de/até trocados valem pelo período
           if (!d) return false;
-          if (s.de && d < s.de) return false;
-          if (s.ate && d > s.ate) return false;
+          if (de && d < de) return false;
+          if (ate && d > ate) return false;
         }
         var n = inteiro(s.dias);
         if (n !== null && !(Number(x.dias) > n)) return false;
@@ -116446,7 +116459,7 @@ body.v357-on #qofRaiz .qof-card[data-qof-est="9"]::after,body.v357-on #qofRaiz .
         var b = ev.target.closest && ev.target.closest('[data-fos]'); if (!b || !no.contains(b)) return;
         var a = b.getAttribute('data-fos');
         if (a === 'mais') { f.mais = !f.mais; salvar(); f.pintar(); return; }
-        if (a === 'limpar') { f.limpar(); }
+        if (a === 'limpar') { f.limpar(); try { var q = no.querySelector('[data-fos-campo="q"]'); if (q) q.focus(); } catch (e) {} }   // o botão some: o foco vai à busca
       });
     }
     f.limpar = function () {
@@ -116525,12 +116538,14 @@ body.v357-on #qofRaiz .qof-card[data-qof-est="9"]::after,body.v357-on #qofRaiz .
   QOF.v361 = true;
   function off() { try { return localStorage.getItem('pcm_v361') === 'off'; } catch (e) { return false; } }
   function T(x) { return String(x == null ? '' : x).trim(); }
-  QOF.v1 = function () { return !off() && !!window.QUADRO; };
+  var LIGADO = !off();                                               // a chave vale na carga da página (mudou = recarregar)
+  QOF.v1 = function () { return LIGADO && !!window.QUADRO; };
 
   // ── o que a busca e os filtros leem de cada máquina do quadro ─────────────────────────────────────────
   var DIA = null;
   function dataLocal(v) {
     v = T(v); if (!v) return '';
+    if (/^\d{4}-\d{2}-\d{2}$/.test(v)) return v;                   // data pura já é o dia (new Date() a leria em UTC: o dia anterior)
     try {
       var d = new Date(v); if (isNaN(d.getTime())) return /^\d{4}-\d{2}-\d{2}/.test(v) ? v.slice(0, 10) : '';
       if (!DIA) DIA = new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Sao_Paulo', year: 'numeric', month: '2-digit', day: '2-digit' });
@@ -116546,15 +116561,17 @@ body.v357-on #qofRaiz .qof-card[data-qof-est="9"]::after,body.v357-on #qofRaiz .
       return mapa.m[T(id)] || null;
     } catch (e) { return null; }
   }
+  var maqs = { de: null, n: -1, m: {} };
   function maqTexto(o) {
     try {
       var ids = o && o.maquinas_vinculadas;
       if (typeof ids === 'string') { try { ids = JSON.parse(ids); } catch (e) { ids = ids.split(/[,;]/); } }
       if (!Array.isArray(ids) || typeof db === 'undefined' || !db || !Array.isArray(db.machines)) return '';
-      return ids.map(function (id) {
-        var m = db.machines.find(function (x) { return x && T(x.id) === T(id); });
-        return m ? [m.tag, m.serial, m.brand, m.model].map(T).join(' ') : '';
-      }).join(' ');
+      if (maqs.de !== db.machines || maqs.n !== db.machines.length) {   // o texto de cada máquina, uma vez por lista
+        maqs = { de: db.machines, n: db.machines.length, m: {} };
+        db.machines.forEach(function (x) { if (x && x.id != null) maqs.m[T(x.id)] = [x.tag, x.serial, x.brand, x.model].map(T).join(' '); });
+      }
+      return ids.map(function (id) { return maqs.m[T(id)] || ''; }).join(' ');
     } catch (e) { return ''; }
   }
   function relogioDe(n) { var l = (QOF.d && QOF.d.estacoes) || []; for (var i = 0; i < l.length; i++) if (Number(l[i].n) === Number(n)) return T(l[i].relogio); return ''; }
@@ -116567,7 +116584,7 @@ body.v357-on #qofRaiz .qof-card[data-qof-est="9"]::after,body.v357-on #qofRaiz .
              entrada: o ? dataLocal(o.data_abertura || o.Created_At) : '', dias: it.dias, atrasada: !!it.atrasada, relogio: relogioDe(it.estacao) };
   }
   QOF.lerItem = lerItem;
-  QOF.filtro = (off() || !window.FILTRO_OS) ? null : FILTRO_OS.criar({
+  QOF.filtro = (!LIGADO || !window.FILTRO_OS) ? null : FILTRO_OS.criar({
     chave: 'oficina', campos: ['busca', 'cliente', 'maquina', 'pessoa', 'entrada', 'dias', 'meta', 'relogio'], ids: { pessoa: 'qofTec' },
     unidade: ['máquina', 'máquinas'], ler: lerItem, aoMudar: function () { QOF.pintar(true); } });
 
@@ -116576,6 +116593,7 @@ body.v357-on #qofRaiz .qof-card[data-qof-est="9"]::after,body.v357-on #qofRaiz .
     var F = QOF.filtro;
     if (!F || !QOF.d) { r.innerHTML = h; return; }
     var bar = F.pintar(QOF.d.itens || []);
+    if (!bar) { r.innerHTML = h; if (window.QUADRO) QUADRO.ajustar(r); return; }   // a faixa não nasceu: o quadro aparece mesmo assim
     var tmp = document.createElement('div'); tmp.innerHTML = h;
     var lugar = tmp.querySelector(':scope > [data-fos-lugar]');
     Array.prototype.slice.call(r.childNodes).forEach(function (n) { if (n !== bar) r.removeChild(n); });
