@@ -48,6 +48,10 @@ main{padding:8px 22px 40px;max-width:1280px}
 .tab thead th{position:sticky;top:0;background:#f1f3f6;font-size:12px;color:var(--mudo)}
 .sw{display:inline-block;width:16px;height:16px;border-radius:4px;border:1px solid rgba(0,0,0,.15);vertical-align:-3px;margin-right:6px}
 .rolar{height:200px;overflow:auto;border:1px solid var(--linha);border-radius:8px;background:var(--cartao)}
+.quadro-caixa{height:300px;overflow:auto;border:1px solid var(--linha);border-radius:8px;padding:8px;background:var(--cartao)}
+.quadro-caixa .quadro-v1-col{background:#F0EFEF;border-radius:8px;padding:6px 4px 2px 6px}
+.quadro-caixa .quadro-v1-cab{font-weight:600;font-size:12.5px;padding:2px 4px 6px}
+.quadro-caixa .cartao{background:#fff;border:1px solid var(--linha);border-radius:6px;padding:6px;margin:0 0 6px;font-size:12px}
 .rolar .it{display:flex;justify-content:space-between;align-items:center;padding:8px 10px;border-bottom:1px solid var(--linha)}
 .rolar .it.aberto{background:#fff7ed}
 .estado{font-size:12.5px;color:var(--mudo);margin-top:6px}
@@ -1487,9 +1491,338 @@ try{
 })();
 </script>
 <!-- ████ FIM ROLAGEM_V1 ████ -->
+<!-- ████ INICIO QUADRO_V1 · quadro de colunas lado a lado: cabe na tela, cada coluna rola sozinha, a repintura não perde a rolagem (ProperCare-backlog#227) ████ -->
+<style id="quadro-v1-css">
+/* QUADRO_V1 (ProperCare-backlog#227) — o quadro de colunas do Padrão de Telas. Marcação que o motor espera:
+   <div class="quadro-v1" data-quadro="chave">
+     <section class="quadro-v1-col [quadro-v1-recolhida]" data-quadro-col="k">
+       <div class="quadro-v1-cab">título · meta (fica fixo)</div>
+       <div class="quadro-v1-corpo">os cartões (só isto rola)</div>
+     </section> …
+   </div>
+   Largura da coluna: --quadro-col (padrão 176px) · recolhida: --quadro-recolhida (padrão 92px). Sem cor própria. */
+.quadro-v1{display:flex;align-items:flex-start;gap:8px;overflow-x:auto;overflow-y:hidden;min-height:0;box-sizing:border-box;padding-bottom:6px;overscroll-behavior-x:contain}
+.quadro-v1>.quadro-v1-col{flex:1 0 var(--quadro-col,176px);min-width:var(--quadro-col,176px);max-height:100%;min-height:0;display:flex;flex-direction:column;box-sizing:border-box}
+.quadro-v1 .quadro-v1-cab{flex:none;min-width:0}
+.quadro-v1 .quadro-v1-corpo{flex:1 1 auto;min-height:0;overflow-x:hidden;overflow-y:auto;overscroll-behavior-y:contain;scrollbar-width:thin}
+.quadro-v1>.quadro-v1-col.quadro-v1-recolhida{flex:0 0 var(--quadro-recolhida,92px);min-width:var(--quadro-recolhida,92px)}
+.quadro-v1 .quadro-v1-recolhida .quadro-v1-corpo{display:none}
+@media (max-width:820px){
+  .quadro-v1{height:auto !important;align-items:flex-start;scroll-snap-type:x proximity;-webkit-overflow-scrolling:touch}
+  .quadro-v1>.quadro-v1-col{max-height:none;flex-basis:min(86vw,320px);scroll-snap-align:start}
+  .quadro-v1 .quadro-v1-corpo{overflow-y:visible}
+}
+</style>
+<script id="quadro-v1-js">
+/* QUADRO_V1 (ProperCare-backlog#227) — o motor do quadro de colunas. Inteiro em try/catch: nunca quebra a tela que o recebe.
+   QUADRO.ajustar(q)        o quadro ocupa a altura que SOBRA da área que rola (medida, nunca número fixo): a página não rola por
+                            causa dele e a barra de lado fica no pé da tela. Tela estreita (≤ 820 px): sem altura travada.
+   QUADRO.guardar(raiz)     foto da rolagem de lado e de CADA coluna (pela chave data-quadro-col) de todo quadro dentro de raiz.
+   QUADRO.devolver(raiz, f) depois da repintura: primeiro a altura (a área tem de existir antes), depois a rolagem.
+   A rodinha sobre uma coluna rola aquela coluna (é a coluna que tem overflow); Shift+rodinha ou a barra anda para os lados.
+   Reajusta sozinho quando a janela ou a área em volta muda de tamanho. */
+(function () {
+  'use strict';
+  if (window.QUADRO) return;
+  var MIN = 240, ESTREITA = 820;
+  var Q = window.QUADRO = { versao: 'V1', min: MIN, ajustes: 0 };
+  function estreita() { try { return (window.innerWidth || 9999) <= ESTREITA; } catch (e) { return false; } }
+  function ehDoc(el) { return !el || el === document.body || el === document.documentElement || el === document.scrollingElement; }
+  function rolador(el) {
+    try {
+      for (var p = el.parentElement; p && !ehDoc(p); p = p.parentElement) {
+        var cs = getComputedStyle(p);
+        if (/(auto|scroll|overlay)/.test(cs.overflowY)) return p;
+      }
+    } catch (e) {}
+    return document.scrollingElement || document.documentElement;
+  }
+  function quadros(raiz) {
+    if (!raiz) return [];
+    if (raiz.classList && raiz.classList.contains('quadro-v1')) return [raiz];
+    return Array.prototype.slice.call(raiz.querySelectorAll('.quadro-v1'));
+  }
+  function px(v) { return parseFloat(v) || 0; }
+  function depoisDe(q, sp) {                                          // o que vem depois do quadro até o fim da área que rola
+    var t = 0, el = q;
+    try {
+      t += px(getComputedStyle(q).marginBottom);
+      while (el && !ehDoc(el)) {
+        var pai = el.parentElement; if (!pai) break;
+        for (var s = el.nextElementSibling; s; s = s.nextElementSibling) {
+          var cs = getComputedStyle(s);
+          if (cs.display === 'none' || cs.position === 'absolute' || cs.position === 'fixed') continue;
+          t += s.getBoundingClientRect().height + px(cs.marginTop) + px(cs.marginBottom);
+        }
+        var pc = getComputedStyle(pai);
+        t += px(pc.paddingBottom) + px(pc.borderBottomWidth);
+        if (pai === sp || ehDoc(pai)) break;
+        t += px(pc.marginBottom);
+        el = pai;
+      }
+    } catch (e) {}
+    return t;
+  }
+  function ajustar(q) {
+    try {
+      if (!q || !q.isConnected) return;
+      if (estreita()) { if (q.style.height) q.style.height = ''; return; }
+      if (!q.getClientRects().length) return;                        // escondido (outra aba): mede quando aparecer
+      var sp = rolador(q), doc = ehDoc(sp);
+      var spTop = doc ? 0 : sp.getBoundingClientRect().top + sp.clientTop;
+      var visivel = doc ? window.innerHeight : Math.min(window.innerHeight - spTop, sp.clientHeight);
+      var st = doc ? (window.scrollY || 0) : sp.scrollTop;
+      var topo = q.getBoundingClientRect().top - spTop + st;          // onde o quadro começa no conteúdo da área que rola
+      var h = Math.max(MIN, Math.floor(visivel - topo - depoisDe(q, sp)) - 1);
+      var antes = parseFloat(q.style.height) || 0;
+      if (Math.abs(antes - h) > 1) { q.style.height = h + 'px'; Q.ajustes++; }
+    } catch (e) {}
+  }
+  Q.ajustar = function (raiz) { quadros(raiz).forEach(ajustar); vigiar(raiz); };
+  Q.guardar = function (raiz) {
+    try {
+      return quadros(raiz).map(function (q) {
+        var cols = {};
+        Array.prototype.forEach.call(q.querySelectorAll('[data-quadro-col]'), function (c) {
+          var b = c.querySelector('.quadro-v1-corpo');
+          if (b && b.scrollTop) cols[c.getAttribute('data-quadro-col')] = b.scrollTop;
+        });
+        return { k: q.getAttribute('data-quadro') || '', x: q.scrollLeft, h: q.style.height, cols: cols };
+      });
+    } catch (e) { return []; }
+  };
+  Q.devolver = function (raiz, foto) {
+    try {
+      var lista = quadros(raiz);
+      lista.forEach(function (q, i) {
+        var k = q.getAttribute('data-quadro') || '', f = null;
+        (foto || []).forEach(function (x, j) { if (!f && (x.k === k && (k || j === i))) f = x; });
+        if (f && f.h && !q.style.height && !estreita()) q.style.height = f.h;   // a área já com altura antes de devolver
+        ajustar(q);
+        if (!f) return;
+        if (f.x) q.scrollLeft = f.x;
+        Object.keys(f.cols || {}).forEach(function (c) {
+          var s = q.querySelector('[data-quadro-col="' + String(c).replace(/["\\]/g, '') + '"] .quadro-v1-corpo');
+          if (s) s.scrollTop = f.cols[c];
+        });
+      });
+      vigiar(raiz);
+    } catch (e) {}
+  };
+  // reajuste: a janela, a área que rola e o que está em volta do quadro mudam de tamanho (o ajuste vai para o próximo quadro de
+  // animação: mexer na altura dentro do aviso de tamanho reacende o aviso no mesmo quadro)
+  var vigiados = [], ro = null, pedido = 0;
+  function todos() { pedido = 0; vigiados = vigiados.filter(function (q) { return q.isConnected; }); vigiados.forEach(ajustar); }
+  function pedir() { if (!pedido) pedido = (window.requestAnimationFrame || setTimeout)(todos); }
+  function vigiar(raiz) {
+    try {
+      quadros(raiz).forEach(function (q) {
+        if (vigiados.indexOf(q) >= 0) return;
+        vigiados.push(q);
+        if (window.ResizeObserver) {
+          if (!ro) ro = new ResizeObserver(pedir);
+          var sp = rolador(q);
+          if (!ehDoc(sp)) ro.observe(sp);
+          if (q.parentElement) ro.observe(q.parentElement);
+        }
+      });
+    } catch (e) {}
+  }
+  Q.todos = todos;
+  try { window.addEventListener('resize', pedir); } catch (e) {}
+})();
+</script>
+<!-- ████ FIM QUADRO_V1 ████ -->
+<!-- ████ INICIO FILTRO_OS_V1 · busca e filtros das vistas de OS: uma faixa só, vale para tudo o que a vista mostra (ProperCare-backlog#227) ████ -->
+<style id="filtro-os-v1-css">
+/* FILTRO_OS_V1 (ProperCare-backlog#227) — a faixa de busca e filtros das vistas de OS. Cor e fonte vêm da tela (variáveis do PCM). */
+.fos{display:flex;flex-direction:column;gap:6px;margin:0 0 10px;font:inherit;color:inherit;box-sizing:border-box;min-width:0}
+.fos *{box-sizing:border-box}
+.fos-l1,.fos-l2{display:flex;flex-wrap:wrap;gap:6px;align-items:center;min-width:0}
+.fos-l2[hidden]{display:none}
+.fos input,.fos select{font:inherit;font-size:12.5px;border:1px solid var(--border,#E6E6E6);border-radius:8px;padding:5px 8px;background:var(--surface,#fff);color:inherit;min-height:30px;max-width:100%}
+.fos input:focus-visible,.fos select:focus-visible,.fos button:focus-visible{outline:2px solid var(--accent,#EE7625);outline-offset:1px}
+.fos-busca{flex:1 1 240px;min-width:180px}
+.fos select{max-width:210px}
+.fos-dias{width:56px}
+.fos label{display:inline-flex;align-items:center;gap:5px;font-size:12.5px;white-space:nowrap}
+.fos-btn{all:unset;box-sizing:border-box;cursor:pointer;border:1px solid var(--border,#E6E6E6);border-radius:8px;padding:5px 11px;font-size:12.5px;background:var(--surface,#fff);white-space:nowrap;min-height:30px;display:inline-flex;align-items:center}
+.fos-btn:hover{border-color:var(--border-strong,#DADADA)}
+.fos-btn:active{transform:translateY(1px)}
+.fos-btn[aria-expanded="true"]{border-color:var(--text-muted,#6B6B6B)}
+.fos-conta{font-size:12.5px;color:var(--text-muted,#6B6B6B);white-space:nowrap}
+.fos-conta b{color:var(--text,#262626)}
+.fos-limpar{all:unset;cursor:pointer;text-decoration:underline;font-size:12.5px;white-space:nowrap}
+.fos-limpar:focus-visible{outline:2px solid var(--accent,#EE7625)}
+.fos [hidden]{display:none !important}
+@media (max-width:820px){.fos input,.fos select,.fos-btn{min-height:40px}.fos select{max-width:100%;flex:1 1 140px}}
+</style>
+<script id="filtro-os-v1-js">
+/* FILTRO_OS_V1 (ProperCare-backlog#227; vai às outras vistas de OS no #228) — a faixa de busca e filtros. Inteiro em try/catch.
+   var f = FILTRO_OS.criar({ chave: 'oficina', campos: ['busca', 'cliente', 'maquina', 'pessoa', 'entrada', 'dias', 'meta', 'relogio'],
+                             ler: function (item) { return { num, cliente, maquina, pessoas: [], texto, entrada: 'AAAA-MM-DD' | '',
+                                                              dias: n | null, atrasada: bool, relogio: 'proper' | 'cliente' | 'fornecedor' }; },
+                             aoMudar: function () { repinta a vista }, ids: { pessoa: 'qofTec' }, unidade: ['máquina', 'máquinas'],
+                             contador: true });
+   f.no (a faixa: a vista a põe uma vez e NÃO a repinta — quem digita não perde o foco) · f.pintar(itens, nVisiveis) (as listas
+   e o contador, sem tocar no campo em foco) · f.passa(item) · f.ativo() · f.limpar() · f.estado.
+   Busca: um campo só, sem acento nem maiúscula, cada palavra tem de aparecer (nº da OS, cliente, máquina, técnico, o texto extra).
+   Cliente, máquina e pessoa: lista com o que existe (escolher, não digitar). Valor guardado que não está mais na lista continua
+   escolhido e à vista ("… · nenhuma agora"): nada fica escondido fora da tela. Data desconhecida não passa no filtro de data e é
+   contada à parte. O filtro fica guardado neste computador (localStorage filtro_os_v1:<chave>). */
+(function () {
+  'use strict';
+  if (window.FILTRO_OS) return;
+  var VAZIO = { q: '', cliente: '', maquina: '', pessoa: '', de: '', ate: '', dias: '', meta: false, relogio: '' };
+  var DO_MAIS = ['de', 'ate', 'dias', 'meta', 'relogio'];
+  var RELOGIOS = [['proper', 'Relógio da Proper'], ['cliente', 'Relógio do cliente'], ['fornecedor', 'Relógio do fornecedor']];
+  function T(x) { return String(x == null ? '' : x).trim(); }
+  function E(x) { return String(x == null ? '' : x).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+  function norm(x) { try { return String(x == null ? '' : x).normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase(); } catch (e) { return String(x == null ? '' : x).toLowerCase(); } }
+  function copia(o) { var r = {}; Object.keys(VAZIO).forEach(function (k) { r[k] = o && o[k] !== undefined ? o[k] : VAZIO[k]; }); return r; }
+  function inteiro(x) { var n = parseInt(String(x == null ? '' : x).replace(/\D/g, ''), 10); return isFinite(n) ? n : null; }
+  function criar(cfg) {
+    cfg = cfg || {};
+    var chave = 'filtro_os_v1:' + (cfg.chave || 'os'), campos = cfg.campos || ['busca'], ids = cfg.ids || {};
+    var un = cfg.unidade || ['OS', 'OS'], ler = cfg.ler || function (x) { return x || {}; };
+    var f = { versao: 'V1', estado: copia(null), mais: false, no: null, semData: 0 };
+    function tem(c) { return campos.indexOf(c) >= 0; }
+    try { var g = JSON.parse(localStorage.getItem(chave) || 'null'); if (g) { f.estado = copia(g.e); f.mais = !!g.mais; } } catch (e) {}
+    function salvar() { try { localStorage.setItem(chave, JSON.stringify({ e: f.estado, mais: f.mais })); } catch (e) {} }
+    function nMais() { var s = f.estado; return DO_MAIS.filter(function (k) { return k === 'meta' ? !!s.meta : (k === 'dias' ? inteiro(s.dias) !== null : !!T(s[k])); }).length; }
+    f.ativo = function () { var s = f.estado; return !!(T(s.q) || s.cliente || s.maquina || s.pessoa) || nMais() > 0; };
+    f.passa = function (it) {
+      try {
+        var s = f.estado, x = ler(it) || {};
+        if (T(s.q)) {
+          var feno = norm([x.num, x.cliente, x.maquina, (x.pessoas || []).join(' '), x.texto].join(' '));
+          var termos = norm(s.q).split(/\s+/).filter(Boolean);
+          for (var i = 0; i < termos.length; i++) if (feno.indexOf(termos[i]) < 0) return false;
+        }
+        if (s.cliente && T(x.cliente) !== s.cliente) return false;
+        if (s.maquina && T(x.maquina) !== s.maquina) return false;
+        if (s.pessoa && (x.pessoas || []).map(T).indexOf(s.pessoa) < 0) return false;
+        if (s.de || s.ate) {
+          var d = T(x.entrada).slice(0, 10);
+          if (!d) return false;
+          if (s.de && d < s.de) return false;
+          if (s.ate && d > s.ate) return false;
+        }
+        var n = inteiro(s.dias);
+        if (n !== null && !(Number(x.dias) > n)) return false;
+        if (s.meta && !x.atrasada) return false;
+        if (s.relogio && T(x.relogio) !== s.relogio) return false;
+        return true;
+      } catch (e) { return true; }
+    };
+    function opcoes(lista, atual, todos) {
+      var l = lista.slice();
+      if (atual && l.indexOf(atual) < 0) l.unshift(atual);
+      return '<option value="">' + E(todos) + '</option>' + l.map(function (v) {
+        return '<option value="' + E(v) + '"' + (v === atual ? ' selected' : '') + '>' + E(v) + (lista.indexOf(v) < 0 ? ' · nenhuma agora' : '') + '</option>';
+      }).join('');
+    }
+    function montar() {
+      var s = f.estado, h = '<div class="fos-l1">';
+      if (tem('busca')) h += '<input type="search" class="fos-busca" data-fos-campo="q" value="' + E(s.q) + '" placeholder="Buscar OS, cliente, máquina, TAG, técnico"' +
+        ' aria-label="Buscar OS, cliente, máquina, TAG ou técnico" readonly onfocus="this.removeAttribute(\'readonly\')" autocomplete="off" name="fos_busca_nofill" data-lpignore="true" data-1p-ignore>';
+      [['cliente', 'Todos os clientes', 'Cliente'], ['maquina', 'Todas as máquinas', 'Máquina'], ['pessoa', 'Todas as pessoas', 'Pessoa']].forEach(function (c) {
+        if (tem(c[0])) h += '<select data-fos-campo="' + c[0] + '"' + (ids[c[0]] ? ' id="' + E(ids[c[0]]) + '"' : '') + ' aria-label="' + c[2] + '" autocomplete="off" name="fos_' + c[0] + '_nofill">' +
+          '<option value="">' + c[1] + '</option></select>';
+      });
+      var algumMais = DO_MAIS.some(function (k) { return tem(k === 'de' || k === 'ate' ? 'entrada' : k); });
+      if (algumMais) h += '<button type="button" class="fos-btn" data-fos="mais" aria-expanded="false">Mais filtros</button>';
+      h += '<span class="fos-conta" aria-live="polite" hidden></span><button type="button" class="fos-limpar" data-fos="limpar" hidden>Limpar filtros</button></div>';
+      if (algumMais) {
+        h += '<div class="fos-l2" hidden>';
+        if (tem('entrada')) h += '<label>Entrada de <input type="date" data-fos-campo="de" value="' + E(s.de) + '" aria-label="Entrada a partir de"></label>' +
+          '<label>até <input type="date" data-fos-campo="ate" value="' + E(s.ate) + '" aria-label="Entrada até"></label>';
+        if (tem('dias')) h += '<label>Na etapa há mais de <input type="text" inputmode="numeric" class="fos-dias" data-fos-campo="dias" value="' + E(s.dias) + '" autocomplete="off" name="fos_dias_nofill" data-lpignore="true" data-1p-ignore aria-label="Dias úteis na etapa"> dias úteis</label>';
+        if (tem('relogio')) h += '<select data-fos-campo="relogio" aria-label="Relógio" autocomplete="off" name="fos_relogio_nofill"><option value="">Todos os relógios</option>' +
+          RELOGIOS.map(function (r) { return '<option value="' + r[0] + '"' + (s.relogio === r[0] ? ' selected' : '') + '>' + r[1] + '</option>'; }).join('') + '</select>';
+        if (tem('meta')) h += '<label><input type="checkbox" data-fos-campo="meta"' + (s.meta ? ' checked' : '') + '> Só as que passaram da meta</label>';
+        h += '</div>';
+      }
+      var no = document.createElement('div');
+      no.className = 'fos'; no.setAttribute('role', 'search'); no.setAttribute('data-fos-faixa', cfg.chave || 'os');
+      no.innerHTML = h;
+      ligar(no);
+      return no;
+    }
+    var timer = 0;
+    function mudou() { salvar(); try { if (cfg.aoMudar) cfg.aoMudar(); } catch (e) { try { console.error('[FILTRO_OS]', e); } catch (x) {} } }
+    function ligar(no) {
+      no.addEventListener('input', function (ev) {
+        var t = ev.target, c = t && t.getAttribute && t.getAttribute('data-fos-campo');
+        if (c === 'q') { f.estado.q = t.value; clearTimeout(timer); timer = setTimeout(mudou, 140); }
+        else if (c === 'dias') { f.estado.dias = t.value; clearTimeout(timer); timer = setTimeout(mudou, 140); }
+      });
+      no.addEventListener('change', function (ev) {
+        var t = ev.target, c = t && t.getAttribute && t.getAttribute('data-fos-campo');
+        if (!c || c === 'q' || c === 'dias') return;
+        f.estado[c] = t.type === 'checkbox' ? !!t.checked : t.value;
+        mudou();
+      });
+      no.addEventListener('keydown', function (ev) {
+        var t = ev.target;
+        if (ev.key === 'Escape' && t && t.getAttribute && t.getAttribute('data-fos-campo') === 'q' && t.value) { ev.preventDefault(); t.value = ''; f.estado.q = ''; clearTimeout(timer); mudou(); }
+      });
+      no.addEventListener('click', function (ev) {
+        var b = ev.target.closest && ev.target.closest('[data-fos]'); if (!b || !no.contains(b)) return;
+        var a = b.getAttribute('data-fos');
+        if (a === 'mais') { f.mais = !f.mais; salvar(); f.pintar(); return; }
+        if (a === 'limpar') { f.limpar(); }
+      });
+    }
+    f.limpar = function () {
+      clearTimeout(timer);
+      f.estado = copia(null);
+      if (f.no) Array.prototype.forEach.call(f.no.querySelectorAll('[data-fos-campo]'), function (c) {
+        if (c.type === 'checkbox') c.checked = false; else c.value = '';
+      });
+      mudou();
+    };
+    var ultimos = [];
+    f.pintar = function (itens, nVis) {
+      try {
+        if (itens) ultimos = itens;
+        if (!f.no) f.no = montar();
+        var s = f.estado, xs = ultimos.map(function (it) { return ler(it) || {}; });
+        var ativo = document.activeElement;
+        function lista(fn) { var o = {}; xs.forEach(function (x) { [].concat(fn(x) || []).forEach(function (v) { v = T(v); if (v) o[v] = 1; }); }); return Object.keys(o).sort(function (a, b) { return a.localeCompare(b, 'pt-BR'); }); }
+        [['cliente', 'Todos os clientes', function (x) { return x.cliente; }], ['maquina', 'Todas as máquinas', function (x) { return x.maquina; }],
+         ['pessoa', 'Todas as pessoas', function (x) { return x.pessoas; }]].forEach(function (c) {
+          var sel = f.no.querySelector('select[data-fos-campo="' + c[0] + '"]'); if (!sel || sel === ativo) return;
+          var h = opcoes(lista(c[2]), s[c[0]], c[1]);
+          if (sel.__fos !== h) { sel.innerHTML = h; sel.__fos = h; }
+          sel.value = s[c[0]];
+        });
+        var q = f.no.querySelector('[data-fos-campo="q"]'); if (q && q !== ativo && q.value !== s.q) q.value = s.q;
+        var n = nMais(), bm = f.no.querySelector('[data-fos="mais"]'), l2 = f.no.querySelector('.fos-l2');
+        if (bm) { bm.textContent = 'Mais filtros' + (n ? ' (' + n + ')' : ''); bm.setAttribute('aria-expanded', f.mais ? 'true' : 'false'); }
+        if (l2) l2.hidden = !f.mais;
+        var at = f.ativo(), semData = 0;
+        if (at && (s.de || s.ate)) semData = xs.filter(function (x) { return !T(x.entrada); }).length;
+        f.semData = semData;
+        var ct = f.no.querySelector('.fos-conta'), lp = f.no.querySelector('[data-fos="limpar"]');
+        if (ct) {
+          var tot = ultimos.length, vis = nVis == null ? ultimos.filter(f.passa).length : nVis;
+          ct.hidden = !at || cfg.contador === false;
+          ct.innerHTML = '<b>' + vis + '</b> de ' + tot + ' ' + (tot === 1 ? un[0] : un[1]) + (semData ? ' · ' + semData + ' sem data de entrada' : '');
+        }
+        if (lp) lp.hidden = !at;
+      } catch (e) { try { console.error('[FILTRO_OS]', e); } catch (x) {} }
+      return f.no;
+    };
+    return f;
+  }
+  window.FILTRO_OS = { versao: 'V1', criar: criar, norm: norm };
+})();
+</script>
+<!-- ████ FIM FILTRO_OS_V1 ████ -->
 <header class="topo">
 <h1>Padrão de Telas ProperCare <small style="font-weight:400;color:var(--mudo)" data-carimbo="· {V}">· PADRAO_V1</small></h1>
-<p>A vitrine do padrão. <b>A fonte é o código</b> em <code>ferramentas/</code> do ProperCare-backlog (D1): os 5 motores desta
+<p>A vitrine do padrão. <b>A fonte é o código</b> em <code>ferramentas/</code> do ProperCare-backlog (D1): os 7 motores desta
 página são os mesmos arquivos, byte a byte; os tokens são lidos agora do PCM, do PCF e do Hub no ar; o selo de cada obrigatório
 sai do código da varredura. Esta página não guarda cópia de nada que possa divergir.</p>
 <div class="resumo"><span><b>25</b> obrigatórios de 17/09</span><span>5 <span class="selo selo-reprova">Medido · reprova</span></span><span>5 <span class="selo selo-avisa">Medido · avisa</span></span><span>15 <span class="selo selo-olho">Só o olho</span></span></div>
@@ -1564,6 +1897,25 @@ são o motor de verdade. Clique duas vezes: o 2º clique é engolido.</p><div cl
 <p class="licao"><b>De onde veio:</b> regras/telas.md: &quot;nada se perde&quot; trava a janela MEXIDA, não a que TEM campo — e botão de opção conta.</p>
 <p class="onde"><b>Fonte:</b> <code>ferramentas/blocos/JANELA_V1.html</code> (md5 9bb8bf40) · declarado em 1 linha(s) da COMPOSICAO.tsv: ProperAdmin/index.html</p>
 <div class="previa vazia">O motor é um trecho do bloco PCM V215 (depende do PCM) e não roda fora dele: a prévia é o próprio PCM.</div>
+</article><article class="card" id="c-quadro" data-componente="quadro">
+<h3>Quadro de colunas</h3>
+<div class="chips"><span class="selo selo-reprova">Medido · reprova · checagem 1: o motor byte a byte</span><span class="selo selo-avisa">Medido · avisa · A6 · checagem 9</span></div>
+<p class="regra">O quadro cabe na tela (altura medida): cada coluna rola sozinha com o título fixo, a barra de lado fica no pé e a repintura não perde a rolagem.</p>
+<p class="licao"><b>De onde veio:</b> #227: &quot;não consigo rolar colunas isoladas, a rolagem horizontal não aparece se não rolar vertical&quot; (Quadro da Oficina, PCM V355).</p>
+<p class="onde"><b>Fonte:</b> <code>ferramentas/blocos/QUADRO_V1.html</code> (md5 228b3c94) · declarado em 2 linha(s) da COMPOSICAO.tsv: ProperAdmin/index.html, ProperAdmin/padrao.html</p>
+<div class="previa"><div class="quadro-caixa" id="demoQuadroCaixa"><div id="demoQuadroRaiz"></div></div>
+<p class="mini">Exemplo fictício numa caixa de 300 px: o quadro mede a altura que sobra, a rodinha sobre uma coluna rola só ela
+(Shift + rodinha anda de lado) e "Repintar" troca tudo sem perder as rolagens.</p>
+<div class="linha-btn"><button class="btn" id="demoQuadroRepintar" type="button">Repintar o quadro</button></div></div>
+</article><article class="card" id="c-filtro-os" data-componente="filtro-os">
+<h3>Busca e filtros das vistas de OS</h3>
+<div class="chips"><span class="selo selo-reprova">Medido · reprova · checagem 1: o motor byte a byte</span><span class="selo selo-avisa">Medido · avisa · A3 · checagem 9</span><span class="selo selo-avisa">Medido · avisa · A7 · checagem 3</span></div>
+<p class="regra">Uma faixa só vale para tudo o que a vista mostra: busca sem acento, escolher (não digitar), contador X de Y, Limpar; fica guardada no computador.</p>
+<p class="licao"><b>De onde veio:</b> #227: &quot;não consigo pesquisar ou filtrar por OS, clientes, máquinas, datas&quot; — o #228 leva a faixa às outras vistas de OS.</p>
+<p class="onde"><b>Fonte:</b> <code>ferramentas/blocos/FILTRO_OS_V1.html</code> (md5 2a65de65) · declarado em 2 linha(s) da COMPOSICAO.tsv: ProperAdmin/index.html, ProperAdmin/padrao.html</p>
+<div class="previa"><div id="demoFiltroLugar"></div><div class="estado" id="demoFiltroEstado"></div>
+<p class="mini">A faixa filtra o quadro do exemplo acima. Busque "metal" ou "maria" (sem acento); o que você escolher fica guardado
+neste navegador.</p></div>
 </article><article class="card" id="c-pin" data-componente="pin">
 <h3>PIN mascarado</h3>
 <div class="chips"><span class="selo selo-reprova">Medido · reprova · checagem 11</span></div>
@@ -1684,10 +2036,10 @@ são o motor de verdade. Clique duas vezes: o 2º clique é engolido.</p><div cl
 <tr><td>10</td><td>A ESTRUTURA DO DOCUMENTO (o defeito do título da aba, 21/09)</td><td>reprova</td><td>—</td></tr>
 <tr><td>11</td><td>NENHUM CAMPO DE SENHA FORA DO LOGIN (o &quot;Salvar senha?&quot; do Chrome, 07/10)</td><td>reprova</td><td>—</td></tr>
 </tbody></table></section></main>
-<footer>Gerado por <code>ferramentas/padrao_telas.py</code> (ProperCare-backlog#128, parte P3 da #125) · motores: PWAIT 1bc3d46f · ERRO c99512b9 · CFX f092f38a · CARIMBO d3e4f00b · ROLAGEM_V1 a83d44bd · JANELA_V1 9bb8bf40 ·
+<footer>Gerado por <code>ferramentas/padrao_telas.py</code> (ProperCare-backlog#128, parte P3 da #125) · motores: PWAIT 1bc3d46f · ERRO c99512b9 · CFX f092f38a · CARIMBO d3e4f00b · ROLAGEM_V1 a83d44bd · JANELA_V1 9bb8bf40 · QUADRO_V1 228b3c94 · FILTRO_OS_V1 2a65de65 ·
 não edite este arquivo: o portão o confere contra o gerador.</footer>
 <script>
-window.PADRAO_CATALOGO=[{"id": "cfx", "css": [], "contar": []}, {"id": "pwait", "css": [], "contar": []}, {"id": "erro", "css": [], "contar": []}, {"id": "carimbo", "css": [], "contar": []}, {"id": "rolagem", "css": [], "contar": []}, {"id": "janela", "css": [], "contar": []}, {"id": "pin", "css": [".pin-mask"], "contar": [["usos de .pin-mask", "pin-mask"]]}, {"id": "vazio", "css": [".empty", ".empty-icon", ".empty-title", ".empty-sub"], "contar": [["títulos .empty-title", "empty-title"], [".mob-empty", "mob-empty"], [".gos-kempty", "gos-kempty"]]}, {"id": "toast", "css": [], "contar": [["funções toast…", "function\\s+toast\\w*\\s*\\("], ["toast… = function", "\\btoast\\w*\\s*=\\s*function"]]}, {"id": "esqueleto", "css": [], "contar": [["xfSkeletonHtml", "xfSkeletonHtml"], ["skel…", "skel"]]}, {"id": "confirmacao", "css": [], "contar": [["funções …confirm…", "function\\s+\\w*confirm\\w*\\s*\\("], ["chamadas confirm( (inclui o diálogo do navegador)", "\\bconfirm\\s*\\("]]}, {"id": "balao", "css": [], "contar": [["funções …balao…", "function\\s+\\w*balao\\w*\\s*\\("]]}, {"id": "painel", "css": [], "contar": [["funções …painel…", "function\\s+\\w*[Pp]ainel\\w*\\s*\\("]]}, {"id": "linha", "css": [], "contar": [["display:contents", "display:\\s*contents"]]}, {"id": "ajuda", "css": [], "contar": [["pc_ajuda", "pc_ajuda"]]}, {"id": "novidade", "css": [], "contar": [["pc_novidade", "pc_novidade"]]}, {"id": "dinheiro", "css": [], "contar": [["funções brl(", "function\\s+brl\\s*\\("], ["toLocaleString('pt-BR')", "toLocaleString\\(\\s*['\\\"]pt-BR['\\\"]"]]}];
+window.PADRAO_CATALOGO=[{"id": "cfx", "css": [], "contar": []}, {"id": "pwait", "css": [], "contar": []}, {"id": "erro", "css": [], "contar": []}, {"id": "carimbo", "css": [], "contar": []}, {"id": "rolagem", "css": [], "contar": []}, {"id": "janela", "css": [], "contar": []}, {"id": "quadro", "css": [], "contar": []}, {"id": "filtro-os", "css": [], "contar": []}, {"id": "pin", "css": [".pin-mask"], "contar": [["usos de .pin-mask", "pin-mask"]]}, {"id": "vazio", "css": [".empty", ".empty-icon", ".empty-title", ".empty-sub"], "contar": [["títulos .empty-title", "empty-title"], [".mob-empty", "mob-empty"], [".gos-kempty", "gos-kempty"]]}, {"id": "toast", "css": [], "contar": [["funções toast…", "function\\s+toast\\w*\\s*\\("], ["toast… = function", "\\btoast\\w*\\s*=\\s*function"]]}, {"id": "esqueleto", "css": [], "contar": [["xfSkeletonHtml", "xfSkeletonHtml"], ["skel…", "skel"]]}, {"id": "confirmacao", "css": [], "contar": [["funções …confirm…", "function\\s+\\w*confirm\\w*\\s*\\("], ["chamadas confirm( (inclui o diálogo do navegador)", "\\bconfirm\\s*\\("]]}, {"id": "balao", "css": [], "contar": [["funções …balao…", "function\\s+\\w*balao\\w*\\s*\\("]]}, {"id": "painel", "css": [], "contar": [["funções …painel…", "function\\s+\\w*[Pp]ainel\\w*\\s*\\("]]}, {"id": "linha", "css": [], "contar": [["display:contents", "display:\\s*contents"]]}, {"id": "ajuda", "css": [], "contar": [["pc_ajuda", "pc_ajuda"]]}, {"id": "novidade", "css": [], "contar": [["pc_novidade", "pc_novidade"]]}, {"id": "dinheiro", "css": [], "contar": [["funções brl(", "function\\s+brl\\s*\\("], ["toLocaleString('pt-BR')", "toLocaleString\\(\\s*['\\\"]pt-BR['\\\"]"]]}];
 </script>
 <script>
 /* Padrão de Telas — o que a página faz ao abrir (ProperCare-backlog#128). Lê os fronts no ar; não grava nada. */
@@ -1891,7 +2243,31 @@ function demos(){
   }
 }
 
-function iniciar(){ try{ demos(); }catch(e){ console.error(e); } lerTudo(); }
+/* ── prévia do QUADRO_V1 + FILTRO_OS_V1: um quadro fictício com a faixa por cima ── */
+function demoQuadro(){
+  var raiz=$('demoQuadroRaiz'); if(!raiz||!window.QUADRO) return;
+  var CLI=['Metalúrgica Alfa','Padaria São José','Fundição Beta','Gráfica Maria'], COL=['Recebida','Diagnóstico','Orçamento','Em execução','Pronta'];
+  var itens=[]; for(var i=1;i<=26;i++){ itens.push({num:'OS-'+String(1000+i), cliente:CLI[i%4], maquina:'Compressor '+(10+i%5*5)+' hp', col:i<12?0:(i%4)+1}); }
+  var F=window.FILTRO_OS? FILTRO_OS.criar({chave:'padrao-demo', campos:['busca','cliente'], unidade:['máquina','máquinas'],
+    ler:function(x){ return {num:x.num, cliente:x.cliente, maquina:x.maquina, pessoas:[], texto:''}; }, aoMudar:pintar}) : null;
+  if(F){ var lugar=$('demoFiltroLugar'); if(lugar) lugar.appendChild(F.pintar(itens)); }
+  function pintar(){
+    var vis=itens.filter(function(x){ return !F||F.passa(x); }), filtra=!!(F&&F.ativo());
+    var foto=QUADRO.guardar(raiz);
+    raiz.innerHTML='<div class="quadro-v1" data-quadro="demo" style="--quadro-col:150px">'+COL.map(function(c,k){
+      var cs=vis.filter(function(x){ return x.col===k; });
+      return '<section class="quadro-v1-col'+(filtra&&!cs.length?' quadro-v1-recolhida':'')+'" data-quadro-col="'+k+'"><div class="quadro-v1-cab">'+esc(c)+' · '+cs.length+'</div>'+
+        '<div class="quadro-v1-corpo">'+cs.map(function(x){ return '<div class="cartao"><b>'+esc(x.num)+'</b><br>'+esc(x.cliente)+'<br>'+esc(x.maquina)+'</div>'; }).join('')+'</div></section>';
+    }).join('')+'</div>';
+    QUADRO.devolver(raiz,foto);
+    if(F) F.pintar(itens);
+    var est=$('demoFiltroEstado'); if(est) est.textContent=filtra? vis.length+' de '+itens.length+' no quadro do exemplo' : '';
+  }
+  pintar();
+  var b=$('demoQuadroRepintar'); if(b) b.addEventListener('click',pintar);
+}
+
+function iniciar(){ try{ demos(); }catch(e){ console.error(e); } try{ demoQuadro(); }catch(e){ console.error(e); } lerTudo(); }
 if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',iniciar); else iniciar();
 })();
 </script>
