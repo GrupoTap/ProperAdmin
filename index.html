@@ -116086,6 +116086,22 @@ body.v357-on #qofRaiz .qof-card[data-qof-est="9"]::after,body.v357-on #qofRaiz .
   V359.htmlFaixa = htmlFaixa;
 
   // ── 3 · o encaixe no painel da OS (depois de cada pintura; só escreve quando muda) ─────────────────────────────────
+  // A rolagem: o painel repinta (innerHTML) e devolve a rolagem ANTES de a faixa e os quadros de outros blocos voltarem — perto do
+  // fim ela é cortada e, quando eles voltam, tudo desce (o botão "Sim" do aceite saía de vista: tela 354). Guardamos a rolagem com
+  // a faixa no lugar e, ao reencaixar na mesma OS, a seguramos até o painel se remontar (até 1,2 s; a pessoa rolar ou tocar solta).
+  var rolagem = V359.rolagem = { os: '', top: 0, alvo: null };
+  document.addEventListener('scroll', function (ev) {
+    var t = ev.target; if (!t || t.id !== 'r2aPainel' || rolagem.alvo || !document.getElementById('v359Linha')) return;
+    rolagem.os = osDoPainel(); rolagem.top = t.scrollTop;
+  }, true);
+  ['wheel', 'touchstart', 'keydown', 'mousedown'].forEach(function (n) { document.addEventListener(n, function () { rolagem.alvo = null; }, { capture: true, passive: true }); });
+  function seguirRolagem() {
+    var a = rolagem.alvo; if (!a) return;
+    var p = document.getElementById('r2aPainel');
+    if (!p || Date.now() > a.ate || osDoPainel() !== a.os) { rolagem.alvo = null; return; }
+    if (p.scrollTop !== a.top) p.scrollTop = a.top;
+  }
+  V359.seguirRolagem = seguirRolagem;
   function encaixar() {
     try {
       var p = document.getElementById('r2aPainel'), id = osDoPainel(), el = document.getElementById('v359Linha');
@@ -116102,12 +116118,14 @@ body.v357-on #qofRaiz .qof-card[data-qof-est="9"]::after,body.v357-on #qofRaiz .
       if (Date.now() - V359.janela > 1000) { V359.janela = Date.now(); V359.escritas = 0; }
       if (++V359.escritas > 30) { V359.pausaAte = Date.now() + 2000; setTimeout(encaixar, 2100); try { console.warn('[V359] disjuntor: o painel repintou demais; a faixa espera 2 s'); } catch (e) {} return; }
       if (!el || el.parentNode !== p) {
+        if (rolagem.os === id && rolagem.top > 0) { rolagem.alvo = { os: id, top: rolagem.top, ate: Date.now() + 1200 }; setTimeout(seguirRolagem, 300); setTimeout(seguirRolagem, 900); }
         if (el) el.remove();
         el = document.createElement('section'); el.id = 'v359Linha'; el.setAttribute('aria-label', 'Linha do tempo na oficina');
         var ancora = p.querySelector('.r2a-tags') || p.querySelector('.r2a-p-maq');
         if (ancora && ancora.parentNode === p) p.insertBefore(el, ancora.nextSibling); else p.insertBefore(el, p.firstChild ? p.firstChild.nextSibling : null);
       }
       el.innerHTML = h; el.__v359 = sig; el.setAttribute('data-v359-os', id);
+      seguirRolagem();
     } catch (e) { try { console.warn('[V359] encaixar:', e && e.message); } catch (x) {} }
   }
   V359.encaixar = encaixar;
@@ -116121,7 +116139,7 @@ body.v357-on #qofRaiz .qof-card[data-qof-est="9"]::after,body.v357-on #qofRaiz .
   function ligar() {
     var vo = document.getElementById('viewOs');
     if (!vo) { setTimeout(ligar, 1000); return; }
-    new MutationObserver(function () { if (!off()) encaixar(); }).observe(vo, { childList: true, subtree: true });
+    new MutationObserver(function () { if (!off()) { encaixar(); seguirRolagem(); } }).observe(vo, { childList: true, subtree: true });
     encaixar();
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', ligar); else setTimeout(ligar, 0);
