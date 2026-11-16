@@ -117059,7 +117059,7 @@ body.v357-on #qofRaiz .qof-card[data-qof-est="9"]::after,body.v357-on #qofRaiz .
 .cban-it input{margin-top:2px;flex:none}
 .cban-it span{min-width:0}
 .cban-it b{font-weight:700}
-.cban-it .cban-sub{display:block;color:var(--text-muted,#6B6B6B);font-size:11.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cban-it .cban-l2{display:block;color:var(--text-muted,#6B6B6B);font-size:11.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .cban-topo{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:12.5px;margin:0 0 6px}
 .cban-topo .sp{flex:1 1 auto}
 .cban-lnk{all:unset;cursor:pointer;color:var(--text2,#4F4F4F);text-decoration:underline;font-size:12px}
@@ -117310,7 +117310,7 @@ body.v357-on #qofRaiz .qof-card[data-qof-est="9"]::after,body.v357-on #qofRaiz .
       : '';
     corpo.innerHTML = '<div class="cban-corpo"><div>' + topo + '<div class="cban-lista">' + lista.map(function (c) {
       return '<label class="cban-it"><input type="checkbox" data-cban-sel="' + E(c.id) + '"' + (CBAN.sel[c.id] ? ' checked' : '') + '>' +
-        '<span><b>OS ' + E(c.num) + '</b> · ' + E(c.cliente || '—') + '<span class="cban-sub">' + E(c.maquina || 'máquina não informada') + '</span><span class="cban-sub">' + E(estNome(c)) + '</span></span></label>';
+        '<span><b>OS ' + E(c.num) + '</b> · ' + E(c.cliente || '—') + '<span class="cban-l2">' + E(c.maquina || 'máquina não informada') + '</span><span class="cban-l2">' + E(estNome(c)) + '</span></span></label>';
     }).join('') + '</div></div>' +
       '<div><div class="cban-prev" id="cbanPrev" aria-label="Prévia do cartão"></div>' +
       '<div class="cban-carimbo" data-carimbo="PCM {v}">PCM</div></div></div>';
