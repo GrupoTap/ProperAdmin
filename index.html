@@ -117452,7 +117452,7 @@ body.v357-on #qofRaiz .qof-card[data-qof-est="9"]::after,body.v357-on #qofRaiz .
 
   // leitura própria: uma função que ainda não existe (SQL do #245 não rodou) NÃO pode marcar o V235 inteiro como "sem SQL"
   //   (o _v235Rpc faz isso e a ficha toda deixaria de abrir — regras/omie.md, lição do _v238Rpc)
-  async function rpc(fn, args) {
+  async function rpc(fn, args, _ja) {
     var tok = await _v200Token(false), r;
     try {
       r = await fetch(SUPA_URL + '/rest/v1/rpc/' + fn, { method: 'POST', signal: _pcmSinalTimeout_(false),
@@ -117461,23 +117461,28 @@ body.v357-on #qofRaiz .qof-card[data-qof-est="9"]::after,body.v357-on #qofRaiz .
     var txt = ''; try { txt = await r.text(); } catch (e) {}
     var j = null; try { j = txt ? JSON.parse(txt) : null; } catch (e) {}
     if (r.ok) return j;
+    if (r.status === 401 && !_ja) { try { _v200Tok = null; } catch (e) {} return rpc(fn, args, true); }   // o crachá venceu: renova uma vez (como o _v235Rpc)
     var cod = (j && j.code) || '';
     if (cod === 'PGRST202' || cod === '42883' || (r.status === 404 && /function|rpc/i.test(txt))) {
       var e1 = new Error('sem o SQL'); e1.semSql = true; console.warn('[V364] fat_mao_docs não existe no banco (SQL do #245 não rodou) — fica a caixa de antes'); throw e1;
     }
-    throw new Error(String((j && (j.message || j.hint)) || ('HTTP ' + r.status)).replace(/^(Faturamento|CRM):\s*/, ''));
+    // regra do banco (P0001) ou permissão (42501): a frase do banco; o resto é técnico — vai para o console (regras/telas.md 5.10)
+    if (cod === 'P0001' || cod === '42501') throw new Error(String((j && j.message) || '').replace(/^(Faturamento|CRM):\s*/, ''));
+    console.warn('[V364] ' + fn + ':', r.status, txt.slice(0, 300));
+    throw new Error('Tela indisponível — avise o administrador.');
   }
   function zerar(id) {
     V364.ficha = id; V364.docs = null; V364.erro = ''; V364.semSql = false; V364.sel = null; V364.digitar = false;
-    V364.nf = ''; V364.obs = ''; V364.uid = ''; V364.carregando = false; V364.ger++;
+    V364.nf = ''; V364.obs = ''; V364.uid = ''; V364.carregando = false; V364.pode = true; V364.total = 0; V364.focar = false; V364.ger++;
   }
   async function carregar(id) {
     var g = ++V364.ger; V364.carregando = true; V364.erro = '';
     try {
       var r = await rpc('fat_mao_docs', { p_id: id });
       if (g !== V364.ger) return;
-      V364.docs = (r && r.docs) || [];
+      V364.docs = (r && r.docs) || []; V364.pode = !(r && r.pode_marcar === false); V364.total = (r && r.total_docs) || V364.docs.length;
       if (!V364.docs.length) V364.digitar = true;   // nada na lista: o número é o caminho
+      V364.focar = true;                             // a caixa acabou de abrir: o foco vai para a lista (ou o número)
     } catch (e) {
       if (g !== V364.ger) return;
       if (e.semSql) V364.semSql = true; else V364.erro = e.message || String(e);
@@ -117490,11 +117495,15 @@ body.v357-on #qofRaiz .qof-card[data-qof-est="9"]::after,body.v357-on #qofRaiz .
     var h = '<h5>Marcar faturada à mão</h5>';
     if (V364.carregando || V364.docs === null && !V364.erro) return h + '<div class="v364-n">⏳ Lendo as notas do Omie deste cliente…</div>' + pe(true);
     if (V364.erro) {
-      return h + '<div class="v364-n er">Não consegui ler as notas do Omie: ' + E(V364.erro) + '</div>' +
+      return h + '<div class="v364-n er">' + E(V364.erro) + '</div>' +
         '<div class="v364-pe"><button type="button" class="v235-btn" data-v235="cancelarCaixa">Cancelar</button><button type="button" class="v235-btn" data-v364="reler">Tentar de novo</button></div>';
     }
     var docs = V364.docs || [], sel = V364.sel;
-    h += '<div class="v364-t" id="v364Tit">Notas do Omie deste cliente</div>';
+    if (V364.pode === false) {   // a trava de sempre (Q8): sem o cadastro do Omie escolhido, a ficha não se marca à mão
+      return h + '<div class="v364-n er">Este cliente não tem o cadastro do Omie escolhido. Use "Escolher o cadastro do Omie" nesta ficha e volte aqui.</div>' +
+        '<div class="v364-pe"><button type="button" class="v235-btn" data-v235="cancelarCaixa">Fechar</button></div>';
+    }
+    h += '<div class="v364-t" id="v364Tit">Notas do Omie deste cliente' + (V364.total > docs.length ? ' <small>(as ' + docs.length + ' mais novas de ' + V364.total + ')</small>' : '') + '</div>';
     if (docs.length) {
       h += '<div class="v364-lista" role="radiogroup" aria-labelledby="v364Tit">' + docs.map(function (d) {
         var on = !!(sel && sel.tipo === d.tipo && String(sel.cod) === String(d.codigo));
@@ -117529,7 +117538,11 @@ body.v357-on #qofRaiz .qof-card[data-qof-est="9"]::after,body.v357-on #qofRaiz .
     var bt = document.getElementById('v235MaoOk'), cx = bt && bt.closest('.v235-caixa'); if (!cx) return;
     var ativo = document.activeElement && cx.contains(document.activeElement) ? document.activeElement.id : '';
     cx.innerHTML = caixaHtml();
-    var foco = document.getElementById(ativo || (V364.digitar && !V364.nf ? 'v364Nf' : ''));
+    var foco = ativo ? document.getElementById(ativo) : null;
+    if (!foco && V364.focar && !V364.carregando && V364.docs) {   // abriu agora: a nota marcada, a 1ª da lista ou o número (Esc e Enter seguem na janela)
+      V364.focar = false;
+      foco = cx.querySelector('.v364-it.on') || cx.querySelector('.v364-it') || document.getElementById('v364Nf') || document.getElementById('v364Ok');
+    }
     if (foco) try { foco.focus({ preventScroll: true }); } catch (e) {}
   }
 
