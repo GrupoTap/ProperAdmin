@@ -5620,11 +5620,11 @@ v50 — Resiliência de rede: retry/backoff em gsGet e syncToGS
   PCF. A5 em pe, 2 por folha A4 deitada. Chamadas: 0 pelo quadro; 0 ou 1 (pc_oficina_quadro) pelo painel; imprimir = 0. Linhas
   pre-existentes alteradas: o pe do painel da OS (R2A), o topo do quadro e QOF.passa (V355). Chave de volta: localStorage pcm_v363 = off.
   PCM V364 — 16/11/2026 — MARCAR FATURADA A MAO: A NOTA DO OMIE ESCOLHIDA NA LISTA, SEM DUPLICAR (ProperCare-backlog#245),
-  sobre o V363 no ar. Par: SQL FAT_MAO_OMIE_2026-11-16 (cadeia 143; RODA ANTES). Zero GAS.
+  sobre o V363 no ar. Par: SQL FAT_MAO_OMIE_2026-11-16 (cadeia 144; RODA ANTES). Zero GAS.
   Ficha de faturamento > Marcar faturada a mao: a caixa abre com "Notas do Omie deste cliente" (faturadas, nao canceladas, de
   nenhuma outra ficha; a que bate com o total primeiro). Escolher uma liga a nota a ficha e marca faturada (fat_faturar_mao, com
-  uid). "Nao esta na lista? Digitar o numero" e a excecao: o banco recusa o numero de uma nota do cliente que esta no Omie, o ja
-  lancado noutra ficha e o de um "ja faturado por fora"; o nao achado entra com aviso. Sem o SQL: a caixa de antes.
+  uid). "Nao esta na lista? Digitar o numero" e a excecao: mesmo numero E valor de nota livre liga a ela; de outra ficha ou de um
+  "ja faturado por fora" recusa; numero ja digitado noutra ficha recusa; o resto entra com aviso. Sem o SQL: a caixa de antes.
   Chamadas: 1 ao abrir a caixa, 1 ao gravar. Linhas pre-existentes alteradas: nenhuma (so o bloco). Chave: localStorage pcm_v364 = off.
 -->
 <title>ProperCare Manager · Gestão PGP v4.03 (PCM V364)</title>
@@ -117435,8 +117435,9 @@ body.v357-on #qofRaiz .qof-card[data-qof-est="9"]::after,body.v357-on #qofRaiz .
    PCM V364 · ProperCare-backlog#245 — "Marcar faturada à mão" casa o número com o Omie e não deixa a mesma nota em duas fichas.
    · D1: a caixa abre com a lista "Notas do Omie deste cliente" (fat_mao_docs: faturadas, não canceladas, de nenhuma outra ficha
      viva e não presas num "já faturado por fora"). Escolher uma = ligar a nota à ficha (confirmado) e marcar faturada.
-   · Digitar o número é a exceção ("Não está na lista? Digitar o número"): o banco recusa o número de uma nota do cliente que está
-     no Omie (escolha na lista), o já lançado noutra ficha e o de um "já faturado por fora"; o não achado entra com aviso (D2).
+   · Digitar o número é a exceção ("Não está na lista? Digitar o número"). O banco decide: mesmo número E valor de uma nota livre do
+     cliente ⇒ liga a ela; de uma nota de outra ficha ou de um "já faturado por fora" ⇒ recusa; o número já digitado noutra ficha do
+     cliente ⇒ recusa; só o número igual ou não achado ⇒ entra com aviso "confira" (D2). O número aceito fica reservado.
    · Grava pelo fat_faturar_mao com uid (o transporte repete o POST: o mesmo envio não grava duas vezes).
    · Sem o SQL do #245 (a lista responde 404): a caixa de antes (só o número, fat_marcar_faturada) — a tela não trava.
    · Chamadas: 1 ao abrir a caixa (fat_mao_docs) e 1 ao gravar. Encaixe: embrulho do _v235Pintar por nome global (molde V273/V318).
