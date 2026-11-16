@@ -5596,17 +5596,25 @@ v50 — Resiliência de rede: retry/backoff em gsGet e syncToGS
   zero GAS. O painel devolvia a rolagem antes de a faixa da linha do tempo (V359) e os quadros de outros blocos voltarem; perto do
   fim ela era cortada e tudo descia (o balao do aceite sumia: tela 354). A faixa guarda a rolagem e a segura ate o painel se
   remontar (ate 3 s; rolar, tocar ou digitar solta). Linha pre-existente alterada: so dentro do bloco V359.
-  PCM V361 — 16/11/2026 — QUADRO DA OFICINA: ROLAGEM POR COLUNA, BARRA DE LADO SEMPRE A VISTA, BUSCA E FILTROS
-  (ProperCare-backlog#227), sobre o V360 no ar. Zero SQL, zero GAS. (1) Motor novo QUADRO_V1 (ferramentas/blocos/): o quadro ocupa
+  PCM V361 — 16/11/2026 — JA FATURADO POR FORA: ENCERRAR A OPORTUNIDADE FATURADA FORA DO FLUXO (ProperCare-backlog#110), sobre o
+  V360 no ar. Precisa do SQL CRM_FATURADO_FORA (roda ANTES). Zero GAS. So o administrador: na aba Acoes da oportunidade aberta em 4 a 8,
+  o botao Encerrar - ja faturada por fora abre o painel (aceite que falta, a nota da leitura do Omie ou digitada, desfecho, observacao) e encerra
+  (sai do quadro, ganho no dia do aceite, sem ficha; conclui a cobranca da OS que so ela tinha); a encerrada assim mostra a nota no
+  Resumo e tem Reabrir (reabre a cobranca). No
+  Comercial, a faixa Possiveis faturados por fora (1 leitura em 2o plano, so para o administrador) com a lista. Tudo no bloco V361 no
+  fim do body; linha pre-existente alterada: nenhuma (embrulha _v200PintarCard, _v200Pintar, _v200Carregar). Chave de volta:
+  localStorage pcm_v361 = off.
+  PCM V362 — 16/11/2026 — QUADRO DA OFICINA: ROLAGEM POR COLUNA, BARRA DE LADO SEMPRE A VISTA, BUSCA E FILTROS
+  (ProperCare-backlog#227), sobre o V361 no ar. Zero SQL, zero GAS. (1) Motor novo QUADRO_V1 (ferramentas/blocos/): o quadro ocupa
   a altura que sobra da janela (medida), cada coluna rola sozinha com o titulo fixo, a barra de lado fica no pe da tela e a
   repintura devolve a rolagem de lado e a de cada coluna. Tela estreita (ate 820 px): sem altura travada. (2) Motor novo
   FILTRO_OS_V1: uma faixa acima do quadro com busca livre (OS, cliente, maquina/serie/TAG, tecnico), cliente, maquina e pessoa
   (escolher), Mais filtros (entrada de/ate, na etapa ha mais de N dias uteis, relogio, so as que passaram da meta), contador e
   Limpar filtros; fica guardado neste computador; coluna sem resultado recolhe e mostra 0. O filtro de pessoa de antes mora na
-  faixa (mesmo id). Linhas pre-existentes alteradas: as do pintar() do V355. Chave de volta: localStorage pcm_v361 = off.
+  faixa (mesmo id). Linhas pre-existentes alteradas: as do pintar() do V355. Chave de volta: localStorage pcm_v362 = off.
 -->
-<title>ProperCare Manager · Gestão PGP v4.03 (PCM V361)</title>
-<meta name="app-build" content="PCM_V361" data-date="2026-11-16">
+<title>ProperCare Manager · Gestão PGP v4.03 (PCM V362)</title>
+<meta name="app-build" content="PCM_V362" data-date="2026-11-16">
 <link rel="icon" type="image/jpeg" href="data:image/jpeg;base64,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">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -114799,7 +114807,7 @@ body.v355-on .gos-ribbon-tab[onclick="gosSetTab('fila')"],body.v355-on .gos-ribb
   // ═══ 3 · A TELA ═══════════════════════════════════════════════════════════════════════════════
   function estacao(n) { var l = (QOF.d && QOF.d.estacoes) || []; for (var i = 0; i < l.length; i++) if (N(l[i].n) === N(n)) return l[i]; return null; }
   function pessoas(it) { var p = []; if (it.tecnico) p.push(T(it.tecnico)); if (it.bola && it.bola.nome && p.indexOf(T(it.bola.nome)) < 0) p.push(T(it.bola.nome)); return p; }
-  function passaTec(it) { if (QOF.filtro) return QOF.filtro.passa(it); return !QOF.tec || pessoas(it).indexOf(QOF.tec) >= 0; }   // PCM V361 (ProperCare-backlog#227): a faixa FILTRO_OS_V1 filtra
+  function passaTec(it) { if (QOF.filtro) return QOF.filtro.passa(it); return !QOF.tec || pessoas(it).indexOf(QOF.tec) >= 0; }   // PCM V362 (ProperCare-backlog#227): a faixa FILTRO_OS_V1 filtra
   function cardHtml(it) {
     var fal = (it.falta || []).slice(0, 4).map(function (f) {
       return '<li class="' + (f.ok ? 'ok' : 'nao') + '"><span aria-hidden="true">' + (f.ok ? '✓' : '○') + '</span><span title="' + E(f.txt) + '">' + E(f.txt) + '</span></li>';
@@ -114849,9 +114857,9 @@ body.v355-on .gos-ribbon-tab[onclick="gosSetTab('fila')"],body.v355-on .gos-ribb
       (d ? '<span class="qof-sub">' + (QOF.filtro && QOF.filtro.ativo() ? '' : vis.length + (vis.length === 1 ? ' máquina' : ' máquinas') + (nAtr ? ' · ' : '')) + (nAtr ? '<b class="verm">' + nAtr + ' passaram da meta</b>' : '') + '</span>' : '') +
       '<span class="qof-sp"></span>' +
       (QOF.filtro ? '' : '<select id="qofTec" class="qof-sel" data-qof="tec" aria-label="Filtrar por pessoa" autocomplete="off" name="qof_tec_nofill"><option value="">Todas as pessoas</option>' +
-      lista.map(function (n) { return '<option value="' + E(n) + '"' + (QOF.tec === n ? ' selected' : '') + '>' + E(n) + '</option>'; }).join('') + '</select>') +   // PCM V361: com a faixa, a pessoa mora nela
+      lista.map(function (n) { return '<option value="' + E(n) + '"' + (QOF.tec === n ? ' selected' : '') + '>' + E(n) + '</option>'; }).join('') + '</select>') +   // PCM V362: com a faixa, a pessoa mora nela
       (d && d.admin ? '<button type="button" class="qof-btn" data-qof="metas" aria-pressed="' + (QOF.metas ? 'true' : 'false') + '">⚙ Editar metas</button>' : '') +
-      '<button type="button" class="qof-btn" data-qof="recarregar" title="Atualizar agora" aria-label="Atualizar agora">' + (QOF.carregando ? '⏳' : '↻') + '</button></div>' + (QOF.filtro ? '<div data-fos-lugar="1"></div>' : '');   // PCM V361: o lugar da faixa
+      '<button type="button" class="qof-btn" data-qof="recarregar" title="Atualizar agora" aria-label="Atualizar agora">' + (QOF.carregando ? '⏳' : '↻') + '</button></div>' + (QOF.filtro ? '<div data-fos-lugar="1"></div>' : '');   // PCM V362: o lugar da faixa
     if (!d) {
       if (QOF.erro) h += '<div class="qof-aviso verm">Não consegui montar o quadro: ' + E(QOF.erro) + ' <button type="button" class="qof-btn" data-qof="recarregar">Tentar de novo</button></div>';
       else h += '<div data-qof-esq="1"></div>';
@@ -114872,7 +114880,7 @@ body.v355-on .gos-ribbon-tab[onclick="gosSetTab('fila')"],body.v355-on .gos-ribb
       }).join('') + '</div>';
     }
     var cols = ((d.estacoes) || []).filter(function (e) { return N(e.n) !== 0 || vis.some(function (it) { return N(it.estacao) === 0; }); });
-    var v1 = !!(QOF.v1 && QOF.v1()), filtrando = !!(QOF.filtro && QOF.filtro.ativo());   // PCM V361 (ProperCare-backlog#227): QUADRO_V1
+    var v1 = !!(QOF.v1 && QOF.v1()), filtrando = !!(QOF.filtro && QOF.filtro.ativo());   // PCM V362 (ProperCare-backlog#227): QUADRO_V1
     h += '<div class="qof-quadro' + (v1 ? ' quadro-v1' : '') + '" data-quadro="oficina" style="--qof-n:' + cols.length + '">' + cols.map(function (e) {
       var cs = vis.filter(function (it) { return N(it.estacao) === N(e.n); })
         .sort(function (a, b) { return (b.atrasada ? 1 : 0) - (a.atrasada ? 1 : 0) || N(b.dias) - N(a.dias); });
@@ -114886,13 +114894,13 @@ body.v355-on .gos-ribbon-tab[onclick="gosSetTab('fila')"],body.v355-on .gos-ribb
     }).join('') + '</div>';
     if (!itens.length) h += '<div class="qof-vazio">Nenhuma máquina na oficina agora. O quadro mostra as OS com local de atendimento <b>interno</b>.</div>';
     else if (!vis.length) h += QOF.filtro ? '<div class="qof-vazio">Nenhuma máquina com esses filtros. <button type="button" class="qof-lnk" data-qof-fos="limpar">Limpar filtros</button></div>'
-                                          : '<div class="qof-vazio">Nenhuma máquina com ' + E(QOF.tec) + ' agora.</div>';   // PCM V361
+                                          : '<div class="qof-vazio">Nenhuma máquina com ' + E(QOF.tec) + ' agora.</div>';   // PCM V362
     h += '<div class="qof-rodape"><span>Atualizado às ' + E(hora(QOF.em)) + ' · atualiza sozinho a cada minuto</span>' +
       '<button type="button" class="qof-lnk" data-qof="antigo" title="Só neste navegador">Ver o quadro de antes</button>' +
       '<span data-carimbo="PCM {v}">PCM</span></div>';
     var q0 = r.querySelector('.qof-quadro'), rol = q0 ? [q0.scrollLeft, q0.scrollTop] : null;   // a repintura devolve a rolagem do quadro
-    var rolV1 = window.QUADRO ? QUADRO.guardar(r) : null;                     // PCM V361 (ProperCare-backlog#227): a de cada coluna também
-    if (QOF.escrever) QOF.escrever(r, h); else r.innerHTML = h;                // PCM V361: a faixa do filtro não é repintada
+    var rolV1 = window.QUADRO ? QUADRO.guardar(r) : null;                     // PCM V362 (ProperCare-backlog#227): a de cada coluna também
+    if (QOF.escrever) QOF.escrever(r, h); else r.innerHTML = h;                // PCM V362: a faixa do filtro não é repintada
     var q1 = r.querySelector('.qof-quadro');
     if (rolV1 && q1 && q1.classList.contains('quadro-v1')) QUADRO.devolver(r, rolV1);
     else if (q1 && rol && (rol[0] || rol[1])) { try { q1.scrollLeft = rol[0]; q1.scrollTop = rol[1]; } catch (e) {} }
@@ -116166,7 +116174,420 @@ body.v357-on #qofRaiz .qof-card[data-qof-est="9"]::after,body.v357-on #qofRaiz .
 })();
 </script>
 <!-- ████ FIM PCM V359 ████ -->
-<!-- ████ INICIO PCM V361 · 🏭 QUADRO DA OFICINA: ROLAGEM POR COLUNA, BARRA DE LADO SEMPRE À VISTA, BUSCA E FILTROS (ProperCare-backlog#227) ████ -->
+<!-- ████ INICIO PCM V361 · 🧾 JÁ FATURADO POR FORA — ENCERRAR A OPORTUNIDADE (ProperCare-backlog#110) ████ -->
+<style id="v361-css">
+/* PCM V361 (ProperCare-backlog#110): o 🧾 Já faturado por fora na aba ⚙ Ações da oportunidade e a faixa "Possíveis faturados por fora".
+   Chave de volta: localStorage pcm_v361 = off */
+#v361Acoes{align-items:center}
+.v361-btn{all:unset;box-sizing:border-box;cursor:pointer;display:inline-flex;align-items:center;gap:5px;min-height:30px;padding:0 11px;border:1px solid #F5C9A6;border-radius:8px;background:#fff;color:#B4540F;font-size:12.5px;font-weight:600}
+.v361-btn:hover,.v361-btn:focus-visible{background:#FFF4EC;outline:2px solid #EE7625;outline-offset:1px}
+.v361-btn:active{transform:translateY(1px)}
+.v361-btn[aria-pressed="true"]{background:#FFF4EC}
+.v361-chip{display:inline-block;font-size:11px;font-weight:700;color:#353434;background:#F0EFEF;border:1px solid #ABABAB;border-radius:6px;padding:1px 7px;margin-left:6px;vertical-align:middle}
+#v361Box{border:2px solid #EE7625;border-style:solid;background:#fff;font-size:13px;color:#262626}
+#v361Box h5{margin:0 0 4px;font-size:15px;font-weight:700}
+#v361Box .v361-q{color:#5A5858;font-size:12.5px;margin:0 0 8px}
+#v361Box fieldset{border:1px solid #E0E0E0;border-radius:10px;padding:10px 12px;margin:10px 0 0;min-width:0}
+#v361Box legend{font-size:12.5px;font-weight:700;padding:0 6px}
+#v361Box .v361-lab{display:block;font-size:11.5px;font-weight:600;color:#5A5858;margin:8px 0 3px}
+#v361Box .v361-in{width:100%;box-sizing:border-box;height:34px;padding:0 9px;border:1px solid #ABABAB;border-radius:7px;font:inherit;font-size:13px;background:#fff}
+#v361Box .v361-grid{display:grid;grid-template-columns:minmax(0,1fr) 200px;gap:10px}
+#v361Box .v361-grid3{display:grid;grid-template-columns:minmax(0,1fr) 160px 130px;gap:10px}
+#v361Box .v361-op{display:flex;gap:10px;align-items:flex-start;border:1px solid #E0E0E0;border-radius:8px;padding:8px 10px;margin:6px 0 0;cursor:pointer;font-weight:400}
+#v361Box .v361-op.on{border-color:#EE7625;background:#FFF4EC}
+#v361Box .v361-op input{width:18px;height:18px;margin:1px 0 0;flex:none;accent-color:#EE7625}
+#v361Box .v361-op small{color:#5A5858}
+#v361Box .v361-alerta{margin:8px 0 0;padding:7px 9px;border-radius:7px;background:#FFF4E0;border:1px solid #F3D9A6;color:#7A4A00;font-size:12.5px}
+#v361Box .v361-err{margin:8px 0 0;padding:7px 9px;border-radius:7px;background:#FEF3F2;border:1px solid #FECDCA;color:#B42318;font-size:12.5px}
+#v361Box .v361-muda{margin:10px 0 0;padding:9px 12px;border-radius:9px;background:#F7F6F6;font-size:12.5px;line-height:1.5}
+#v361Box .v361-pe{display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap;margin-top:12px}
+.v361-sim{all:unset;box-sizing:border-box;cursor:pointer;min-height:36px;padding:0 16px;border-radius:9px;background:#353434;color:#fff;font-weight:700;font-size:13px;display:inline-flex;align-items:center}
+.v361-sim:hover,.v361-sim:focus-visible{background:#1F1F1F;outline:2px solid #EE7625;outline-offset:1px}
+.v361-sim[disabled]{background:#ABABAB;cursor:not-allowed}
+.v361-sim.is-busy{cursor:progress}
+/* a gaveta (V288) prende o "Para andar" no rodapé: folga embaixo para o botão do painel nunca ficar sob ele */
+#v200Modal.v288-on #v361Box{margin-bottom:84px}
+#v361Faixa{display:flex;gap:10px;align-items:center;flex-wrap:wrap;transition:none}
+#v361Faixa .v361-btn{min-height:28px}
+#v361Lista td,#v361Lista th{vertical-align:top}
+#v361Lista .v361-nt{display:block;white-space:nowrap}
+@media (max-width:640px){#v361Box .v361-grid,#v361Box .v361-grid3{grid-template-columns:minmax(0,1fr)}}
+</style>
+<script id="v361Js">
+/* ═════════════════════════════════════════════════════════════════════════════════════
+   PCM V361 · ProperCare-backlog#110 — 🧾 JÁ FATURADO POR FORA: encerrar a oportunidade que foi faturada antes de seguir o fluxo.
+   · Oportunidade aberta em 4 a 8, aba ⚙ Ações, SÓ o administrador: "🧾 Já faturado por fora" abre o painel (crm_fechar_fora_previa):
+     1 · Aceite (o que ela já tem; sem aceite: quem, quando, como e a versão) · 2 · Nota (escolhida na leitura do Omie do cliente; ou
+     "não está na lista" → nº, data e valor) · desfecho (😊 satisfeito padrão, ⚠ reclamação) · observação. "Encerrar oportunidade"
+     (crm_fechar_fora, com uid: repetir não duplica). Sai do quadro, conta como ganho no dia do aceite, não abre ficha nem cobrança.
+   · Oportunidade encerrada assim: aviso no Resumo (a nota) e, para o administrador, "↺ Reabrir" na aba ⚙ Ações
+     (crm_fechar_fora_desfazer; pode apagar o aceite que o encerramento registrou).
+   · Comercial (quadro e lista), só o administrador: a faixa "🧾 N podem ter sido faturadas por fora" (crm_fechar_fora_candidatos, 1
+     leitura em 2º plano depois do quadro, guardada 60 s) e "Ver a lista" → abre cada oportunidade já no painel. Nada fecha sozinho.
+   · Quem decide é o banco (só administrador, colunas 4–8, sem ficha viva, nota do cliente). Sem o SQL: nada aparece.
+   Embrulha por fora (pelo nome global): _v200PintarCard · _v200Pintar · _v200Carregar. Linha pré-existente alterada: nenhuma.
+   Chave de volta: localStorage pcm_v361 = off.
+   ═════════════════════════════════════════════════════════════════════════════════════ */
+(function () {
+  'use strict';
+  if (window.V361) return;
+  var V361 = window.V361 = { versao: 'V361', orig: {}, st: null, semSql: false, gravando: false, cand: null, candEm: 0, candVoo: null, auto: '' };
+  function off() { try { return localStorage.getItem('pcm_v361') === 'off'; } catch (e) { return false; } }
+  V361.off = off;
+  function S(v) { return String(v == null ? '' : v); }
+  function T(v) { return S(v).trim(); }
+  function E(v) { return S(v).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+  function admin() { try { return window.PROPER_SESSION && window.PROPER_SESSION.is_admin === true; } catch (e) { return false; } }
+  function rs(v) { var n = Number(v); return (v === null || v === undefined || v === '' || !isFinite(n)) ? '' : 'R$ ' + n.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
+  // data SEM hora ('2026-11-13') é o dia dela — new Date() a leria como meia-noite UTC (o dia anterior em Brasília)
+  function dia(v) { var m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(T(v)); if (m) return m[3] + '/' + m[2] + '/' + m[1]; try { return _v200Data(v); } catch (e) { return S(v); } }
+  function agoraLocal() { var d = new Date(); d.setMinutes(d.getMinutes() - d.getTimezoneOffset()); return d.toISOString().slice(0, 16); }
+  function hojeLocal() { return agoraLocal().slice(0, 10); }
+  function novoUid() { return 'fora-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 10); }
+  function nomeUsu(id) { try { return _v200NomeUsu(id); } catch (e) { return S(id); } }
+  function formaRot(f) { try { return (V200_FORMAS.find(function (x) { return x[0] === f; }) || [0, f])[1]; } catch (e) { return S(f); } }
+  function tipoDoc(t) { return t === 'pedido' ? 'Pedido de venda' : 'OS do Omie'; }
+  // valor em pt-BR ("1.200,50") → número; vazio → null; ilegível → NaN
+  function valorBR(s) { s = T(s).replace(/^R\$\s*/i, ''); if (!s) return null; if (/,/.test(s)) s = s.replace(/\./g, '').replace(',', '.'); var n = Number(s); return isFinite(n) ? n : NaN; }
+  try { V200_EVENTO.faturado_fora = '🧾 encerrada — já faturada por fora'; } catch (e) {}
+
+  async function rpc(fn, args, escrita) {
+    try { return await _v200Rpc(fn, args, escrita); }
+    catch (e) {
+      var cod = e && (e.v200 || e.code);
+      if (cod === 'sem_sql') { V361.semSql = true; console.warn('[V361] a função ' + fn + ' não existe no banco (falta o SQL CRM_FATURADO_FORA)'); }
+      if (cod === 'acesso') throw new Error('Só o administrador encerra como "já faturado por fora". Se você é administrador, entre de novo pelo Hub e tente outra vez.');
+      throw e;
+    }
+  }
+
+  // ── o card ────────────────────────────────────────────────────────────────────────────────────────────────────
+  function cardAberto() { try { var M = _v200.modal; return (M && M.tipo === 'card' && M.d && M.d.card && M.d.card.id) ? M : null; } catch (e) { return null; } }
+  function eventoFora(d) {
+    var t = (d && d.trilha) || [], x = null;
+    for (var i = 0; i < t.length; i++) if (t[i] && t[i].tipo === 'faturado_fora') x = t[i];
+    return x ? (x.dados || {}) : null;
+  }
+  function notaTxt(n) {
+    if (!n) return 'nota';
+    var nm = n.fonte === 'omie' ? tipoDoc(n.tipo) + ' nº ' + T(n.numero || n.codigo) : 'nota ' + T(n.numero);
+    return nm + (n.data ? ' de ' + dia(n.data) : '') + (rs(n.valor) ? ' · ' + rs(n.valor) : '');
+  }
+  function limpar(ids) { ids.forEach(function (i) { var x = document.getElementById(i); if (x) x.remove(); }); }
+
+  function noCard() {
+    var M = cardAberto(), body = document.getElementById('v200ModalBody');
+    if (!M || !body || off() || V361.semSql) { limpar(['v361Acoes', 'v361Box', 'v361Aviso']); return; }
+    var o = M.d.card, col = (M.d.estado && M.d.estado.coluna) || 0;
+    var aberta = !o.perdida_em && !o.fechada_em, fora = !!o.fechada_em && o.fechamento === 'faturado_fora';
+    if (V361.st && (V361.st.id !== o.id || V361.st.M !== M)) V361.st = null;   // outro card, ou a janela foi reaberta: começa fechado
+    // no Resumo (todos veem): a nota que encerrou, DENTRO da faixa "Fechada em …" de sempre (uma faixa só — 5.10)
+    var av = document.getElementById('v361Aviso');
+    if (fora) {
+      var ev = eventoFora(M.d);
+      var ha = ' · 🧾 <b>faturada por fora</b> — ' + E(notaTxt(ev && ev.nota));
+      var faixa = av ? av.parentNode : Array.prototype.find.call(body.querySelectorAll(':scope > .v200-aviso.azul'), function (x) { return /^Fechada em/.test(T(x.textContent)); });
+      if (!av && faixa) { av = document.createElement('span'); av.id = 'v361Aviso'; faixa.appendChild(av); }
+      if (av && av.getAttribute('data-h') !== ha) { av.setAttribute('data-h', ha); av.innerHTML = ha; }
+    } else if (av) av.remove();
+    var pode = admin() && ((aberta && col >= 4 && col <= 8) || fora);
+    if (!pode) { limpar(['v361Acoes', 'v361Box']); return; }
+    var aberto = !!(V361.st && V361.st.aberto);
+    var linha = document.getElementById('v361Acoes');
+    if (!linha) {
+      linha = document.createElement('div'); linha.id = 'v361Acoes'; linha.className = 'v200-acoes';
+      var ref = Array.prototype.slice.call(body.querySelectorAll(':scope > .v200-acoes')).pop() || body.querySelector(':scope > .v200-grid');
+      if (ref) ref.insertAdjacentElement('afterend', linha); else body.insertAdjacentElement('afterbegin', linha);
+    }
+    var hl = fora
+      ? '<button type="button" class="v361-btn" data-v361="abrir" aria-pressed="' + aberto + '">↺ Reabrir oportunidade (faturada por fora)</button>'
+      : '<button type="button" class="v361-btn" data-v361="abrir" aria-pressed="' + aberto + '">🧾 Encerrar — já faturada por fora</button>';
+    if (linha.getAttribute('data-h') !== hl) { linha.setAttribute('data-h', hl); linha.innerHTML = hl; }
+    var box = document.getElementById('v361Box');
+    if (!aberto) { if (box) box.remove(); return; }
+    if (!box) { box = document.createElement('div'); box.id = 'v361Box'; box.className = 'v200-form'; box.setAttribute('aria-live', 'polite'); linha.insertAdjacentElement('afterend', box); }
+    var h = V361.st.modo === 'reabrir' ? htmlReabrir(V361.st, M.d) : htmlEncerrar(V361.st);
+    if (box.getAttribute('data-h') !== h) {                    // só troca o que mudou (o clique e o foco não se perdem)
+      var foco = document.activeElement && box.contains(document.activeElement) ? document.activeElement.id : '';
+      box.setAttribute('data-h', h); box.innerHTML = h;
+      if (foco) { var f = document.getElementById(foco); if (f) { try { f.focus({ preventScroll: true }); } catch (e) {} } }
+    }
+  }
+  V361.noCard = noCard;
+
+  function pe(acao, rot, pode, tit) {
+    return '<div class="v361-pe"><button type="button" class="btn btn-secondary btn-sm" data-v361="fechar">Cancelar</button>' +
+      '<button type="button" class="v361-sim" data-v361="' + acao + '"' + (pode ? '' : ' disabled title="' + E(tit || '') + '"') + '>' + rot + '</button></div>';
+  }
+  function htmlEncerrar(st) {
+    var h = '<h5>🧾 Já faturado por fora — encerrar <span class="v361-chip">só admin</span></h5>';
+    if (st.erro) return h + '<div class="v361-err">' + E(st.erro) + '</div><div class="v361-pe"><button type="button" class="btn btn-secondary btn-sm" data-v361="reler">Tentar de novo</button><button type="button" class="btn btn-secondary btn-sm" data-v361="fechar">Cancelar</button></div>';
+    var p = st.p;
+    if (!p) return h + '<div class="v361-q">⏳ Conferindo o aceite e as notas do cliente…</div>';
+    if (!p.pode) return h + '<div class="v361-err">Não dá para encerrar por aqui: ' + E(p.motivo) + '.</div><div class="v361-pe"><button type="button" class="btn btn-secondary btn-sm" data-v361="fechar">Fechar</button></div>';
+    // 1 · aceite
+    h += '<fieldset><legend>1 · Aceite</legend>';
+    if (p.aceite) {
+      h += '<div>✅ Já registrado: <b>' + E(p.aceite.quem || 'aceite') + '</b>' + (p.aceite.forma ? ' · ' + E(formaRot(p.aceite.forma)) : '') + ' · ' + E(_v200Data(p.aceite.quando, true)) +
+        (rs(p.aceite.valor) ? ' · ' + rs(p.aceite.valor) : '') + '</div>';
+    } else {
+      var vs = p.versoes || [];
+      if (vs.length > 1) {
+        h += '<label class="v361-lab" for="v361Ver">Versão aprovada *</label><select id="v361Ver" class="v361-in" data-v361c="versao">' +
+          '<option value=""' + (st.versao ? '' : ' selected') + '>— escolha a versão que o cliente aprovou</option>' + vs.map(function (v) { return '<option value="' + E(v.id) + '"' + (st.versao === v.id ? ' selected' : '') + '>' + E(v.proposta) + ' v' + E(v.versao) + ' · ' + rs(v.total) + '</option>'; }).join('') + '</select>';
+      } else if (vs.length === 1) {
+        h += '<div>Versão aprovada: <b>' + E(vs[0].proposta) + ' v' + E(vs[0].versao) + (rs(vs[0].total) ? ' · ' + rs(vs[0].total) : '') + '</b></div>';
+      }
+      h += '<div class="v361-grid"><div><label class="v361-lab" for="v361Quem">Quem aprovou * (nome e função)</label>' +
+        '<input id="v361Quem" class="v361-in" data-v361c="quem" maxlength="120" value="' + E(st.quem) + '" placeholder="Ex.: Carlos Mendes — compras" readonly onfocus="this.removeAttribute(\'readonly\')" autocomplete="off" name="v361_quem_nofill" data-lpignore="true" data-1p-ignore></div>' +
+        '<div><label class="v361-lab" for="v361Quando">Quando o cliente aprovou *</label><input id="v361Quando" class="v361-in" type="datetime-local" data-v361c="quando" value="' + E(st.quando) + '" max="' + agoraLocal() + '"></div></div>' +
+        '<label class="v361-lab" for="v361Forma">Como aprovou</label><select id="v361Forma" class="v361-in" data-v361c="forma">' +
+        (function () { try { return V200_FORMAS; } catch (e) { return [['outro', 'Outro']]; } })().map(function (f) { return '<option value="' + E(f[0]) + '"' + (st.forma === f[0] ? ' selected' : '') + '>' + E(f[1]) + '</option>'; }).join('') + '</select>';
+    }
+    h += '</fieldset>';
+    // 2 · nota
+    var ns = p.notas || [];
+    h += '<fieldset><legend>2 · Nota (da leitura do Omie)</legend>';
+    if (!ns.length) h += '<div class="v361-q" style="margin:0">Nenhuma nota faturada deste cliente na leitura do Omie' + (p.omie_lido_em ? ' (lida em ' + E(_v200Data(p.omie_lido_em, true)) + ')' : '') + '. Digite o número e a data.</div>';
+    ns.forEach(function (n) {
+      var k = n.tipo + ':' + n.codigo, on = st.nota === k;
+      h += '<label class="v361-op' + (on ? ' on' : '') + '"><input type="radio" name="v361Nota" data-v361c="nota" value="' + E(k) + '"' + (on ? ' checked' : '') + (n.ja_usada ? ' disabled' : '') + '><span><b>' + E(tipoDoc(n.tipo)) + ' nº ' + E(n.numero || n.codigo) + '</b> · ' +
+        E(dia(n.data_fat)) + (rs(n.valor) ? ' · ' + rs(n.valor) : '') + (n.ja_usada ? ' · já encerrou a ' + E(n.ja_usada) : '') +
+        (n.provavel_de && n.provavel_de.length && !n.ja_usada ? ' · <i>provável da ficha ' + n.provavel_de.map(E).join(', ') + ' — sai de lá</i>' : '') + '</span></label>';
+    });
+    var dig = st.nota === 'digitada' || !ns.length;
+    if (ns.length) h += '<label class="v361-op' + (dig ? ' on' : '') + '"><input type="radio" name="v361Nota" data-v361c="nota" value="digitada"' + (dig ? ' checked' : '') + '><span>Não está na lista — digitar nº e data</span></label>';
+    if (dig) h += '<div class="v361-grid3"><div><label class="v361-lab" for="v361Num">Nº da nota *</label><input id="v361Num" class="v361-in" data-v361c="num" maxlength="30" value="' + E(st.num) + '" readonly onfocus="this.removeAttribute(\'readonly\')" autocomplete="off" name="v361_num_nofill" data-lpignore="true" data-1p-ignore></div>' +
+      '<div><label class="v361-lab" for="v361Data">Data *</label><input id="v361Data" class="v361-in" type="date" data-v361c="data" value="' + E(st.data) + '" max="' + hojeLocal() + '"></div>' +
+      '<div><label class="v361-lab" for="v361Val">Valor</label><input id="v361Val" class="v361-in" inputmode="decimal" data-v361c="valor" value="' + E(st.valor) + '" placeholder="0,00" readonly onfocus="this.removeAttribute(\'readonly\')" autocomplete="off" name="v361_val_nofill" data-lpignore="true" data-1p-ignore></div></div>';
+    h += '</fieldset>';
+    // desfecho e observação
+    h += '<fieldset><legend>Desfecho</legend>' + [['satisfeito', '😊 satisfeito'], ['reclamacao', '⚠ reclamação']].map(function (x) {
+      return '<label class="v361-op' + (st.desfecho === x[0] ? ' on' : '') + '"><input type="radio" name="v361Desf" data-v361c="desfecho" value="' + x[0] + '"' + (st.desfecho === x[0] ? ' checked' : '') + '><span>' + x[1] + '</span></label>'; }).join('') + '</fieldset>';
+    h += '<label class="v361-lab" for="v361Obs">Observação (vai para a Trilha)</label><input id="v361Obs" class="v361-in" data-v361c="obs" maxlength="300" value="' + E(st.obs) + '" placeholder="ex.: faturado direto no Omie antes do aceite no PCM" readonly onfocus="this.removeAttribute(\'readonly\')" autocomplete="off" name="v361_obs_nofill" data-lpignore="true" data-1p-ignore>';
+    var oses = p.oses || [], cobs = p.cobrancas || [];
+    var sos = oses.filter(function (s) { return !s.de_outra; }), outs = oses.filter(function (s) { return s.de_outra; });
+    var nos = function (l) { return l.map(function (s) { return '<b>' + E(s.numero_os || s.id_os) + '</b>'; }).join(', '); };
+    if (sos.length) h += '<div class="v361-alerta">🛠 ' + nos(sos) + ': fica sem cobrança e sem ficha' +
+      (cobs.length ? ' · a cobrança aberta (' + cobs.map(function (c) { return E(c.demanda); }).join(', ') + ') será concluída' : '') + '.</div>';
+    if (outs.length) h += '<div class="v361-q" style="margin:8px 0 0">🛠 ' + nos(outs) + ': também é de outra oportunidade aberta e segue cobrando por ela.</div>';
+    if (st.msg) h += '<div class="v361-err">' + E(st.msg) + '</div>';
+    return h + pe('encerrar', '🧾 Encerrar oportunidade', true);
+  }
+  function colNome(c) { try { return (V200_COLS[c] || {}).t || ('coluna ' + c); } catch (e) { return 'coluna ' + c; } }
+  function htmlReabrir(st, d) {
+    var ev = eventoFora(d) || {}, ac = null;
+    if (ev.aceite_criado) ac = ((d && d.aceites) || []).find(function (a) { return S(a.id) === S(ev.aceite_criado); }) || null;
+    var h = '<h5>↺ Reabrir a oportunidade <span class="v361-chip">só admin</span></h5><div class="v361-q">Encerrada como faturada por fora — ' + E(notaTxt(ev.nota)) + '.</div>' +
+      '<label class="v361-lab" for="v361PorQue">Por que está reabrindo? *</label><input id="v361PorQue" class="v361-in" data-v361c="porque" maxlength="300" value="' + E(st.porque) + '" readonly onfocus="this.removeAttribute(\'readonly\')" autocomplete="off" name="v361_pq_nofill" data-lpignore="true" data-1p-ignore>';
+    var subst = (ev.substituidas || []).length > 0, concl = ev.cobrancas_concluidas || [];
+    if (ac && !subst) h += '<label class="v361-op' + (st.apagar ? ' on' : '') + '"><input type="checkbox" data-v361c="apagar"' + (st.apagar ? ' checked' : '') + '><span>Apagar também o aceite que o encerramento registrou (' + E(ac.quem_aprovou) + ' · ' + E(_v200Data(ac.quando_aprovou, true)) + ')</span></label>';
+    if (ac && subst) h += '<div class="v361-q" style="margin:8px 0 0">O aceite do encerramento substituiu a versão anterior: ele fica.</div>';
+    if (concl.length) h += '<div class="v361-q" style="margin:8px 0 0">A cobrança que o encerramento concluiu (' + concl.map(E).join(', ') + ') volta a ficar aberta.</div>';
+    if (st.msg) h += '<div class="v361-err">' + E(st.msg) + '</div>';
+    return h + pe('reabrir', '↺ Reabrir oportunidade', T(st.porque).length >= 3, 'Diga por que está reabrindo');
+  }
+
+  async function carregar(st) {
+    st.p = null; st.erro = ''; noCard();
+    try {
+      var p = await rpc('crm_fechar_fora_previa', { p_id: st.id }, false);
+      if (V361.st !== st) return;
+      st.p = p || {};
+      if (!st.lido) {                                    // só na 1ª leitura: a nota de mesmo valor que a proposta vem marcada
+        var ns = st.p.notas || [], vs = st.p.versoes || [], ref = st.p.valor_ref, tot = (ref === null || ref === undefined) ? NaN : Number(ref);
+        var igual = ns.find(function (n) { return !n.ja_usada && isFinite(tot) && Number(n.valor) === tot; });
+        st.nota = igual ? igual.tipo + ':' + igual.codigo : (ns.length ? '' : 'digitada');
+        st.versao = vs.length === 1 ? vs[0].id : '';      // duas valendo: a pessoa escolhe (o banco recusa sem escolha)
+        st.lido = true;
+      }
+    } catch (e) {
+      if (V361.st !== st) return;
+      if (V361.semSql) { V361.st = null; noCard(); toast('Tela indisponível — avise o administrador.', 'error'); return; }
+      st.erro = (e && e.message) || String(e);
+    }
+    noCard();
+  }
+
+  function dadosDoForm(st) {
+    var p = st.p || {}, d = { uid: st.uid, desfecho: st.desfecho || 'satisfeito' };
+    if (T(st.obs)) d.obs = T(st.obs);
+    if (!p.aceite) {
+      if (T(st.quem).length < 3) return 'Diga QUEM aprovou (nome e função).';
+      if (!st.quando) return 'Informe QUANDO o cliente aprovou.';
+      var q = new Date(st.quando);
+      if (isNaN(q)) return 'Data do aceite inválida.';
+      if (q.getTime() > Date.now() + 60000) return 'O aceite não pode ser no futuro.';
+      if ((p.versoes || []).length > 1 && !st.versao) return 'Escolha a versão que o cliente aprovou.';
+      d.aceite = { quem: T(st.quem), quando: q.toISOString(), forma: st.forma || 'outro' };
+      if (st.versao) d.aceite.versao_id = st.versao;
+    }
+    var dig = st.nota === 'digitada' || !(p.notas || []).length;
+    if (dig) {
+      if (!T(st.num)) return 'Escreva o número da nota.';
+      if (!st.data) return 'Informe a data da nota.';
+      if (st.data > hojeLocal()) return 'A data da nota não pode ser no futuro.';
+      var v = valorBR(st.valor);
+      if (v !== null && (!isFinite(v) || v <= 0)) return 'Valor da nota inválido (ex.: 1.200,50).';
+      d.nota = { fonte: 'digitada', numero: T(st.num), data: st.data };
+      if (v !== null) d.nota.valor = v;
+    } else {
+      if (!st.nota) return 'Escolha a nota (ou "Não está na lista").';
+      var k = st.nota.split(':');
+      d.nota = { fonte: 'omie', tipo: k[0], codigo: k[1] };
+    }
+    return d;
+  }
+
+  async function enviar(btn, acao) {
+    var st = V361.st, M = cardAberto(); if (!st || !M || M.d.card.id !== st.id || V361.gravando) return;
+    var args, fn, okMsg;
+    if (acao === 'encerrar') {
+      var d = dadosDoForm(st);
+      if (typeof d === 'string') { st.msg = d; return noCard(); }
+      fn = 'crm_fechar_fora'; args = { p_id: st.id, p_dados: d };
+    } else {
+      if (T(st.porque).length < 3) { st.msg = 'Diga por que está reabrindo.'; return noCard(); }
+      fn = 'crm_fechar_fora_desfazer'; args = { p_id: st.id, p_por_que: T(st.porque), p_apagar_aceite: !!st.apagar, p_uid: st.uid };
+    }
+    V361.gravando = true; st.msg = '';                   // a trava mora no ESTADO (a repintura recria o botão)
+    if (btn) { btn.disabled = true; btn.classList.add('is-busy'); btn.setAttribute('data-pcm-enviando', '1'); btn.textContent = '⏳ Gravando…'; }
+    try {
+      var r = await rpc(fn, args, true) || {};
+      V361.st = null; V361.cand = null; V361.candEm = 0;
+      if (acao === 'encerrar') okMsg = r.ja ? 'Este envio já tinha sido gravado (' + notaTxt(r.nota) + ')' + (r.aberta_de_novo ? ' e a oportunidade foi reaberta depois.' : '.') : 'Oportunidade encerrada — faturada por fora' + (r.aceite_criado ? ' (aceite registrado)' : '') + '. Saiu do quadro' + ((r.cobrancas_concluidas || []).length ? '; cobrança concluída: ' + r.cobrancas_concluidas.join(', ') : '') + '.';
+      else okMsg = r.ja ? 'A oportunidade já estava reaberta.' : 'Oportunidade reaberta' + (r.coluna ? ' — voltou para "' + colNome(r.coluna) + '"' : '') + (r.aceite_apagado ? '; o aceite do encerramento foi apagado' : '') +
+        ((r.cobrancas_reabertas || []).length ? '; a cobrança ' + r.cobrancas_reabertas.join(', ') + ' voltou a ficar aberta' : '') + '.';
+      toast(okMsg, 'success');
+      if (_v200.modal === M) await _v200AbrirCard(st.id);
+      try { _v200.perdidas = null; _v200Carregar(); } catch (e) {}
+    } catch (e) {
+      var msg = (e && e.message) || String(e);
+      if (V361.st === st && _v200.modal === st.M && document.getElementById('v361Box')) { st.msg = msg; noCard(); } else toast(msg, 'error');
+    } finally {
+      V361.gravando = false;
+      if (btn && btn.isConnected) { btn.classList.remove('is-busy'); btn.removeAttribute('data-pcm-enviando'); }
+    }
+  }
+
+  function abrir(M, auto) {
+    var o = M.d.card, fora = !!o.fechada_em && o.fechamento === 'faturado_fora';
+    V361.st = { id: o.id, M: M, aberto: true, modo: fora ? 'reabrir' : 'encerrar', uid: novoUid(), p: null, erro: '', msg: '', lido: false,
+                quem: '', quando: '', forma: 'whatsapp', versao: '', nota: '', num: '', data: '', valor: '', desfecho: 'satisfeito', obs: '', porque: '', apagar: false };
+    try { if (window.V288 && V288.irPara) V288.irPara('acoes'); } catch (e) {}
+    if (fora) noCard(); else carregar(V361.st);
+    setTimeout(function () { var x = document.getElementById('v361Box'); if (x && x.scrollIntoView) x.scrollIntoView({ block: 'nearest', behavior: auto ? 'auto' : 'smooth' }); }, 60);
+  }
+
+  document.addEventListener('click', function (ev) {
+    var b = ev.target.closest && ev.target.closest('[data-v361]'); if (!b) return;
+    var a = b.getAttribute('data-v361');
+    if (a === 'lista') { ev.preventDefault(); return abrirLista(); }
+    if (a === 'atualizar') { ev.preventDefault(); V361.cand = null; pintarLista(); return lerCand(true); }
+    if (a === 'card') { ev.preventDefault(); V361.auto = b.getAttribute('data-id'); return _v200AbrirCard(V361.auto); }
+    if (!b.closest('#v200Modal')) return;
+    var M = cardAberto(); if (!M) return;
+    if (a === 'abrir') {
+      ev.preventDefault();
+      if (V361.st && V361.st.id === M.d.card.id && V361.st.aberto) { V361.st.aberto = false; return noCard(); }
+      return abrir(M, false);
+    }
+    if (!V361.st || V361.st.id !== M.d.card.id) return;
+    if (a === 'fechar') { ev.preventDefault(); V361.st.aberto = false; return noCard(); }
+    if (a === 'reler') { ev.preventDefault(); return carregar(V361.st); }
+    if (a === 'encerrar' || a === 'reabrir') { ev.preventDefault(); return enviar(b, a); }
+  }, true);
+  // o que a pessoa escolhe/digita vai para o ESTADO na hora (a repintura nunca relê o DOM)
+  function guardar(ev) {
+    var x = ev.target; if (!x || !x.getAttribute || !V361.st || !x.closest || !x.closest('#v361Box')) return;
+    var c = x.getAttribute('data-v361c'); if (!c) return;
+    var st = V361.st;
+    if (c === 'apagar') st.apagar = !!x.checked;
+    else if (x.type === 'radio') { if (x.checked) st[c] = x.value; }
+    else st[c] = x.value;
+    if (ev.type === 'change' && (x.type === 'radio' || x.type === 'checkbox' || x.tagName === 'SELECT')) { st.msg = ''; noCard(); }
+    else if (c === 'porque') { var bt = document.querySelector('#v361Box [data-v361="reabrir"]'); if (bt && !V361.gravando) bt.disabled = T(x.value).length < 3; }
+  }
+  document.addEventListener('input', guardar, true);
+  document.addEventListener('change', guardar, true);
+
+  // ── a faixa e a lista "Possíveis faturados por fora" (Comercial, só o administrador) ────────────────────────────────
+  function naAba() { try { return currentView === 'comercial' && (_v200.aba === 'quadro' || _v200.aba === 'lista'); } catch (e) { return false; } }
+  function faixa() {
+    var raiz = document.getElementById('viewComercial'), f = document.getElementById('v361Faixa');
+    var n = (V361.cand || []).length;
+    var desl = false; try { desl = !!(_v200.q && _v200.q.ligado === false); } catch (e) {}
+    if (!raiz || off() || V361.semSql || desl || !admin() || !naAba() || !n || !raiz.querySelector(':scope > .v200-nums')) { if (f) f.remove(); return; }
+    var h = '<span>🧾 <b>' + n + (n === 1 ? ' oportunidade' : ' oportunidades') + '</b> com nota do Omie depois da proposta — pode' + (n === 1 ? '' : 'm') + ' ter sido faturada' + (n === 1 ? '' : 's') + ' por fora.</span>' +
+      '<button type="button" class="v361-btn" data-v361="lista">Ver a lista</button>';
+    if (!f) { f = document.createElement('div'); f.id = 'v361Faixa'; f.className = 'v200-aviso amar'; raiz.querySelector(':scope > .v200-nums').insertAdjacentElement('beforebegin', f); }
+    if (f.getAttribute('data-h') !== h) { f.setAttribute('data-h', h); f.innerHTML = h; }
+  }
+  V361.faixa = faixa;
+  function lerCand(forcar) {
+    if (off() || V361.semSql || !admin()) return Promise.resolve(null);
+    if (!forcar && V361.cand && Date.now() - V361.candEm < 60000) return Promise.resolve(V361.cand);
+    if (V361.candVoo) return V361.candVoo;
+    V361.candVoo = rpc('crm_fechar_fora_candidatos', {}, false)
+      .then(function (r) { V361.cand = Array.isArray(r) ? r : []; V361.candEm = Date.now(); return V361.cand; })
+      .catch(function (e) { console.warn('[V361] lista:', e && e.message); return null; })
+      .finally(function () { V361.candVoo = null; try { faixa(); if (_v200.modal && _v200.modal.tipo === 'v361lista') pintarLista(); } catch (e) {} });
+    return V361.candVoo;
+  }
+  V361.lerCand = lerCand;
+  function pintarLista() {
+    var c = V361.cand;
+    var h = !c ? '<div class="v200-vazio">⏳ Procurando…</div>'
+      : !c.length ? '<div class="empty"><div class="empty-title">Nenhuma oportunidade na lista</div><div class="empty-sub">Nenhuma oportunidade em 5 ou 6 tem nota do Omie do cliente depois da proposta.</div><button type="button" class="btn btn-secondary btn-sm" data-v361="atualizar">↻ Procurar de novo</button></div>'
+      : '<div style="overflow:auto;max-height:70vh"><table class="v200-tab" id="v361Lista"><thead><tr><th>Conta</th><th>Oportunidade</th><th>Coluna</th><th>Proposta</th><th>Notas do Omie</th><th></th></tr></thead><tbody>' +
+        c.map(function (x) {
+          return '<tr><td>' + E(x.cliente || x.cliente_id) + '</td><td>' + E(x.id) + '<br><small>' + E(x.titulo) + '</small></td>' +
+            '<td>' + E(x.coluna) + ' · ' + E((V200_COLS[x.coluna] || {}).t || '') + '</td><td data-cfx-val="' + E(x.total || 0) + '">' + (rs(x.total) || '—') + '</td><td>' +
+            (x.notas || []).map(function (n) { return '<span class="v361-nt">' + E(tipoDoc(n.tipo)) + ' nº ' + E(n.numero || n.codigo) + ' · ' + E(dia(n.data_fat)) + (rs(n.valor) ? ' · ' + rs(n.valor) : '') + '</span>'; }).join('') +
+            '</td><td><button type="button" class="v361-btn" data-v361="card" data-id="' + E(x.id) + '">Abrir</button></td></tr>';
+        }).join('') + '</tbody></table></div>';
+    var b = document.getElementById('v200ModalBody'); if (b && _v200.modal && _v200.modal.tipo === 'v361lista') b.innerHTML = h;
+  }
+  function abrirLista() {
+    _v200.modal = { tipo: 'v361lista' };
+    _v200Abrir('🧾 Possíveis faturados por fora', '<div class="v200-vazio">⏳ Procurando…</div>');
+    pintarLista();
+    lerCand(true);
+  }
+
+  // ── os embrulhos ──────────────────────────────────────────────────────────────────────────────────────────────
+  V361.orig.pintarCard = _v200PintarCard;
+  // ⚠ SOBRESCREVE _v200PintarCard
+  _v200PintarCard = function () {
+    var r = V361.orig.pintarCard.apply(this, arguments);
+    try {
+      noCard();
+      var M = cardAberto();
+      if (M && V361.auto && V361.auto === M.d.card.id) {   // veio da lista: abre direto no painel
+        V361.auto = '';
+        if (!off() && admin() && !(V361.st && V361.st.id === M.d.card.id && V361.st.aberto) && !M.d.card.fechada_em && !M.d.card.perdida_em) abrir(M, true);
+      }
+    } catch (e) { console.warn('[V361] card:', e); }
+    return r;
+  };
+  V361.orig.pintar = _v200Pintar;
+  // ⚠ SOBRESCREVE _v200Pintar
+  _v200Pintar = function () {
+    var r = V361.orig.pintar.apply(this, arguments);
+    try { faixa(); } catch (e) { console.warn('[V361] faixa:', e); }
+    return r;
+  };
+  V361.orig.carregar = _v200Carregar;
+  // ⚠ SOBRESCREVE _v200Carregar
+  _v200Carregar = async function () {
+    var r = await V361.orig.carregar.apply(this, arguments);
+    try { if (_v200.q && admin() && !off()) lerCand(false); } catch (e) {}
+    return r;
+  };
+})();
+</script>
+<!-- ████ FIM PCM V361 ████ -->
+<!-- ████ INICIO PCM V362 · 🏭 QUADRO DA OFICINA: ROLAGEM POR COLUNA, BARRA DE LADO SEMPRE À VISTA, BUSCA E FILTROS (ProperCare-backlog#227) ████ -->
 <!-- ████ INICIO QUADRO_V1 · quadro de colunas lado a lado: cabe na tela, cada coluna rola sozinha, a repintura não perde a rolagem (ProperCare-backlog#227) ████ -->
 <style id="quadro-v1-css">
 /* QUADRO_V1 (ProperCare-backlog#227) — o quadro de colunas do Padrão de Telas. Marcação que o motor espera:
@@ -116508,8 +116929,8 @@ body.v357-on #qofRaiz .qof-card[data-qof-est="9"]::after,body.v357-on #qofRaiz .
 })();
 </script>
 <!-- ████ FIM FILTRO_OS_V1 ████ -->
-<style id="v361-css">
-/* PCM V361 (ProperCare-backlog#227): o Quadro da Oficina no QUADRO_V1 + a faixa FILTRO_OS_V1. Chave de volta: localStorage pcm_v361 = off */
+<style id="v362-css">
+/* PCM V362 (ProperCare-backlog#227): o Quadro da Oficina no QUADRO_V1 + a faixa FILTRO_OS_V1. Chave de volta: localStorage pcm_v362 = off */
 #qofRaiz .qof-quadro.quadro-v1{--quadro-col:176px;--quadro-recolhida:96px}
 #qofRaiz .qof-col.quadro-v1-col{padding:8px 3px 2px 7px}
 #qofRaiz .quadro-v1-col .qof-col-h,#qofRaiz .quadro-v1-col .qof-col-sub{padding-right:7px}
@@ -116518,9 +116939,9 @@ body.v357-on #qofRaiz .qof-card[data-qof-est="9"]::after,body.v357-on #qofRaiz .
 #qofRaiz .quadro-v1-recolhida .qof-col-h{padding-bottom:8px}
 #qofRaiz .quadro-v1-recolhida .qof-col-h .n{font-weight:700}
 </style>
-<script id="v361Js">
+<script id="v362Js">
 /* ═════════════════════════════════════════════════════════════════════════════════════
-   PCM V361 · ProperCare-backlog#227 — Quadro da Oficina: rolagem por coluna, barra de lado sempre à vista, busca e filtros.
+   PCM V362 · ProperCare-backlog#227 — Quadro da Oficina: rolagem por coluna, barra de lado sempre à vista, busca e filtros.
    · QUADRO_V1 (motor novo, ferramentas/blocos/): o quadro ocupa a altura que sobra da janela (medida), cada coluna rola sozinha com
      o título fixo, e a repintura (a leitura de cada minuto, o filtro, a meta) devolve a rolagem de lado e a de cada coluna.
    · FILTRO_OS_V1 (motor novo; o #228 leva às outras vistas de OS): busca livre (OS, cliente, máquina/série/TAG, técnico), cliente,
@@ -116529,14 +116950,14 @@ body.v357-on #qofRaiz .qof-card[data-qof-est="9"]::after,body.v357-on #qofRaiz .
      O filtro de pessoa de antes (#qofTec) vive na faixa, com o mesmo id.
    · Entrada = data de abertura da OS (lida da lista de OS já carregada; OS sem data não passa no filtro de data e é contada).
    Chamadas: nenhuma nova (tudo sobre o pc_oficina_quadro e a lista de OS que o PCM já tem). Linhas pré-existentes alteradas: as do
-   pintar() do V355 (quem filtra, a faixa, a marcação das colunas e a rolagem) — ver o montar_v361.py.
-   Chave de volta: localStorage pcm_v361 = off (o quadro e o filtro do V355).
+   pintar() do V355 (quem filtra, a faixa, a marcação das colunas e a rolagem) — ver o montar_v362.py.
+   Chave de volta: localStorage pcm_v362 = off (o quadro e o filtro do V355).
    ═════════════════════════════════════════════════════════════════════════════════════ */
 (function () {
   'use strict';
-  if (!window.QOF || QOF.v361) return;
-  QOF.v361 = true;
-  function off() { try { return localStorage.getItem('pcm_v361') === 'off'; } catch (e) { return false; } }
+  if (!window.QOF || QOF.v362) return;
+  QOF.v362 = true;
+  function off() { try { return localStorage.getItem('pcm_v362') === 'off'; } catch (e) { return false; } }
   function T(x) { return String(x == null ? '' : x).trim(); }
   var LIGADO = !off();                                               // a chave vale na carga da página (mudou = recarregar)
   QOF.v1 = function () { return LIGADO && !!window.QUADRO; };
@@ -116615,7 +117036,7 @@ body.v357-on #qofRaiz .qof-card[data-qof-est="9"]::after,body.v357-on #qofRaiz .
   });
 })();
 </script>
-<!-- ████ FIM PCM V361 ████ -->
+<!-- ████ FIM PCM V362 ████ -->
 
 </body>
 </html>
