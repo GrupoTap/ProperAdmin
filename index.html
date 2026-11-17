@@ -5626,9 +5626,19 @@ v50 — Resiliência de rede: retry/backoff em gsGet e syncToGS
   uid). "Nao esta na lista? Digitar o numero" e a excecao: mesmo numero E valor de nota livre liga a ela; de outra ficha ou de um
   "ja faturado por fora" recusa; numero ja digitado noutra ficha recusa; o resto entra com aviso. Sem o SQL: a caixa de antes.
   Chamadas: 1 ao abrir a caixa, 1 ao gravar. Linhas pre-existentes alteradas: nenhuma (so o bloco). Chave: localStorage pcm_v364 = off.
+  PCM V365 — 17/11/2026 — LOCACAO NA + OPORTUNIDADE COM AS MAQUINAS DA FROTA PROPER LOCACAO (ProperCare-backlog#244, parte 1 de 4),
+  sobre o V364 no ar. Par: SQL CRM_LOCACAO_P1_2026-11-17 (cadeia 146; RODA ANTES). Zero GAS.
+  + Oportunidade: a natureza ganha "Locacao" (exclusiva). Marcada, saem maquina do cliente, modelo, "a identificar" e OS; entram
+  Mensal | Diaria (spot), inicio e fim previsto e a lista da FROTA (crm_locacao_frota) com a situacao (livre, locada ate dd/mm, na
+  oficina) e o aviso de outra oportunidade de locacao no mesmo periodo. Valor sugerido pela potencia (CV x R$/CV, editavel). Diaria
+  acima do teto avisa que vira mensal. Cria pela crm_locacao_criar com uid. Card de locacao: selo da natureza, sem cobertura, a caixa
+  "Locacao" (crm_locacao_ler) com "Mudar a locacao" enquanto nao ha proposta (crm_locacao_salvar com versao e uid).
+  Quadro: selo "locacao". Configuracoes do quadro: "Preco da locacao" (so o administrador grava). Sem o SQL: nada muda.
+  Chamadas: + Oportunidade 1 por sessao (precos), 1 por periodo (so com Locacao marcada) e 1 ao criar; card de locacao 1; Configuracoes 1. Linhas
+  pre-existentes alteradas: nenhuma (so o bloco). Chave: localStorage pcm_v365 = off.
 -->
-<title>ProperCare Manager · Gestão PGP v4.03 (PCM V364)</title>
-<meta name="app-build" content="PCM_V364" data-date="2026-11-16">
+<title>ProperCare Manager · Gestão PGP v4.03 (PCM V365)</title>
+<meta name="app-build" content="PCM_V365" data-date="2026-11-17">
 <link rel="icon" type="image/jpeg" href="data:image/jpeg;base64,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">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -117602,6 +117612,629 @@ body.v357-on #qofRaiz .qof-card[data-qof-est="9"]::after,body.v357-on #qofRaiz .
 })();
 </script>
 <!-- ████ FIM PCM V364 ████ -->
+<!-- ████ INICIO PCM V365 · 🚚 LOCAÇÃO NA ＋ OPORTUNIDADE COM AS MÁQUINAS DA FROTA (ProperCare-backlog#244) ████ -->
+<style id="v365-css">
+/* PCM V365 (ProperCare-backlog#244, parte 1): a natureza 🚚 Locação na ＋ Oportunidade, a caixa 🚚 Locação do card e o preço por CV
+   em ⚙ Configurações do quadro. Chave de volta: localStorage pcm_v365 = off */
+.v365-opc{border-style:dashed!important}
+.v365-opc.on{border-style:solid!important;border-color:#175CD3!important;background:#EFF4FF!important}
+.v365-box{border:1px solid #D0D5DD;border-radius:10px;padding:10px 12px;margin:10px 0 4px;background:#FCFCFD}
+.v365-box h5{margin:0 0 8px;font-size:13.5px}
+.v365-seg{display:inline-flex;border:1.5px solid #D0D5DD;border-radius:999px;overflow:hidden}
+.v365-seg button{all:unset;cursor:pointer;padding:6px 14px;font-size:13px;font-weight:600;color:#344054;background:#fff;min-height:20px}
+.v365-seg button+button{border-left:1.5px solid #D0D5DD}
+.v365-seg button[aria-pressed="true"]{background:#175CD3;color:#fff}
+.v365-seg button:hover{background:#EFF4FF}
+.v365-seg button[aria-pressed="true"]:hover{background:#1849A9}
+.v365-seg button:active{background:#DCE7FF}
+.v365-seg button:focus-visible{outline:2px solid #98A2B3;outline-offset:-2px}
+.v365-datas{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;margin:10px 0 4px}
+.v365-datas label{display:flex!important;flex-direction:column;gap:3px;font-size:12px!important;font-weight:600;margin:0!important}
+.v365-datas input[type=date]{width:auto!important;min-width:150px}
+.v365-dias{font-size:12.5px;color:#475467;padding-bottom:8px;font-variant-numeric:tabular-nums}
+.v365-av{font-size:12.5px;border-radius:8px;padding:6px 10px;margin:6px 0;background:#FFF4E0;border:1px solid #F3D9A6;color:#7A4A00}
+.v365-av.er{background:#FEF3F2;border-color:#FECDCA;color:#B42318}
+.v365-av.az{background:#EFF4FF;border-color:#B2CCFF;color:#1849A9}
+.v365-t{font-size:12px;font-weight:700;color:#475467;margin:10px 0 4px;display:flex;gap:8px;align-items:baseline;flex-wrap:wrap}
+.v365-t .v365-min{font-weight:400;color:#667085}
+.v365-min{font-size:11.5px;color:#667085;font-weight:400}
+.v365-busca{width:100%;max-width:340px;margin:0 0 6px}
+.v365-lista{display:flex;flex-direction:column;max-height:300px;overflow:auto;border:1px solid #EAECF0;border-radius:8px;background:#fff}
+.v365-maq{display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:6px 10px;border-top:1px solid #F2F4F7;font-size:12.5px;min-height:34px}
+.v365-maq:first-child{border-top:0}
+.v365-maq.on{background:#F5F8FF;box-shadow:inset 3px 0 0 #175CD3}
+.v365-maq.conf{box-shadow:inset 3px 0 0 #F79009}
+.v365-maq.on.conf{box-shadow:inset 3px 0 0 #F79009;background:#FFFAEB}
+.v365-maq>label{display:flex!important;gap:8px;align-items:center;justify-content:flex-start!important;flex:1 1 300px;margin:0!important;cursor:pointer;font-weight:400!important;font-size:12.5px!important;min-width:0;text-align:left}
+.v365-maq input[type=checkbox]{width:auto!important;flex:none;margin:0!important;height:auto}
+.v365-rot{flex:1 1 auto}
+.v365-maq>label:hover .v365-rot{text-decoration:underline}
+.v365-tag{font-weight:700;font-variant-numeric:tabular-nums;white-space:nowrap}
+.v365-rot{color:#344054;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.v365-cv{color:#475467;white-space:nowrap;font-variant-numeric:tabular-nums}
+.v365-sit{display:inline-block;font-size:11px;font-weight:700;padding:0 7px;border-radius:999px;border:1px solid #ABEFC6;background:#ECFDF3;color:#067647;white-space:nowrap}
+.v365-sit.locada{border-color:#FEDF89;background:#FFFAEB;color:#B54708}
+.v365-sit.oficina{border-color:#D0D5DD;background:#F2F4F7;color:#344054}
+.v365-res{flex-basis:100%;font-size:11.5px;color:#B54708;padding-left:24px}
+.v365-val{display:flex;gap:6px;align-items:center;flex:0 0 auto}
+.v365-val input{width:118px!important;text-align:right;font-variant-numeric:tabular-nums}
+.v365-val .v365-min{white-space:nowrap}
+.v365-val .ruim{border-color:#F04438!important}
+.v365-sug{font-size:11.5px;color:#667085;white-space:nowrap}
+.v365-total{margin:8px 0 0;font-size:13px;font-weight:700;font-variant-numeric:tabular-nums}
+
+.v365-vazio{padding:10px;font-size:12.5px;color:#667085}
+.v365-pe{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+.v365-chipnat{display:inline-flex;align-items:center;gap:6px;border:1.5px solid #175CD3;border-radius:999px;padding:3px 12px;font-size:13px;font-weight:600;background:#EFF4FF;color:#1849A9}
+.v365-tab{width:100%;border-collapse:collapse;font-size:12.5px;margin-top:6px}
+.v365-tab th,.v365-tab td{border-bottom:1px solid #EAECF0;padding:5px 6px;text-align:left;vertical-align:top}
+.v365-tab th{font-size:11.5px;color:#475467;font-weight:700}
+.v365-tab td.n,.v365-tab th.n{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.v365-cfg{border:1px solid #D0D5DD;border-radius:10px;padding:10px 12px;margin:14px 0;background:#fff}
+.v365-cfg h4{margin:0 0 8px}
+.v365-cfg .v365-cfgl{display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end}
+.v365-cfg label{display:flex!important;flex-direction:column;gap:3px;font-size:12px!important;font-weight:600;margin:0!important}
+.v365-cfg input{width:130px!important;text-align:right}
+/* card de locação (a classe fica na janela enquanto ele está aberto): o que é de proposta/aceite/duplicar sai — o banco recusa até a parte 2 */
+#v200Modal.v365-loc [data-v204="montar"],#v200Modal.v365-loc #v284Linha,
+#v200Modal.v365-loc .v200-acoes [data-v200="form"][data-k="aceite"],#v200Modal.v365-loc .v200-acoes [data-v200="form"][data-k="orcamento"],
+#v200Modal.v365-loc .v200-acoes [data-v200="form"][data-k="pedido"]{display:none!important}
+#v200Modal.v365-loc #v204Sec::after{content:"A proposta de locação ainda não está disponível — os valores ficam na caixa 🚚 Locação, no Resumo.";display:block;margin-top:6px;font-size:12.5px;color:#1849A9;background:#EFF4FF;border:1px solid #B2CCFF;border-radius:8px;padding:6px 10px}
+</style>
+<script id="v365Js">
+/* ═════════════════════════════════════════════════════════════════════════════════════════════════════════════
+   PCM V365 · ProperCare-backlog#244 (parte 1 de 4) — 🚚 Locação na ＋ Oportunidade com as máquinas da frota Proper Locação.
+   · ＋ Oportunidade: a natureza ganha "🚚 Locação" (exclusiva). Marcada, saem máquina do cliente, modelo, 🔎 e OS; entram Mensal |
+     Diária (spot), início e fim previsto, e a lista da FROTA (crm_locacao_frota) com a situação de cada máquina (livre · locada até
+     dd/mm · na oficina) e o aviso quando ela já está noutra oportunidade de locação no mesmo período. O valor vem sugerido pela
+     potência (CV × R$/CV mês ou dia, parâmetros do banco) e é editável (texto pt-BR com prévia). Diária com mais diárias que o teto
+     avisa que vira mensal (o banco grava assim). Cria pela crm_locacao_criar com uid (o transporte repete o POST).
+   · Card de locação: a natureza vira o selo 🚚 Locação; cobertura e máquina do cliente saem; a caixa "🚚 Locação" mostra modalidade,
+     período, máquinas (situação de hoje) e o total; "✏ Mudar a locação" edita enquanto não há proposta (crm_locacao_salvar com a
+     versão lida e uid). Quadro: o selo "🚚 locação".
+   · ⚙ Configurações do quadro: "🚚 Preço da locação" (R$/CV mês, R$/CV dia, diárias até virar mensal) — só o administrador grava.
+   · Sem o SQL do #244 (a frota responde 404): a natureza Locação não aparece; nada mais muda.
+   · Chamadas: ＋ Oportunidade 1 por sessão (os preços: diz se o SQL existe), 1 por período com Locação marcada (frota) e 1 ao criar · card de locação: 1 (ler) ·
+     Configurações: 1. Encaixe: embrulho por nome global de _v200PintarNova/_v200CriarOportunidade/_v200PintarCard/_v200AcaoCard/
+     _v200Chips/_v200PintarConfig, por FORA dos blocos de antes (este bloco é o último). O Salvar do card é o de antes (sem as
+     caixinhas da natureza ele manda natureza vazia = mantém); a marca da janela se acerta a cada pintura de card.
+   ═════════════════════════════════════════════════════════════════════════════════════════════════════════════ */
+(function () {
+  'use strict';
+  if (window.V365) return;
+  var V365 = window.V365 = { versao: 'V365', orig: {}, semSql: false, cfg: null, cfgVoo: false, cfgErro: '', frota: {}, card: {}, voo: {} };
+  function off() { try { return localStorage.getItem('pcm_v365') === 'off'; } catch (e) { return false; } }
+  function S(v) { return String(v == null ? '' : v); }
+  function T(v) { return S(v).replace(/\s+/g, ' ').trim(); }
+  function E(v) { return S(v).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;'); }
+  function N(s) { return S(s).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').trim(); }
+  function brl(v) { var n = Number(v || 0); return n.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }); }
+  function num2(v) { var n = Number(v || 0); return n.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
+  function ehLoc(o) { return !!(o && Array.isArray(o.naturezas) && o.naturezas.length === 1 && o.naturezas[0] === 'locacao'); }
+  function novoUid() { return 'v365-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 10); }
+  function hojeIso() { var d = new Date(), f = new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Sao_Paulo', year: 'numeric', month: '2-digit', day: '2-digit' }); return f.format(d); }
+  function dataBr(iso) { var m = /^(\d{4})-(\d{2})-(\d{2})/.exec(S(iso)); return m ? m[3] + '/' + m[2] + '/' + m[1] : ''; }
+  function diasEntre(a, b) { var x = Date.parse(S(a) + 'T12:00:00Z'), y = Date.parse(S(b) + 'T12:00:00Z'); return isNaN(x) || isNaN(y) ? null : Math.round((y - x) / 864e5) + 1; }
+  // dinheiro digitado em pt-BR (regras/telas.md: texto com parse e prévia): 3.500 = três mil e quinhentos; 3.500,50; 3500; 3500.5
+  function parseValor(s) {
+    s = T(s).replace(/^R\$\s*/i, '').replace(/\s/g, '');
+    if (!s) return null;
+    if (!/^[\d.,]+$/.test(s)) return NaN;
+    var v;
+    if (s.indexOf(',') >= 0) {
+      if (!/^(\d{1,3}(\.\d{3})+|\d+)(,\d{1,2})?$/.test(s)) return NaN;
+      v = Number(s.replace(/\./g, '').replace(',', '.'));
+    } else if (/^\d{1,3}(\.\d{3})+$/.test(s)) v = Number(s.replace(/\./g, ''));
+    else if (/^\d+(\.\d{1,2})?$/.test(s)) v = Number(s);
+    else return NaN;
+    return Math.round(v * 100) / 100;
+  }
+  function falha(e) { return (e && e.message) || 'Não consegui.'; }
+  async function rpc(fn, args, escrita) {
+    try { return await _v200Rpc(fn, args || {}, escrita); }
+    catch (e) {
+      if (e && e.v200 === 'sem_sql' && /^crm_locacao/.test(fn)) { V365.semSql = true; console.warn('[V365] ' + fn + ' não existe no banco (SQL do #244 não rodou) — a locação não aparece'); }
+      throw e;
+    }
+  }
+
+  // ═══ 1 · o estado de um formulário de locação (o da ＋ Oportunidade e o do "Mudar" no card usam o MESMO) ═════════════════
+  function novoForm(ctx, base) {
+    var F = { ctx: ctx, mod: 'mensal', ini: hojeIso(), fim: '', sel: {}, ordem: [], busca: '', uid: '', versao: null, card: null, criando: false };
+    if (base) {
+      F.mod = base.modalidade || 'mensal'; F.ini = S(base.inicio).slice(0, 10) || hojeIso(); F.fim = S(base.fim || '').slice(0, 10);
+      F.versao = base.versao; F.card = base.id;
+      (base.maquinas || []).forEach(function (m) { F.sel[m.id] = num2(m.valor).replace(/\s/g, ''); F.ordem.push(m.id); });
+    }
+    return F;
+  }
+  function chaveFrota(F) { return (F.card || '') + '|' + F.ini + '|' + (F.fim || ''); }
+  function frotaDe(F) { return V365.frota[chaveFrota(F)] || null; }
+  function cfgDe(F) { var fr = frotaDe(F); return (fr && fr.cfg) || V365.cfg || { diarias_max: 10 }; }   // os preços vêm do banco (nunca escritos aqui)
+  function lerFrota(F, repintar) {
+    var k = chaveFrota(F);
+    if (V365.frota[k] || V365.voo[k]) return;
+    V365.voo[k] = true;
+    rpc('crm_locacao_frota', { p_inicio: F.ini || null, p_fim: F.fim || null, p_oportunidade: F.card || null }, false).then(function (r) {
+      V365.frota[k] = r || { ok: false, motivo: 'O banco não respondeu a frota.' };
+    }, function (e) {
+      V365.frota[k] = { ok: false, motivo: falha(e) };
+    }).then(function () {
+      V365.voo[k] = false;
+      if (V365.semSql) { var M = _v200.modal; if (M && M.tipo === 'nova' && M.v365) { M.v365 = null; try { _v200PintarNova(); } catch (e) {} } return; }
+      try { repintar(); } catch (e) { console.warn('[V365] repintar:', e); }
+    });
+  }
+  function dias(F) { return F.fim ? diasEntre(F.ini, F.fim) : null; }
+  function vaiVirarMensal(F) { var d = dias(F); return F.mod === 'diaria' && d != null && d > Number(cfgDe(F).diarias_max || 10); }
+  function sugerido(F, m) { return F.mod === 'mensal' ? m.sugerido_mensal : m.sugerido_diaria; }
+  function maqDe(F, id) { var fr = frotaDe(F); return ((fr && fr.maquinas) || []).find(function (m) { return m.id === id; }) || null; }
+  function valorDe(F, id) { var t = F.sel[id], m = maqDe(F, id); if (T(t)) return parseValor(t); return m && sugerido(F, m) != null ? Number(sugerido(F, m)) : null; }
+  function total(F) {
+    var s = 0, ok = true;
+    F.ordem.forEach(function (id) { var v = valorDe(F, id); if (v == null || isNaN(v)) ok = false; else s += v; });
+    return ok ? Math.round(s * 100) / 100 : null;
+  }
+  function sitHtml(m) {
+    if (m.situacao === 'locada') return '<span class="v365-sit locada" title="' + E(m.com ? 'Com ' + m.com : '') + '">locada' + (m.ate ? ' até ' + E(dataBr(m.ate)) : ' sem data de volta') + '</span>';
+    if (m.situacao === 'oficina') return '<span class="v365-sit oficina" title="' + E(m.os_oficina ? 'OS ' + m.os_oficina : '') + '">na oficina</span>';
+    return '<span class="v365-sit">livre</span>';
+  }
+  function resHtml(m) {
+    var r = m.reservas || [];
+    if (r.length) return '<div class="v365-res">⚠ também na ' + E(r[0].oportunidade_id) + ' (' + E(r[0].cliente) + ')' + (r.length > 1 ? ' e em mais ' + (r.length - 1) : '') + ' no mesmo período</div>';
+    if (m.conflito && m.situacao === 'locada') return '<div class="v365-res">⚠ locada' + (m.com ? ' com ' + E(m.com) : '') + (m.ate ? ' até ' + E(dataBr(m.ate)) : ', sem data de devolução') + ' — confira a data de início</div>';
+    return '';
+  }
+
+  // o formulário (ids com o contexto: n = ＋ Oportunidade, c = card)
+  function formHtml(F) {
+    var c = F.ctx, fr = frotaDe(F), cfg = cfgDe(F), d = dias(F);
+    var h = '<div class="v365-seg" role="group" aria-label="Modalidade da locação">' +
+      '<button type="button" data-v365="mod" data-ctx="' + c + '" data-k="mensal" aria-pressed="' + (F.mod === 'mensal') + '">Mensal</button>' +
+      '<button type="button" data-v365="mod" data-ctx="' + c + '" data-k="diaria" aria-pressed="' + (F.mod === 'diaria') + '">Diária (spot)</button></div>';
+    h += '<div class="v365-datas"><label for="v365' + c + 'Ini">Início *<input type="date" id="v365' + c + 'Ini" data-v365c="ini" data-ctx="' + c + '" value="' + E(F.ini) + '"></label>' +
+      '<label for="v365' + c + 'Fim">Fim previsto' + (F.mod === 'diaria' ? ' *' : '') + '<input type="date" id="v365' + c + 'Fim" data-v365c="fim" data-ctx="' + c + '" value="' + E(F.fim) + '"' + (F.ini ? ' min="' + E(F.ini) + '"' : '') + '></label>' +
+      '<span class="v365-dias" id="v365' + c + 'Dias">' + diasTxt(F) + '</span></div>';
+    h += '<div id="v365' + c + 'Conv">' + convHtml(F) + '</div>';
+    h += '<div class="v365-t">Máquinas da frota' + (cfg.cv_mensal != null ? ' <span class="v365-min">sugestão: R$ ' + E(num2(cfg.cv_mensal)) + '/CV por mês · R$ ' + E(num2(cfg.cv_diaria)) + '/CV por dia</span>' : '') + '</div>';
+    if (!fr) return h + '<div class="v365-lista"><div class="v365-vazio">⏳ Lendo a frota…</div></div>';
+    if (!fr.ok) return h + '<div class="v365-av er">' + E(fr.motivo || 'Não consegui ler a frota.') + ' <button type="button" class="btn btn-secondary btn-sm" data-v365="relerFrota" data-ctx="' + c + '">Tentar de novo</button></div>';
+    var maqs = fr.maquinas || [];
+    if (!maqs.length) return h + '<div class="v365-lista"><div class="v365-vazio"><b>Nenhuma máquina na frota.</b> Cadastre as máquinas em nome da Proper Locação (Placas da frota).</div></div>';
+    h += '<input type="text" class="v365-busca" id="v365' + c + 'Busca" data-v365c="busca" data-ctx="' + c + '" value="' + E(F.busca) + '" placeholder="Filtrar: TAG, marca, modelo, série" readonly onfocus="this.removeAttribute(\'readonly\')" autocomplete="off" name="v365_busca_' + c + '_nofill" data-lpignore="true" data-1p-ignore>';
+    h += '<div class="v365-lista" id="v365' + c + 'Lista">' + listaHtml(F) + '</div>';
+    h += '<div class="v365-total" id="v365' + c + 'Total">' + totalTxt(F) + '</div>';
+    return h;
+  }
+  function listaHtml(F) {
+    var fr = frotaDe(F), c = F.ctx, b = N(F.busca), uma = F.mod === 'mensal' ? '/mês' : '/dia';
+    var maqs = ((fr && fr.maquinas) || []).filter(function (m) {
+      return F.sel[m.id] !== undefined || !b || N([m.tag, m.marca, m.modelo, m.serie, m.tipo_equip].join(' ')).indexOf(b) >= 0;
+    });
+    if (!maqs.length) return '<div class="v365-vazio">Nenhuma máquina com "' + E(F.busca) + '".</div>';
+    return maqs.map(function (m) {
+      var on = F.sel[m.id] !== undefined, sug = sugerido(F, m), v = on ? F.sel[m.id] : '', pv = parseValor(v);
+      var h = '<div class="v365-maq' + (on ? ' on' : '') + (m.conflito ? ' conf' : '') + '" data-id="' + E(m.id) + '">' +
+        '<label><input type="checkbox" data-v365c="maq" data-ctx="' + c + '" value="' + E(m.id) + '"' + (on ? ' checked' : '') + '>' +
+        '<span class="v365-tag">' + E(m.tag || '(sem TAG)') + '</span><span class="v365-rot">' + E([m.marca, m.modelo].filter(Boolean).join(' ')) + (m.serie ? ' · ' + E(m.serie) : '') + '</span>' +
+        '<span class="v365-cv">' + (m.cv != null ? E(num2(m.cv).replace(/,00$/, '')) + ' CV' : '<span title="Sem potência no cadastro: sem sugestão de valor">sem CV</span>') + '</span>' + sitHtml(m) + '</label>';
+      if (on) {
+        h += '<span class="v365-val"><input type="text" inputmode="decimal" data-v365c="val" data-ctx="' + c + '" data-id="' + E(m.id) + '" id="v365' + c + 'Val_' + E(m.id) + '" value="' + E(v) + '"' +
+          ' placeholder="' + (sug != null ? E(num2(sug)) : 'valor') + '" maxlength="16" autocomplete="off" aria-label="Valor ' + E(uma) + ' de ' + E(m.tag || m.id) + '"' + (isNaN(pv) ? ' class="ruim"' : '') + '>' +
+          '<span class="v365-min">' + uma + '</span></span><span class="v365-sug">' + (sug != null ? 'sugerido ' + E(brl(sug)) : 'sem sugestão: informe o valor') + '</span>';
+      }
+      return h + resHtml(m) + '</div>';
+    }).join('');
+  }
+  function diasTxt(F) {
+    var d = dias(F);
+    if (F.mod === 'diaria') return d ? d + (d === 1 ? ' diária' : ' diárias') : 'informe o fim (conta as diárias)';
+    return d ? d + ' dias' : 'sem fim definido';
+  }
+  function convHtml(F) {
+    if (!vaiVirarMensal(F)) return '';
+    var mx = Number(cfgDe(F).diarias_max || 10);
+    return '<div class="v365-av az">São ' + dias(F) + ' diárias — passa de ' + mx + ': a locação fica <b>MENSAL</b> (valor mensal = diária × ' + mx + ').</div>';
+  }
+  function totalTxt(F) {
+    var n = F.ordem.length; if (!n) return '<span class="v365-min">Marque as máquinas da locação.</span>';
+    var t = total(F); if (t == null) return '<span class="v365-min">' + n + ' máquina(s) — confira os valores.</span>';
+    var d = dias(F), mx = Number(cfgDe(F).diarias_max || 10);
+    if (F.mod === 'mensal') return 'Total: ' + E(brl(t)) + ' por mês <span class="v365-min">· ' + n + ' máquina(s)</span>';
+    if (vaiVirarMensal(F)) return 'Total: ' + E(brl(t * mx)) + ' por mês <span class="v365-min">· ' + n + ' máquina(s) · diária × ' + mx + '</span>';
+    return 'Total: ' + E(brl(t)) + ' por dia' + (d ? ' × ' + d + ' = ' + E(brl(t * d)) : '') + ' <span class="v365-min">· ' + n + ' máquina(s)</span>';
+  }
+  // a parte que muda com o digitado sem repintar a lista (o campo em foco fica)
+  function atualizarResumo(F) {
+    var c = F.ctx, a = document.getElementById('v365' + c + 'Total'), b = document.getElementById('v365' + c + 'Dias'), cv = document.getElementById('v365' + c + 'Conv');
+    if (a) a.innerHTML = totalTxt(F);
+    if (b) b.innerHTML = diasTxt(F);
+    if (cv) cv.innerHTML = convHtml(F);
+  }
+  // confere o que dá para conferir antes do banco (o banco confere tudo de novo)
+  function validar(F) {
+    if (!F.ini) return { erro: 'Informe a data de início da locação.', campo: 'v365' + F.ctx + 'Ini' };
+    if (F.fim && F.fim < F.ini) return { erro: 'O fim previsto é antes do início.', campo: 'v365' + F.ctx + 'Fim' };
+    if (F.mod === 'diaria' && !F.fim) return { erro: 'Na diária, informe o fim previsto (é ele que conta as diárias).', campo: 'v365' + F.ctx + 'Fim' };
+    if (!F.ordem.length) return { erro: 'Marque ao menos uma máquina da frota.' };
+    var fr = frotaDe(F); if (!fr || !fr.ok) return { erro: 'Aguarde a lista da frota carregar (o período mudou).' };
+    var maqs = [];
+    for (var i = 0; i < F.ordem.length; i++) {
+      var id = F.ordem[i], m = maqDe(F, id) || { id: id }, t = F.sel[id], v = parseValor(t);
+      if (isNaN(v)) return { erro: 'Não entendi o valor de ' + (m.tag || id) + ': use 3.500 (três mil e quinhentos) ou 3.500,50.', campo: 'v365' + F.ctx + 'Val_' + id };
+      if (v !== null && !(v > 0)) return { erro: 'O valor de ' + (m.tag || id) + ' tem de ser maior que zero.', campo: 'v365' + F.ctx + 'Val_' + id };
+      if (v === null && sugerido(F, m) == null) return { erro: (m.tag || id) + ' não tem potência no cadastro: informe o valor.', campo: 'v365' + F.ctx + 'Val_' + id };
+      maqs.push(v === null ? { id: id } : { id: id, valor: v });
+    }
+    return { p: { modalidade: F.mod, inicio: F.ini, fim: F.fim || null, maquinas: maqs } };
+  }
+  function focar(id) { if (!id) return; var f = document.getElementById(id); if (f) { f.removeAttribute('readonly'); try { f.focus(); } catch (e) {} } }
+  function avisar(r) { var av = (r && r.avisos) || []; if (av.length) { try { toast('Atenção: ' + av.join(' · '), 'warning'); } catch (e) {} } }
+
+  // ═══ 2 · ＋ OPORTUNIDADE ═══════════════════════════════════════════════════════════════════════════════════════════════
+  function formNova() { var M = _v200.modal; return M && M.tipo === 'nova' && M.v365 ? M.v365 : null; }
+  function repintarSecao(F) {
+    var id = F.ctx === 'n' ? 'v365Nova' : 'v365CardEd', box = document.getElementById(id); if (!box) return;
+    var a = document.activeElement, foco = a && box.contains(a) && a.id ? a.id : '', p = null;
+    try { if (foco && a.selectionStart != null) p = a.selectionStart; } catch (e) {}
+    var corpo = box.querySelector('.v365-corpo'); if (!corpo) return;
+    corpo.innerHTML = formHtml(F);
+    if (foco) { var n = document.getElementById(foco); if (n) { n.removeAttribute('readonly'); try { n.focus({ preventScroll: true }); if (p != null) n.setSelectionRange(p, p); } catch (e) {} } }
+  }
+  function decorarNova(M) {
+    if (V365.semSql) { if (M.v365) { M.v365 = null; } return; }
+    var body = document.getElementById('v200ModalBody'); if (!body) return;
+    if (!V365.cfg) { if (Date.now() - (V365.cfgFalhouEm || 0) > 60000) lerCfg(false); return; }   // 1 leitura por sessão: sem o SQL do #244 (ou sem resposta) a Locação não aparece
+    var F = M.v365;
+    var grupo = body.querySelector('[data-v214grupo="v214NvNat"]');
+    if (!F) {
+      var OPC = '<label class="v214-nat v365-opc"><input type="checkbox" data-v365="loc"> 🚚 Locação</label>';
+      if (grupo) { if (!grupo.querySelector('[data-v365="loc"]')) grupo.insertAdjacentHTML('beforeend', OPC); return; }
+      // natureza no seletor antigo (o V214 ainda não ligou — ex.: aberta pelo Início antes do quadro): a opção ao lado dele
+      var sel = document.getElementById('v200NvNat');
+      if (sel && !body.querySelector('[data-v365="loc"]')) sel.insertAdjacentHTML('afterend', '<div class="v214-nats" style="margin-top:6px">' + OPC + '</div>');
+      return;
+    }
+    // modo locação: do título para baixo, a locação (máquina do cliente, modelo, 🔎, OS e a natureza de antes saem)
+    var tit = document.getElementById('v200NvTit'); if (!tit) return;
+    var form = tit.parentNode, ancora = tit;
+    var v293 = document.getElementById('v293Nova');
+    if (v293 && v293.parentNode === form && v293.previousElementSibling === tit) {
+      ancora = v293;
+      var lin = v293.querySelector('#v293NvVal'); if (lin && lin.closest('.v293-lin')) lin.closest('.v293-lin').style.display = 'none';   // o valor é o total da locação
+    }
+    while (ancora.nextSibling) form.removeChild(ancora.nextSibling);
+    var conta = (_v200.contas || []).find(function (c) { return c.cliente_id === M.cli; }) || {};
+    var fr = frotaDe(F), daFrota = fr && fr.frota_id && fr.frota_id === M.cli;
+    var h = '<label>Natureza</label><div class="v214-nats" data-v365grupo="1">' +
+      '<label class="v214-nat"><input type="checkbox" data-v365="nat" data-k="servico"> Serviço</label>' +
+      '<label class="v214-nat"><input type="checkbox" data-v365="nat" data-k="peca"> Peça</label>' +
+      '<label class="v214-nat v365-opc on"><input type="checkbox" data-v365="nat" data-k="locacao" checked> 🚚 Locação</label></div>' +
+      '<div class="v365-box" id="v365Nova"><h5>🚚 Locação — máquinas da frota Proper Locação</h5>' +
+      (daFrota ? '<div class="v365-av er">A Proper Locação é a dona da frota: escolha a conta do cliente que recebe a máquina.</div>' : '') +
+      '<div class="v365-corpo">' + formHtml(F) + '</div></div>' +
+      '<label>Dono</label>' + _v200SelectUsu('v365Dono', F.dono != null ? F.dono : (conta.dono_id || ''), false).replace('— sem dono (vai para o dono padrão)', '— o dono da conta') +
+      '<div style="margin-top:12px"><button type="button" class="btn btn-primary btn-sm" data-v365="criar">Criar oportunidade de locação</button></div>';
+    form.insertAdjacentHTML('beforeend', h);
+    lerFrota(F, function () { if (formNova() === F) repintarSecao(F); });
+  }
+  async function criar(btn) {
+    var M = _v200.modal, F = formNova(); if (!F || !M.cli || F.criando) return;
+    var tit = _v200Val('v200NvTit'); if (tit.length < 3) { toast('Escreva o título (3 letras ou mais).', 'error'); focar('v200NvTit'); return; }
+    var v = validar(F); if (v.erro) { toast(v.erro, 'error'); focar(v.campo); return; }
+    var st = M.v293n || null, orig = st && st.orig ? st.orig : null;
+    if (!F.uid) F.uid = novoUid();
+    var p = Object.assign({ uid: F.uid, cliente: M.cli, titulo: tit, dono: _v200Val('v365Dono') || null }, v.p);
+    F.criando = true; if (btn) btn.setAttribute('data-pcm-enviando', '1');
+    try {
+      var r = await rpc('crm_locacao_criar', { p: p }, true);
+      if (!r || !r.id) throw new Error('o banco não devolveu o número da oportunidade — confira o quadro antes de criar de novo.');
+      F.uid = '';
+      var L = r.locacao || {};
+      toast('Oportunidade ' + r.id + (r.repetido ? ' (já estava criada)' : ' criada') + ' — locação ' + (r.modalidade === 'diaria' ? 'diária' : 'mensal') + ', ' + ((L.maquinas || []).length || F.ordem.length) + ' máquina(s).', 'success');
+      avisar(r);
+      V365.card[r.id] = Object.assign({ ok: true, locacao: true }, L);
+      if (orig && !r.repetido) {   // "de onde veio" (V293) grava depois de o card nascer — o valor estimado é o total da locação
+        var tot = Number(L.total || 0);
+        rpc('crm_negocio_gravar', { p_card: r.id, p_origem: orig, p_valor: tot > 0 ? (r.modalidade === 'diaria' ? tot * (Number(L.dias) || 1) : tot) : null, p_versao: 'novo' }, true)
+          .catch(function (e) { toast('O card ' + r.id + ' foi criado, mas "de onde veio" não gravou (' + falha(e) + '). Abra a oportunidade e salve no Resumo.', 'warning'); });
+      }
+      V365.frota = {};
+      _v200Fechar(); await _v200Carregar();
+      _v200AbrirCard(r.id);
+    } catch (e) {
+      toast(falha(e), 'error');
+    } finally {
+      F.criando = false; if (btn) btn.removeAttribute('data-pcm-enviando');
+    }
+  }
+  if (typeof _v200PintarNova === 'function') {
+    V365.orig.pintarNova = _v200PintarNova;
+    _v200PintarNova = function () {
+      var r = V365.orig.pintarNova.apply(this, arguments);
+      try { var M = _v200.modal; if (!off() && M && M.tipo === 'nova' && M.cli) decorarNova(M); } catch (e) { console.warn('[V365] ＋ Oportunidade:', e); }
+      return r;
+    };
+  }
+  if (typeof _v200CriarOportunidade === 'function') {
+    V365.orig.criar = _v200CriarOportunidade;
+    _v200CriarOportunidade = async function () {
+      if (!off() && formNova()) return criar(document.querySelector('#v200ModalBody [data-v365="criar"]'));   // o Enter/atalho de antes cai aqui
+      return V365.orig.criar.apply(this, arguments);
+    };
+  }
+
+  // ═══ 3 · O CARD DE LOCAÇÃO ═════════════════════════════════════════════════════════════════════════════════════════
+  function lerCard(id, forcar) {
+    if (V365.voo['card:' + id]) return;
+    if (!forcar && V365.card[id] && Date.now() - (V365.card[id].__em || 0) < 30000) return;   // situação e reservas são "de hoje": relê depois de 30 s
+    V365.voo['card:' + id] = true;
+    rpc('crm_locacao_ler', { p_id: id }, false).then(function (r) { V365.card[id] = r || { ok: false }; V365.card[id].__em = Date.now(); },
+      function (e) { V365.card[id] = { ok: false, erro: falha(e) }; })
+      .then(function () {
+        V365.voo['card:' + id] = false;
+        var M = _v200.modal; if (M && M.tipo === 'card' && M.d && M.d.card && M.d.card.id === id && !M.v365e) { var bx = document.getElementById('v365Card'); if (bx) bx.__v365 = ''; pintarCaixa(M); }
+      });
+  }
+  function caixaHtml(M) {
+    var o = M.d.card, L = V365.card[o.id], F = M.v365e;
+    var h = '<h5>🚚 Locação</h5>';
+    if (!L) return h + '<div class="v365-vazio">⏳ Lendo a locação…</div>';
+    if (L.erro) return h + '<div class="v365-av er">' + E(L.erro) + '</div>';
+    if (!L.locacao) return h + '<div class="v365-av er">Esta oportunidade de locação não tem os dados da locação — avise o administrador.</div>';
+    if (F) return h + '<div id="v365CardEd"><div class="v365-corpo">' + formHtml(F) + '</div></div><div class="v365-pe"><button type="button" class="btn btn-primary btn-sm" data-v365="salvarLoc">Salvar a locação</button>' +
+      '<button type="button" class="btn btn-secondary btn-sm" data-v365="cancelarLoc">Cancelar</button></div>';
+    var mx = L.cfg && L.cfg.diarias_max, uma = L.modalidade === 'mensal' ? '/mês' : '/dia';
+    h += '<div><b>' + (L.modalidade === 'mensal' ? 'Mensal' : 'Diária (spot)') + '</b> · de ' + E(dataBr(L.inicio)) + (L.fim ? ' a ' + E(dataBr(L.fim)) + ' (' + L.dias + (L.modalidade === 'diaria' ? ' diárias' : ' dias') + ')' : ' · sem fim definido') + '</div>';
+    h += '<table class="v365-tab" data-cfx-off="1"><thead><tr><th>Máquina</th><th>Situação hoje</th><th class="n">Valor' + uma + '</th></tr></thead><tbody>' +
+      (L.maquinas || []).map(function (m) {
+        return '<tr><td><b>' + E(m.tag || m.id) + '</b> ' + E([m.marca, m.modelo].filter(Boolean).join(' ')) + (m.cv != null ? ' · ' + E(num2(m.cv).replace(/,00$/, '')) + ' CV' : '') + resHtml(m).replace('class="v365-res"', 'class="v365-res" style="padding-left:0"') + '</td>' +
+          '<td>' + sitHtml(m) + '</td><td class="n">' + E(brl(m.valor)) + (m.valor_sugerido != null && Number(m.valor_sugerido) !== Number(m.valor) ? '<br><span class="v365-min">sugerido ' + E(brl(m.valor_sugerido)) + '</span>' : '') + '</td></tr>';
+      }).join('') + '</tbody></table>';
+    var t = Number(L.total || 0);
+    h += '<div class="v365-total">Total: ' + E(brl(t)) + (L.modalidade === 'mensal' ? ' por mês' : ' por dia' + (L.dias ? ' × ' + L.dias + ' = ' + E(brl(t * L.dias)) : '')) + '</div>';
+    if (L.editavel) h += '<div class="v365-pe"><button type="button" class="btn btn-secondary btn-sm" data-v365="mudarLoc">✏ Mudar a locação</button></div>';
+    else if (L.aberta && L.tem_proposta) h += '<div class="v365-sub" style="font-size:12px;color:#667085;margin-top:6px">Com proposta: muda pela proposta.</div>';
+    void mx;
+    return h;
+  }
+  function pintarCaixa(M) {
+    var body = document.getElementById('v200ModalBody'); if (!body) return;
+    var bx = document.getElementById('v365Card');
+    if (!bx) {
+      var ancora = document.getElementById('v288Res') || body.querySelector('.v200-grid'); if (!ancora || !body.contains(ancora)) return;
+      bx = document.createElement('div'); bx.id = 'v365Card'; bx.className = 'v365-box';
+      ancora.insertAdjacentElement('afterend', bx);
+    }
+    var F = M.v365e;
+    var a = document.activeElement, foco = a && bx.contains(a) && a.id ? a.id : '';
+    var h = caixaHtml(M);
+    if (bx.__v365 === h) return;
+    bx.innerHTML = h; bx.__v365 = h;
+    if (foco) { var n = document.getElementById(foco); if (n) { try { n.focus({ preventScroll: true }); } catch (e) {} } }
+    if (F) lerFrota(F, function () { var M2 = _v200.modal; if (M2 === M && M.v365e === F) { bx.__v365 = ''; pintarCaixa(M); } });
+  }
+  function celulaDe(body, rotulo) {
+    var ls = body.querySelectorAll('.v200-grid > div');
+    for (var i = 0; i < ls.length - 1; i += 1) if (T(ls[i].textContent) === rotulo && ls[i].nextElementSibling) return [ls[i], ls[i].nextElementSibling];
+    return null;
+  }
+  function marcarJanela(loc) { var j = document.getElementById('v200Modal'); if (j) j.classList.toggle('v365-loc', !!loc); }
+  function decorarCard(M) {
+    var o = M.d && M.d.card; marcarJanela(ehLoc(o)); if (!ehLoc(o)) return;
+    var body = document.getElementById('v200ModalBody'); if (!body) return;
+    // natureza: o selo (nada de marcar serviço/peça num card de locação — o banco recusa)
+    var g = body.querySelector('[data-v214grupo="v214Nat"]') || document.getElementById('v200Nat');
+    if (g) {
+      var dica = g.nextElementSibling;
+      if (dica && dica.classList.contains('v200-sub') && /Pode marcar os dois/.test(dica.textContent)) dica.remove();
+      g.outerHTML = '<span class="v365-chipnat" id="v365Nat">🚚 Locação</span>';
+    }
+    var cob = celulaDe(body, 'Cobertura'); if (cob) { cob[0].hidden = true; cob[1].hidden = true; }
+    var mq = celulaDe(body, 'Máquinas'); if (mq) mq[1].innerHTML = '<span style="color:#475467">da frota — na caixa 🚚 Locação abaixo</span>';
+    var sv = body.querySelector('[data-v200="salvarCard"]'); if (sv) sv.textContent = 'Salvar dono';
+    pintarCaixa(M);
+    lerCard(o.id);
+  }
+  if (typeof _v200PintarCard === 'function') {
+    V365.orig.pintarCard = _v200PintarCard;
+    _v200PintarCard = function () {
+      var r = V365.orig.pintarCard.apply(this, arguments);
+      try { var M = _v200.modal; if (!off() && M && M.tipo === 'card') decorarCard(M); } catch (e) { console.warn('[V365] card:', e); }
+      return r;
+    };
+  }
+  async function salvarLoc(btn) {
+    var M = _v200.modal, F = M && M.v365e; if (!F || F.criando) return;
+    var v = validar(F); if (v.erro) { toast(v.erro, 'error'); focar(v.campo); return; }
+    if (!F.uid) F.uid = novoUid();
+    F.criando = true; if (btn) btn.setAttribute('data-pcm-enviando', '1');
+    try {
+      var r = await rpc('crm_locacao_salvar', { p_id: F.card, p: Object.assign({ uid: F.uid, versao: F.versao }, v.p) }, true);
+      F.uid = '';
+      V365.card[F.card] = Object.assign({ ok: true, locacao: true }, (r && r.locacao) || {});
+      toast('Locação salva' + (r && r.repetido ? ' (já estava gravada)' : '') + (r && r.convertida ? ' — virou MENSAL' : '') + '.', 'success');
+      avisar(r);
+      V365.frota = {};
+      if (_v200.modal === M) { M.v365e = null; var bx = document.getElementById('v365Card'); if (bx) bx.__v365 = ''; pintarCaixa(M); }
+    } catch (e) {
+      toast(falha(e), 'error');
+      if (/outra pessoa mudou/.test(falha(e))) lerCard(F.card, true);
+    } finally {
+      F.criando = false; if (btn) btn.removeAttribute('data-pcm-enviando');
+    }
+  }
+
+  // ═══ 4 · O QUADRO: o selo ═══════════════════════════════════════════════════════════════════════════════════════════
+  if (typeof _v200Chips === 'function') {
+    V365.orig.chips = _v200Chips;
+    _v200Chips = function (c) {
+      var h = V365.orig.chips.apply(this, arguments);
+      try { if (!off() && ehLoc(c)) return '<span class="v200-chip v365-chip">🚚 locação</span>' + h; } catch (e) {}
+      return h;
+    };
+  }
+
+  // ═══ 5 · ⚙ CONFIGURAÇÕES DO QUADRO: o preço da locação ════════════════════════════════════════════════════════════════
+  function cfgHtml() {
+    var c = V365.cfg;
+    var h = '<h4>🚚 Preço da locação</h4>';
+    if (!c) return h + (V365.cfgErro ? '<div class="v365-av er">' + E(V365.cfgErro) + '</div>' : '<div class="v365-vazio">⏳ Lendo…</div>');
+    var dis = c.pode_editar ? '' : ' disabled', dg = V365.cfgDig || {};
+    var val = function (id, v) { return E(dg[id] != null ? dg[id] : v); };
+    h += '<div class="v365-cfgl"><label for="v365CfgM">R$ por CV · mês<input type="text" inputmode="decimal" id="v365CfgM" value="' + val('v365CfgM', num2(c.cv_mensal)) + '"' + dis + '></label>' +
+      '<label for="v365CfgD">R$ por CV · dia<input type="text" inputmode="decimal" id="v365CfgD" value="' + val('v365CfgD', num2(c.cv_diaria)) + '"' + dis + '></label>' +
+      '<label for="v365CfgX">Diárias até virar mensal<input type="number" min="1" max="31" step="1" id="v365CfgX" value="' + val('v365CfgX', c.diarias_max) + '"' + dis + '></label>' +
+      (c.pode_editar ? '<button type="button" class="btn btn-primary btn-sm" data-v365="salvarCfg">Salvar preço da locação</button>' : '') + '</div>' +
+      (c.mudado ? '<div style="font-size:11.5px;color:#667085;margin-top:6px" title="Fica na trilha do quadro">Mudado por ' + E(_v200NomeUsu(c.mudado.por)) + ' em ' + E(_v200Data(c.mudado.em, true)) + '</div>' : '');
+    return h;
+  }
+  // onde mora a seção: a janela ⚙ do quadro (vendedor) ou Administração › Configurações › Comercial (o administrador vai para lá — V349)
+  function cfgAlvo() {
+    var M = _v200.modal;
+    if (M && M.tipo === 'config') return { el: document.getElementById('v200ModalBody'), pagina: false };
+    var pn = document.querySelector('#viewConfig [data-v349-pn="comercial"]');
+    if (pn && pn.querySelector('.v349-cx')) return { el: pn, pagina: true };
+    return null;
+  }
+  function pintarCfg() {
+    var a = cfgAlvo(); if (!a || !a.el) return;
+    var bx = document.getElementById('v365Cfg');
+    if (!bx || !a.el.contains(bx)) {
+      if (bx) bx.remove();
+      bx = document.createElement('div'); bx.id = 'v365Cfg'; bx.className = 'v365-cfg' + (a.pagina ? ' v349-cx' : ''); a.el.appendChild(bx);
+    }
+    var h = cfgHtml();
+    if (bx.__v365 === h) return;
+    var foco = document.activeElement && bx.contains(document.activeElement) ? document.activeElement.id : '';
+    bx.innerHTML = h; bx.__v365 = h;
+    if (foco) { var f = document.getElementById(foco); if (f) try { f.focus({ preventScroll: true }); } catch (e) {} }
+  }
+  // a página de Configurações do administrador é pintada DENTRO de outro bloco (V349): um observador põe a seção quando o painel
+  //   Comercial aparece sem ela (só ESCREVE quando falta — o que ele mesmo põe não o chama de novo) e tem disjuntor de escritas
+  (function () {
+    var vw = document.getElementById('viewConfig'); if (!vw || typeof MutationObserver !== 'function') return;
+    var n = 0, t0 = Date.now();
+    var ob = new MutationObserver(function () {
+      if (off() || V365.semSql) return;
+      var pn = vw.querySelector('[data-v349-pn="comercial"]');
+      if (!pn || !pn.querySelector('.v349-cx') || pn.querySelector('#v365Cfg')) return;
+      if (Date.now() - t0 > 10000) { t0 = Date.now(); n = 0; }
+      if (++n > 40) { ob.disconnect(); console.warn('[V365] disjuntor: o painel Comercial repintou demais — a seção do preço da locação parou'); return; }
+      pintarCfg(); lerCfg(!V365.cfg);
+    });
+    ob.observe(vw, { childList: true, subtree: true });
+  })();
+  function lerCfg(forcar) {
+    if (V365.cfgVoo || (V365.cfg && !forcar)) return;
+    V365.cfgVoo = true; V365.cfgErro = '';
+    rpc('crm_locacao_cfg_ler', {}, false).then(function (r) { V365.cfg = r; V365.cfgFalhouEm = 0; }, function (e) { V365.cfgFalhouEm = Date.now(); V365.cfgErro = V365.semSql ? '' : falha(e); })
+      .then(function () {
+        V365.cfgVoo = false;
+        var M = _v200.modal;
+        if (M && M.tipo === 'nova') { if (V365.cfg || V365.semSql) { try { _v200PintarNova(); } catch (e) {} } return; }   // falhou: não repinta (senão relê em laço — auditoria A1)
+        if (V365.semSql) { var b = document.getElementById('v365Cfg'); if (b) b.remove(); return; }
+        var bx = document.getElementById('v365Cfg'); if (bx) bx.__v365 = '';
+        pintarCfg();
+      });
+  }
+  async function salvarCfg(btn) {
+    if (V365.cfgSalvando) return;
+    var m = parseValor(_v200Val('v365CfgM')), d = parseValor(_v200Val('v365CfgD')), x = Number(_v200Val('v365CfgX'));
+    if (m === null || isNaN(m) || !(m > 0)) { toast('R$ por CV · mês: use um valor maior que zero (ex.: 150 ou 150,00).', 'error'); focar('v365CfgM'); return; }
+    if (d === null || isNaN(d) || !(d > 0)) { toast('R$ por CV · dia: use um valor maior que zero (ex.: 15 ou 15,00).', 'error'); focar('v365CfgD'); return; }
+    if (!(x >= 1 && x <= 31 && Math.round(x) === x)) { toast('Diárias até virar mensal: de 1 a 31.', 'error'); focar('v365CfgX'); return; }
+    V365.cfgSalvando = true; if (btn) btn.setAttribute('data-pcm-enviando', '1');
+    try {
+      V365.cfg = await rpc('crm_locacao_cfg_salvar', { p: { cv_mensal: m, cv_diaria: d, diarias_max: x } }, true);
+      V365.frota = {}; V365.cfgDig = {};
+      toast('Preço da locação salvo.', 'success');
+      pintarCfg();
+    } catch (e) { toast(falha(e), 'error'); }
+    finally { V365.cfgSalvando = false; if (btn) btn.removeAttribute('data-pcm-enviando'); }
+  }
+  if (typeof _v200PintarConfig === 'function') {
+    V365.orig.pintarCfg = _v200PintarConfig;
+    _v200PintarConfig = function () {
+      var r = V365.orig.pintarCfg.apply(this, arguments);
+      try { if (!off() && !V365.semSql) { pintarCfg(); lerCfg(true); } } catch (e) { console.warn('[V365] config:', e); }
+      return r;
+    };
+  }
+
+  // ═══ 6 · OS CLIQUES E O DIGITADO (delegação no documento; só dentro da janela do quadro) ═══════════════════════════════
+  function formDoCtx(ctx) { var M = _v200.modal; if (!M) return null; return ctx === 'c' ? M.v365e : formNova(); }
+  function repintarCtx(F) { if (F.ctx === 'n') repintarSecao(F); else { var M = _v200.modal, bx = document.getElementById('v365Card'); if (bx) bx.__v365 = ''; if (M) pintarCaixa(M); } }
+  document.addEventListener('click', function (ev) {
+    var t = ev.target && ev.target.closest && ev.target.closest('[data-v365]'); if (!t || off()) return;
+    var a = t.getAttribute('data-v365');
+    if (a === 'salvarCfg' && t.closest('#v365Cfg')) { salvarCfg(t); return; }   // a seção também mora na página de Configurações
+    if (!t.closest('#v200Modal')) return;
+    var M = _v200.modal; if (!M) return;
+    if (a === 'loc' && M.tipo === 'nova') {   // entra no modo locação (a caixinha da natureza)
+      ev.preventDefault();
+      M.v365 = M.v365 || novoForm('n');
+      _v200PintarNova();
+      return;
+    }
+    if (a === 'nat' && M.tipo === 'nova') {
+      ev.preventDefault();
+      var k = t.getAttribute('data-k'); if (k === 'locacao') return;
+      M.v365 = null; M.nats = [k];   // sai da locação para Serviço ou Peça
+      _v200PintarNova();
+      return;
+    }
+    if (a === 'criar') { ev.preventDefault(); criar(t); return; }
+    if (a === 'mod') {
+      var F = formDoCtx(t.getAttribute('data-ctx')); if (!F) return;
+      var k2 = t.getAttribute('data-k'); if (F.mod === k2) return;
+      F.mod = k2;
+      Object.keys(F.sel).forEach(function (id) { F.sel[id] = ''; });   // o valor muda de unidade (mês × dia): volta ao sugerido
+      repintarCtx(F); return;
+    }
+    if (a === 'relerFrota') { var F2 = formDoCtx(t.getAttribute('data-ctx')); if (!F2) return; delete V365.frota[chaveFrota(F2)]; repintarCtx(F2); lerFrota(F2, function () { repintarCtx(F2); }); return; }
+    if (a === 'mudarLoc' && M.tipo === 'card') {
+      var L = V365.card[M.d.card.id]; if (!L || !L.editavel) return;
+      M.v365e = novoForm('c', L); pintarCaixa(M); return;
+    }
+    if (a === 'cancelarLoc' && M.tipo === 'card') { M.v365e = null; var bx = document.getElementById('v365Card'); if (bx) bx.__v365 = ''; pintarCaixa(M); return; }
+    if (a === 'salvarLoc') { salvarLoc(t); return; }
+  }, true);
+  function aoMudar(ev) {
+    var t = ev.target; if (!t || !t.getAttribute || off()) return;
+    if (t.id === 'v365Dono') { var Fd = formNova(); if (Fd) Fd.dono = t.value; return; }
+    if (/^v365Cfg[MDX]$/.test(t.id || '')) { V365.cfgDig = V365.cfgDig || {}; V365.cfgDig[t.id] = t.value; return; }
+    var k = t.getAttribute('data-v365c'); if (!k) return;
+    var F = formDoCtx(t.getAttribute('data-ctx')); if (!F) return;
+    if (k === 'val') { F.sel[t.getAttribute('data-id')] = t.value; t.classList.toggle('ruim', isNaN(parseValor(t.value))); atualizarResumo(F); return; }
+    if (k === 'busca') {
+      F.busca = t.value;
+      var ls = document.getElementById('v365' + F.ctx + 'Lista'); if (ls) ls.innerHTML = listaHtml(F);
+      return;
+    }
+    if (ev.type !== 'change') return;   // datas e marcar máquina: só no change (o input de data dispara a cada dígito)
+    if (k === 'maq') {
+      var id = t.value;
+      if (t.checked) { if (F.sel[id] === undefined) { F.sel[id] = ''; F.ordem.push(id); } }
+      else { delete F.sel[id]; F.ordem = F.ordem.filter(function (x) { return x !== id; }); }
+      var ls2 = document.getElementById('v365' + F.ctx + 'Lista'); if (ls2) ls2.innerHTML = listaHtml(F);
+      atualizarResumo(F);
+      if (t.checked) { var vi = document.getElementById('v365' + F.ctx + 'Val_' + id); if (vi && !vi.value) { /* o sugerido fica no placeholder */ } }
+      return;
+    }
+    if (k === 'ini' || k === 'fim') {
+      F[k] = t.value || '';
+      if (k === 'ini' && F.fim && F.fim < F.ini) F.fim = '';
+      repintarCtx(F);
+      lerFrota(F, function () { if (formDoCtx(F.ctx) === F) repintarCtx(F); });
+    }
+  }
+  document.addEventListener('input', aoMudar, true);
+  document.addEventListener('change', aoMudar, true);
+})();
+</script>
+<!-- ████ FIM PCM V365 ████ -->
 
 </body>
 </html>
