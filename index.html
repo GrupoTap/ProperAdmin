@@ -117636,7 +117636,8 @@ body.v357-on #qofRaiz .qof-card[data-qof-est="9"]::after,body.v357-on #qofRaiz .
 .v365-av.er{background:#FEF3F2;border-color:#FECDCA;color:#B42318}
 .v365-av.az{background:#EFF4FF;border-color:#B2CCFF;color:#1849A9}
 .v365-t{font-size:12px;font-weight:700;color:#475467;margin:10px 0 4px;display:flex;gap:8px;align-items:baseline;flex-wrap:wrap}
-.v365-t small{font-weight:400;color:#667085}
+.v365-t .v365-min{font-weight:400;color:#667085}
+.v365-min{font-size:11.5px;color:#667085;font-weight:400}
 .v365-busca{width:100%;max-width:340px;margin:0 0 6px}
 .v365-lista{display:flex;flex-direction:column;max-height:300px;overflow:auto;border:1px solid #EAECF0;border-radius:8px;background:#fff}
 .v365-maq{display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:6px 10px;border-top:1px solid #F2F4F7;font-size:12.5px;min-height:34px}
@@ -117657,11 +117658,11 @@ body.v357-on #qofRaiz .qof-card[data-qof-est="9"]::after,body.v357-on #qofRaiz .
 .v365-res{flex-basis:100%;font-size:11.5px;color:#B54708;padding-left:24px}
 .v365-val{display:flex;gap:6px;align-items:center;flex:0 0 auto}
 .v365-val input{width:118px!important;text-align:right;font-variant-numeric:tabular-nums}
-.v365-val small{color:#667085;white-space:nowrap}
+.v365-val .v365-min{white-space:nowrap}
 .v365-val .ruim{border-color:#F04438!important}
 .v365-sug{font-size:11.5px;color:#667085;white-space:nowrap}
 .v365-total{margin:8px 0 0;font-size:13px;font-weight:700;font-variant-numeric:tabular-nums}
-.v365-total small{font-weight:400;color:#667085}
+
 .v365-vazio{padding:10px;font-size:12.5px;color:#667085}
 .v365-pe{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
 .v365-chipnat{display:inline-flex;align-items:center;gap:6px;border:1.5px solid #175CD3;border-radius:999px;padding:3px 12px;font-size:13px;font-weight:600;background:#EFF4FF;color:#1849A9}
@@ -117796,7 +117797,7 @@ body.v357-on #qofRaiz .qof-card[data-qof-est="9"]::after,body.v357-on #qofRaiz .
       '<label for="v365' + c + 'Fim">Fim previsto' + (F.mod === 'diaria' ? ' *' : '') + '<input type="date" id="v365' + c + 'Fim" data-v365c="fim" data-ctx="' + c + '" value="' + E(F.fim) + '"' + (F.ini ? ' min="' + E(F.ini) + '"' : '') + '></label>' +
       '<span class="v365-dias" id="v365' + c + 'Dias">' + diasTxt(F) + '</span></div>';
     h += '<div id="v365' + c + 'Conv">' + convHtml(F) + '</div>';
-    h += '<div class="v365-t">Máquinas da frota' + (cfg.cv_mensal != null ? ' <small>sugestão: R$ ' + E(num2(cfg.cv_mensal)) + '/CV por mês · R$ ' + E(num2(cfg.cv_diaria)) + '/CV por dia</small>' : '') + '</div>';
+    h += '<div class="v365-t">Máquinas da frota' + (cfg.cv_mensal != null ? ' <span class="v365-min">sugestão: R$ ' + E(num2(cfg.cv_mensal)) + '/CV por mês · R$ ' + E(num2(cfg.cv_diaria)) + '/CV por dia</span>' : '') + '</div>';
     if (!fr) return h + '<div class="v365-lista"><div class="v365-vazio">⏳ Lendo a frota…</div></div>';
     if (!fr.ok) return h + '<div class="v365-av er">' + E(fr.motivo || 'Não consegui ler a frota.') + ' <button type="button" class="btn btn-secondary btn-sm" data-v365="relerFrota" data-ctx="' + c + '">Tentar de novo</button></div>';
     var maqs = fr.maquinas || [];
@@ -117821,7 +117822,7 @@ body.v357-on #qofRaiz .qof-card[data-qof-est="9"]::after,body.v357-on #qofRaiz .
       if (on) {
         h += '<span class="v365-val"><input type="text" inputmode="decimal" data-v365c="val" data-ctx="' + c + '" data-id="' + E(m.id) + '" id="v365' + c + 'Val_' + E(m.id) + '" value="' + E(v) + '"' +
           ' placeholder="' + (sug != null ? E(num2(sug)) : 'valor') + '" maxlength="16" autocomplete="off" aria-label="Valor ' + E(uma) + ' de ' + E(m.tag || m.id) + '"' + (isNaN(pv) ? ' class="ruim"' : '') + '>' +
-          '<small>' + uma + '</small></span><span class="v365-sug">' + (sug != null ? 'sugerido ' + E(brl(sug)) : 'sem sugestão: informe o valor') + '</span>';
+          '<span class="v365-min">' + uma + '</span></span><span class="v365-sug">' + (sug != null ? 'sugerido ' + E(brl(sug)) : 'sem sugestão: informe o valor') + '</span>';
       }
       return h + resHtml(m) + '</div>';
     }).join('');
@@ -117837,12 +117838,12 @@ body.v357-on #qofRaiz .qof-card[data-qof-est="9"]::after,body.v357-on #qofRaiz .
     return '<div class="v365-av az">São ' + dias(F) + ' diárias — passa de ' + mx + ': a locação fica <b>MENSAL</b> (valor mensal = diária × ' + mx + ').</div>';
   }
   function totalTxt(F) {
-    var n = F.ordem.length; if (!n) return '<small>Marque as máquinas da locação.</small>';
-    var t = total(F); if (t == null) return '<small>' + n + ' máquina(s) — confira os valores.</small>';
+    var n = F.ordem.length; if (!n) return '<span class="v365-min">Marque as máquinas da locação.</span>';
+    var t = total(F); if (t == null) return '<span class="v365-min">' + n + ' máquina(s) — confira os valores.</span>';
     var d = dias(F), mx = Number(cfgDe(F).diarias_max || 10);
-    if (F.mod === 'mensal') return 'Total: ' + E(brl(t)) + ' por mês <small>· ' + n + ' máquina(s)</small>';
-    if (vaiVirarMensal(F)) return 'Total: ' + E(brl(t * mx)) + ' por mês <small>· ' + n + ' máquina(s) · diária × ' + mx + '</small>';
-    return 'Total: ' + E(brl(t)) + ' por dia' + (d ? ' × ' + d + ' = ' + E(brl(t * d)) : '') + ' <small>· ' + n + ' máquina(s)</small>';
+    if (F.mod === 'mensal') return 'Total: ' + E(brl(t)) + ' por mês <span class="v365-min">· ' + n + ' máquina(s)</span>';
+    if (vaiVirarMensal(F)) return 'Total: ' + E(brl(t * mx)) + ' por mês <span class="v365-min">· ' + n + ' máquina(s) · diária × ' + mx + '</span>';
+    return 'Total: ' + E(brl(t)) + ' por dia' + (d ? ' × ' + d + ' = ' + E(brl(t * d)) : '') + ' <span class="v365-min">· ' + n + ' máquina(s)</span>';
   }
   // a parte que muda com o digitado sem repintar a lista (o campo em foco fica)
   function atualizarResumo(F) {
@@ -117989,7 +117990,7 @@ body.v357-on #qofRaiz .qof-card[data-qof-est="9"]::after,body.v357-on #qofRaiz .
     h += '<table class="v365-tab" data-cfx-off="1"><thead><tr><th>Máquina</th><th>Situação hoje</th><th class="n">Valor' + uma + '</th></tr></thead><tbody>' +
       (L.maquinas || []).map(function (m) {
         return '<tr><td><b>' + E(m.tag || m.id) + '</b> ' + E([m.marca, m.modelo].filter(Boolean).join(' ')) + (m.cv != null ? ' · ' + E(num2(m.cv).replace(/,00$/, '')) + ' CV' : '') + resHtml(m).replace('class="v365-res"', 'class="v365-res" style="padding-left:0"') + '</td>' +
-          '<td>' + sitHtml(m) + '</td><td class="n">' + E(brl(m.valor)) + (m.valor_sugerido != null && Number(m.valor_sugerido) !== Number(m.valor) ? '<br><small style="color:#667085">sugerido ' + E(brl(m.valor_sugerido)) + '</small>' : '') + '</td></tr>';
+          '<td>' + sitHtml(m) + '</td><td class="n">' + E(brl(m.valor)) + (m.valor_sugerido != null && Number(m.valor_sugerido) !== Number(m.valor) ? '<br><span class="v365-min">sugerido ' + E(brl(m.valor_sugerido)) + '</span>' : '') + '</td></tr>';
       }).join('') + '</tbody></table>';
     var t = Number(L.total || 0);
     h += '<div class="v365-total">Total: ' + E(brl(t)) + (L.modalidade === 'mensal' ? ' por mês' : ' por dia' + (L.dias ? ' × ' + L.dias + ' = ' + E(brl(t * L.dias)) : '')) + '</div>';
