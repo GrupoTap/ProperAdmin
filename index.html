@@ -119033,10 +119033,9 @@ body.v357-on #qofRaiz .qof-card[data-qof-est="9"]::after,body.v357-on #qofRaiz .
       if (k === 'fechar') return fechar();
       if (k === 'lista' || k === 'interno') gerar(k === 'interno', b);
     });
-    setTimeout(function () {
-      document.addEventListener('mousedown', foraDoBalao, true);
-      document.addEventListener('keydown', escBalao, true);
-    }, 0);
+    // na hora (não depois de um setTimeout): o Esc logo depois de abrir tem de fechar; o mousedown que abriu já passou
+    document.addEventListener('mousedown', foraDoBalao, true);
+    document.addEventListener('keydown', escBalao, true);
     return el;
   }
   function status(txt, cls) { var s = document.getElementById('v367St'); if (s) { s.className = 'v367-st' + (cls ? ' ' + cls : ''); s.textContent = txt || ''; } }
