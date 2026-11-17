@@ -5645,9 +5645,19 @@ v50 — Resiliência de rede: retry/backoff em gsGet e syncToGS
   Registrar aceite (com a versao), Reabrir, Nova versao, descartar/desfazer — formularios na propria linha. Para andar: abrir a proposta.
   Chamadas: card de locacao 1 (relida ao entrar na aba) e 1 por acao + a releitura do card. Linhas pre-existentes alteradas: nenhuma
   (so o bloco). Sem o SQL: a aba fica como no V365. Chave: localStorage pcm_v366 = off.
+  PCM V367 — 17/11/2026 — PECAS A TROCAR POR CLIENTE: UNIDADE NAS PREVENTIVAS E O RELATORIO PARA O CLIENTE (ProperCare-backlog#157).
+  Par: SQL REL_TROCAS_CLIENTE_2026-11-17 (RODA ANTES; so leitura). Zero GAS.
+  Preventivas: coluna "Unidade" (a do cadastro pelo unidade_id; sem ela, a filial em texto, em italico) com filtro, caixa de marcacao
+  por linha (motor V194) e o botao "Gerar relatorio de trocas" (as marcadas; sem marcacao, as filtradas de UM cliente). Ficha do
+  cliente > Resumo > Unidades e maquinas: "Gerar relatorio" do cliente e de cada unidade com maquina. Os dois abrem o mesmo
+  balao: "Gerar lista para o cliente" (PDF de 1 pagina em faixas, SEM codigo de peca) ou "Gerar relatorio interno" (por maquina,
+  com codigo e o selo USO INTERNO). A conta e o que mostrar vem da pc_rel_trocas_cliente; o PDF sai aqui (jsPDF) e e baixado.
+  Unidade da maquina: o mapa vem do banco (pc_rel_trocas_unidades; a copia local nao traz o unidade_id).
+  Sem o SQL: o balao diz "Tela indisponivel". Chamadas: Preventivas 1 ao abrir (cache 5 min); 1 por relatorio. Linhas pre-existentes alteradas: nenhuma
+  (so o bloco). Chave: localStorage pcm_v367 = off.
 -->
-<title>ProperCare Manager · Gestão PGP v4.03 (PCM V366)</title>
-<meta name="app-build" content="PCM_V366" data-date="2026-11-17">
+<title>ProperCare Manager · Gestão PGP v4.03 (PCM V367)</title>
+<meta name="app-build" content="PCM_V367" data-date="2026-11-17">
 <link rel="icon" type="image/jpeg" href="data:image/jpeg;base64,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">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -118812,6 +118822,552 @@ body.v357-on #qofRaiz .qof-card[data-qof-est="9"]::after,body.v357-on #qofRaiz .
 })();
 </script>
 <!-- ████ FIM PCM V366 ████ -->
+<!-- ████ INICIO PCM V367 · 📄 PEÇAS A TROCAR POR CLIENTE: UNIDADE NAS PREVENTIVAS E O RELATÓRIO PARA O CLIENTE (ProperCare-backlog#157) ████ -->
+<style id="v367-css">
+/* PCM V367 (ProperCare-backlog#157): coluna Unidade e marcação nas Preventivas, 📄 Gerar relatório de trocas (Preventivas e ficha do
+   cliente › Unidades e máquinas) e o balão que gera o PDF. Chave de volta: localStorage pcm_v367 = off */
+.v367-uni{font-size:12px;font-weight:600;color:var(--text,#262626)}
+.v367-uni.texto{font-weight:400;font-style:italic;color:var(--text3,#667085)}
+.v367-bal{position:fixed;z-index:9850;width:380px;max-width:calc(100vw - 16px);background:#fff;border:1px solid #D0D5DD;border-radius:12px;
+  box-shadow:0 12px 32px rgba(16,24,40,.18);padding:12px 14px;font-size:13px;color:#1D2939}
+.v367-bal h5{margin:0 0 4px;font-size:14px;display:flex;align-items:center;gap:8px}
+.v367-bal h5 .sp{flex:1}
+.v367-bal .v367-x{all:unset;cursor:pointer;width:28px;height:28px;display:inline-flex;align-items:center;justify-content:center;border-radius:6px;color:#475467}
+.v367-bal .v367-x:hover{background:#F2F4F7}
+.v367-bal .v367-x:active{background:#EAECF0}
+.v367-esc{color:#475467;margin:0 0 10px;line-height:1.4}
+.v367-acoes{display:flex;flex-direction:column;gap:8px}
+.v367-acoes .btn{justify-content:flex-start;text-align:left;min-height:38px}
+.v367-st{margin-top:10px;font-size:12.5px;line-height:1.4}
+.v367-st:empty{display:none}
+.v367-st.ok{color:#067647}
+.v367-st.er{color:#B42318}
+.v367-av{margin:8px 0 0;padding:0 0 0 16px;font-size:12px;color:#7A4A00}
+.v367-av li{margin:2px 0}
+.v367-fbtn{margin-left:6px;text-transform:none;letter-spacing:0}
+</style>
+<script id="v367Js">
+/* ═══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════
+   PCM V367 · ProperCare-backlog#157 — 📄 Peças a trocar por cliente.
+   · Preventivas: a coluna "Unidade" (a do cadastro pelo unidade_id; sem ela, a filial escrita à mão, em itálico) com o filtro estilo
+     Excel, a caixa de marcação por linha (motor V194 do XF) e o botão "📄 Gerar relatório de trocas": usa as máquinas MARCADAS; sem
+     marcação, as da lista filtrada — que têm de ser de UM cliente (filtre a coluna Cliente).
+   · Ficha do cliente › Resumo › Unidades e máquinas: "📄 Gerar relatório" para o cliente inteiro e em cada unidade com máquina.
+   · Os dois abrem o MESMO balão: "📄 Gerar lista para o cliente" (1 página, faixas Trocar agora · Na próxima visita · 30 dias · 30 a 90 dias,
+     SEM código de peça) ou "🔒 Gerar relatório interno (com código)" (por máquina, com código e o selo USO INTERNO). Um gerador só: a conta e
+     o que mostrar vêm da pc_rel_trocas_cliente (SQL REL_TROCAS_CLIENTE); o PDF sai aqui (jsPDF) e é baixado. O código só é pedido ao banco
+     no relatório interno (regras/MAPA.md §4).
+   · Sem o SQL: o balão diz "Tela indisponível — avise o administrador" e nada mais muda. Chave de volta: localStorage pcm_v367 = off.
+   · Chamadas: Preventivas, 1 ao abrir (o mapa máquina → unidade, guardado 5 min); ficha, 0; 1 por relatório. Encaixe: embrulho por nome global de xfReg (só a instância 'prev'),
+     renderPreventivas (o botão na barra) e _v222ResumoHtml (os botões nas unidades). Nenhuma linha de antes muda.
+   ═══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════ */
+(function () {
+  'use strict';
+  if (window.V367) return;
+  var V367 = window.V367 = { versao: 'V367', orig: {}, bal: null, voo: false, ultimo: null };
+  function off() { try { return localStorage.getItem('pcm_v367') === 'off'; } catch (e) { return false; } }
+  function S(v) { return String(v == null ? '' : v); }
+  function T(v) { return S(v).replace(/\s+/g, ' ').trim(); }
+  function E(v) { return S(v).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;'); }
+  function N(v) { return S(v).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').trim(); }
+  function n0(v) { var x = Number(v); return isFinite(x) ? Math.round(x).toLocaleString('pt-BR') : '—'; }
+  function dBr(iso) { var m = /^(\d{4})-(\d{2})-(\d{2})/.exec(S(iso)); return m ? m[3] + '/' + m[2] + '/' + m[1] : ''; }
+  function dMes(iso) { var m = /^(\d{4})-(\d{2})/.exec(S(iso)); return m ? m[2] + '/' + m[1] : ''; }
+  function cap(s) { s = S(s); return s ? s.charAt(0).toUpperCase() + s.slice(1) : s; }
+  function juntar(l) { l = (l || []).map(function (x) { return S(x).toLowerCase(); }); return cap(l.length < 2 ? (l[0] || '') : l.slice(0, -1).join(', ') + ' e ' + l[l.length - 1]); }
+  function curto(s, n) { s = T(s); return s.length > n ? s.slice(0, n - 1) + '…' : s; }
+  function arqNome(s) { return N(s).replace(/[^a-z0-9]+/gi, '_').replace(/^_+|_+$/g, '').slice(0, 40) || 'cliente'; }
+
+  // ═══ 1 · a unidade da máquina (a do cadastro; sem ela, a filial escrita à mão) ════════════════════════════════════════
+  // A cópia local das máquinas (db.machines) não traz o unidade_id: o mapa máquina → unidade vem do banco (pc_rel_trocas_unidades,
+  // a MESMA régua do relatório), numa leitura só, guardada 5 min. Antes de ele chegar (ou sem o SQL), vale o que o computador sabe.
+  function lerUnidades() {
+    if (V367.uniVoo || V367.semSql || (V367.uni && Date.now() - V367.uniEm < 5 * 60e3) || Date.now() - (V367.uniFalhouEm || 0) < 60e3) return;
+    V367.uniVoo = true;
+    _v222Rpc('pc_rel_trocas_unidades', {}, false).then(function (r) {
+      if (r && r.ok && r.maquinas) { V367.uni = r.maquinas; V367.uniEm = Date.now(); }
+    }, function (e) {
+      if (e && e.v222 === 'sem_sql') { V367.semSql = true; console.warn('[V367] pc_rel_trocas_unidades não existe no banco (SQL do #157 não rodou)'); }
+      else { V367.uniFalhouEm = Date.now(); console.warn('[V367] unidades:', e && e.message); }
+    }).then(function () {
+      V367.uniVoo = false;
+      try { if (V367.uni && typeof currentView !== 'undefined' && currentView === 'preventivas' && !off()) xfRender('prev'); } catch (e) {}
+    });
+  }
+  function uniDe(eq) {
+    if (V367.uni && eq && eq.id != null) {
+      var b = V367.uni[S(eq.id)];
+      return b ? { nome: T(b[0]), texto: !!b[1] } : { nome: '', texto: false };
+    }
+    var id = T(eq && (eq.unidadeId || eq.unidade_id));
+    if (id) {
+      var u = null; try { u = (db.unidades || []).find(function (x) { return S(x.id) === id; }); } catch (e) {}
+      if (u && T(u.nome)) return { nome: T(u.nome), texto: false };
+    }
+    if (T(eq && eq.branch)) return { nome: T(eq.branch), texto: true };
+    return { nome: '', texto: false };
+  }
+  V367.uniDe = uniDe;
+
+  // ═══ 2 · Preventivas: coluna Unidade, marcação e o botão ═════════════════════════════════════════════════════════════
+  function decorarPrev(cfg) {
+    if (!cfg || !Array.isArray(cfg.columns) || cfg.columns.some(function (c) { return c && c.key === 'v367uni'; })) return;
+    lerUnidades();
+    var i = cfg.columns.findIndex(function (c) { return c && c.key === 'cliente'; });
+    cfg.columns.splice(i >= 0 ? i + 1 : cfg.columns.length, 0, {
+      key: 'v367uni', label: 'Unidade', filter: 'values',
+      getValue: function (r) { return uniDe(r.eq).nome || '—'; },
+      render: function (r) {
+        var u = uniDe(r.eq);
+        if (!u.nome) return '<span style="color:var(--text3)">—</span>';
+        return '<span class="v367-uni' + (u.texto ? ' texto" title="Unidade só em texto — ligue a máquina a uma unidade do cliente' : '') + '">' + E(u.nome) + '</span>';
+      } });
+    cfg.selectable = true;
+    cfg.rowKey = function (r) { return S(r.eq.id); };
+    cfg.selActions = (cfg.selActions || []).concat([{ label: '📄 Gerar relatório de trocas', run: function () {
+      var ev = window.event, alvo = ev && ev.target && ev.target.closest ? ev.target.closest('button') : null;
+      abrirDasPreventivas(alvo || document.getElementById('v367BtnRel'));
+    } }]);
+    var st = cfg.searchText;
+    if (typeof st === 'function') cfg.searchText = function (r) { return st(r) + ' ' + uniDe(r.eq).nome; };
+  }
+  function botaoPrev() {
+    var inp = document.getElementById('prevSearchInput'), barra = inp && inp.parentElement;
+    if (!barra || document.getElementById('v367BtnRel')) return;
+    inp.insertAdjacentHTML('afterend', '<button type="button" class="btn btn-secondary btn-sm" id="v367BtnRel" data-v367="prev" ' +
+      'title="As máquinas marcadas ou, sem marcação, as filtradas de um cliente">📄 Gerar relatório de trocas</button>');
+  }
+  function linhasPrev() {
+    var I = (typeof XF !== 'undefined' && XF.inst) ? XF.inst.prev : null;
+    if (!I) return { linhas: [], marcadas: false };
+    var marc = []; try { marc = xfSelVivas('prev'); } catch (e) {}
+    if (marc.length) return { linhas: marc, marcadas: true };
+    var f = []; try { f = xfFiltered(I); } catch (e) {}
+    return { linhas: f, marcadas: false };
+  }
+  function abrirDasPreventivas(anc) {
+    var L = linhasPrev(), rows = L.linhas;
+    var clis = {}; rows.forEach(function (r) { var k = N(r.eq.client); clis[k] = r.eq.client || '(sem cliente)'; });
+    var nCli = Object.keys(clis).length;
+    if (!rows.length) return balao(anc, { erro: 'Nenhuma máquina na lista. Mude os filtros ou marque as máquinas.' });
+    if (nCli > 1) return balao(anc, { erro: L.marcadas
+      ? 'As máquinas marcadas são de ' + nCli + ' clientes — o relatório é de um cliente só. Marque as de um cliente.'
+      : 'A lista tem máquinas de ' + nCli + ' clientes. Filtre um cliente na coluna Cliente ou marque as máquinas.' });
+    var cliente = clis[Object.keys(clis)[0]];
+    balao(anc, { pedido: { p_maquinas: rows.map(function (r) { return S(r.eq.id); }) }, cliente: cliente,
+                 escopo: rows.length + (rows.length === 1 ? ' máquina' : ' máquinas') + (L.marcadas ? ' marcada' + (rows.length === 1 ? '' : 's') : ' da lista') });
+  }
+
+  // ═══ 3 · ficha do cliente › Unidades e máquinas ═════════════════════════════════════════════════════════════════════
+  function decorarFicha(h, c) {
+    if (!c || !c.id || typeof h !== 'string') return h;
+    var unis = [], maqs = [];
+    try { unis = _v222UnidsDoCliente(c) || []; maqs = _v222MaqsDoCliente(c) || []; } catch (e) { return h; }
+    if (!maqs.length) return h;
+    var porU = {}; maqs.forEach(function (m) { if (m.unidade_id) porU[m.unidade_id] = (porU[m.unidade_id] || 0) + 1; });
+    // o título da seção (outros blocos já põem botões nele, ex.: ＋ Máquina do V258): o nosso entra antes do </h4>
+    var k = h.indexOf('<h4>Unidades e máquinas'), fimH = k < 0 ? -1 : h.indexOf('</h4>', k);
+    if (fimH < 0) return h;
+    h = h.slice(0, fimH) + '<button type="button" class="v222-mini v367-fbtn" data-v367="ficha" data-cli="' + E(c.id) +
+        '" title="Peças a trocar de todas as máquinas do cliente">📄 Gerar relatório</button>' + h.slice(fimH);
+    var pos = fimH;
+    unis.forEach(function (u) {
+      var marca = '<div class="v222-uni"><div class="v222-uni-cab"><span class="nm">' + _v222E(u.nome) + '</span>';
+      var a = h.indexOf(marca, pos); if (a < 0) return;
+      var sp = h.indexOf('<span class="sp"></span>', a); if (sp < 0) return;
+      pos = sp;
+      if (!porU[u.id]) return;
+      var b = '<button type="button" class="v222-mini" data-v367="ficha" data-cli="' + E(c.id) + '" data-uni="' + E(u.id) + '" data-nome="' + E(u.nome) +
+              '" title="Peças a trocar das máquinas desta unidade">📄 Gerar relatório</button>';
+      var fim = sp + '<span class="sp"></span>'.length;
+      h = h.slice(0, fim) + b + h.slice(fim);
+    });
+    return h;
+  }
+  function abrirDaFicha(btn) {
+    var cli = btn.getAttribute('data-cli'), uni = btn.getAttribute('data-uni'), nomeU = btn.getAttribute('data-nome') || '';
+    var c = null; try { c = _v222Cli(); } catch (e) {}
+    var nomeC = (c && c.nome) || '';
+    balao(btn, { pedido: uni ? { p_cliente: cli, p_unidades: [uni] } : { p_cliente: cli }, cliente: nomeC,
+                 escopo: uni ? 'unidade ' + nomeU : 'todas as unidades' });
+  }
+
+  // ═══ 4 · o balão ════════════════════════════════════════════════════════════════════════════════════════════════════
+  function fechar() {
+    if (V367.bal) { try { V367.bal.remove(); } catch (e) {} }
+    V367.bal = null;
+    document.removeEventListener('mousedown', foraDoBalao, true);
+    document.removeEventListener('keydown', escBalao, true);
+  }
+  V367.fechar = fechar;
+  function foraDoBalao(ev) { if (V367.bal && !V367.bal.contains(ev.target) && !(ev.target.closest && ev.target.closest('[data-v367]'))) fechar(); }
+  function escBalao(ev) { if (ev.key === 'Escape' && V367.bal) { ev.stopPropagation(); fechar(); } }
+  function posicionar(el, anc) {
+    var r = anc && anc.getBoundingClientRect ? anc.getBoundingClientRect() : null;
+    var w = el.offsetWidth || 380, hgt = el.offsetHeight || 200, vw = window.innerWidth, vh = window.innerHeight;
+    var x = r ? Math.min(Math.max(8, r.right - w), vw - w - 8) : (vw - w) / 2;
+    var y = r ? r.bottom + 6 : 80;
+    if (y + hgt > vh - 8 && r) y = Math.max(8, r.top - hgt - 6);
+    el.style.left = Math.round(x) + 'px'; el.style.top = Math.round(y) + 'px';
+  }
+  function balao(anc, o) {
+    fechar();
+    if (anc && anc.scrollIntoView) { try { anc.scrollIntoView({ block: 'nearest' }); } catch (e) {} }
+    var el = document.createElement('div');
+    el.className = 'v367-bal mob-keep'; el.id = 'v367Bal'; el.setAttribute('role', 'dialog'); el.setAttribute('aria-label', 'Peças a trocar');
+    var h = '<h5>📄 Peças a trocar<span class="sp"></span><button type="button" class="v367-x" data-v367b="fechar" aria-label="Fechar">✕</button></h5>';
+    if (o.erro) h += '<div class="v367-st er">' + E(o.erro) + '</div>';
+    else {
+      h += '<p class="v367-esc"><b>' + E(o.cliente || 'Cliente') + '</b> · ' + E(o.escopo || '') + '</p>' +
+           '<div class="v367-acoes"><button type="button" class="btn btn-primary" data-v367b="lista">📄 Gerar lista para o cliente (PDF)</button>' +
+           '<button type="button" class="btn btn-secondary" data-v367b="interno" title="Por máquina, com o código das peças — não mande ao cliente">' +
+           '🔒 Gerar relatório interno (com código)</button></div><div class="v367-st" id="v367St"></div><ul class="v367-av" id="v367Av"></ul>';
+    }
+    el.innerHTML = h;
+    document.body.appendChild(el);
+    V367.bal = el; V367.pedido = o.pedido || null; V367.anc = anc || null;
+    posicionar(el, anc);
+    el.addEventListener('click', function (ev) {
+      var b = ev.target.closest && ev.target.closest('[data-v367b]'); if (!b) return;
+      var k = b.getAttribute('data-v367b');
+      if (k === 'fechar') return fechar();
+      if (k === 'lista' || k === 'interno') gerar(k === 'interno', b);
+    });
+    setTimeout(function () {
+      document.addEventListener('mousedown', foraDoBalao, true);
+      document.addEventListener('keydown', escBalao, true);
+    }, 0);
+    return el;
+  }
+  function status(txt, cls) { var s = document.getElementById('v367St'); if (s) { s.className = 'v367-st' + (cls ? ' ' + cls : ''); s.textContent = txt || ''; } }
+  function avisos(l) { var u = document.getElementById('v367Av'); if (u) u.innerHTML = (l || []).map(function (a) { return '<li>' + E(a) + '</li>'; }).join(''); }
+
+  async function gerar(interno, botao) {
+    if (!V367.pedido) return;
+    if (V367.voo) { status('⏳ Ainda gerando o relatório anterior — aguarde.'); return; }
+    var bal = V367.bal, botoes = bal ? bal.querySelectorAll('[data-v367b="lista"],[data-v367b="interno"]') : [];
+    V367.voo = true;
+    botoes.forEach(function (b) { b.disabled = true; b.setAttribute('data-pcm-enviando', '1'); });
+    var rot = botao ? botao.textContent : '';
+    if (botao) botao.textContent = '⏳ Lendo as máquinas…';
+    status(''); avisos([]);
+    try {
+      var args = Object.assign({ p_codigo: !!interno }, V367.pedido);
+      var r = await _v222Rpc('pc_rel_trocas_cliente', args, false);
+      if (V367.bal !== bal) return;   // fechou no meio: não baixa nada
+      if (!r || !r.ok) throw new Error('O banco não devolveu o relatório.');
+      if (botao) botao.textContent = '⏳ Montando o PDF…';
+      var lib = await pcmEnsureJsPDF();
+      var pdf = interno ? pdfInterno(lib.jsPDF, r) : pdfLista(lib.jsPDF, r);
+      baixar(pdf);
+      status('✅ ' + pdf.arquivo + ' (' + pdf.paginas + (pdf.paginas === 1 ? ' página' : ' páginas') + ') — está nos downloads.', 'ok');
+      avisos(r.avisos || []);
+    } catch (e) {
+      var m = (e && e.message) || 'Não consegui gerar o relatório.';
+      if (e && e.v222 === 'sem_sql') { m = 'Tela indisponível — avise o administrador.'; console.warn('[V367] pc_rel_trocas_cliente não existe no banco (SQL do #157 não rodou)'); }
+      status('O PDF não foi gerado: ' + m.replace(/^Relatório:\s*/, ''), 'er');
+    } finally {
+      V367.voo = false;
+      botoes.forEach(function (b) { b.disabled = false; b.removeAttribute('data-pcm-enviando'); });
+      if (botao) botao.textContent = rot;
+    }
+  }
+  function baixar(pdf) {
+    V367.ultimo = { arquivo: pdf.arquivo, tipo: pdf.tipo, paginas: pdf.paginas, b64: pdf.doc.output('datauristring').split(',')[1] };
+    var url = URL.createObjectURL(pdf.doc.output('blob')), a = document.createElement('a');
+    a.href = url; a.download = pdf.arquivo; a.style.display = 'none'; document.body.appendChild(a); a.click();
+    setTimeout(function () { try { URL.revokeObjectURL(url); a.remove(); } catch (e) {} }, 4000);
+  }
+
+  // ═══ 5 · o PDF (jsPDF) — o motor de página e de tabela dos dois relatórios ═════════════════════════════════════════════
+  var COR = { lar: [238, 118, 37], tin: [45, 45, 45], cin: [107, 107, 107], lin: [221, 221, 221], cla: [242, 242, 242],
+              ver: [198, 40, 40], verF: [253, 236, 236], amb: [180, 83, 9], ambF: [254, 243, 226], vrd: [46, 125, 50], vrdF: [234, 245, 234], larF: [253, 243, 235] };
+  function A(s) { try { return typeof _v249Ansi === 'function' ? _v249Ansi(s) : S(s); } catch (e) { return S(s); } }
+  function Doc(jsPDF, o) {
+    var doc = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
+    try { doc.setProperties({ title: A(o.titulo), author: 'Proper Compressores' }); } catch (e) {}
+    try { doc.setLineHeightFactor(1.18); } catch (e) {}
+    var D = { doc: doc, W: 210, H: 297, ML: 15, MR: 15, y: 0, topo: 30, base: 282, cab: o.cab };
+    D.L = D.W - D.ML - D.MR;
+    D.cor = function (c) { doc.setTextColor(c[0], c[1], c[2]); };
+    D.fonte = function (b, s) { doc.setFont('helvetica', b ? 'bold' : 'normal'); doc.setFontSize(s); };
+    D.txt = function (t, x, y, op) { doc.text(A(t), x, y, op || {}); };
+    D.quebra = function (t, w) { return doc.splitTextToSize(A(t), w); };
+    D.fill = function (c) { doc.setFillColor(c[0], c[1], c[2]); };
+    D.draw = function (c, w) { doc.setDrawColor(c[0], c[1], c[2]); doc.setLineWidth(w || 0.2); };
+    D.pagina = function () { if (D.y) doc.addPage(); D.y = D.topo; D.cab(D); };
+    D.precisa = function (h) { if (D.y + h > D.base) { D.pagina(); return true; } return false; };
+    D.logo = function () {
+      try { doc.addImage('data:image/png;base64,' + V249_LOGO, 'PNG', D.ML, 9, 44, 44 * V249_LOGO_RAZAO); }
+      catch (e) { D.fonte(true, 15); D.cor(COR.tin); D.txt('PROPER COMPRESSORES', D.ML, 16); }
+      D.fill(COR.lar); doc.rect(D.ML, 22, D.L, 0.5, 'F');
+    };
+    D.rodape = function (txt) {
+      var n = doc.getNumberOfPages();
+      for (var i = 1; i <= n; i++) {
+        doc.setPage(i); D.fonte(false, 7); D.cor(COR.cin);
+        D.txt(txt, D.ML, 290); D.txt('página ' + i + ' de ' + n, D.W - D.MR, 290, { align: 'right' });
+      }
+      return n;
+    };
+    // parágrafo com quebra; devolve a altura usada
+    D.par = function (t, s, b, c, larg, x) {
+      D.fonte(b, s); D.cor(c || COR.tin);
+      var ls = D.quebra(t, larg || D.L), lh = s * 0.3528 * 1.25;
+      D.precisa(Math.min(ls.length, 3) * lh);   // texto longo continua na página seguinte, linha a linha (nunca sai cortado no rodapé)
+      ls.forEach(function (l) { D.precisa(lh); D.fonte(b, s); D.cor(c || COR.tin); D.txt(l, x || D.ML, D.y + s * 0.3528); D.y += lh; });
+      return ls.length * lh;
+    };
+    D.h2 = function (t) { D.precisa(14); D.y += 3; D.fonte(true, 12); D.cor(COR.lar); D.txt(t, D.ML, D.y + 4.5); D.y += 8; };
+    // célula = lista de pedaços {t, b, s, c}; cada pedaço quebra na largura da coluna
+    function medir(cel, w) {
+      var h = 0;
+      (cel || []).forEach(function (p) { if (!p || p.t == null || p.t === '') return; D.fonte(p.b, p.s || 8.5); h += D.quebra(p.t, w).length * (p.s || 8.5) * 0.3528 * 1.22; });
+      return h;
+    }
+    function pintar(cel, x, y, w, al) {
+      (cel || []).forEach(function (p) {
+        if (!p || p.t == null || p.t === '') return;
+        var s = p.s || 8.5, lh = s * 0.3528 * 1.22; D.fonte(p.b, s); D.cor(p.c || COR.tin);
+        D.quebra(p.t, w).forEach(function (l) {
+          var xx = al === 'right' ? x + w : al === 'center' ? x + w / 2 : x;
+          D.txt(l, xx, y + s * 0.3528, al === 'right' ? { align: 'right' } : al === 'center' ? { align: 'center' } : {}); y += lh;
+        });
+      });
+      return y;
+    }
+    // tabela: cols [{t, w, al}], linhas [{faixa:{t, c, f}} | {cel:[…], fundo:{i:cor}, barra:{i, pct, c}}]
+    D.tabela = function (cols, linhas, op) {
+      op = op || {}; var PAD = 1.6;
+      function cabecalho() {
+        var hc = 0; cols.forEach(function (c) { hc = Math.max(hc, medir([{ t: c.t, b: true, s: 7.3 }], c.w - 2 * PAD)); });
+        hc += 2 * PAD; D.precisa(hc + 8);
+        var x = D.ML; cols.forEach(function (c) { pintar([{ t: c.t, b: true, s: 7.3, c: COR.cin }], x + PAD, D.y + PAD, c.w - 2 * PAD, c.al); x += c.w; });
+        D.y += hc; D.draw(COR.tin, 0.35); D.doc.line(D.ML, D.y, D.ML + D.L, D.y);
+      }
+      cabecalho();
+      linhas.forEach(function (ln) {
+        if (ln.faixa) {
+          var hf = 6.4;
+          if (D.precisa(hf + 8)) cabecalho();
+          D.fill(ln.faixa.f); D.doc.rect(D.ML, D.y, D.L, hf, 'F'); D.fill(ln.faixa.c); D.doc.rect(D.ML, D.y, 1.1, hf, 'F');
+          D.fonte(true, 8.6); D.cor(ln.faixa.c); D.txt(ln.faixa.t, D.ML + 3, D.y + 4.3); D.y += hf; return;
+        }
+        var h = 0;
+        cols.forEach(function (c, i) { h = Math.max(h, medir(ln.cel[i], c.w - 2 * PAD) + (ln.barra && ln.barra.i === i ? 2.6 : 0)); });
+        h += 2 * PAD + 0.6;
+        if (D.precisa(h)) cabecalho();
+        var x = D.ML;
+        cols.forEach(function (c, i) {
+          if (ln.fundo && ln.fundo[i]) { D.fill(ln.fundo[i]); D.doc.rect(x, D.y, c.w, h, 'F'); }
+          var hc = medir(ln.cel[i], c.w - 2 * PAD) + (ln.barra && ln.barra.i === i ? 2.6 : 0);
+          var yy = pintar(ln.cel[i], x + PAD, D.y + (h - hc) / 2, c.w - 2 * PAD, c.al);
+          if (ln.barra && ln.barra.i === i) {
+            var bw = c.w - 2 * PAD, pc = Math.max(0, Math.min(1, (ln.barra.pct || 0) / 100));
+            D.fill(COR.cla); D.doc.rect(x + PAD, yy + 0.8, bw, 1.6, 'F');
+            D.fill(ln.barra.c); D.doc.rect(x + PAD, yy + 0.8, Math.max(0.6, bw * pc), 1.6, 'F');
+          }
+          x += c.w;
+        });
+        D.y += h; D.draw(COR.lin, 0.2); D.doc.line(D.ML, D.y, D.ML + D.L, D.y);
+      });
+    };
+    return D;
+  }
+  var FAIXAS = { agora: { t: 'TROCAR AGORA', c: COR.ver, f: COR.verF }, visita: { t: 'NA PRÓXIMA VISITA — recomendação do técnico', c: COR.amb, f: COR.ambF },
+                 '30': { t: 'NOS PRÓXIMOS 30 DIAS', c: COR.amb, f: COR.ambF }, '90': { t: 'DE 30 A 90 DIAS', c: COR.vrd, f: COR.vrdF } };
+  var ORDEM_F = ['agora', 'visita', '30', '90'];
+  function maqTitulo(m) { return T([m.marca, m.modelo].join(' ')) || 'Compressor'; }
+  function maqSub(m) { return T((m.serie ? 'série ' + m.serie : '') + (m.tag ? ' · TAG ' + m.tag : '')).replace(/^· /, ''); }
+  function unidadesTxt(r) { var u = r.unidades || []; return u.length < 2 ? (u[0] || '') : u.slice(0, -1).join(', ') + ' e ' + u[u.length - 1]; }
+
+  // ── A · a LISTA DO CLIENTE (1 página quando cabe; sem código de peça) ──
+  function pdfLista(jsPDF, r) {
+    var cli = (r.cliente && r.cliente.nome) || 'Cliente', base = dBr(r.data_base);
+    var D = Doc(jsPDF, { titulo: 'Peças a trocar — ' + cli, cab: function (D) { D.logo(); } });
+    D.pagina();
+    D.par('Peças a trocar — ' + cli, 17, true); D.y += 1.2;
+    var nm = (r.maquinas || []).length;
+    D.par('Situação em ' + base + ' · ' + nm + (nm === 1 ? ' compressor' : ' compressores') + (unidadesTxt(r) ? ' · ' + unidadesTxt(r) : ''), 9.5, false, COR.cin);
+    D.y += 5;
+    var porId = {}; (r.maquinas || []).forEach(function (m) { porId[m.id] = m; });
+    var cols = [{ t: 'Quando', w: 27 }, { t: 'Compressor', w: 46 }, { t: 'Onde está', w: 46 }, { t: 'Peças a trocar', w: D.L - 119 }];
+    var linhas = [];
+    ORDEM_F.forEach(function (f) {
+      var ls = (r.lista || []).filter(function (l) { return l.faixa === f; });
+      if (!ls.length) return;
+      var F = FAIXAS[f]; linhas.push({ faixa: F });
+      ls.forEach(function (l) {
+        var m = porId[l.maquina_id] || {};
+        var q = f === 'agora' ? 'Agora' : f === 'visita' ? 'Próxima visita' : (l.quando ? dBr(l.quando) : 'Em breve');
+        linhas.push({ cel: [[{ t: q, b: true, s: 9.3, c: F.c }],
+                            [{ t: maqTitulo(m), b: true, s: 9.3 }, { t: maqSub(m), s: 7.8, c: COR.cin }],
+                            [{ t: (m.unidade && m.unidade.nome) || '—', s: 9.3 }, { t: m.local || '', s: 7.8, c: COR.cin }],
+                            [{ t: juntar(l.pecas), b: true, s: 9.3 }]] });
+      });
+    });
+    if (linhas.length) D.tabela(cols, linhas);
+    else D.par('Nenhuma troca prevista nos próximos 90 dias.', 11, true, COR.vrd);
+    D.y += 5;
+    var notas = [];
+    if (r.proxima_fora) notas.push(['Os demais itens estão em dia: a próxima troca fora desta lista é a partir de ' + dMes(r.proxima_fora) + '.', false]);
+    (r.maquinas || []).forEach(function (m) { if (m.obs && T(m.obs.texto)) notas.push(['Atenção — ' + maqTitulo(m) + (m.serie ? ' série ' + m.serie : '') + ': ' + T(m.obs.texto), true]); });
+    notas.push(['As datas são estimadas pelas horas de trabalho de cada compressor e são confirmadas a cada visita da Proper. Para agendar as trocas, fale com a Proper.', false]);
+    notas.forEach(function (n) { D.par(n[0], 8.6, n[1]); D.y += 2; });
+    var pag = D.rodape('Proper Compressores · Divinópolis/MG');
+    return { doc: D.doc, paginas: pag, tipo: 'lista', arquivo: 'Pecas_a_Trocar_' + arqNome(cli) + '_' + S(r.data_base) + '.pdf' };
+  }
+
+  // ── B · o RELATÓRIO DETALHADO (uso interno, com código) ──
+  var SIT = { vencido: ['Vencida', COR.ver, COR.verF], alerta: ['Atenção', COR.amb, COR.ambF], ok: ['Em dia', COR.vrd, COR.vrdF] };
+  function faltamTxt(i) { var f = Number(i.faltam_h); return !isFinite(f) ? '—' : f <= 0 ? n0(-f) + ' h atrás' : n0(f) + ' h'; }
+  function prevTxt(i) { return i.quando ? dBr(i.quando) : (i.ha_dias != null ? 'há ~' + i.ha_dias + (i.ha_dias === 1 ? ' dia' : ' dias') : '—'); }
+  function pdfInterno(jsPDF, r) {
+    var cli = (r.cliente && r.cliente.nome) || 'Cliente', base = dBr(r.data_base);
+    var D = Doc(jsPDF, { titulo: 'Peças a trocar — ' + cli + ' (uso interno)', cab: function (D) {
+      D.logo(); var X = D.W - D.MR;
+      D.fonte(true, 7.5); D.cor(COR.lar); D.txt('USO INTERNO — COM CÓDIGOS DE PEÇA', X, 11, { align: 'right' });
+      D.fonte(true, 9); D.cor(COR.tin); D.txt('Peças a trocar — relatório detalhado', X, 15.5, { align: 'right' });
+      D.fonte(false, 8); D.cor(COR.cin); D.txt(cli + ' · base ' + base, X, 19.5, { align: 'right' });
+    } });
+    D.pagina();
+    var maqs = r.maquinas || [], nU = (r.unidades || []).length, c = r.contagem || {};
+    D.par('Previsão de troca de peças por compressor', 15, true); D.y += 1;
+    var cl = r.cliente || {};
+    D.par('Cliente: ' + cli + (cl.cidade ? ' · ' + cl.cidade + (cl.uf ? '/' + cl.uf : '') : '') + (cl.contato ? ' · A/C ' + cl.contato : '') +
+          '   Data-base: ' + base + '   Compressores: ' + maqs.length + (nU ? ' em ' + nU + (nU === 1 ? ' unidade' : ' unidades') : ''), 8.8);
+    D.y += 4;
+    // os 4 números
+    var cards = [[c.vencidos, 'itens vencidos', COR.ver, COR.verF], [c.atencao, 'itens em atenção (até 10% do intervalo)', COR.amb, COR.ambF],
+                 [c.tecnico, 'itens que o técnico indicou trocar', COR.amb, COR.ambF], [c.maquinas, 'compressores acompanhados', COR.tin, COR.cla]];
+    var cw = (D.L - 9) / 4;
+    cards.forEach(function (k, i) {
+      var x = D.ML + i * (cw + 3); D.fill(k[3]); D.doc.rect(x, D.y, cw, 17, 'F');
+      D.fonte(true, 16); D.cor(k[2]); D.txt(S(k[0] == null ? 0 : k[0]), x + 3, D.y + 7.5);
+      D.fonte(false, 7.5); D.cor(COR.cin); D.quebra(k[1], cw - 6).forEach(function (l, j) { D.txt(l, x + 3, D.y + 12 + j * 3.2); });
+    });
+    D.y += 21;
+    // resumo
+    D.h2('Resumo');
+    D.tabela([{ t: 'Unidade', w: 22 }, { t: 'Compressor', w: 31 }, { t: 'Local', w: 26 }, { t: 'Horím. hoje', w: 16, al: 'right' },
+              { t: 'Próximo item a trocar', w: 34 }, { t: 'Faltam', w: 16, al: 'right' }, { t: 'Previsão', w: 19, al: 'center' }, { t: 'Situação', w: 16, al: 'center' }],
+      maqs.map(function (m) {
+        var p = m.pior || {}, s = SIT[p.situacao] || ['—', COR.cin, null], ct = m.contagem || {};
+        var extra = [];
+        if (p.nome && p.situacao === 'vencido' && ct.vencidos > 1) extra.push({ t: '+' + (ct.vencidos - 1) + ' vencido' + (ct.vencidos > 2 ? 's' : ''), s: 7.3, c: COR.cin });
+        if (ct.tecnico) extra.push({ t: ct.tecnico + (ct.tecnico === 1 ? ' indicação do técnico' : ' indicações do técnico'), s: 7.3, c: COR.amb });
+        return { cel: [[{ t: (m.unidade && m.unidade.nome) || '—', s: 8 }], [{ t: maqTitulo(m), b: true, s: 8 }, { t: m.serie ? 'série ' + m.serie : '', s: 7.3, c: COR.cin }],
+                       [{ t: m.local || '—', s: 8 }], [{ t: n0(m.hoje_h) + ' h', s: 8 }],
+                       [{ t: p.nome || 'sem previsão (sem histórico)', s: 8 }].concat(extra),
+                       [{ t: p.nome ? faltamTxt(p) : '—', s: 8, c: p.situacao === 'vencido' ? COR.ver : COR.tin }],
+                       [{ t: p.nome ? prevTxt(p) : '—', s: 8 }], [{ t: s[0], b: true, s: 8, c: s[1] }]],
+                 fundo: s[2] ? { 7: s[2] } : null };
+      }));
+    D.y += 2;
+    D.par('"Próximo item a trocar" é o de menor folga em horas. A previsão em data supõe o regime de trabalho informado de cada compressor (h/semana) e se confirma a cada leitura do horímetro.', 7.5, false, COR.cin);
+    D.h2('Como ler este relatório');
+    D.par('Próxima troca = horímetro da última troca + intervalo recomendado do item. Horímetro estimado = última leitura feita pela Proper (preventiva ou inspeção) + regime de trabalho × semanas desde a leitura. Faltam = próxima troca − horímetro estimado. Atenção = faltam até 10% do intervalo. Indicação do técnico = item que o técnico avaliou em campo e recomendou trocar, mesmo que ainda tenha horas pela conta. Última troca em 0 numa máquina com até 2.000 h = peça original de fábrica.', 8.2);
+    // peças por código
+    var gr = r.grupos || [];
+    if (gr.length) {
+      D.h2('Peças por código — o que trocar e quando');
+      D.tabela([{ t: 'Peça', w: 38 }, { t: 'Código', w: 24 }, { t: 'Compressores (série · unidade)', w: 52 }, { t: 'Vencidas', w: 15, al: 'center' },
+                { t: 'Até 30 dias', w: 14, al: 'center' }, { t: '31 a 90 dias', w: 14, al: 'center' }, { t: 'Próxima necessidade', w: 23, al: 'center' }],
+        gr.map(function (g) {
+          var it = g.itens || [], tec = g.tecnico || [];
+          var pec = [{ t: g.nome, b: true, s: 8.3 }, { t: (g.modelos || []).join(', '), s: 7.2, c: COR.cin }];
+          if (it.length > 1) pec.push({ t: 'mesma peça em ' + it.length + ' compressores', s: 7.2, c: COR.lar });
+          if (tec.length) pec.push({ t: 'técnico indicou em ' + tec.join(', '), s: 7.2, c: COR.amb });
+          var cps = it.map(function (x) { return { t: (x.serie || '—') + ' · ' + (x.unidade || '—') + ' (' + (x.situacao === 'vencido' ? 'vencida' : (x.quando ? dBr(x.quando) : 'sem data')) + ')', s: 7.6, c: x.situacao === 'vencido' ? COR.ver : COR.tin }; });
+          var prox = g.proxima_em === 'agora' ? [{ t: 'agora', b: true, s: 8.3, c: COR.ver }] : [{ t: g.proxima_em ? dBr(g.proxima_em) : '—', s: 8 }, { t: g.proxima_serie ? 'série ' + g.proxima_serie : '', s: 7.2, c: COR.cin }];
+          function nn(v, cor) { return [{ t: v ? S(v) : '—', b: !!v, s: 8.3, c: v ? cor : COR.cin }]; }
+          return { cel: [pec, [{ t: g.ref || '—', s: 8 }], cps, nn(g.vencidas, COR.ver), nn(g.ate30, COR.amb), nn(g.de31a90, COR.tin), prox],
+                   fundo: Object.assign({}, g.vencidas ? { 3: COR.verF } : {}, g.ate30 ? { 4: COR.ambF } : {}) };
+        }));
+      D.y += 1.5;
+      D.par('Contagem em número de trocas (uma por compressor). A peça é agrupada quando é a mesma referência em mais de um compressor.', 7.5, false, COR.cin);
+    }
+    // por unidade → por máquina
+    var uniAtual = null;
+    maqs.forEach(function (m) {
+      var un = (m.unidade && m.unidade.nome) || '';
+      if (uniAtual === null || un !== uniAtual) { uniAtual = un; D.pagina(); D.h2(un ? 'Unidade ' + un : 'Sem unidade'); }
+      else D.precisa(40);
+      // cabeçalho da máquina
+      var l1 = maqTitulo(m), l1b = [m.serie ? 'série ' + m.serie : '', m.tag ? 'TAG ' + m.tag : '', m.ano ? 'ano ' + m.ano : '', m.potencia ? m.potencia + (/[a-z]/i.test(m.potencia) ? '' : ' cv') : ''].filter(Boolean).join(' · ');
+      var lt = m.leitura, l2 = 'Local: ' + (m.local || '—') + ' · Regime: ' + (Number(m.regime_h_semana) > 0 ? n0(m.regime_h_semana) + ' h/semana' : 'não informado') +
+               ' · Última leitura: ' + (lt ? n0(lt.h) + ' h em ' + dBr(lt.em) + (lt.tipo ? ' (' + lt.tipo + ')' : '') : 'nenhuma') + ' · Estimado hoje: ' + n0(m.hoje_h) + ' h' +
+               (m.ultima_preventiva && (!lt || m.ultima_preventiva !== lt.em) ? ' · Última preventiva: ' + dBr(m.ultima_preventiva) : '');
+      D.fonte(false, 7.8); var ls2 = D.quebra(l2, D.L - 8), hb = 8 + ls2.length * 3.4;
+      D.precisa(hb + 22);
+      D.fill(COR.larF); D.doc.rect(D.ML, D.y, D.L, hb, 'F'); D.fill(COR.lar); D.doc.rect(D.ML, D.y, 1.1, hb, 'F');
+      D.fonte(true, 10); D.cor(COR.tin); D.txt(l1, D.ML + 4, D.y + 5.2);
+      var w1 = D.doc.getTextWidth(A(l1)); D.fonte(true, 8); D.cor(COR.cin); D.txt(l1b, D.ML + 6 + w1, D.y + 5.2);
+      D.fonte(false, 7.8); D.cor(COR.tin); ls2.forEach(function (l, i) { D.txt(l, D.ML + 4, D.y + 9.4 + i * 3.4); });
+      D.y += hb + 1;
+      var itens = (m.itens || []).filter(function (i) { return SIT[i.situacao]; });
+      if (itens.length) {
+        D.tabela([{ t: 'Item', w: 46 }, { t: 'Código', w: 21 }, { t: 'Última troca', w: 16, al: 'right' }, { t: 'Uso desde a troca', w: 24, al: 'right' },
+                  { t: 'Próxima troca', w: 16, al: 'right' }, { t: 'Faltam', w: 18, al: 'right' }, { t: 'Previsão', w: 21, al: 'center' }, { t: 'Situação', w: 18, al: 'center' }],
+          itens.map(function (i) {
+            var s = SIT[i.situacao], ult = i.ultima;
+            var item = [{ t: i.nome, b: true, s: 8.4 },
+                        { t: 'intervalo ' + n0(i.intervalo) + ' h' + (ult && ult.em ? ' · ' + (ult.acao === 'trocada' ? 'trocado' : 'conferido') + ' em ' + dBr(ult.em) : ''), s: 7.2, c: COR.cin }];
+            if (i.original) item.push({ t: 'original de fábrica (máquina nova)', s: 7.2, c: COR.cin });
+            if (i.marca && i.marca.urgencia) item.push({ t: (i.marca.urgencia === 'urgente' ? 'Técnico indicou troca URGENTE' : 'Técnico indicou trocar na próxima visita') +
+                                                          (i.marca.em ? ' (' + dBr(i.marca.em).slice(0, 5) + ')' : '') + (i.marca.obs ? ': ' + curto(i.marca.obs, 160) : ''), s: 7.2,
+                                                          c: i.marca.urgencia === 'urgente' ? COR.ver : COR.amb });
+            return { cel: [item, [{ t: i.ref || '—', s: 8 }], [{ t: n0(i.ultima_h) + ' h', s: 8 }], [{ t: n0(i.uso_h) + ' h · ' + S(i.uso_pct) + '%', s: 7.6 }],
+                           [{ t: n0(i.proxima_h) + ' h', s: 8 }], [{ t: faltamTxt(i), b: true, s: 8, c: i.situacao === 'vencido' ? COR.ver : COR.tin }],
+                           [{ t: prevTxt(i), s: 8 }], [{ t: s[0], b: true, s: 8, c: s[1] }]],
+                     fundo: { 7: s[2] }, barra: { i: 3, pct: i.uso_pct, c: s[1] } };
+          }));
+      } else D.par('Nenhuma peça com histórico de troca registrado.', 8, false, COR.cin);
+      D.y += 1.5;
+      if ((m.sem_registro || []).length) D.par('Sem histórico de troca registrado: ' + m.sem_registro.join(', ') + ' — o controle começa na primeira troca registrada.', 7.6);
+      if ((m.na || []).length) D.par('Não se aplica a este compressor: ' + m.na.join(', ') + '.', 7.6);
+      if (m.obs && T(m.obs.texto)) D.par('Observação do técnico (' + dBr(m.obs.em).slice(0, 5) + '): ' + T(m.obs.texto), 7.6, true);
+      D.y += 4;
+    });
+    var pag = D.rodape('Proper Compressores · Divinópolis/MG · Relatório gerado pelo ProperCare · USO INTERNO');
+    return { doc: D.doc, paginas: pag, tipo: 'interno', arquivo: 'Pecas_a_Trocar_' + arqNome(cli) + '_' + S(r.data_base) + '_INTERNO.pdf' };
+  }
+  V367.pdfLista = pdfLista; V367.pdfInterno = pdfInterno;
+
+  // ═══ 6 · os encaixes (embrulho por nome global, por FORA dos blocos de antes) ════════════════════════════════════════
+  function embrulhar(nome, f) {
+    var o = window[nome]; if (typeof o !== 'function' || o.__v367) return;
+    V367.orig[nome] = o;
+    var w = function () { return f.call(this, o, arguments); }; w.__v367 = true;
+    window[nome] = w;
+  }
+  embrulhar('xfReg', function (o, a) {
+    if (a[0] === 'prev' && !off()) { try { decorarPrev(a[1]); } catch (e) { console.warn('[V367] coluna Unidade:', e); } }
+    return o.apply(this, a);
+  });
+  embrulhar('renderPreventivas', function (o, a) {
+    var r = o.apply(this, a);
+    if (!off()) { try { botaoPrev(); } catch (e) { console.warn('[V367] botão:', e); } }
+    return r;
+  });
+  embrulhar('_v222ResumoHtml', function (o, a) {
+    var h = o.apply(this, a);
+    if (off()) return h;
+    try { return decorarFicha(h, a[0]); } catch (e) { console.warn('[V367] ficha:', e); return h; }
+  });
+  document.addEventListener('click', function (ev) {
+    var b = ev.target && ev.target.closest ? ev.target.closest('[data-v367]') : null;
+    if (!b || off()) return;
+    ev.preventDefault(); ev.stopPropagation();
+    if (V367.bal && V367.anc === b) return fechar();
+    if (b.getAttribute('data-v367') === 'prev') abrirDasPreventivas(b);
+    else if (b.getAttribute('data-v367') === 'ficha') abrirDaFicha(b);
+  }, true);
+  // a tela de Preventivas aberta antes deste bloco ganha a coluna na próxima pintura
+  try { if (!off() && typeof currentView !== 'undefined' && currentView === 'preventivas') renderPreventivas(); } catch (e) {}
+})();
+</script>
+<!-- ████ FIM PCM V367 ████ -->
 
 </body>
 </html>
