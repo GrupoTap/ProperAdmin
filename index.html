@@ -119862,6 +119862,7 @@ body.v357-on #qofRaiz .qof-card[data-qof-est="9"]::after,body.v357-on #qofRaiz .
     try { rp = await rpc('crm_locacao_os_pedir', { p_id: id, p_proposta: prop, p_uid: uid }, true); }
     catch (e) { return { ok: false, txt: rede(e) ? 'sem resposta do banco — tente de novo (o mesmo pedido não duplica)' : falha(e).replace(/^NÃO foi gravada: /, '') }; }
     if (rp && rp.ok === false) return { ok: false, txt: rp.mensagem || rp.motivo || 'a locação recusou' };
+    if (rp && rp.uid && rp.uid !== uid) { uid = rp.uid; V368.uids[id + '|' + prop] = { uid: uid, em: Date.now() }; }   // o pedido anterior que não voltou: o MESMO uid (não duplica)
     if (rp && rp.ja_existe_os) { esquecerUid(id, prop); return { ok: true, txt: '✓ a OS deste pedido já tinha sido gravada — ligada à locação' }; }
     if (typeof _v178Bloco === 'function' && _v178Bloco('G') && typeof _v178DestinoDaOS === 'function') {
       try {
