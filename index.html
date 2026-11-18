@@ -5663,9 +5663,17 @@ v50 — Resiliência de rede: retry/backoff em gsGet e syncToGS
   da empresa, Cliente/Objeto, Resumo, Detalhamento, Condicoes em cartoes, Observacoes, assinaturas); o rascunho ganha A/C e Pagamento.
   Linhas do V366 alteradas (ganchos para o V368): a previa, o estado do rascunho, o salvar e os campos do rascunho. Sem o SQL: nada
   aparece e o PDF segue o do V366. Chave: localStorage pcm_v368 = off.
+  PCM V370 — 17/11/2026 — CESSAO REMUNERADA NA LOCACAO (ProperCare-backlog#244, parte 3B de 4), sobre o V369 (o V369 é a ProperCare-backlog#263).
+  Par: SQL CRM_LOCACAO_P3B_2026-11-17 (cadeia 150; RODA ANTES) e o form_emprestimo (ProperForms). Zero GAS.
+  + Oportunidade e Mudar a locacao: Mensal | Diaria | Cessao remunerada (uma maquina da frota, so o inicio, valor da cessao sugerido por
+  CV, diaria e mensal depois do prazo, a maquina do cliente da conta ou descrita). Caixa Locacao do card de cessao. Proposta: resumo e
+  versoes dizem cessao; o PDF (emissao e previa) no modelo da PROP-2026-0067 v1 (7 passos, prazo e valores, exemplos pela regra do form).
+  Entrega: os textos da modalidade. Configuracoes: R$/CV da cessao, dias para aprovar, dias de cessao (o mesmo Salvar).
+  Linhas antigas alteradas (ganchos para o V370): 11 no V365, 3 no V366, 3 no V368 — sem o V370 (ou com ele desligado) fazem o mesmo de
+  antes. Sem o SQL: a cessao nao aparece. Chave: localStorage pcm_v370 = off.
 -->
-<title>ProperCare Manager · Gestão PGP v4.03 (PCM V368)</title>
-<meta name="app-build" content="PCM_V368" data-date="2026-11-17">
+<title>ProperCare Manager · Gestão PGP v4.03 (PCM V370)</title>
+<meta name="app-build" content="PCM_V370" data-date="2026-11-17">
 <link rel="icon" type="image/jpeg" href="data:image/jpeg;base64,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">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -117794,7 +117802,7 @@ body.v357-on #qofRaiz .qof-card[data-qof-est="9"]::after,body.v357-on #qofRaiz .
   }
   function dias(F) { return F.fim ? diasEntre(F.ini, F.fim) : null; }
   function vaiVirarMensal(F) { var d = dias(F); return F.mod === 'diaria' && d != null && d > Number(cfgDe(F).diarias_max || 10); }
-  function sugerido(F, m) { return F.mod === 'mensal' ? m.sugerido_mensal : m.sugerido_diaria; }
+  function sugerido(F, m) { if (F.mod === 'cessao' && window.V370 && !V370.off()) return V370.sugerido(F, m); return F.mod === 'mensal' ? m.sugerido_mensal : m.sugerido_diaria; }   /* V370: cessão */
   function maqDe(F, id) { var fr = frotaDe(F); return ((fr && fr.maquinas) || []).find(function (m) { return m.id === id; }) || null; }
   function valorDe(F, id) { var t = F.sel[id], m = maqDe(F, id); if (T(t)) return parseValor(t); return m && sugerido(F, m) != null ? Number(sugerido(F, m)) : null; }
   function total(F) {
@@ -117819,7 +117827,8 @@ body.v357-on #qofRaiz .qof-card[data-qof-est="9"]::after,body.v357-on #qofRaiz .
     var c = F.ctx, fr = frotaDe(F), cfg = cfgDe(F), d = dias(F);
     var h = '<div class="v365-seg" role="group" aria-label="Modalidade da locação">' +
       '<button type="button" data-v365="mod" data-ctx="' + c + '" data-k="mensal" aria-pressed="' + (F.mod === 'mensal') + '">Mensal</button>' +
-      '<button type="button" data-v365="mod" data-ctx="' + c + '" data-k="diaria" aria-pressed="' + (F.mod === 'diaria') + '">Diária (spot)</button></div>';
+      '<button type="button" data-v365="mod" data-ctx="' + c + '" data-k="diaria" aria-pressed="' + (F.mod === 'diaria') + '">Diária (spot)</button>' + (window.V370 && !V370.off() ? V370.botaoMod(F) : '') + '</div>';   /* V370: cessão */
+    if (F.mod === 'cessao' && window.V370 && !V370.off()) h += V370.datasHtml(F); else   /* V370: cessão (só o início) */
     h += '<div class="v365-datas"><label for="v365' + c + 'Ini">Início *<input type="date" id="v365' + c + 'Ini" data-v365c="ini" data-ctx="' + c + '" value="' + E(F.ini) + '"></label>' +
       '<label for="v365' + c + 'Fim">Fim previsto' + (F.mod === 'diaria' ? ' *' : '') + '<input type="date" id="v365' + c + 'Fim" data-v365c="fim" data-ctx="' + c + '" value="' + E(F.fim) + '"' + (F.ini ? ' min="' + E(F.ini) + '"' : '') + '></label>' +
       '<span class="v365-dias" id="v365' + c + 'Dias">' + diasTxt(F) + '</span></div>';
@@ -117832,10 +117841,11 @@ body.v357-on #qofRaiz .qof-card[data-qof-est="9"]::after,body.v357-on #qofRaiz .
     h += '<input type="text" class="v365-busca" id="v365' + c + 'Busca" data-v365c="busca" data-ctx="' + c + '" value="' + E(F.busca) + '" placeholder="Filtrar: TAG, marca, modelo, série" readonly onfocus="this.removeAttribute(\'readonly\')" autocomplete="off" name="v365_busca_' + c + '_nofill" data-lpignore="true" data-1p-ignore>';
     h += '<div class="v365-lista" id="v365' + c + 'Lista">' + listaHtml(F) + '</div>';
     h += '<div class="v365-total" id="v365' + c + 'Total">' + totalTxt(F) + '</div>';
+    if (F.mod === 'cessao' && window.V370 && !V370.off()) h += V370.extraHtml(F);   /* V370: diária, mensal e a máquina do cliente */
     return h;
   }
   function listaHtml(F) {
-    var fr = frotaDe(F), c = F.ctx, b = N(F.busca), uma = F.mod === 'mensal' ? '/mês' : '/dia';
+    var fr = frotaDe(F), c = F.ctx, b = N(F.busca), uma = F.mod === 'mensal' ? '/mês' : F.mod === 'cessao' ? ' (cessão)' : '/dia';   /* V370 */
     var maqs = ((fr && fr.maquinas) || []).filter(function (m) {
       return F.sel[m.id] !== undefined || !b || N([m.tag, m.marca, m.modelo, m.serie, m.tipo_equip].join(' ')).indexOf(b) >= 0;
     });
@@ -117868,6 +117878,7 @@ body.v357-on #qofRaiz .qof-card[data-qof-est="9"]::after,body.v357-on #qofRaiz .
     var n = F.ordem.length; if (!n) return '<span class="v365-min">Marque as máquinas da locação.</span>';
     var t = total(F); if (t == null) return '<span class="v365-min">' + n + ' máquina(s) — confira os valores.</span>';
     var d = dias(F), mx = Number(cfgDe(F).diarias_max || 10);
+    if (F.mod === 'cessao' && window.V370 && !V370.off()) return V370.totalTxt(F);   /* V370: cessão */
     if (F.mod === 'mensal') return 'Total: ' + E(brl(t)) + ' por mês <span class="v365-min">· ' + n + ' máquina(s)</span>';
     if (vaiVirarMensal(F)) return 'Total: ' + E(brl(t * mx)) + ' por mês <span class="v365-min">· ' + n + ' máquina(s) · diária × ' + mx + '</span>';
     return 'Total: ' + E(brl(t)) + ' por dia' + (d ? ' × ' + d + ' = ' + E(brl(t * d)) : '') + ' <span class="v365-min">· ' + n + ' máquina(s)</span>';
@@ -117894,7 +117905,9 @@ body.v357-on #qofRaiz .qof-card[data-qof-est="9"]::after,body.v357-on #qofRaiz .
       if (v === null && sugerido(F, m) == null) return { erro: (m.tag || id) + ' não tem potência no cadastro: informe o valor.', campo: 'v365' + F.ctx + 'Val_' + id };
       maqs.push(v === null ? { id: id } : { id: id, valor: v });
     }
-    return { p: { modalidade: F.mod, inicio: F.ini, fim: F.fim || null, maquinas: maqs } };
+    var pv = { p: { modalidade: F.mod, inicio: F.ini, fim: F.fim || null, maquinas: maqs } };
+    if (F.mod === 'cessao' && window.V370 && !V370.off()) return V370.validar(F, pv);   /* V370: a cessão (diária, mensal, máquina do cliente) */
+    return pv;
   }
   function focar(id) { if (!id) return; var f = document.getElementById(id); if (f) { f.removeAttribute('readonly'); try { f.focus(); } catch (e) {} } }
   function avisar(r) { var av = (r && r.avisos) || []; if (av.length) { try { toast('Atenção: ' + av.join(' · '), 'warning'); } catch (e) {} } }
@@ -117959,7 +117972,7 @@ body.v357-on #qofRaiz .qof-card[data-qof-est="9"]::after,body.v357-on #qofRaiz .
       if (!r || !r.id) throw new Error('o banco não devolveu o número da oportunidade — confira o quadro antes de criar de novo.');
       F.uid = '';
       var L = r.locacao || {};
-      toast('Oportunidade ' + r.id + (r.repetido ? ' (já estava criada)' : ' criada') + ' — locação ' + (r.modalidade === 'diaria' ? 'diária' : 'mensal') + ', ' + ((L.maquinas || []).length || F.ordem.length) + ' máquina(s).', 'success');
+      toast('Oportunidade ' + r.id + (r.repetido ? ' (já estava criada)' : ' criada') + ' — locação ' + (r.modalidade === 'diaria' ? 'diária' : r.modalidade === 'cessao' ? 'cessão remunerada' : 'mensal') + ', ' + ((L.maquinas || []).length || F.ordem.length) + ' máquina(s).', 'success');
       avisar(r);
       V365.card[r.id] = Object.assign({ ok: true, locacao: true }, L);
       if (orig && !r.repetido) {   // "de onde veio" (V293) grava depois de o card nascer — o valor estimado é o total da locação
@@ -118012,6 +118025,7 @@ body.v357-on #qofRaiz .qof-card[data-qof-est="9"]::after,body.v357-on #qofRaiz .
     if (!L.locacao) return h + '<div class="v365-av er">Esta oportunidade de locação não tem os dados da locação — avise o administrador.</div>';
     if (F) return h + '<div id="v365CardEd"><div class="v365-corpo">' + formHtml(F) + '</div></div><div class="v365-pe"><button type="button" class="btn btn-primary btn-sm" data-v365="salvarLoc">Salvar a locação</button>' +
       '<button type="button" class="btn btn-secondary btn-sm" data-v365="cancelarLoc">Cancelar</button></div>';
+    if (L.modalidade === 'cessao' && window.V370 && !V370.off()) return h + V370.caixaHtml(L);   /* V370: a caixa da cessão */
     var mx = L.cfg && L.cfg.diarias_max, uma = L.modalidade === 'mensal' ? '/mês' : '/dia';
     h += '<div><b>' + (L.modalidade === 'mensal' ? 'Mensal' : 'Diária (spot)') + '</b> · de ' + E(dataBr(L.inicio)) + (L.fim ? ' a ' + E(dataBr(L.fim)) + ' (' + L.dias + (L.modalidade === 'diaria' ? ' diárias' : ' dias') + ')' : ' · sem fim definido') + '</div>';
     h += '<table class="v365-tab" data-cfx-off="1"><thead><tr><th>Máquina</th><th>Situação hoje</th><th class="n">Valor' + uma + '</th></tr></thead><tbody>' +
@@ -118113,6 +118127,7 @@ body.v357-on #qofRaiz .qof-card[data-qof-est="9"]::after,body.v357-on #qofRaiz .
     h += '<div class="v365-cfgl"><label for="v365CfgM">R$ por CV · mês<input type="text" inputmode="decimal" id="v365CfgM" value="' + val('v365CfgM', num2(c.cv_mensal)) + '"' + dis + '></label>' +
       '<label for="v365CfgD">R$ por CV · dia<input type="text" inputmode="decimal" id="v365CfgD" value="' + val('v365CfgD', num2(c.cv_diaria)) + '"' + dis + '></label>' +
       '<label for="v365CfgX">Diárias até virar mensal<input type="number" min="1" max="31" step="1" id="v365CfgX" value="' + val('v365CfgX', c.diarias_max) + '"' + dis + '></label>' +
+      (window.V370 && !V370.off() ? V370.cfgCampos(c, dis) : '') +   /* V370: os parâmetros da cessão */
       (c.pode_editar ? '<button type="button" class="btn btn-primary btn-sm" data-v365="salvarCfg">Salvar preço da locação</button>' : '') + '</div>' +
       (c.mudado ? '<div style="font-size:11.5px;color:#667085;margin-top:6px" title="Fica na trilha do quadro">Mudado por ' + E(_v200NomeUsu(c.mudado.por)) + ' em ' + E(_v200Data(c.mudado.em, true)) + '</div>' : '');
     return h;
@@ -118174,7 +118189,9 @@ body.v357-on #qofRaiz .qof-card[data-qof-est="9"]::after,body.v357-on #qofRaiz .
     if (!(x >= 1 && x <= 31 && Math.round(x) === x)) { toast('Diárias até virar mensal: de 1 a 31.', 'error'); focar('v365CfgX'); return; }
     V365.cfgSalvando = true; if (btn) btn.setAttribute('data-pcm-enviando', '1');
     try {
-      V365.cfg = await rpc('crm_locacao_cfg_salvar', { p: { cv_mensal: m, cv_diaria: d, diarias_max: x } }, true);
+      var pc = { cv_mensal: m, cv_diaria: d, diarias_max: x };
+      if (window.V370 && !V370.off()) { var ex = V370.cfgValores(); if (ex.erro) { toast(ex.erro, 'error'); focar(ex.campo); return; } Object.assign(pc, ex.p); }   /* V370: + a cessão */
+      V365.cfg = await rpc('crm_locacao_cfg_salvar', { p: pc }, true);
       V365.frota = {}; V365.cfgDig = {};
       toast('Preço da locação salvo.', 'success');
       pintarCfg();
@@ -118404,6 +118421,7 @@ body.v357-on #qofRaiz .qof-card[data-qof-est="9"]::after,body.v357-on #qofRaiz .
   // ═══ 2 · a pintura (dentro do #v204Sec, que a gaveta já põe na aba 📝 Proposta) ═══════════════════════════════════════
   function caixaTxt(L) {
     if (!L) return '';
+    if (L.modalidade === 'cessao' && window.V370 && !V370.off()) return V370.caixaTxt(L);   /* V370 */
     var t = (L.modalidade === 'mensal' ? 'Mensal' : 'Diária (spot)') + ' · de ' + dataBr(L.inicio) + (L.fim ? ' a ' + dataBr(L.fim) + ' (' + L.dias + (L.modalidade === 'diaria' ? ' diárias' : ' dias') + ')' : ' · sem fim definido');
     var n = (L.maquinas || []).length, tot = Number(L.total || 0);
     return t + ' · ' + n + ' máquina' + (n === 1 ? '' : 's') + ' · ' + brl(tot) + (L.modalidade === 'mensal' ? ' por mês' : ' por dia' + (L.dias ? ' (' + brl(tot * L.dias) + ' no período)' : ''));
@@ -118479,10 +118497,10 @@ body.v357-on #qofRaiz .qof-card[data-qof-est="9"]::after,body.v357-on #qofRaiz .
     if (vs.length) {
       h += '<ul class="v366-vers">' + vs.map(function (v) {
         var vivo = v.situacao !== 'substituida', l = '<li class="v366-ver" data-vid="' + E(v.id) + '"><div class="v366-vt"><b>v' + E(v.versao) + '</b> · <b>' + E(brl(v.total)) + '</b>' +
-          '<span class="v366-sub">' + (v.modalidade === 'mensal' ? 'por mês' : 'no período (' + E(v.dias) + ' diárias × ' + E(brl(v.total_base)) + ')') + '</span>' + situ(v.situacao) +
+          '<span class="v366-sub">' + (v.modalidade === 'cessao' ? 'cessão remunerada (valor único)' : v.modalidade === 'mensal' ? 'por mês' : 'no período (' + E(v.dias) + ' diárias × ' + E(brl(v.total_base)) + ')') + '</span>' + situ(v.situacao) +
           '<span class="v366-sub">emitida ' + E(_v200Data(v.emitida_em)) + (v.validade_ate ? ' · válida até ' + E(dataBr(v.validade_ate)) : '') + '</span></div>';
         var info = [];
-        info.push((v.modalidade === 'mensal' ? 'Mensal' : 'Diária') + ' · ' + dataBr(v.inicio) + (v.fim ? ' a ' + dataBr(v.fim) : '') + ' · ' + v.n_maquinas + ' máquina' + (v.n_maquinas === 1 ? '' : 's'));
+        info.push((v.modalidade === 'cessao' ? 'Cessão remunerada' : v.modalidade === 'mensal' ? 'Mensal' : 'Diária') + ' · ' + dataBr(v.inicio) + (v.fim ? ' a ' + dataBr(v.fim) : '') + ' · ' + v.n_maquinas + ' máquina' + (v.n_maquinas === 1 ? '' : 's'));
         info.push((v.condicoes || []).length ? 'Condições: ' + v.condicoes.map(function (c) { return c.rotulo; }).join(', ') : 'Sem condições marcadas');
         if (v.motivo) info.push('Motivo: ' + v.motivo);
         if (v.envio) info.push('Enviada ' + ({ email: 'por e-mail', whatsapp: 'por WhatsApp', em_maos: 'em mãos' }[v.envio.canal] || v.envio.canal) + ' em ' + _v200Data(v.envio.quando, true) + (v.envio.com_quem ? ' · com ' + v.envio.com_quem : ''));
@@ -119736,7 +119754,7 @@ body.v357-on #qofRaiz .qof-card[data-qof-est="9"]::after,body.v357-on #qofRaiz .
   function escolhaHtml(id, D, x) {
     var F = V368.esc[id]; if (!F || F.prop !== x.proposta.id) return '';
     var lst = V368.frota[id];
-    var h = '<div class="v368-esc" id="v368Esc"><b>🔁 Trocar ' + E(maqTxt(x.maquina)) + ' por:</b> <span class="v368-sub">o valor continua ' + E(brl(x.valor)) + (D.modalidade === 'mensal' ? ' por mês' : ' por dia') + '</span>';
+    var h = '<div class="v368-esc" id="v368Esc"><b>🔁 Trocar ' + E(maqTxt(x.maquina)) + ' por:</b> <span class="v368-sub">o valor continua ' + E(brl(x.valor)) + (D.modalidade === 'mensal' ? ' por mês' : D.modalidade === 'cessao' ? ' (cessão)' : ' por dia') + '</span>';
     if (!lst) h += '<div class="v368-sub">⏳ Lendo a frota…</div>';
     else if (lst.erro) h += '<div class="v368-av">' + E(lst.erro) + '</div>';
     else {
@@ -119755,7 +119773,7 @@ body.v357-on #qofRaiz .qof-card[data-qof-est="9"]::after,body.v357-on #qofRaiz .
     if (D.erro) return '<h4>🚚 Entrega</h4><div class="v368-av">' + E(D.erro) + '</div>';
     if (!D.ok || !D.aceita) return '';
     var lote = V368.lote[id];
-    var h = '<h4>🚚 Entrega <span class="v368-sub">' + E(D.proposta || '') + (D.versao ? ' v' + E(D.versao) : '') + ' · ' + (D.modalidade === 'mensal' ? 'mensal' : 'diária') + ' · de ' + E(dataBr(D.inicio)) + ' · ' + E(D.periodo || '') +
+    var h = '<h4>🚚 Entrega <span class="v368-sub">' + E(D.proposta || '') + (D.versao ? ' v' + E(D.versao) : '') + ' · ' + (D.modalidade === 'mensal' ? 'mensal' : D.modalidade === 'cessao' ? 'cessão remunerada' : 'diária') + ' · de ' + E(dataBr(D.inicio)) + ' · ' + E(D.periodo || '') +
       ' · ' + E(D.n_os) + ' de ' + E(D.n) + ' com OS · ' + E(D.n_entregue) + ' entregue' + (Number(D.n_entregue) === 1 ? '' : 's') + '</span></h4>';
     if (!D.tipo_os) h += '<div class="v368-av">O tipo de OS "Entrega em Locação" não está cadastrado — avise o administrador.</div>';
     h += '<table class="v368-tab" data-cfx-off="caixa curta do card (até 30 máquinas)"><thead><tr><th>Máquina</th><th>Situação</th><th class="v368-n">Valor</th><th></th></tr></thead><tbody>';
@@ -119766,7 +119784,7 @@ body.v357-on #qofRaiz .qof-card[data-qof-est="9"]::after,body.v357-on #qofRaiz .
       if (x.os && x.os.no_espelho) acoes += '<button type="button" class="btn btn-secondary btn-sm" data-v368="abrirOS" data-os="' + E(x.os.id) + '">Abrir a OS ' + E(x.os.numero) + '</button>';
       h += '<tr data-v368l="' + E(x.proposta.id) + '"><td><b>' + E(maqTxt(x.maquina)) + '</b>' + (x.trocada ? '<span class="v368-troca">proposta: ' + E(maqTxt(x.proposta)) + ' — trocada' + (x.trocada_em ? ' em ' + E(dataBr(x.trocada_em)) : '') + '</span>' : '') + '</td>' +
         '<td>' + situacao(x) + (x.os && !x.os.viva ? '<div class="v368-sub">OS ' + E(x.os.numero) + ' cancelada</div>' : '') + '</td>' +
-        '<td class="v368-n">' + E(brl(x.valor)) + (D.modalidade === 'mensal' ? '/mês' : '/dia') + '</td><td><div class="v368-lin" style="margin-top:0">' + acoes + '</div>' + escolhaHtml(id, D, x) + '</td></tr>';
+        '<td class="v368-n">' + E(brl(x.valor)) + (D.modalidade === 'mensal' ? '/mês' : D.modalidade === 'cessao' ? '' : '/dia') + '</td><td><div class="v368-lin" style="margin-top:0">' + acoes + '</div>' + escolhaHtml(id, D, x) + '</td></tr>';
     });
     h += '</tbody></table>';
     var podem = (D.maquinas || []).filter(function (x) { return x.pode_os; });
@@ -119948,6 +119966,502 @@ body.v357-on #qofRaiz .qof-card[data-qof-est="9"]::after,body.v357-on #qofRaiz .
 })();
 </script>
 <!-- ████ FIM PCM V368 ████ -->
+<!-- ████ INICIO PCM V370 · 🤝 CESSÃO REMUNERADA NA LOCAÇÃO: OPORTUNIDADE, PROPOSTA, PDF E A OS DE ENTREGA EM EMPRÉSTIMO (ProperCare-backlog#244) ████ -->
+<style id="v370-css">
+/* PCM V370 (ProperCare-backlog#244, parte 3B): a cessão remunerada (3ª modalidade da 🚚 Locação). Chave: localStorage pcm_v370 = off */
+.v370-ces{border-top:1px dashed #D0D5DD;margin-top:10px;padding-top:8px}
+.v370-lin{display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end;margin-top:4px}
+.v370-lin label{display:flex!important;flex-direction:column;gap:3px;font-size:12px!important;font-weight:600;margin:0!important}
+.v370-lin input[type=text]{width:150px!important;text-align:right}
+.v370-lin input.ruim{border-color:#D92D20!important;background:#FEF3F2}
+.v370-cli select{max-width:100%;min-width:280px}
+.v370-cli input[type=text]{width:100%!important;max-width:520px;text-align:left!important}
+.v370-txt{font-size:12.5px;color:#344054;margin-top:4px}
+.v370-txt b{color:#101828}
+.v370-tab{width:100%;border-collapse:collapse;font-size:12.5px;margin-top:6px}
+.v370-tab th{font-size:11px;color:#667085;font-weight:600;text-align:left;padding:4px 6px;border-bottom:1px solid #EAECF0}
+.v370-tab td{padding:6px;border-bottom:1px solid #F2F4F7;vertical-align:top}
+.v370-tab td.n{text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
+.v370-cfgl{display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end;margin-top:8px;padding-top:8px;border-top:1px dashed #D0D5DD}
+.v370-cfgl input{width:130px!important;text-align:right}
+</style>
+<script id="v370Js">
+/* ═════════════════════════════════════════════════════════════════════════════════════════════════════════════
+   PCM V370 · ProperCare-backlog#244 (parte 3B de 4) — 🤝 Cessão remunerada: a 3ª modalidade da 🚚 Locação.
+   · ＋ Oportunidade › 🚚 Locação e ✏ Mudar a locação: Mensal | Diária (spot) | Cessão remunerada. Na cessão: só o início (sem fim), UMA
+     máquina da frota (marcar outra troca), o valor da cessão sugerido por CV × R$/CV da cessão, a diária e a mensal depois do prazo
+     (CV × R$/CV dia e mês) e a máquina do cliente que vai para a oficina (da conta, ou descrita "a identificar na coleta"). O V365 chama
+     este bloco pelas trocas do V370 (sugerido, datas, campos, total, validar, caixa do card); sem o V370 ele faz o mesmo de antes.
+   · Card de cessão: a caixa 🚚 Locação mostra a cessão (máquina, valor, depois do prazo, máquina do cliente, prazos).
+   · 📝 Proposta: o resumo e as versões dizem "cessão remunerada"; o PDF (emissão e prévia) sai no modelo da PROP-2026-0067 v1 (uma página
+     A4: Cliente/Objeto, Resumo, os 7 passos, Prazo e valores, Exemplos pela regra do form, Condições, Responsabilidades, assinaturas).
+     O _v204GerarPdf é embrulhado por fora do V368 (conteúdo de locação com modalidade cessão ⇒ este gerador) e a prévia do V368 também.
+   · 🚚 Entrega: os textos da modalidade (o banco já dá o tipo Entrega em Empréstimo).
+   · ⚙ Configurações (o preço da locação): R$/CV da cessão, dias para aprovar, dias de cessão (o mesmo Salvar).
+   · Sem o SQL do #244 parte 3B (os parâmetros não trazem cv_cessao): a cessão não aparece; nada mais muda.
+   · Chamadas: nenhuma a mais ao abrir (os parâmetros e a caixa já vêm das leituras do V365); criar/salvar: as do V365.
+   ═════════════════════════════════════════════════════════════════════════════════════════════════════════════ */
+(function () {
+  'use strict';
+  if (window.V370) return;
+  var V370 = window.V370 = { versao: 'V370', orig: {}, cfgDig: {}, cfgBase: null };
+  function off() { try { return localStorage.getItem('pcm_v370') === 'off'; } catch (e) { return false; } }
+  V370.off = off;
+  function S(v) { return String(v == null ? '' : v); }
+  function T(v) { return S(v).replace(/\s+/g, ' ').trim(); }
+  function E(v) { return S(v).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;'); }
+  function brl(v) { var n = Number(v || 0); return n.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }); }
+  function num2(v) { var n = Number(v || 0); return n.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
+  function dataBr(iso) { var m = /^(\d{4})-(\d{2})-(\d{2})/.exec(S(iso)); return m ? m[3] + '/' + m[2] + '/' + m[1] : ''; }
+  function maisDias(iso, n) { var m = /^(\d{4})-(\d{2})-(\d{2})/.exec(S(iso)); if (!m) return ''; var d = new Date(Date.UTC(+m[1], +m[2] - 1, +m[3] + Number(n || 0))); return d.toISOString().slice(0, 10); }
+  // dinheiro digitado em pt-BR (a MESMA régua do V365: 3.500 = três mil e quinhentos; 3.500,50; 3500; 3500.5)
+  function parseValor(s) {
+    s = T(s).replace(/^R\$\s*/i, '').replace(/\s/g, '');
+    if (!s) return null;
+    if (!/^[\d.,]+$/.test(s)) return NaN;
+    var v;
+    if (s.indexOf(',') >= 0) {
+      if (!/^(\d{1,3}(\.\d{3})+|\d+)(,\d{1,2})?$/.test(s)) return NaN;
+      v = Number(s.replace(/\./g, '').replace(',', '.'));
+    } else if (/^\d{1,3}(\.\d{3})+$/.test(s)) v = Number(s.replace(/\./g, ''));
+    else if (/^\d+(\.\d{1,2})?$/.test(s)) v = Number(s);
+    else return NaN;
+    return Math.round(v * 100) / 100;
+  }
+  function ehCes(L) { return !!(L && L.modalidade === 'cessao'); }
+
+  // ═══ 1 · os parâmetros (vêm do banco: sem o SQL da parte 3B não há cv_cessao e a cessão não aparece) ════════════════════
+  function cfgDoF(F) {
+    var L = F && F.card && window.V365 && V365.card ? V365.card[F.card] : null;
+    if (L && L.cfg && L.cfg.cv_cessao != null) return L.cfg;
+    return (window.V365 && V365.cfg) || {};
+  }
+  function temSql(F) { var c = cfgDoF(F); return c.cv_cessao != null; }
+  V370.ligado = function (F) { return !off() && (F ? temSql(F) : !!(window.V365 && V365.cfg && V365.cfg.cv_cessao != null)); };
+
+  // ═══ 2 · o formulário da locação (o V365 chama pelas trocas) ═══════════════════════════════════════════════════════════
+  function maqFrota(F, id) { var fr = window.V365 && V365.frota ? V365.frota[(F.card || '') + '|' + F.ini + '|' + (F.fim || '')] : null; return ((fr && fr.maquinas) || []).find(function (m) { return m.id === id; }) || null; }
+  function cvDe(F) { var id = F.ordem[0], m = id ? maqFrota(F, id) : null; return m && m.cv != null ? Number(m.cv) : null; }
+  function ces(F) {
+    if (!F.ces) {
+      var L = F.card && V365.card ? V365.card[F.card] : null, C = L && L.modalidade === 'cessao' ? L.cessao : null;
+      F.ces = C ? { diaria: num2(C.valor_diaria).replace(/\s/g, ''), mensal: num2(C.valor_mensal).replace(/\s/g, ''),
+                    cliMaq: C.cliente_maquina ? C.cliente_maquina.id : (C.cliente_maquina_texto ? '__txt' : ''), cliTxt: S(C.cliente_maquina_texto) }
+                : { diaria: '', mensal: '', cliMaq: '', cliTxt: '' };
+    }
+    return F.ces;
+  }
+  function sugD(F) { var cv = cvDe(F), c = cfgDoF(F); return cv == null || c.cv_diaria == null ? null : Math.round(cv * Number(c.cv_diaria) * 100) / 100; }
+  function sugM(F) { var cv = cvDe(F), c = cfgDoF(F); return cv == null || c.cv_mensal == null ? null : Math.round(cv * Number(c.cv_mensal) * 100) / 100; }
+  V370.sugerido = function (F, m) { var c = cfgDoF(F); return m && m.cv != null && c.cv_cessao != null ? Math.round(Number(m.cv) * Number(c.cv_cessao) * 100) / 100 : null; };
+  V370.botaoMod = function (F) {
+    if (!V370.ligado(F)) return '';
+    return '<button type="button" data-v365="mod" data-ctx="' + F.ctx + '" data-k="cessao" aria-pressed="' + (F.mod === 'cessao') + '" title="Máquina da frota no cliente enquanto o compressor dele está na oficina">Cessão remunerada</button>';
+  };
+  V370.datasHtml = function (F) {
+    var c = F.ctx, cf = cfgDoF(F);
+    return '<div class="v365-datas"><label for="v365' + c + 'Ini">Início previsto (entrega) *<input type="date" id="v365' + c + 'Ini" data-v365c="ini" data-ctx="' + c + '" value="' + E(F.ini) + '"></label>' +
+      '<span class="v365-dias" title="Sem fim: a máquina volta quando o compressor do cliente estiver pronto">sem fim · aprovar em ' + E(cf.cessao_aprov_dias) + ' dias · cessão até ' + E(cf.cessao_total_dias) + ' dias</span></div>';
+  };
+  function clientesDe(F) {
+    var M = _v200.modal, cli = F.ctx === 'c' ? (M && M.d && M.d.card && M.d.card.cliente_id) : (M && M.cli);
+    var conta = (_v200.contas || []).find(function (c) { return c.cliente_id === cli; }) || {};
+    try { return _v200MaquinasDo(conta.cliente || '', cli).filter(function (m) { return m && S(m.ativo || 'SIM').toUpperCase() !== 'NÃO'; }); } catch (e) { return []; }
+  }
+  function rotMaq(m) { try { return _osMachineLabel(m); } catch (e) { return T([m.brand || m.marca, m.model || m.modelo, m.serial || m.serie].filter(Boolean).join(' · ')) || S(m.id); } }
+  function extraInner(F) {
+    var c = F.ctx, X = ces(F), cf = cfgDoF(F), sd = sugD(F), sm = sugM(F);
+    var pd = parseValor(X.diaria), pm = parseValor(X.mensal);
+    var h = '<div class="v365-t">Depois do prazo de aprovação <span class="v365-min">só cobrados se a aprovação passar do prazo · sugestão: R$ ' + E(num2(cf.cv_diaria)) + '/CV por dia · R$ ' + E(num2(cf.cv_mensal)) + '/CV por mês</span></div>' +
+      '<div class="v370-lin"><label for="v370' + c + 'Dia">Diária (1º ao ' + E(cf.diarias_max || 10) + 'º dia)<input type="text" inputmode="decimal" id="v370' + c + 'Dia" data-v370c="diaria" data-ctx="' + c + '" value="' + E(X.diaria) + '" placeholder="' + (sd != null ? E(num2(sd)) : 'valor') + '" maxlength="16" autocomplete="off"' + (isNaN(pd) ? ' class="ruim"' : '') + '></label>' +
+      '<label for="v370' + c + 'Men">Mensal (do ' + E(Number(cf.diarias_max || 10) + 1) + 'º dia em diante)<input type="text" inputmode="decimal" id="v370' + c + 'Men" data-v370c="mensal" data-ctx="' + c + '" value="' + E(X.mensal) + '" placeholder="' + (sm != null ? E(num2(sm)) : 'valor') + '" maxlength="16" autocomplete="off"' + (isNaN(pm) ? ' class="ruim"' : '') + '></label></div>';
+    var ms = clientesDe(F), tem = false;
+    var ops = '<option value="">— não informar agora</option><option value="__txt"' + (X.cliMaq === '__txt' ? ' selected' : '') + '>🔎 descrever (a identificar na coleta)</option>' +
+      ms.map(function (m) { var on = S(m.id) === X.cliMaq; if (on) tem = true; return '<option value="' + E(m.id) + '"' + (on ? ' selected' : '') + '>' + E(rotMaq(m)) + '</option>'; }).join('');
+    if (X.cliMaq && X.cliMaq !== '__txt' && !tem) ops += '<option value="' + E(X.cliMaq) + '" selected>' + E(X.cliMaq) + '</option>';
+    h += '<div class="v365-t" style="margin-top:8px">Máquina do cliente que vai para a oficina <span class="v365-min">opcional</span></div>' +
+      '<div class="v370-cli"><select id="v370' + c + 'Cli" data-v370c="cliMaq" data-ctx="' + c + '" aria-label="Máquina do cliente">' + ops + '</select>' +
+      (X.cliMaq === '__txt' ? '<div style="margin-top:6px"><input type="text" id="v370' + c + 'CliTxt" data-v370c="cliTxt" data-ctx="' + c + '" value="' + E(X.cliTxt) + '" maxlength="300" placeholder="ex.: compressor parafuso 20 CV, sem placa" aria-label="Descrição da máquina do cliente" autocomplete="off" readonly onfocus="this.removeAttribute(\'readonly\')" name="v370_cli_' + c + '_nofill" data-lpignore="true" data-1p-ignore></div>' : '') + '</div>';
+    return h;
+  }
+  V370.extraHtml = function (F) { return '<div class="v370-ces" id="v370' + F.ctx + 'Ces">' + extraInner(F) + '</div>'; };
+  function valorDe(F) { var id = F.ordem[0]; if (!id) return null; var t = F.sel[id]; if (T(t)) return parseValor(t); return V370.sugerido(F, maqFrota(F, id)); }
+  V370.totalTxt = function (F) {
+    var n = F.ordem.length; if (!n) return '<span class="v365-min">Marque a máquina da frota que vai na cessão.</span>';
+    if (n > 1) return '<span class="v365-min">Na cessão vai UMA máquina — desmarque as outras.</span>';
+    var v = valorDe(F); if (v == null || isNaN(v)) return '<span class="v365-min">Confira o valor da cessão.</span>';
+    var X = ces(F), d = T(X.diaria) ? parseValor(X.diaria) : sugD(F), m = T(X.mensal) ? parseValor(X.mensal) : sugM(F);
+    return 'Valor da cessão: ' + E(brl(v)) + ' <span class="v365-min">· devido na entrega' + (d != null && !isNaN(d) && m != null && !isNaN(m) ? ' · depois do prazo ' + E(brl(d)) + '/dia e ' + E(brl(m)) + '/mês' : '') + '</span>';
+  };
+  // o que vai ao banco (o V365 já conferiu datas, máquina e valor da máquina)
+  V370.validar = function (F, pv) {
+    if (F.ordem.length !== 1) return { erro: 'Na cessão remunerada vai UMA máquina da frota — desmarque as outras.' };
+    var X = ces(F), c = F.ctx, d = parseValor(X.diaria), m = parseValor(X.mensal);
+    if (isNaN(d)) return { erro: 'Não entendi a diária: use 280 ou 280,00.', campo: 'v370' + c + 'Dia' };
+    if (isNaN(m)) return { erro: 'Não entendi a mensal: use 2.800 ou 2.800,00.', campo: 'v370' + c + 'Men' };
+    if ((d === null && sugD(F) == null) || (m === null && sugM(F) == null)) return { erro: 'A máquina não tem potência no cadastro: informe a diária e a mensal depois do prazo.', campo: 'v370' + c + (d === null ? 'Dia' : 'Men') };
+    if (X.cliMaq === '__txt' && T(X.cliTxt).length > 300) return { erro: 'A descrição da máquina do cliente passa de 300 letras.', campo: 'v370' + c + 'CliTxt' };
+    pv.p.fim = null;
+    pv.p.cessao = { valor_diaria: d, valor_mensal: m, cliente_maquina_id: X.cliMaq && X.cliMaq !== '__txt' ? X.cliMaq : null,
+                    cliente_maquina_texto: X.cliMaq === '__txt' ? T(X.cliTxt) || null : null };
+    return pv;
+  };
+  function formDoCtx(ctx) { var M = _v200.modal; if (!M) return null; return ctx === 'c' ? M.v365e : (M.tipo === 'nova' ? M.v365 : null); }
+  function focar(id) { var f = id && document.getElementById(id); if (f) { f.removeAttribute('readonly'); try { f.focus(); } catch (e) {} } }
+  function atualizarTotal(F) { var a = document.getElementById('v365' + F.ctx + 'Total'); if (a) a.innerHTML = V370.totalTxt(F); }
+  function repintarExtra(F) {
+    var b = document.getElementById('v370' + F.ctx + 'Ces'); if (!b) return;
+    var foco = document.activeElement && b.contains(document.activeElement) ? document.activeElement.id : '';
+    b.innerHTML = extraInner(F);
+    if (foco) focar(foco);
+  }
+  // uma máquina só: as outras marcadas saem pelo próprio V365 (o "change" de cada caixinha, procurada de novo depois de cada repintura)
+  function soUma(F, fica) {
+    var outras = F.ordem.filter(function (id) { return id !== fica; });
+    outras.forEach(function (id) {
+      var lista = document.getElementById('v365' + F.ctx + 'Lista');
+      var cb = lista && Array.prototype.find.call(lista.querySelectorAll('input[data-v365c="maq"]'), function (x) { return x.value === id; });
+      if (cb && cb.checked) { cb.checked = false; cb.dispatchEvent(new Event('change', { bubbles: true })); }
+      else { delete F.sel[id]; F.ordem = F.ordem.filter(function (x) { return x !== id; }); }
+    });
+  }
+  // depois do V365 tratar o clique em Cessão: sem fim, uma máquina, a frota relida para o período (o "change" do início faz isso)
+  document.addEventListener('click', function (ev) {
+    var t = ev.target && ev.target.closest && ev.target.closest('[data-v365="mod"]'); if (!t || off() || !t.closest('#v200Modal')) return;
+    var F = formDoCtx(t.getAttribute('data-ctx')); if (!F || F.mod !== 'cessao') return;
+    setTimeout(function () {
+      if (F.ordem.length > 1) soUma(F, F.ordem[0]);
+      if (F.fim) { F.fim = ''; var ini = document.getElementById('v365' + F.ctx + 'Ini'); if (ini) ini.dispatchEvent(new Event('change', { bubbles: true })); }
+      atualizarTotal(F);
+    }, 0);
+  }, false);
+  function aoMudar(ev) {
+    var t = ev.target; if (!t || !t.getAttribute || off()) return;
+    if (/^v370Cfg[CAT]$/.test(t.id || '')) { V370.cfgDig[t.id] = t.value; V370.cfgBase = window.V365 ? V365.cfg : null; return; }
+    var F, k = t.getAttribute('data-v370c');
+    if (!k) {
+      // marcar outra máquina na cessão troca a de antes (depois do V365 tratar o "change")
+      if (ev.type === 'change' && t.getAttribute('data-v365c') === 'maq' && t.checked) {
+        F = formDoCtx(t.getAttribute('data-ctx'));
+        if (F && F.mod === 'cessao' && F.ordem.length > 1) { var id = t.value; setTimeout(function () { soUma(F, id); repintarExtra(F); atualizarTotal(F); }, 0); }
+        else if (F && F.mod === 'cessao') setTimeout(function () { repintarExtra(F); atualizarTotal(F); }, 0);
+      }
+      return;
+    }
+    F = formDoCtx(t.getAttribute('data-ctx')); if (!F) return;
+    var X = ces(F);
+    if (k === 'diaria' || k === 'mensal') { X[k] = t.value; t.classList.toggle('ruim', isNaN(parseValor(t.value))); atualizarTotal(F); return; }
+    if (k === 'cliTxt') { X.cliTxt = t.value; return; }
+    if (k === 'cliMaq' && ev.type === 'change') { X.cliMaq = t.value; repintarExtra(F); if (t.value === '__txt') focar('v370' + F.ctx + 'CliTxt'); }
+  }
+  document.addEventListener('input', aoMudar, false);
+  document.addEventListener('change', aoMudar, false);
+
+  // ═══ 3 · a caixa 🚚 Locação do card de cessão (o V365 chama pela troca) ═══════════════════════════════════════════════
+  function sitTxt(m) {
+    if (m.situacao === 'locada') return 'locada' + (m.ate ? ' até ' + dataBr(m.ate) : '');
+    if (m.situacao === 'oficina') return 'na oficina';
+    return 'livre';
+  }
+  function cliTxt(C) {
+    if (!C) return '';
+    if (C.cliente_maquina) return T([C.cliente_maquina.marca, C.cliente_maquina.modelo].filter(Boolean).join(' ')) + (C.cliente_maquina.serie ? ' · série ' + C.cliente_maquina.serie : '') + (C.cliente_maquina.tag ? ' · TAG ' + C.cliente_maquina.tag : '');
+    if (C.cliente_maquina_texto) return 'a identificar: ' + C.cliente_maquina_texto;
+    return '';
+  }
+  V370.caixaHtml = function (L) {
+    var C = L.cessao || {}, m = (L.maquinas || [])[0] || {};
+    var h = '<div><b>Cessão remunerada</b> · início previsto ' + E(dataBr(L.inicio)) + ' · sem fim (volta quando o compressor do cliente estiver pronto)</div>';
+    h += '<table class="v370-tab" data-cfx-off="caixa curta do card (uma máquina)"><thead><tr><th>Máquina cedida</th><th>Situação hoje</th><th class="n">Valor da cessão</th></tr></thead><tbody>' +
+      '<tr><td><b>' + E(m.tag || m.id || '') + '</b> ' + E([m.marca, m.modelo].filter(Boolean).join(' ')) + (m.cv != null ? ' · ' + E(num2(m.cv).replace(/,00$/, '')) + ' CV' : '') +
+      ((m.reservas || []).length ? '<div class="v365-res" style="padding-left:0">⚠ também na ' + E(m.reservas[0].oportunidade_id) + ' (' + E(m.reservas[0].cliente) + ')</div>' : '') + '</td>' +
+      '<td>' + E(sitTxt(m)) + '</td><td class="n">' + E(brl(m.valor)) + (m.valor_sugerido != null && Number(m.valor_sugerido) !== Number(m.valor) ? '<br><span class="v365-min">sugerido ' + E(brl(m.valor_sugerido)) + '</span>' : '') + '</td></tr></tbody></table>';
+    h += '<div class="v370-txt">Depois do prazo: <b>' + E(brl(C.valor_diaria)) + '/dia</b> (1º ao ' + E(C.diarias_max || 10) + 'º dia) · <b>' + E(brl(C.valor_mensal)) + '/mês</b> do ' + E(Number(C.diarias_max || 10) + 1) + 'º dia em diante</div>';
+    h += '<div class="v370-txt">Prazos de hoje: aprovar em ' + E(C.aprov_dias) + ' dias · cessão até ' + E(C.total_dias) + ' dias</div>';
+    var ct = cliTxt(C);
+    h += '<div class="v370-txt">Máquina do cliente: ' + (ct ? '<b>' + E(ct) + '</b>' : '<span class="v365-min">não informada</span>') + '</div>';
+    h += '<div class="v365-total">Valor da cessão: ' + E(brl(L.total)) + ' <span class="v365-min">· devido na entrega</span></div>';
+    if (L.editavel) h += '<div class="v365-pe"><button type="button" class="btn btn-secondary btn-sm" data-v365="mudarLoc">✏ Mudar a locação</button></div>';
+    else if (L.aberta && L.tem_proposta) h += '<div class="v365-sub" style="font-size:12px;color:#667085;margin-top:6px">Com proposta: muda pela proposta.</div>';
+    return h;
+  };
+  // 📝 Proposta (V366): o resumo da caixa
+  V370.caixaTxt = function (L) {
+    var C = L.cessao || {}, m = (L.maquinas || [])[0] || {};
+    return 'Cessão remunerada · início ' + dataBr(L.inicio) + ' · ' + (m.tag || m.id || '1 máquina') + ' · ' + brl(L.total) + ' (valor da cessão) · depois do prazo ' + brl(C.valor_diaria) + '/dia, ' + brl(C.valor_mensal) + '/mês';
+  };
+
+  // ═══ 4 · ⚙ Configurações: os parâmetros da cessão no mesmo quadro do preço da locação (o V365 chama pelas trocas) ════════════
+  V370.cfgCampos = function (c, dis) {
+    if (off() || !c || c.cv_cessao == null) return '';
+    if (V370.cfgBase !== c) { V370.cfgDig = {}; V370.cfgBase = c; }   // a leitura nova (ou o salvar) vale mais que o digitado de antes
+    var dg = V370.cfgDig, val = function (id, v) { return E(dg[id] != null ? dg[id] : v); };
+    return '</div><div class="v370-cfgl"><b style="font-size:12.5px;width:100%">🤝 Cessão remunerada</b>' +
+      '<label for="v370CfgC">R$ por CV · cessão<input type="text" inputmode="decimal" id="v370CfgC" value="' + val('v370CfgC', num2(c.cv_cessao)) + '"' + dis + '></label>' +
+      '<label for="v370CfgA">Dias para aprovar<input type="number" min="1" max="90" step="1" id="v370CfgA" value="' + val('v370CfgA', c.cessao_aprov_dias) + '"' + dis + '></label>' +
+      '<label for="v370CfgT">Dias de cessão<input type="number" min="1" max="180" step="1" id="v370CfgT" value="' + val('v370CfgT', c.cessao_total_dias) + '"' + dis + '></label>';
+  };
+  V370.cfgValores = function () {
+    if (off() || !window.V365 || !V365.cfg || V365.cfg.cv_cessao == null || !document.getElementById('v370CfgC')) return { p: {} };
+    var c = parseValor(_v200Val('v370CfgC')), a = Number(_v200Val('v370CfgA')), t = Number(_v200Val('v370CfgT'));
+    if (c === null || isNaN(c) || !(c > 0)) return { erro: 'R$ por CV · cessão: use um valor maior que zero (ex.: 100 ou 100,00).', campo: 'v370CfgC' };
+    if (!(a >= 1 && a <= 90 && Math.round(a) === a)) return { erro: 'Dias para aprovar: de 1 a 90.', campo: 'v370CfgA' };
+    if (!(t >= 1 && t <= 180 && Math.round(t) === t)) return { erro: 'Dias de cessão: de 1 a 180.', campo: 'v370CfgT' };
+    return { p: { cv_cessao: c, cessao_aprov_dias: a, cessao_total_dias: t } };
+  };
+
+  // ═══ 5 · o PDF da cessão remunerada (o modelo aprovado da PROP-2026-0067 v1) ════════════════════════════════════════════
+  // a conta da regra (a MESMA do form_emprestimo: empCalc) — o prazo para aprovar nunca é menos que aprov; sobra até total
+  function calc(D, A, P) {
+    var livre = Math.max(P.aprov, P.total - D), exc = Math.max(0, A - livre), extra = 0, txt = 'Dentro do prazo';
+    if (exc > 0 && exc <= P.dmax) { extra = exc * P.diaria; txt = exc + ' dias excedentes × ' + brl(P.diaria); }
+    else if (exc > P.dmax) { var meses = Math.ceil(exc / 30); extra = meses * P.mensal; txt = exc + ' dias excedentes: mensalidade' + (meses > 1 ? ' × ' + meses : ''); }
+    return { D: D, A: A, livre: livre, txt: txt, total: P.valor + extra };
+  }
+  V370.calc = calc;
+  function curto(nome) { var p = T(S(nome).split(/\s+[–-]\s+|,/)[0]).split(' ')[0] || 'cliente'; return p.charAt(0).toUpperCase() + p.slice(1).toLowerCase(); }
+  function cvTxt(m) { var n = Number(m && m.cv); if (m && m.cv != null && m.cv !== '' && isFinite(n)) return (Math.round(n * 10) / 10).toLocaleString('pt-BR') + ' CV'; return T(m && m.potencia) || '—'; }
+  function docFmt(x) { return window.V368 && V368.docFmt ? V368.docFmt(x) : T(x); }
+  function modelo(c) {
+    c = c || {}; var L = c.locacao || {}, K = L.cessao || {}, m = (L.maquinas || [])[0] || {}, cli = c.cliente || {}, cond = c.condicoes || {};
+    var P = { valor: Number(K.valor != null ? K.valor : (L.total_base || m.valor || 0)), diaria: Number(K.valor_diaria || 0), mensal: Number(K.valor_mensal || 0),
+              aprov: Number(K.aprov_dias || 15), total: Number(K.total_dias || 30), dmax: Number(K.diarias_max || 10) };
+    var nomeMaq = T([T(m.marca), T(m.modelo)].filter(Boolean).join(' ')) || T(S(m.rotulo).split(' · ')[0]) || 'equipamento', soModelo = T(m.modelo);
+    var tipo = T(m.tipo_equip), tipoCap = tipo ? tipo.charAt(0).toUpperCase() + tipo.slice(1).toLowerCase() : '';
+    var objTipo = tipo ? tipo.split(' ')[0].toLowerCase() : 'equipamento', cv = cvTxt(m);
+    var D2 = P.aprov, D1 = Math.max(1, Math.min(P.total - P.aprov - 5, D2 - 1)), D3 = P.aprov + 5;   // três casos distintos (auditoria A12)
+    var l1 = Math.max(P.aprov, P.total - D1), l3 = Math.max(P.aprov, P.total - D3);
+    var ex = [calc(D1, Math.max(1, l1 - 2), P), calc(D2, Math.max(P.aprov, P.total - D2) + Math.min(5, P.dmax), P), calc(D3, l3 + P.dmax + 5, P)];
+    var quem = T(c.emitida_por_nome);
+    if (!quem) { try { var q = T(_v200NomeUsu(c.emitida_por)); quem = q && q !== '—' && q !== T(c.emitida_por) ? q : ''; } catch (e) { quem = ''; } }
+    var cards = [];
+    var vd = Number(c.validade_dias) || 0;
+    cards.push({ rot: 'Validade', val: vd ? vd + ' dias' : '—', sub: c.validade_ate ? 'até ' + dataBr(c.validade_ate) : '' });
+    if (T(cond.pagamento)) cards.push({ rot: 'Pagamento', val: T(cond.pagamento), sub: 'valor da cessão devido na entrega' });
+    cards.push({ rot: 'Início previsto', val: dataBr(L.inicio) || '—', sub: 'com a coleta do compressor da ' + curto(cli.nome) });
+    (L.condicoes || []).forEach(function (x) { cards.push({ rot: T(x.rotulo), val: T(x.texto), sub: '' }); });
+    var ct = K.cliente_maquina ? T([K.cliente_maquina.marca, K.cliente_maquina.modelo].filter(Boolean).join(' ')) + (K.cliente_maquina.serie ? ' (série ' + K.cliente_maquina.serie + ')' : '') : T(K.cliente_maquina_texto);
+    var cc = curto(cli.nome);
+    var resp = ['A ' + cc + ' responde pela guarda, pela operação correta e pela integridade do equipamento cedido, e pelas condições do local de instalação: rede elétrica, aterramento, ventilação, espaço livre e piso.',
+                'O equipamento deve ser devolvido no mesmo estado em que foi recebido, ressalvado o desgaste natural de uso.',
+                'A manutenção do compressor da ' + cc + (ct ? ' — ' + ct + ' —' : '') + ' é objeto de proposta própria, enviada após o diagnóstico.'];
+    return { proposta: T(c.proposta), versao: S(c.versao), emitida: c.emitida_em ? new Date(c.emitida_em).toLocaleDateString('pt-BR', { timeZone: 'America/Sao_Paulo' }) : '',
+             validade: c.validade_ate ? dataBr(c.validade_ate) : '', quem: quem,
+             cliente: { nome: T(cli.nome), doc: T(cli.cnpj) ? docFmt(cli.cnpj) : '', local: T(cli.cidade) + (T(cli.uf) ? (T(cli.cidade) ? '/' : '') + T(cli.uf) : '') },
+             ac: T(cond.ac), objeto: 'Cessão remunerada de ' + objTipo + (cv !== '—' ? ' ' + cv : ''), maq: { nome: nomeMaq, modelo: soModelo, tipo: tipoCap, tag: T(m.tag), cv: cv },
+             P: P, ex: ex, cards: cards, resp: resp };
+  }
+  V370.modelo = modelo;
+  async function pdfCessao(v, previa) {
+    var lib = await pcmEnsureJsPDF();
+    var c = (v && v.conteudo) || {}, jsPDF = lib.jsPDF, M = modelo(c), P = M.P;
+    var doc = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
+    try { if (c.emitida_em && typeof doc.setCreationDate === 'function') doc.setCreationDate(new Date(c.emitida_em)); } catch (e) {}
+    try { if (v && v.id && typeof doc.setFileId === 'function') doc.setFileId(String(v.id).replace(/-/g, '').slice(0, 32).toUpperCase()); } catch (e) {}
+    try { doc.setProperties({ title: M.proposta + (M.versao ? ' · revisão ' + M.versao : '') }); } catch (e) {}
+    var W = 210, H = 297, ML = 13, MR = 13, X2 = W - MR, LARG = W - ML - MR, RODAPE = 12, y = 11;
+    var COR = { lar: [232, 99, 28], larE: [180, 71, 14], larC: [255, 244, 236], larM: [253, 227, 208], verde: [46, 107, 58], verdeC: [234, 244, 236], verdeB: [125, 184, 138],
+                txt: [34, 34, 34], cin: [85, 85, 85], cl: [136, 136, 136], fundo: [241, 241, 241], linha: [238, 238, 238], borda: [204, 204, 204], cinzaSeta: [187, 187, 187] };
+    try { doc.setLineHeightFactor(1.17); } catch (e) {}
+    function cor(c3) { doc.setTextColor(c3[0], c3[1], c3[2]); }
+    function fonte(peso, tam) { doc.setFont('helvetica', peso || 'normal'); doc.setFontSize(tam); }
+    function A(s) { return typeof _v249Ansi === 'function' ? _v249Ansi(s) : S(s); }
+    function txt(s, x, yy, o) { doc.text(A(s), x, yy, o || {}); }
+    function quebra(s, larg) { return doc.splitTextToSize(A(s), larg); }
+    function txtEsp(s, x, yy, esp, alinha) { s = A(s); var w = doc.getTextWidth(s) + esp * Math.max(s.length - 1, 0); try { doc.setCharSpace(esp); } catch (e) {} txt(s, alinha === 'right' ? x - w : alinha === 'center' ? x - w / 2 : x, yy); try { doc.setCharSpace(0); } catch (e) {} }
+    function fill(c3) { doc.setFillColor(c3[0], c3[1], c3[2]); }
+    function draw(c3, w) { doc.setDrawColor(c3[0], c3[1], c3[2]); doc.setLineWidth(w || 0.2); }
+    function cabe(h) { return y + h <= H - RODAPE - 4; }
+    function precisa(h) { if (!cabe(h)) { doc.addPage(); y = 14; } }
+    function titulo(t) { precisa(9); fill(COR.lar); doc.rect(ML, y - 3.4, 0.9, 4.4, 'F'); fonte('bold', 10); cor(COR.txt); txt(t, ML + 3, y); y += 4.2; }
+    // cabeçalho (o da proposta comercial)
+    var temLogo = typeof V249_LOGO !== 'undefined' && V249_LOGO;
+    try { if (!temLogo) throw new Error('sem logo'); doc.addImage('data:image/png;base64,' + V249_LOGO, 'PNG', ML, y - 1, 50, 50 * (typeof V249_LOGO_RAZAO !== 'undefined' ? V249_LOGO_RAZAO : 125 / 600)); }
+    catch (e) { fonte('bold', 15); cor(COR.txt); txt('PROPER COMPRESSORES', ML, y + 6); }
+    fonte('bold', 7); cor(COR.lar); txtEsp((previa ? 'PRÉVIA · ' : '') + 'PROPOSTA DE CESSÃO REMUNERADA', X2, y + 1, 0.9, 'right');
+    fonte('bold', 16); cor(COR.txt); txt(M.proposta, X2, y + 7.6, { align: 'right' });
+    fonte('normal', 7.8); cor(COR.cin);
+    txt('Revisão ' + M.versao + (M.emitida ? ' · Emitida em ' + M.emitida : '') + (M.validade ? ' · Válida até ' + M.validade : ''), X2, y + 12, { align: 'right' });
+    y += 15.5;
+    fill(COR.lar); doc.rect(ML, y, LARG, 0.8, 'F'); y += 3.8;
+    var EMP = (typeof V249_EMPRESA !== 'undefined' && V249_EMPRESA) || { razao: 'PROPER COMPRESSORES LTDA', nome: 'Proper Compressores', dados: '', dados2: '' };
+    fonte('normal', 6.4); cor(COR.cin);
+    quebra(EMP.razao + (EMP.dados ? ' · ' + EMP.dados + ' ·' : ''), LARG).concat(EMP.dados2 ? quebra(EMP.dados2, LARG) : []).forEach(function (t) { txt(t, W / 2, y, { align: 'center' }); y += 2.8; });
+    y += 2.4;
+    // Cliente | Objeto
+    var bw = (LARG - 6) / 2, bx2 = ML + bw + 6;
+    fonte('bold', 10.5); var cliN = quebra(M.cliente.nome || '—', bw - 9);
+    fonte('normal', 7.8); var cliL = quebra([M.cliente.doc ? (M.cliente.doc.replace(/\D/g, '').length === 11 ? 'CPF ' : 'CNPJ ') + M.cliente.doc : '', M.cliente.local].filter(Boolean).join(' · '), bw - 9);
+    if (M.ac) cliL = cliL.concat(quebra('A/C ' + M.ac, bw - 9));
+    fonte('bold', 9); var objL = quebra(M.objeto, bw - 9);
+    var hBox = Math.max(8.5 + cliN.length * 4.4 + cliL.length * 3.5, 8.5 + objL.length * 4 + 9) + 2;
+    draw(COR.borda, 0.25); doc.roundedRect(ML, y, bw, hBox, 1.8, 1.8, 'S');
+    fill(COR.fundo); doc.roundedRect(bx2, y, bw, hBox, 1.8, 1.8, 'F');
+    fonte('normal', 6.2); cor(COR.cl); txtEsp('CLIENTE', ML + 4.5, y + 5, 0.6); txtEsp('OBJETO', bx2 + 4.5, y + 5, 0.6);
+    var yy = y + 10.2;
+    fonte('bold', 10.5); cor(COR.txt); cliN.forEach(function (t) { txt(t, ML + 4.5, yy); yy += 4.4; });
+    fonte('normal', 7.8); cor(COR.cin); cliL.forEach(function (t) { txt(t, ML + 4.5, yy - 0.4); yy += 3.5; });
+    yy = y + 10.2;
+    fonte('bold', 9); cor(COR.txt); objL.forEach(function (t) { txt(t, bx2 + 4.5, yy); yy += 4; });
+    fonte('normal', 7.6); cor(COR.cin); txt('Valor da cessão', bx2 + 4.5, y + hBox - 4.6);
+    var vtW = doc.getTextWidth(A('Valor da cessão '));
+    fonte('bold', 15); cor(COR.txt); txt(_v204R(P.valor), bx2 + 4.5 + vtW + 1.5, y + hBox - 4.6);
+    y += hBox + 6;
+    // Resumo
+    titulo('Resumo');
+    var cR = { num: ML + 1.5, eq: ML + 8, tag: ML + 70, pot: ML + 91, cob: ML + 107, val: X2 - 1 };
+    fonte('normal', 5.9); cor(COR.cl);
+    txtEsp('EQUIPAMENTO CEDIDO', cR.eq, y, 0.5); txtEsp('TAG', cR.tag, y, 0.5); txtEsp('POTÊNCIA', cR.pot, y, 0.5); txtEsp('COBERTURA', cR.cob, y, 0.5); txtEsp('VALOR', cR.val, y, 0.5, 'right');
+    y += 1.8; draw(COR.txt, 0.3); doc.line(ML, y, X2, y); y += 4.4;
+    fonte('bold', 8.4); cor(COR.lar); txt('01', cR.num, y);
+    fonte('normal', 8.2); cor(COR.txt); var qn = quebra(M.maq.nome + (M.maq.tipo ? ' · ' + M.maq.tipo : ''), cR.tag - cR.eq - 2); txt(qn.length > 1 ? quebra(M.maq.nome, cR.tag - cR.eq - 2)[0] : qn[0], cR.eq, y); txt(M.maq.tag || '—', cR.tag, y); txt(M.maq.cv, cR.pot, y);
+    txt('Diagnóstico, aprovação e manutenção', cR.cob, y); fonte('bold', 8.4); txt(_v204R(P.valor), cR.val, y, { align: 'right' });
+    y += 2.6; draw(COR.txt, 0.3); doc.line(ML, y, X2, y); y += 4.4;
+    fonte('bold', 8.6); txt('Total devido na entrega', cR.eq, y); txt(_v204R(P.valor), cR.val, y, { align: 'right' });
+    y += 6.5;
+    // Como funciona: os 7 passos (o desenho aprovado: viewBox 920 × 352 → 184 mm de largura, k = 0,2)
+    precisa(78); titulo('Como funciona a cessão remunerada');   // o desenho inteiro na mesma página (auditoria A11)
+    var k = LARG / 920, y0 = y + 0.5;
+    function px(x) { return ML + x * k; } function py(v2) { return y0 + v2 * k; }
+    function seta(x1, y1, x2) { draw(COR.cinzaSeta, 0.4); doc.line(px(x1), py(y1), px(x2) - 1.1, py(y1)); fill(COR.cinzaSeta); doc.triangle(px(x2), py(y1), px(x2) - 1.6, py(y1) - 0.8, px(x2) - 1.6, py(y1) + 0.8, 'F'); }
+    var CX = [66, 197, 328, 460, 591, 722, 854];
+    for (var i = 0; i < 6; i++) seta(CX[i] + 33, 50, CX[i + 1] - 33);
+    CX.forEach(function (x) { fill(COR.larC); draw(COR.lar, 0.5); doc.circle(px(x), py(50), 30 * k, 'FD'); });
+    draw(COR.lar, 0.45); doc.setLineCap('round'); doc.setLineJoin('round');
+    function seg(pts) { for (var j = 0; j < pts.length - 1; j++) doc.line(px(pts[j][0]), py(pts[j][1]), px(pts[j + 1][0]), py(pts[j + 1][1])); }
+    function ret(x, yv, w, h2) { doc.roundedRect(px(x), py(yv), w * k, h2 * k, 0.4, 0.4, 'S'); }
+    function circ(x, yv, r, f) { if (f) { fill(COR.larC); doc.circle(px(x), py(yv), r * k, 'FD'); } else doc.circle(px(x), py(yv), r * k, 'S'); }
+    // 1 coleta (caminhão) · 2 entrega (compressor) · 3 termo · 4 diagnóstico · 5 aprovação · 6 manutenção · 7 devolução
+    ret(45, 38, 24, 18); seg([[69, 43], [78, 43], [84, 50], [84, 56], [69, 56]]); circ(53, 59, 4, true); circ(76, 59, 4, true);
+    ret(179, 37, 36, 25); circ(190, 49, 6); seg([[200, 43], [209, 43]]); seg([[200, 49], [209, 49]]); seg([[200, 55], [209, 55]]); seg([[183, 62], [183, 66]]); seg([[211, 62], [211, 66]]);
+    seg([[316, 34], [332, 34], [340, 42], [340, 66], [316, 66], [316, 34]]); seg([[321, 46], [335, 46]]); seg([[321, 52], [335, 52]]); seg([[321, 60], [325, 56], [328, 60], [332, 64], [335, 60]]);
+    circ(456, 47, 11); seg([[464, 55], [473, 64]]); seg([[450, 47], [453, 47], [455, 43], [458, 51], [460, 47], [462, 47]]);
+    ret(575, 35, 32, 30); seg([[575, 43], [607, 43]]); seg([[582, 54], [587, 59], [598, 48]]);
+    circ(729, 44, 8); seg([[723, 50], [711, 62]]); seg([[714, 64], [709, 59]]);
+    seg([[837, 44], [868, 44]]); seg([[861, 37], [868, 44]]); seg([[871, 58], [840, 58]]); seg([[847, 65], [840, 58]]);
+    doc.setLineCap('butt'); doc.setLineJoin('miter');
+    fonte('bold', 6.4); doc.setTextColor(255, 255, 255);
+    CX.forEach(function (x, j) { fill(COR.lar); doc.circle(px(x + 23), py(25), 9 * k, 'F'); txt(String(j + 1), px(x + 23), py(25) + 0.8, { align: 'center' }); });
+    var PASSOS = [['Coleta', ['Levamos o seu', 'compressor', 'para a oficina']],
+                  ['Entrega', ['Deixamos o nosso', M.maq.nome, 'no lugar']],
+                  ['Termo', ['Assinatura na', 'entrega ·', { b: _v204R(P.valor) }]],
+                  ['Diagnóstico', ['Avaliamos o seu', 'compressor e', 'enviamos a proposta']],
+                  ['Aprovação', ['Até ' + P.aprov + ' dias para', 'aprovar, sem', 'custo adicional']],
+                  ['Manutenção', ['Valor congelado', { pre: 'em ', b: _v204R(P.valor) }, 'até a entrega']],
+                  ['Devolução', ['O seu volta', 'consertado e', 'recolhemos o nosso']]];
+    PASSOS.forEach(function (ps, j) {
+      var x = px(CX[j]);
+      fonte('bold', 7.9); cor(COR.txt); txt(ps[0], x, py(104), { align: 'center' });
+      ps[1].forEach(function (l, n) {
+        var yl = py(122 + n * 15);
+        if (typeof l === 'string') { fonte('normal', 6.9); cor(COR.cin); var ql = quebra(l, 26); if (ql.length > 1 && j === 1 && n === 1) ql = quebra(M.maq.modelo || l, 26); txt(ql[0] + (ql.length > 1 ? '…' : ''), x, yl, { align: 'center' }); return; }   // auditoria A10
+        fonte('normal', 6.9); var pre = A(l.pre || ''), wp = doc.getTextWidth(pre); fonte('bold', 6.9); var wb = doc.getTextWidth(A(l.b));
+        var x0 = x - (wp + wb) / 2; fonte('normal', 6.9); cor(COR.cin); if (pre) txt(pre, x0, yl); fonte('bold', 6.9); cor(COR.txt); txt(l.b, x0 + wp, yl);
+      });
+    });
+    function etiqueta(cx, t, prop) {
+      fill(prop ? COR.verdeC : COR.larC); draw(prop ? COR.verdeB : COR.lar, 0.25); doc.roundedRect(px(cx - 52), py(164), 104 * k, 19 * k, 1.9, 1.9, 'FD');
+      fonte('bold', 6.4); cor(prop ? COR.verde : COR.larE); txt(t, px(cx), py(177.5), { align: 'center' });
+    }
+    etiqueta(460, 'Etapa da Proper', true); etiqueta(591, 'Sua etapa', false); etiqueta(722, 'Etapa da Proper', true);
+    // Prazo e valores
+    fonte('bold', 7.3); cor(COR.txt); txt('Prazo e valores', px(20), py(229));
+    draw(COR.lar, 0.3); doc.line(px(548), py(236), px(548), py(230)); doc.line(px(548), py(230), px(898), py(230)); doc.line(px(898), py(230), px(898), py(236));
+    fonte('bold', 7); cor(COR.larE); txt('Só cobrados se a aprovação passar do prazo', px(723), py(224), { align: 'center' });
+    fill(COR.verdeC); draw(COR.verdeB, 0.3); doc.roundedRect(px(20), py(240), 520 * k, 56 * k, 1.2, 1.2, 'FD');
+    fill(COR.larC); draw(COR.lar, 0.3); doc.roundedRect(px(546), py(240), 172 * k, 56 * k, 1.2, 1.2, 'FD');
+    fill(COR.larM); doc.roundedRect(px(724), py(240), 176 * k, 56 * k, 1.2, 1.2, 'FD');
+    fonte('bold', 8.4); cor(COR.verde); txt('Valor único da cessão · ' + _v204R(P.valor), px(280), py(264), { align: 'center' });
+    fonte('normal', 6.9); cor([68, 68, 68]); txt('diagnóstico e manutenção pelo tempo que levarem + até ' + P.aprov + ' dias para aprovar*', px(280), py(284), { align: 'center' });
+    fonte('bold', 8.4); cor(COR.larE); txt(_v204R(P.diaria) + '/dia', px(632), py(264), { align: 'center' }); txt(_v204R(P.mensal) + '/mês', px(812), py(264), { align: 'center' });
+    fonte('normal', 6.7); cor([68, 68, 68]); txt('do 1º ao ' + P.dmax + 'º dia', px(632), py(284), { align: 'center' }); txt('do ' + (P.dmax + 1) + 'º dia em diante', px(812), py(284), { align: 'center' });
+    fonte('bold', 6.7); cor(COR.verde); txt('Enquanto o seu compressor estiver nas mãos da Proper, você não paga nada além dos ' + _v204R(P.valor) + '.', px(20), py(320));
+    fonte('normal', 6.7); cor(COR.cin); txt('* Se o diagnóstico terminar em menos de ' + P.aprov + ' dias, o prazo para aprovar aumenta até completar ' + P.total + ' dias desde a entrega.', px(20), py(338));
+    y = py(352) + 5;
+    // Exemplos (pela regra do form)
+    precisa(28); titulo('Exemplos');
+    var cE = [ML + 1.5, ML + 38, ML + 74, ML + 108, X2 - 1.5];
+    fonte('normal', 5.9); cor(COR.cl);
+    txtEsp('DIAGNÓSTICO LEVOU', cE[0], y, 0.5); txtEsp('PRAZO PARA APROVAR', cE[1], y, 0.5); txtEsp('APROVAÇÃO EM', cE[2], y, 0.5); txtEsp('RESULTADO', cE[3], y, 0.5); txtEsp('TOTAL DEVIDO', cE[4], y, 0.5, 'right');
+    y += 1.8; draw(COR.txt, 0.3); doc.line(ML, y, X2, y); y += 4;
+    M.ex.forEach(function (r) {
+      fonte('normal', 8.2); cor(COR.txt);
+      txt(r.D + ' dias', cE[0], y); txt(r.livre + ' dias', cE[1], y); txt(r.A + ' dias', cE[2], y); txt(r.txt, cE[3], y); txt(_v204R(r.total), cE[4], y, { align: 'right' });
+      y += 1.9; draw(COR.linha, 0.2); doc.line(ML, y, X2, y); y += 3.9;
+    });
+    y += 2;
+    // Condições comerciais em cartões (3 por linha) — Validade, Pagamento, Início previsto e as marcadas
+    var nC = 3, gap = 4, cw = (LARG - gap * (nC - 1)) / nC, linhas = [];
+    for (var q = 0; q < M.cards.length; q += nC) linhas.push(M.cards.slice(q, q + nC));
+    var med = linhas.map(function (row) {
+      return row.map(function (cd) { fonte('bold', 8.8); var vl = quebra(cd.val, cw - 7); fonte('normal', 6.6); var sl = cd.sub ? quebra(cd.sub, cw - 7) : []; var rl = quebra(cd.rot, cw - 7); return { rl: rl, vl: vl, sl: sl, h: 4.4 + rl.length * 3 + vl.length * 3.8 + sl.length * 3 + 2.2 }; });
+    });
+    precisa(Math.min(7 + (med[0] ? Math.max.apply(null, med[0].map(function (m) { return m.h; })) : 0), 60)); titulo('Condições comerciais');
+    med.forEach(function (row) {
+      var hr = Math.max.apply(null, row.map(function (m) { return m.h; }));
+      precisa(hr + 2);
+      row.forEach(function (m, j) {
+        var x = ML + j * (cw + gap);
+        fill(COR.fundo); doc.roundedRect(x, y, cw, hr, 1.6, 1.6, 'F');
+        fonte('normal', 6.6); cor([119, 119, 119]); doc.text(m.rl, x + 3.5, y + 4.4);
+        var yv = y + 4.4 + m.rl.length * 3 + 1.2;
+        fonte('bold', 8.8); cor(COR.txt); doc.text(m.vl, x + 3.5, yv);
+        if (m.sl.length) { fonte('normal', 6.6); cor([119, 119, 119]); doc.text(m.sl, x + 3.5, yv + m.vl.length * 3.8); }
+      });
+      y += hr + 3;
+    });
+    // Responsabilidades durante a cessão
+    fonte('normal', 8); var ol = M.resp.map(function (o) { return quebra(o, LARG - 12); });
+    var ho = 7 + ol.reduce(function (a, o) { return a + o.length * 3.5 + 0.7; }, 0) + 1.2;
+    precisa(ho); fill(COR.fundo); doc.roundedRect(ML, y, LARG, ho, 1.6, 1.6, 'F');
+    fonte('normal', 6.6); cor([119, 119, 119]); txt('Responsabilidades durante a cessão', ML + 3.5, y + 4.4);
+    var yo = y + 8.3; fonte('normal', 8); cor(COR.txt); fill(COR.txt);
+    ol.forEach(function (o) { doc.circle(ML + 5, yo - 1, 0.42, 'F'); doc.text(o, ML + 7.5, yo); yo += o.length * 3.5 + 0.7; });
+    y += ho + 3;
+    // assinaturas (com folga do rodapé)
+    y += 6; if (y + 9 > H - RODAPE - 1) { doc.addPage(); y = 24; }
+    var sw = (LARG - 18) / 2;
+    draw(COR.txt, 0.25); doc.line(ML, y, ML + sw, y); doc.line(ML + sw + 18, y, X2, y);
+    fonte('bold', 8.2); cor(COR.txt); txt(EMP.nome || 'Proper Compressores', ML, y + 4); txt(quebra('De acordo — ' + (M.cliente.nome || 'cliente'), sw)[0], ML + sw + 18, y + 4);
+    fonte('normal', 7.4); cor(COR.cin); txt(M.quem ? M.quem + ' · emissor da proposta' : 'emissor da proposta', ML, y + 7.6); txt('Nome, cargo e data', ML + sw + 18, y + 7.6);
+    // rodapé em todas as páginas
+    var n = doc.getNumberOfPages();
+    for (var p2 = 1; p2 <= n; p2++) {
+      doc.setPage(p2); fonte('normal', 6.4); cor(COR.cl);
+      txt(M.proposta + ' · revisão ' + M.versao + (M.emitida ? ' · emitida em ' + M.emitida : '') + (M.quem ? ' por ' + M.quem : '') + ' · arquivo ' + M.proposta + '-v' + M.versao + '.pdf', ML, H - 6);
+      if (n > 1) txt('Página ' + p2 + ' de ' + n, X2, H - 6, { align: 'right' });
+    }
+    return doc;
+  }
+  V370.pdf = pdfCessao;
+  function ehCesV(v) { var c = v && v.conteudo; return !!(c && c.tipo_doc === 'locacao' && c.locacao && c.locacao.modalidade === 'cessao'); }
+  if (typeof _v204GerarPdf === 'function') {
+    V370.orig.gerarPdf = _v204GerarPdf;
+    // ⚠ SOBRESCREVE _v204GerarPdf (embrulho por fora do V368: a proposta de cessão sai no modelo da cessão)
+    _v204GerarPdf = function (v, previa) {
+      if (!off() && ehCesV(v)) return pdfCessao(v, previa);
+      return V370.orig.gerarPdf.apply(this, arguments);
+    };
+  }
+  // a prévia (o V366 chama V368.previa): a cessão monta o conteúdo da caixa (com os prazos de hoje) e sai no modelo da cessão
+  if (window.V368 && typeof V368.previa === 'function') {
+    V370.orig.previa = V368.previa;
+    V368.previa = function (id, v) {
+      if (off() || !ehCesV(v)) return V370.orig.previa.apply(this, arguments);
+      var U = (window.V366 && V366.ui && V366.ui[id]) || {}, D = (window.V366 && V366.d && V366.d[id]) || {}, L = D.caixa || {};
+      var c = v.conteudo;
+      c.locacao.cessao = Object.assign({}, L.cessao || {}, { valor: Number(L.total || 0) });
+      c.locacao.fim = null; c.locacao.total_periodo = null;
+      var pag = U.pagamento !== undefined ? U.pagamento : S(D.pagamento_padrao), ac = U.ac !== undefined ? U.ac : S(D.ac_padrao);
+      c.condicoes = {}; if (T(pag)) c.condicoes.pagamento = T(pag); if (T(ac)) c.condicoes.ac = T(ac);
+      try { var me = _v200UsuarioId(), nm = T(_v200NomeUsu(me)); c.emitida_por_nome = nm && nm !== '—' && nm !== me ? nm : ''; } catch (e) {}
+      return pdfCessao(v, true);
+    };
+  }
+  V370.ehCes = ehCes;
+})();
+</script>
+<!-- ████ FIM PCM V370 ████ -->
 
 </body>
 </html>
