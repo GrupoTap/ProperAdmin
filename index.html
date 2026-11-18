@@ -5663,8 +5663,13 @@ v50 — Resiliência de rede: retry/backoff em gsGet e syncToGS
   da empresa, Cliente/Objeto, Resumo, Detalhamento, Condicoes em cartoes, Observacoes, assinaturas); o rascunho ganha A/C e Pagamento.
   Linhas do V366 alteradas (ganchos para o V368): a previa, o estado do rascunho, o salvar e os campos do rascunho. Sem o SQL: nada
   aparece e o PDF segue o do V366. Chave: localStorage pcm_v368 = off.
+  PCM V369 — 17/11/2026 — BUSCAR NA RECEITA EM CADEIA (ProperCare-backlog#263), sobre o V368. Zero SQL, zero GAS.
+  A BrasilAPI recusa o IP do escritorio no endpoint de CNPJ (429 sem CORS = "Failed to fetch"). Os 4 botoes Buscar na Receita
+  (V128 modal antigo, novo cliente da Oportunidade, V253 Clientes, V303 lead pelo CNPJ) passam por _v369ReceitaCnpj: minhareceita.org
+  primeiro, BrasilAPI de reserva (a cadeia do emitir_nota). Todas sem resposta: o aviso diz que a consulta esta bloqueada ou
+  limitada para esta internet (ou sem internet). Dica dos botoes sem o nome da fonte. Chave: localStorage pcm_v369 = off (so BrasilAPI).
   PCM V370 — 17/11/2026 — CESSAO REMUNERADA NA LOCACAO (ProperCare-backlog#244, parte 3B de 4), sobre o V369 (o V369 é a ProperCare-backlog#263).
-  Par: SQL CRM_LOCACAO_P3B_2026-11-17 (cadeia 150; RODA ANTES) e o form_emprestimo (ProperForms). Zero GAS.
+  Par: SQL CRM_LOCACAO_P3B_2026-11-17 (cadeia 151; RODA ANTES) e o form_emprestimo (ProperForms). Zero GAS.
   + Oportunidade e Mudar a locacao: Mensal | Diaria | Cessao remunerada (uma maquina da frota, so o inicio, valor da cessao sugerido por
   CV, diaria e mensal depois do prazo, a maquina do cliente da conta ou descrita). Caixa Locacao do card de cessao. Proposta: resumo e
   versoes dizem cessao; o PDF (emissao e previa) no modelo da PROP-2026-0067 v1 (7 passos, prazo e valores, exemplos pela regra do form).
@@ -32005,7 +32010,7 @@ async function _v128BuscarCnpj(btnEl) {
   const btn = btnEl; const txt0 = btn.textContent;
   btn.disabled = true; btn.textContent = '…';
   try {
-    const r = await fetch('https://brasilapi.com.br/api/cnpj/v1/' + digits);
+    const r = await (typeof _v369ReceitaCnpj === 'function' ? _v369ReceitaCnpj(digits) : fetch('https://brasilapi.com.br/api/cnpj/v1/' + digits));   /* V369: minhareceita.org e a BrasilAPI de reserva */
     if (r.status === 404) { toast('CNPJ não encontrado na base pública da Receita.', 'warning'); return; }
     if (!r.ok) { toast('A consulta pública de CNPJ não respondeu agora (HTTP ' + r.status + '). Tente de novo em instantes.', 'warning'); return; }
     const d = await r.json();
@@ -32047,7 +32052,7 @@ async function _v128BuscarCnpj(btnEl) {
               : 'Receita respondeu, mas todos os campos já estavam preenchidos — nada foi alterado.', 'success');
     }
   } catch (e) {
-    toast('Sem acesso à consulta pública agora (' + (e && e.message || e) + '). Preencha manualmente ou tente de novo.', 'warning');
+    toast((e && e.v369rede) ? e.message + ' Preencha manualmente ou tente de novo.' : 'Sem acesso à consulta pública agora (' + (e && e.message || e) + '). Preencha manualmente ou tente de novo.', 'warning');   /* V369 */
   } finally {
     btn.disabled = false; btn.textContent = txt0;
   }
@@ -61476,7 +61481,7 @@ table.r2a-tab col.c-os{width:25%}table.r2a-tab col.c-cli{width:25%}table.r2a-tab
       h += '<div class="r2a-novo" id="r2aNovoCli"><div><b>Cliente novo — só o essencial agora</b><div class="r2a-l2" style="white-space:normal">o resto se completa depois em Clientes</div></div>' +
         c('nome', 'Razão social *', ' maxlength="120"') +
         '<div><label for="r2aNc_cnpj">CNPJ</label><div class="r2a-cnpj"><input id="r2aNc_cnpj" data-r2a-nc="cnpj" value="' + E(nc.cnpj || '') + '" autocomplete="off" name="r2a_nc_cnpj_nofill" data-lpignore="true" data-1p-ignore inputmode="numeric" placeholder="só se já souber">' +
-        '<button type="button" class="r2a-btn" data-r2a="receita" title="Consulta pública da Receita (BrasilAPI): preenche só o que estiver vazio">Buscar na Receita</button></div>' +
+        '<button type="button" class="r2a-btn" data-r2a="receita" title="Consulta pública da Receita: preenche só o que estiver vazio">Buscar na Receita</button></div>' +
         '<div class="r2a-l2" style="white-space:normal">A Receita preenche o endereço — só o que estiver vazio.</div></div>' +
         '<div class="r2a-3">' + c('cidade', 'Cidade') + c('uf', 'UF', ' maxlength="2" style="text-transform:uppercase"') + c('contato', 'Contato') + '</div>';
       if (nc.end) h += '<div class="r2a-l2" style="white-space:normal">Endereço da Receita guardado para a OS: ' + E([nc.end.endereco, nc.end.numero, nc.end.bairro, nc.end.cep].filter(Boolean).join(', ')) + '</div>';
@@ -61595,7 +61600,7 @@ table.r2a-tab col.c-os{width:25%}table.r2a-tab col.c-cli{width:25%}table.r2a-tab
     await ocupar(function () {
       return _comLoadingBtn_(btn, async function () {
         try {
-          var r = await fetch('https://brasilapi.com.br/api/cnpj/v1/' + dig);
+          var r = await (typeof _v369ReceitaCnpj === 'function' ? _v369ReceitaCnpj(dig) : fetch('https://brasilapi.com.br/api/cnpj/v1/' + dig));   /* V369: minhareceita.org e a BrasilAPI de reserva */
           if (r.status === 404) { nc.erro = 'CNPJ não encontrado na base pública da Receita.'; return; }
           if (!r.ok) { nc.erro = 'A consulta pública de CNPJ não respondeu agora (HTTP ' + r.status + ').'; return; }
           var d = await r.json(), tc = function (x) { try { return _v128TitleCase(x); } catch (e) { return S(x); } };
@@ -61605,7 +61610,7 @@ table.r2a-tab col.c-os{width:25%}table.r2a-tab col.c-cli{width:25%}table.r2a-tab
           nc.end = { endereco: tc([d.descricao_tipo_de_logradouro, d.logradouro].filter(Boolean).join(' ')), numero: T(d.numero), bairro: tc(d.bairro),
             cep: S(d.cep).replace(/^(\d{5})(\d{3})$/, '$1-$2'), cidade: tc(d.municipio), uf: T(d.uf).toUpperCase() };
           nc.erro = S(d.descricao_situacao_cadastral).toUpperCase() && S(d.descricao_situacao_cadastral).toUpperCase() !== 'ATIVA' ? 'Atenção: na Receita este CNPJ está ' + S(d.descricao_situacao_cadastral) + '.' : '';
-        } catch (e) { nc.erro = 'Sem acesso à consulta pública agora (' + ((e && e.message) || e) + '). Preencha à mão.'; }
+        } catch (e) { nc.erro = (e && e.v369rede) ? e.message + ' Preencha à mão.' : 'Sem acesso à consulta pública agora (' + ((e && e.message) || e) + '). Preencha à mão.'; }   /* V369 */
       });
     });
     rascunhoDepois(); pintarPainel();
@@ -80565,7 +80570,7 @@ function _v253Embrulhar() {
       var ocupado = V253.busy === chave;   // a tela repintou no meio da consulta: o botão novo nasce "consultando"
       var novo = m[0] + '<div class="v253-acao">' +
         '<button type="button" class="v253-btn" data-v253="receita"' + (ocupado ? ' disabled data-v253-ocupado="1" data-pcm-enviando="1"' : '') +
-        ' title="Consulta pública da Receita (BrasilAPI): preenche só o que estiver vazio">' + (ocupado ? '⏳ Consultando…' : V253_TXT_BTN) + '</button></div>' +
+        ' title="Consulta pública da Receita: preenche só o que estiver vazio">' + (ocupado ? '⏳ Consultando…' : V253_TXT_BTN) + '</button></div>' +
         _v253MsgHtml(chave, cnpjTela, nomeTela);
       return h.slice(0, m.index) + novo + h.slice(m.index + m[0].length);
     } catch (e) { console.warn('[V253] form:', e); return h; }
@@ -80610,12 +80615,13 @@ async function _v253Receita(btn) {
   var tm = setTimeout(function () { try { ctl && ctl.abort(); } catch (e) {} }, V253.PRAZO_MS);
   var d = null, falha = '';
   try {
-    var r = await fetch('https://brasilapi.com.br/api/cnpj/v1/' + dig, ctl ? { signal: ctl.signal } : undefined);
+    var r = await (typeof _v369ReceitaCnpj === 'function' ? _v369ReceitaCnpj(dig, ctl ? ctl.signal : undefined) : fetch('https://brasilapi.com.br/api/cnpj/v1/' + dig, ctl ? { signal: ctl.signal } : undefined));   /* V369: minhareceita.org e a BrasilAPI de reserva */
     if (r.status === 404) falha = 'CNPJ não encontrado na base pública da Receita.';
     else if (!r.ok) falha = 'A consulta pública de CNPJ não respondeu agora (HTTP ' + r.status + '). Tente de novo em instantes.';
     else d = await r.json();
   } catch (e) {
     falha = (e && e.name === 'AbortError') ? 'A Receita não respondeu em ' + Math.round(V253.PRAZO_MS / 1000) + ' s. Tente de novo ou preencha à mão.'
+          : (e && e.v369rede) ? e.message + ' Preencha à mão ou tente de novo.'   /* V369 */
           : 'Sem acesso à consulta pública agora (' + ((e && e.message) || e) + '). Preencha à mão ou tente de novo.';
   } finally { clearTimeout(tm); V253.busy = ''; try { solta(); } catch (e) {} try { _v253BtnVolta(chave); } catch (e) {} }
   // a pessoa mudou de ficha ou de CNPJ enquanto esperava: a resposta não serve mais
@@ -96447,12 +96453,13 @@ var V295 = window.V295 = { versao: 'PCM_V295', of: { rol: {}, escritas: 0, h: 0,
     var tm = setTimeout(function () { try { ctl && ctl.abort(); } catch (e) {} }, prazo);
     var j = null, falha = '';
     try {
-      var r = await fetch('https://brasilapi.com.br/api/cnpj/v1/' + d, ctl ? { signal: ctl.signal } : undefined);
+      var r = await (typeof _v369ReceitaCnpj === 'function' ? _v369ReceitaCnpj(d, ctl ? ctl.signal : undefined) : fetch('https://brasilapi.com.br/api/cnpj/v1/' + d, ctl ? { signal: ctl.signal } : undefined));   /* V369: minhareceita.org e a BrasilAPI de reserva */
       if (r.status === 404) falha = 'CNPJ não encontrado na base pública da Receita.';
       else if (!r.ok) falha = 'A Receita não respondeu agora (HTTP ' + r.status + ') — preencha à mão; dá para buscar depois na ficha do cliente.';
       else j = await r.json();
     } catch (e) {
       falha = (e && e.name === 'AbortError') ? 'A Receita não respondeu em ' + Math.round(prazo / 1000) + ' s — preencha à mão; dá para buscar depois na ficha do cliente.'
+            : (e && e.v369rede) ? e.message + ' Preencha à mão; dá para buscar depois na ficha do cliente.'   /* V369 */
             : 'A Receita não respondeu agora (' + ((e && e.message) || e) + ') — preencha à mão; dá para buscar depois na ficha do cliente.';
     } finally { clearTimeout(tm); }
     if (!vivo(M, nc, ger, d)) return solta(nc, s);
@@ -119966,6 +119973,79 @@ body.v357-on #qofRaiz .qof-card[data-qof-est="9"]::after,body.v357-on #qofRaiz .
 })();
 </script>
 <!-- ████ FIM PCM V368 ████ -->
+<!-- ████ INICIO PCM V369 · 🔎 RECEITA EM CADEIA: MINHARECEITA.ORG E BRASILAPI DE RESERVA (ProperCare-backlog#263) ████ -->
+<script id="v369Js">
+/* ═══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════
+   PCM V369 · ProperCare-backlog#263 — a consulta pública de CNPJ ("🔎 Buscar na Receita") em cadeia.
+   Antes: os 4 botões (V128 modal antigo, ＋ Oportunidade › novo cliente, V253 Clientes › Dados/Novo, V303 lead pelo CNPJ) iam só à
+   BrasilAPI. A BrasilAPI passou a recusar o IP da internet do escritório só no endpoint de CNPJ (HTTP 429 do firewall da Vercel,
+   SEM Access-Control-Allow-Origin): o navegador não deixa ler o status e o fetch cai em "Failed to fetch".
+   Agora: _v369ReceitaCnpj(dig, sinal) tenta minhareceita.org (mesmos nomes de campo, CORS aberto) e, se ela falhar, a BrasilAPI
+   — a mesma cadeia do emitir_nota.html. Devolve a 1ª resposta 200. 404 (CNPJ fora da base daquela fonte) também tenta a reserva
+   (CNPJ recém-aberto pode estar só numa delas) e só volta se nenhuma achou. Erro HTTP (429, 5xx) passa à próxima; todas com erro ⇒
+   devolve a última (o chamador mostra o "HTTP nnn" como antes). NENHUMA respondeu (rede/CORS/prazo de cada fonte) ⇒ Error com
+   .v369rede = true e a frase certa: sem internet, não respondeu a tempo, ou consulta bloqueada/limitada para esta internet.
+   O CORPO é lido aqui dentro, ainda sob os dois prazos, e volta num Response novo: uma fonte que manda o cabeçalho e trava o corpo
+   não prende o botão (auditoria do #263).
+   O sinal do chamador (prazo da tela, V253.PRAZO_MS) vale para a cadeia inteira e, se ele estourar, sai AbortError (o chamador
+   já trata); cada fonte tem ainda o seu prazo (PRAZO_FONTE_MS) para uma fonte parada não comer o tempo da reserva.
+   Chave: localStorage pcm_v369 = off ⇒ só a BrasilAPI (o caminho de antes).
+   ═══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════ */
+(function () {
+  'use strict';
+  var V369 = window.V369 = {
+    versao: 'V369',
+    FONTES: ['https://minhareceita.org/', 'https://brasilapi.com.br/api/cnpj/v1/'],
+    PRAZO_FONTE_MS: 8000,
+    off: function () { try { return localStorage.getItem('pcm_v369') === 'off'; } catch (e) { return false; } },
+    ultima: null   // a fonte que respondeu por último (para o console e a bancada)
+  };
+  function erroAbort() {
+    try { return new DOMException('The operation was aborted.', 'AbortError'); }
+    catch (e) { var x = new Error('The operation was aborted.'); x.name = 'AbortError'; return x; }
+  }
+  V369.frase = function (soPrazo) {
+    var off = false; try { off = navigator.onLine === false; } catch (e) {}
+    return off ? 'Sem conexão com a internet: a Receita não foi consultada.'
+         : soPrazo ? 'A consulta pública de CNPJ não respondeu a tempo agora.'
+         : 'A consulta pública de CNPJ está bloqueada ou limitada para esta internet agora.';
+  };
+  window._v369ReceitaCnpj = async function (dig, sinal) {
+    var fontes = V369.off() ? [V369.FONTES[1]] : V369.FONTES.slice(), ultimo = null, nao = null, motivos = [], prazos = 0;
+    for (var i = 0; i < fontes.length; i++) {
+      if (sinal && sinal.aborted) throw erroAbort();
+      var ctl = typeof AbortController === 'function' ? new AbortController() : null, solta = null, tm = 0;
+      if (ctl) {
+        if (sinal) { solta = function () { try { ctl.abort(); } catch (e) {} }; try { sinal.addEventListener('abort', solta); } catch (e) {} }
+        tm = setTimeout(function () { try { ctl.abort(); } catch (e) {} }, V369.PRAZO_FONTE_MS);
+      }
+      try {
+        var r = await fetch(fontes[i] + dig, ctl ? { signal: ctl.signal } : (sinal ? { signal: sinal } : undefined));
+        V369.ultima = fontes[i];
+        if (r.ok || r.status === 404) {
+          var corpo = await r.text();   // ainda sob o prazo da fonte e o da tela
+          var resp = new Response(corpo, { status: r.status, headers: { 'Content-Type': 'application/json' } });
+          if (r.ok) return resp;
+          nao = resp; motivos.push(fontes[i] + ' 404'); continue;
+        }
+        ultimo = r; motivos.push(fontes[i] + ' HTTP ' + r.status);
+      } catch (e) {
+        if (sinal && sinal.aborted) throw erroAbort();   // o prazo da tela acabou: o chamador diz "não respondeu em N s"
+        if (e && e.name === 'AbortError') prazos++;
+        motivos.push(fontes[i] + ' ' + ((e && e.name === 'AbortError') ? 'prazo' : ((e && e.message) || e)));
+      } finally {
+        clearTimeout(tm);
+        if (solta && sinal) { try { sinal.removeEventListener('abort', solta); } catch (e) {} }
+      }
+    }
+    try { console.warn('[V369] consulta de CNPJ sem sucesso nas fontes:', motivos.join(' · ')); } catch (e) {}
+    if (nao) return nao;
+    if (ultimo) return ultimo;
+    var x = new Error(V369.frase(prazos === fontes.length)); x.v369rede = true; throw x;
+  };
+})();
+</script>
+<!-- ████ FIM PCM V369 ████ -->
 <!-- ████ INICIO PCM V370 · 🤝 CESSÃO REMUNERADA NA LOCAÇÃO: OPORTUNIDADE, PROPOSTA, PDF E A OS DE ENTREGA EM EMPRÉSTIMO (ProperCare-backlog#244) ████ -->
 <style id="v370-css">
 /* PCM V370 (ProperCare-backlog#244, parte 3B): a cessão remunerada (3ª modalidade da 🚚 Locação). Chave: localStorage pcm_v370 = off */
