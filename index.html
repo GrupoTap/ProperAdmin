@@ -120722,10 +120722,10 @@ body.v357-on #qofRaiz .qof-card[data-qof-est="9"]::after,body.v357-on #qofRaiz .
     if (!d.maquinas.length) { V372.erro = 'Marque ao menos uma máquina.'; return _crosNoCard(); }
     if (!d.motivo) { V372.erro = 'Escolha o motivo.'; return _crosNoCard(); }
     if (d.motivo === 'faturada_fora' && (!/\d/.test(d.nf_numero || '') || !/^\d+([.,]\d{1,2})?$/.test(String(d.nf_valor || '').replace(/\.(?=\d{3}(\D|$))/g, '')))) {
-      V372.erro = 'Informe o nº da nota e o valor destas máquinas (ex.: 528,30).'; return _crosNoCard();
+      V372.erro = 'Informe o nº da nota e o valor destas máquinas (ex.: 1.250,00).'; return _crosNoCard();
     }
     if (d.texto.length < 3) { V372.erro = 'Escreva o porquê (vai para a Trilha).'; return _crosNoCard(); }
-    if (d.nf_valor) d.nf_valor = d.nf_valor.replace(/\.(?=\d{3}(\D|$))/g, '');   // 1.528,30 → 1528,30
+    if (d.nf_valor) d.nf_valor = d.nf_valor.replace(/\.(?=\d{3}(\D|$))/g, '');   // 1.250,00 → 1250,00
     // o mesmo conteúdo reaproveita o uid (a resposta pode ter se perdido); conteúdo novo = uid novo
     var ass = JSON.stringify([o.id, d.maquinas, d.motivo, d.texto, d.nf_numero || '', d.nf_valor || '']);
     if (!V372.uid || V372.uidAss !== ass) { V372.uid = novoUid(); V372.uidAss = ass; }
