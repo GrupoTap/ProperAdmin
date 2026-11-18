@@ -120555,7 +120555,9 @@ body.v357-on #qofRaiz .qof-card[data-qof-est="9"]::after,body.v357-on #qofRaiz .
 .v373-pot .v373-num.v373-erro{border-color:#dc2626;box-shadow:0 0 0 2px rgba(220,38,38,.15)}
 .v373-un{display:inline-flex;border:1px solid var(--border,#cbd5e1);border-radius:8px;overflow:hidden}
 .v373-un.v373-erro{border-color:#dc2626;box-shadow:0 0 0 2px rgba(220,38,38,.15)}
-.v373-u{appearance:none;border:0;border-right:1px solid var(--border,#cbd5e1);background:#fff;color:var(--text,#1e293b);font:600 13px/1 inherit;padding:9px 12px;min-width:46px;cursor:pointer;transition:background-color .12s,color .12s}
+.v373-u{appearance:none;border:0;border-right:1px solid var(--border,#cbd5e1);background:#fff;color:var(--text,#1e293b);font-family:inherit;font-size:13px;font-weight:600;line-height:1;padding:0 12px;min-height:38px;min-width:46px;cursor:pointer;transition:background-color .12s,color .12s}
+body.mob-on .v373-u,body.mob-on .v373-pot .v373-num{min-height:52px}
+body.mob-on .v373-u{min-width:56px}
 .v373-u:last-child{border-right:0}
 .v373-u:hover{background:#eff6ff}
 .v373-u:active{background:#dbeafe}
@@ -120582,6 +120584,7 @@ body.v357-on #qofRaiz .qof-card[data-qof-est="9"]::after,body.v357-on #qofRaiz .
    digitar outro não perde a unidade escolhida.
    O controle não tem id nem name: o retrato de "alterações não salvas" (_captureFormSnapshot) segue olhando só o campo antigo.
    O Salvar (saveMachine/saveModel) ganha a guarda por fora NA HORA DE ABRIR a janela (outro bloco pode embrulhar depois da carga).
+   A comparação de potência do cadastro (normPower: modelo de referência e máquina repetida) passa a usar a mesma conta.
    Chave: localStorage pcm_v373 = off ⇒ o campo de texto de antes, sem guarda.
    ═══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════ */
 (function () {
@@ -120646,10 +120649,10 @@ body.v357-on #qofRaiz .qof-card[data-qof-est="9"]::after,body.v357-on #qofRaiz .
     inp.insertAdjacentElement('afterend', c);
     c.insertAdjacentElement('afterend', av);
     var num = c.querySelector('.v373-num');
-    num.addEventListener('input', function () { var e = est(id); e.num = num.value; e.erro = ''; aplicar(id); });
+    num.addEventListener('input', function () { var e = est(id); e.num = num.value; e.erro = ''; e.tocou = true; aplicar(id, 'num'); });
     c.querySelector('.v373-un').addEventListener('click', function (ev) {
       var b = ev.target && ev.target.closest ? ev.target.closest('.v373-u') : null; if (!b) return;
-      var e = est(id); e.unid = b.getAttribute('data-u'); e.erro = ''; aplicar(id);
+      var e = est(id); e.unid = b.getAttribute('data-u'); e.erro = ''; e.tocou = true; aplicar(id, 'uni');
     });
     // um só caminho para quem escreve no campo antigo: o setter da instância repinta o controle
     try {
@@ -120660,12 +120663,12 @@ body.v357-on #qofRaiz .qof-card[data-qof-est="9"]::after,body.v357-on #qofRaiz .
       });
     } catch (e) { console.warn('[V373] setter do campo', id, e); }
     if (id === 'mcPower') ['mcClient', 'mcTag'].forEach(function (k) {
-      var el = document.getElementById(k); if (el) el.addEventListener('input', function () { pintar(id); });
+      var el = document.getElementById(k); if (el) ['input', 'change'].forEach(function (t) { el.addEventListener(t, function () { pintar(id); }); });
     });
     carregar(id);
     return c;
   }
-  function est(id) { return V373.est[id] || (V373.est[id] = { num: '', unid: '', antigo: null, erro: '', escrito: null }); }
+  function est(id) { return V373.est[id] || (V373.est[id] = { num: '', unid: '', antigo: null, semNumero: false, erro: '', escrito: null, tocou: false }); }
 
   // o campo antigo ⇒ o controle (abrir a máquina, limpar o formulário, outro bloco preenchendo)
   function carregar(id) {
@@ -120673,20 +120676,21 @@ body.v357-on #qofRaiz .qof-card[data-qof-est="9"]::after,body.v357-on #qofRaiz .
     var v = DESC.get.call(inp), e = est(id);
     e.erro = '';
     if (e.escrito !== null && v === e.escrito) { e.escrito = null; e.antigo = null; pintar(id); return; }   // o que o controle acabou de gravar: o número e a unidade ficam como a pessoa deixou (apagar o número não perde a unidade)
-    e.escrito = null;
+    e.escrito = null; e.tocou = false;
     var l = V373.ler(v);
     e.num = l.num != null ? V373.fmt(l.num) : '';
     e.unid = l.ok ? l.unid : '';
     e.antigo = (!l.vazio && !l.ok) ? l.bruto : null;
+    e.semNumero = !!e.antigo && l.num == null;
     pintar(id);
   }
 
   // o controle ⇒ o campo antigo (só quando a pessoa mexe; o texto antigo entendido fica como estava)
-  function aplicar(id) {
+  function aplicar(id, origem) {
     var inp = document.getElementById(id), e = est(id); if (!inp) return;
     var n = V373.numero(e.num), novo = null;
-    if (n === null) novo = '';                                  // apagou o número: sem potência
-    else if (n === n && e.unid) novo = V373.texto(n, e.unid);   // número válido + unidade: o formato único
+    if (n === null && origem === 'num') novo = '';              // apagou o número: sem potência (só a unidade, sem número, não apaga nada)
+    else if (n !== null && n === n && e.unid) novo = V373.texto(n, e.unid);   // número válido + unidade: o formato único
     if (novo !== null && DESC.get.call(inp) !== novo) {
       e.escrito = novo; inp.value = novo;                       // o setter reconhece a escrita do controle e só repinta
       try { inp.dispatchEvent(new Event('input', { bubbles: true })); } catch (x) {}
@@ -120699,9 +120703,11 @@ body.v357-on #qofRaiz .qof-card[data-qof-est="9"]::after,body.v357-on #qofRaiz .
   V373.pendencia = function (id) {
     var inp = document.getElementById(id), e = est(id); if (!inp) return '';
     var n = V373.numero(e.num), atual = S(DESC.get.call(inp));
-    if (n !== null && n !== n) return 'Potência: digite só o número (ex.: 7,5).';
-    if (n !== null && !e.unid) return 'Escolha a unidade da potência: CV, HP ou kW.';
-    if (atual && !V373.ler(atual).ok) return 'Potência fora do padrão: digite o número e escolha a unidade (CV, HP ou kW).';
+    if (e.tocou) {                                              // o número só se confere quando a pessoa mexeu (o "0 CV" antigo não trava o Salvar)
+      if (n !== null && n !== n) return 'Potência: digite só o número (ex.: 7,5).';
+      if (n !== null && !e.unid) return 'Escolha a unidade da potência: CV, HP ou kW.';
+    }
+    if (atual && !V373.ler(atual).ok) return e.semNumero ? 'Potência fora do padrão: digite o número e escolha a unidade (CV, HP ou kW).' : 'Escolha a unidade da potência: CV, HP ou kW.';
     if (!atual && obrigatoria(id)) return 'Potência é obrigatória nas máquinas da Proper Locação.';
     return '';
   };
@@ -120720,7 +120726,7 @@ body.v357-on #qofRaiz .qof-card[data-qof-est="9"]::after,body.v357-on #qofRaiz .
     num.classList.toggle('v373-erro', !!e.erro && (semNum || n !== n));
     un.classList.toggle('v373-erro', !!e.erro && (semUni || !!e.antigo));
     if (av) {
-      var msg = e.erro || (e.antigo ? 'Estava «' + e.antigo + '» — escolha a unidade.' : '');
+      var msg = e.erro || (e.antigo ? 'Estava «' + e.antigo + '» — ' + (e.semNumero ? 'digite o número e escolha a unidade.' : 'escolha a unidade.') : '');
       av.textContent = msg;
       av.hidden = !msg; av.classList.toggle('v373-erro', !!e.erro);
     }
@@ -120753,15 +120759,28 @@ body.v357-on #qofRaiz .qof-card[data-qof-est="9"]::after,body.v357-on #qofRaiz .
     if (typeof o !== 'function' || o.__v373) return;
     var f = function () {
       try { guardar(id); } catch (x) { console.warn('[V373] guarda do Salvar', id, x); }
-      return o.apply(this, arguments);
+      var r = o.apply(this, arguments);
+      pintar(id);                                               // o cliente/TAG que o abrir pôs por código (sem evento): o rótulo da frota
+      return r;
     };
     try { Object.keys(o).forEach(function (k) { f[k] = o[k]; }); } catch (x) {}
     f.__v373 = true;
     window[nome] = f;
   }
 
+  // ⚠ SOBRESCREVE normPower
+  // a comparação de potência (modelo de referência e máquina repetida): entendida ⇒ o HP inteiro pela conta do banco ("30 kW" = "40 CV",
+  // "30 kW" ≠ "30 CV"); não entendida ⇒ o 1º número, como antes
+  V373.normPowerAntes = window.normPower;
+  function normPowerV373(v) {
+    var l = V373.ler(v);
+    if (l.ok) return String(Math.round(V373.cv(l.num, l.unid)));
+    return typeof V373.normPowerAntes === 'function' ? V373.normPowerAntes(v) : '';
+  }
+
   function ligar() {
     if (V373.off()) return;
+    window.normPower = normPowerV373;
     Object.keys(V373.CAMPOS).forEach(function (id) {
       try { if (montar(id)) abrir(id); } catch (e) { console.warn('[V373] ligar', id, e); }
     });
