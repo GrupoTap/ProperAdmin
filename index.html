@@ -120561,8 +120561,8 @@ body.v357-on #qofRaiz .qof-card[data-qof-est="9"]::after,body.v357-on #qofRaiz .
 .v373-u:active{background:#dbeafe}
 .v373-u.on,.v373-u.on:hover{background:#1d4ed8;color:#fff}
 .v373-conv{font-size:12px;color:var(--text-muted,#64748b);white-space:nowrap}
-.v373-aviso{margin-top:4px;font-size:12px;color:#92400e}
-.v373-aviso.v373-erro{color:#b91c1c;font-weight:600}
+.v373-msg{margin-top:4px;font-size:12px;color:#92400e}
+.v373-msg.v373-erro{color:#b91c1c;font-weight:600}
 </style>
 <script id="v373Js">
 /* ═══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════
@@ -120641,7 +120641,7 @@ body.v357-on #qofRaiz .qof-card[data-qof-est="9"]::after,body.v357-on #qofRaiz .
       '<span class="v373-un" role="group" aria-label="Unidade da potência">' +
       V373.UNID.map(function (u) { return '<button type="button" class="v373-u" data-u="' + u + '">' + u + '</button>'; }).join('') + '</span>' +
       '<span class="v373-conv" title="Número usado no preço da locação e nas faixas de serviço (1 kW = 1,34 CV)"></span>';
-    var av = document.createElement('div'); av.className = 'v373-aviso'; av.setAttribute('data-v373-aviso', id); av.hidden = true;
+    var av = document.createElement('div'); av.className = 'v373-msg'; av.setAttribute('data-v373-msg', id); av.hidden = true;
     inp.style.display = 'none';
     inp.insertAdjacentElement('afterend', c);
     c.insertAdjacentElement('afterend', av);
@@ -120709,7 +120709,7 @@ body.v357-on #qofRaiz .qof-card[data-qof-est="9"]::after,body.v357-on #qofRaiz .
   function pintar(id) {
     var c = caixa(id), e = est(id); if (!c) return;
     var num = c.querySelector('.v373-num'), un = c.querySelector('.v373-un'), conv = c.querySelector('.v373-conv');
-    var av = document.querySelector('[data-v373-aviso="' + id + '"]');
+    var av = document.querySelector('[data-v373-msg="' + id + '"]');
     if (num.value !== e.num && document.activeElement !== num) num.value = e.num;
     Array.prototype.forEach.call(c.querySelectorAll('.v373-u'), function (b) {
       var on = b.getAttribute('data-u') === e.unid; b.classList.toggle('on', on); b.setAttribute('aria-pressed', on ? 'true' : 'false');
