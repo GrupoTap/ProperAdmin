@@ -119482,7 +119482,7 @@ body.v357-on #qofRaiz .qof-card[data-qof-est="9"]::after,body.v357-on #qofRaiz .
     var tags = maqs.map(function (m) { return m.tag; }).filter(Boolean);
     var obs = ['Locação pura de equipamento, faturada mensalmente. Não inclui serviços nem peças.'];
     if (mensal) obs.push('A locação renova-se mês a mês até a devolução do equipamento, que será combinada entre as partes.');
-    else obs.push('Se a locação passar de 10 diárias, a partir do 11º dia ela passa a mensal (10 diárias = 1 mensal).');
+    else { var tm = Number(L.diarias_max) || 10; obs.push('Se a locação passar de ' + tm + ' diárias, a partir do ' + (tm + 1) + 'º dia ela passa a mensal (' + tm + ' diárias = 1 mensal).'); }
     obs.push((maqs.length > 1 ? 'Os equipamentos são da frota Proper Locação e estão identificados pelas placas' : 'O equipamento é da frota Proper Locação e está identificado pela placa')
              + (tags.length ? ' com TAG ' + tags.join(', ') : '') + ' e QR Code.');
     var cli = c.cliente || {}, quem = T(c.emitida_por_nome);
@@ -119915,13 +119915,15 @@ body.v357-on #qofRaiz .qof-card[data-qof-est="9"]::after,body.v357-on #qofRaiz .
     V368.ocupado = true; ocupar(bt, 'Criando…');
     var L = V368.lote[id] = { prog: alvo.map(function (x) { return { prop: x.proposta.id, rot: maqTxt(x.maquina), txt: 'na fila' }; }), fim: false };
     var M = cardAberto(); if (M) pintar(M);
-    for (var i = 0; i < L.prog.length; i++) {
-      L.prog[i].txt = '⏳ criando…'; M = cardAberto(); if (M) pintar(M);
-      var r = await criarUma(id, L.prog[i].prop);
-      L.prog[i].txt = r.ok ? r.txt : '❌ ' + r.txt;
-      M = cardAberto(); if (M) pintar(M);
-    }
-    L.fim = true; V368.ocupado = false;
+    try {
+      for (var i = 0; i < L.prog.length; i++) {
+        L.prog[i].txt = '⏳ criando…'; M = cardAberto(); if (M) pintar(M);
+        var r;
+        try { r = await criarUma(id, L.prog[i].prop); } catch (e) { r = { ok: false, txt: falha(e) }; }
+        L.prog[i].txt = r.ok ? r.txt : '❌ ' + r.txt;
+        M = cardAberto(); if (M) pintar(M);
+      }
+    } finally { L.fim = true; V368.ocupado = false; }
     toast('Pronto: ' + L.prog.filter(function (p) { return /^✓/.test(p.txt); }).length + ' de ' + L.prog.length + ' OS de entrega.', 'success');
     V368.ep[id] = (V368.ep[id] || 0) + 1; V368.voo[id] = false; delete V368.d[id];
     try { if (typeof currentView === 'undefined' || currentView === 'comercial') _v200Carregar(); } catch (e) {}
