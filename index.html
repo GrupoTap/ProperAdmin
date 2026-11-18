@@ -120577,7 +120577,8 @@ body.v357-on #qofRaiz .qof-card[data-qof-est="9"]::after,body.v357-on #qofRaiz .
      por fora, sem OS" (pede o nº e o valor da nota) — e o porquê (vai para a Trilha). Grava por crm_maquina_dispensar (com uid: o mesmo
      envio repetido não grava duas vezes). Quem decide é o banco (só administrador, máquina aprovada sem OS, pelo menos uma fica).
    · A máquina dispensada aparece "🚫 dispensada" na linha dela (motivo, nota e valor) sem o "🛠 Criar a OS"; o administrador tem
-     "↺ Desfazer" (com o porquê: crm_maquina_dispensa_desfazer). O card segue pelas OS que existem (a régua 1d.1 é do banco).
+     "↺ Desfazer" (com o porquê: crm_maquina_dispensa_desfazer; "já faturada por fora" desfaz o envio inteiro). A dispensa SUSPENSA
+     (a máquina ganhou OS) aparece na linha da OS, com o ↺. O card segue pelas OS que existem (a régua 1d.1 é do banco).
    · Sem o SQL do #248: nada muda na tela até o administrador apertar; aí "Tela indisponível" e o botão some.
    · Chamadas: nenhuma a mais ao abrir o card (a caixa já lê crm_os_contexto); 1 ao gravar + a releitura da caixa.
    Embrulha por fora (pelo nome global): _crosCardHtml · _v231PodeCriar. Linha pré-existente alterada: nenhuma.
@@ -120599,7 +120600,7 @@ body.v357-on #qofRaiz .qof-card[data-qof-est="9"]::after,body.v357-on #qofRaiz .
   function candidatas(c) {
     return (c.por_maquina || []).filter(function (p) { return p && !p.os_id && !p.pendente && !p.pedida_em && p.na_aceita === true && !p.dispensa; });
   }
-  function nDispensadas(c) { return (c.por_maquina || []).filter(function (p) { return p && p.dispensa; }).length; }
+  function nDispensadas(c) { return (c.por_maquina || []).filter(function (p) { return p && p.dispensa; }).length; }   // as suspensas contam (régua do banco)
   function podeDispensar(c) {
     var card = c.card || {}, ac = Array.isArray(c.aceita_maquinas) ? c.aceita_maquinas : [];
     return admin() && !V372.semSql && card.aberta !== false && ac.length >= 2 && candidatas(c).length >= 1 && ac.length - nDispensadas(c) >= 2;
@@ -120616,8 +120617,10 @@ body.v357-on #qofRaiz .qof-card[data-qof-est="9"]::after,body.v357-on #qofRaiz .
     return h;
   }
   function desfHtml(o, p) {
-    var D = V372.desf;
+    var D = V372.desf, d = p.dispensa || {}, g = Array.isArray(d.grupo_maquinas) ? d.grupo_maquinas.length : 1;
+    var junto = d.motivo === 'faturada_fora' && g > 1;
     return '<div class="v372-desf" id="v372Desf"><label class="v372-lab" for="v372DesfPq">Por que a dispensa de ' + E(p.rotulo || p.maquina_id) + ' sai? *</label>' +
+      (junto ? '<div class="v372-st" style="margin:0 0 4px">Desfaz as ' + g + ' máquinas deste envio: a nota valia para todas.</div>' : '') +
       '<textarea id="v372DesfPq" class="v372-tx" data-v372f="desfPq" maxlength="500" autocomplete="off" name="v372_desf_nofill" data-lpignore="true" data-1p-ignore="true">' + E(D.porque) + '</textarea>' +
       (D.erro ? '<div class="v372-err">' + E(D.erro) + '</div>' : '') +
       '<div class="cros-acoes"><button type="button" class="btn btn-primary btn-sm" data-v372="desfOk">↺ Desfazer a dispensa</button>' +
@@ -120633,11 +120636,14 @@ body.v357-on #qofRaiz .qof-card[data-qof-est="9"]::after,body.v357-on #qofRaiz .
       var j = h.indexOf(a1, i), k = j < 0 ? -1 : h.indexOf(a2, j), l = k < 0 ? -1 : h.indexOf(a3, k + a2.length);
       if (j < 0 || k < 0 || l < 0) return;
       var d = p.dispensa || {}, tit = 'por ' + (typeof _v200NomeUsu === 'function' ? _v200NomeUsu(d.por) : (d.por || '')) + ' em ' + dataBr(d.em);
-      var bts = h.slice(k + a2.length, l);
+      var bts = h.slice(k + a2.length, l), orig = h.slice(j + a1.length, k);
+      // suspensa (a máquina ganhou OS) ou com OS pedida: a linha de antes fica e a dispensa vem junto (auditoria 1, nº 1 e 9)
+      var st = d.suspensa ? orig + ' · <span class="v372-st">🚫 dispensa suspensa (a máquina tem OS)</span>'
+                          : textoDispensa(p) + ((p.pendente || p.pedida_em) ? ' · ' + orig : '');
       if (admin() && aberta && !(V372.desf && V372.desf.card === o.id && V372.desf.maq === p.maquina_id))
         bts += '<button type="button" class="btn btn-secondary btn-sm" data-v372="desf" data-maq="' + E(p.maquina_id) + '">↺ Desfazer</button>';
       var depois = (V372.desf && V372.desf.card === o.id && V372.desf.maq === p.maquina_id) ? desfHtml(o, p) : '';
-      h = h.slice(0, j) + '<span class="v231-st v372-st" data-v372st="' + E(p.maquina_id) + '" title="' + E(tit) + '">' + textoDispensa(p) + a2 + bts + a3 + depois + h.slice(l + a3.length);
+      h = h.slice(0, j) + '<span class="v231-st v372-st" data-v372st="' + E(p.maquina_id) + '" title="' + E(tit) + '">' + st + a2 + bts + a3 + depois + h.slice(l + a3.length);
     });
     return h;
   }
@@ -120731,7 +120737,7 @@ body.v357-on #qofRaiz .qof-card[data-qof-est="9"]::after,body.v357-on #qofRaiz .
       V372.erro = (e && e.message) || String(e); return _crosNoCard();
     }
     var n = (r && r.maquinas && r.maquinas.length) || d.maquinas.length;
-    toast(n + ' máquina(s) dispensada(s)' + (r && r.mesma_nf_ficha ? ' — a mesma NF da ficha ' + r.mesma_nf_ficha : '') + (r && r.aviso ? '. ⚠ ' + r.aviso : '.'), r && r.aviso ? 'warning' : 'success');
+    toast(n + ' máquina(s) dispensada(s)' + (r && r.mesma_nf_ficha ? ' — a mesma NF da ficha ' + r.mesma_nf_ficha : '') + '.', 'success');
     V372.aberto = null; V372.sel = {}; V372.motivo = ''; V372.texto = ''; V372.nf = ''; V372.valor = ''; V372.uid = ''; V372.uidAss = ''; V372.erro = '';
     _crosInvalidar(o.id); await _crosCarregarCtx(o.id); _v204AtualizarCard(o.id);
   }
@@ -120740,12 +120746,13 @@ body.v357-on #qofRaiz .qof-card[data-qof-est="9"]::after,body.v357-on #qofRaiz .
     var pq = String(D.porque || '').trim();
     if (pq.length < 3) { D.erro = 'Escreva por que a dispensa sai (vai para a Trilha).'; return _crosNoCard(); }
     if (!D.uid || D.uidPq !== pq) { D.uid = novoUid(); D.uidPq = pq; }
-    try { await _v200Rpc('crm_maquina_dispensa_desfazer', { p_id: o.id, p_maquina: D.maq, p_por_que: pq, p_uid: D.uid }, true); }
+    var r;
+    try { r = await _v200Rpc('crm_maquina_dispensa_desfazer', { p_id: o.id, p_maquina: D.maq, p_por_que: pq, p_uid: D.uid }, true); }
     catch (e) {
       if (e && e.v200 === 'sem_sql') { V372.semSql = true; V372.desf = null; toast('Tela indisponível — avise o administrador.', 'error'); return _crosNoCard(); }
       D.erro = (e && e.message) || String(e); return _crosNoCard();
     }
-    toast('Dispensa desfeita: a máquina volta a esperar a OS.', 'success');
+    toast(((r && r.desfeitas) > 1 ? 'Dispensa desfeita: as ' + r.desfeitas + ' máquinas voltam' : 'Dispensa desfeita: a máquina volta') + ' a esperar a OS.', 'success');
     V372.desf = null;
     _crosInvalidar(o.id); await _crosCarregarCtx(o.id); _v204AtualizarCard(o.id);
   }
