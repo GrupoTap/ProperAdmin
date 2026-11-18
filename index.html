@@ -5676,9 +5676,15 @@ v50 — Resiliência de rede: retry/backoff em gsGet e syncToGS
   Entrega: os textos da modalidade. Configuracoes: R$/CV da cessao, dias para aprovar, dias de cessao (o mesmo Salvar).
   Linhas antigas alteradas (ganchos para o V370): 11 no V365, 3 no V366, 3 no V368 — sem o V370 (ou com ele desligado) fazem o mesmo de
   antes. Sem o SQL: a cessao nao aparece. Chave: localStorage pcm_v370 = off.
+  PCM V373 — 18/11/2026 — POTENCIA DA MAQUINA: NUMERO + UNIDADE ESCOLHIDA (ProperCare-backlog#274), sobre o V370. Zero SQL, zero GAS.
+  Maquina nova/editar (mcPower) e modelo do catalogo (mPower): o texto livre vira um numero (aceita virgula) e a unidade em botoes
+  CV, HP, kW. Grava no MESMO campo, em formato unico ("40 CV", "7,5 kW"): planilha, GAS, espelho e o _crm_hp leem o mesmo texto.
+  Ao lado, o numero da locacao e das faixas ("30 kW ~ 40,2 CV"; 1 CV = 1 HP, kW x 1,34 — D2). Potencia antiga lida pelo criterio
+  do banco: entendida abre preenchida e so muda se a pessoa mexer; nao entendida mostra "Estava ..." e o Salvar pede a unidade.
+  Obrigatoria na maquina da Proper Locacao (D3). Chave: localStorage pcm_v373 = off (o campo de texto de antes).
 -->
-<title>ProperCare Manager · Gestão PGP v4.03 (PCM V370)</title>
-<meta name="app-build" content="PCM_V370" data-date="2026-11-17">
+<title>ProperCare Manager · Gestão PGP v4.03 (PCM V373)</title>
+<meta name="app-build" content="PCM_V373" data-date="2026-11-18">
 <link rel="icon" type="image/jpeg" href="data:image/jpeg;base64,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">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -120542,6 +120548,228 @@ body.v357-on #qofRaiz .qof-card[data-qof-est="9"]::after,body.v357-on #qofRaiz .
 })();
 </script>
 <!-- ████ FIM PCM V370 ████ -->
+<!-- ████ INICIO PCM V373 · ⚡ POTÊNCIA DA MÁQUINA: NÚMERO + UNIDADE ESCOLHIDA (ProperCare-backlog#274) ████ -->
+<style id="v373Css">
+.v373-pot{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.v373-pot .v373-num{width:96px;flex:0 0 96px}
+.v373-pot .v373-num.v373-erro{border-color:#dc2626;box-shadow:0 0 0 2px rgba(220,38,38,.15)}
+.v373-un{display:inline-flex;border:1px solid var(--border,#cbd5e1);border-radius:8px;overflow:hidden}
+.v373-un.v373-erro{border-color:#dc2626;box-shadow:0 0 0 2px rgba(220,38,38,.15)}
+.v373-u{appearance:none;border:0;border-right:1px solid var(--border,#cbd5e1);background:#fff;color:var(--text,#1e293b);font:600 13px/1 inherit;padding:9px 12px;min-width:46px;cursor:pointer;transition:background-color .12s,color .12s}
+.v373-u:last-child{border-right:0}
+.v373-u:hover{background:#eff6ff}
+.v373-u:active{background:#dbeafe}
+.v373-u.on,.v373-u.on:hover{background:#1d4ed8;color:#fff}
+.v373-conv{font-size:12px;color:var(--text-muted,#64748b);white-space:nowrap}
+.v373-aviso{margin-top:4px;font-size:12px;color:#92400e}
+.v373-aviso.v373-erro{color:#b91c1c;font-weight:600}
+</style>
+<script id="v373Js">
+/* ═══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════
+   PCM V373 · ProperCare-backlog#274 — a potência da máquina e do modelo deixa de ser texto livre.
+   Antes: #mcPower (máquina nova/editar) e #mPower (modelo do catálogo) eram texto ("ex: 10cv / 7,5kW"); quem precisa do número
+   (proposta, peças por modelo, preço sugerido da 🚚 Locação) lê pelo _crm_hp do banco: 1º número COM unidade (hp|cv|kw), kW × 1,34,
+   CV = HP; sem unidade = sem potência. "40", "40 cavalos", "30 KVA" ficavam sem potência e ninguém via ao salvar.
+   Agora: ao lado do campo antigo (que fica no DOM, escondido, e segue sendo o que o Salvar manda), um número (aceita vírgula) e a
+   unidade em botões CV · HP · kW. Grava no MESMO campo, em formato único ("40 CV", "50 HP", "7,5 kW"): planilha, GAS, espelho,
+   _crm_hp, PDFs, PCF e Portal continuam lendo o mesmo texto. Ao lado, o número que a locação e as faixas usam ("≈ 40,2 CV").
+   Potência antiga: lida pelo MESMO critério do banco (V373.ler = _crm_hp). Entendida ⇒ o campo vem preenchido e o texto antigo
+   só muda se a pessoa mexer na potência. Não entendida ⇒ "Estava «40» — escolha a unidade" e o Salvar recusa até escolher (ou apagar).
+   Decisões (issue #274): D1 CV, HP e kW · D2 a conta de hoje (1 CV = 1 HP; kW × 1,34) · D3 obrigatória na máquina da Proper Locação
+   (cliente "Proper Locação" ou TAG PL-), opcional nas outras.
+   Um só caminho para quem escreve no campo: o `value` do input escondido ganha um setter próprio (o da instância) que repinta o
+   controle — abrir, limpar, preencher por outro bloco. A escrita do PRÓPRIO controle (e.escrito) só repinta: apagar o número para
+   digitar outro não perde a unidade escolhida.
+   O controle não tem id nem name: o retrato de "alterações não salvas" (_captureFormSnapshot) segue olhando só o campo antigo.
+   O Salvar (saveMachine/saveModel) ganha a guarda por fora NA HORA DE ABRIR a janela (outro bloco pode embrulhar depois da carga).
+   Chave: localStorage pcm_v373 = off ⇒ o campo de texto de antes, sem guarda.
+   ═══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════ */
+(function () {
+  'use strict';
+  var V373 = window.V373 = {
+    versao: 'V373',
+    UNID: ['CV', 'HP', 'kW'],
+    KW_CV: 1.34,                 // D2: a mesma conta do _crm_hp
+    CAMPOS: { mcPower: { salvar: 'saveMachine', abrir: 'openModalMachine', modal: 'modalMachine', frota: true },
+              mPower: { salvar: 'saveModel', abrir: 'openModalModel', modal: 'modalModel', frota: false } },
+    est: {},
+    off: function () { try { return localStorage.getItem('pcm_v373') === 'off'; } catch (e) { return false; } }
+  };
+  var DESC = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value');
+
+  // ── ler o texto gravado pelo MESMO critério do banco (_crm_hp, SQL 06) ─────────────────────────────────────────────
+  V373.ler = function (txt) {
+    var s = String(txt == null ? '' : txt).trim();
+    if (!s) return { vazio: true, ok: false, num: null, unid: '', bruto: '' };
+    var m = /([0-9]+(?:\.[0-9]+)?)\s*(hp|cv|kw)/.exec(s.toLowerCase().replace(/,/g, '.'));
+    if (m) return { vazio: false, ok: true, num: Number(m[1]), unid: m[2] === 'kw' ? 'kW' : m[2].toUpperCase(), bruto: s };
+    var n = /([0-9]+(?:[.,][0-9]+)?)/.exec(s);
+    return { vazio: false, ok: false, num: n ? Number(n[1].replace(',', '.')) : null, unid: '', bruto: s };
+  };
+  V373.fmt = function (n) { return String(Math.round(Number(n) * 100) / 100).replace('.', ','); };
+  // o número digitado: '' ⇒ null (vazio) · "7,5"/"7.5"/"40" ⇒ número · o resto ⇒ NaN
+  V373.numero = function (s) {
+    s = String(s == null ? '' : s).trim();
+    if (!s) return null;
+    if (!/^[0-9]{1,5}(?:[.,][0-9]{1,2})?$/.test(s)) return NaN;
+    var n = Number(s.replace(',', '.'));
+    return n > 0 ? n : NaN;
+  };
+  V373.texto = function (n, u) { return V373.fmt(n) + ' ' + u; };
+  V373.cv = function (n, u) { return u === 'kW' ? Math.round(n * V373.KW_CV * 100) / 100 : n; };
+
+  function S(v) { return String(v == null ? '' : v).trim(); }
+  function sa(s) { return S(s).normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase(); }
+
+  // D3: máquina da frota Proper Locação — o dono pelo NOME (a regra de nome do _parque_e_da_frota) ou a TAG PL-
+  V373.daFrota = function () {
+    var cli = sa((document.getElementById('mcClient') || {}).value), tag = S((document.getElementById('mcTag') || {}).value);
+    return /proper\s*loca/.test(cli) || /^PL-/i.test(tag);
+  };
+  function obrigatoria(id) { return !!(V373.CAMPOS[id] && V373.CAMPOS[id].frota && V373.daFrota()); }
+
+  // ── o controle ─────────────────────────────────────────────────────────────────────────────────────────────────────
+  function caixa(id) { return document.querySelector('.v373-pot[data-v373="' + id + '"]'); }
+  function montar(id) {
+    var inp = document.getElementById(id);
+    if (!inp) return null;
+    var c = caixa(id);
+    if (c) return c;
+    c = document.createElement('div');
+    c.className = 'v373-pot'; c.setAttribute('data-v373', id);
+    c.innerHTML = '<input class="form-input v373-num" inputmode="decimal" autocomplete="off" data-lpignore="true" data-1p-ignore="true" placeholder="ex: 7,5" aria-label="Potência (número)">' +
+      '<span class="v373-un" role="group" aria-label="Unidade da potência">' +
+      V373.UNID.map(function (u) { return '<button type="button" class="v373-u" data-u="' + u + '">' + u + '</button>'; }).join('') + '</span>' +
+      '<span class="v373-conv" title="Número usado no preço da locação e nas faixas de serviço (1 kW = 1,34 CV)"></span>';
+    var av = document.createElement('div'); av.className = 'v373-aviso'; av.setAttribute('data-v373-aviso', id); av.hidden = true;
+    inp.style.display = 'none';
+    inp.insertAdjacentElement('afterend', c);
+    c.insertAdjacentElement('afterend', av);
+    var num = c.querySelector('.v373-num');
+    num.addEventListener('input', function () { var e = est(id); e.num = num.value; e.erro = ''; aplicar(id); });
+    c.querySelector('.v373-un').addEventListener('click', function (ev) {
+      var b = ev.target && ev.target.closest ? ev.target.closest('.v373-u') : null; if (!b) return;
+      var e = est(id); e.unid = b.getAttribute('data-u'); e.erro = ''; aplicar(id);
+    });
+    // um só caminho para quem escreve no campo antigo: o setter da instância repinta o controle
+    try {
+      Object.defineProperty(inp, 'value', {
+        configurable: true,
+        get: function () { return DESC.get.call(this); },
+        set: function (v) { DESC.set.call(this, v); carregar(id); }
+      });
+    } catch (e) { console.warn('[V373] setter do campo', id, e); }
+    if (id === 'mcPower') ['mcClient', 'mcTag'].forEach(function (k) {
+      var el = document.getElementById(k); if (el) el.addEventListener('input', function () { pintar(id); });
+    });
+    carregar(id);
+    return c;
+  }
+  function est(id) { return V373.est[id] || (V373.est[id] = { num: '', unid: '', antigo: null, erro: '', escrito: null }); }
+
+  // o campo antigo ⇒ o controle (abrir a máquina, limpar o formulário, outro bloco preenchendo)
+  function carregar(id) {
+    var inp = document.getElementById(id); if (!inp) return;
+    var v = DESC.get.call(inp), e = est(id);
+    e.erro = '';
+    if (e.escrito !== null && v === e.escrito) { e.escrito = null; e.antigo = null; pintar(id); return; }   // o que o controle acabou de gravar: o número e a unidade ficam como a pessoa deixou (apagar o número não perde a unidade)
+    e.escrito = null;
+    var l = V373.ler(v);
+    e.num = l.num != null ? V373.fmt(l.num) : '';
+    e.unid = l.ok ? l.unid : '';
+    e.antigo = (!l.vazio && !l.ok) ? l.bruto : null;
+    pintar(id);
+  }
+
+  // o controle ⇒ o campo antigo (só quando a pessoa mexe; o texto antigo entendido fica como estava)
+  function aplicar(id) {
+    var inp = document.getElementById(id), e = est(id); if (!inp) return;
+    var n = V373.numero(e.num), novo = null;
+    if (n === null) novo = '';                                  // apagou o número: sem potência
+    else if (n === n && e.unid) novo = V373.texto(n, e.unid);   // número válido + unidade: o formato único
+    if (novo !== null && DESC.get.call(inp) !== novo) {
+      e.escrito = novo; inp.value = novo;                       // o setter reconhece a escrita do controle e só repinta
+      try { inp.dispatchEvent(new Event('input', { bubbles: true })); } catch (x) {}
+    } else {
+      if (novo !== null) e.antigo = null;
+      pintar(id);
+    }
+  }
+
+  V373.pendencia = function (id) {
+    var inp = document.getElementById(id), e = est(id); if (!inp) return '';
+    var n = V373.numero(e.num), atual = S(DESC.get.call(inp));
+    if (n !== null && n !== n) return 'Potência: digite só o número (ex.: 7,5).';
+    if (n !== null && !e.unid) return 'Escolha a unidade da potência: CV, HP ou kW.';
+    if (atual && !V373.ler(atual).ok) return 'Potência fora do padrão: digite o número e escolha a unidade (CV, HP ou kW).';
+    if (!atual && obrigatoria(id)) return 'Potência é obrigatória nas máquinas da Proper Locação.';
+    return '';
+  };
+
+  function pintar(id) {
+    var c = caixa(id), e = est(id); if (!c) return;
+    var num = c.querySelector('.v373-num'), un = c.querySelector('.v373-un'), conv = c.querySelector('.v373-conv');
+    var av = document.querySelector('[data-v373-aviso="' + id + '"]');
+    if (num.value !== e.num && document.activeElement !== num) num.value = e.num;
+    Array.prototype.forEach.call(c.querySelectorAll('.v373-u'), function (b) {
+      var on = b.getAttribute('data-u') === e.unid; b.classList.toggle('on', on); b.setAttribute('aria-pressed', on ? 'true' : 'false');
+    });
+    var n = V373.numero(e.num);
+    conv.textContent = (n !== null && n === n && (e.unid === 'kW' || e.unid === 'HP')) ? '≈ ' + V373.fmt(V373.cv(n, e.unid)) + ' CV' : '';
+    var semNum = n === null || n !== n, semUni = n !== null && n === n && !e.unid;
+    num.classList.toggle('v373-erro', !!e.erro && (semNum || n !== n));
+    un.classList.toggle('v373-erro', !!e.erro && (semUni || !!e.antigo));
+    if (av) {
+      var msg = e.erro || (e.antigo ? 'Estava «' + e.antigo + '» — escolha a unidade.' : '');
+      av.textContent = msg;
+      av.hidden = !msg; av.classList.toggle('v373-erro', !!e.erro);
+    }
+    if (V373.CAMPOS[id] && V373.CAMPOS[id].frota) {
+      var lab = c.parentNode && c.parentNode.querySelector('.form-label span');
+      if (lab) lab.textContent = obrigatoria(id) ? 'obrigatória na frota' : 'opcional';
+    }
+  }
+
+  // ── a guarda do Salvar (por fora; refeita ao abrir) ─────────────────────────────────────────────────────────────
+  function guardar(id) {
+    var cfg = V373.CAMPOS[id], nome = cfg.salvar, o = window[nome];
+    if (typeof o !== 'function' || o.__v373) return;
+    var f = function () {
+      var msg = V373.pendencia(id);
+      if (msg) {
+        est(id).erro = msg; pintar(id);
+        try { toast(msg, 'error'); } catch (x) {}
+        try { var c = caixa(id), n = V373.numero(est(id).num); (n === null || n !== n ? c.querySelector('.v373-num') : c.querySelector('.v373-u')).focus(); } catch (x) {}
+        return;
+      }
+      return o.apply(this, arguments);
+    };
+    try { Object.keys(o).forEach(function (k) { f[k] = o[k]; }); } catch (x) {}
+    f.__v373 = true;
+    window[nome] = f;
+  }
+  function abrir(id) {
+    var cfg = V373.CAMPOS[id], nome = cfg.abrir, o = window[nome];
+    if (typeof o !== 'function' || o.__v373) return;
+    var f = function () {
+      try { guardar(id); } catch (x) { console.warn('[V373] guarda do Salvar', id, x); }
+      return o.apply(this, arguments);
+    };
+    try { Object.keys(o).forEach(function (k) { f[k] = o[k]; }); } catch (x) {}
+    f.__v373 = true;
+    window[nome] = f;
+  }
+
+  function ligar() {
+    if (V373.off()) return;
+    Object.keys(V373.CAMPOS).forEach(function (id) {
+      try { if (montar(id)) abrir(id); } catch (e) { console.warn('[V373] ligar', id, e); }
+    });
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', ligar); else ligar();
+})();
+</script>
+<!-- ████ FIM PCM V373 ████ -->
 
 </body>
 </html>
