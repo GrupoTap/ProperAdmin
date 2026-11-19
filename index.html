@@ -5698,9 +5698,17 @@ v50 — Resiliência de rede: retry/backoff em gsGet e syncToGS
   da OS, sem abrir. O tipo impresso num canto (PECA, PRATELEIRA, KIT OS, MAQUINA). Conferir etiqueta reconhece os 4 tipos (kit pelo
   "#os/", maquina pelo QR do PCF, prateleira pelo endereco, peca pelo codigo; senao "Etiqueta nao reconhecida").
   Chave de volta: localStorage pcm_v374 = off (os textos novos ficam).
+  PCM V375 — 19/11/2026 — BUSCA DE ITENS DA PROPOSTA: TOTAL POR GRUPO E MOSTRAR MAIS (ProperCare-backlog#273, parte 1), sobre o V374.
+  Par: SQL CRM_BUSCA_TOTAL_2026-11-18 (cadeia 153; RODA ANTES). Antes cada grupo da busca vinha cortado em 12 (6 em peca de outro
+  modelo), em ordem alfabetica, e a tela mostrava como se fosse tudo: "kit" casava com 112 produtos do ERP e apareciam 12.
+  Barra de busca e Trocar o item: o titulo do grupo cortado diz "12 de 112" e o botao Mostrar mais traz os proximos 12 no lugar
+  (a lista nao volta ao topo). Cadastrar produto / Cadastrar servico: enquanto ha resultado por ver, o texto diz quantos faltam.
+  A ordem (relevancia) e os totais vem do banco. So leitura: nada e gravado.
+  Linhas antigas alteradas (ganchos para o V375): 3 na barra de busca (V204), 3 no Trocar o item (V239), 1 no V309 e 1 no V310 —
+  sem o V375 (ou com ele desligado) fazem o mesmo de antes. Sem o SQL: a tela fica como antes. Chave: localStorage pcm_v375 = off.
 -->
-<title>ProperCare Manager · Gestão PGP v4.03 (PCM V374)</title>
-<meta name="app-build" content="PCM_V374" data-date="2026-11-18">
+<title>ProperCare Manager · Gestão PGP v4.03 (PCM V375)</title>
+<meta name="app-build" content="PCM_V375" data-date="2026-11-19">
 <link rel="icon" type="image/jpeg" href="data:image/jpeg;base64,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">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -55392,7 +55400,7 @@ function _v204ResHtml() {
   var h = '<div class="v204-res" id="v204Res">', grupoAnt = '';
   B.itens.forEach(function (it, n) {
     var g = it.fonte === 'peca_modelo' && it.outro_modelo ? 'peca_outro' : it.fonte;
-    if (g !== grupoAnt) { h += '<div class="v204-gr">' + _v204E(V204_FONTE[g] || g) + (g === 'produto_erp' ? ' · ' + _v204Dia(V204.ed.cfg.erp_lista_em) : '') + '</div>'; grupoAnt = g; }
+    if (g !== grupoAnt) { h += (window.V375 && !V375.off() ? V375.mais('busca', grupoAnt, n) : '') + '<div class="v204-gr">' + _v204E(V204_FONTE[g] || g) + (g === 'produto_erp' ? ' · ' + _v204Dia(V204.ed.cfg.erp_lista_em) : '') + (window.V375 && !V375.off() ? V375.titulo('busca', g) : '') + '</div>'; grupoAnt = g; }   /* V375: "12 de 112" no título e o Mostrar mais do grupo que acabou */
     var det = [];
     if (it.codigo) det.push(it.codigo);
     if (it.marca) det.push(it.marca);
@@ -55413,6 +55421,7 @@ function _v204ResHtml() {
     var tag = it.fonte === 'kit' ? 'Kit' : it.natureza === 'servico' ? 'Serviço' : (it.fonte === 'produto_erp' ? 'Produto' : 'Peça');
     h += '<button type="button" class="v204-it' + (n === B.sel ? ' sel' : '') + '" data-v204="res" data-n="' + n + '" data-pw-off="1"><span><b>' + _v204E(it.nome) + '</b><br><small>' + _v204E(det.join(' · ')) + '</small></span><span class="v204-tag">' + tag + '</span></button>';
   });
+  if (window.V375 && !V375.off()) h += V375.mais('busca', grupoAnt, B.itens.length);   /* V375: o Mostrar mais do último grupo */
   if (!B.itens.length && !B.carregando) h += '<div class="v200-vazio">nada encontrado para "' + _v204E(B.q) + '"</div>';
   h += '<button type="button" class="v204-it" data-v204="avulsaQ" data-pw-off="1"><span><b>＋ Linha avulsa "' + _v204E(B.q) + '"</b><br><small>peça de balcão ou item fora de todo catálogo</small></span><span class="v204-tag">Avulsa</span></button>';
   return h + '</div>';
@@ -55554,7 +55563,7 @@ function _v204Buscar(q) {
     try {
       var r = await _v200Rpc('crm_busca', { p_q: q, p_oportunidade: ED.op, p_maquina: ED.maqAtual || null, p_limite: 12 });
       if (V204.ed !== ED || meu !== B.voo) return;
-      B.itens = (r && r.itens) || []; B.carregando = false;
+      B.itens = (r && r.itens) || []; B.carregando = false; B.v375r = r || null;   /* V375: os totais de cada grupo vêm na resposta */
     } catch (e) { if (V204.ed !== ED || meu !== B.voo) return; B.itens = []; B.carregando = false; B.erro = e.message || String(e); }
     _v204PintarRes();
   }, 160);
@@ -75964,7 +75973,7 @@ function _v239Buscar(q) {
         if (it.fonte === 'produto_erp' && (it.inativo === true || (typeof V218 !== 'undefined' && V218.inativos && V218.inativos[String(it.codigo)]))) return false;
         return true;
       });
-      S.qEf = ef; S.carregando = false;
+      S.qEf = ef; S.carregando = false; S.v375r = r || null;   /* V375: os totais de cada grupo vêm na resposta */
     } catch (e) {
       if (V204.ed !== ED || ED.v239s !== S || meu !== S.voo) return;
       S.itens = []; S.carregando = false; S.erro = (e && e.message) || String(e);
@@ -75982,7 +75991,7 @@ function _v239ResInner() {
   var h = '', gAnt = '';
   S.itens.forEach(function (it, n) {
     var g = it.fonte === 'peca_modelo' && it.outro_modelo ? 'peca_outro' : it.fonte;
-    if (g !== gAnt) { h += '<div class="v239-gr">' + _v239E((typeof V204_FONTE !== 'undefined' && V204_FONTE[g]) || g) + '</div>'; gAnt = g; }
+    if (g !== gAnt) { h += (window.V375 && !V375.off() ? V375.mais('troca', gAnt, n) : '') + '<div class="v239-gr">' + _v239E((typeof V204_FONTE !== 'undefined' && V204_FONTE[g]) || g) + (window.V375 && !V375.off() ? V375.titulo('troca', g) : '') + '</div>'; gAnt = g; }   /* V375 */
     var om = _v239Omie(it), chip = '';
     try { if (om && om.codigo && typeof _v218ChipHtml === 'function') chip = ' ' + _v218ChipHtml(String(om.codigo)); } catch (e) {}
     var txt = it.fonte === 'produto_erp'
@@ -75992,6 +76001,7 @@ function _v239ResInner() {
     h += '<button type="button" class="v239-it' + (n === S.sel ? ' sel' : '') + '" data-v239="pick" data-n="' + n + '" data-pw-off="1"><span>' + txt + chip + '</span>' +
       '<span class="pr">' + (om && om.preco != null ? _v239E(_v204R(om.preco)) : '—') + '</span></button>';
   });
+  if (window.V375 && !V375.off()) h += V375.mais('troca', gAnt, S.itens.length);   /* V375: o Mostrar mais do último grupo */
   return h;
 }
 function _v239PeHtml() {
@@ -98965,7 +98975,7 @@ var V295 = window.V295 = { versao: 'PCM_V295', of: { rol: {}, escritas: 0, h: 0,
             ex += '<button type="button" class="v204-it" data-v309="usar" data-id="' + E(p.id) + '" data-pw-off="1"><span><b>' + E(p.descricao) + '</b><br><small>' + E(det.join(' · ')) + '</small></span><span class="v204-tag">Provisório</span></button>';
           });
         }
-        ex += '<button type="button" class="v204-it" data-v309="cadQ" data-pw-off="1"><span><b>＋ Cadastrar produto "' + E(q) + '"</b><br><small>não achou? salve um produto provisório agora; o Suprimentos completa o fiscal e cria no Omie</small></span><span class="v204-tag">Novo</span></button>';
+        ex += '<button type="button" class="v204-it" data-v309="cadQ" data-pw-off="1"><span><b>＋ Cadastrar produto "' + E(q) + '"</b><br><small>' + (window.V375 && !V375.off() && V375.faltam('produto_erp') ? V375.cadTxt('produto_erp') : 'não achou? salve um produto provisório agora; o Suprimentos completa o fiscal e cria no Omie') + '</small></span><span class="v204-tag">Novo</span></button>';
         return h.slice(0, ponto) + ex + h.slice(ponto);
       } catch (e) { console.warn('[V309] lista:', e); return h; }
     };
@@ -99390,7 +99400,7 @@ var V295 = window.V295 = { versao: 'PCM_V295', of: { rol: {}, escritas: 0, h: 0,
         var P = papel(); if (!P) return h;
         var ponto = h.indexOf('<button type="button" class="v204-it" data-v204="avulsaQ"'); if (ponto < 0) return h;
         var q = S(V204.ed.busca.q);
-        var ex = '<button type="button" class="v204-it" data-v310="cadSrvQ" data-pw-off="1"><span><b>＋ Cadastrar serviço "' + E(q) + '"</b><br><small>não achou? cadastre no catálogo 🔧 Serviços agora e ligue ao serviço do Omie</small></span><span class="v204-tag">Novo</span></button>';
+        var ex = '<button type="button" class="v204-it" data-v310="cadSrvQ" data-pw-off="1"><span><b>＋ Cadastrar serviço "' + E(q) + '"</b><br><small>' + (window.V375 && !V375.off() && V375.faltam('servico') ? V375.cadTxt('servico') : 'não achou? cadastre no catálogo 🔧 Serviços agora e ligue ao serviço do Omie') + '</small></span><span class="v204-tag">Novo</span></button>';
         return h.slice(0, ponto) + ex + h.slice(ponto);
       } catch (e) { console.warn('[V310] lista:', e); return h; }
     };
@@ -121638,6 +121648,181 @@ body.mob-on .v373-u{min-width:56px}
 })();
 </script>
 <!-- ████ FIM PCM V374 ████ -->
+<!-- ████ INICIO PCM V375 · 🔎 BUSCA DE ITENS DA PROPOSTA: "12 DE 112" E MOSTRAR MAIS (ProperCare-backlog#273) ████ -->
+<style id="v375-css">
+/* PCM V375 (ProperCare-backlog#273, parte 1): a busca de itens da proposta (barra 🔎 e 🔁 Trocar o item) diz quantos resultados cada
+   grupo tem e traz os próximos. Chave: localStorage pcm_v375 = off */
+.v375-n{text-transform:none;letter-spacing:0;font-weight:700;color:var(--text,#101828)}
+.v375-mais{all:unset;box-sizing:border-box;display:block;width:100%;padding:7px 10px;cursor:pointer;font-size:12px;font-weight:600;color:#1849A9;background:#F5F8FF;border-top:1px solid #E0EAFF;text-align:center}
+.v375-mais:hover{background:#E0EAFF}
+.v375-mais:focus-visible{background:#E0EAFF;outline:2px solid #1849A9;outline-offset:-2px}
+.v375-mais[disabled]{color:#667085;background:#F9FAFB;cursor:progress}
+</style>
+<script id="v375Js">
+/* ═════════════════════════════════════════════════════════════════════════════════════════════════════════════
+   PCM V375 · ProperCare-backlog#273 (parte 1) — a busca de itens da proposta não esconde mais resultado.
+   Antes: cada grupo vinha cortado em 12 (6 em "peça de outro modelo"), em ordem alfabética, e a tela mostrava a lista como se fosse
+   tudo — "kit" casava com 112 produtos do ERP, apareciam 12 e logo abaixo vinha "＋ Cadastrar produto".
+   · O título do grupo que foi cortado diz "12 de 112" (barra 🔎 e 🔁 Trocar o item).
+   · "Mostrar mais" no fim do grupo traz os próximos 12 (crm_busca_mais, a partir do que o banco já mandou); a lista não volta ao topo.
+   · "＋ Cadastrar produto" e "＋ Cadastrar serviço": enquanto há resultado por ver, o texto diz quantos faltam.
+   A ordem (relevância) e os totais vêm do banco: SQL CRM_BUSCA_TOTAL_2026-11-18 (roda ANTES). Sem ele a resposta não traz `totais`
+   e a tela fica como antes. Nada é gravado aqui: só leitura.
+   Ganchos em linhas antigas (sem o V375, ou com ele desligado, fazem o mesmo de antes): 3 na barra 🔎 (V204), 3 no 🔁 Trocar o
+   item (V239), 1 no "＋ Cadastrar produto" (V309) e 1 no "＋ Cadastrar serviço" (V310).
+   ═════════════════════════════════════════════════════════════════════════════════════════════════════════════ */
+(function () {
+  'use strict';
+  var PAG = 12;
+  var NOME = { peca_maquina: ['peça', 'peças'], peca_modelo: ['peça', 'peças'], peca_outro: ['peça', 'peças'], peca_biblioteca: ['peça', 'peças'],
+               servico: ['serviço', 'serviços'], kit: ['kit', 'kits'], produto_erp: ['produto', 'produtos'] };
+  function off() { try { return localStorage.getItem('pcm_v375') === 'off'; } catch (e) { return false; } }
+  function E(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+  function grupo(it) { return it && it.fonte === 'peca_modelo' && it.outro_modelo ? 'peca_outro' : String((it && it.fonte) || ''); }
+  function chave(it) { return grupo(it) + '|' + String(it.ref_id || it.familia || '') + '|' + String(it.codigo || ''); }
+  function nome(g, n) { var x = NOME[g] || ['resultado', 'resultados']; return n === 1 ? x[0] : x[1]; }
+
+  // ── o contexto de cada lista: a barra 🔎 (V204) e o 🔁 Trocar o item (V239) ───────────────────────────────────────────
+  function ctx(onde) {
+    var ED = (typeof V204 !== 'undefined' && V204.ed) || null; if (!ED) return null;
+    if (onde === 'troca') {
+      var S = ED.v239s; if (!S) return null;
+      return { onde: onde, ED: ED, dono: S, R: S.v375r || null, lista: S.itens || [], caixa: 'v239SugRes', aberta: true,
+               maq: (S.l && S.l.maquina_id) || ED.maqAtual || null,
+               // o MESMO filtro da busca do V239: serviço e kit não trocam peça; produto inativo no Omie fica fora (G7)
+               serve: function (it) {
+                 if (!it || it.natureza === 'servico' || it.fonte === 'kit') return false;
+                 if (it.fonte === 'produto_erp' && (it.inativo === true || (typeof V218 !== 'undefined' && V218.inativos && V218.inativos[String(it.codigo)]))) return false;
+                 return true;
+               },
+               pintar: function () { _v239PintarRes(); try { _v218ChipAgendar(); } catch (e) { /* sem o chip de estoque */ } } };
+    }
+    var B = ED.busca; if (!B) return null;
+    return { onde: 'busca', ED: ED, dono: B, R: B.v375r || null, lista: B.itens || [], caixa: 'v204Res', maq: ED.maqAtual || null, aberta: !!B.aberta && !B.erro,
+             serve: function () { return true; }, pintar: function () { _v204PintarRes(); } };
+  }
+  // conta para o total do grupo? (o banco não conta o produto inativo no Omie; a sugestão da conciliação — V240 — não veio da busca)
+  function conta(it, g) { return grupo(it) === g && !it.v240 && !(g === 'produto_erp' && it.inativo === true); }
+  // de  = o que o banco já mandou de cada grupo (com os inativos e o que a tela filtra): é o "a partir de" da próxima página
+  // pul = o que o banco mandou e esta lista NÃO mostra (o 🔁 tira o produto que a leitura do estoque diz inativo): sai do total
+  function prep(C) {
+    var R = C.R; if (!R || R.v375) return R;
+    var de = {}, veio = {}, pul = {};
+    (R.itens || []).forEach(function (it) { var g = grupo(it); de[g] = (de[g] || 0) + 1; if (conta(it, g)) veio[g] = (veio[g] || 0) + 1; });
+    Object.keys(veio).forEach(function (g) { pul[g] = Math.max(0, veio[g] - vistos(C, g)); });
+    R.v375 = { de: de, pul: pul, voo: {}, fim: {} };
+    return R;
+  }
+  function vistos(C, g) {
+    var n = 0;
+    C.lista.forEach(function (it) { if (conta(it, g)) n++; });
+    return n;
+  }
+  // quantos resultados do grupo esta lista PODE mostrar (o total do banco menos o que ela filtra)
+  function total(C, g) {
+    var R = C && C.R, t = R && R.totais ? Number(R.totais[g]) : NaN;
+    if (!isFinite(t)) return null;
+    return Math.max(0, t - ((R.v375 && R.v375.pul[g]) || 0));
+  }
+  // quantos resultados do grupo ainda não estão na tela (0 = nada a mais, ou o banco ainda não manda o total)
+  function faltaDe(C, g) {
+    if (!C || !C.R || off()) return 0;
+    prep(C);
+    if (C.R.v375.fim[g]) return 0;
+    var t = total(C, g); if (t === null) return 0;
+    return Math.max(0, t - vistos(C, g));
+  }
+
+  // ── o que entra no HTML das duas listas (chamado pelos ganchos das linhas antigas) ───────────────────────────────────
+  function titulo(onde, g) {
+    try {
+      var C = ctx(onde), f = faltaDe(C, g); if (!f) return '';
+      return ' · <span class="v375-n" data-v375n="' + E(g) + '">' + vistos(C, g) + ' de ' + total(C, g) + '</span>';
+    } catch (e) { return ''; }
+  }
+  // o botão vem no fim do grupo `g`: n = o índice do item seguinte (nenhum item de `g` daqui para a frente)
+  function mais(onde, g, n) {
+    try {
+      if (!g) return '';
+      var C = ctx(onde), f = faltaDe(C, g); if (!f) return '';
+      for (var i = n; i < C.lista.length; i++) if (grupo(C.lista[i]) === g) return '';
+      var indo = !!C.R.v375.voo[g], q = Math.min(PAG, f);
+      return '<button type="button" class="v375-mais" data-v375="mais" data-onde="' + E(onde) + '" data-g="' + E(g) + '" data-pw-off="1"' + (indo ? ' disabled' : '') + '>' +
+        (indo ? '⏳ procurando…' : '▾ Mostrar mais ' + q + ' ' + nome(g, q) + ' · ' + (f === 1 ? 'falta 1' : 'faltam ' + f)) + '</button>';
+    } catch (e) { return ''; }
+  }
+  // "＋ Cadastrar produto/serviço": há resultado desse tipo por ver?
+  function faltam(g) { try { return faltaDe(ctx('busca'), g); } catch (e) { return 0; } }
+  function cadTxt(g) {
+    var f = faltam(g);
+    return 'ainda ' + (f === 1 ? 'há 1 ' + nome(g, 1) : 'há ' + f + ' ' + nome(g, f)) + ' acima para ver (Mostrar mais) — confira antes de cadastrar';
+  }
+
+  // ── o clique: os próximos do grupo ──────────────────────────────────────────────────────────────────
+  function repintar(C) {
+    var cx = document.getElementById(C.caixa), topo = cx ? cx.scrollTop : 0;
+    C.pintar();
+    cx = document.getElementById(C.caixa);
+    if (cx) cx.scrollTop = topo;   // a lista continua onde estava: os novos aparecem no lugar do botão
+    // o cursor volta para o campo de quem busca (↑↓ e Enter continuam valendo). No 🔁 a lista é repintada de novo quando o chip de
+    //   estoque chega: foco num item dela se perderia — e fora da caixa o V239 a fecha.
+    try {
+      var alvo = C.onde === 'busca' ? document.getElementById('v204Busca')
+               : (document.getElementById('v239SugQ') || document.getElementById('v204d' + C.ED.linhas.indexOf(C.dono.l)));
+      if (alvo) alvo.focus({ preventScroll: true });
+    } catch (e) { /* foco é conforto */ }
+  }
+  async function trazer(onde, g) {
+    var C = ctx(onde); if (!C || !C.R || off()) return;
+    var R = prep(C), ED = C.ED, dono = C.dono;
+    if (R.v375.voo[g]) return;                                   // trava de duplo clique
+    // a MESMA lista ainda na tela: mesmo editor, mesma busca (uma busca nova troca o R) e a lista aberta (Esc/escolher fecha)
+    var vivo = function () { var A = ctx(onde); return !!A && A.ED === ED && A.dono === dono && A.R === R && A.aberta; };
+    R.v375.voo[g] = true; repintar(C);
+    try {
+      var r = await _v200Rpc('crm_busca_mais', { p_q: R.q, p_oportunidade: ED.op, p_maquina: C.maq, p_grupo: g,
+                                                 p_a_partir: R.v375.de[g] || 0, p_limite: PAG });
+      if (!vivo()) return;                                       // a pessoa buscou outra coisa, ou fechou: esta resposta não entra
+      var veio = (r && r.itens) || [];
+      R.v375.de[g] = (R.v375.de[g] || 0) + veio.length;
+      if (r && r.totais && r.totais[g] != null) { R.totais = R.totais || {}; R.totais[g] = r.totais[g]; }
+      if (!veio.length) R.v375.fim[g] = true;                    // o banco não tem mais (a lista mudou no meio): o botão some
+      var A = ctx(onde), tem = {};
+      A.lista.forEach(function (it) { tem[chave(it)] = 1; });
+      var novos = veio.filter(function (it) { return grupo(it) === g && A.serve(it) && !tem[chave(it)] && (tem[chave(it)] = 1); });
+      // o que veio e esta lista não mostra (filtrado, ou já estava nela) deixa de contar como "falta ver"
+      var cg = function (it) { return conta(it, g); };
+      R.v375.pul[g] = (R.v375.pul[g] || 0) + veio.filter(cg).length - novos.filter(cg).length;
+      if (novos.length) {
+        // depois do último item do grupo que veio da busca — nunca dentro das ✨ sugestões da conciliação (V240), que ficam no fim
+        var pos = -1, sug = -1;
+        A.lista.forEach(function (it, i) { if (it.v240) { if (sug < 0) sug = i; } else if (grupo(it) === g) pos = i; });
+        pos = pos >= 0 ? pos + 1 : (sug >= 0 ? sug : A.lista.length);
+        Array.prototype.splice.apply(A.lista, [pos, 0].concat(novos));
+        // quem guarda ÍNDICE desta lista continua apontando para o MESMO item: a escolha do teclado, a pergunta do preço aberta
+        //   no 🔁 (S.confirmar.n) e o começo das sugestões do V240 (S.v240n0)
+        if (typeof dono.sel === 'number' && dono.sel >= pos) dono.sel += novos.length;
+        if (dono.confirmar && typeof dono.confirmar.n === 'number' && dono.confirmar.n >= pos) dono.confirmar.n += novos.length;
+        if (typeof dono.v240n0 === 'number' && dono.v240n0 >= pos) dono.v240n0 += novos.length;
+      }
+    } catch (e) {
+      if (vivo()) toast('Não consegui trazer mais resultados: ' + ((e && e.message) || e), 'error');
+    } finally {
+      R.v375.voo[g] = false;
+      if (vivo()) repintar(ctx(onde));
+    }
+  }
+  document.addEventListener('click', function (ev) {
+    var b = ev.target && ev.target.closest && ev.target.closest('[data-v375="mais"]'); if (!b) return;
+    ev.preventDefault(); ev.stopPropagation();
+    if (b.disabled) return;
+    trazer(b.getAttribute('data-onde') === 'troca' ? 'troca' : 'busca', String(b.getAttribute('data-g') || ''));
+  }, true);
+
+  window.V375 = { BUILD: 'V375', off: off, titulo: titulo, mais: mais, faltam: faltam, cadTxt: cadTxt, trazer: trazer };
+})();
+</script>
+<!-- ████ FIM PCM V375 ████ -->
 
 </body>
 </html>
