@@ -5676,7 +5676,16 @@ v50 — Resiliência de rede: retry/backoff em gsGet e syncToGS
   Entrega: os textos da modalidade. Configuracoes: R$/CV da cessao, dias para aprovar, dias de cessao (o mesmo Salvar).
   Linhas antigas alteradas (ganchos para o V370): 11 no V365, 3 no V366, 3 no V368 — sem o V370 (ou com ele desligado) fazem o mesmo de
   antes. Sem o SQL: a cessao nao aparece. Chave: localStorage pcm_v370 = off.
-  PCM V373 — 18/11/2026 — POTENCIA DA MAQUINA: NUMERO + UNIDADE ESCOLHIDA (ProperCare-backlog#274), sobre o V370. Zero SQL, zero GAS.
+  PCM V371 — 18/11/2026 — LOCACAO EM CURSO (ProperCare-backlog#244, parte 4), sobre o V370.
+  Par: SQL CRM_LOCACAO_P4_2026-11-18 (cadeia 152; RODA ANTES) e o GAS v188 (textos dos avisos da locacao).
+  Resumo do card de locacao aceito: Andamento da locacao abaixo da Entrega (cada maquina: no cliente desde, dia N de 10 da diaria,
+  vira mensal / mensal desde o 11o dia, recolhida; fim previsto; prorrogacao; faturamento). Prorrogar: novo fim (ou sem fim) e os
+  valores; nasce a versao seguinte da MESMA proposta em rascunho (emitir, PDF, enviar e aceite na Proposta). Locacao faturada
+  (todas recolhidas, coluna 8) e Desfazer com motivo. PDF da prorrogacao no desenho do V368 (titulo, so as maquinas que nao
+  voltaram, diaria pelos dias acrescidos, cartao Prorrogacao). Configuracoes: aviso de fim (dias antes). Para andar em 8.
+  Linhas antigas alteradas (ganchos para o V371): 2 no V365, 2 no V368 — sem o V371 (ou com ele desligado) fazem o mesmo de antes.
+  Sem o SQL: o andamento nao aparece. Chave: localStorage pcm_v371 = off.
+  PCM V373 — 18/11/2026 — POTENCIA DA MAQUINA: NUMERO + UNIDADE ESCOLHIDA (ProperCare-backlog#274), sobre o V371. Zero SQL, zero GAS.
   Maquina nova/editar (mcPower) e modelo do catalogo (mPower): o texto livre vira um numero (aceita virgula) e a unidade em botoes
   CV, HP, kW. Grava no MESMO campo, em formato unico ("40 CV", "7,5 kW"): planilha, GAS, espelho e o _crm_hp leem o mesmo texto.
   Ao lado, o numero da locacao e das faixas ("30 kW ~ 40,2 CV"; 1 CV = 1 HP, kW x 1,34 — D2). Potencia antiga lida pelo criterio
@@ -118141,6 +118150,7 @@ body.v357-on #qofRaiz .qof-card[data-qof-est="9"]::after,body.v357-on #qofRaiz .
       '<label for="v365CfgD">R$ por CV · dia<input type="text" inputmode="decimal" id="v365CfgD" value="' + val('v365CfgD', num2(c.cv_diaria)) + '"' + dis + '></label>' +
       '<label for="v365CfgX">Diárias até virar mensal<input type="number" min="1" max="31" step="1" id="v365CfgX" value="' + val('v365CfgX', c.diarias_max) + '"' + dis + '></label>' +
       (window.V370 && !V370.off() ? V370.cfgCampos(c, dis) : '') +   /* V370: os parâmetros da cessão */
+      (window.V371 && !V371.off() ? V371.cfgCampos(c, dis) : '') +   /* V371: o aviso de fim da locação */
       (c.pode_editar ? '<button type="button" class="btn btn-primary btn-sm" data-v365="salvarCfg">Salvar preço da locação</button>' : '') + '</div>' +
       (c.mudado ? '<div style="font-size:11.5px;color:#667085;margin-top:6px" title="Fica na trilha do quadro">Mudado por ' + E(_v200NomeUsu(c.mudado.por)) + ' em ' + E(_v200Data(c.mudado.em, true)) + '</div>' : '');
     return h;
@@ -118204,6 +118214,7 @@ body.v357-on #qofRaiz .qof-card[data-qof-est="9"]::after,body.v357-on #qofRaiz .
     try {
       var pc = { cv_mensal: m, cv_diaria: d, diarias_max: x };
       if (window.V370 && !V370.off()) { var ex = V370.cfgValores(); if (ex.erro) { toast(ex.erro, 'error'); focar(ex.campo); return; } Object.assign(pc, ex.p); }   /* V370: + a cessão */
+      if (window.V371 && !V371.off()) { var e71 = V371.cfgValores(); if (e71.erro) { toast(e71.erro, 'error'); focar(e71.campo); return; } Object.assign(pc, e71.p); }   /* V371: + o aviso de fim */
       V365.cfg = await rpc('crm_locacao_cfg_salvar', { p: pc }, true);
       V365.frota = {}; V365.cfgDig = {};
       toast('Preço da locação salvo.', 'success');
@@ -119526,7 +119537,7 @@ body.v357-on #qofRaiz .qof-card[data-qof-est="9"]::after,body.v357-on #qofRaiz .
   V368.modelo = modelo;
   async function pdfPadrao(v, previa) {
     var lib = await pcmEnsureJsPDF();
-    var c = (v && v.conteudo) || {}, jsPDF = lib.jsPDF, M = modelo(c);
+    var c = (v && v.conteudo) || {}, jsPDF = lib.jsPDF, M = (window.V371 && !V371.off()) ? V371.modelo(c, modelo) : modelo(c);   /* V371: a prorrogação */
     var doc = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
     try { if (c.emitida_em && typeof doc.setCreationDate === 'function') doc.setCreationDate(new Date(c.emitida_em)); } catch (e) {}
     try { if (v && v.id && typeof doc.setFileId === 'function') doc.setFileId(String(v.id).replace(/-/g, '').slice(0, 32).toUpperCase()); } catch (e) {}
@@ -119549,7 +119560,7 @@ body.v357-on #qofRaiz .qof-card[data-qof-est="9"]::after,body.v357-on #qofRaiz .
     var temLogo = typeof V249_LOGO !== 'undefined' && V249_LOGO;
     try { if (!temLogo) throw new Error('sem logo'); doc.addImage('data:image/png;base64,' + V249_LOGO, 'PNG', ML, y - 1, 50, 50 * (typeof V249_LOGO_RAZAO !== 'undefined' ? V249_LOGO_RAZAO : 125 / 600)); }
     catch (e) { fonte('bold', 15); cor(COR.txt); txt('PROPER COMPRESSORES', ML, y + 6); }
-    fonte('bold', 7); cor(COR.lar); txtEsp((previa ? 'PRÉVIA · ' : '') + 'PROPOSTA DE LOCAÇÃO', X2, y + 1, 0.9, 'right');
+    fonte('bold', 7); cor(COR.lar); txtEsp((previa ? 'PRÉVIA · ' : '') + (M.rotulo || 'PROPOSTA DE LOCAÇÃO'), X2, y + 1, 0.9, 'right');   /* V371: o título vem do modelo */
     fonte('bold', 16); cor(COR.txt); txt(M.proposta, X2, y + 7.6, { align: 'right' });
     fonte('normal', 7.8); cor(COR.cin);
     txt('Revisão ' + M.versao + (M.emitida ? ' · Emitida em ' + M.emitida : '') + (M.validade ? ' · Válida até ' + M.validade : ''), X2, y + 12, { align: 'right' });
@@ -120548,6 +120559,415 @@ body.v357-on #qofRaiz .qof-card[data-qof-est="9"]::after,body.v357-on #qofRaiz .
 })();
 </script>
 <!-- ████ FIM PCM V370 ████ -->
+<!-- ████ INICIO PCM V371 · 🔁 LOCAÇÃO EM CURSO: PRORROGAÇÃO, 11º DIA, FIM DO PERÍODO E LOCAÇÃO FATURADA (ProperCare-backlog#244) ████ -->
+<style id="v371-css">
+/* PCM V371 (ProperCare-backlog#244, parte 4): o andamento da locação aceita (abaixo da 🚚 Entrega), a 🔁 prorrogação, o ✅ Locação faturada,
+   o PDF da prorrogação e o aviso de fim em ⚙ Configurações. Chave: localStorage pcm_v371 = off */
+.v371-box{border:1px solid #D0D5DD;border-radius:10px;padding:10px 12px;margin:10px 0;background:#FCFCFD}
+.v371-box h4{margin:0 0 6px;font-size:14px;display:flex;gap:8px;align-items:baseline;flex-wrap:wrap}
+.v371-sub{font-size:12px;color:#667085;font-weight:400}
+.v371-lin{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-top:8px}
+.v371-tab{width:100%;border-collapse:collapse;font-size:12.5px;margin-top:4px}
+.v371-tab th{font-size:11px;color:#667085;font-weight:600;text-align:left;padding:4px 6px;border-bottom:1px solid #EAECF0}
+.v371-tab td{padding:6px;border-bottom:1px solid #F2F4F7;vertical-align:top}
+.v371-chip{display:inline-block;border-radius:999px;padding:1px 8px;font-size:11.5px;font-weight:600;background:#F2F4F7;color:#344054;white-space:nowrap}
+.v371-chip.ok{background:#ECFDF3;color:#067647}.v371-chip.al{background:#FFFAEB;color:#B54708}.v371-chip.tr{background:#FEF3F2;color:#B42318}.v371-chip.az{background:#EFF4FF;color:#1849A9}
+.v371-sec{border-top:1px solid #EAECF0;margin-top:8px;padding-top:8px;font-size:12.5px}
+.v371-av{font-size:12px;color:#B42318;margin-top:3px}
+.v371-form{border:1px dashed #98A2B3;border-radius:8px;padding:8px 10px;margin-top:6px;background:#F9FAFB}
+.v371-campos{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;margin-top:4px}
+.v371-campos label{display:flex;flex-direction:column;gap:2px;font-size:12px;color:#344054}
+.v371-campos input[type=text],.v371-campos input[type=date]{min-height:32px;padding:4px 8px;border:1px solid #D0D5DD;border-radius:6px;font-size:13px}
+.v371-campos input.v371-val{width:130px;text-align:right}
+.v371-campos label.v371-chk{flex-direction:row;align-items:center;gap:6px;min-height:32px}
+.v371-prev{font-size:12px;color:#344054;margin-top:6px}
+.v371-px{margin-left:6px}
+.v371-cfgl{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;margin-top:8px}
+.v371-cfgl label{display:flex;flex-direction:column;gap:2px;font-size:12px;color:#344054}
+.v371-cfgl input{min-height:32px;padding:4px 8px;border:1px solid #D0D5DD;border-radius:6px;font-size:13px;width:110px}
+</style>
+<script id="v371Js">
+/* ═════════════════════════════════════════════════════════════════════════════════════════════════════════════
+   PCM V371 · ProperCare-backlog#244 (parte 4) — a locação mensal/diária depois do aceite.
+   · 📅 Andamento da locação (Resumo do card de locação aceito, logo abaixo da 🚚 Entrega): cada máquina — entregue em, "dia N de 10 · vira
+     mensal em dd/mm" / "mensal desde dd/mm (11º dia)", recolhida —, o fim previsto (passou ⇒ aviso), a prorrogação e o faturamento
+     (crm_locacao_curso; leitura 1 chamada, com o card).
+   · 🔁 Prorrogar: novo fim (ou "sem fim", que vale como mensal) e os valores (texto em R$; diária que passa de 10 dias sugere diária × 10)
+     → crm_locacao_prorrogar → a versão seguinte da MESMA proposta nasce rascunho; emitir, PDF, enviar e aceite são os da 📝 Proposta.
+     Rascunho de prorrogação: ✏ Mudar a prorrogação (a versão lida vai junto: o banco recusa se outro mudou no meio).
+   · ✅ Locação faturada (todas as máquinas recolhidas, card em 8): nº da nota opcional → crm_locacao_faturada (o card vai a 9);
+     ↺ Desfazer com motivo.
+   · PDF da prorrogação (emissão e prévia): o desenho do V368 com o título "PRORROGAÇÃO DA LOCAÇÃO", só as máquinas que não voltaram,
+     a diária pelos dias ACRESCIDOS, o cartão "Prorrogação" (de → para) e a observação "demais condições continuam".
+   · ⚙ Configurações › Preço da locação: + "Aviso de fim (dias antes)" (o mesmo Salvar).
+   · "Para andar" (card em 8): "📅 Abrir o andamento".
+   · Sem o SQL do #244 parte 4 (crm_locacao_curso responde 404): nada aparece; o PDF e as configurações ficam como no V370.
+   · Chamadas: card de locação aceito +1 (crm_locacao_curso); cada ação 1 + a releitura do card.
+   ═════════════════════════════════════════════════════════════════════════════════════════════════════════════ */
+(function () {
+  'use strict';
+  if (window.V371) return;
+  var V371 = window.V371 = { versao: 'V371', orig: {}, semSql: false, d: {}, voo: {}, ep: {}, form: {}, uids: {}, ocupado: false };
+  function off() { try { return localStorage.getItem('pcm_v371') === 'off'; } catch (e) { return false; } }
+  V371.off = off;
+  function S(v) { return String(v == null ? '' : v); }
+  function T(v) { return S(v).replace(/\s+/g, ' ').trim(); }
+  function E(v) { return S(v).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;'); }
+  function brl(v) { var n = Number(v || 0); return n.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }); }
+  function num2(v) { var n = Number(v); return isFinite(n) ? n.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }
+  function ehLoc(o) { return !!(o && Array.isArray(o.naturezas) && o.naturezas.length === 1 && o.naturezas[0] === 'locacao'); }
+  function dataBr(iso) { var m = /^(\d{4})-(\d{2})-(\d{2})/.exec(S(iso)); return m ? m[3] + '/' + m[2] + '/' + m[1] : ''; }
+  function dataCurta(iso) { var m = /^(\d{4})-(\d{2})-(\d{2})/.exec(S(iso)); return m ? m[3] + '/' + m[2] : ''; }
+  function maisDias(iso, n) { var m = /^(\d{4})-(\d{2})-(\d{2})/.exec(S(iso)); if (!m) return ''; var d = new Date(Date.UTC(+m[1], +m[2] - 1, +m[3] + n)); return d.toISOString().slice(0, 10); }
+  function diasEntre(a, b) { var x = /^(\d{4})-(\d{2})-(\d{2})/.exec(S(a)), y = /^(\d{4})-(\d{2})-(\d{2})/.exec(S(b)); if (!x || !y) return NaN; return Math.round((Date.UTC(+y[1], +y[2] - 1, +y[3]) - Date.UTC(+x[1], +x[2] - 1, +x[3])) / 86400000); }
+  function falha(e) { return S((e && e.message) || 'Não consegui.'); }
+  function rede(e) { return !!(e && (e.v200 === 'rede' || /Sem conexão/.test(S(e.message)))); }
+  function cardAberto() { var M = (typeof _v200 !== 'undefined') ? _v200.modal : null; return M && M.tipo === 'card' && M.d && M.d.card ? M : null; }
+  function ocupar(bt, txt) { if (!bt) return ''; var t = bt.textContent; bt.setAttribute('data-pcm-enviando', '1'); bt.disabled = true; if (txt) bt.textContent = txt; return t; }
+  function soltar(bt, t) { if (!bt) return; bt.removeAttribute('data-pcm-enviando'); bt.disabled = false; if (t) bt.textContent = t; }
+  // R$ digitado em pt-BR ("3.500", "3.500,50", "3500.5"): número ou null
+  function parseBrl(s) {
+    s = T(s).replace(/^R\$\s*/, ''); if (!s) return null;
+    if (/,/.test(s)) s = s.replace(/\./g, '').replace(',', '.');
+    else if (/^\d{1,3}(\.\d{3})+$/.test(s)) s = s.replace(/\./g, '');
+    if (!/^\d+(\.\d{1,2})?$/.test(s)) return NaN;
+    return Number(s);
+  }
+  V371.parseBrl = parseBrl;
+  // o uid do pedido vale para o MESMO conteúdo: mudou o que vai ao banco (fim, valores, nota) ⇒ uid novo (o repetido nunca esconde a mudança)
+  function uidPara(k, conteudo) {
+    var sig = JSON.stringify(conteudo), u = V371.uids[k];
+    if (!u || u.sig !== sig) u = V371.uids[k] = { uid: 'v371-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 10), sig: sig };
+    return u.uid;
+  }
+  V371.uidPara = uidPara;
+  async function rpc(fn, args, escrita) {
+    try { return await _v200Rpc(fn, args || {}, escrita); }
+    catch (e) {
+      if (e && e.v200 === 'sem_sql' && /^crm_locacao_(curso|prorrogar|faturada)$/.test(fn)) { V371.semSql = true; console.warn('[V371] ' + fn + ' não existe no banco (SQL do #244 parte 4 não rodou) — o andamento da locação não aparece'); }
+      throw e;
+    }
+  }
+
+  // ═══ 1 · o PDF da prorrogação (o V368 chama V371.modelo no lugar do modelo dele; a prévia passa pelo embrulho abaixo) ═════════
+  V371.modelo = function (c, base) {
+    var L = (c && c.locacao) || {}, P = L.prorrogacao;
+    if (off() || !P || typeof P !== 'object' || L.modalidade === 'cessao') return base(c);
+    var c2 = JSON.parse(JSON.stringify(c)), L2 = c2.locacao, mensal = L2.modalidade !== 'diaria';
+    L2.maquinas = (L2.maquinas || []).filter(function (m) { return !m.recolhida; }).map(function (m) {
+      if (m.entregue && m.entregue.tag) m.tag = m.entregue.tag;   // a máquina que está no cliente (trocada na entrega)
+      return m;
+    });
+    var soma = L2.maquinas.reduce(function (a, m) { return a + Number(m.valor || 0); }, 0);
+    if (P.de_fim) L2.inicio = maisDias(P.de_fim, 1);
+    L2.total_base = soma;
+    if (!mensal) { var da = Number(P.dias_acrescidos) || (P.de_fim && P.para_fim ? diasEntre(P.de_fim, P.para_fim) : 0); L2.dias = da; L2.total_periodo = soma * da; }
+    var M = base(c2);
+    M.rotulo = 'PRORROGAÇÃO DA LOCAÇÃO';
+    M.objeto = 'Prorrogação ' + (P.para_fim ? 'até ' + dataBr(P.para_fim) : 'sem prazo final') + ' — ' + M.objeto;
+    var per = (M.cards || []).filter(function (x) { return x.rot === 'Período da locação'; })[0];
+    if (per) per.sub = 'a partir de ' + dataBr(L2.inicio) + (!mensal && P.para_fim ? ' · fim em ' + dataBr(P.para_fim) : '');
+    (M.cards || []).splice(1, 0, { rot: 'Prorrogação', val: (P.de_fim ? 'de ' + dataBr(P.de_fim) + ' para ' : 'até ') + (P.para_fim ? dataBr(P.para_fim) : 'sem prazo final'),
+                                   sub: P.de_modalidade === 'diaria' && P.para_modalidade === 'mensal' ? 'passa de diária a mensal' : '' });
+    (M.obs || []).unshift('Prorrogação da proposta ' + M.proposta + (P.versao_aceita ? ' aceita na revisão ' + P.versao_aceita : ' aceita') + ': as demais condições continuam as mesmas.');
+    return M;
+  };
+  // a prévia (o V366 monta o conteúdo pela caixa — a do rascunho de prorrogação vem do banco com o período novo): leva junto a prorrogação
+  if (window.V368 && typeof V368.previa === 'function') {
+    V371.orig.previa = V368.previa;
+    V368.previa = function (id, v) {
+      try {
+        var D = (window.V366 && V366.d && V366.d[id]) || {}, L = D.caixa || {};
+        if (!off() && L.prorrogacao && v && v.conteudo && v.conteudo.locacao) {
+          var cl = v.conteudo.locacao, rec = {};
+          (L.maquinas || []).forEach(function (m) { rec[m.id] = !!m.recolhida; });
+          cl.prorrogacao = L.prorrogacao;
+          (cl.maquinas || []).forEach(function (m) { m.recolhida = !!rec[m.id]; });
+        }
+      } catch (e) { console.warn('[V371] prévia:', e); }
+      return V371.orig.previa.apply(this, arguments);
+    };
+  }
+
+  // ═══ 2 · ⚙ Configurações: os dias de antecedência do aviso de fim (o V365 chama pelas trocas) ════════════════════════════
+  V371.cfgCampos = function (c, dis) {
+    if (off() || !c || c.aviso_fim_dias == null) return '';
+    if (V371.cfgBase !== c) { V371.cfgDig = null; V371.cfgBase = c; }
+    var v = V371.cfgDig != null ? V371.cfgDig : S(c.aviso_fim_dias);
+    return '</div><div class="v371-cfgl"><b style="font-size:12.5px;width:100%">🔁 Locação em curso</b>' +
+      '<label for="v371CfgAv">Aviso de fim (dias antes)<input type="number" min="0" max="30" step="1" id="v371CfgAv" value="' + E(v) + '"' + dis + '></label>';
+  };
+  V371.cfgValores = function () {
+    if (off() || !window.V365 || !V365.cfg || V365.cfg.aviso_fim_dias == null || !document.getElementById('v371CfgAv')) return { p: {} };
+    var bruto = T(_v200Val('v371CfgAv')), a = Number(bruto);
+    if (bruto === '' || !(a >= 0 && a <= 30 && Math.round(a) === a)) return { erro: 'Aviso de fim: de 0 a 30 dias antes.', campo: 'v371CfgAv' };
+    return { p: { aviso_fim_dias: a } };
+  };
+  document.addEventListener('input', function (ev) { var t = ev.target; if (t && t.id === 'v371CfgAv') V371.cfgDig = t.value; }, true);
+
+  // ═══ 3 · o andamento da locação (Resumo do card de locação aceito) ═══════════════════════════════════════════════════════
+  // a assinatura do estado do card (coluna + o que falta): mudou (aceite, emissão, entrega, recolhimento) ⇒ a leitura de antes já não vale
+  function estSig(M) { var e = (M && M.d && M.d.estado) || {}; return S(e.coluna) + '|' + S(e.falta); }
+  function ler(id, forcar) {
+    if (V371.voo[id] || V371.semSql) return;
+    var D = V371.d[id], M0 = cardAberto(), sig = M0 && M0.d.card.id === id ? estSig(M0) : null;
+    if (!forcar && D && Date.now() - (D.__em || 0) < 30000 && (sig === null || D.__est === sig)) return;
+    V371.voo[id] = true;
+    var ep = V371.ep[id] || 0, velha = function () { return (V371.ep[id] || 0) !== ep; };
+    rpc('crm_locacao_curso', { p_id: id }, false).then(function (r) { if (!velha()) { V371.d[id] = r || { ok: false }; V371.d[id].__em = Date.now(); V371.d[id].__est = sig; } },
+      function (e) { if (!V371.semSql && !velha()) V371.d[id] = { ok: false, erro: falha(e), __em: Date.now() }; })
+      .then(function () {
+        V371.voo[id] = false;
+        if (velha()) { ler(id, true); return; }
+        var M = cardAberto(); if (M && M.d.card.id === id) { pintar(M); paraAndar(M); }
+      });
+  }
+  V371.ler = ler;
+  function maqLinha(D, x) {
+    var dia = '—';
+    if (x.convertida) dia = '<span class="v371-chip az">mensal desde ' + E(dataBr(x.convertida_em)) + ' (' + (Number(x.teto) + 1) + 'º dia)</span>' + (x.valor_mensal != null ? ' <span class="v371-sub">' + E(brl(x.valor_mensal)) + '/mês</span>' : '');
+    else if (x.dia != null) dia = 'dia ' + E(x.dia) + ' de ' + E(x.teto) + (x.recolhida ? '' : ' · <span class="v371-sub">vira mensal em ' + E(dataBr(x.vira_mensal_em)) + '</span>');
+    else if (x.entregue_em && D.modalidade === 'mensal') dia = 'mensal';
+    var sit = x.recolhida ? '<span class="v371-chip">↩ recolhida' + (x.recolhida_em ? ' em ' + E(dataBr(x.recolhida_em)) : '') + '</span>'
+            : x.entregue_em ? '<span class="v371-chip ok">no cliente desde ' + E(dataBr(x.entregue_em)) + '</span>' : '<span class="v371-chip">a entregar</span>';
+    return '<tr data-v371l="' + E(x.proposta) + '"><td><b>' + E(x.rotulo || x.maquina) + '</b></td><td>' + sit + '</td><td>' + dia + '</td></tr>';
+  }
+  function prorrHtml(id, D) {
+    var P = D.prorrogacao || {}, pe = P.pendente, F = V371.form[id], h = '<div class="v371-sec" id="v371Pr">';
+    (P.aceitas || []).forEach(function (a) {
+      h += '<div>🔁 Prorrogação v' + E(a.versao) + ' aceita' + (a.aceita_em ? ' em ' + E(_v200Data(a.aceita_em, true)) : '') + ': ' + (a.para_fim ? 'até ' + E(dataBr(a.para_fim)) : 'sem prazo final') + (a.para_modalidade === 'mensal' ? ' · mensal' : ' · diária') + '</div>';
+    });
+    if (pe) {
+      h += '<div><b>🔁 Prorrogação v' + E(pe.versao) + '</b> ' + (pe.para_fim ? 'até ' + E(dataBr(pe.para_fim)) : 'sem prazo final') + ' · ' + (pe.para_modalidade === 'mensal' ? 'mensal' : 'diária') +
+        ' · ' + (pe.maquinas || []).map(function (m) { return E(brl(m.valor)) + (pe.para_modalidade === 'mensal' ? '/mês' : '/dia'); }).join(' + ') + ' ' +
+        (pe.rascunho ? '<span class="v371-chip al">em rascunho — emita na 📝 Proposta</span>' : pe.pode_aceitar ? '<span class="v371-chip az">com o cliente — registre o aceite na 📝 Proposta</span>' : '<span class="v371-chip">emitida, sem aceite</span>') + '</div>';
+    }
+    if (F) return h + formHtml(id, D, F) + '</div>';
+    var bts = '';
+    if (pe && pe.rascunho && D.aberta) bts += '<button type="button" class="btn btn-secondary btn-sm" data-v371="mudarPr">✏ Mudar a prorrogação</button>';
+    if (pe && D.aberta) bts += '<button type="button" class="btn btn-secondary btn-sm" data-v371="irProposta">📝 Abrir a proposta</button>';
+    if (P.pode && !(pe && pe.rascunho)) bts += '<button type="button" class="btn btn-primary btn-sm" data-v371="prorrogar">🔁 ' + (pe ? 'Fazer outra prorrogação' : 'Prorrogar') + '</button>';
+    if (bts) h += '<div class="v371-lin">' + bts + '</div>';
+    else if (!pe && !(P.aceitas || []).length && P.porque && D.fase !== 'faturar' && D.fase !== 'encerrada') h += '<div class="v371-sub">Prorrogar: ' + E(P.porque) + '.</div>';
+    return h + '</div>';
+  }
+  // o que a prorrogação vai ser, pela MESMA régua do banco (o banco decide; aqui é a prévia)
+  function previsto(D, F) {
+    var conv = (D.maquinas || []).some(function (m) { return m.convertida; });
+    var deMensal = D.modalidade === 'mensal' || conv;
+    if (F.semFim) return { mensal: true, motivo: 'sem fim definido vale como mensal' };
+    if (!F.fim) return { mensal: deMensal, motivo: '' };
+    var dias = diasEntre(D.inicio, F.fim) + 1;
+    if (deMensal) return { mensal: true, motivo: conv && D.modalidade === 'diaria' ? 'a diária já virou mensal' : '' };
+    if (dias > Number(D.teto || 10)) return { mensal: true, motivo: 'passa de ' + (D.teto || 10) + ' diárias (' + dias + ' dias no total)' };
+    return { mensal: false, motivo: dias + ' dias no total' };
+  }
+  function sugerido(D, F, m) {
+    var pv = previsto(D, F), v = Number(m.valor || 0);
+    return D.modalidade === 'diaria' && pv.mensal ? Math.round(v * Number(D.teto || 10) * 100) / 100 : v;
+  }
+  function formHtml(id, D, F) {
+    var pv = previsto(D, F), h = '<div class="v371-form" id="v371Form"><b>🔁 ' + (F.versao_id ? 'Mudar a prorrogação v' + E(F.versao) : 'Prorrogar a locação') + '</b>' +
+      ' <span class="v371-sub">fim de hoje: ' + (D.fim ? E(dataBr(D.fim)) : 'sem prazo final') + '</span>';
+    h += '<div class="v371-campos"><label for="v371Fim">Novo fim<input type="date" id="v371Fim" data-v371f="fim" value="' + E(F.fim || '') + '"' + (F.semFim ? ' disabled' : '') + ' min="' + E(maisDias(D.fim || D.hoje, 1)) + '"></label>' +
+      '<label class="v371-chk" for="v371Sem"><input type="checkbox" id="v371Sem" data-v371f="semFim"' + (F.semFim ? ' checked' : '') + '>Sem fim definido</label></div>';
+    h += '<div class="v371-campos">' + (D.maquinas || []).map(function (m) {
+      var v = F.valores[m.proposta] != null ? F.valores[m.proposta] : num2(sugerido(D, F, m));
+      return '<label for="v371V_' + E(m.proposta) + '">' + E(m.rotulo || m.maquina) + (m.recolhida ? ' (recolhida)' : '') + ' · R$ ' + (pv.mensal ? 'por mês' : 'por dia') +
+        '<input type="text" inputmode="decimal" class="v371-val" id="v371V_' + E(m.proposta) + '" data-v371v="' + E(m.proposta) + '" value="' + E(v) + '" autocomplete="off"' + (m.recolhida ? ' disabled' : '') + '></label>';
+    }).join('') + '</div>';
+    h += '<div class="v371-prev" id="v371Prev">Fica <b>' + (pv.mensal ? 'mensal' : 'diária') + '</b>' + (pv.motivo ? ' — ' + E(pv.motivo) : '') + '. A versão seguinte da proposta nasce em rascunho na 📝 Proposta.</div>';
+    h += '<div class="v371-lin"><button type="button" class="btn btn-primary btn-sm" data-v371="salvarPr">Salvar a prorrogação</button><button type="button" class="btn btn-secondary btn-sm" data-v371="fecharPr">Cancelar</button></div>';
+    return h + '</div>';
+  }
+  function fatHtml(id, D) {
+    var F = D.faturamento || {}, h = '', fz = V371.form['fat:' + id];
+    if (F.faturada) {
+      h = '<div class="v371-sec" id="v371Fat"><span class="v371-chip ok">✅ Locação faturada</span> em ' + E(_v200Data(F.faturada.em, true)) + ' por ' + E(F.faturada.por_nome || _v200NomeUsu(F.faturada.por)) +
+        (F.faturada.nota ? ' · nota ' + E(F.faturada.nota) : '');
+      if (fz) h += '<div class="v371-form"><div class="v371-campos"><label for="v371Mot">Por que desfazer? *<input type="text" id="v371Mot" data-v371f="motivo" maxlength="300" style="width:320px" value="' + E(fz.motivo || '') + '" autocomplete="off"></label></div>' +
+        '<div class="v371-lin"><button type="button" class="btn btn-primary btn-sm" data-v371="desfazerOk">Desfazer</button><button type="button" class="btn btn-secondary btn-sm" data-v371="fecharFat">Cancelar</button></div></div>';
+      else if (F.pode_desfazer) h += '<div class="v371-lin"><button type="button" class="btn btn-secondary btn-sm" data-v371="desfazer">↺ Desfazer</button></div>';
+      return h + '</div>';
+    }
+    if (!F.pode_marcar) return '';
+    return '<div class="v371-sec" id="v371Fat"><b>Todas as máquinas voltaram.</b> Fature a locação e marque aqui.' +
+      '<div class="v371-campos"><label for="v371Nota">Nº da nota (opcional)<input type="text" id="v371Nota" data-v371f="nota" maxlength="60" value="' + E((fz && fz.nota) || '') + '" autocomplete="off"></label>' +
+      '<button type="button" class="btn btn-primary btn-sm" data-v371="faturada">✅ Marcar locação faturada</button></div></div>';
+  }
+  function caixaHtml(M) {
+    var id = M.d.card.id, D = V371.d[id];
+    if (!D) return '';
+    if (D.erro) return '<h4>📅 Andamento da locação</h4><div class="v371-av">' + E(D.erro) + '</div>';
+    if (!D.ok || !D.aceita || D.modalidade === 'cessao') return '';
+    var h = '<h4>📅 Andamento da locação <span class="v371-sub">' + (D.modalidade === 'mensal' ? 'mensal' : 'diária · vira mensal no ' + (Number(D.teto) + 1) + 'º dia') +
+      ' · fim ' + (D.fim ? E(dataBr(D.fim)) : 'sem prazo') + '</span>' + (D.fim_passou ? ' <span class="v371-chip tr">⚠ passou do fim — prorrogue ou recolha</span>' : '') + '</h4>';
+    if ((D.maquinas || []).length) h += '<table class="v371-tab" data-cfx-off="caixa curta do card (até 30 máquinas)"><thead><tr><th>Máquina</th><th>Situação</th><th>Período</th></tr></thead><tbody>' +
+      D.maquinas.map(function (x) { return maqLinha(D, x); }).join('') + '</tbody></table>';
+    return h + prorrHtml(id, D) + fatHtml(id, D);
+  }
+  function pintar(M) {
+    var body = document.getElementById('v200ModalBody'); if (!body) return;
+    var bx = document.getElementById('v371Cur');
+    var h = off() || V371.semSql || !ehLoc(M.d.card) ? '' : caixaHtml(M);
+    if (!h) { if (bx) bx.remove(); return; }
+    var ancora = document.getElementById('v368Ent') || document.getElementById('v365Card');
+    if (!bx) {
+      if (!ancora || !body.contains(ancora)) return;
+      bx = document.createElement('div'); bx.id = 'v371Cur'; bx.className = 'v371-box';
+      ancora.insertAdjacentElement('afterend', bx);
+    }
+    if (bx.__v371 === h) return;
+    if (document.activeElement && bx.contains(document.activeElement) && /^(INPUT|TEXTAREA)$/.test(document.activeElement.tagName) && bx.__v371) return;   // não repinta com o campo em uso
+    bx.innerHTML = h; bx.__v371 = h;
+  }
+  V371.pintar = pintar;
+  function paraAndar(M) {
+    var body = document.getElementById('v200ModalBody'), f = body && body.querySelector(':scope > .v200-falta'); if (!f) return;
+    var fx = S(M.d && M.d.estado && M.d.estado.falta);
+    var quer = !off() && /^faturar a locação/.test(fx);
+    var bt = f.querySelector('[data-v371="irCurso"]');
+    if (!quer) { if (bt) bt.remove(); return; }
+    if (!bt) f.insertAdjacentHTML('beforeend', '<button type="button" class="btn btn-primary btn-sm v371-px" data-v371="irCurso" data-pw-off="1">📅 Abrir o andamento</button>');
+  }
+  if (typeof _v200PintarCard === 'function') {
+    V371.orig.pintarCard = _v200PintarCard;
+    // ⚠ SOBRESCREVE _v200PintarCard (embrulho por fora do V368: depois da 🚚 Entrega, o andamento da locação)
+    _v200PintarCard = function () {
+      var r = V371.orig.pintarCard.apply(this, arguments);
+      try {
+        var M = cardAberto();
+        if (M && !off() && !V371.semSql && ehLoc(M.d.card)) { pintar(M); paraAndar(M); ler(M.d.card.id); }
+      } catch (e) { console.warn('[V371] card:', e); }
+      return r;
+    };
+  }
+  // a 🚚 Entrega (V368) nasce e se repinta sozinha: o andamento vai logo abaixo dela
+  (function () {
+    var m = document.getElementById('v200Modal'); if (!m || typeof MutationObserver !== 'function') return;
+    new MutationObserver(function () {
+      if (off() || V371.semSql) return;
+      var M = cardAberto(); if (!M || !ehLoc(M.d.card) || !V371.d[M.d.card.id]) return;
+      var a = document.getElementById('v368Ent') || document.getElementById('v365Card'), b = document.getElementById('v371Cur');
+      if (!a || (b && a.nextElementSibling === b)) return;
+      if (b) { if (!b.contains(document.activeElement)) a.insertAdjacentElement('afterend', b); return; }   // só MUDA de lugar: o formulário aberto (e o foco) ficam (auditoria A7)
+      if (caixaHtml(M)) pintar(M);
+    }).observe(m, { childList: true, subtree: true });
+  })();
+
+  // ═══ 4 · as ações ══════════════════════════════════════════════════════════════════════════════════════════════════
+  async function recarregar(id) {
+    V371.ep[id] = (V371.ep[id] || 0) + 1; V371.voo[id] = false; delete V371.d[id];
+    try { if (window.V366 && V366.d) { delete V366.d[id]; delete V366.ui[id]; } } catch (e) {}
+    try { if (window.V368 && V368.d) { V368.ep[id] = (V368.ep[id] || 0) + 1; V368.voo[id] = false; delete V368.d[id]; } } catch (e) {}
+    try { var M = cardAberto(); if (M && M.d.card.id === id) { await _v200AbrirCard(id); try { V288.irPara('resumo'); } catch (e) {} } } catch (e) {}
+    try { if (typeof currentView === 'undefined' || currentView === 'comercial') _v200Carregar(); } catch (e) {}
+  }
+  function abrirForm(id, mudar) {
+    var D = V371.d[id]; if (!D) return;
+    var pe = D.prorrogacao && D.prorrogacao.pendente, F = { fim: '', semFim: false, valores: {} };
+    if (mudar && pe && pe.rascunho) {
+      F.versao_id = pe.versao_id; F.versao = pe.versao; F.lido = pe.lido; F.fim = S(pe.para_fim || ''); F.semFim = !pe.para_fim;
+      (pe.maquinas || []).forEach(function (m) { F.valores[m.id] = num2(m.valor); F.mexido = F.mexido || {}; F.mexido[m.id] = true; });
+    }
+    V371.form[id] = F;
+  }
+  function lerValores(id, D, F) {
+    var pv = previsto(D, F), out = [], erro = null;
+    (D.maquinas || []).forEach(function (m) {
+      if (erro) return;
+      var raw = F.valores[m.proposta] != null ? F.valores[m.proposta] : num2(sugerido(D, F, m));
+      var v = parseBrl(raw);
+      if (v === null || isNaN(v) || !(v > 0)) { erro = { txt: (m.rotulo || m.maquina) + ': use um valor maior que zero (ex.: 3.500 ou 3.500,00).', campo: 'v371V_' + m.proposta }; return; }
+      out.push({ id: m.proposta, valor: v });
+    });
+    return { maquinas: out, erro: erro, mensal: pv.mensal };
+  }
+  async function salvarPr(id, bt) {
+    if (V371.ocupado) return;
+    var D = V371.d[id], F = V371.form[id]; if (!D || !F) return;
+    if (!F.semFim && !F.fim) { toast('Escolha o novo fim (ou marque "Sem fim definido").', 'error'); try { document.getElementById('v371Fim').focus(); } catch (e) {} return; }
+    if (!F.semFim && D.fim && F.fim <= D.fim) { toast('O novo fim tem de ser depois de ' + dataBr(D.fim) + '.', 'error'); try { document.getElementById('v371Fim').focus(); } catch (e) {} return; }
+    var lv = lerValores(id, D, F);
+    if (lv.erro) { toast(lv.erro.txt, 'error'); try { document.getElementById(lv.erro.campo).focus(); } catch (e) {} return; }
+    V371.ocupado = true; var t = ocupar(bt, 'Salvando…');
+    var p = { maquinas: lv.maquinas };
+    if (F.semFim) p.sem_fim = true; else p.fim = F.fim;
+    if (F.versao_id) p.lido = F.lido;
+    p.uid = uidPara('pr:' + id, p);
+    try {
+      var r = await rpc('crm_locacao_prorrogar', { p_id: id, p: p }, true);
+      delete V371.uids['pr:' + id]; delete V371.form[id];
+      V371.ocupado = false; soltar(bt, t);
+      toast((F.versao_id ? 'Prorrogação mudada' : 'Prorrogação salva') + ' — emita a versão nova na 📝 Proposta.', 'success');
+      await recarregar(id);
+    } catch (e) {
+      V371.ocupado = false; soltar(bt, t);
+      if (!rede(e)) delete V371.uids['pr:' + id];
+      toast(rede(e) ? 'Sem resposta do banco — a prorrogação PODE ter sido salva. Clique de novo: o mesmo pedido não duplica.' : falha(e).replace(/^NÃO foi gravada: /, 'Não foi gravado: '), 'error');
+    }
+  }
+  async function faturada(id, acao, bt) {
+    if (V371.ocupado) return;
+    var p = { acao: acao };
+    if (acao === 'marcar') { var n = T(_v200Val('v371Nota')); if (n) p.nota = n; p.uid = uidPara('fat:' + id, p); }
+    else { var fz = V371.form['fat:' + id] || {}; p.motivo = T(fz.motivo); if (p.motivo.length < 3) { toast('Diga por que está desfazendo (3 letras ou mais).', 'error'); try { document.getElementById('v371Mot').focus(); } catch (e) {} return; } }
+    V371.ocupado = true; var t = ocupar(bt, acao === 'marcar' ? 'Marcando…' : 'Desfazendo…');
+    try {
+      await rpc('crm_locacao_faturada', { p_id: id, p: p }, true);
+      delete V371.uids['fat:' + id]; delete V371.form['fat:' + id];
+      V371.ocupado = false; soltar(bt, t);
+      toast(acao === 'marcar' ? 'Locação marcada como faturada.' : 'Marca de faturada desfeita.', 'success');
+      await recarregar(id);
+    } catch (e) {
+      V371.ocupado = false; soltar(bt, t);
+      if (!rede(e)) delete V371.uids['fat:' + id];
+      toast(rede(e) ? 'Sem resposta do banco — PODE ter sido gravado. Confira o andamento (repetir não duplica).' : falha(e).replace(/^NÃO foi gravada: /, 'Não foi gravado: '), 'error');
+      if (rede(e)) await recarregar(id);
+    }
+  }
+  function repintarPrev(id) {
+    var D = V371.d[id], F = V371.form[id], el = document.getElementById('v371Prev'); if (!D || !F || !el) return;
+    var pv = previsto(D, F);
+    el.innerHTML = 'Fica <b>' + (pv.mensal ? 'mensal' : 'diária') + '</b>' + (pv.motivo ? ' — ' + E(pv.motivo) : '') + '. A versão seguinte da proposta nasce em rascunho na 📝 Proposta.';
+    (D.maquinas || []).forEach(function (m) {
+      var inp = document.getElementById('v371V_' + m.proposta); if (!inp) return;
+      if (!(F.mexido && F.mexido[m.proposta])) { inp.value = num2(sugerido(D, F, m)); delete F.valores[m.proposta]; }
+      var lb = inp.parentElement; if (lb && lb.firstChild && lb.firstChild.nodeType === 3) lb.firstChild.nodeValue = (m.rotulo || m.maquina) + (m.recolhida ? ' (recolhida)' : '') + ' · R$ ' + (pv.mensal ? 'por mês' : 'por dia');
+    });
+  }
+  function aoMudar(ev) {
+    var t = ev.target; if (!t || !t.getAttribute || off() || !t.closest || !t.closest('#v371Cur')) return;
+    var M = cardAberto(); if (!M) return;
+    var id = M.d.card.id, F = V371.form[id], k = t.getAttribute('data-v371f'), kv = t.getAttribute('data-v371v');
+    if (kv && F) { F.valores[kv] = t.value; F.mexido = F.mexido || {}; F.mexido[kv] = true; return; }
+    if (k === 'fim' && F) { F.fim = t.value; repintarPrev(id); return; }
+    if (k === 'semFim' && F && ev.type === 'change') { F.semFim = t.checked; var f = document.getElementById('v371Fim'); if (f) { f.disabled = F.semFim; if (F.semFim) { f.value = ''; F.fim = ''; } } repintarPrev(id); return; }
+    if (k === 'motivo') { var fz = V371.form['fat:' + id] = V371.form['fat:' + id] || {}; fz.motivo = t.value; return; }
+    if (k === 'nota') { var fn = V371.form['fat:' + id] = V371.form['fat:' + id] || {}; fn.nota = t.value; return; }
+  }
+  document.addEventListener('input', aoMudar, true);
+  document.addEventListener('change', aoMudar, true);
+
+  // ═══ 5 · os cliques (delegação no documento; só dentro da janela do quadro) ═══════════════════════════════════════
+  document.addEventListener('click', function (ev) {
+    var t = ev.target && ev.target.closest && ev.target.closest('[data-v371]'); if (!t || off() || !t.closest('#v200Modal')) return;
+    var M = cardAberto(); if (!M || !ehLoc(M.d.card)) return;
+    var id = M.d.card.id, a = t.getAttribute('data-v371');
+    if (t.hasAttribute('data-pcm-enviando')) return;
+    if (a === 'irCurso') { ev.preventDefault(); try { V288.irPara('resumo'); } catch (e) {} ler(id, true); setTimeout(function () { var b = document.getElementById('v371Cur'); if (b) try { b.scrollIntoView({ block: 'center' }); } catch (e) {} }, 80); return; }
+    if (a === 'prorrogar' || a === 'mudarPr') { abrirForm(id, a === 'mudarPr'); pintar(M); setTimeout(function () { var f = document.getElementById('v371Fim'); if (f && !f.disabled) try { f.focus(); } catch (e) {} }, 30); return; }
+    if (a === 'fecharPr') { delete V371.form[id]; pintar(M); return; }
+    if (a === 'salvarPr') { salvarPr(id, t); return; }
+    if (a === 'irProposta') { try { V288.irPara('proposta'); } catch (e) {} return; }
+    if (a === 'faturada') { faturada(id, 'marcar', t); return; }
+    if (a === 'desfazer') { V371.form['fat:' + id] = { motivo: '' }; pintar(M); setTimeout(function () { var f = document.getElementById('v371Mot'); if (f) try { f.focus(); } catch (e) {} }, 30); return; }
+    if (a === 'fecharFat') { delete V371.form['fat:' + id]; pintar(M); return; }
+    if (a === 'desfazerOk') { faturada(id, 'desfazer', t); return; }
+  }, true);
+})();
+</script>
+<!-- ████ FIM PCM V371 ████ -->
 <!-- ████ INICIO PCM V373 · ⚡ POTÊNCIA DA MÁQUINA: NÚMERO + UNIDADE ESCOLHIDA (ProperCare-backlog#274) ████ -->
 <style id="v373Css">
 .v373-pot{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
