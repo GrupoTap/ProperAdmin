@@ -5706,9 +5706,21 @@ v50 — Resiliência de rede: retry/backoff em gsGet e syncToGS
   A ordem (relevancia) e os totais vem do banco. So leitura: nada e gravado.
   Linhas antigas alteradas (ganchos para o V375): 3 na barra de busca (V204), 3 no Trocar o item (V239), 1 no V309 e 1 no V310 —
   sem o V375 (ou com ele desligado) fazem o mesmo de antes. Sem o SQL: a tela fica como antes. Chave: localStorage pcm_v375 = off.
+  PCM V376 — 19/11/2026 — LOCACAO NA + OPORTUNIDADE: A DATA SE DIGITA, AS LINHAS DA FROTA NAO SE SOBREPOEM E O "SEM CV" DIZ O
+  QUE FAZER (ProperCare-backlog#275), sobre o V375. Zero SQL, zero GAS.
+  Data: no Chrome o campo de data dispara "change" a cada digito (o 1o digito do ano ja forma 0002) e o formulario inteiro era
+  repintado: o cursor voltava para o dia e o ano nao se digitava (contador -739576 dias). Agora os campos de data nao sao recriados;
+  dias, aviso de conversao e total mudam no lugar e a frota e relida so com a data completa (ano de 4 digitos, 2020 a 2100). Data
+  pela metade nao conta dias nem vai ao banco: o contador diz "complete a data" e o Criar/Salvar recusa. Vale na + Oportunidade, no
+  Mudar a locacao do card e no inicio da cessao.
+  Lista da frota: a linha tem a altura do conteudo (nada cai sobre a de baixo; a lista rola).
+  Sem CV: a frota e relida a cada formulario aberto e ha "Atualizar" ao lado do filtro (sem mexer nas datas); a maquina sem CV diz por
+  que (sem potencia no cadastro, ou "40" sem a unidade).
+  Linhas antigas alteradas (ganchos para o V376): 10 no V365 — sem o V376 (ou com ele desligado) fazem o mesmo de antes.
+  Chave: localStorage pcm_v376 = off.
 -->
-<title>ProperCare Manager · Gestão PGP v4.03 (PCM V375)</title>
-<meta name="app-build" content="PCM_V375" data-date="2026-11-19">
+<title>ProperCare Manager · Gestão PGP v4.03 (PCM V376)</title>
+<meta name="app-build" content="PCM_V376" data-date="2026-11-19">
 <link rel="icon" type="image/jpeg" href="data:image/jpeg;base64,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">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -117830,6 +117842,7 @@ body.v357-on #qofRaiz .qof-card[data-qof-est="9"]::after,body.v357-on #qofRaiz .
       F.versao = base.versao; F.card = base.id;
       (base.maquinas || []).forEach(function (m) { F.sel[m.id] = num2(m.valor).replace(/\s/g, ''); F.ordem.push(m.id); });
     }
+    if (window.V376 && !V376.off()) V376.novo();   /* V376: a frota guardada valia a sessão inteira — relê a cada formulário aberto */
     return F;
   }
   function chaveFrota(F) { return (F.card || '') + '|' + F.ini + '|' + (F.fim || ''); }
@@ -117849,7 +117862,8 @@ body.v357-on #qofRaiz .qof-card[data-qof-est="9"]::after,body.v357-on #qofRaiz .
       try { repintar(); } catch (e) { console.warn('[V365] repintar:', e); }
     });
   }
-  function dias(F) { return F.fim ? diasEntre(F.ini, F.fim) : null; }
+  function dias(F) { if (window.V376 && !V376.off() && V376.semDias(F)) return null;   /* V376: data pela metade não conta */
+    return F.fim ? diasEntre(F.ini, F.fim) : null; }
   function vaiVirarMensal(F) { var d = dias(F); return F.mod === 'diaria' && d != null && d > Number(cfgDe(F).diarias_max || 10); }
   function sugerido(F, m) { if (F.mod === 'cessao' && window.V370 && !V370.off()) return V370.sugerido(F, m); return F.mod === 'mensal' ? m.sugerido_mensal : m.sugerido_diaria; }   /* V370: cessão */
   function maqDe(F, id) { var fr = frotaDe(F); return ((fr && fr.maquinas) || []).find(function (m) { return m.id === id; }) || null; }
@@ -117873,6 +117887,7 @@ body.v357-on #qofRaiz .qof-card[data-qof-est="9"]::after,body.v357-on #qofRaiz .
 
   // o formulário (ids com o contexto: n = ＋ Oportunidade, c = card)
   function formHtml(F) {
+    if (window.V376 && !V376.off()) V376.pintando(F);   /* V376: o período da lista e as datas que nascem do estado */
     var c = F.ctx, fr = frotaDe(F), cfg = cfgDe(F), d = dias(F);
     var h = '<div class="v365-seg" role="group" aria-label="Modalidade da locação">' +
       '<button type="button" data-v365="mod" data-ctx="' + c + '" data-k="mensal" aria-pressed="' + (F.mod === 'mensal') + '">Mensal</button>' +
@@ -117887,7 +117902,7 @@ body.v357-on #qofRaiz .qof-card[data-qof-est="9"]::after,body.v357-on #qofRaiz .
     if (!fr.ok) return h + '<div class="v365-av er">' + E(fr.motivo || 'Não consegui ler a frota.') + ' <button type="button" class="btn btn-secondary btn-sm" data-v365="relerFrota" data-ctx="' + c + '">Tentar de novo</button></div>';
     var maqs = fr.maquinas || [];
     if (!maqs.length) return h + '<div class="v365-lista"><div class="v365-vazio"><b>Nenhuma máquina na frota.</b> Cadastre as máquinas em nome da Proper Locação (Placas da frota).</div></div>';
-    h += '<input type="text" class="v365-busca" id="v365' + c + 'Busca" data-v365c="busca" data-ctx="' + c + '" value="' + E(F.busca) + '" placeholder="Filtrar: TAG, marca, modelo, série" readonly onfocus="this.removeAttribute(\'readonly\')" autocomplete="off" name="v365_busca_' + c + '_nofill" data-lpignore="true" data-1p-ignore>';
+    h += (window.V376 && !V376.off() ? V376.filtroAbre() : '') + '<input type="text" class="v365-busca" id="v365' + c + 'Busca" data-v365c="busca" data-ctx="' + c + '" value="' + E(F.busca) + '" placeholder="Filtrar: TAG, marca, modelo, série" readonly onfocus="this.removeAttribute(\'readonly\')" autocomplete="off" name="v365_busca_' + c + '_nofill" data-lpignore="true" data-1p-ignore>' + (window.V376 && !V376.off() ? V376.filtroFecha(F) : '');   /* V376: ↻ Atualizar */
     h += '<div class="v365-lista" id="v365' + c + 'Lista">' + listaHtml(F) + '</div>';
     h += '<div class="v365-total" id="v365' + c + 'Total">' + totalTxt(F) + '</div>';
     if (F.mod === 'cessao' && window.V370 && !V370.off()) h += V370.extraHtml(F);   /* V370: diária, mensal e a máquina do cliente */
@@ -117910,10 +117925,11 @@ body.v357-on #qofRaiz .qof-card[data-qof-est="9"]::after,body.v357-on #qofRaiz .
           ' placeholder="' + (sug != null ? E(num2(sug)) : 'valor') + '" maxlength="16" autocomplete="off" aria-label="Valor ' + E(uma) + ' de ' + E(m.tag || m.id) + '"' + (isNaN(pv) ? ' class="ruim"' : '') + '>' +
           '<span class="v365-min">' + uma + '</span></span><span class="v365-sug">' + (sug != null ? 'sugerido ' + E(brl(sug)) : 'sem sugestão: informe o valor') + '</span>';
       }
-      return h + resHtml(m) + '</div>';
+      return h + resHtml(m) + (window.V376 && !V376.off() ? V376.semCvHtml(m) : '') + '</div>';   /* V376: sem CV — o porquê */
     }).join('');
   }
   function diasTxt(F) {
+    var x76 = (window.V376 && !V376.off()) ? V376.diasTxt(F) : null; if (x76) return x76;   /* V376: "complete a data" */
     var d = dias(F);
     if (F.mod === 'diaria') return d ? d + (d === 1 ? ' diária' : ' diárias') : 'informe o fim (conta as diárias)';
     return d ? d + ' dias' : 'sem fim definido';
@@ -117941,6 +117957,7 @@ body.v357-on #qofRaiz .qof-card[data-qof-est="9"]::after,body.v357-on #qofRaiz .
   }
   // confere o que dá para conferir antes do banco (o banco confere tudo de novo)
   function validar(F) {
+    if (window.V376 && !V376.off()) { var e76 = V376.validar(F); if (e76) return e76; }   /* V376: data pela metade não vai */
     if (!F.ini) return { erro: 'Informe a data de início da locação.', campo: 'v365' + F.ctx + 'Ini' };
     if (F.fim && F.fim < F.ini) return { erro: 'O fim previsto é antes do início.', campo: 'v365' + F.ctx + 'Fim' };
     if (F.mod === 'diaria' && !F.fim) return { erro: 'Na diária, informe o fim previsto (é ele que conta as diárias).', campo: 'v365' + F.ctx + 'Fim' };
@@ -118308,6 +118325,7 @@ body.v357-on #qofRaiz .qof-card[data-qof-est="9"]::after,body.v357-on #qofRaiz .
       var ls = document.getElementById('v365' + F.ctx + 'Lista'); if (ls) ls.innerHTML = listaHtml(F);
       return;
     }
+    if ((k === 'ini' || k === 'fim') && window.V376 && !V376.off() && V376.data(F, k, t)) return;   /* V376: a data muda no lugar; a frota só com ela completa */
     if (ev.type !== 'change') return;   // datas e marcar máquina: só no change (o input de data dispara a cada dígito)
     if (k === 'maq') {
       var id = t.value;
@@ -118325,6 +118343,7 @@ body.v357-on #qofRaiz .qof-card[data-qof-est="9"]::after,body.v357-on #qofRaiz .
       lerFrota(F, function () { if (formDoCtx(F.ctx) === F) repintarCtx(F); });
     }
   }
+  V365.ns = { formHtml: formHtml, chaveFrota: chaveFrota, lerFrota: lerFrota, atualizarResumo: atualizarResumo, formDoCtx: formDoCtx, repintarCtx: repintarCtx };   /* V376 */
   document.addEventListener('input', aoMudar, true);
   document.addEventListener('change', aoMudar, true);
 })();
@@ -121823,6 +121842,172 @@ body.mob-on .v373-u{min-width:56px}
 })();
 </script>
 <!-- ████ FIM PCM V375 ████ -->
+<!-- ████ INICIO PCM V376 · 🚚 LOCAÇÃO NA ＋ OPORTUNIDADE: A DATA SE DIGITA, AS LINHAS DA FROTA NÃO SE SOBREPÕEM E O "SEM CV" DIZ O QUE FAZER (ProperCare-backlog#275) ████ -->
+<style id="v376-css">
+/* PCM V376 (ProperCare-backlog#275): consertos do formulário de locação do V365 (＋ Oportunidade e ✏ Mudar a locação).
+   Chave: localStorage pcm_v376 = off */
+/* a lista da frota é coluna flex com altura máxima: sem isto o navegador ENCOLHE cada linha até o min-height e a linha que quebrou em
+   2–3 linhas (valor, sugestão, aviso) transborda sobre as de baixo. A linha tem a altura do conteúdo e a lista rola. */
+html:not(.v376-off) .v365-maq{flex:none}
+.v376-filtro{display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin:0 0 6px}
+.v376-filtro .v365-busca{margin:0!important;flex:1 1 220px}
+.v376-atu{flex:none;white-space:nowrap}
+.v376-semcv{flex-basis:100%;font-size:11.5px;color:#475467;padding-left:24px}
+.v376-pend{color:#B54708}
+</style>
+<script id="v376Js">
+/* ═════════════════════════════════════════════════════════════════════════════════════════════════════════════
+   PCM V376 · ProperCare-backlog#275 — o formulário de locação (V365: ＋ Oportunidade › 🚚 Locação e ✏ Mudar a locação do card;
+   V370: o "Início previsto (entrega)" da cessão).
+   1 · DATA: no Chrome o <input type=date> dispara "change" a cada dígito que forma uma data — o 1º dígito do ano já forma o ano 0002.
+       O V365 repintava o formulário inteiro nesse "change": o campo era recriado, o cursor voltava para o dia e o resto do ano se
+       perdia (e o contador mostrava -739576 dias). Agora digitar a data NÃO recria os campos de data: o estado, o contador de dias,
+       o aviso de conversão e o total mudam no lugar; a frota (que depende do período) é relida e o que vem DEPOIS das datas é
+       repintado quando ela chega, só com a data completa (ano de 4 dígitos entre 2020 e 2100). Data pela metade (só dia e mês, ou o
+       ano 0002 enquanto se digita) não vira conta de dias nem chamada ao banco: o contador diz "complete a data" e o Criar/Salvar
+       recusa. A repintura espera o botão do mouse soltar (o "Criar" logo depois de digitar a data não se perde).
+       Os campos de data só nascem de novo numa repintura inteira (Mensal/Diária, Tentar de novo), já com a data do estado.
+   2 · LINHAS: a linha da frota tem a altura do conteúdo (flex:none) — nada mais cai sobre a linha de baixo.
+   3 · "SEM CV": a frota guardada por período valia a sessão inteira; agora é relida a cada formulário aberto (＋ Oportunidade ou
+       ✏ Mudar a locação) e há "↻ Atualizar" ao lado do filtro (relê a situação e a potência do cadastro, sem mexer nas datas). Na
+       máquina sem CV, uma linha diz o porquê: sem potência no cadastro, ou a potência que o banco não lê (ex.: "40" sem a unidade).
+   Ganchos em linhas antigas do V365 (sem o V376, ou com ele desligado, fazem o mesmo de antes): novoForm, dias, diasTxt, validar,
+   formHtml, o filtro, a linha da máquina, a data no aoMudar e V365.ns (o que este bloco usa do V365). Chamadas: nenhuma a mais — a frota
+   que antes ficava guardada a sessão inteira é lida 1 vez por formulário aberto e a cada ↻ Atualizar.
+   ═════════════════════════════════════════════════════════════════════════════════════════════════════════════ */
+(function () {
+  'use strict';
+  if (window.V376) return;
+  var V376 = window.V376 = { versao: 'V376' };
+  function off() { try { return localStorage.getItem('pcm_v376') === 'off'; } catch (e) { return false; } }
+  V376.off = off;
+  try { if (off()) document.documentElement.classList.add('v376-off'); } catch (e) { /* sem a marca: o CSS vale */ }
+  function S(v) { return String(v == null ? '' : v); }
+  function E(v) { return S(v).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;'); }
+  var ANO_MIN = 2020, ANO_MAX = 2100;
+  // data completa e plausível: AAAA-MM-DD que existe no calendário, ano entre 2020 e 2100 (0002, 0020 e 0202 são o ano pela metade)
+  function plausivel(v) {
+    var m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(S(v)); if (!m) return false;
+    var a = Number(m[1]), me = Number(m[2]), d = Number(m[3]);
+    if (a < ANO_MIN || a > ANO_MAX) return false;
+    var x = new Date(Date.UTC(a, me - 1, d));
+    return x.getUTCFullYear() === a && x.getUTCMonth() === me - 1 && x.getUTCDate() === d;
+  }
+  V376.plausivel = plausivel;
+  function campo(F, k) { return document.getElementById('v365' + F.ctx + (k === 'ini' ? 'Ini' : 'Fim')); }
+  // o campo tem algo que ainda não é uma data: dia e mês sem o ano (o Chrome devolve '' com badInput) ou o ano sendo digitado (0002).
+  //   Fica no ESTADO (F.v376p), gravado a cada tecla pelo V376.data e zerado quando o formulário recria os campos (V376.pintando):
+  //   ler o campo ao vivo durante uma repintura inteira lia o campo velho, que ia ser trocado (auditoria A2)
+  function pendente(F, k) { return !!(F.v376p && F.v376p[k]); }
+  V376.pend = function (F) { return pendente(F, 'ini') || pendente(F, 'fim'); };
+  // o contador de dias: pela metade não conta; fim antes do início diz isso (antes mostrava dias negativos)
+  V376.diasTxt = function (F) {
+    if (V376.pend(F)) return '<span class="v376-pend">complete a data</span>';
+    if (F.ini && F.fim && F.fim < F.ini) return '<span class="v376-pend">o fim é antes do início</span>';
+    return null;
+  };
+  V376.semDias = function (F) { return V376.pend(F) || !!(F.ini && F.fim && F.fim < F.ini); };
+  // o Criar / Salvar a locação: data pela metade não vai (o estado ainda tem a data de antes)
+  V376.validar = function (F) {
+    if (pendente(F, 'ini')) return { erro: 'Complete a data de início (dd/mm/aaaa, ano entre 2020 e 2100).', campo: 'v365' + F.ctx + 'Ini' };
+    if (pendente(F, 'fim')) return { erro: 'Complete o fim previsto (dd/mm/aaaa, ano entre 2020 e 2100) ou apague a data.', campo: 'v365' + F.ctx + 'Fim' };
+    return null;
+  };
+  // chamado no começo do formHtml do V365: o período da lista que vai para a tela; numa repintura inteira os campos de data nascem do
+  //   estado (nada pela metade). A repintura "sem as datas" (abaixo) marca que os campos ficam.
+  var semDatas = false;
+  V376.pintando = function (F) {
+    var ns = window.V365 && V365.ns; if (!ns) return;
+    F.v376k = ns.chaveFrota(F);
+    if (!semDatas) F.v376p = {};
+  };
+
+  // ── 3 · a frota relida a cada formulário aberto (a potência corrigida no cadastro aparece sem F5) ─────────────────────
+  V376.novo = function () {
+    var V = window.V365; if (!V) return;
+    V.frota = {};
+    // leitura de outro formulário ainda no ar: sem a marca de "em voo" este formulário lê a sua (a resposta velha só enche o guardado)
+    Object.keys(V.voo || {}).forEach(function (k) { if (k.indexOf('card:') !== 0) delete V.voo[k]; });
+  };
+  V376.filtroAbre = function () { return '<div class="v376-filtro">'; };
+  V376.filtroFecha = function (F) {
+    return '<button type="button" class="btn btn-secondary btn-sm v376-atu" data-v376="atualizar" data-ctx="' + E(F.ctx) + '" title="Reler a frota: situação de cada máquina e a potência do cadastro">↻ Atualizar</button></div>';
+  };
+  V376.semCvHtml = function (m) {
+    if (!m || m.cv != null) return '';
+    var p = S(m.potencia).replace(/\s+/g, ' ').trim(), t, d = 'Sem a unidade o sistema não calcula a sugestão: informe o valor ou corrija o cadastro';
+    if (!p) { t = 'sem CV — informe o valor ou corrija a potência no cadastro'; d = ''; }
+    else if (/\d/.test(p) && !/(hp|cv|kw)/i.test(p)) t = 'potência no cadastro: ' + E(p) + ' — falta a unidade (ex.: 40 cv)';
+    else t = 'potência no cadastro: “' + E(p) + '” — use número e unidade (ex.: 40 cv)';
+    return '<div class="v376-semcv"' + (d ? ' title="' + E(d) + '"' : '') + '>' + t + '</div>';
+  };
+
+  // ── 1 · a data digitada: muda o estado e o que mostra no lugar; a frota só com a data completa ──────────────────────────
+  function corpoDe(F) { var bx = document.getElementById(F.ctx === 'n' ? 'v365Nova' : 'v365CardEd'); return bx ? bx.querySelector('.v365-corpo') : null; }
+  function filhoDatas(el) { for (var n = el.firstElementChild; n; n = n.nextElementSibling) if (n.classList.contains('v365-datas')) return n; return null; }
+  // repinta o que vem DEPOIS das datas (aviso de conversão, frota, filtro, lista, total, a cessão); as datas ficam (o campo em foco
+  //   e o que está sendo digitado nele) — só o contador é acertado no lugar
+  function repintarSemDatas(F) {
+    var ns = window.V365 && V365.ns, cp = corpoDe(F); if (!ns || !cp) return;
+    var vivo = filhoDatas(cp), tmp = document.createElement('div');
+    semDatas = true;
+    try { tmp.innerHTML = ns.formHtml(F); } finally { semDatas = false; }
+    var novo = filhoDatas(tmp);
+    if (!vivo || !novo) { ns.repintarCtx(F); return; }   // formulário de outro feitio: o caminho de antes
+    while (vivo.nextSibling) cp.removeChild(vivo.nextSibling);
+    while (novo.nextSibling) cp.appendChild(novo.nextSibling);
+    var dv = vivo.querySelector('.v365-dias'), dn = novo.querySelector('.v365-dias');
+    if (dv && dn && dv.innerHTML !== dn.innerHTML) dv.innerHTML = dn.innerHTML;
+    if (F.ctx === 'c') { var bx = document.getElementById('v365Card'); if (bx) bx.__v365 = ''; }   // a próxima pintura da caixa refaz tudo
+  }
+  V376.repintarSemDatas = repintarSemDatas;
+  // repintura com o botão do mouse apertado troca o que está debaixo dele entre o apertar e o soltar, e o Chrome não manda o clique
+  //   (regras/telas.md): o "Criar" / "Salvar a locação" logo depois de digitar a data se perdia. Espera o soltar (uma vez por formulário).
+  var apertado = false, fila = [];
+  function rodarFila() { var q = fila; fila = []; q.forEach(function (F) { F.v376fila = false; pintarJa(F); }); }
+  function soltou() { if (!apertado) return; apertado = false; setTimeout(rodarFila, 0); }   // o 0 deixa o click passar antes
+  document.addEventListener('pointerdown', function (ev) { if (ev.button === 0) apertado = true; }, true);
+  document.addEventListener('pointerup', soltou, true);
+  document.addEventListener('pointercancel', soltou, true);
+  window.addEventListener('blur', soltou);   // soltou fora da janela
+  function pintarJa(F) { var ns = V365.ns; if (ns.formDoCtx(F.ctx) === F) repintarSemDatas(F); }
+  function pintar(F) { if (!apertado) { pintarJa(F); return; } if (!F.v376fila) { F.v376fila = true; fila.push(F); } }
+  // a frota do período: lida na hora em que a data fica completa; a lista de antes fica na tela até a nova chegar (sem o
+  //   "⏳ Lendo a frota…", que encolhia a caixa e mudava o lugar dos botões de baixo)
+  function releFrota(F) {
+    var ns = V365.ns, k = ns.chaveFrota(F);
+    if (V365.frota[k]) { if (F.v376k !== k) pintar(F); return; }   // o período já foi lido nesta janela
+    ns.lerFrota(F, function () { if (ns.chaveFrota(F) === k) pintar(F); });
+  }
+  // chamado pelo aoMudar do V365 (input e change de data-v365c="ini"/"fim"); devolve true = tratado
+  V376.data = function (F, k, t) {
+    var ns = window.V365 && V365.ns; if (!ns) return false;
+    var v = S(t.value), bad = !!(t.validity && t.validity.badInput);
+    F.v376p = F.v376p || {};
+    if (!v && !bad) { F[k] = ''; F.v376p[k] = false; }            // a data apagada (fim vazio = sem fim)
+    else if (plausivel(v)) { F[k] = v; F.v376p[k] = false; }      // a data completa
+    else F.v376p[k] = true;   // pela metade: o estado fica com a data de antes e nada vai ao banco
+    if (k === 'ini' && F.ini && F.fim && F.fim < F.ini) { F.fim = ''; F.v376p.fim = false; var cf = campo(F, 'fim'); if (cf && cf !== t) cf.value = ''; }
+    var fi = campo(F, 'fim');
+    // o mínimo do Fim acompanha o início — só quando muda: mexer no atributo do campo em que se digita zera o segmento do ano no Chrome
+    if (fi && (fi.getAttribute('min') || '') !== (F.ini || '')) { if (F.ini) fi.setAttribute('min', F.ini); else fi.removeAttribute('min'); }
+    ns.atualizarResumo(F);
+    releFrota(F);
+    return true;
+  };
+  // ↻ Atualizar: relê a frota do período (ignora o guardado e a leitura velha em voo) e repinta só o que vem depois das datas
+  document.addEventListener('click', function (ev) {
+    var b = ev.target && ev.target.closest && ev.target.closest('[data-v376="atualizar"]'); if (!b || off() || !b.closest('#v200Modal')) return;
+    var ns = window.V365 && V365.ns, F = ns && ns.formDoCtx(b.getAttribute('data-ctx')); if (!F) return;
+    ev.preventDefault();
+    var k = ns.chaveFrota(F);
+    delete V365.frota[k]; delete V365.voo[k];
+    repintarSemDatas(F);   // "⏳ Lendo a frota…"
+    ns.lerFrota(F, function () { if (ns.chaveFrota(F) === k) pintar(F); });
+  }, true);
+})();
+</script>
+<!-- ████ FIM PCM V376 ████ -->
 
 </body>
 </html>
