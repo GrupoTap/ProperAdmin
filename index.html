@@ -5727,9 +5727,21 @@ v50 — Resiliência de rede: retry/backoff em gsGet e syncToGS
   so com a aba Omie. Os textos de tela que mandavam ao engrenagem > Integracao Omie dizem "Administracao > Configuracoes > Omie".
   Linhas antigas alteradas: ganchos no V349 e no desenho do V330 (sem o V378 fazem o mesmo de antes) + os textos de caminho.
   Chave: localStorage pcm_v378 = off.
+  PCM V379 — 19/11/2026 — ETIQUETA DE SEPARACAO POR EMBALAGEM ("CAIXA i DE N" E A PECA AVULSA), A SEPARACAO SEM A ETIQUETA DE PECA
+  E O "ENTREGAR KIT" (ProperCare-backlog#295, parte 1), sobre o V378. SQL 155_ALM_SEP_EMBALAGEM roda ANTES. Zero GAS.
+  Separacao: saem os tres "Etiqueta de peca" e o "Ja colei" (a etiqueta de peca mora em Almoxarifado > Etiquetas). Na linha da OS, um
+  botao so, "Etiqueta de separacao" (laranja com a separacao pronta), abre o "Fechar a separacao": quantas caixas ou sacos e quais
+  pecas vao fora da caixa; imprime uma etiqueta 100x40 por embalagem (Caixa i de N / Avulsa i de N, com a peca) e grava no banco
+  (alm_sep_fechar). O QR e o texto do banco: SEP + o numero da OS so com letras e numeros + E + a embalagem (o leitor de mao com o
+  teclado errado le igual; o QR antigo continua valendo). A OS fechada mostra "N embalagens" (alm_sep_resumo).
+  O botao do topo "Conferir etiqueta" vira "Entregar kit": ler qualquer embalagem abre a conferencia da OS e mostra "Embalagens
+  lidas x de N"; a avulsa lida fica em destaque; faltou ler = so avisa (D4). O Conferir etiqueta generico fica em Almoxarifado >
+  Etiquetas, onde a aba "Kit da OS" vira "Separacao" (OS fechada imprime as N etiquetas; sem fechamento, a da OS sem "volumes").
+  Linhas antigas alteradas: o botao do topo (V323); abrir com modo, o QR novo, o titulo, o rotulo do campo, as embalagens e a linha
+  lida (V353); a aba, o QR, o "volumes" e o resumo da aba (V374); o texto do botao do Recebimento (V325). Chave: pcm_v379 = off.
 -->
-<title>ProperCare Manager · Gestão PGP v4.03 (PCM V378)</title>
-<meta name="app-build" content="PCM_V378" data-date="2026-11-19">
+<title>ProperCare Manager · Gestão PGP v4.03 (PCM V379)</title>
+<meta name="app-build" content="PCM_V379" data-date="2026-11-19">
 <link rel="icon" type="image/jpeg" href="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/4gHYSUNDX1BST0ZJTEUAAQEAAAHIAAAAAAQwAABtbnRyUkdCIFhZWiAH4AABAAEAAAAAAABhY3NwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlkZXNjAAAA8AAAACRyWFlaAAABFAAAABRnWFlaAAABKAAAABRiWFlaAAABPAAAABR3dHB0AAABUAAAABRyVFJDAAABZAAAAChnVFJDAAABZAAAAChiVFJDAAABZAAAAChjcHJ0AAABjAAAADxtbHVjAAAAAAAAAAEAAAAMZW5VUwAAAAgAAAAcAHMAUgBHAEJYWVogAAAAAAAAb6IAADj1AAADkFhZWiAAAAAAAABimQAAt4UAABjaWFlaIAAAAAAAACSgAAAPhAAAts9YWVogAAAAAAAA9tYAAQAAAADTLXBhcmEAAAAAAAQAAAACZmYAAPKnAAANWQAAE9AAAApbAAAAAAAAAABtbHVjAAAAAAAAAAEAAAAMZW5VUwAAACAAAAAcAEcAbwBvAGcAbABlACAASQBuAGMALgAgADIAMAAxADb/2wBDAAUDBAQEAwUEBAQFBQUGBwwIBwcHBw8LCwkMEQ8SEhEPERETFhwXExQaFRERGCEYGh0dHx8fExciJCIeJBweHx7/2wBDAQUFBQcGBw4ICA4eFBEUHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh7/wAARCAGGAc0DASIAAhEBAxEB/8QAHAABAAIDAQEBAAAAAAAAAAAAAAYHBAUIAwIB/8QATBAAAQMCAgMJCBAFBAMBAAAAAAECAwQFBhEHIUESFjFRVnSBk7EIFyJVYZHR0hMUIzI0NTY3QmJxc6GissEVM4KU8FJ1krNypMKE/8QAHAEBAAIDAQEBAAAAAAAAAAAAAAYHAQMEBQII/8QAOhEAAQMBAwgHCAMAAwEBAAAAAAECAwQFETEGFCFBU3GRsRMVUVJh0eESIjI0NXKSwTOB8CRC8SOh/9oADAMBAAIRAxEAPwAACqj9AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA+JpY4YXzTSNjjY1XPe5ckaicKqvEZxMKqIl6iaWOGF800jY42NVz3uXJGonCqrxFFaRtJ1fcLj7Uw5VzUdDA5fd413L514+NG8SdK8SeGlbSDJiCZ9ptMjo7Ux3hOTUtSqbV+rxJ0rsRK7JjZFjJEnTTp72pOzf48itMo8pnTuWnpHXNTFya93hz3Y7/fri3lDcevUb9cW8obj16mgB72bQ9xOCERz2p2juKm/wB+uLeUNx69Rv1xbyhuPXqaADNoe4nBBntTtHcVN/v1xbyhuPXqN+uLeUNx69TQAZtD3E4IM9qdo7ipv9+uLeUNx69Rv1xbyhuPXqaADNoe4nBBntTtHcVN/v1xbyhuPXqN+uLeUNx69TQAZtD3E4IM9qdo7ipv9+uLeUNx69Rv1xbyhuPXqaADNoe4nBBntTtHcVN/v1xbyhuPXqN+uLeUNx69TQAZtD3E4IM9qdo7ipv9+uLeUNx69TY4ZxRjW4YgoKKkvldLNLO1rWySK5q69e6RdmWar5CHlxdz5hzVUYmqY+OClzT/AJuT9P8AyOOvWClp3SKxPDQmJ6dkNq6+sZC2R3auldCJj/u0uEAFdlzgAAAAAAqTTXjivttwisVkrHU0rGeyVcseW6RV1tYi7NWtftQszEV1p7JZKu61S+5U0avyzy3S7Gp5VXJOk5UutdUXO5VNwq37ueokdI9fKq7PISGwKFJpFlel7W8/TyIblfazqWFtPE65ztK3YonqvJTbb9cW8obj16jfri3lDcevU0AJfm0PcTghW+e1O0dxU3+/XFvKG49eo364t5Q3Hr1NABm0PcTggz2p2juKm/364t5Q3Hr1G/XFvKG49epoAM2h7icEGe1O0dxU3+/XFvKG49eo364t5Q3Hr1NABm0PcTggz2p2juKm/wB+uLeUNx69Rv1xbyhuPXqaADNoe4nBBntTtHcVN/v1xbyhuPXqN+uLeUNx69TQAZtD3E4IM9qdo7ipv9+uLeUNx69T0p8dYugnZM2/1zlYue5kk3TV+1F1KRwBaaFf+icEMpXVKLekjuKnTGjnGlFiy3fRguMLU9sU+f5m8bV/DgXYqys5HtFxrbTcYbhb53QVMLt0x7exeNF4jo3RzjSixZbvowXGFqe2KfP8zeNq/hwLsVYda9kLTL0sXwcvQsrJzKNK5Ep6hbpEwXvev/qErAB4BLwAAAAAAAAAAAAAAAAfMj2Rxukke1jGornOcuSIicKqoCrcJHsjjdJI9rGNRXOc5ckRE4VVSg9LWP5L9UPtFplVtqjdk96alqXJt/8AFNibeHiy9NLGkJ98kks1mlcy2NXKWVNS1Cp/8eTaVsTKxrH6K6eZPe1J2evLeVnlLlJnF9LSr7mte3wTw57sQAJKQgAAAAAAAAAAAAAAAAAAAAAzLHbai73eltlI3OapkSNvkz4VXyIma9B1XZLdT2i00tspG7mGmjSNvGuXCq+VV19JVXc+Yc1VGJqmPjgpc0/5uT9P/IuEhOUFZ0syQtwbz9PMtHI6zM3plqXp7z8Pt9V08AACPEyAAAABrsS3ansViq7rUr7nTxq7c55bp3A1qeVVyTpPpjHPcjW4qfEkjYmK963ImlSqO6CxH7LU0+GqaTNsWU9Vkv0lTwGr9ia+lOIqQyLnW1FxuFRX1b93PUSOkkdxqq5+YxyyqKlbSwNiTVjv1lH2pXur6p87teHgmoAA6zzwAAAAAAAAAAAAAAAAAAZdouNbabjDcLfO6CphdumPb2LxovEYgMOajkuXAy1yscjmrcqHTGjnGlFiy3fRguMLU9sU+f5m8bV/DgXYqys5HtFxrbTcYbhb53QVMLt0x7exeNF4jo3RzjSixZbvowXGFqe2KfP8zeNq/hwLsVYRa9kLTL0sXwcvQtPJzKNK5Ep6hbpEwXvev/qErAB4BLwAAAAAAAAAAfMj2Rxukke1jGornOcuSIicKqoCrcJHsjjdJI9rGNRXOc5ckRE4VVSh9LGkJ98kks1mlcy2NXKWVNS1Cp/8eTaNLGkJ98kks1mlcy2NXKWVNS1Cp/8AHk2lbEysex+iunnT3tSdnry3lZ5S5S5xfS0q+5rXt8E8Oe7EACSkIAAAAAAAAAAAAAAAAAAAAABmWO21F3u9LbKRuc1TIkbfJnwqvkRM16DDLj7n3Daok+JqqP3yLBSZ/ncn6f8AkcdfVJSwOkXHVvPSsmz3WhVsgTBcfBEx/wB2lqWS3U9otNLbKRu5hpo0jbxrlwqvlVdfSZgBWznK5VcuKl3sY2NqNalyJoAAPk+gAAAUr3QWI/Zq2nw3TSeBBlNVZLwvVPBb0Iuf9ScRbOJbtT2KxVd1qV9zp41duc8t07ga1PKq5J0nKtzrai43Cor6t+7nqJHSSO41Vc/MSPJ6j6SVZ3YNw3+hCss7T6GBKVi6X6V3J5ryUxwATQrEAAAAAAAAAAAAAAAAAAAAAAAAGXaLjW2m4w3C3zugqYXbpj29i8aLxGIDDmo5LlwMtcrHI5q3Kh0xo5xpRYst30YLjC1PbFPn+ZvG1fw4F2KsrOR7Rca203GG4W+d0FTC7dMe3sXjReI6N0c40osWW76MFxhantinz/M3jav4cC7FWEWvZC0y9LF8HL0LTycyjSuRKeoW6RMF73r/AOoSsAHgEvAAAAB+Pc1jVe9yNa1M1VVyREAD3NY1XvcjWtTNVVckRCitLekNbw6Sx2SVUtzVynnbw1CpsT6nb9nC0taRHXd0tjscyttzV3M87VyWoXiT6nb9nDWRMbHsfo7p5006k7PFfHlvK1ylyl6e+lpV93Wvb4J4dvbuxAAkxBgAAAAAAAAAAAAAAAAAAAAAAADOsFsqLzeaS10iZzVMiMRctTU2uXyIma9B1XaKCntVrprdSN3MFPGkbE25InCvlXhKr7nzDm4iqMTVMet+cFLmmxPfuTp8HocW8QjKCs6WboW4N5+nmWlkdZmb0y1L095+H2+uPAAAj5MQAAAAa7Et2p7FYqu61K+508au3OeW6dwNanlVck6T6Yxz3I1uKnxJI2JivetyJpUqbugsR+zVtPhumk8CDKaqyXheqeC3oRc/6k4ipjIudbUXG4VFfVv3c9RI6SR3Gqrn5jHLKoqVtLA2JNXPWUdale6vqnzu14eCakAAOs4AAAAAAAAAAAAAAAAAAAAAAAAAAAAZdouNbabjDcLfO6CphdumPb2LxovEYgMOajkuXAy1yscjmrcqHTGjnGlFiy3fRguMLU9sU+f5m8bV/DgXYqys5HtFxrbTcYbhb53QVMLt0x7exeNF4jo3RzjSixZbvowXGFqe2KfP8zeNq/hwLsVYRa9kLTL0sXwcvQtPJzKNK5Ep6hbpEwXvev8A6hKwAeAS8EC071M9PgJ6QTPj9mqWRyblct01UcqtXyakJ6V7p/8AkI3nkfY477LS+sjv7TyLeVUs2ZU7qnPwALIKTAAAAAAAAAABIcC4TuGK7qlLSosdPHktRUKngxt/dy7E/Y1yysiYr3rciG2CCSokSONL3LggwLhO4YruqUtKix08eS1FQqeDG393LsT9i5qfRNg6JqJJT1c6omSq+oVM14/ByJXh2y2+wWqK222FI4Y+FV98921zl2qpsSD19tzzyf8AyVWtTD1LVsnJalpYf+Q1HvXG/SieCf7SQjvV4L8XTf3MnpHerwX4um/uZPSTcHD1jV7ReKnq9SWdsG8EIR3q8F+Lpv7mT0jvV4L8XTf3MnpJuB1jV7ReKjqSztg3ghCO9XgvxdN/cyekd6vBfi6b+5k9JNwOsavaLxUdSWdsG8EIR3q8F+Lpv7mT0n6mivBSL8WzL/8Apk9JNgOsavaLxUz1LZ2wbwQ8KGkpqGjio6OBkFPE3cxxsTJGoe4Bxqqqt6npNajURES5EAAMGQAAAUn3QGJFqK+HDdNJ7lT5S1OS8Mip4LehFz6fIWzim8QWGwVl2qMlbTxqrW5+/dwNb0rkhytcKuevrp62qesk88jpJHLtcq5qSTJ6j6SRZ3Jobhv9CE5Z2n0MCUjF0v0ru9V5HgACZlZAAAAAAAAl2ifDm+LFsDJo91RUvu9RmmpURdTelcujM1TTNhjWR2CG+lpn1MzYY8XLcWJgDRfY34bpqvEFFJU1tSxJVY6Z7EiautG5NVNeWWee0kHexwP4k/8Aam9cmIK8ltOqkerukVL9SKtxc1PYdBDE2PomrcmKtRVXxUh3exwP4k/9qb1z6j0aYIjdum2Nqr9aolcnmVxLwa8/qto7ipu6poNgz8U8iK97vBfiGDrH+sO93gvxDB1j/WJUDGfVO0dxUz1VQ7Fn4p5FZ440U2mrtr5sOU6UVdGmbY/ZFVkyf6darkvEvBx8aUZVQTUtRJT1ET4po3K17HpkrVThRUOvyBaU8Aw4lp3XG3NZFd426l4EqET6LvLxL0Lq4Pbsm2nRu6KoW9F1rq3+HIi2UOS7JWdPRtucmLUwXcnbz3488g9KqCalqJKeoifFNG5WvY9MlaqcKKh5kxRbytFRUW5QADIAAAAAABsMN19Xbb7R1tFM6KaOZuTmrwpnrReNFTUqGvPe3/D6f71vah8vRHNVFPuNytejmrcqHXgAKqP0ACvdP/yEbzyPscWEV7p/+QjeeR9jjvsv5yPeeRb/ANNm+1Tn4AFkFJgAAAAAAA3OC7BPibEVPaYZWwpJm6SRUz3DETNVy2rxeVT4ke2NqvctyIbIonzSJGxL1Vbk3qZGBcJ3DFd1SlpUWOnjyWoqFTwY2/u5difsdI4dstvsFqittthSOGPhVffPdtc5dqqMO2W32C1RW22wpHDHwqvvnu2ucu1VNiQG1LUfWvuTQxME/alu2BYMdmR+07TIuK9ngn+0gAHkkiAAAAAAAAAAAAAAAAAAABrMU3iCw2Csu1RkraeNVa3P37uBrelckPpjHPcjW4qa5ZWxMWR63IiXqVL3QOI/bNxgw5TSZxU2UtTkvDIqeC3oRc/6vIVSe9wq56+unrap6yTzyOkkcu1yrmp4Fl0VM2lgbEmrnrKPtOudX1T53a10eCakAAOo4AAAAAAAdH6HsOfwDCUT549zW12U8+aa2oqeA3oT8VUp7RPhzfFi2Bk0e6oqX3eozTUqIupvSuXRmdKkVyjrLkSnbvX9J++BYGRVmXq6teng39r+uIABEiwwAAAAAAAACBaU8Aw4lp3XG3NZFd426l4EqET6LvLxL0Lq4OfaqCalqJKeoifFNG5WvY9MlaqcKKh1+V9pdwPTX23TXmia2K500SvcqJqna1M9yv1sk1L0L5JJY1rrEqQTL7upez05EIymycSoRaumS56aVTt8d/Pfjz6ACZlZgAAAAAA97f8AD6f71vah4Hvb/h9P963tQwuBluKHXgAKpP0ECvdP/wAhG88j7HFhFe6f/kI3nkfY477L+cj3nkW/9Nm+1Tn4AFkFJgAAAAAAnugb5wIubS9iECJ7oG+cCLm0vYhxWj8pJuXkenYv1CD7m8zoYAFal4AAAAAAAAAAAAAAAAAAAAAApLugcR+2bjBhymkzipspanJeGRU8FvQi5/1eQtrFN4gsNgrLtUZK2njVWtz9+7ga3pXJDla4Vc9fXT1tU9ZJ55HSSOXa5VzUkmTtH0kizuwbhv8AQhOWdp9DAlIxdL9K7vVeR4AAmZWQAAAAAAAJjoiw5vgxbCs0e6o6LKefNNS5L4LelfwRTTPM2CN0jsEOilpn1UzYY8XLcW/ogw2uHsJxuqI9xW1uU8+aa2pl4LehPxVSZgFaVE7p5XSOxUvKjpWUkDYI8Gpd/t+IABpOkAAAAAAAAAGHe/iWu5vJ+lTMMO9/EtdzeT9KmyL427zVUfxO3KckAAtMoEAAAAAAHvb/AIfT/et7UPA97f8AD6f71vahhcDLcUOvAAVSfoIFe6f/AJCN55H2OLCK90//ACEbzyPscd9l/OR7zyLf+mzfapz8ACyCkwAAAAAAT3QN84EXNpexCBE90DfOBFzaXsQ4rR+Uk3LyPTsX6hB9zeZ0MACtS8AAAAAAAAAAAAAAAAAAAAazFV3jsOHa27yt3SU0Sua3/U5dTU6XKiH0xivcjW4qfEsjYmLI9bkRL13IVFp/xItVdIsOU0nuFJlJUZL76VU1J0Ivnd5CrD2rametrJqypkWSeeR0kj14XOVc1U8Sy6OmbSwtibq56yjbSrn19U+d2tdHgmpAADqOEAAAAAAHSeiPDm97CUKTR7msrMp6jNNaZp4LehPxVSndEWHN8GLYVmj3VHRZTz5pqXJfBb0r+CKdJEUyjrMKdu9f0n74Fg5FWZpdWvTwb+1/XEAAiZYQAAAAAAAAAAAAMO9/EtdzeT9KmYYd7+Ja7m8n6VNkXxt3mqo/iduU5IABaZQIAAAAAAPe3/D6f71vah4Hvb/h9P8Aet7UMLgZbih14ACqT9BArLuiZHtwnQxtcqNfWpuk48mOyLNK07olrVwbRPy8JLgxEXyLHJ6EPRshf+bHvPFyiRVsya7s/aFDgAsYpYAAAAAAE90DfOBFzaXsQgRPdA3zgRc2l7EOK0flJNy8j07F+oQfc3mdDAArUvAAAAAAAAAAAAAAAAAAAHjW0tNW0ktJVwsnglbuZI3pmjkPYGUVUW9DDmo5FRU0EV73eC/EMHWP9Yd7vBfiGDrH+sSoHTn1TtHcVOHqqh2LPxTyIr3u8F+IYOsf6w73eC/EMHWP9YlQGfVO0dxUdVUOxZ+KeRFe93gvxDB1j/WHe7wX4hg6x/rEqAz6p2juKjqqh2LPxTyIr3u8F+IYOsf6w73eC/EMHWP9YlQGfVO0dxUdVUOxZ+KeRr7JZbVZKZ1NaqGGkjcubkYmty8arwr0mwAOd73PX2nLep2RxsjajGJciak0IAAfJ9gAAAAAAAAAAAAw738S13N5P0qZhh3v4lrubyfpU2RfG3eaqj+J25TkgAFplAgAAAAAA97f8Pp/vW9qHge9v+H0/wB63tQwuBluKHXgAKpP0ECtu6I+RVH/ALiz/rlLJK27oj5FUf8AuLP+uU9CyvnI9542UH02bcUKACxylQAAAAAAT3QN84EXNpexCBE90DfOBFzaXsQ4rR+Uk3LyPTsX6hB9zeZ0MACtS8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAYd7+Ja7m8n6VMww738S13N5P0qbIvjbvNVR/E7cpyQAC0ygQAAAAAAe9v+H0/3re1DwPe3/D6f71vahhcDLcUOvAAVSfoIFbd0R8iqP/cWf9cpZJW3dEfIqj/3Fn/XKehZXzke88bKD6bNuKFABY5SoAAAAAAJ7oG+cCLm0vYhAie6BvnAi5tL2IcVo/KSbl5Hp2L9Qg+5vM6GABWpeAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMO9/EtdzeT9KmYYd7+Ja7m8n6VNkXxt3mqo/iduU5IABaZQIAAAAAAPe3/D6f71vah4Hvb/AIfT/et7UMLgZbih14ACqT9BArzugGtXAsaqiKra2NU8i7l6fuWGV7p/+QjeeR9jjvsv5yPeeRb/ANNm+1Tn4AFkFJgAAAAAAnugb5wIubS9iECJ7oG+cCLm0vYhxWj8pJuXkenYv1CD7m8zoYAFal4AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAw738S13N5P0qZhh3v4lrubyfpU2RfG3eaqj+J25TkgAFplAgAAAAAA97f8Pp/vW9qHge9v+H0/wB63tQwuBluKHXgAKpP0ECvdP8A8hG88j7HFhFe6f8A5CN55H2OO+y/nI955Fv/AE2b7VOfgAWQUmAAAAAACe6BvnAi5tL2IQInugb5wIubS9iHFaPykm5eR6di/UIPubzOhgAVqXgAAAAAAAAAAAAAAAfMj2RxukkcjWNRVc5VyRETac8Ys0lYirr5UyWu5zUdA16tp440RM2Iupy6s814fIWNp0xH/CcMpaqeTKquWbFyXW2JPfr06m9K8Rz+S2wLPasazyNvvwv5ldZYWxI2ZtLA5U9nS65btK4J/Saf7JLv9xhygrPOnoG/3GHKCs86egjQJFmsHcTghDM/qtq7ivmSXf7jDlBWedPQN/uMOUFZ509BGgM1g7icEGf1W1dxXzJLv9xhygrPOnoG/wBxhygrPOnoI0BmsHcTggz+q2ruK+ZJd/uMOUFZ509BtMJYvxtccTW6ihvFTO6WoaixvyVqtzzdnq4Ms1Ugxcvc+Yc3EVRiapj1vzgpc02J79ydPg9DjitDN6WndIrE8NCYnp2MtbXVjIWyuuvvXSuhEx/3aW8ACvS5QAAAAAAAAAAAAAAAAAAYd7+Ja7m8n6VMww738S13N5P0qbIvjbvNVR/E7cpyQAC0ygQAAAAAAe9v+H0/3re1DwPe3/D6f71vahhcDLcUOvAAVSfoIFe6f/kI3nkfY4sIr3T/APIRvPI+xx32X85HvPIt/wCmzfapz8ACyCkwAAAAAAT3QN84EXNpexCBE90DfOBFzaXsQ4rR+Uk3LyPTsX6hB9zeZ0MACtS8AAAAAAAAAAAAAfMj2RxukkcjWNRVc5VyRETafRXmnPEaWnDX8Jp5Mqu45sXJdbYk98vT73pXiOilp3VMzYm6zjtCtZRUz534NTiupP7Up/SFiB+JcVVVxRV9rovsVM1dkbeDz61+1VI+AWXFG2JiMbghRs8z55HSvW9VW9QADYagAAAAADPw7aqi93uktVKnutTIjEXLNGpwq5fIiZr0HVVooKe1Wumt1I3cwU8aRsTbkicK+VeEq7ufMOexU1RiWpj8KXOClzT6KL4bulUy6F4y2yEZQVvTTdC3BvP08y08j7MzemWpenvPw+3Vxx4AAEfJgAAAAAAAAAAAAAAAAAADDvfxLXc3k/SpmGHe/iWu5vJ+lTZF8bd5qqP4nblOSAAWmUCAAAAAAD3t/wAPp/vW9qHge9v+H0/3re1DC4GW4odeAAqk/QQK90//ACEbzyPscWEV7p/+QjeeR9jjvsv5yPeeRb/02b7VOfgAWQUmAAAAAACb6EKqnpdIFL7YlbGk0UkTFcuSK5U1J05echAaqtVHNVUVNaKmw01EKTROjVbr0VDpo6haWoZMiX+yqLwOwwVbok0iJckisV9mRK1Mm09Q9f5/E1y/6/Lt+3htIrirpJKWRY5E9S7LOtGG0IUmhXRrTWi9igAHKdwAAAAAAAAB8yyMiifLI9GMY1XOcq5IiJwqcuY+v78SYpq7mqr7CrvY6dq/Rib73z61Xyqpb+nbEf8AC8NttFPJlVXHNrsl1thT33n1N+zMoImOTtH7DFqHYroTd/uRWuWlp9JK2jYuhuld+pP6TmAASYgwAAAAAAM/DtqqL3e6S1Uqe61MiMzyz3KcKuXyIma9BgF0dz5hz2KmqMS1MfhS5wUuafRRfDd0qmXQvGcVoVaUlO6TXq3np2PZ62hVshTDFdyY+W8tK1UNPbLbT2+kZuIKeNsbE8iJlr8pkgFbOcrlvXEu5jUY1GtS5EAAMH0AAAAAAAAAAAAAAAAAADV4sraa34auNVVytiiZTvRVcvCqtVERONVXUiGTd7jRWm3TXC4TsgpoW7p73dicarsTac56Rsa1uLLjkm7gtsLl9r0+f53cbl/DgTaq+rZdnSVciLg1MV/RH7ftqKzoFaul7k0J+18OZEwAWEU4AAAAAAD3t/w+n+9b2oeB72/4fT/et7UMLgZbih14ACqT9BAr3T/8hG88j7HFhFe6f/kI3nkfY477L+cj3nkW/wDTZvtU5+ABZBSYAAAAAAAAAaqtVHNVUVNaKmwvHRJpES5JFYr7MiVqZNp6h6/z+Jrl/wBfl2/bw0cGqrVRzVVFTWipsOKuoY6yP2H/ANL2HpWVas1mz9LFhrTUqf7BTsMFW6JNIiXJIrFfZkStTJtPUPX+fxNcv+vy7ft4bSK/q6SSlkWORPUuOzrRhtCFJoV0a01ovYoAByncAAAD5lkZFE+WR6MYxquc5VyREThU+iudO2I/4Xhttop5Mqq45tdkutsKe+8+pv2ZnTSU7qmZsTdZxWjWsoaZ87/+qcV1J/alQY+v78SYpq7mqr7CrvY6dq/Rib73z61XyqpoQCy442xsRjcEKNmmfPI6R63qq3qAAfZrAAAAAAM/DtqqL3e6S1Uqe61MiMzyz3KcKuXyIma9B1XaqGntltp7fSM3EFPG2NieREy1+Uq3ufMOexU1RiWpj8KXOClzT6KL4bulUy6F4y2yEZQVnTTdC3BvP08y08j7MzelWoenvPw+3Vxx4AAEfJgAAAAAAAAAAAAAAAAAADEu9xorTbprhcJ2QU0Ld097uxONV2JtF3uNFabdNcLhOyCmhbunvd2JxquxNpznpGxrW4suOSbuC2wuX2vT5/ndxuX8OBNqr6lmWY+tf2NTFf0nieDbluRWXF2vXBP2vhzGkbGtbiy45Ju4LbC5fa9Pn+d3G5fw4E2qsTAJ9DCyFiMYlyIVDU1MtVKssq3uUAA2mgAAAAAAHvb/AIfT/et7UPA97f8AD6f71vahhcDLcUOvAAVSfoIGlxrh6nxPh6e1VEixK9UfFKiZ7h6cC5bU2KnEqm6B9xyOjej2rcqGqaFk8bo5EvaqXKcm4jstwsF2lttyhWOaPWipra9uxzV2ov8Ams1x1FjrClvxXalpapEjqI81p6hEzdE792rtT98lObsR2W4WC7S225QrHNHrRU1te3Y5q7UX/NZPrLtRlay5dD0xT9oVDb1gyWZJ7TdMa4L+l8eZrgAesR8AAAAAAAAANVWqjmqqKmtFTYSOLHWL442xtxBXblqZJun7pfOutSOA1viZJ8aIu82xTyw39G5Uv7FuJLv9xhygrPOnoG/3GHKCs86egjQNeawdxOCG7P6rau4r5kl3+4w5QVnnT0Df7jDlBWedPQRoDNYO4nBBn9VtXcV8yS7/AHGHKCs86eg0l0uNddKx1ZcauWqqHalkkdmuXF9nkMUH2yGNi3taif0a5aqaVPZkeqp4qqgAG00AAAAAAA2OGbRUX2/Ulppv5lRIjVdlnuG8LndCIq9Bri6+59w57BQ1GJKmP3Sozhpc04GIvhO6VTL+leM4bQq0pKd0mvVvPUsazltCsZDqxXcmPkWhbKKnt1vp6CkjSOCnjSONqbERO0yACt1VXLepdrWoxEa1LkQAAwfQAAAKG0j6Rr1JiWopLHcX0tDSuWJqxImcrk1Ocq5cGeaJsyTMszSviPe7hKeSGTc1lV7hTZLrRVTW7oTNftyOaSU5P0DXos8iXpgl/wD+r/vEgOWNsPic2khcqLi65btyfvgSXf7jDlBWedPQN/uMOUFZ509BGgSbNYO4nBCC5/VbV3FfMku/3GHKCs86egb/AHGHKCs86egjQGawdxOCDP6rau4r5kl3+4w5QVnnT0Df7jDlBWedPQRoDNYO4nBBn9VtXcV8yS7/AHGHKCs86egb/cYcoKzzp6CNAZrB3E4IM/qtq7ivmbS9Yivl6jZHdLpU1cbF3TWPf4KLx5cGflNWAbmsaxLmpchzySPkd7T1VV8QAD6PgAAAAAAAAAFi6JMAzXyqivVzY6K2QvR0bVTJahyLwJ9XPhXbwJty/NFOj6TEEzLtdo3R2pjvBaupalU2J9XjXoTaqX5DFHDCyGGNscbGo1jGpkjUTgRE4iN2xbHQ3wQr72tez15E2yaybWpVKqpT3NSdvivhz3Y/YAIYWaAAACPY6wpb8V2paWqRI6iPNaeoRM3RO/dq7U/fJSQg2RSviej2LcqGmop46iNYpUvauKHJuI7LcLBdpbbcoVjmj1oqa2vbsc1dqL/ms1x1FjrClvxXalpapEjqI81p6hEzdE792rtT98lObsR2W4WC7S225QrHNHrRU1te3Y5q7UX/ADWT2y7UZWsuXQ9MU/aFRW9YMlmSe03TGuC/pfHma4AHrEfAAAAAAAAAAAAAAAAAAAAAAAAAAANjhm0VF9v1Jaab+ZUSI1XZZ7hvC53QiKvQdVW2jp7db6ehpWbiCnjbHG3iREyQq/ufcOewUNRiSpj90qM4aXNOBiL4TulUy/pXjLYIPb9Z00/RNwbz9MC1Mj7Mzalzh6e8/lq448AADwCXgAAAAiOljEaYdwlO+GTc1tVnBTZLrRVTW7oTX9uXGboIXTyNjbipz1dSylgdNJg1LyntMWI/4/i2WOCTdUdBnBDkupyovhu6V1fYiELALLghbBG2NuCFGVdS+qndNJi5bwADcc4AAAAAAAAAAAAAAAAAAAAALE0U6PpMQTMu12jdHamO8Fq6lqVTYn1eNehNqo0U6PpMQTMu12jdHamO8Fq6lqVTYn1eNehNqpfkMUcMLIYY2xxsajWMamSNROBETiI3bFsdDfDCvva17PXkTbJrJpalUqqpPc1J2+K+HPdihijhhZDDG2ONjUaxjUyRqJwIicR9gENXSWYiIiXIAAYMgAAAAAAj2OsKW/FdqWlqkSOojzWnqETN0Tv3au1P3yUkINkUr4no9i3KhpqKeOojWKVL2rihybiOy3CwXaW23KFY5o9aKmtr27HNXai/5rNcdRY6wpb8V2paWqRI6iPNaeoRM3RO/dq7U/fJTm7EdluFgu0ttuUKxzR60VNbXt2Oau1F/wA1k9su1GVrLl0PTFP2hUVvWDJZkntN0xrgv6Xx5muAB6xHwAAAAAAAAAAAAAAAAAAAAAbHDNoqL7fqS0038yokRquyz3DeFzuhEVeg1xdnc/4bWnoZ8SVUeUlSixUuacEaL4TulUy6F4zhtGrSkp3Sa9W89SxrOW0KxkOrFdyY+X9ln22jp7db6ehpWbiCnjbHG3iREyQyACt1VXLepdrWo1Ea1NCAAGD6AAABzbpdxHvgxbMkMm6o6LOCDJdS5L4TulfwRC4tLmI972Eplhk3NZWZwU+S60zTwndCfiqHNhLMnKPGoduT9r+uJXuWtp6W0TF8XfpP3wAAJWV8AAAAAAAAAAAAAAAAAAAAACxNFOj6TEEzLtdo3R2pjvBaupalU2J9XjXoTaqNFOj6TEEzLtdo3R2pjvBaupalU2J9XjXoTaqX5DFHDCyGGNscbGo1jGpkjUTgRE4iN2xbHQ3wwr72tez15E2yayaWpVKqqT3NSdvivhz3YoYo4YWQwxtjjY1GsY1MkaicCInEfYBDV0lmIiIlyAAGDIAAAAAAAAAAAAI9jrClvxXalpapEjqI81p6hEzdE792rtT98lJCDZFK+J6PYtyoaainjqI1ilS9q4ocm4jstwsF2lttyhWOaPWipra9uxzV2ov+azXHUWOsKW/FdqWlqkSOojzWnqETN0Tv3au1P3yU5uxHZbhYLtLbblCsc0etFTW17djmrtRf81k9su1GVrLl0PTFP2hUVvWDJZkntN0xrgv6Xx5muAB6xHwAAAAAAAAAAAAAAAAADZ4Vs89/xBR2mnzR08iI5yJ7xia3O6EzOqaCkgoaGCipY0jggjbHG1NjUTJCse5/w57Wts+IqmPKWqzip804I0Xwl6VTL+nylqkGt+s6afom4N56/ItXJCzM2pM4envP5auOPAAA8ElwAAAAIfpcxCuH8ITugeraurX2vAqcLVVPCd0Jn05G6CF08jY24qc1XVMpIHTSYNS//byndLuI98GLZkhk3VHRZwQZLqXJfCd0r+CIQ4AsuCFsEbY24IUbVVL6qZ00mLlvAANxzgAAAAAAAAAAAAAAAAAAsTRTo+kxBMy7XaN0dqY7wWrqWpVNifV416E2qjRTo+kxBMy7XaN0dqY7wWrqWpVNifV416E2ql+QxRwwshhjbHGxqNYxqZI1E4EROIjdsWx0N8MK+9rXs9eRNsmsmlqVSqqk9zUnb4r4c92KGKOGFkMMbY42NRrGNTJGonAiJxH2AQ1dJZiIiJcgABgyAAAAAAAAAAAAAAAAAADWX6wWa+xxsu1vhq0jVdwr01tz4clTWhswfTHuY72mrcp8SRMlarJERUXUulCK97vBfiGDrH+sO93gvxDB1j/WJUDoz6p2juKnH1VQ7Fn4p5EV73eC/EMHWP8AWHe7wX4hg6x/rEqAz6p2juKjqqh2LPxTyIr3u8F+IYOsf6w73eC/EMHWP9YlQGfVO0dxUdVUOxZ+KeRFe93gvxDB1j/WHe7wX4hg6x/rEqAz6p2juKjqqh2LPxTyIr3u8F+IYOsf6w73eC/EMHWP9YlQGfVO0dxUdVUOxZ+KeRFe93gvxDB1j/WHe7wX4hg6x/rEqAz6p2juKjqqh2LPxTyIr3u8F+IYOsf6x+po8wYi5/wGD/m/1iUgZ9U7R3FR1VQ7Fn4p5HnTww08DIKeJkUUbUaxjGo1rUTgRETgQ9ADmVb9KnciIiXIAAYMgAAAwL5Z7Ze6NKS60cdVCj0ejX56nJtRU1pwqZ4Ppr3MX2mrcp8SRskarHpei6lIr3u8F+IYOsf6w73eC/EMHWP9YlQOjPqnaO4qcfVVDsWfinkRXvd4L8QwdY/1h3u8F+IYOsf6xKgM+qdo7io6qodiz8U8iK97vBfiGDrH+sO93gvxDB1j/WJUBn1TtHcVHVVDsWfinkRXvd4L8QwdY/1h3u8F+IYOsf6xKgM+qdo7io6qodiz8U8iK97vBfiGDrH+sO93gvxDB1j/AFiVAZ9U7R3FR1VQ7Fn4p5EV73eC/EMHWP8AWHe7wX4hg6x/rEqAz6p2juKjqqh2LPxTyIr3u8F+IYOsf6w73eC/EMHWP9YlQGfVO0dxUdVUOxZ+KeRFe93gvxDB1j/WP1ujzBiORUsNPmi563vX9yUgZ9U7R3FR1VQ7Fn4p5HxDFHDCyGGNscbGo1jGpkjUTgRE4j7AOZdJ3IiIlyAAGDIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB//2Q==">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -102702,7 +102714,7 @@ html:not(.v311-off):has(>body.v292-alto #viewComercial.v292-on:not([style*="disp
       '<div class="v323-bts"><button type="button" class="v323-bt" data-v323="reler" title="Ler de novo do banco">↻ Atualizar</button>' +
       '<button type="button" class="v323-bt" data-v323="lista" title="A4: as OS deste filtro, peças na ordem da prateleira">🖨 Lista do dia</button>' +
       '<button type="button" class="v323-bt" data-v323="etqTodas" title="Uma etiqueta de peça (100×40) para cada peça deste filtro">🏷 Etiqueta de peça</button>' +
-      (window.V353 && !V353.off() ? '<button type="button" class="v323-bt" id="v353Bt" data-v353="abrir" title="Bipe qualquer etiqueta: diz se é de peça, prateleira, kit da OS ou máquina">🏷 Conferir etiqueta</button>' : '') +   // PCM V353
+      (window.V353 && !V353.off() ? (window.V379 && V379.on() ? V379.btEntregar() : '<button type="button" class="v323-bt" id="v353Bt" data-v353="abrir" title="Bipe qualquer etiqueta: diz se é de peça, prateleira, kit da OS ou máquina">🏷 Conferir etiqueta</button>') : '') +   // PCM V353 (V379: 📦 Entregar kit)
       '<button type="button" class="v323-bt" data-v323="painel" data-q="end" aria-expanded="' + (S.painel === 'end') + '">📍 Endereços</button>' +
       (off342() ? '' : '<button type="button" class="v323-bt' + (S.d && S.d.devolver && N(S.d.devolver.vencidas) ? ' alerta' : '') + '" data-v323="painel" data-q="dev" aria-expanded="' + (S.painel === 'dev') + '" title="Peças separadas e não usadas de OS concluídas: voltam ao estoque">↩ A devolver' +
         (S.d && S.d.devolver && N(S.d.devolver.n) ? '<span class="v342-n">' + N(S.d.devolver.n) + '</span>' : '') + '</button>') +   // PCM V342
@@ -104408,7 +104420,7 @@ html:not(.v311-off):has(>body.v292-alto #viewComercial.v292-on:not([style*="disp
     if (S.semAcesso) { el.innerHTML = h + '<div class="v325-vazio">O recebimento é do almoxarifado (quem separa), de Compras ou do administrador. Peça ao administrador.</div>'; return; }
     if (S.erro) h += '<div class="v325-aviso erro">Não deu para ler as NF: ' + E(S.erro) + ' <button type="button" class="v325-bt mini" data-v325="reler">Tentar de novo</button></div>';
     if (S.msg) h += '<div class="v325-aviso ' + (S.msg.erro ? 'erro' : 'ok') + '">' + E(S.msg.txt) + (S.msg.kits || []).map(function (k) {
-      return ' <button type="button" class="v325-bt mini pri" data-v325="etqKit" data-os="' + E(k.os_id) + '">🏷 Etiqueta do kit da OS ' + E(k.numero_os || '') + '</button>'; }).join('') + '</div>';
+      return ' <button type="button" class="v325-bt mini pri" data-v325="etqKit" data-os="' + E(k.os_id) + '">🏷 ' + (window.V379 && V379.on() ? 'Etiqueta de separação' : 'Etiqueta do kit da OS') + ' ' + E(k.numero_os || '') + '</button>'; }).join('') + '</div>';
     if (S.painel === 'semnf' || (S.d && (S.d.sem_nf || []).length)) h += painelSemNf();
     if (S.carregando) { el.innerHTML = h + '<div class="v325-esq"></div><div class="v325-esq"></div><div class="v325-esq"></div>'; return; }
     h += '<div class="v325-chips">' + FILTROS.map(function (f) {
@@ -114075,7 +114087,7 @@ body.v349-nadm [data-v200="config"]{display:none!important}
   function uid() { return 'v353-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 10); }
   function quando(v) { var d = new Date(v || 0); if (!v || isNaN(d.getTime())) return ''; return d.toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo', day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' }); }
   function dia(iso) { var m = /^(\d{4})-(\d{2})-(\d{2})/.exec(T(iso)); return m ? m[3] + '/' + m[2] : ''; }
-  function modoDe(t) { return /#os\//i.test(t) ? 'qr' : 'os'; }
+  function modoDe(t) { return /#os\//i.test(t) || (window.V379 && V379.ehQr(t)) ? 'qr' : 'os'; }   // PCM V379: o QR novo (SEP…E<i>) também é QR
   function msgErro(e) {
     if (e && e.v200 === 'sem_sql') return 'Tela indisponível — avise o administrador.';
     if (e && e.v200 === 'acesso') return 'O banco recusou: conferir e retirar as peças é do técnico da OS ou do almoxarifado.';
@@ -114098,6 +114110,7 @@ body.v349-nadm [data-v200="config"]{display:none!important}
       if (g !== S.ger) return;
       var mesma = S.d && r && S.d.os === r.os;
       S.d = r; S.dig = ''; if (!mesma) { S.uid = null; S.levou = padrao(r); }
+      if (window.V379 && V379.on()) V379.depoisDeLer(r, t, g);   // PCM V379: as embalagens e qual foi lida
     } catch (e) { if (g !== S.ger) return; S.d = null; S.erro = msgErro(e);
       if (window.V374 && V374.on() && !manterMsg && await V374.depois(e, t, g)) return; }   // PCM V374: peça ou "não reconhecida"
     S.lendo = false; pintar();
@@ -114133,15 +114146,16 @@ body.v349-nadm [data-v200="config"]{display:none!important}
   // ═══ 2 · O PAINEL ═══════════════════════════════════════════════════════════════════════════════════
   function linhaHtml(l) {
     var saiu = N(l.retirado) > 0 && N(l.retirado) >= N(l.vol_sep);
-    return '<tr class="' + E(l.conf) + '" data-v353linha="' + E(l.linha) + '"><td class="v353-sit">' + (l.conf === 'falta' ? '⚠ ' : '') + E(l.rotulo || '') +   // o rótulo do banco já traz ☑ 🛒 🚚
+    return '<tr class="' + E(l.conf) + (window.V379 ? V379.trCls(l) : '') + '" data-v353linha="' + E(l.linha) + '"><td class="v353-sit">' + (l.conf === 'falta' ? '⚠ ' : '') + E(l.rotulo || '') +   // o rótulo do banco já traz ☑ 🛒 🚚
       (saiu ? '<span class="v353-saiu" title="Já saiu numa retirada anterior">já saiu</span>' : '') + '</td>' +
-      '<td class="cod">' + E(l.codigo || '—') + '</td><td>' + E(l.descricao || '') + (l.maquina ? '<span class="v353-mq">' + E(l.maquina) + '</span>' : '') + '</td>' +
+      '<td class="cod">' + E(l.codigo || '—') + '</td><td>' + E(l.descricao || '') + (window.V379 ? V379.trChip(l) : '') + (l.maquina ? '<span class="v353-mq">' + E(l.maquina) + '</span>' : '') + '</td>' +
       '<td class="q">' + Q(l.qtd) + ' ' + E(l.unidade || '') + '</td><td class="q">' + Q(l.separado) + '</td><td>' + (l.endereco ? '📍 ' + E(l.endereco) : '<span style="color:#98A2B3">—</span>') + '</td></tr>';
   }
   function corpoHtml() {
-    var h = '<label for="v353Lido">' + (window.V374 && V374.on() ? 'Bipe qualquer 🏷 etiqueta (peça, prateleira, kit da OS ou máquina) ou digite o número da OS' : 'Bipe o QR da 🏷 Etiqueta da separação ou digite o número da OS') + '</label><div class="v353-lin">' +
+    var e379 = !!(window.V379 && V379.on() && S.modo === 'entregar');   // PCM V379: o 📦 Entregar kit da 🧺 Separação
+    var h = '<label for="v353Lido">' + (e379 ? 'Bipe a 🏷 etiqueta de separação (qualquer embalagem) ou digite o número da OS' : window.V374 && V374.on() ? 'Bipe qualquer 🏷 etiqueta (peça, prateleira, ' + (window.V379 && V379.on() ? 'separação' : 'kit da OS') + ' ou máquina) ou digite o número da OS' : 'Bipe o QR da 🏷 Etiqueta da separação ou digite o número da OS') + '</label><div class="v353-lin">' +
       '<input type="text" id="v353Lido" class="v353-in" data-v353foco="lido" value="' + E(S.dig) + '" placeholder="QR da etiqueta ou nº da OS" readonly onfocus="this.removeAttribute(\'readonly\')" autocomplete="off" name="v353_lido_nofill" data-lpignore="true" data-1p-ignore>' +
-      '<button type="button" class="v323-bt pri" data-v353="ler">' + (window.V374 && V374.on() ? 'Conferir' : 'Abrir a lista') + '</button></div>';
+      '<button type="button" class="v323-bt pri" data-v353="ler">' + (window.V374 && V374.on() && !e379 ? 'Conferir' : 'Abrir a lista') + '</button></div>';
     if (S.erro) h += '<div class="v353-erro" role="alert">' + E(S.erro) + '</div>';
     if (S.msg) h += '<div class="' + (S.msg.er ? 'v353-erro' : 'v353-ok') + '" role="status">' + E(S.msg.txt) + '</div>';
     if (S.lendo && !S.d) return h + '<div class="v353-esq"></div><div class="v353-esq"></div><div class="v353-esq"></div>';
@@ -114153,6 +114167,7 @@ body.v349-nadm [data-v200="config"]{display:none!important}
       return h + '<div class="v353-kit">' + (k.endereco ? '🧰 Kit em 📍 ' + E(k.endereco) : k.retirado_em ? '🧰 Kit retirado' + (k.retirado_por ? ' por ' + E(k.retirado_por) : '') + ' em ' + E(quando(k.retirado_em)) : 'Sem kit separado.') + '</div>' +
         '<div class="v353-mot" style="margin-top:8px">A lista das peças é do técnico da OS e do almoxarifado.</div>';
     }
+    if (window.V379 && V379.on()) h += V379.embHtml(d);   // PCM V379: 📦 embalagens lidas x de N
     var v = d.volumes || {};
     h += '<div class="v353-ver ' + (d.nivel === 'verde' ? 'verde' : 'ambar') + '" data-v353="veredito">' + (d.nivel === 'verde' ? '✅ ' : '⚠ ') + E(d.veredito || '') +
       '<span class="v353-it">' + N(d.itens) + ' ite' + (N(d.itens) === 1 ? 'm' : 'ns') + '</span></div>';
@@ -114187,7 +114202,7 @@ body.v349-nadm [data-v200="config"]{display:none!important}
       if (!foco) foco = 'v353Lido';
     }
     var corpo = el.querySelector('.v353-corpo'), rol = corpo ? corpo.scrollTop : 0;
-    el.innerHTML = '<div class="v353-cab"><h3>🏷 Conferir etiqueta</h3><button type="button" class="v323-bt" data-v353="fechar">✕ Fechar</button></div>' +
+    el.innerHTML = '<div class="v353-cab"><h3>' + (window.V379 && V379.on() && S.modo === 'entregar' ? '📦 Entregar kit' : '🏷 Conferir etiqueta') + '</h3><button type="button" class="v323-bt" data-v353="fechar">✕ Fechar</button></div>' +
       '<div class="v353-corpo">' + corpoHtml() + '</div>' + (S.d ? '<div class="v353-pe">' + peHtml() + '</div>' : '');
     corpo = el.querySelector('.v353-corpo'); if (corpo && rol) corpo.scrollTop = rol;
     var f = foco ? document.getElementById(foco) : null;
@@ -114195,8 +114210,9 @@ body.v349-nadm [data-v200="config"]{display:none!important}
     if (f) { f.removeAttribute('readonly'); try { f.focus({ preventScroll: true }); } catch (e) {} }
   }
   V353.pintar = pintar;
-  function abrir(lido) {
+  function abrir(lido, modo) {
     if (off()) return;
+    S.modo = modo || ''; if (window.V379) V379.novaJanela();   // PCM V379: 'entregar' = o 📦 Entregar kit
     S.aberta = true; S.erro = ''; S.msg = null; S.d = null; S.t374 = null; S.dig = ''; S.uid = null; S.lendo = false; S.ger++; pintar();
     if (T(lido)) ler(lido);
   }
@@ -114209,7 +114225,7 @@ body.v349-nadm [data-v200="config"]{display:none!important}
     var a = bt.getAttribute('data-v353');
     if (a === 'veredito' || a === 'motivo') return;
     ev.preventDefault();
-    if (a === 'abrir') return abrir();
+    if (a === 'abrir') return abrir('', bt.getAttribute('data-modo') || '');   // PCM V379: o botão diz o modo
     if (a === 'fechar') return fechar();
     if (a === 'ler') { var i = document.getElementById('v353Lido'); return ler(i ? i.value : S.dig); }
     if (a === 'outra') { S.d = null; S.t374 = null; S.msg = null; S.erro = ''; S.dig = ''; S.uid = null; S.lendo = false; S.ger++; pintar(); var i2 = document.getElementById('v353Lido'); if (i2) try { i2.focus(); } catch (e) {} return; }
@@ -114234,7 +114250,8 @@ body.v349-nadm [data-v200="config"]{display:none!important}
     if (!vs || vs.style.display === 'none' || !vs.offsetParent) { V353.buf = ''; return; }
     var tag = t && t.tagName; if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || (t && t.isContentEditable)) { V353.buf = ''; return; }
     var agora = Date.now(); if (agora - V353.bufEm > 400) V353.buf = ''; V353.bufEm = agora;
-    if (ev.key === 'Enter') { var b = V353.buf; V353.buf = ''; if (/#os\/\S+/i.test(b)) { ev.preventDefault(); abrir(b); } return; }
+    if (ev.key === 'Enter') { var b = V353.buf; V353.buf = ''; var q379 = window.V379 && V379.on() ? V379.qrNoFim(b) : '';   // PCM V379: o QR novo também; aberto pela Separação = Entregar kit
+      if (q379) { ev.preventDefault(); abrir(q379, 'entregar'); } else if (/#os\/\S+/i.test(b)) { ev.preventDefault(); abrir(b, window.V379 && V379.on() ? 'entregar' : ''); } return; }
     if (ev.key && ev.key.length === 1) { V353.buf = (V353.buf + ev.key).slice(-300); if (/#os\//i.test(V353.buf)) ev.preventDefault(); }
   }, true);
 })();
@@ -121361,7 +121378,7 @@ body.mob-on .v373-u{min-width:56px}
   function tipoDaFolha(html) {
     var m = /<title>([^<]*)<\/title>/.exec(String(html || '')), t = m ? m[1] : '';
     if (!/^\s*Etiquetas?\b/i.test(t) || String(html).indexOf('<div class="e">') < 0) return '';   // só a folha 100×40 (a Lista do dia A4 não)
-    return /kit da OS/i.test(t) ? 'kit' : /prateleira/i.test(t) ? 'prateleira' : /de peça/i.test(t) ? 'peca' : '';
+    return /kit da OS|de separação/i.test(t) ? 'kit' : /prateleira/i.test(t) ? 'prateleira' : /de peça/i.test(t) ? 'peca' : '';
   }
   function canto(html) {
     html = String(html == null ? '' : html);
@@ -121392,8 +121409,8 @@ body.mob-on .v373-u{min-width:56px}
     var num = T(d.numero_os) || T(d.os), v = d.volumes || {}, mq = maquinas(d), k = (d.kit && d.kit.endereco) || '';
     var quando = dia(d.dia) + (d.hora ? ' ' + d.hora : '');
     var n = N(v.tot) ? N(v.tot) + (N(v.tot) === 1 ? ' volume' : ' volumes') : N(d.itens) ? N(d.itens) + (N(d.itens) === 1 ? ' item' : ' itens') : '';
-    var fim = [n, k ? 'separação em ' + k : ''].filter(Boolean).join(' · ');
-    return '<div class="e"><div class="q">' + qr(urlKit(num)) + '</div><div class="t"><div class="c" style="font-size:6.2mm">OS ' + esc(num) + '</div>' +
+    var fim = [window.V379 && V379.on() ? '' : n, k ? 'separação em ' + k : ''].filter(Boolean).join(' · ');   // PCM V379: a etiqueta não diz "volumes"
+    return '<div class="e"><div class="q">' + qr(window.V379 && V379.on() && d.qr_os ? d.qr_os : urlKit(num)) + '</div><div class="t"><div class="c" style="font-size:6.2mm">OS ' + esc(num) + '</div>' +
       '<div class="d">' + esc(d.cliente || '') + (mq.length ? ' · ' + esc(mq.join(' · ')) : '') + '</div>' +
       '<div class="r">' + esc(d.tecnico || 'sem técnico') + (quando ? ' · ' + esc(quando) : '') + '</div><div class="n" style="font-size:4.2mm">' + (fim ? esc(fim) : '&nbsp;') + '</div></div></div>';
   }
@@ -121411,7 +121428,9 @@ body.mob-on .v373-u{min-width:56px}
     if (!t) { K.erro = 'Digite o número da OS (ou bipe a etiqueta do kit).'; K.d = null; return pintar(); }
     var g = ++K.g; K.lendo = true; K.erro = ''; K.msg = null; pintar();
     return _v200Rpc('alm_kit_conferencia', { p: { lido: t, modo: /#os\//i.test(t) ? 'qr' : 'os' } }, false).then(function (r) {
-      if (g !== K.g) return; K.lendo = false; K.d = r || null; K.dTxt = t; K.cop = '1'; pintar();
+      if (g !== K.g) return; K.lendo = false; K.d = r || null; K.dTxt = t; K.cop = '1'; K.emb = null; K.msg379 = '';
+      if (window.V379) V379.kitTab(K, g);   // PCM V379: as etiquetas de separação da OS
+      pintar();
     }, function (e) {
       if (g !== K.g) return; K.lendo = false; K.d = null;
       K.erro = msgErro(e); pintar();
@@ -121419,11 +121438,13 @@ body.mob-on .v373-u{min-width:56px}
   }
   function kitImprimir() {
     var K = S.kit, d = K.d; if (!d || S.imprimindo) return;
+    if (window.V379 && !V379.kitPronto(K)) return;   // PCM V379: espera o QR do banco (um instante depois da busca)
     var c = copias(K.cop); if (!c) { K.msg = { erro: true, txt: 'As cópias vão de 1 a ' + MAX_COP + '.' }; return pintar(); }
     S.imprimindo = true; setTimeout(function () { S.imprimindo = false; }, 1500);   // trava de duplo clique (o diálogo do Chrome ainda nem abriu)
     var e = etqKit(d), corpo = ''; for (var i = 0; i < c; i++) corpo += e;
     imprimir('<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><title>' + NOME.kit + '</title><style>' + CSS_ETQ + '</style></head><body>' + corpo + '</body></html>');
-    K.msg = { txt: '🏷 ' + c + (c === 1 ? ' etiqueta do kit da OS mandada' : ' etiquetas do kit da OS mandadas') + ' para a impressora (100×40).' };
+    var n379 = window.V379 && V379.on() ? 'de separação' : 'do kit da OS';   // PCM V379
+    K.msg = { txt: '🏷 ' + c + (c === 1 ? ' etiqueta ' + n379 + ' mandada' : ' etiquetas ' + n379 + ' mandadas') + ' para a impressora (100×40).' };
     pintar();
   }
 
@@ -121464,7 +121485,7 @@ body.mob-on .v373-u{min-width:56px}
   }
   V374.garantir = garantir;
   function abasHtml() {
-    var A = [['peca', '🏷 Peça'], ['prateleira', 'Prateleira'], ['kit', 'Kit da OS']];
+    var A = [['peca', '🏷 Peça'], ['prateleira', 'Prateleira'], ['kit', window.V379 && V379.on() ? 'Separação' : 'Kit da OS']];   // PCM V379 (D2)
     return '<div class="v374-abas" role="tablist" aria-label="Etiqueta de">' + A.map(function (a) {
       return '<button type="button" role="tab" data-v374="aba" data-a="' + a[0] + '" aria-selected="' + (S.aba === a[0]) + '" title="' + esc('🏷 ' + NOME[a[0]]) + '">' + esc(a[1]) + '</button>';
     }).join('') + '</div>';
@@ -121486,16 +121507,17 @@ body.mob-on .v373-u{min-width:56px}
       '<div class="v374-info">' + (N(v.tot) ? N(v.tot) + (N(v.tot) === 1 ? ' volume' : ' volumes') + ' (' + N(v.sep) + ' separado' + (N(v.sep) === 1 ? '' : 's') + ')' : d.aberta === false ? 'OS fechada: nenhuma peça em aberto' : 'Sem peças a separar agora') +
         (k.endereco ? ' · 🧰 kit em 📍 ' + esc(k.endereco) : k.retirado_em ? ' · 🧰 kit já retirado' : '') + '</div></div>';
     if (K.msg) h += '<div class="v334-msg ' + (K.msg.erro ? 'erro' : 'ok') + '" role="' + (K.msg.erro ? 'alert' : 'status') + '">' + esc(K.msg.txt) + '</div>';
+    var k379 = window.V379 && V379.on() ? V379.kitTabHtml(K) : ''; if (k379) return h + k379;   // PCM V379: a OS fechada imprime as N
     var c = copias(K.cop);
     h += '<div class="v334-lin"><label style="font-size:13px;display:inline-flex;gap:6px;align-items:center">Cópias <input type="number" class="v343-cop" min="1" max="' + MAX_COP + '" value="' + esc(K.cop) + '" data-v374foco="cop" aria-label="Cópias da etiqueta do kit" autocomplete="off" name="v374_cop_nofill" data-lpignore="true" data-1p-ignore></label>' +
-      '<button type="button" class="v334-bt pri" data-v374="kitImprimir"><span>🖨 Imprimir <span id="v374Tot">' + (c || 0) + (c === 1 ? ' etiqueta' : ' etiquetas') + '</span> do kit da OS</span></button></div>';
+      '<button type="button" class="v334-bt pri" data-v374="kitImprimir"><span>🖨 Imprimir <span id="v374Tot">' + (c || 0) + (c === 1 ? ' etiqueta' : ' etiquetas') + '</span> ' + (window.V379 && V379.on() ? 'de separação' : 'do kit da OS') + '</span></button></div>';
     return h;
   }
   function pintar() {
     var el = document.getElementById('viewV374Etiquetas'); if (!el) return;
     var dir = document.getElementById('v374Dir');
     if (dir) {
-      var hd = window.V353 && !V353.off() ? '<button type="button" class="v334-bt" id="v374Conf" data-v353="abrir" title="Bipe qualquer etiqueta: diz se é de peça, prateleira, kit da OS ou máquina">🏷 Conferir etiqueta</button>' : '';
+      var hd = window.V353 && !V353.off() ? '<button type="button" class="v334-bt" id="v374Conf" data-v353="abrir" title="Bipe qualquer etiqueta: diz se é de peça, prateleira, separação ou máquina">🏷 Conferir etiqueta</button>' : '';
       if (dir.__v !== hd) { dir.innerHTML = hd; dir.__v = hd; }
     }
     var ab = document.getElementById('v374Abas'), ha = abasHtml();
@@ -122112,6 +122134,364 @@ html:not(.v376-off) .v365-maq{flex:none}
 })();
 </script>
 <!-- ████ FIM PCM V378 ████ -->
+<!-- ████ INICIO PCM V379 · 🏷 ETIQUETA DE SEPARAÇÃO POR EMBALAGEM ("CAIXA i DE N" E A PEÇA AVULSA), A 🧺 SEPARAÇÃO SEM A ETIQUETA DE PEÇA E O 📦 ENTREGAR KIT (ProperCare-backlog#295, parte 1) ████ -->
+<style id="v379-css">
+/* PCM V379 (ProperCare-backlog#295): a etiqueta de separação por embalagem. Chave de volta: localStorage pcm_v379 = off */
+/* a 🧺 Separação não imprime mais etiqueta de peça (ela nasce no Recebimento e em Almoxarifado › 🏷 Etiquetas): os botões antigos ficam no DOM, escondidos */
+#viewSeparacao.v379-on [data-v323="etqTodas"],#viewSeparacao.v379-on [data-v323="etqOs"],#viewSeparacao.v379-on [data-v323="etqPeca"],
+#viewSeparacao.v379-on [data-v323="etqMarcar"],#viewSeparacao.v379-on .v374-kb [data-v323="etqKit"]{display:none!important}
+.v379-kb{gap:8px;flex-wrap:wrap;justify-content:flex-end}
+.v379-kb .v379-n{white-space:nowrap}
+.v323-bt.v379-pri{min-height:34px;padding:6px 12px;font-size:13px}
+.v379-bal{flex:1 1 100%;border-top:1px solid #EAECF0;padding:10px 12px 12px;background:#FCFCFD}
+.v379-bal .v323-bal{margin-top:0}
+.v379-passo{display:inline-flex;align-items:center;border:1px solid #98A2B3;border-radius:8px;overflow:hidden;background:#fff}
+.v379-passo button{border:0;background:#F2F4F7;min-width:44px;min-height:40px;font-size:20px;cursor:pointer;font-family:inherit;color:#1D2939;transition:background-color .15s}
+.v379-passo button:hover,.v379-passo button:focus-visible{background:#E4E7EC;outline:none}
+.v379-passo button[disabled]{opacity:.45;cursor:default}
+.v379-passo b{min-width:52px;text-align:center;font:800 20px ui-monospace,Consolas,monospace}
+.v379-av{list-style:none;margin:2px 0 0;padding:0;border:1px solid #EAECF0;border-radius:8px;background:#fff;max-width:620px}
+.v379-av li{display:flex;flex-wrap:wrap;gap:6px 10px;align-items:center;padding:8px 10px;border-bottom:1px solid #EAECF0;font-size:13.5px}
+.v379-av li:last-child{border-bottom:0}
+.v379-av li.on{background:#FFF6ED}
+.v379-av label{display:flex;gap:10px;align-items:center;flex:1 1 260px;min-width:0;margin:0;cursor:pointer;font-size:13.5px;color:#1D2939}
+.v379-av input[type=checkbox]{width:18px;height:18px;flex:0 0 18px;margin:0}
+.v379-av .k{font:800 13.5px ui-monospace,Consolas,monospace;white-space:nowrap}
+.v379-av .q{margin-left:auto;color:#475467;white-space:nowrap}
+.v379-av .v379-vol{display:inline-flex;gap:6px;align-items:center;font-size:12.5px;color:#344054}
+.v379-av .v379-vol input{width:56px;min-height:32px;border:1px solid #98A2B3;border-radius:6px;padding:2px 6px;font:600 14px ui-monospace,Consolas,monospace;box-sizing:border-box}
+.v379-res{margin-top:10px;padding:8px 10px;border-radius:8px;background:#F2F4F7;font-size:13.5px;max-width:620px;box-sizing:border-box}
+.v379-esq{height:40px;border-radius:8px;background:linear-gradient(90deg,#F2F4F7,#EAECF0,#F2F4F7);margin:6px 0}
+/* 📦 Entregar kit: as embalagens lidas */
+#v353Jan .v379-emb{margin:10px 0 8px;padding:10px 12px;border:2px solid #1D2939;border-radius:10px;background:#fff}
+#v353Jan .v379-emb.ok{border-color:#32D583;background:#ECFDF3}
+#v353Jan .v379-emb .h{font-size:17px;font-weight:800}
+#v353Jan .v379-emb .cs{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+#v353Jan .v379-emb .falta{margin-top:8px;color:#93370D;font-size:13px;font-weight:600}
+#v353Jan .v379-emb.sem{border:1px dashed #D0D5DD;font-size:13px;color:#475467;padding:8px 10px}
+#v353Jan tr.v379-lida td{background:#FFF6ED;box-shadow:inset 0 2px 0 #EE7625,inset 0 -2px 0 #EE7625}
+#v353Jan .v379-avl{display:inline-block;margin-left:4px;font-size:11px;font-weight:700;color:#93370D;background:#FFEAD5;border-radius:6px;padding:0 5px}
+/* Almoxarifado › 🏷 Etiquetas › Separação: a OS fechada */
+.v379-kt{border:1px solid #EAECF0;border-radius:10px;background:#fff;padding:10px 12px;margin:8px 0;font-size:13.5px;line-height:1.5}
+@media (max-width:820px){.v379-av .v379-vol input{min-height:44px}.v323-bt.v379-pri{min-height:44px}}
+</style>
+<script>
+/* ═══════════════════════════════════════════════════════════════════════════════════════════════════════════════
+   PCM V379 — 19/11/2026 — 🏷 ETIQUETA DE SEPARAÇÃO POR EMBALAGEM (ProperCare-backlog#295, parte 1). Prefixo V379 / v379- / data-v379.
+   Decisão do Fernando (19/11, 11h36): opção B — uma etiqueta por EMBALAGEM, com a linha da peça quando ela vai fora da caixa; D2 o nome
+   "Etiqueta de separação"; D4 faltou ler uma embalagem na entrega = só avisa. Prévia aprovada às 12h35 (pontos A–E). Nada renomeado
+   (função, rota, id, data-key): os textos mudam e os botões antigos ficam no DOM, escondidos.
+   · 🧺 Separação: saem os três "🏷 Etiqueta de peça" e o "✅ Já colei" (a etiqueta de peça mora em Almoxarifado › 🏷 Etiquetas).
+     Na linha de cada OS, UM botão "🏷 Etiqueta de separação" (laranja quando a separação fica pronta) abre ali mesmo o "Fechar a
+     separação": quantas caixas ou sacos (padrão 1) e quais peças vão fora da caixa (peça com quantidade > 1: em quantos volumes).
+     "🖨 Imprimir N etiquetas" grava (alm_sep_fechar) e imprime 100×40: "CAIXA i de N" (OS, cliente, máquinas, técnico, dia, lugar do
+     kit) ou "AVULSA i de N" (OS, código e descrição da peça). O QR = o texto que o BANCO devolve (SEP<nº da OS>E<i>, só letras e
+     números). A OS fechada mostra "📦 N embalagens" e o mesmo botão reabre o fechamento (para mudar ou reimprimir).
+   · 📦 Entregar kit (o 🏷 Conferir etiqueta do topo da Separação, V353): ler QUALQUER embalagem abre a lista de conferência da OS e
+     mostra "📦 Embalagens lidas x de N"; ler a avulsa destaca a peça. Faltou alguma = só avisa (o "Conferi e retirei" segue liberado).
+     O leitor de mão que "digita" na página também abre com o QR novo. O "🏷 Conferir etiqueta" genérico fica em Almoxarifado › 🏷 Etiquetas.
+   · Almoxarifado › 🏷 Etiquetas: a aba "Kit da OS" vira "Separação"; OS fechada imprime as N etiquetas; sem fechamento, a etiqueta da OS
+     (QR SEP…E0), sem "volumes".
+   Chamadas: abrir a Separação = +1 em seguida à fila (alm_sep_resumo, só das OS da fila) · abrir o fechamento = 0 ou 1 (OS já fechada:
+   alm_sep_etiquetas) · imprimir = 1 (alm_sep_fechar) · cada leitura no Entregar kit = +1 (alm_sep_etiquetas) · buscar na aba Separação = +1.
+   Chave de volta: localStorage pcm_v379 = off. Precisa do SQL 155_ALM_SEP_EMBALAGEM (roda ANTES). Zero Apps Script.
+   ═══════════════════════════════════════════════════════════════════════════════════════════════════════════════ */
+(function () {
+  'use strict';
+  if (window.V379) return;
+  var V379 = window.V379 = { versao: 'V379 · 19/11/2026', S: { mapa: {}, mapaDe: null, mapaGer: 0, semSql: false, bal: null, emb: null }, ultimaImpressao: '', nImp: 0 };
+  var S = V379.S, MAX_CX = 50, MAX_ET = 99;
+  function off() { try { return localStorage.getItem('pcm_v379') === 'off'; } catch (e) { return false; } }
+  function on() { return !off(); }
+  V379.on = on;
+  function T(x) { return String(x == null ? '' : x).trim(); }
+  function E(x) { return String(x == null ? '' : x).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+  function N(x) { var n = Number(x); return isFinite(n) ? n : 0; }
+  function Q(x) { return N(x).toLocaleString('pt-BR', { maximumFractionDigits: 3 }); }
+  function dia(iso) { var m = /^(\d{4})-(\d{2})-(\d{2})/.exec(T(iso)); return m ? m[3] + '/' + m[2] : ''; }
+  function pl(n, um, varios) { return n + ' ' + (n === 1 ? um : varios); }
+  function msgErro(e) {
+    var c = e && e.v200;
+    if (c === 'sem_sql') { try { console.warn('[V379] falta uma função no banco:', e && e.message); } catch (x) {} return 'Tela indisponível — avise o administrador.'; }
+    if (c === 'acesso') return 'O banco recusou: fechar a separação e imprimir as etiquetas é do almoxarifado.';
+    if (c === 'rede') return String((e && e.message) || 'Sem conexão — nada foi gravado. Tente de novo.');
+    var m = String((e && e.message) || '').replace(/^NÃO foi gravada:\s*/, '').replace(/^Separação:\s*/, '');
+    return m ? m.charAt(0).toUpperCase() + m.slice(1) : 'Não deu certo. Tente de novo; se continuar, avise o administrador.';
+  }
+  // o QR da etiqueta de separação (o texto vem do banco; aqui só se RECONHECE para saber que é uma leitura de separação)
+  var RX_QR = /^\s*SEP[A-Z0-9]+E\d{1,3}\s*$/i;
+  function ehQr(t) { return on() && RX_QR.test(String(t == null ? '' : t)); }
+  V379.ehQr = ehQr;
+  function qrNoFim(b) { var m = /(SEP[A-Z0-9]+E\d{1,3})$/i.exec(String(b || '')); return m ? m[1] : ''; }   // o leitor de mão "digita" na página
+  V379.qrNoFim = qrNoFim;
+
+  // ═══ 1 · A 🧺 SEPARAÇÃO: O BOTÃO NA LINHA DA OS (embrulha o V374.kitNaLinha, que o osHtml do V323 chama) ═════════
+  function v323() { return window.V323 && V323.S; }
+  function grupo(chave) { var d = v323() && V323.S.d; return ((d && d.grupos) || []).find(function (x) { return x.chave === chave; }) || null; }
+  function repintar() { try { if (window.V323 && V323.pintar) V323.pintar(); } catch (e) {} }
+  function marcarView() {
+    var v = document.getElementById('viewSeparacao'); if (!v) return;
+    var q = on() && !!(window.V374 && V374.on && V374.on());   // sem o V374 (pcm_v374 = off) não há a linha da OS: a Separação fica a de antes
+    if (v.classList.contains('v379-on') !== q) v.classList.toggle('v379-on', q);
+  }
+  function lerMapa() {
+    var d = v323() && V323.S.d; S.mapaDe = d;
+    var ids = ((d && d.grupos) || []).map(function (x) { return T(x.os_id); }).filter(Boolean).slice(0, 300);
+    if (!ids.length) return;
+    var g = ++S.mapaGer;
+    _v200Rpc('alm_sep_resumo', { p: { os: ids } }, false).then(function (r) {
+      if (g !== S.mapaGer) return; S.mapa = (r && r.mapa) || {}; S.semSql = false;
+      var a = document.activeElement, bal = document.querySelector('#viewSeparacao [data-v379="bal"]');
+      if (!(bal && a && bal.contains(a))) repintar();   // com alguém digitando no fechamento, a contagem espera a próxima pintura (auditoria B7)
+    }, function (e) {
+      if (g !== S.mapaGer) return; S.semSql = !!(e && e.v200 === 'sem_sql');
+      try { console.warn('[V379] resumo das embalagens:', e && e.message); } catch (x) {}
+    });
+  }
+  function linhaHtml(g, h) {
+    marcarView();
+    if (v323() && V323.S.d && V323.S.d !== S.mapaDe) { S.mapaDe = V323.S.d; setTimeout(lerMapa, 0); }   // uma leitura por fila lida
+    var m = S.mapa[T(g.os_id)], ab = !!(S.bal && S.bal.g === g.chave), pri = g.situacao === 'pronto';
+    var bt = (m && N(m.total) ? '<span class="v323-tag v379-n" data-v379="n" title="' + E(pl(N(m.caixas), 'caixa', 'caixas') + (N(m.avulsas) ? ' + ' + pl(N(m.avulsas), 'peça fora da caixa', 'peças fora da caixa') : '')) + '">📦 ' + E(pl(N(m.total), 'embalagem', 'embalagens')) + '</span>' : '') +
+      '<button type="button" class="v323-bt ' + (pri ? 'pri v379-pri' : 'mini') + '" data-v379="etq" data-g="' + E(g.chave) + '" aria-expanded="' + ab + '">🏷 Etiqueta de separação</button>';
+    var h2 = String(h).replace(/^<div class="v374-kb">/, function () { return '<div class="v374-kb v379-kb">'; });
+    h2 = /<\/div>\s*$/.test(h2) ? h2.replace(/<\/div>\s*$/, function () { return bt + '</div>'; }) : h2 + '<div class="v374-kb v379-kb">' + bt + '</div>';   // o V374 mudou o formato: o botão não some
+    return h2 + (ab ? balHtml(g) : '');
+  }
+  function ligar374() {
+    if (!window.V374 || V374.__v379 || typeof V374.kitNaLinha !== 'function') return !!(window.V374 && V374.__v379);
+    var orig = V374.kitNaLinha; V374.__v379 = true;
+    V374.kitNaLinha = function (g) { var h = orig.apply(this, arguments); return h && on() ? linhaHtml(g, h) : h; };
+    if (on() && V374.on && V374.on()) { V374.NOME.kit = 'Etiqueta de separação'; V374.CANTO.kit = 'SEPARAÇÃO'; }   // D2: o nome fixo (a lista única do V374)
+    return true;
+  }
+
+  // ═══ 2 · FECHAR A SEPARAÇÃO (o balão dentro da linha da OS) ═════════════════════════════════════════════════════════
+  function separadas(g) {   // as peças que podem ir fora da caixa: as separadas (e as que o fechamento gravado já marcou)
+    var b = S.bal || {}, marc = b.av || {};
+    return (g.linhas || []).filter(function (l) { return l.sit === 'separada' || l.sit === 'usada' || N(l.separado) > 0 || marc[l.linha] != null; });
+  }
+  function maxVol(l) { var q = N(l.qtd); return q >= 1 && Math.floor(q) === q && q <= MAX_ET ? q : MAX_ET; }
+  function codigo(l) { return T(l.produto) || T(l.ref) || '—'; }
+  function volDe(l) { var b = S.bal, v = b && b.vol[l.linha]; var n = parseInt(T(v), 10); return isFinite(n) ? n : 0; }
+  function total() {   // a mesma lista que o Imprimir manda (só as peças da OS): a prévia nunca promete o que não grava (auditoria B6)
+    var b = S.bal; if (!b) return 0; var t = b.caixas, g = grupo(b.g);
+    (g ? separadas(g) : []).forEach(function (l) { if (b.av[l.linha]) { var n = parseInt(T(b.vol[l.linha] == null ? '1' : b.vol[l.linha]), 10); t += isFinite(n) && n > 0 ? n : 0; } });
+    return t;
+  }
+  function plano(g) {   // os rótulos que vão sair, na ordem do banco: caixas primeiro, depois as avulsas na ordem da lista
+    var b = S.bal, out = [], i;
+    for (i = 1; i <= b.caixas; i++) out.push('Caixa ' + i);
+    separadas(g).forEach(function (l) { if (!b.av[l.linha]) return; var n = Math.max(1, parseInt(T(b.vol[l.linha] == null ? '1' : b.vol[l.linha]), 10) || 1);
+      for (var j = 0; j < n; j++) out.push('Avulsa ' + (b.caixas + out.length - b.caixas + 1) + ' (' + (l.produto_desc || l.descricao || codigo(l)) + ')'); });
+    var tot = out.length;
+    return out.map(function (x, k) { return x.replace(/^(Caixa|Avulsa) \d+/, function (m0, t) { return t + ' ' + (k + 1) + ' de ' + tot; }); });
+  }
+  function balHtml(g) {
+    var b = S.bal, h = '<div class="v379-bal" data-v379="bal"><div class="v323-bal conf"><h5>🏷 Fechar a separação da OS ' + E(g.numero_os || '') + '</h5>';
+    if (b.lendo) return h + '<div class="v379-esq"></div><div class="v379-esq"></div></div></div>';
+    if (S.semSql) return h + '<div class="v323-erro" role="alert">Tela indisponível — avise o administrador.</div>' +
+      '<div class="v323-lin"><button type="button" class="v323-bt" data-v379="cancelar">Fechar</button></div></div></div>';
+    h += '<label>Quantas caixas ou sacos?</label><span class="v379-passo"><button type="button" data-v379="menos" aria-label="Menos uma"' + (b.caixas <= 0 ? ' disabled' : '') + '>−</button>' +
+      '<b data-v379="cx" aria-live="polite">' + b.caixas + '</b><button type="button" data-v379="mais" aria-label="Mais uma"' + (b.caixas >= MAX_CX ? ' disabled' : '') + '>+</button></span>';
+    var ls = separadas(g);
+    h += '<label style="margin-top:12px">Alguma peça vai fora da caixa? Marque (cada uma ganha a etiqueta dela)</label>';
+    if (!ls.length) h += '<div class="v323-sub">Nenhuma peça separada ainda: só as caixas.</div>';
+    else h += '<ul class="v379-av">' + ls.map(function (l) {
+      var mk = !!b.av[l.linha], mv = maxVol(l), id = 'v379av_' + String(l.linha).replace(/[^a-zA-Z0-9_-]/g, '');
+      return '<li class="' + (mk ? 'on' : '') + '"><label for="' + E(id) + '"><input type="checkbox" id="' + E(id) + '" data-v379="av" data-l="' + E(l.linha) + '"' + (mk ? ' checked' : '') + '>' +
+        '<span class="k">' + E(codigo(l)) + '</span><span>' + E(l.produto_desc || l.descricao || '') + '</span></label>' +
+        (mk && N(l.qtd) > 1 ? '<span class="v379-vol">em quantos volumes? <input type="text" inputmode="numeric" data-v379foco="vol" data-l="' + E(l.linha) + '" value="' + E(b.vol[l.linha] == null ? '1' : b.vol[l.linha]) + '" aria-label="Volumes de ' + E(codigo(l)) + ' (1 a ' + mv + ')" autocomplete="off" name="v379_vol_nofill" data-lpignore="true" data-1p-ignore></span>' : '') +
+        '<span class="q">' + Q(l.qtd) + ' ' + E(l.unidade || 'un') + '</span></li>';
+    }).join('') + '</ul>';
+    var tot = total(), pn = tot ? plano(g) : [];
+    h += '<div class="v379-res" data-v379="res">' + (tot ? 'Vão sair <b>' + pl(tot, 'etiqueta', 'etiquetas') + '</b>: ' + E(pn.join(' · ')) : 'Nenhuma etiqueta: informe pelo menos 1 caixa ou marque uma peça.') + '</div>';
+    if (b.erro) h += '<div class="v323-erro" role="alert">' + E(b.erro) + '</div>';
+    h += '<div class="v323-lin"><button type="button" class="v323-bt pri" data-v379="imprimir"' + (b.gravando ? ' disabled data-pcm-enviando="1"' : b.versao == null ? ' disabled' : '') + '>' +
+      (b.gravando ? '⏳ Gravando…' : '🖨 Imprimir ' + pl(tot, 'etiqueta', 'etiquetas')) + '</button><button type="button" class="v323-bt" data-v379="cancelar">Cancelar</button></div>';
+    return h + '</div></div>';
+  }
+  function abrirBal(chave) {
+    var g = grupo(chave); if (!g || !T(g.os_id)) return;
+    if (S.bal && S.bal.g === chave) { S.bal = null; return repintar(); }   // o mesmo botão fecha
+    S.bal = { g: chave, os: T(g.os_id), caixas: 1, av: {}, vol: {}, erro: '', gravando: false, lendo: false, versao: null, ger: (S.bal ? S.bal.ger : 0) + 1 };
+    lerFechamento(S.bal);
+  }
+  // o fechamento gravado SEMPRE vem do banco ao abrir (outra pessoa pode ter fechado depois que a fila foi lida — auditoria M3): preenche
+  // e guarda a versão lida, que o Imprimir manda (o banco recusa se mudou). Sem a leitura, o Imprimir fica travado.
+  function lerFechamento(b, msg) {
+    var ger = ++b.ger; b.lendo = true; b.versao = null; repintar();
+    _v200Rpc('alm_sep_etiquetas', { p: { os: b.os } }, false).then(function (r) {
+      if (S.bal !== b || b.ger !== ger) return; b.lendo = false; b.erro = msg || '';
+      b.versao = r && r.fechada ? N(r.versao_fechamento) : 0;
+      if (r && r.fechada) { b.caixas = N(r.caixas); b.av = {}; b.vol = {}; (r.avulsas || []).forEach(function (a) { b.av[a.linha] = true; b.vol[a.linha] = String(N(a.volumes) || 1); }); }
+      if (r && r.os) S.mapa[r.os] = r.fechada ? { total: N(r.total), caixas: N(r.caixas), avulsas: (r.avulsas || []).length, versao: r.versao_fechamento } : S.mapa[r.os];
+      repintar();
+    }, function (e) { if (S.bal !== b || b.ger !== ger) return; b.lendo = false; if (e && e.v200 === 'sem_sql') S.semSql = true; else b.erro = 'Não deu para ler o fechamento desta OS: ' + msgErro(e) + ' Feche e abra de novo.'; repintar(); });
+  }
+  async function imprimirBal(bt) {
+    var b = S.bal; if (!b || b.gravando || b.lendo || b.versao == null) return;   // sem a versão lida não grava (auditoria M3)
+    var g = grupo(b.g); if (!g) { S.bal = null; return repintar(); }
+    var av = [], err = '';
+    separadas(g).forEach(function (l) {
+      if (!b.av[l.linha]) return;
+      var s = T(b.vol[l.linha] == null ? '1' : b.vol[l.linha]), n = /^\d{1,2}$/.test(s) ? parseInt(s, 10) : 0;
+      if (N(l.qtd) <= 1) n = 1;
+      if (!n || n > maxVol(l)) err = err || ('A peça ' + codigo(l) + ' vai em 1 a ' + maxVol(l) + (maxVol(l) === 1 ? ' volume.' : ' volumes.'));
+      av.push({ linha: l.linha, volumes: n });
+    });
+    var tot = total();
+    if (!err && tot < 1) err = 'Informe pelo menos 1 caixa ou marque uma peça que vai fora da caixa.';
+    if (!err && tot > MAX_ET) err = 'No máximo ' + MAX_ET + ' etiquetas por OS.';
+    if (err) { b.erro = err; return repintar(); }
+    b.gravando = true; b.erro = '';
+    if (bt) { bt.disabled = true; bt.setAttribute('data-pcm-enviando', '1'); bt.textContent = '⏳ Gravando…'; }
+    var r = null, falhou = null;
+    try { r = await _v200Rpc('alm_sep_fechar', { p: { os: b.os, caixas: b.caixas, avulsas: av, versao: b.versao } }, true); } catch (e) { falhou = e; }
+    b.gravando = false;   // a trava sai ANTES da repintura (lição do V323)
+    if (falhou) {
+      if (falhou.v200 === 'sem_sql') S.semSql = true;
+      if (/outra pessoa mudou/i.test(String(falhou.message || ''))) return lerFechamento(b, msgErro(falhou));   // relê o que está gravado agora
+      b.erro = msgErro(falhou); return repintar();
+    }
+    imprimirEtiquetas(r, r && r.etiquetas);
+    S.mapa[b.os] = { total: N(r && r.total), caixas: N(r && r.caixas), avulsas: ((r && r.avulsas) || []).length, versao: r && r.versao_fechamento };
+    S.bal = null;
+    try { V323.S.msg = { txt: '🏷 ' + pl(N(r && r.total), 'etiqueta de separação mandada', 'etiquetas de separação mandadas') + ' para a impressora (100×40) — OS ' + (r.numero_os || '') + '.' }; } catch (e) {}
+    repintar();
+  }
+
+  // ═══ 3 · A FOLHA 100×40 (o texto do QR é o do banco) ═══════════════════════════════════════════════════════════════
+  var CSS_ETQ = '@page{size:100mm 40mm;margin:0}html,body{margin:0;padding:0;width:100mm}body{font-family:Arial,sans-serif;color:#000;background:#fff}' +
+    '.e{position:relative;width:85mm;height:40mm;margin:0 auto;box-sizing:border-box;padding:2.5mm 2mm;display:flex;gap:3mm;align-items:center;overflow:hidden;page-break-after:always;break-after:page}' +
+    '.e:last-child{page-break-after:auto;break-after:auto}.q{width:28mm;height:28mm;flex:0 0 28mm}.q svg{width:28mm;height:28mm;display:block}.t{flex:1;min-width:0}' +
+    '.c{font:900 6.2mm/1 "Courier New",monospace;letter-spacing:.2mm;white-space:nowrap;overflow:hidden;text-overflow:clip}.d{font-size:3.3mm;line-height:1.15;margin-top:1.2mm;max-height:7.8mm;overflow:hidden}' +
+    '.r{font-size:2.9mm;margin-top:.8mm;white-space:nowrap;overflow:hidden}.n{font:800 5.6mm/1 "Courier New",monospace;margin-top:1.6mm;white-space:nowrap}' +
+    '.tp{position:absolute;top:1.2mm;right:1.5mm;font:900 2.3mm/1 Arial,sans-serif;letter-spacing:.12em;border:.35mm solid #000;border-radius:.8mm;padding:.5mm .9mm;background:#fff;color:#000}';
+  var FIT = '<script>(function(){var a=document.querySelectorAll(".c,.d");for(var i=0;i<a.length;i++){var e=a[i],f=parseFloat(getComputedStyle(e).fontSize),g=0;while((e.scrollWidth>e.clientWidth+1||e.scrollHeight>e.clientHeight+1)&&f>7&&g++<40){f-=0.5;e.style.fontSize=f+"px";}}})();<\/script>';
+  function qr(txt) { try { return typeof etqQrSvg === 'function' ? etqQrSvg(String(txt), { ec: 'M', quiet: 1 }) : ''; } catch (e) { return ''; } }
+  function etqHtml(d, et) {
+    var num = T(d.numero_os) || T(d.os), mq = (d.maquinas || []).join(' · '), quando = dia(d.dia) + (d.hora ? ' ' + d.hora : ''), av = et.tipo === 'avulsa';
+    var l2 = av ? '<b>' + E(et.codigo || '') + '</b> ' + E(et.descricao || '') : E(d.cliente || '') + (mq ? ' · ' + E(mq) : '');
+    var l3 = av ? E(d.cliente || '') + (et.maquina ? ' · ' + E(et.maquina) : '') + (N(et.volumes) > 1 ? ' · volume ' + N(et.volume) + '/' + N(et.volumes) : '')
+                : E(d.tecnico || 'sem técnico') + (quando ? ' · ' + E(quando) : '') + (d.kit ? ' · 📍 ' + E(d.kit) : '');
+    var fim = et.tipo === 'os' ? (d.kit ? 'SEPARAÇÃO EM ' + E(d.kit) : '&nbsp;') : (av ? 'AVULSA ' : 'CAIXA ') + N(et.i) + ' de ' + N(et.de);
+    return '<div class="e" data-qr="' + E(et.qr) + '"><div class="tp">SEPARAÇÃO</div><div class="q">' + qr(et.qr) + '</div><div class="t"><div class="c">OS ' + E(num) + '</div>' +
+      '<div class="d">' + l2 + '</div><div class="r">' + l3 + '</div><div class="n"' + (et.tipo === 'os' ? ' style="font-size:4.2mm"' : '') + '>' + fim + '</div></div></div>';
+  }
+  V379.etqHtml = etqHtml;
+  function imprimir(html) {
+    html = String(html).replace('</body>', FIT + '</body>');
+    V379.ultimaImpressao = html; V379.nImp++;
+    var f = document.getElementById('v379Print');
+    if (!f) { f = document.createElement('iframe'); f.id = 'v379Print'; f.setAttribute('aria-hidden', 'true'); f.style.cssText = 'position:fixed;right:0;bottom:0;width:0;height:0;border:0;visibility:hidden'; document.body.appendChild(f); }
+    var doc = f.contentWindow.document; doc.open(); doc.write(html); doc.close();
+    setTimeout(function () { try { if (window.__v379SemPrint) return; f.contentWindow.focus(); f.contentWindow.print(); } catch (e) {} }, 250);
+  }
+  function imprimirEtiquetas(d, ets) {
+    ets = ets || []; if (!d || !ets.length) return 0;
+    imprimir('<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><title>Etiqueta de separação</title><style>' + CSS_ETQ + '</style></head><body>' +
+      ets.map(function (et) { return etqHtml(d, et); }).join('') + '</body></html>');
+    return ets.length;
+  }
+  V379.imprimirEtiquetas = imprimirEtiquetas;
+
+  // ═══ 4 · 📦 ENTREGAR KIT (o painel do V353): as embalagens lidas ═════════════════════════════════════════════════════
+  V379.btEntregar = function () {
+    marcarView();   // o V323 chama isto a cada pintura: a 🧺 Separação esconde os botões de peça mesmo sem OS na fila
+    return '<button type="button" class="v323-bt" id="v353Bt" data-v353="abrir" data-modo="entregar" title="Bipe a etiqueta de separação de qualquer embalagem da OS">📦 Entregar kit</button>';
+  };
+  V379.novaJanela = function () { S.emb = null; };
+  // depois que a lista de conferência chegou: as etiquetas da OS e qual embalagem foi lida (1 chamada, não segura a lista)
+  V379.depoisDeLer = function (r, t, g) {
+    if (!on() || !r || !r.os || r.sem_acesso) return;
+    if (!S.emb || S.emb.os !== r.os) S.emb = { os: r.os, d: null, lidas: {}, ultima: null };
+    var em = S.emb;
+    _v200Rpc('alm_sep_etiquetas', { p: { os: r.os, lido: t } }, false).then(function (x) {
+      if (S.emb !== em || !x) return;   // outra OS (ou janela nova): esta resposta não é dela
+      // toda leitura da MESMA OS conta, mesmo a que chega depois da seguinte (o leitor bipa duas em 1 s — auditoria M1)
+      var li = x.lida, i = li ? N(li.i) : 0;
+      if (li && i >= 1 && i <= N(x.total)) em.lidas[i] = true;
+      if (!em.d || g === V353.S.ger) { em.d = x; em.ultima = li || null; }   // o destaque e o texto são os da ÚLTIMA leitura
+      try { if (window.V353 && V353.S.d && V353.S.d.os === em.os) V353.pintar(); } catch (e) {}
+    }, function (e) { try { console.warn('[V379] etiquetas da OS:', e && e.message); } catch (z) {} });
+  };
+  V379.embHtml = function (d) {
+    var em = S.emb; if (!on() || !em || !d || em.os !== d.os || !em.d) return '';
+    var x = em.d;
+    if (!x.fechada) return '<div class="v379-emb sem" data-v379="emb">📦 A separação desta OS ainda não foi fechada: sem etiquetas por embalagem.</div>';
+    var ets = x.etiquetas || [], lidas = ets.filter(function (et) { return em.lidas[N(et.i)]; }).length, faltam = ets.filter(function (et) { return !em.lidas[N(et.i)]; });
+    function rot(et) { return (et.tipo === 'avulsa' ? 'Avulsa ' : 'Caixa ') + N(et.i) + (et.tipo === 'avulsa' && et.descricao ? ' · ' + et.descricao : ''); }
+    return '<div class="v379-emb' + (faltam.length ? '' : ' ok') + '" data-v379="emb"><div class="h">📦 Embalagens lidas: ' + lidas + ' de ' + ets.length + '</div><div class="cs">' +
+      ets.map(function (et) { var ok = !!em.lidas[N(et.i)]; return '<span class="v323-tag' + (ok ? ' verde' : '') + '">' + (ok ? '✅ ' : '⬜ ') + E(rot(et)) + '</span>'; }).join('') + '</div>' +
+      (faltam.length ? '<div class="falta" role="status">⚠ Falta ler: ' + E(faltam.map(rot).join(', ')) + '. Confira se ' + (faltam.length === 1 ? 'ela está' : 'elas estão') + ' com o kit antes de entregar.</div>' : '') + '</div>';
+  };
+  function ultAvulsa(l) { var u = S.emb && S.emb.ultima; return !!(on() && u && u.tipo === 'avulsa' && u.linha && String(u.linha) === String(l && l.linha)); }
+  V379.trCls = function (l) { return ultAvulsa(l) ? ' v379-lida' : ''; };
+  V379.trChip = function (l) { return ultAvulsa(l) ? '<span class="v379-avl">avulsa · lida agora</span>' : ''; };
+
+  // ═══ 5 · ALMOXARIFADO › 🏷 ETIQUETAS › SEPARAÇÃO (a aba "Kit da OS" do V374) ══════════════════════════════════════
+  V379.kitTab = function (K, g) {   // chamada depois que a OS chegou: as etiquetas dela (o QR da OS e, fechada, as N)
+    if (!on() || !K || !K.d || !K.d.os) return;
+    var d = K.d; K.emb = null; K.embErro = false;
+    _v200Rpc('alm_sep_etiquetas', { p: { os: d.os } }, false).then(function (x) {
+      if (g !== K.g || K.d !== d) return; K.emb = x || null; if (x && x.qr_os) d.qr_os = x.qr_os;
+      try { V374.pintar(); } catch (e) {}
+    }, function (e) { if (g !== K.g || K.d !== d) return; K.embErro = true; try { console.warn('[V379] etiquetas da OS (aba):', e && e.message); } catch (z) {} });
+  };
+  // a etiqueta da OS só sai com o QR do banco; se a leitura dele falhou, sai a de antes (o QR antigo continua aceito) — auditoria B10
+  V379.kitPronto = function (K) { return !on() || !K || !!K.emb || !!K.embErro; };
+  V379.kitTabHtml = function (K) {
+    var x = K && K.emb; if (!on() || !x || !x.fechada) return '';
+    return '<div class="v379-kt" data-v379="kt">📦 <b>' + E(pl(N(x.total), 'embalagem', 'embalagens')) + '</b> (' + E(pl(N(x.caixas), 'caixa', 'caixas')) +
+      ((x.avulsas || []).length ? ' + ' + E(pl((x.avulsas || []).length, 'peça fora da caixa', 'peças fora da caixa')) : '') + ')' +
+      (x.fechada_por ? ' <span class="v374-info">· fechada por ' + E(x.fechada_por) + '</span>' : '') + '</div>' +
+      '<div class="v334-lin"><button type="button" class="v334-bt pri" data-v379="kitImp">🖨 Imprimir ' + E(pl(N(x.total), 'etiqueta de separação', 'etiquetas de separação')) + '</button></div>' +
+      (K.msg379 ? '<div class="v334-msg ok" role="status">' + E(K.msg379) + '</div>' : '');
+  };
+
+  // ═══ 6 · OS GESTOS ═════════════════════════════════════════════════════════════════════════════════════════════
+  document.addEventListener('click', function (ev) {
+    if (off()) return;
+    var bt = ev.target && ev.target.closest && ev.target.closest('[data-v379]'); if (!bt || bt.disabled) return;
+    var a = bt.getAttribute('data-v379');
+    if (a === 'av') {   // a caixinha: o clique já mudou o "checked"
+      if (S.bal) { var l = bt.getAttribute('data-l'); S.bal.av[l] = !!bt.checked; if (bt.checked && S.bal.vol[l] == null) S.bal.vol[l] = '1'; S.bal.erro = ''; setTimeout(repintar, 0); }
+      return;
+    }
+    if (a === 'n' || a === 'res' || a === 'bal' || a === 'emb' || a === 'kt' || a === 'cx') return;
+    ev.preventDefault();
+    if (a === 'etq') return abrirBal(bt.getAttribute('data-g'));
+    if (a === 'cancelar') { if (S.bal && S.bal.gravando) return; S.bal = null; return repintar(); }
+    if (a === 'menos' || a === 'mais') { if (!S.bal || S.bal.gravando) return; S.bal.caixas = Math.max(0, Math.min(MAX_CX, S.bal.caixas + (a === 'mais' ? 1 : -1))); S.bal.erro = ''; return repintar(); }
+    if (a === 'imprimir') return imprimirBal(bt);
+    if (a === 'kitImp') {
+      var K = window.V374 && V374.S && V374.S.kit; if (!K || !K.emb || !K.d || V379.kitImpr) return;
+      V379.kitImpr = true; setTimeout(function () { V379.kitImpr = false; }, 1500);   // trava de duplo clique (o diálogo do Chrome ainda nem abriu)
+      var n = imprimirEtiquetas(K.emb, K.emb.etiquetas);
+      K.msg379 = '🏷 ' + pl(n, 'etiqueta de separação mandada', 'etiquetas de separação mandadas') + ' para a impressora (100×40).';
+      try { V374.pintar(); } catch (e) {}
+    }
+  }, true);
+  document.addEventListener('input', function (ev) {
+    var t = ev.target; if (off() || !t || !t.getAttribute || t.getAttribute('data-v379foco') !== 'vol' || !S.bal) return;
+    S.bal.vol[t.getAttribute('data-l')] = t.value; S.bal.erro = '';
+    var g = grupo(S.bal.g), r = document.querySelector('#viewSeparacao [data-v379="res"]'), tot = total();   // só o resumo muda: o campo em foco não é recriado
+    if (g && r) r.innerHTML = tot ? 'Vão sair <b>' + E(pl(tot, 'etiqueta', 'etiquetas')) + '</b>: ' + E(plano(g).join(' · ')) : 'Nenhuma etiqueta: informe pelo menos 1 caixa ou marque uma peça.';
+    var bp = document.querySelector('#viewSeparacao [data-v379="imprimir"]'); if (bp && !S.bal.gravando) bp.textContent = '🖨 Imprimir ' + pl(tot, 'etiqueta', 'etiquetas');
+  }, true);
+  document.addEventListener('keydown', function (ev) {
+    var t = ev.target; if (off() || ev.key !== 'Enter' || !t || !t.getAttribute || t.getAttribute('data-v379foco') !== 'vol') return;
+    ev.preventDefault(); if (ev.repeat) return; imprimirBal(document.querySelector('#viewSeparacao [data-v379="imprimir"]'));
+  }, true);
+
+  // ═══ 7 · LIGAR ═════════════════════════════════════════════════════════════════════════════════════════════════
+  if (off()) return;
+  function tentar() { try { if (ligar374()) { marcarView(); repintar(); return true; } } catch (e) { try { console.warn('[V379] ligar:', e); } catch (x) {} } return false; }
+  if (!tentar()) [300, 1200, 3000].forEach(function (ms) { setTimeout(tentar, ms); });
+})();
+</script>
+<!-- ████ FIM PCM V379 ████ -->
 
 </body>
 </html>
