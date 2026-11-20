@@ -5761,9 +5761,21 @@ v50 — Resiliência de rede: retry/backoff em gsGet e syncToGS
   Linhas pre-existentes alteradas: a 1a linha do renderDocs e do renderDocsList (chamam o V381, sem embrulho novo), o card
   "Preventivas fora de OS" do Dashboard (abre a aba Sem OS) e, no bloco V330, as 4 abas novas de Documentos (ALIAS, desenho, entrar
   e sair). Chave de volta: localStorage pcm_v381 = off (a Gestao de Documentos de antes, inteira).
+  PCM V382 — 19/11/2026 — DOCUMENTOS LE DO POSTGRES (ProperCare-backlog#304, P2 do estudo #301; regra 5.4 item 2).
+  Par do SQL 157 DOCS_ATENDIMENTO_PG (roda ANTES do merge). A tela por atendimento (V381) deixa de baixar o acervo inteiro do Apps
+  Script (getAttachments) e passa a ler do banco so a pagina que mostra: pc_docs_lista (atendimentos ja agrupados, na ordem, com o
+  total "50 de N" e Mostrar mais, os numeros dos filtros e o da aba Sem OS; visitas sem OS; propostas e pedidos do cliente) e
+  pc_docs_atendimento (os arquivos do painel, so quando ele abre). Natureza do documento, foto duplicada e pendencias (sem laudo,
+  falta assinatura, sem OS) calculadas no banco (pc_doc_natureza = a regua unica); o selo tambem vale a assinatura do Portal.
+  Fallback: espelho fora de dia, SQL ausente, sem cracha ou rede => le do Apps Script como o V381 ate o Atualizar. Tirar da lista
+  continua no GAS (desativarAnexo); o que saiu vai em `excluir` ate o push. Chamadas ao abrir: 1 (pc_docs_lista); antes 2 (getAttachments
+  do acervo inteiro + getOS). Linhas pre-existentes alteradas: no bloco V381, os ganchos que perguntam ao V382 (render, lista, contagem
+  Sem OS, acharAt, abrirPainel, pintura das linhas, comercial, confirmar, atualizar, endereco, selo do Portal, tipo da OS) e duas
+  exportacoes (V381.montarAt, V381.endDe); fora dele, _v178DocItem e _assRemotaSolicitar acham tambem o item do painel.
+  Chave de volta: localStorage pcm_v382 = off (o V381 inteiro, pelo Apps Script).
 -->
-<title>ProperCare Manager · Gestão PGP v4.03 (PCM V381)</title>
-<meta name="app-build" content="PCM_V381" data-date="2026-11-19">
+<title>ProperCare Manager · Gestão PGP v4.03 (PCM V382)</title>
+<meta name="app-build" content="PCM_V382" data-date="2026-11-19">
 <link rel="icon" type="image/jpeg" href="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/4gHYSUNDX1BST0ZJTEUAAQEAAAHIAAAAAAQwAABtbnRyUkdCIFhZWiAH4AABAAEAAAAAAABhY3NwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlkZXNjAAAA8AAAACRyWFlaAAABFAAAABRnWFlaAAABKAAAABRiWFlaAAABPAAAABR3dHB0AAABUAAAABRyVFJDAAABZAAAAChnVFJDAAABZAAAAChiVFJDAAABZAAAAChjcHJ0AAABjAAAADxtbHVjAAAAAAAAAAEAAAAMZW5VUwAAAAgAAAAcAHMAUgBHAEJYWVogAAAAAAAAb6IAADj1AAADkFhZWiAAAAAAAABimQAAt4UAABjaWFlaIAAAAAAAACSgAAAPhAAAts9YWVogAAAAAAAA9tYAAQAAAADTLXBhcmEAAAAAAAQAAAACZmYAAPKnAAANWQAAE9AAAApbAAAAAAAAAABtbHVjAAAAAAAAAAEAAAAMZW5VUwAAACAAAAAcAEcAbwBvAGcAbABlACAASQBuAGMALgAgADIAMAAxADb/2wBDAAUDBAQEAwUEBAQFBQUGBwwIBwcHBw8LCwkMEQ8SEhEPERETFhwXExQaFRERGCEYGh0dHx8fExciJCIeJBweHx7/2wBDAQUFBQcGBw4ICA4eFBEUHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh7/wAARCAGGAc0DASIAAhEBAxEB/8QAHAABAAIDAQEBAAAAAAAAAAAAAAYHBAUIAwIB/8QATBAAAQMCAgMJCBAFBAMBAAAAAAECAwQFBhEHIUESFjFRVnSBk7EIFyJVYZHR0hMUIzI0NTY3QmJxc6GissEVM4KU8FJ1krNypMKE/8QAHAEBAAIDAQEBAAAAAAAAAAAAAAYHAQMEBQII/8QAOhEAAQMBAwgHCAMAAwEBAAAAAAECAwQFETEGFCFBU3GRsRMVUVJh0eESIjI0NXKSwTOB8CRC8SOh/9oADAMBAAIRAxEAPwAACqj9AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA+JpY4YXzTSNjjY1XPe5ckaicKqvEZxMKqIl6iaWOGF800jY42NVz3uXJGonCqrxFFaRtJ1fcLj7Uw5VzUdDA5fd413L514+NG8SdK8SeGlbSDJiCZ9ptMjo7Ux3hOTUtSqbV+rxJ0rsRK7JjZFjJEnTTp72pOzf48itMo8pnTuWnpHXNTFya93hz3Y7/fri3lDcevUb9cW8obj16mgB72bQ9xOCERz2p2juKm/wB+uLeUNx69Rv1xbyhuPXqaADNoe4nBBntTtHcVN/v1xbyhuPXqN+uLeUNx69TQAZtD3E4IM9qdo7ipv9+uLeUNx69Rv1xbyhuPXqaADNoe4nBBntTtHcVN/v1xbyhuPXqN+uLeUNx69TQAZtD3E4IM9qdo7ipv9+uLeUNx69Rv1xbyhuPXqaADNoe4nBBntTtHcVN/v1xbyhuPXqN+uLeUNx69TQAZtD3E4IM9qdo7ipv9+uLeUNx69TY4ZxRjW4YgoKKkvldLNLO1rWySK5q69e6RdmWar5CHlxdz5hzVUYmqY+OClzT/AJuT9P8AyOOvWClp3SKxPDQmJ6dkNq6+sZC2R3auldCJj/u0uEAFdlzgAAAAAAqTTXjivttwisVkrHU0rGeyVcseW6RV1tYi7NWtftQszEV1p7JZKu61S+5U0avyzy3S7Gp5VXJOk5UutdUXO5VNwq37ueokdI9fKq7PISGwKFJpFlel7W8/TyIblfazqWFtPE65ztK3YonqvJTbb9cW8obj16jfri3lDcevU0AJfm0PcTghW+e1O0dxU3+/XFvKG49eo364t5Q3Hr1NABm0PcTggz2p2juKm/364t5Q3Hr1G/XFvKG49epoAM2h7icEGe1O0dxU3+/XFvKG49eo364t5Q3Hr1NABm0PcTggz2p2juKm/wB+uLeUNx69Rv1xbyhuPXqaADNoe4nBBntTtHcVN/v1xbyhuPXqN+uLeUNx69TQAZtD3E4IM9qdo7ipv9+uLeUNx69T0p8dYugnZM2/1zlYue5kk3TV+1F1KRwBaaFf+icEMpXVKLekjuKnTGjnGlFiy3fRguMLU9sU+f5m8bV/DgXYqys5HtFxrbTcYbhb53QVMLt0x7exeNF4jo3RzjSixZbvowXGFqe2KfP8zeNq/hwLsVYda9kLTL0sXwcvQsrJzKNK5Ep6hbpEwXvev/qErAB4BLwAAAAAAAAAAAAAAAAfMj2Rxukke1jGornOcuSIicKqoCrcJHsjjdJI9rGNRXOc5ckRE4VVSg9LWP5L9UPtFplVtqjdk96alqXJt/8AFNibeHiy9NLGkJ98kks1mlcy2NXKWVNS1Cp/8eTaVsTKxrH6K6eZPe1J2evLeVnlLlJnF9LSr7mte3wTw57sQAJKQgAAAAAAAAAAAAAAAAAAAAAzLHbai73eltlI3OapkSNvkz4VXyIma9B1XZLdT2i00tspG7mGmjSNvGuXCq+VV19JVXc+Yc1VGJqmPjgpc0/5uT9P/IuEhOUFZ0syQtwbz9PMtHI6zM3plqXp7z8Pt9V08AACPEyAAAABrsS3ansViq7rUr7nTxq7c55bp3A1qeVVyTpPpjHPcjW4qfEkjYmK963ImlSqO6CxH7LU0+GqaTNsWU9Vkv0lTwGr9ia+lOIqQyLnW1FxuFRX1b93PUSOkkdxqq5+YxyyqKlbSwNiTVjv1lH2pXur6p87teHgmoAA6zzwAAAAAAAAAAAAAAAAAAZdouNbabjDcLfO6CphdumPb2LxovEYgMOajkuXAy1yscjmrcqHTGjnGlFiy3fRguMLU9sU+f5m8bV/DgXYqys5HtFxrbTcYbhb53QVMLt0x7exeNF4jo3RzjSixZbvowXGFqe2KfP8zeNq/hwLsVYRa9kLTL0sXwcvQtPJzKNK5Ep6hbpEwXvev/qErAB4BLwAAAAAAAAAAfMj2Rxukke1jGornOcuSIicKqoCrcJHsjjdJI9rGNRXOc5ckRE4VVSh9LGkJ98kks1mlcy2NXKWVNS1Cp/8eTaNLGkJ98kks1mlcy2NXKWVNS1Cp/8AHk2lbEysex+iunnT3tSdnry3lZ5S5S5xfS0q+5rXt8E8Oe7EACSkIAAAAAAAAAAAAAAAAAAAAABmWO21F3u9LbKRuc1TIkbfJnwqvkRM16DDLj7n3Daok+JqqP3yLBSZ/ncn6f8AkcdfVJSwOkXHVvPSsmz3WhVsgTBcfBEx/wB2lqWS3U9otNLbKRu5hpo0jbxrlwqvlVdfSZgBWznK5VcuKl3sY2NqNalyJoAAPk+gAAAUr3QWI/Zq2nw3TSeBBlNVZLwvVPBb0Iuf9ScRbOJbtT2KxVd1qV9zp41duc8t07ga1PKq5J0nKtzrai43Cor6t+7nqJHSSO41Vc/MSPJ6j6SVZ3YNw3+hCss7T6GBKVi6X6V3J5ryUxwATQrEAAAAAAAAAAAAAAAAAAAAAAAAGXaLjW2m4w3C3zugqYXbpj29i8aLxGIDDmo5LlwMtcrHI5q3Kh0xo5xpRYst30YLjC1PbFPn+ZvG1fw4F2KsrOR7Rca203GG4W+d0FTC7dMe3sXjReI6N0c40osWW76MFxhantinz/M3jav4cC7FWEWvZC0y9LF8HL0LTycyjSuRKeoW6RMF73r/AOoSsAHgEvAAAAB+Pc1jVe9yNa1M1VVyREAD3NY1XvcjWtTNVVckRCitLekNbw6Sx2SVUtzVynnbw1CpsT6nb9nC0taRHXd0tjscyttzV3M87VyWoXiT6nb9nDWRMbHsfo7p5006k7PFfHlvK1ylyl6e+lpV93Wvb4J4dvbuxAAkxBgAAAAAAAAAAAAAAAAAAAAAAADOsFsqLzeaS10iZzVMiMRctTU2uXyIma9B1XaKCntVrprdSN3MFPGkbE25InCvlXhKr7nzDm4iqMTVMet+cFLmmxPfuTp8HocW8QjKCs6WboW4N5+nmWlkdZmb0y1L095+H2+uPAAAj5MQAAAAa7Et2p7FYqu61K+508au3OeW6dwNanlVck6T6Yxz3I1uKnxJI2JivetyJpUqbugsR+zVtPhumk8CDKaqyXheqeC3oRc/6k4ipjIudbUXG4VFfVv3c9RI6SR3Gqrn5jHLKoqVtLA2JNXPWUdale6vqnzu14eCakAAOs4AAAAAAAAAAAAAAAAAAAAAAAAAAAAZdouNbabjDcLfO6CphdumPb2LxovEYgMOajkuXAy1yscjmrcqHTGjnGlFiy3fRguMLU9sU+f5m8bV/DgXYqys5HtFxrbTcYbhb53QVMLt0x7exeNF4jo3RzjSixZbvowXGFqe2KfP8zeNq/hwLsVYRa9kLTL0sXwcvQtPJzKNK5Ep6hbpEwXvev8A6hKwAeAS8EC071M9PgJ6QTPj9mqWRyblct01UcqtXyakJ6V7p/8AkI3nkfY477LS+sjv7TyLeVUs2ZU7qnPwALIKTAAAAAAAAAABIcC4TuGK7qlLSosdPHktRUKngxt/dy7E/Y1yysiYr3rciG2CCSokSONL3LggwLhO4YruqUtKix08eS1FQqeDG393LsT9i5qfRNg6JqJJT1c6omSq+oVM14/ByJXh2y2+wWqK222FI4Y+FV98921zl2qpsSD19tzzyf8AyVWtTD1LVsnJalpYf+Q1HvXG/SieCf7SQjvV4L8XTf3MnpHerwX4um/uZPSTcHD1jV7ReKnq9SWdsG8EIR3q8F+Lpv7mT0jvV4L8XTf3MnpJuB1jV7ReKjqSztg3ghCO9XgvxdN/cyekd6vBfi6b+5k9JNwOsavaLxUdSWdsG8EIR3q8F+Lpv7mT0n6mivBSL8WzL/8Apk9JNgOsavaLxUz1LZ2wbwQ8KGkpqGjio6OBkFPE3cxxsTJGoe4Bxqqqt6npNajURES5EAAMGQAAAUn3QGJFqK+HDdNJ7lT5S1OS8Mip4LehFz6fIWzim8QWGwVl2qMlbTxqrW5+/dwNb0rkhytcKuevrp62qesk88jpJHLtcq5qSTJ6j6SRZ3Jobhv9CE5Z2n0MCUjF0v0ru9V5HgACZlZAAAAAAAAl2ifDm+LFsDJo91RUvu9RmmpURdTelcujM1TTNhjWR2CG+lpn1MzYY8XLcWJgDRfY34bpqvEFFJU1tSxJVY6Z7EiautG5NVNeWWee0kHexwP4k/8Aam9cmIK8ltOqkerukVL9SKtxc1PYdBDE2PomrcmKtRVXxUh3exwP4k/9qb1z6j0aYIjdum2Nqr9aolcnmVxLwa8/qto7ipu6poNgz8U8iK97vBfiGDrH+sO93gvxDB1j/WJUDGfVO0dxUz1VQ7Fn4p5FZ440U2mrtr5sOU6UVdGmbY/ZFVkyf6darkvEvBx8aUZVQTUtRJT1ET4po3K17HpkrVThRUOvyBaU8Aw4lp3XG3NZFd426l4EqET6LvLxL0Lq4Pbsm2nRu6KoW9F1rq3+HIi2UOS7JWdPRtucmLUwXcnbz3488g9KqCalqJKeoifFNG5WvY9MlaqcKKh5kxRbytFRUW5QADIAAAAAABsMN19Xbb7R1tFM6KaOZuTmrwpnrReNFTUqGvPe3/D6f71vah8vRHNVFPuNytejmrcqHXgAKqP0ACvdP/yEbzyPscWEV7p/+QjeeR9jjvsv5yPeeRb/ANNm+1Tn4AFkFJgAAAAAAA3OC7BPibEVPaYZWwpJm6SRUz3DETNVy2rxeVT4ke2NqvctyIbIonzSJGxL1Vbk3qZGBcJ3DFd1SlpUWOnjyWoqFTwY2/u5difsdI4dstvsFqittthSOGPhVffPdtc5dqqMO2W32C1RW22wpHDHwqvvnu2ucu1VNiQG1LUfWvuTQxME/alu2BYMdmR+07TIuK9ngn+0gAHkkiAAAAAAAAAAAAAAAAAAABrMU3iCw2Csu1RkraeNVa3P37uBrelckPpjHPcjW4qa5ZWxMWR63IiXqVL3QOI/bNxgw5TSZxU2UtTkvDIqeC3oRc/6vIVSe9wq56+unrap6yTzyOkkcu1yrmp4Fl0VM2lgbEmrnrKPtOudX1T53a10eCakAAOo4AAAAAAAdH6HsOfwDCUT549zW12U8+aa2oqeA3oT8VUp7RPhzfFi2Bk0e6oqX3eozTUqIupvSuXRmdKkVyjrLkSnbvX9J++BYGRVmXq6teng39r+uIABEiwwAAAAAAAACBaU8Aw4lp3XG3NZFd426l4EqET6LvLxL0Lq4OfaqCalqJKeoifFNG5WvY9MlaqcKKh1+V9pdwPTX23TXmia2K500SvcqJqna1M9yv1sk1L0L5JJY1rrEqQTL7upez05EIymycSoRaumS56aVTt8d/Pfjz6ACZlZgAAAAAA97f8AD6f71vah4Hvb/h9P963tQwuBluKHXgAKpP0ECvdP/wAhG88j7HFhFe6f/kI3nkfY477L+cj3nkW/9Nm+1Tn4AFkFJgAAAAAAnugb5wIubS9iECJ7oG+cCLm0vYhxWj8pJuXkenYv1CD7m8zoYAFal4AAAAAAAAAAAAAAAAAAAAAApLugcR+2bjBhymkzipspanJeGRU8FvQi5/1eQtrFN4gsNgrLtUZK2njVWtz9+7ga3pXJDla4Vc9fXT1tU9ZJ55HSSOXa5VzUkmTtH0kizuwbhv8AQhOWdp9DAlIxdL9K7vVeR4AAmZWQAAAAAAAJjoiw5vgxbCs0e6o6LKefNNS5L4LelfwRTTPM2CN0jsEOilpn1UzYY8XLcW/ogw2uHsJxuqI9xW1uU8+aa2pl4LehPxVSZgFaVE7p5XSOxUvKjpWUkDYI8Gpd/t+IABpOkAAAAAAAAAGHe/iWu5vJ+lTMMO9/EtdzeT9KmyL427zVUfxO3KckAAtMoEAAAAAAHvb/AIfT/et7UPA97f8AD6f71vahhcDLcUOvAAVSfoIFe6f/AJCN55H2OLCK90//ACEbzyPscd9l/OR7zyLf+mzfapz8ACyCkwAAAAAAT3QN84EXNpexCBE90DfOBFzaXsQ4rR+Uk3LyPTsX6hB9zeZ0MACtS8AAAAAAAAAAAAAAAAAAAAazFV3jsOHa27yt3SU0Sua3/U5dTU6XKiH0xivcjW4qfEsjYmLI9bkRL13IVFp/xItVdIsOU0nuFJlJUZL76VU1J0Ivnd5CrD2rametrJqypkWSeeR0kj14XOVc1U8Sy6OmbSwtibq56yjbSrn19U+d2tdHgmpAADqOEAAAAAAHSeiPDm97CUKTR7msrMp6jNNaZp4LehPxVSndEWHN8GLYVmj3VHRZTz5pqXJfBb0r+CKdJEUyjrMKdu9f0n74Fg5FWZpdWvTwb+1/XEAAiZYQAAAAAAAAAAAAMO9/EtdzeT9KmYYd7+Ja7m8n6VNkXxt3mqo/iduU5IABaZQIAAAAAAPe3/D6f71vah4Hvb/h9P8Aet7UMLgZbih14ACqT9BArLuiZHtwnQxtcqNfWpuk48mOyLNK07olrVwbRPy8JLgxEXyLHJ6EPRshf+bHvPFyiRVsya7s/aFDgAsYpYAAAAAAE90DfOBFzaXsQgRPdA3zgRc2l7EOK0flJNy8j07F+oQfc3mdDAArUvAAAAAAAAAAAAAAAAAAAHjW0tNW0ktJVwsnglbuZI3pmjkPYGUVUW9DDmo5FRU0EV73eC/EMHWP9Yd7vBfiGDrH+sSoHTn1TtHcVOHqqh2LPxTyIr3u8F+IYOsf6w73eC/EMHWP9YlQGfVO0dxUdVUOxZ+KeRFe93gvxDB1j/WHe7wX4hg6x/rEqAz6p2juKjqqh2LPxTyIr3u8F+IYOsf6w73eC/EMHWP9YlQGfVO0dxUdVUOxZ+KeRr7JZbVZKZ1NaqGGkjcubkYmty8arwr0mwAOd73PX2nLep2RxsjajGJciak0IAAfJ9gAAAAAAAAAAAAw738S13N5P0qZhh3v4lrubyfpU2RfG3eaqj+J25TkgAFplAgAAAAAA97f8Pp/vW9qHge9v+H0/wB63tQwuBluKHXgAKpP0ECtu6I+RVH/ALiz/rlLJK27oj5FUf8AuLP+uU9CyvnI9542UH02bcUKACxylQAAAAAAT3QN84EXNpexCBE90DfOBFzaXsQ4rR+Uk3LyPTsX6hB9zeZ0MACtS8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAYd7+Ja7m8n6VMww738S13N5P0qbIvjbvNVR/E7cpyQAC0ygQAAAAAAe9v+H0/3re1DwPe3/D6f71vahhcDLcUOvAAVSfoIFbd0R8iqP/cWf9cpZJW3dEfIqj/3Fn/XKehZXzke88bKD6bNuKFABY5SoAAAAAAJ7oG+cCLm0vYhAie6BvnAi5tL2IcVo/KSbl5Hp2L9Qg+5vM6GABWpeAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMO9/EtdzeT9KmYYd7+Ja7m8n6VNkXxt3mqo/iduU5IABaZQIAAAAAAPe3/D6f71vah4Hvb/AIfT/et7UMLgZbih14ACqT9BArzugGtXAsaqiKra2NU8i7l6fuWGV7p/+QjeeR9jjvsv5yPeeRb/ANNm+1Tn4AFkFJgAAAAAAnugb5wIubS9iECJ7oG+cCLm0vYhxWj8pJuXkenYv1CD7m8zoYAFal4AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAw738S13N5P0qZhh3v4lrubyfpU2RfG3eaqj+J25TkgAFplAgAAAAAA97f8Pp/vW9qHge9v+H0/wB63tQwuBluKHXgAKpP0ECvdP8A8hG88j7HFhFe6f8A5CN55H2OO+y/nI955Fv/AE2b7VOfgAWQUmAAAAAACe6BvnAi5tL2IQInugb5wIubS9iHFaPykm5eR6di/UIPubzOhgAVqXgAAAAAAAAAAAAAAAfMj2RxukkcjWNRVc5VyRETac8Ys0lYirr5UyWu5zUdA16tp440RM2Iupy6s814fIWNp0xH/CcMpaqeTKquWbFyXW2JPfr06m9K8Rz+S2wLPasazyNvvwv5ldZYWxI2ZtLA5U9nS65btK4J/Saf7JLv9xhygrPOnoG/3GHKCs86egjQJFmsHcTghDM/qtq7ivmSXf7jDlBWedPQN/uMOUFZ509BGgM1g7icEGf1W1dxXzJLv9xhygrPOnoG/wBxhygrPOnoI0BmsHcTggz+q2ruK+ZJd/uMOUFZ509BtMJYvxtccTW6ihvFTO6WoaixvyVqtzzdnq4Ms1Ugxcvc+Yc3EVRiapj1vzgpc02J79ydPg9DjitDN6WndIrE8NCYnp2MtbXVjIWyuuvvXSuhEx/3aW8ACvS5QAAAAAAAAAAAAAAAAAAYd7+Ja7m8n6VMww738S13N5P0qbIvjbvNVR/E7cpyQAC0ygQAAAAAAe9v+H0/3re1DwPe3/D6f71vahhcDLcUOvAAVSfoIFe6f/kI3nkfY4sIr3T/APIRvPI+xx32X85HvPIt/wCmzfapz8ACyCkwAAAAAAT3QN84EXNpexCBE90DfOBFzaXsQ4rR+Uk3LyPTsX6hB9zeZ0MACtS8AAAAAAAAAAAAAfMj2RxukkcjWNRVc5VyRETafRXmnPEaWnDX8Jp5Mqu45sXJdbYk98vT73pXiOilp3VMzYm6zjtCtZRUz534NTiupP7Up/SFiB+JcVVVxRV9rovsVM1dkbeDz61+1VI+AWXFG2JiMbghRs8z55HSvW9VW9QADYagAAAAADPw7aqi93uktVKnutTIjEXLNGpwq5fIiZr0HVVooKe1Wumt1I3cwU8aRsTbkicK+VeEq7ufMOexU1RiWpj8KXOClzT6KL4bulUy6F4y2yEZQVvTTdC3BvP08y08j7MzemWpenvPw+3Vxx4AAEfJgAAAAAAAAAAAAAAAAAADDvfxLXc3k/SpmGHe/iWu5vJ+lTZF8bd5qqP4nblOSAAWmUCAAAAAAD3t/wAPp/vW9qHge9v+H0/3re1DC4GW4odeAAqk/QQK90//ACEbzyPscWEV7p/+QjeeR9jjvsv5yPeeRb/02b7VOfgAWQUmAAAAAACb6EKqnpdIFL7YlbGk0UkTFcuSK5U1J05echAaqtVHNVUVNaKmw01EKTROjVbr0VDpo6haWoZMiX+yqLwOwwVbok0iJckisV9mRK1Mm09Q9f5/E1y/6/Lt+3htIrirpJKWRY5E9S7LOtGG0IUmhXRrTWi9igAHKdwAAAAAAAAB8yyMiifLI9GMY1XOcq5IiJwqcuY+v78SYpq7mqr7CrvY6dq/Rib73z61Xyqpb+nbEf8AC8NttFPJlVXHNrsl1thT33n1N+zMoImOTtH7DFqHYroTd/uRWuWlp9JK2jYuhuld+pP6TmAASYgwAAAAAAM/DtqqL3e6S1Uqe61MiMzyz3KcKuXyIma9BgF0dz5hz2KmqMS1MfhS5wUuafRRfDd0qmXQvGcVoVaUlO6TXq3np2PZ62hVshTDFdyY+W8tK1UNPbLbT2+kZuIKeNsbE8iJlr8pkgFbOcrlvXEu5jUY1GtS5EAAMH0AAAAAAAAAAAAAAAAAADV4sraa34auNVVytiiZTvRVcvCqtVERONVXUiGTd7jRWm3TXC4TsgpoW7p73dicarsTac56Rsa1uLLjkm7gtsLl9r0+f53cbl/DgTaq+rZdnSVciLg1MV/RH7ftqKzoFaul7k0J+18OZEwAWEU4AAAAAAD3t/w+n+9b2oeB72/4fT/et7UMLgZbih14ACqT9BAr3T/8hG88j7HFhFe6f/kI3nkfY477L+cj3nkW/wDTZvtU5+ABZBSYAAAAAAAAAaqtVHNVUVNaKmwvHRJpES5JFYr7MiVqZNp6h6/z+Jrl/wBfl2/bw0cGqrVRzVVFTWipsOKuoY6yP2H/ANL2HpWVas1mz9LFhrTUqf7BTsMFW6JNIiXJIrFfZkStTJtPUPX+fxNcv+vy7ft4bSK/q6SSlkWORPUuOzrRhtCFJoV0a01ovYoAByncAAAD5lkZFE+WR6MYxquc5VyREThU+iudO2I/4Xhttop5Mqq45tdkutsKe+8+pv2ZnTSU7qmZsTdZxWjWsoaZ87/+qcV1J/alQY+v78SYpq7mqr7CrvY6dq/Rib73z61XyqpoQCy442xsRjcEKNmmfPI6R63qq3qAAfZrAAAAAAM/DtqqL3e6S1Uqe61MiMzyz3KcKuXyIma9B1XaqGntltp7fSM3EFPG2NieREy1+Uq3ufMOexU1RiWpj8KXOClzT6KL4bulUy6F4y2yEZQVnTTdC3BvP08y08j7MzelWoenvPw+3Vxx4AAEfJgAAAAAAAAAAAAAAAAAADEu9xorTbprhcJ2QU0Ld097uxONV2JtF3uNFabdNcLhOyCmhbunvd2JxquxNpznpGxrW4suOSbuC2wuX2vT5/ndxuX8OBNqr6lmWY+tf2NTFf0nieDbluRWXF2vXBP2vhzGkbGtbiy45Ju4LbC5fa9Pn+d3G5fw4E2qsTAJ9DCyFiMYlyIVDU1MtVKssq3uUAA2mgAAAAAAHvb/AIfT/et7UPA97f8AD6f71vahhcDLcUOvAAVSfoIGlxrh6nxPh6e1VEixK9UfFKiZ7h6cC5bU2KnEqm6B9xyOjej2rcqGqaFk8bo5EvaqXKcm4jstwsF2lttyhWOaPWipra9uxzV2ov8Ams1x1FjrClvxXalpapEjqI81p6hEzdE792rtT98lObsR2W4WC7S225QrHNHrRU1te3Y5q7UX/NZPrLtRlay5dD0xT9oVDb1gyWZJ7TdMa4L+l8eZrgAesR8AAAAAAAAANVWqjmqqKmtFTYSOLHWL442xtxBXblqZJun7pfOutSOA1viZJ8aIu82xTyw39G5Uv7FuJLv9xhygrPOnoG/3GHKCs86egjQNeawdxOCG7P6rau4r5kl3+4w5QVnnT0Df7jDlBWedPQRoDNYO4nBBn9VtXcV8yS7/AHGHKCs86eg0l0uNddKx1ZcauWqqHalkkdmuXF9nkMUH2yGNi3taif0a5aqaVPZkeqp4qqgAG00AAAAAAA2OGbRUX2/Ulppv5lRIjVdlnuG8LndCIq9Bri6+59w57BQ1GJKmP3Sozhpc04GIvhO6VTL+leM4bQq0pKd0mvVvPUsazltCsZDqxXcmPkWhbKKnt1vp6CkjSOCnjSONqbERO0yACt1VXLepdrWoxEa1LkQAAwfQAAAKG0j6Rr1JiWopLHcX0tDSuWJqxImcrk1Ocq5cGeaJsyTMszSviPe7hKeSGTc1lV7hTZLrRVTW7oTNftyOaSU5P0DXos8iXpgl/wD+r/vEgOWNsPic2khcqLi65btyfvgSXf7jDlBWedPQN/uMOUFZ509BGgSbNYO4nBCC5/VbV3FfMku/3GHKCs86egb/AHGHKCs86egjQGawdxOCDP6rau4r5kl3+4w5QVnnT0Df7jDlBWedPQRoDNYO4nBBn9VtXcV8yS7/AHGHKCs86egb/cYcoKzzp6CNAZrB3E4IM/qtq7ivmbS9Yivl6jZHdLpU1cbF3TWPf4KLx5cGflNWAbmsaxLmpchzySPkd7T1VV8QAD6PgAAAAAAAAAFi6JMAzXyqivVzY6K2QvR0bVTJahyLwJ9XPhXbwJty/NFOj6TEEzLtdo3R2pjvBaupalU2J9XjXoTaqX5DFHDCyGGNscbGo1jGpkjUTgRE4iN2xbHQ3wQr72tez15E2yaybWpVKqpT3NSdvivhz3Y/YAIYWaAAACPY6wpb8V2paWqRI6iPNaeoRM3RO/dq7U/fJSQg2RSviej2LcqGmop46iNYpUvauKHJuI7LcLBdpbbcoVjmj1oqa2vbsc1dqL/ms1x1FjrClvxXalpapEjqI81p6hEzdE792rtT98lObsR2W4WC7S225QrHNHrRU1te3Y5q7UX/ADWT2y7UZWsuXQ9MU/aFRW9YMlmSe03TGuC/pfHma4AHrEfAAAAAAAAAAAAAAAAAAAAAAAAAAANjhm0VF9v1Jaab+ZUSI1XZZ7hvC53QiKvQdVW2jp7db6ehpWbiCnjbHG3iREyQq/ufcOewUNRiSpj90qM4aXNOBiL4TulUy/pXjLYIPb9Z00/RNwbz9MC1Mj7Mzalzh6e8/lq448AADwCXgAAAAiOljEaYdwlO+GTc1tVnBTZLrRVTW7oTX9uXGboIXTyNjbipz1dSylgdNJg1LyntMWI/4/i2WOCTdUdBnBDkupyovhu6V1fYiELALLghbBG2NuCFGVdS+qndNJi5bwADcc4AAAAAAAAAAAAAAAAAAAAALE0U6PpMQTMu12jdHamO8Fq6lqVTYn1eNehNqo0U6PpMQTMu12jdHamO8Fq6lqVTYn1eNehNqpfkMUcMLIYY2xxsajWMamSNROBETiI3bFsdDfDCvva17PXkTbJrJpalUqqpPc1J2+K+HPdihijhhZDDG2ONjUaxjUyRqJwIicR9gENXSWYiIiXIAAYMgAAAAAAj2OsKW/FdqWlqkSOojzWnqETN0Tv3au1P3yUkINkUr4no9i3KhpqKeOojWKVL2rihybiOy3CwXaW23KFY5o9aKmtr27HNXai/5rNcdRY6wpb8V2paWqRI6iPNaeoRM3RO/dq7U/fJTm7EdluFgu0ttuUKxzR60VNbXt2Oau1F/wA1k9su1GVrLl0PTFP2hUVvWDJZkntN0xrgv6Xx5muAB6xHwAAAAAAAAAAAAAAAAAAAAAbHDNoqL7fqS0038yokRquyz3DeFzuhEVeg1xdnc/4bWnoZ8SVUeUlSixUuacEaL4TulUy6F4zhtGrSkp3Sa9W89SxrOW0KxkOrFdyY+X9ln22jp7db6ehpWbiCnjbHG3iREyQyACt1VXLepdrWo1Ea1NCAAGD6AAABzbpdxHvgxbMkMm6o6LOCDJdS5L4TulfwRC4tLmI972Eplhk3NZWZwU+S60zTwndCfiqHNhLMnKPGoduT9r+uJXuWtp6W0TF8XfpP3wAAJWV8AAAAAAAAAAAAAAAAAAAAACxNFOj6TEEzLtdo3R2pjvBaupalU2J9XjXoTaqNFOj6TEEzLtdo3R2pjvBaupalU2J9XjXoTaqX5DFHDCyGGNscbGo1jGpkjUTgRE4iN2xbHQ3wwr72tez15E2yayaWpVKqqT3NSdvivhz3YoYo4YWQwxtjjY1GsY1MkaicCInEfYBDV0lmIiIlyAAGDIAAAAAAAAAAAAI9jrClvxXalpapEjqI81p6hEzdE792rtT98lJCDZFK+J6PYtyoaainjqI1ilS9q4ocm4jstwsF2lttyhWOaPWipra9uxzV2ov+azXHUWOsKW/FdqWlqkSOojzWnqETN0Tv3au1P3yU5uxHZbhYLtLbblCsc0etFTW17djmrtRf81k9su1GVrLl0PTFP2hUVvWDJZkntN0xrgv6Xx5muAB6xHwAAAAAAAAAAAAAAAAADZ4Vs89/xBR2mnzR08iI5yJ7xia3O6EzOqaCkgoaGCipY0jggjbHG1NjUTJCse5/w57Wts+IqmPKWqzip804I0Xwl6VTL+nylqkGt+s6afom4N56/ItXJCzM2pM4envP5auOPAAA8ElwAAAAIfpcxCuH8ITugeraurX2vAqcLVVPCd0Jn05G6CF08jY24qc1XVMpIHTSYNS//byndLuI98GLZkhk3VHRZwQZLqXJfCd0r+CIQ4AsuCFsEbY24IUbVVL6qZ00mLlvAANxzgAAAAAAAAAAAAAAAAAAsTRTo+kxBMy7XaN0dqY7wWrqWpVNifV416E2qjRTo+kxBMy7XaN0dqY7wWrqWpVNifV416E2ql+QxRwwshhjbHGxqNYxqZI1E4EROIjdsWx0N8MK+9rXs9eRNsmsmlqVSqqk9zUnb4r4c92KGKOGFkMMbY42NRrGNTJGonAiJxH2AQ1dJZiIiJcgABgyAAAAAAAAAAAAAAAAAADWX6wWa+xxsu1vhq0jVdwr01tz4clTWhswfTHuY72mrcp8SRMlarJERUXUulCK97vBfiGDrH+sO93gvxDB1j/WJUDoz6p2juKnH1VQ7Fn4p5EV73eC/EMHWP8AWHe7wX4hg6x/rEqAz6p2juKjqqh2LPxTyIr3u8F+IYOsf6w73eC/EMHWP9YlQGfVO0dxUdVUOxZ+KeRFe93gvxDB1j/WHe7wX4hg6x/rEqAz6p2juKjqqh2LPxTyIr3u8F+IYOsf6w73eC/EMHWP9YlQGfVO0dxUdVUOxZ+KeRFe93gvxDB1j/WHe7wX4hg6x/rEqAz6p2juKjqqh2LPxTyIr3u8F+IYOsf6x+po8wYi5/wGD/m/1iUgZ9U7R3FR1VQ7Fn4p5HnTww08DIKeJkUUbUaxjGo1rUTgRETgQ9ADmVb9KnciIiXIAAYMgAAAwL5Z7Ze6NKS60cdVCj0ejX56nJtRU1pwqZ4Ppr3MX2mrcp8SRskarHpei6lIr3u8F+IYOsf6w73eC/EMHWP9YlQOjPqnaO4qcfVVDsWfinkRXvd4L8QwdY/1h3u8F+IYOsf6xKgM+qdo7io6qodiz8U8iK97vBfiGDrH+sO93gvxDB1j/WJUBn1TtHcVHVVDsWfinkRXvd4L8QwdY/1h3u8F+IYOsf6xKgM+qdo7io6qodiz8U8iK97vBfiGDrH+sO93gvxDB1j/AFiVAZ9U7R3FR1VQ7Fn4p5EV73eC/EMHWP8AWHe7wX4hg6x/rEqAz6p2juKjqqh2LPxTyIr3u8F+IYOsf6w73eC/EMHWP9YlQGfVO0dxUdVUOxZ+KeRFe93gvxDB1j/WP1ujzBiORUsNPmi563vX9yUgZ9U7R3FR1VQ7Fn4p5HxDFHDCyGGNscbGo1jGpkjUTgRE4j7AOZdJ3IiIlyAAGDIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB//2Q==">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -12990,7 +13002,8 @@ window._assRemotaSolicitar = async function (aid){
   const id = String(aid || '').trim();
   if (!id) { toast('Anexo sem ID.', 'error'); return; }
   const it = (Array.isArray(_docsCache) ? _docsCache : [])
-    .find(function(x){ return String((x && x.Attachment_ID) || '') === id; });
+    .find(function(x){ return String((x && x.Attachment_ID) || '') === id; })
+    || (window.V382 && typeof V382.item === 'function' ? V382.item(id) || undefined : undefined);   // PCM V382 (ProperCare-backlog#304): o item do painel
   openModal('modalAssinatura');
   const box = document.getElementById('assRemotaBody');
   box.innerHTML = '<div style="text-align:center;padding:24px;color:var(--text-muted)">⏳ Gerando o link de assinatura…</div>';
@@ -41774,7 +41787,8 @@ const _V178_DOC_TTL = 2 * 60 * 1000;
 
 function _v178DocLigado() { return _v178Bloco('D') || _v178Bloco('S'); }
 function _v178DocItem(aid) {
-  return (Array.isArray(_docsCache) ? _docsCache : []).find(function (x) { return String((x && x.Attachment_ID) || '') === String(aid); }) || null;
+  return (Array.isArray(_docsCache) ? _docsCache : []).find(function (x) { return String((x && x.Attachment_ID) || '') === String(aid); })
+    || (window.V382 && typeof V382.item === 'function' ? V382.item(aid) : null);   // PCM V382 (ProperCare-backlog#304): o item do painel
 }
 function _v178EhOrcamento(it) {
   return String((it && it.Categoria) || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').indexOf('pdf_orcamento') === 0;
@@ -43474,6 +43488,7 @@ window._v180Destino = function (v) {
 function _v180NomesDaOS(num) {
   var s = {};
   try { (_docsCache || []).forEach(function (it) { if (String(it && it.OS_Numero || '') === String(num)) s[String(it.File_Name || '').toLowerCase()] = 1; }); } catch (e) {}
+  try { if (window.V382 && V382.ativo()) { var b = V382.nomesDaOS(num); Object.keys(b).forEach(function (n) { s[n] = 1; }); } } catch (e) {}   // PCM V382 (ProperCare-backlog#304): os nomes da OS lidos do banco
   return s;
 }
 // Nome ÚNICO dentro da OS para o que vai para o cliente: com o mesmo nome, o
@@ -122907,6 +122922,8 @@ table.v381-t{width:100%;table-layout:fixed;border-collapse:separate;border-spaci
   function diaChave(ms) { if (!ms) return 'sem-data'; var d = new Date(ms); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
   function plural(n, um, varios) { return n + ' ' + (n === 1 ? um : varios); }
   function quem() { try { return typeof _v178Quem === 'function' ? _v178Quem() : ''; } catch (e) { return ''; } }
+  function pg() { try { return !!(window.V382 && V382.ativo()); } catch (e) { return false; } }   // PCM V382 (ProperCare-backlog#304): a página vem do banco
+  function arr(n, x) { var a = new Array(Math.max(0, +n || 0)); if (a.length) a[0] = x; return a; }   // PCM V382: "n itens" com o 1º conhecido
 
   // ═══ 1 · AS ABAS E O MODO ════════════════════════════════════════════════════════════════════════════
   V381.pode = function (m) {
@@ -122954,6 +122971,7 @@ table.v381-t{width:100%;table-layout:fixed;border-collapse:separate;border-spaci
   function papel(it) { var s = N(T(it.File_Name) + ' ' + T(it.Caption)); return /tecnic/.test(s) ? 'tecnico' : (/respons|client/.test(s) ? 'cliente' : ''); }
   function nomeAssin(it) { var p = T(it.Caption).split('—').map(function (x) { return x.trim(); }); return p.length >= 2 ? p[1] : ''; }
   function laudoAssinado(it) {
+    if (it && it.Portal_Assinado === true) return true;   // PCM V382 (ProperCare-backlog#304): assinado no Portal (portal_assinatura)
     if (/^Assinatura remota:/i.test(T(it.Created_By)) || /^Assinad[oa] remotamente/i.test(T(it.Caption))) return true;
     try {
       var r = (typeof _v178DocRes === 'object' && _v178DocRes) ? _v178DocRes[String(it.Attachment_ID)] : null;
@@ -123059,6 +123077,16 @@ table.v381-t{width:100%;table-layout:fixed;border-collapse:separate;border-spaci
     return d;
   }
   V381.dados = dados;
+  // PCM V382 (ProperCare-backlog#304): o atendimento do painel, montado dos arquivos que o banco devolveu, com as MESMAS regras da tela
+  var NAT_PG = { assinatura: 'assin', laudo: 'laudo', foto: 'foto', outro: 'outro' };
+  V381.montarAt = function (k, os, itens, tipo) {
+    var A = novoAt(k, os, itens[0] || {});
+    itens.forEach(function (it) { poe(A, it, NAT_PG[it.Natureza] || natureza(it)); });
+    fecharAt(A); A.osDt = A.dt; A.tipo = tipo || '';
+    return A;
+  };
+  V381.endDe = function (A) { return endDe(A); };
+  V381.rotLaudo = function (it) { return rotLaudo(it); };
   function tipoOS(os) { try { var m = _docsOsMetaGet().get(String(os)); return (m && m.tipo) || ''; } catch (e) { return ''; } }
   function selo(A) {
     if (!A.laudos.length) return 'sem';
@@ -123131,10 +123159,12 @@ table.v381-t{width:100%;table-layout:fixed;border-collapse:separate;border-spaci
       S.ger++;
       if (force === true && S.modo === 'internos') { try { _v180Internos = null; } catch (e) {} }
       renderDocsList();
-      if (!(Array.isArray(_docsCache) && _docsCache.length)) _docsBuscarAnexos_().then(function (r) { if (r && r.status === 'ok' && !(_docsCache && _docsCache.length)) { _docsCache = Array.isArray(r.attachments) ? r.attachments : []; contarSemOS(); } }).catch(function () {});
+      if (pg()) contarSemOS();   // PCM V382 (ProperCare-backlog#304): o número da aba Sem OS vem do banco
+      else if (!(Array.isArray(_docsCache) && _docsCache.length)) _docsBuscarAnexos_().then(function (r) { if (r && r.status === 'ok' && !(_docsCache && _docsCache.length)) { _docsCache = Array.isArray(r.attachments) ? r.attachments : []; contarSemOS(); } }).catch(function () {});
       else contarSemOS();
       return Promise.resolve();
     }
+    if (pg()) { if (force === true) V382.limpar(false); V381.lista(); return Promise.resolve(); }   // PCM V382 (ProperCare-backlog#304)
     if (Array.isArray(_docsCache) && _docsCache.length && force !== true) { V381.lista(); return Promise.resolve(); }
     return carregar();
   };
@@ -123157,6 +123187,15 @@ table.v381-t{width:100%;table-layout:fixed;border-collapse:separate;border-spaci
     var list = document.getElementById('docsList'); if (!list) return;
     if (!document.querySelector('#viewDocs .v381')) return;   // sem a casca do V381 (quem pinta a tela é o renderDocs): nada a fazer aqui
     if (S.modo === 'assin' || S.modo === 'internos') return;   // essas abas são pintadas pelo V184/V180 (auditoria: leitura atrasada não pinta por cima)
+    if (pg()) {   // PCM V382 (ProperCare-backlog#304): a página vem do banco, já agrupada, filtrada e contada
+      if (!V382.pronto(S)) { if (!list.firstChild) pintarCarregando(); V382.carregar(S); return; }   // filtro novo: a página de antes fica até a nova chegar
+      if (S.modo === 'comercial') pintarComercial(list);
+      else if (S.modo === 'semos') pintarSemOSPg(list);
+      else pintarAtendPg(list);
+      contarSemOS();
+      if (S.sel) abrirPainel(S.sel, true); else fecharPainel(true);
+      return;
+    }
     try { _docsGarantirOsMeta_(); } catch (e) {}
     if (S.modo === 'comercial') pintarComercial(list);
     else if (S.modo === 'semos') pintarSemOS(list);
@@ -123176,9 +123215,9 @@ table.v381-t{width:100%;table-layout:fixed;border-collapse:separate;border-spaci
     });
     return out;
   }
-  function pintarPend(rs) {
+  function pintarPend(rs, nfPg, nsPg) {
     var el = document.getElementById('v381Pend'); if (!el) return;
-    var nf = rs.filter(function (r) { return r.s === 'falta'; }).length, ns = rs.filter(function (r) { return r.s === 'sem'; }).length;
+    var nf = rs ? rs.filter(function (r) { return r.s === 'falta'; }).length : +nfPg || 0, ns = rs ? rs.filter(function (r) { return r.s === 'sem'; }).length : +nsPg || 0;   // PCM V382: ou os números do banco
     if (S.pend === 'falta' && !nf) S.pend = '';
     if (S.pend === 'sem' && !ns) S.pend = '';
     var h = chip('✍ Falta assinatura do cliente · ' + nf, S.pend === 'falta', 'data-v381-pend="falta"' + (nf ? '' : ' disabled'), 'v381-pd') +
@@ -123193,7 +123232,23 @@ table.v381-t{width:100%;table-layout:fixed;border-collapse:separate;border-spaci
   function pintarAtend(list) {
     var todas = linhasAtend();
     pintarPend(todas);
-    var rs = S.pend ? todas.filter(function (r) { return r.s === S.pend; }) : todas;
+    desenharAtend(list, S.pend ? todas.filter(function (r) { return r.s === S.pend; }) : todas, -1);
+  }
+  // PCM V382 (ProperCare-backlog#304): a página do banco vira as mesmas linhas (A com o que a linha mostra; o painel busca o resto)
+  function pintarAtendPg(list) {
+    var R = V382.resposta(S) || {};
+    if (S.pend && !(+R.total || 0)) { S.pend = ''; V381.lista(); return; }   // o filtro de pendência zerou: volta ao todo
+    pintarPend(null, R.n_falta, R.n_sem);
+    var rs = (R.linhas || []).map(function (l) {
+      var A = { k: T(l.k), os: T(l.os), dt: Date.parse(l.dt) || 0, cli: T(l.cli), maqRot: T(l.maq_rot), maqId: T(l.maq_id), tipo: T(l.tipo),
+                laudos: arr(l.n_laudos, { Categoria: T(l.laudo_cat) }), fotos: arr(l.n_fotos) };
+      var Ac = V382.achar(A.k);   // o painel já aberto sabe mais (a assinatura do fluxo de documentos, que mora na planilha)
+      return { A: A, s: (Ac && selo(Ac) === 'ok') ? 'ok' : l.selo, arq: +l.achou_n ? arr(l.achou_n, { it: { File_Name: T(l.achou_nome) } }) : null };
+    });
+    desenharAtend(list, rs, +R.total || 0);
+  }
+  function desenharAtend(list, rs, tot) {
+    if (tot < 0) tot = rs.length;
     var cont = document.getElementById('docsCounter'), mais = document.getElementById('v381Mais');
     var perTxt = S.per ? 'últimos ' + S.per + ' dias' : 'todo o período';
     if (!rs.length) {
@@ -123207,7 +123262,7 @@ table.v381-t{width:100%;table-layout:fixed;border-collapse:separate;border-spaci
     }
     var n = Math.min(rs.length, S.mais), ant = '', h = '';
     for (var i = 0; i < n; i++) {
-      var r = rs[i], A = r.A, mesma = A.os === ant, tipo = tipoOS(A.os);
+      var r = rs[i], A = r.A, mesma = A.os === ant, tipo = A.tipo != null ? A.tipo : tipoOS(A.os);   // PCM V382: o tipo vem do banco
       ant = A.os;
       var achou = r.arq ? '<span class="v381-achou" title="' + E(T(r.arq[0].it.File_Name)) + '">' + plural(r.arq.length, 'arquivo', 'arquivos') + ': ' + E(_docFileNameCurto(T(r.arq[0].it.File_Name) || T(r.arq[0].it.Caption), 34)) + '</span>' : '';
       h += '<tr data-v381-at="' + E(A.k) + '" class="' + (mesma ? 'mesma' : '') + (S.sel === A.k ? ' sel' : '') + '">' +
@@ -123218,8 +123273,8 @@ table.v381-t{width:100%;table-layout:fixed;border-collapse:separate;border-spaci
     }
     list.innerHTML = '<table class="v381-t" id="v381Tab"><colgroup><col style="width:28%"><col style="width:38%"><col style="width:22%"><col style="width:12%"></colgroup>' +
       '<thead><tr><th>OS · data</th><th>Cliente · máquina</th><th>Laudo</th><th>Fotos</th></tr></thead><tbody>' + h + '</tbody></table>';
-    if (cont) cont.textContent = n + ' de ' + plural(rs.length, 'atendimento', 'atendimentos') + ' · ' + perTxt;
-    if (mais) mais.innerHTML = rs.length > n ? '<button type="button" class="btn btn-secondary btn-sm" data-v381="mais">Mostrar mais</button>' : '';
+    if (cont) cont.textContent = n + ' de ' + plural(tot, 'atendimento', 'atendimentos') + ' · ' + perTxt;
+    if (mais) mais.innerHTML = tot > n ? '<button type="button" class="btn btn-secondary btn-sm" data-v381="mais">Mostrar mais</button>' : '';
   }
 
   // ═══ 6 · 🗂 SEM OS (fila de arrumação; o 🔗 Ligar à OS é da P3) ═══════════════════════════════════════════
@@ -123229,7 +123284,23 @@ table.v381-t{width:100%;table-layout:fixed;border-collapse:separate;border-spaci
   }
   function pintarSemOS(list) {
     var d = dados(), ts = termos();
-    var rs = d.sem.filter(function (V) { return casa(V, ts).ok; });
+    var rs0 = d.sem.filter(function (V) { return casa(V, ts).ok; });
+    desenharSemOS(list, rs0, -1, rs0.reduce(function (s, V) { return s + V.itens.length; }, 0));
+  }
+  // PCM V382 (ProperCare-backlog#304): a página de visitas do banco
+  function pintarSemOSPg(list) {
+    var R = V382.resposta(S) || {};
+    var rs = (R.linhas || []).map(function (l) {
+      var c = { Categoria: T(l.tipo_cat) };
+      return { k: T(l.k), os: '', dt: Date.parse(l.dt) || 0, cli: T(l.cli), maqRot: T(l.maq_rot), maqId: T(l.maq_id), tec: T(l.tec),
+               laudos: arr(l.n_laudos, c), outros: arr(l.n_outros), fotos: arr(l.n_fotos, c), assin: arr(l.n_assin),
+               itens: [{ Created_By: T(l.por0), Categoria: T(l.tipo_cat) }] };
+    });
+    desenharSemOS(list, rs, +R.total || 0, +R.total_arquivos || 0);
+  }
+  function desenharSemOS(list, rs, tot, totArq) {
+    var ts = termos();
+    if (tot < 0) tot = rs.length;
     var cont = document.getElementById('docsCounter'), mais = document.getElementById('v381Mais');
     if (!rs.length) {
       list.innerHTML = ts.length ? vazio('🔎', 'Nada com essa busca.', '', '') : vazio('✅', 'Nenhum arquivo sem OS.', 'Todo atendimento do campo está ligado a uma OS.', '');
@@ -123249,9 +123320,8 @@ table.v381-t{width:100%;table-layout:fixed;border-collapse:separate;border-spaci
     }
     list.innerHTML = '<table class="v381-t" id="v381TabSem"><colgroup><col style="width:16%"><col style="width:24%"><col style="width:26%"><col style="width:12%"><col style="width:13%"><col style="width:9%"></colgroup>' +
       '<thead><tr><th>Visita</th><th>Cliente</th><th>Máquina</th><th>Arquivos</th><th>Técnico</th><th></th></tr></thead><tbody>' + h + '</tbody></table>';
-    var arq = rs.reduce(function (s, V) { return s + V.itens.length; }, 0);
-    if (cont) cont.textContent = n + ' de ' + plural(rs.length, 'visita', 'visitas') + ' sem OS · ' + plural(arq, 'arquivo', 'arquivos');
-    if (mais) mais.innerHTML = rs.length > n ? '<button type="button" class="btn btn-secondary btn-sm" data-v381="mais">Mostrar mais</button>' : '';
+    if (cont) cont.textContent = n + ' de ' + plural(tot, 'visita', 'visitas') + ' sem OS · ' + plural(totArq, 'arquivo', 'arquivos');
+    if (mais) mais.innerHTML = tot > n ? '<button type="button" class="btn btn-secondary btn-sm" data-v381="mais">Mostrar mais</button>' : '';
   }
 
   // ═══ 7 · 📝 COMERCIAL (uma linha por oportunidade) ═══════════════════════════════════════════════════════
@@ -123284,7 +123354,7 @@ table.v381-t{width:100%;table-layout:fixed;border-collapse:separate;border-spaci
   var RX_PROP = /^(PROP-\d{4}-\d{3,6}(?:-C\d{1,2})?)-v(\d+)\.pdf$/i;
   function linhasComercial() {
     var mq = mapaQuadro() || { id: {}, prop: {}, os: {} }, grupos = new Map();
-    dados().com.forEach(function (it) {
+    (pg() ? V382.com() : dados().com).forEach(function (it) {   // PCM V382 (ProperCare-backlog#304)
       var cardId = (ent(it) === 'avulso' && /^OPO-/i.test(T(it.Entity_ID))) ? T(it.Entity_ID).toUpperCase() : '';
       var m = RX_PROP.exec(T(it.File_Name)), prop = m ? m[1].toUpperCase() : '', os = T(it.OS_Numero);
       var c = (cardId && mq.id[cardId]) || (prop && mq.prop[prop]) || (os && mq.os[os]) || null;
@@ -123385,10 +123455,15 @@ table.v381-t{width:100%;table-layout:fixed;border-collapse:separate;border-spaci
     if (!semHash) limparHash();
   }
   V381.fechar = function () { fecharPainel(false); };
-  function acharAt(k) { return dados().porK[k] || null; }
+  function acharAt(k) { if (pg()) return V382.achar(k); return dados().porK[k] || null; }   // PCM V382 (ProperCare-backlog#304)
   function abrirPainel(k, silencioso) {
     var A = acharAt(k), pn = document.getElementById('v381Painel');
     if (!pn) return;
+    if (!A && pg() && V382.buscarAt(k, function () { if (emDocs() && S.sel === k) abrirPainel(k, silencioso); })) {   // PCM V382: os arquivos vêm do banco
+      S.sel = k; pn.hidden = false;
+      pn.innerHTML = '<div class="v381-ph"><h3>Carregando o atendimento…</h3><button type="button" class="btn btn-secondary btn-sm" data-v381="fechar" title="Fechar (Esc)">✕</button></div>';
+      return;
+    }
     if (!A) { fecharPainel(!!silencioso && !lerHash()); return; }
     k = A.k;
     if (S.sel !== k) S.conf = null;
@@ -123440,7 +123515,7 @@ table.v381-t{width:100%;table-layout:fixed;border-collapse:separate;border-spaci
       '<span class="f">' + E(_docDateLabel(it.Created_At)) + (ic === '📄' ? ' · ' + E(_docFileNameCurto(T(it.File_Name), 34)) : '') + '</span>' + (selos || '') + '</div><div class="a">' + acoes + '</div></div>';
   }
   function htmlPainel(A) {
-    var semOS = !A.os, tipo = semOS ? tipoVisita(A) : tipoOS(A.os);
+    var semOS = !A.os, tipo = semOS ? tipoVisita(A) : (A.tipo || tipoOS(A.os));   // PCM V382: o tipo vem do banco
     var tit = semOS ? '🗂 ' + dia(A.dt) + ' · ' + (A.maqRot || 'Sem máquina identificada') : '🛠 ' + A.os + ' · ' + (A.maqRot || 'Sem máquina identificada');
     var sub = [A.cli, tipo, diaAno(A.dt), A.tec ? '👷 ' + A.tec : ''].filter(Boolean).join(' · ');
     var h = '<div class="v381-ph"><h3>' + E(tit) + '<span class="v381-phs">' + E(sub) + '</span></h3><button type="button" class="btn btn-secondary btn-sm" data-v381="fechar" title="Fechar (Esc)">✕</button></div><div class="v381-pc">';
@@ -123509,6 +123584,7 @@ table.v381-t{width:100%;table-layout:fixed;border-collapse:separate;border-spaci
       return;
     } finally { S.ocupado = false; }
     _v163TirarDoCache(r.ok);
+    if (pg()) V382.tirados(r.ok);   // PCM V382 (ProperCare-backlog#304): o banco já conta sem eles (o espelho recebe o push depois)
     S.conf = null;
     if (r.falharam) toast(r.ok.length + ' de ' + ids.length + ' tirados da lista — ' + r.falharam + (r.falharam === 1 ? ' falhou' : ' falharam') + '. Clique em ↻ Atualizar.', 'error');
     else if (r.ok.length) toast(plural(r.ok.length, 'arquivo tirado', 'arquivos tirados') + ' da lista.', 'success');
@@ -123586,7 +123662,10 @@ table.v381-t{width:100%;table-layout:fixed;border-collapse:separate;border-spaci
     var s = a && document.querySelector('#viewDocs [data-v381-n="' + a[0] + '"]');
     if (s && s.textContent !== (n ? String(n) : '')) s.textContent = n ? String(n) : '';
   }
-  function contarSemOS() { try { if (Array.isArray(_docsCache) && _docsCache.length) navCount('v381DocsSemOS', dados().sem.length); } catch (e) {} }
+  function contarSemOS() {
+    if (pg()) { if (V382.nSemOS() != null) navCount('v381DocsSemOS', V382.nSemOS()); else V382.contar(function () { if (V382.nSemOS() != null) navCount('v381DocsSemOS', V382.nSemOS()); }); return; }   // PCM V382
+    try { if (Array.isArray(_docsCache) && _docsCache.length) navCount('v381DocsSemOS', dados().sem.length); } catch (e) {}
+  }
   function contarAssin() {
     try {
       if (typeof _v184Carregar !== 'function') return;
@@ -123630,7 +123709,7 @@ table.v381-t{width:100%;table-layout:fixed;border-collapse:separate;border-spaci
     b = t.closest('[data-v381]');
     if (b) {
       var a = b.getAttribute('data-v381'), k = b.getAttribute('data-k') || '';
-      if (a === 'atualizar') { try { _docsCache = []; } catch (e) {} memo.src = null; S.quadro = null; S.quadroTentado = false; renderDocs(true); }
+      if (a === 'atualizar') { try { _docsCache = []; } catch (e) {} if (window.V382) V382.limpar(true); memo.src = null; S.quadro = null; S.quadroTentado = false; renderDocs(true); }
       else if (a === 'mais') { if (S.modo === 'semos') S.semMais += PAG; else S.mais += PAG; V381.lista(); }
       else if (a === 'fechar') fecharPainel(false);
       else if (a === 'ver-at') abrirPainel(k, false);
@@ -123652,6 +123731,15 @@ table.v381-t{width:100%;table-layout:fixed;border-collapse:separate;border-spaci
   });
   function anexar() {
     var A = acharAt(S.sel); if (!A || !A.os || typeof _v180Anexar !== 'function') return;
+    // PCM V382 (ProperCare-backlog#304): o envio ao cliente não repete nome da OS (nome igual substitui o PDF) — no modo banco os nomes
+    //   vêm de TODOS os arquivos da OS, lidos antes de abrir; sem a leitura, não abre (nada é enviado)
+    if (pg() && arguments[0] !== true) {
+      if (S.osNomes) return;
+      S.osNomes = true;
+      V382.carregarOS(A.os).then(function () { S.osNomes = false; anexar(true); },
+        function () { S.osNomes = false; toast('Não consegui conferir os arquivos da OS. Nada foi enviado — tente de novo.', 'error'); });
+      return;
+    }
     var ok = 'v381|' + A.k, maqs = (A.maqId || A.maqRot) ? [{ mk: 'm', id: A.maqId, label: A.maqRot || A.maqId }] : [];
     try { _V180_OS[ok] = { num: A.os, cliente: A.cli, maqs: maqs }; } catch (e) { return; }
     _v180Anexar(ok, maqs.length ? 'm' : '');
@@ -123675,7 +123763,7 @@ table.v381-t{width:100%;table-layout:fixed;border-collapse:separate;border-spaci
     if (!emDocs()) {
       if (typeof showView !== 'function' || !(window.PROPER_SESSION && (PROPER_SESSION.id_tecnico || PROPER_SESSION.tecnico))) return;
       var alvo = acharAt(k);
-      V381.modo(k.indexOf('v~') === 0 || (alvo && !alvo.os) ? 'semos' : 'atend', true);
+      V381.modo(k.indexOf('v~') === 0 || k.indexOf('s|') === 0 || (alvo && !alvo.os) ? 'semos' : 'atend', true);   // PCM V382: a chave crua s|… também é visita
       showView(S.modo === 'semos' && menuNovo() ? 'v381DocsSemOS' : 'docs');
       return;
     }
@@ -123703,6 +123791,221 @@ table.v381-t{width:100%;table-layout:fixed;border-collapse:separate;border-spaci
 })();
 </script>
 <!-- ████ FIM PCM V381 ████ -->
+<!-- ████ INICIO PCM V382 · DOCUMENTOS LÊ DO POSTGRES (ProperCare-backlog#304, P2 do #301) ████ -->
+<script>
+/* ═════════════════════════════════════════════════════════════════════════════════════════════════
+   PCM V382 · 19/11/2026 — DOCUMENTOS LÊ DO POSTGRES (ProperCare-backlog#304 = P2 do estudo #301; regra 5.4 item 2).
+   A tela por atendimento (V381) baixava o acervo INTEIRO de anexos do Apps Script (getAttachments) a cada abertura e agrupava na tela.
+   Agora o banco devolve só a página que a tela mostra (SQL DOCS_ATENDIMENTO_PG, cadeia 157):
+   · pc_docs_lista {modo:'atend', dias, busca, pend, desde, limite, rotulos, excluir} → os atendimentos (OS × máquina) já agrupados,
+     na ordem da tela, com o total ("50 de 214"; Mostrar mais pede só as próximas, p.desde), os números dos filtros (falta assinatura ·
+     sem laudo) e o número da aba 🗂 Sem OS; rotulos = o rótulo de cada laudo na tela (a busca acha "recebimento" como antes);
+     {modo:'semos'} → as visitas sem OS; {modo:'comercial'} → as propostas e os pedidos do cliente (a tela agrupa pela oportunidade).
+   · pc_docs_atendimento {k | os} → os arquivos do painel (os mesmos campos do getAttachments), pedidos só ao abrir o painel; com p.os,
+     também os nomes de TODOS os arquivos da OS (o 📎 Anexar aqui confere o nome: nome igual substitui o PDF no servidor).
+   · Quem zera o _docsCache (anexo novo, orçamento anexado) invalida também a página guardada; ↻ Atualizar relê tudo.
+   · A natureza do documento, a foto duplicada e as pendências (sem laudo, falta assinatura, sem OS) são calculadas no banco
+     (pc_doc_natureza: a régua única; o selo também vale o Portal, portal_assinatura).
+   Fallback: espelho fora de dia (resposta.espelho.ok ≠ true), SQL ausente, sem crachá ou rede ⇒ a tela lê do Apps Script, como no V381,
+   até o ↻ Atualizar (que tenta o banco de novo). Chave de volta: localStorage pcm_v382 = off (o V381 inteiro, pelo Apps Script).
+   "Tirar da lista" continua no GAS (desativarAnexo); o que acabou de sair vai em `excluir` até o espelho receber o push.
+   Chamadas ao abrir Documentos: 1 (pc_docs_lista); antes: getAttachments (o acervo inteiro) + getOS (o tipo da OS) em 2º plano.
+   ═════════════════════════════════════════════════════════════════════════════════════════════════ */
+(function () {
+  'use strict';
+  if (window.V382) return;
+  var V382 = window.V382 = { versao: 'V382 · 19/11/2026' };
+  // res: resposta da lista por assinatura dos filtros · at: atendimento montado (painel) por chave · end: endereço → chave
+  var D = V382.D = { gas: false, motivo: '', res: {}, voo: null, vooSig: '', ger: 0, at: {}, end: {}, atVoo: {}, atTentado: {}, atFalhou: {}, nomes: {},
+                     fora: {}, nSemOS: null, contVoo: null, em: 0, rot: null, ref: null, refOk: false };
+
+  function ls(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
+  V382.ligado = function () { return ls('pcm_v382') !== 'off' && !!(window.V381 && V381.ligado()) && typeof _v200Rpc === 'function'; };
+  V382.ativo = function () { return V382.ligado() && !D.gas; };
+  V382.fonte = function () { return !V382.ligado() ? 'apps-script (chave pcm_v382 = off)' : D.gas ? 'apps-script (' + D.motivo + ')' : 'postgres'; };
+  function T(v) { return String(v == null ? '' : v).trim(); }
+  function emDocs() { try { return typeof currentView !== 'undefined' && currentView === 'docs'; } catch (e) { return false; } }
+  function busca() { try { return typeof _docsQuery === 'string' ? _docsQuery.trim().replace(/\s+/g, ' ').slice(0, 200) : ''; } catch (e) { return ''; } }
+  function fora() { var k = Object.keys(D.fora); return k.length ? k.slice(-1000) : null; }
+
+  // ═══ 1 · O PEDIDO DA LISTA (um por combinação de filtros; a resposta fica guardada até ↻ Atualizar ou "Tirar da lista") ═══
+  // o rótulo de cada laudo (o mesmo da linha: DOCS_CAT_LABELS pelo rotLaudo do V381) vai junto, para a busca do banco achar "recebimento"
+  function rotulos() {
+    if (D.rot) return D.rot;
+    var m = {};
+    try { Object.keys(DOCS_CAT_LABELS || {}).forEach(function (c) { m[c] = V381.rotLaudo({ Categoria: c }); }); } catch (e) {}
+    return (D.rot = m);
+  }
+  function pedido(S) {
+    var p;
+    if (S.modo === 'comercial') p = { modo: 'comercial' };
+    else if (S.modo === 'semos') p = { modo: 'semos', busca: busca() };
+    else p = { modo: 'atend', dias: S.per, pend: S.pend || '', busca: busca() };
+    return p;
+  }
+  function sig(S) { return JSON.stringify(pedido(S)); }
+  function quer(S) { return S.modo === 'semos' ? S.semMais : S.mais; }
+  // quem zera o _docsCache (anexo novo, orçamento anexado, upload) diz "o acervo mudou": a página guardada também cai
+  function conferirAcervo() {
+    var c = null; try { c = _docsCache; } catch (e) {}
+    if (D.refOk && c !== D.ref) { D.res = {}; D.at = {}; D.end = {}; D.atTentado = {}; D.nomes = {}; D.nSemOS = null; D.ger++; D.voo = null; D.vooSig = ''; }
+    D.ref = c; D.refOk = true;
+  }
+  // pronta = já veio a resposta e já tem as linhas que a tela quer mostrar ("Mostrar mais" pede só as que faltam, com p.desde)
+  V382.pronto = function (S) {
+    conferirAcervo();
+    var R = D.res[sig(S)];
+    if (!R) return false;
+    return S.modo === 'comercial' || R.linhas.length >= Math.min(quer(S), +R.r.total || 0);
+  };
+  V382.resposta = function (S) {
+    var R = D.res[sig(S)]; if (!R) return null;
+    var o = {}; Object.keys(R.r).forEach(function (k) { o[k] = R.r[k]; });
+    o.linhas = R.linhas.slice(0, quer(S));
+    return o;
+  };
+  function cair(motivo) {
+    if (D.gas) return;
+    D.gas = true; D.motivo = String(motivo || 'erro');
+    console.warn('[V382] Documentos lendo do Apps Script — ' + D.motivo);
+    if (emDocs()) { try { V381.render(false); } catch (e) {} }
+  }
+  function espelhoOk(r) { return !!(r && r.espelho && r.espelho.ok === true); }
+  function motivoEspelho(r) {
+    try { var p = (r.espelho.problemas || [])[0]; return 'espelho ' + (p ? p.motivo : 'fora de dia'); } catch (e) { return 'espelho fora de dia'; }
+  }
+  V382.carregar = function (S) {
+    var s = sig(S), R0 = D.res[s], ja = R0 ? R0.linhas.length : 0, vs = s + '#' + ja + '#' + quer(S);
+    if (D.voo && D.vooSig === vs) return D.voo;
+    var g = ++D.ger, p = pedido(S);
+    if (S.modo !== 'comercial') { p.desde = ja; p.limite = Math.max(1, Math.min(500, quer(S) - ja)); p.rotulos = rotulos(); }
+    var ex = fora(); if (ex) p.excluir = ex;
+    D.vooSig = vs;
+    D.voo = Promise.resolve().then(function () { return _v200Rpc('pc_docs_lista', { p: p }, false); }).then(function (r) {
+      if (g !== D.ger) return;
+      if (!r || r.ok !== true) throw new Error('resposta inesperada do banco');
+      if (!espelhoOk(r)) { cair(motivoEspelho(r)); return; }
+      var R = D.res[s];
+      if (!R || !ja) R = D.res[s] = { r: r, linhas: [] };
+      var tem = {}; R.linhas.forEach(function (l) { tem[l.k] = 1; });
+      (r.linhas || []).forEach(function (l) { if (!tem[l.k]) { tem[l.k] = 1; R.linhas.push(l); } });
+      R.r = r; D.em = Date.now();
+      if (r.n_sem_os != null) D.nSemOS = +r.n_sem_os || 0;
+      if (emDocs() && V382.ativo()) V381.lista();
+    }).catch(function (e) {
+      if (g !== D.ger) return;
+      cair((e && (e.codigo || e.code)) ? (e.codigo || e.code) + ': ' + (e.message || '') : (e && e.message) || 'erro');
+    }).then(function () { if (g === D.ger) { D.voo = null; D.vooSig = ''; } });
+    return D.voo;
+  };
+  V382.linhas = function (S) { var r = V382.resposta(S); return r ? (r.linhas || []) : []; };
+  V382.com = function () { var R = D.res[JSON.stringify({ modo: 'comercial' })]; return R && Array.isArray(R.r.itens) ? R.r.itens : []; };
+  V382.nSemOS = function () { return D.nSemOS; };
+  // o número da aba 🗂 Sem OS quando a tela aberta é outra (✍ Assinaturas, 🔒 Internos): uma leitura de 1 linha
+  V382.contar = function (cb) {
+    if (D.nSemOS != null) { cb(); return; }
+    if (D.contVoo) { D.contVoo.then(cb); return; }
+    var p = { modo: 'semos', limite: 1 }, ex = fora(), g = D.ger; if (ex) p.excluir = ex;
+    D.contVoo = _v200Rpc('pc_docs_lista', { p: p }, false).then(function (r) {
+      if (g === D.ger && r && r.ok === true && espelhoOk(r)) D.nSemOS = +r.n_sem_os || 0;
+    }).catch(function (e) { console.warn('[V382] contagem Sem OS:', e && e.message); })
+      .then(function () { D.contVoo = null; });
+    D.contVoo.then(cb);
+  };
+
+  // ═══ 2 · O PAINEL (os arquivos de um atendimento, só quando ele abre) ═══════════════════════════════════════════
+  function guardar(g) {
+    var itens = (g.itens || []).filter(function (it) { return it && !D.fora[T(it.Attachment_ID)]; });
+    if (!itens.length) { delete D.at[g.k]; return; }
+    var A = V381.montarAt(g.k, T(g.os), itens, T(g.tipo));
+    D.at[g.k] = A; D.end[V381.endDe(A)] = g.k;
+  }
+  V382.achar = function (k) {
+    k = T(k); if (!k) return null;
+    return D.at[k] || (D.end[k] && D.at[D.end[k]]) || null;
+  };
+  V382.item = function (aid) {
+    aid = T(aid); if (!aid) return null;
+    var ks = Object.keys(D.at);
+    for (var i = 0; i < ks.length; i++) {
+      var x = D.at[ks[i]].itens.filter(function (it) { return T(it.Attachment_ID) === aid; })[0];
+      if (x) return x;
+    }
+    return V382.com().filter(function (it) { return T(it.Attachment_ID) === aid; })[0] || null;
+  };
+  function lerAt(p) {
+    var ex = fora(); if (ex) p.excluir = ex;
+    return _v200Rpc('pc_docs_atendimento', { p: p }, false).then(function (r) {
+      if (!r || r.ok !== true || !Array.isArray(r.grupos)) throw new Error('resposta inesperada do banco');
+      (r.grupos || []).forEach(guardar);
+      if (p.os && Array.isArray(r.nomes)) D.nomes[T(p.os)] = r.nomes;
+    });
+  }
+  // a visita sem OS pelo endereço (#atendimento/v~…): a chave sai da lista de visitas (o endereço é um resumo da chave)
+  function acharVisita(endereco) {
+    var p = { modo: 'semos', limite: 500 }, ex = fora(); if (ex) p.excluir = ex;
+    return _v200Rpc('pc_docs_lista', { p: p }, false).then(function (r) {
+      var k = '';
+      ((r && r.linhas) || []).some(function (l) { if (V381.endDe({ os: '', k: l.k }) === endereco) { k = l.k; return true; } return false; });
+      if (!k) return;
+      D.end[endereco] = k;
+      return lerAt({ k: k });
+    });
+  }
+  // true = está buscando (o painel mostra "Carregando…" e `cb` reabre); false = não há o que buscar (o painel fecha)
+  V382.buscarAt = function (k, cb) {
+    k = T(k); if (!k || !V382.ativo()) return false;
+    if (D.atVoo[k]) { D.atVoo[k].then(cb); return true; }
+    if (D.atFalhou[k]) { delete D.atFalhou[k]; delete D.atTentado[k]; return false; }   // falhou: o painel fecha; o próximo clique tenta de novo
+    if (D.atTentado[k]) return false;
+    var pr;
+    if (/^(os|s)\|/.test(k)) pr = lerAt({ k: k });
+    else {
+      var m = /^(.*)~([0-9a-z]+)$/.exec(k);
+      if (!m) return false;
+      pr = m[1] === 'v' ? acharVisita(k) : lerAt({ os: m[1] });
+    }
+    D.atTentado[k] = 1;
+    D.atVoo[k] = pr.catch(function (e) {
+      D.atFalhou[k] = 1;
+      console.warn('[V382] pc_docs_atendimento:', e && e.message);
+      try { toast('Não consegui abrir o atendimento. Nada mudou — tente de novo.', 'error'); } catch (x) {}
+    }).then(function () { delete D.atVoo[k]; });
+    D.atVoo[k].then(cb);
+    return true;
+  };
+
+  // todos os atendimentos de UMA OS (o 📎 Anexar aqui confere o nome contra TODOS os arquivos da OS: nome igual substitui o PDF)
+  V382.carregarOS = function (os) { return lerAt({ os: T(os) }); };
+  V382.nomesDaOS = function (num) {
+    var s = {};
+    (D.nomes[T(num)] || []).forEach(function (n) { s[String(n || '').toLowerCase()] = 1; });
+    Object.keys(D.at).forEach(function (k) {
+      var A = D.at[k]; if (T(A.os) !== T(num)) return;
+      A.itens.forEach(function (it) { s[String(it.File_Name || '').toLowerCase()] = 1; });
+    });
+    return s;
+  };
+
+  // ═══ 3 · TIRAR DA LISTA (o GAS desativa; aqui a tela já conta sem eles) e ↻ ATUALIZAR ═════════════════════════════
+  V382.tirados = function (ids) {
+    var novos = (ids || []).map(T).filter(Boolean);
+    if (!novos.length) return;
+    novos.forEach(function (id) { D.fora[id] = 1; });
+    Object.keys(D.at).forEach(function (k) {
+      var A = D.at[k];
+      if (A.itens.some(function (it) { return D.fora[T(it.Attachment_ID)]; })) guardar({ k: A.k, os: A.os, tipo: A.tipo, itens: A.itens });
+    });
+    D.res = {}; D.nSemOS = null; D.ger++; D.voo = null; D.vooSig = '';
+  };
+  // force: relê tudo (↻ Atualizar, anexo novo); comGas: e tenta o banco de novo se a tela caiu para o Apps Script
+  V382.limpar = function (comGas) {
+    D.res = {}; D.at = {}; D.end = {}; D.atTentado = {}; D.atFalhou = {}; D.nomes = {}; D.nSemOS = null; D.ger++; D.voo = null; D.vooSig = '';
+    if (comGas) { D.gas = false; D.motivo = ''; }
+  };
+})();
+</script>
+<!-- ████ FIM PCM V382 ████ -->
 
 </body>
 </html>
