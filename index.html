@@ -124131,6 +124131,8 @@ table.v381-t{width:100%;table-layout:fixed;border-collapse:separate;border-spaci
   function emDocs() { try { return typeof currentView !== 'undefined' && currentView === 'docs'; } catch (e) { return false; } }
   function uid() { return 'lig-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 10); }
   function msgErro(e) { return String((e && e.message) || 'erro').replace(/^NÃO foi gravada:\s*/, ''); }
+  // o que a tela acabou de tirar da lista (o espelho só vê depois do push): o banco não o conta nem o liga (auditoria #305)
+  function excl(p) { try { var k = Object.keys(V382.D.fora || {}); if (k.length) p.excluir = k.slice(-1000); } catch (e) {} return p; }
   function reler() { try { V382.limpar(false); } catch (e) {} if (emDocs()) V381.lista(); }
 
   // ═══ 1 · 🛠 ATENDIMENTOS POR OS ═══════════════════════════════════════════════════════════════════════════════
@@ -124312,7 +124314,7 @@ table.v381-t{width:100%;table-layout:fixed;border-collapse:separate;border-spaci
     document.body.appendChild(B.el);
     pintarBalao();
     var meu = B;
-    _v200Rpc('pc_docs_os_sugestoes', { p: { k: k } }, false).then(function (r) {
+    _v200Rpc('pc_docs_os_sugestoes', { p: excl({ k: k }) }, false).then(function (r) {
       if (B !== meu) return;
       B.carregando = false; B.ops = (r && Array.isArray(r.os)) ? r.os : []; B.total = +(r && r.total) || B.ops.length;
       if (B.ops.length) B.sel = T(B.ops[0].os);
@@ -124330,7 +124332,7 @@ table.v381-t{width:100%;table-layout:fixed;border-collapse:separate;border-spaci
     B.enviando = true; pintarBalao();
     var r;
     try {
-      r = await _v200Rpc('pc_docs_ligar_os', { p: { k: B.k, os: os, n: B.n, uid: B.uid } }, true);
+      r = await _v200Rpc('pc_docs_ligar_os', { p: excl({ k: B.k, os: os, n: B.n, uid: B.uid }) }, true);
     } catch (e) {
       if (B !== meu) return;
       B.enviando = false; pintarBalao();
