@@ -5773,9 +5773,20 @@ v50 — Resiliência de rede: retry/backoff em gsGet e syncToGS
   Sem OS, acharAt, abrirPainel, pintura das linhas, comercial, confirmar, atualizar, endereco, selo do Portal, tipo da OS) e duas
   exportacoes (V381.montarAt, V381.endDe); fora dele, _v178DocItem e _assRemotaSolicitar acham tambem o item do painel.
   Chave de volta: localStorage pcm_v382 = off (o V381 inteiro, pelo Apps Script).
+  PCM V383 — 20/11/2026 — LIGAR A OS E ATENDIMENTOS POR OS (ProperCare-backlog#305, P3 do estudo #301; previas aprovadas no #301 e
+  no #305). Par do SQL 159 DOCS_LIGAR_OS (roda ANTES do merge) e do GAS v189 (action docsLigarOS: merge do GAS antes do PCM).
+  Sem OS: botao "Ligar a OS" por visita (e no painel dela): balao com as OS do cliente (pc_docs_os_sugestoes, a da mesma maquina
+  primeiro) e "Ligar N arquivos" (pc_docs_ligar_os: o banco confere cliente, OS ativa e a visita vista; grava a trilha); o Apps
+  Script move no Drive (docsLigarOS) e o resultado volta ao banco; Drive pendente = faixa com "Tentar de novo". Painel da OS: quem
+  ligou, quando, o Drive, Tentar de novo e Desfazer (pc_docs_desfazer). Atendimentos: OS de varias maquinas numa linha so (seta abre
+  as maquinas; busca e filtros abrem ja aberta, so as que casam, "mostrar as outras N"), Ver (PDF por cima) e Baixar em cada maquina,
+  pagina conta OS (pc_docs_lista agrupar os). Linhas pre-existentes alteradas: no V381, a exportacao V381.h, a linha do banco com
+  o resumo da OS e o laudo, a pintura por OS, o botao da visita e a coluna de acoes, a faixa da aba Sem OS, o extra do painel e o
+  delegado de cliques; no V382, o pedido por OS, a pagina medida em OS e os vinculos guardados no atendimento do painel.
+  Chave de volta: localStorage pcm_v383 = off (a tela do V382 inteira).
 -->
-<title>ProperCare Manager · Gestão PGP v4.03 (PCM V382)</title>
-<meta name="app-build" content="PCM_V382" data-date="2026-11-19">
+<title>ProperCare Manager · Gestão PGP v4.03 (PCM V383)</title>
+<meta name="app-build" content="PCM_V383" data-date="2026-11-20">
 <link rel="icon" type="image/jpeg" href="data:image/jpeg;base64,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">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -123087,6 +123098,10 @@ table.v381-t{width:100%;table-layout:fixed;border-collapse:separate;border-spaci
   };
   V381.endDe = function (A) { return endDe(A); };
   V381.rotLaudo = function (it) { return rotLaudo(it); };
+  // PCM V383 (ProperCare-backlog#305): o que o V383 reusa para pintar por OS e no painel
+  V381.h = { dia: dia, diaAno: diaAno, plural: plural, termos: termos, selo: selo,
+             seloHtml: function (A, s) { return seloHtml(A, s); }, desenharAtend: function (l, rs, t) { return desenharAtend(l, rs, t); },
+             repintarPainel: function () { if (S.sel) abrirPainel(S.sel, true); } };
   function tipoOS(os) { try { var m = _docsOsMetaGet().get(String(os)); return (m && m.tipo) || ''; } catch (e) { return ''; } }
   function selo(A) {
     if (!A.laudos.length) return 'sem';
@@ -123243,9 +123258,10 @@ table.v381-t{width:100%;table-layout:fixed;border-collapse:separate;border-spaci
       var A = { k: T(l.k), os: T(l.os), dt: Date.parse(l.dt) || 0, cli: T(l.cli), maqRot: T(l.maq_rot), maqId: T(l.maq_id), tipo: T(l.tipo),
                 laudos: arr(l.n_laudos, { Categoria: T(l.laudo_cat) }), fotos: arr(l.n_fotos) };
       var Ac = V382.achar(A.k);   // o painel já aberto sabe mais (a assinatura do fluxo de documentos, que mora na planilha)
-      return { A: A, s: (Ac && selo(Ac) === 'ok') ? 'ok' : l.selo, arq: +l.achou_n ? arr(l.achou_n, { it: { File_Name: T(l.achou_nome) } }) : null };
+      return { A: A, s: (Ac && selo(Ac) === 'ok') ? 'ok' : l.selo, arq: +l.achou_n ? arr(l.achou_n, { it: { File_Name: T(l.achou_nome) } }) : null,
+               l: l, lau: l.laudo || null };   // PCM V383 (ProperCare-backlog#305): o resumo da OS e o laudo da linha
     });
-    desenharAtend(list, rs, +R.total || 0);
+    if (window.V383 && V383.porOS()) V383.desenharAtend(list, rs, R); else desenharAtend(list, rs, +R.total || 0);   // PCM V383: por OS
   }
   function desenharAtend(list, rs, tot) {
     if (tot < 0) tot = rs.length;
@@ -123304,6 +123320,7 @@ table.v381-t{width:100%;table-layout:fixed;border-collapse:separate;border-spaci
     var cont = document.getElementById('docsCounter'), mais = document.getElementById('v381Mais');
     if (!rs.length) {
       list.innerHTML = ts.length ? vazio('🔎', 'Nada com essa busca.', '', '') : vazio('✅', 'Nenhum arquivo sem OS.', 'Todo atendimento do campo está ligado a uma OS.', '');
+      if (window.V383) V383.faixaSemOS(list, 0, 0);   // PCM V383: o Drive pendente aparece mesmo com a fila vazia
       if (cont) cont.textContent = ''; if (mais) mais.innerHTML = '';
       return;
     }
@@ -123316,10 +123333,14 @@ table.v381-t{width:100%;table-layout:fixed;border-collapse:separate;border-spaci
         '<td><span class="v381-maq" title="' + E(V.maqRot) + '">' + E(V.maqRot || 'Sem máquina identificada') + '</span></td>' +
         '<td class="v381-n" data-cfx-val="' + V.itens.length + '">' + (nl ? '📄 ' + nl + (V.fotos.length ? ' · ' : '') : '') + (V.fotos.length ? '📷 ' + V.fotos.length : '') + (!nl && !V.fotos.length ? '✍ ' + V.assin.length : '') + '</td>' +
         '<td>' + E(V.tec || T(V.itens[0] && V.itens[0].Created_By) || '—') + '</td>' +
-        '<td style="text-align:right"><button type="button" class="btn btn-secondary btn-xs" data-v381="ver-at" data-k="' + E(V.k) + '">Ver</button></td></tr>';
+        '<td style="text-align:right;white-space:nowrap"><button type="button" class="btn btn-secondary btn-xs" data-v381="ver-at" data-k="' + E(V.k) + '">Ver</button>' +
+        (window.V383 ? V383.botaoLigar(V.k) : '') + '</td></tr>';   // PCM V383 (ProperCare-backlog#305)
     }
-    list.innerHTML = '<table class="v381-t" id="v381TabSem"><colgroup><col style="width:16%"><col style="width:24%"><col style="width:26%"><col style="width:12%"><col style="width:13%"><col style="width:9%"></colgroup>' +
+    var lig = !!(window.V383 && V383.ligado());   // PCM V383 (ProperCare-backlog#305): a coluna de ações cabe o 🔗 Ligar à OS
+    list.innerHTML = '<table class="v381-t" id="v381TabSem"><colgroup>' + (lig ? '<col style="width:13%"><col style="width:21%"><col style="width:22%"><col style="width:11%"><col style="width:12%"><col style="width:21%">'
+                                                                                : '<col style="width:16%"><col style="width:24%"><col style="width:26%"><col style="width:12%"><col style="width:13%"><col style="width:9%">') + '</colgroup>' +
       '<thead><tr><th>Visita</th><th>Cliente</th><th>Máquina</th><th>Arquivos</th><th>Técnico</th><th></th></tr></thead><tbody>' + h + '</tbody></table>';
+    if (window.V383) V383.faixaSemOS(list, tot, totArq);
     if (cont) cont.textContent = n + ' de ' + plural(tot, 'visita', 'visitas') + ' sem OS · ' + plural(totArq, 'arquivo', 'arquivos');
     if (mais) mais.innerHTML = tot > n ? '<button type="button" class="btn btn-secondary btn-sm" data-v381="mais">Mostrar mais</button>' : '';
   }
@@ -123540,6 +123561,7 @@ table.v381-t{width:100%;table-layout:fixed;border-collapse:separate;border-spaci
     h += '<div class="v381-pf">' + (cabe && selo(A) !== 'ok' ? '<button type="button" class="btn btn-secondary btn-xs" data-v381="assinatura" data-aid="' + E(T(cabe.Attachment_ID)) + '">✍ Pedir assinatura</button>' : '') +
          (A.itens.length ? '<button type="button" class="btn btn-secondary btn-xs" data-v381="tirar-todos" title="Tirar este atendimento da lista">⋯ Tirar da lista</button>' : '') + '</div>';
     h += htmlConf(A);
+    if (window.V383) h += V383.painelExtra(A);   // PCM V383 (ProperCare-backlog#305): 🔗 Ligar à OS (visita) · ligado pela fila (OS)
     return h + '</div>';
   }
   // ── tirar da lista (V163: desativarAnexo; a foto de campo de máquina só sai se a pessoa marcar) ──
@@ -123722,6 +123744,7 @@ table.v381-t{width:100%;table-layout:fixed;border-collapse:separate;border-spaci
       else if (a === 'tirar-todos') { S.conf = { tipo: 'todos' }; abrirPainel(S.sel, true); rolarConf(); }
       else if (a === 'conf-nao') { S.conf = null; abrirPainel(S.sel, true); }
       else if (a === 'conf-sim') { if (S.ocupado) toast('Espere terminar de tirar da lista.', 'warning'); else confirmar(b); }
+      else if (a === 'ligar' || a.indexOf('v383-') === 0) { if (window.V383) V383.acao(a, b); }   // PCM V383 (ProperCare-backlog#305)
       return;
     }
     var tr = t.closest('tr[data-v381-at]');
@@ -123841,10 +123864,19 @@ table.v381-t{width:100%;table-layout:fixed;border-collapse:separate;border-spaci
     if (S.modo === 'comercial') p = { modo: 'comercial' };
     else if (S.modo === 'semos') p = { modo: 'semos', busca: busca() };
     else p = { modo: 'atend', dias: S.per, pend: S.pend || '', busca: busca() };
+    if (p.modo === 'atend' && window.V383 && V383.porOS()) p.agrupar = 'os';   // PCM V383 (ProperCare-backlog#305): a página conta OS
     return p;
   }
   function sig(S) { return JSON.stringify(pedido(S)); }
   function quer(S) { return S.modo === 'semos' ? S.semMais : S.mais; }
+  // PCM V383 (ProperCare-backlog#305): por OS, a página se mede em OS (uma OS nunca fica cortada)
+  function porOS(S) { return S.modo === 'atend' && pedido(S).agrupar === 'os'; }
+  function unid(S, ls) { if (!porOS(S)) return ls.length; var o = {}; ls.forEach(function (l) { o[l.os] = 1; }); return Object.keys(o).length; }
+  function corta(S, ls) {
+    if (!porOS(S)) return ls.slice(0, quer(S));
+    var o = {}, n = 0, q = quer(S);
+    return ls.filter(function (l) { if (!o[l.os]) { if (n >= q) return false; o[l.os] = 1; n++; } return true; });
+  }
   // quem zera o _docsCache (anexo novo, orçamento anexado, upload) diz "o acervo mudou": a página guardada também cai
   function conferirAcervo() {
     var c = null; try { c = _docsCache; } catch (e) {}
@@ -123856,12 +123888,12 @@ table.v381-t{width:100%;table-layout:fixed;border-collapse:separate;border-spaci
     conferirAcervo();
     var R = D.res[sig(S)];
     if (!R) return false;
-    return S.modo === 'comercial' || R.linhas.length >= Math.min(quer(S), +R.r.total || 0);
+    return S.modo === 'comercial' || unid(S, R.linhas) >= Math.min(quer(S), +R.r.total || 0);   // PCM V383: em OS quando por OS
   };
   V382.resposta = function (S) {
     var R = D.res[sig(S)]; if (!R) return null;
     var o = {}; Object.keys(R.r).forEach(function (k) { o[k] = R.r[k]; });
-    o.linhas = R.linhas.slice(0, quer(S));
+    o.linhas = corta(S, R.linhas);   // PCM V383: por OS, corta em OS
     return o;
   };
   function cair(motivo) {
@@ -123875,7 +123907,7 @@ table.v381-t{width:100%;table-layout:fixed;border-collapse:separate;border-spaci
     try { var p = (r.espelho.problemas || [])[0]; return 'espelho ' + (p ? p.motivo : 'fora de dia'); } catch (e) { return 'espelho fora de dia'; }
   }
   V382.carregar = function (S) {
-    var s = sig(S), R0 = D.res[s], ja = R0 ? R0.linhas.length : 0, vs = s + '#' + ja + '#' + quer(S);
+    var s = sig(S), R0 = D.res[s], ja = R0 ? unid(S, R0.linhas) : 0, vs = s + '#' + ja + '#' + quer(S);   // PCM V383: desde em OS quando por OS
     if (D.voo && D.vooSig === vs) return D.voo;
     var g = ++D.ger, p = pedido(S);
     if (S.modo !== 'comercial') { p.desde = ja; p.limite = Math.max(1, Math.min(500, quer(S) - ja)); p.rotulos = rotulos(); }
@@ -123918,6 +123950,7 @@ table.v381-t{width:100%;table-layout:fixed;border-collapse:separate;border-spaci
     var itens = (g.itens || []).filter(function (it) { return it && !D.fora[T(it.Attachment_ID)]; });
     if (!itens.length) { delete D.at[g.k]; return; }
     var A = V381.montarAt(g.k, T(g.os), itens, T(g.tipo));
+    A.vinculos = Array.isArray(g.vinculos) ? g.vinculos : [];   // PCM V383 (ProperCare-backlog#305): ligado pela fila Sem OS
     D.at[g.k] = A; D.end[V381.endDe(A)] = g.k;
   }
   V382.achar = function (k) {
@@ -123994,7 +124027,7 @@ table.v381-t{width:100%;table-layout:fixed;border-collapse:separate;border-spaci
     novos.forEach(function (id) { D.fora[id] = 1; });
     Object.keys(D.at).forEach(function (k) {
       var A = D.at[k];
-      if (A.itens.some(function (it) { return D.fora[T(it.Attachment_ID)]; })) guardar({ k: A.k, os: A.os, tipo: A.tipo, itens: A.itens });
+      if (A.itens.some(function (it) { return D.fora[T(it.Attachment_ID)]; })) guardar({ k: A.k, os: A.os, tipo: A.tipo, itens: A.itens, vinculos: A.vinculos });   // PCM V383: os vínculos ficam
     });
     D.res = {}; D.nSemOS = null; D.ger++; D.voo = null; D.vooSig = '';
   };
@@ -124006,6 +124039,430 @@ table.v381-t{width:100%;table-layout:fixed;border-collapse:separate;border-spaci
 })();
 </script>
 <!-- ████ FIM PCM V382 ████ -->
+<!-- ████ INICIO PCM V383 · 🔗 LIGAR À OS E ATENDIMENTOS POR OS (ProperCare-backlog#305, P3 do #301) ████ -->
+<style id="v383css">
+.v383-faixa{display:flex;align-items:center;gap:10px;flex-wrap:wrap;border:1px solid #FEC84B;background:#FFFAEB;color:#93370D;border-radius:10px;padding:8px 12px;margin:0 0 10px;font-size:12.5px}
+.v383-faixa b{color:#7A2E0E}
+.v383-faixa .btn{margin-left:auto}
+.v381-t tr.v383-os td{background:#FCFCFD;cursor:pointer}
+.v381-t tr.v383-os.aberta td{background:#F9FAFB;border-bottom-color:#EAECF0}
+.v381-t tr.v383-os:hover td{background:#F2F4F7}
+.v383-seta{display:inline-block;width:16px;color:#667085;font-size:11px}
+.v381-t tr.v383-maq td:first-child{padding-left:30px}
+.v381-t tr.v383-maq .v381-maq{color:#101828;font-size:12.5px;font-weight:600}
+.v381-t tr.v383-outras td{cursor:pointer;color:#6941C6;font-size:12px;font-weight:600;padding-left:30px}
+.v383-ac{display:flex;gap:4px;justify-content:flex-end;flex-wrap:nowrap}
+.v383-ac .btn[disabled]{opacity:.45;cursor:default}
+.v381-w:has(> .v381-p:not([hidden])) .v383-rot{display:none}
+.v383-bal{position:absolute;z-index:1300;width:380px;max-width:calc(100vw - 16px);background:#fff;border:1px solid #D0D5DD;border-radius:12px;box-shadow:0 8px 28px rgba(16,24,40,.22);padding:12px;font-size:13px;color:#101828}
+.v383-bal h4{margin:0 0 8px;font-size:13.5px}
+.v383-ops{display:flex;flex-direction:column;gap:6px;max-height:260px;overflow:auto}
+.v383-op{display:flex;align-items:center;gap:8px;text-align:left;border:1px solid #EAECF0;border-radius:10px;padding:8px 10px;background:#fff;font:inherit;cursor:pointer;transition:background-color .12s,border-color .12s}
+.v383-op:hover{background:#F9FAFB}
+.v383-op.on{border-color:#EE7625;background:#FFF6ED}
+.v383-op .t{flex:1;min-width:0}
+.v383-op .t b{display:block;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.v383-op .t span{display:block;font-size:11.5px;color:#667085}
+.v383-op .ck{color:#EE7625;font-weight:700;visibility:hidden}
+.v383-op.on .ck{visibility:visible}
+.v383-outra{display:flex;gap:6px;align-items:center;margin-top:8px;font-size:12px;color:#475467}
+.v383-outra .form-input{flex:1;min-width:0}
+.v383-bts{display:flex;gap:6px;justify-content:flex-end;margin-top:10px}
+.v383-vaz{color:#667085;font-size:12.5px;padding:4px 0 2px}
+.v383-vin{border:1px solid #EAECF0;border-radius:10px;padding:8px 10px;margin-bottom:6px;font-size:12.5px}
+.v383-vin .l1{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.v383-vin .l1 .bts{margin-left:auto;display:flex;gap:4px}
+.v383-vin .dr{font-size:11.5px;font-weight:700}
+.v383-vin .dr.ok{color:#05603A}.v383-vin .dr.pend{color:#B54708}.v383-vin .dr.erro{color:#B42318}
+.v383-pdf{position:fixed;inset:0;z-index:9900;background:rgba(12,17,29,.92);display:flex;flex-direction:column}
+.v383-pdf-top{display:flex;align-items:center;gap:8px;padding:10px 14px;color:#fff;font-size:13px}
+.v383-pdf-top .t{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600}
+.v383-pdf-top button{background:rgba(255,255,255,.12);color:#fff;border:1px solid rgba(255,255,255,.25);border-radius:8px;padding:6px 10px;font:inherit;cursor:pointer;transition:background-color .12s}
+.v383-pdf-top button:hover{background:rgba(255,255,255,.24)}
+.v383-pdf iframe{flex:1;border:0;background:#fff;margin:0 14px 14px;border-radius:6px}
+@media (max-width:760px){
+  .v383-bal{position:fixed;left:8px!important;right:8px;bottom:8px;top:auto!important;width:auto}
+  .v381-t tr.v383-maq td:first-child{padding-left:0}
+  .v383-ac{justify-content:flex-start;margin-top:4px}
+  .v383-pdf iframe{margin:0}
+}
+@media print{.v383-faixa,.v383-bal,.v383-ac{display:none!important}}
+</style>
+<script>
+/* ═════════════════════════════════════════════════════════════════════════════════════════════════
+   PCM V383 · 20/11/2026 — 🔗 LIGAR À OS E ATENDIMENTOS POR OS (ProperCare-backlog#305 = P3 do estudo #301; prévias aprovadas no #301
+   e no #305). Par do SQL 159 DOCS_LIGAR_OS (roda ANTES do merge) e do GAS v189 (action docsLigarOS).
+   · 🗂 Sem OS: botão "🔗 Ligar à OS" em cada visita (e no painel dela). O balão pergunta ao banco as OS do cliente da visita
+     (pc_docs_os_sugestoes: a da mesma máquina primeiro, depois a mais perto do dia) e liga TODOS os arquivos da visita de uma vez
+     (pc_docs_ligar_os: o banco confere o cliente, a OS ativa e a visita que a tela mostrou; grava a trilha). Depois pede ao Apps Script
+     (docsLigarOS {lote}) que mova os arquivos para a pasta Cliente › OS › Máquina no Drive. Falha do Drive não desfaz o vínculo: a faixa
+     da aba diz quantos esperam o Drive, com "Tentar de novo".
+   · Painel do atendimento: "🔗 Ligado pela fila Sem OS" — quem, quando, o Drive, Tentar de novo e Desfazer (pc_docs_desfazer; os
+     arquivos voltam para a fila e o Apps Script os devolve à pasta de antes).
+   · 🛠 Atendimentos por OS (parte B): a OS de várias máquinas vira UMA linha (▸) com o resumo (máquinas, laudos, assinados, falta, fotos);
+     a seta abre as máquinas logo abaixo. Busca e "Falta assinatura"/"Sem laudo" abrem a OS já aberta, só com as máquinas que casam
+     ("mostrar as outras N" lê o resto). Em cada máquina, 👁 Ver (o PDF num visualizador por cima, sem abrir o painel) e ⬇ Baixar.
+     A página conta OS ("50 de N OS"): o banco pagina por OS (pc_docs_lista agrupar 'os'), uma OS nunca fica cortada.
+   Chamadas: abrir Documentos = as mesmas do V382 (1). O balão: 1 leitura (sugestões); ligar: 1 rpc + 1 action do Apps Script (2º plano).
+   Só no modo banco (V382 ativo): no Apps Script de reserva a tela é a do V382, sem o 🔗 (a regra mora no banco).
+   Chave de volta: localStorage pcm_v383 = off (a tela do V382 inteira).
+   ═════════════════════════════════════════════════════════════════════════════════════════════════ */
+(function () {
+  'use strict';
+  if (window.V383) return;
+  var V383 = window.V383 = { versao: 'V383 · 20/11/2026' };
+  var B = null;          // o balão aberto: { k, n, uid, sel, ops, el, btn, enviando }
+  var conf = '';         // o lote cujo "Desfazer" pede confirmação no painel
+  var ocupado = {};      // lote → true enquanto o Apps Script move
+  var laudos = {};       // attachment_id → { fid, url, nome } (o 👁 Ver e o ⬇ Baixar da linha)
+
+  function ls(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
+  function ligado() {
+    try { return ls('pcm_v383') !== 'off' && !!(window.V381 && V381.ligado() && V381.h && window.V382 && V382.ativo()); } catch (e) { return false; }
+  }
+  V383.ligado = ligado;
+  V383.porOS = ligado;
+  V383.podeLigar = ligado;
+  function T(v) { return String(v == null ? '' : v).trim(); }
+  function E(v) { return escHtml(v); }
+  function H() { return V381.h; }
+  function S() { return V381.S; }
+  function quem() { try { return typeof _v178Quem === 'function' ? String(_v178Quem() || '') : ''; } catch (e) { return ''; } }
+  function emDocs() { try { return typeof currentView !== 'undefined' && currentView === 'docs'; } catch (e) { return false; } }
+  function uid() { return 'lig-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 10); }
+  function msgErro(e) { return String((e && e.message) || 'erro').replace(/^NÃO foi gravada:\s*/, ''); }
+  // o que a tela acabou de tirar da lista (o espelho só vê depois do push): o banco não o conta nem o liga (auditoria #305)
+  function excl(p) { try { var k = Object.keys(V382.D.fora || {}); if (k.length) p.excluir = k.slice(-1000); } catch (e) {} return p; }
+  function reler() { try { V382.limpar(false); } catch (e) {} if (emDocs()) V381.lista(); }
+
+  // ═══ 1 · 🛠 ATENDIMENTOS POR OS ═══════════════════════════════════════════════════════════════════════════════
+  function acoesLaudo(lau) {
+    if (lau && (lau.fid || lau.url)) {
+      laudos[lau.aid] = lau;
+      return '<div class="v383-ac"><button type="button" class="btn btn-secondary btn-xs" data-v381="v383-ver" data-aid="' + E(lau.aid) + '" title="Ver o laudo">👁<span class="v383-rot"> Ver</span></button>' +
+             '<button type="button" class="btn btn-secondary btn-xs" data-v381="v383-baixar" data-aid="' + E(lau.aid) + '" title="Baixar o PDF">⬇<span class="v383-rot"> Baixar</span></button></div>';
+    }
+    return '<div class="v383-ac"><button type="button" class="btn btn-secondary btn-xs" disabled title="sem laudo">👁<span class="v383-rot"> Ver</span></button>' +
+           '<button type="button" class="btn btn-secondary btn-xs" disabled title="sem laudo">⬇<span class="v383-rot"> Baixar</span></button></div>';
+  }
+  function laudoDeA(A) {   // o atendimento montado do painel (as "outras" máquinas): o laudo mais novo
+    var it = A && A.laudos && A.laudos[0];
+    if (!it || !T(it.Attachment_ID)) return null;
+    return { aid: T(it.Attachment_ID), fid: T(it.File_ID), url: /^https:\/\//i.test(T(it.File_URL)) ? T(it.File_URL) : '', nome: T(it.File_Name) };
+  }
+  function linhaMaq(r, sel, comOS) {
+    var h = H(), A = r.A, s = r.s;
+    var achou = r.arq ? '<span class="v381-achou" title="' + E(T(r.arq[0].it.File_Name)) + '">' + h.plural(r.arq.length, 'arquivo', 'arquivos') + ': ' + E(_docFileNameCurto(T(r.arq[0].it.File_Name) || T(r.arq[0].it.Caption), 34)) + '</span>' : '';
+    var c1 = comOS ? '<span class="v383-seta"></span><b>' + E(A.os) + '</b><span class="v381-meta">' + E(h.dia(A.dt)) + (A.tipo ? ' · ' + E(A.tipo) : '') + '</span>' + achou
+                   : '<span class="v381-meta">' + E(h.dia(A.dt)) + '</span>' + achou;
+    var c2 = comOS ? '<span class="v381-cli">' + E(A.cli || '—') + '</span><span class="v381-maq" title="' + E(A.maqRot) + '">' + E(A.maqRot || 'Sem máquina identificada') + '</span>'
+                   : '<span class="v381-maq" title="' + E(A.maqRot) + '">' + E(A.maqRot || 'Sem máquina identificada') + '</span>';
+    return '<tr data-v381-at="' + E(A.k) + '" class="' + (comOS ? 'v381-os1' : 'v383-maq') + (sel === A.k ? ' sel' : '') + '">' +
+      '<td class="v381-os" data-cfx-val="' + E(h.diaAno(A.dt)) + '">' + c1 + '</td>' +
+      '<td data-cfx-val="' + E(A.cli || '—') + '">' + c2 + '</td>' +
+      '<td data-cfx-val="' + (s === 'ok' ? 'assinado' : s === 'falta' ? 'falta cliente' : 'sem laudo') + '">' + h.seloHtml(A, s) + '</td>' +
+      '<td class="v381-n" data-cfx-val="' + A.fotos.length + '">📷 ' + A.fotos.length + '</td>' +
+      '<td>' + acoesLaudo(r.lau) + '</td></tr>';
+  }
+  function resumoOS(l) {
+    var nl = +l.os_n_laudos || 0, ok = +l.os_n_ok || 0, fa = +l.os_n_falta || 0, se = +l.os_n_sem || 0, h = H();
+    var partes = [];
+    if (ok) partes.push(h.plural(ok, 'assinado', 'assinados'));
+    if (fa) partes.push(fa + ' falta cliente');
+    if (se) partes.push(se + ' sem laudo');
+    return '📄 ' + h.plural(nl, 'laudo', 'laudos') + '<span class="' + (fa || se ? 'v381-fal' : 'v381-ok') + '">✍ ' + E(partes.join(' · ') || '—') + '</span>';
+  }
+  V383.desenharAtend = function (list, rs, R) {
+    var h = H(), s = S(), tot = +R.total || 0;
+    if (!rs.length) { h.desenharAtend(list, rs, 0); return; }
+    var filtros = !!(h.termos().length || s.pend), ctx = filtros ? s.pend + '|' + h.termos().join(' ') : '';
+    if (!s.osAbertas || s.osCtx !== ctx) { s.osAbertas = {}; s.osOutras = {}; s.osCtx = ctx; }   // filtro novo: a OS que casa volta a abrir sozinha
+    var grupos = [], porOs = {};
+    rs.forEach(function (r) {
+      var os = r.A.os;
+      if (!porOs[os]) { porOs[os] = { os: os, rs: [], l: r.l || {} }; grupos.push(porOs[os]); }
+      porOs[os].rs.push(r);
+    });
+    var lim = Math.min(grupos.length, s.mais), out = '';
+    for (var gi = 0; gi < lim; gi++) {
+      var G = grupos[gi], l = G.l, nMaq = +l.os_n_maq || G.rs.length, A0 = G.rs[0].A;
+      if (nMaq <= 1 && G.rs.length === 1) { out += linhaMaq(G.rs[0], s.sel, true); continue; }
+      var aberta = s.osAbertas[G.os] != null ? !!s.osAbertas[G.os] : filtros;
+      out += '<tr data-v381="v383-os" data-k="' + E(G.os) + '" class="v383-os' + (aberta ? ' aberta' : '') + '" aria-expanded="' + aberta + '">' +
+        '<td class="v381-os" data-cfx-val="' + E(h.diaAno(A0.dt)) + '"><span class="v383-seta">' + (aberta ? '▾' : '▸') + '</span><b>' + E(G.os) + '</b><span class="v381-meta">' + E(h.dia(l.os_dt ? Date.parse(l.os_dt) : A0.dt)) + (A0.tipo ? ' · ' + E(A0.tipo) : '') + '</span></td>' +
+        '<td data-cfx-val="' + E(A0.cli || '—') + '"><span class="v381-cli">' + E(A0.cli || '—') + '</span><span class="v381-maq">' + E(h.plural(nMaq, 'máquina', 'máquinas')) + '</span></td>' +
+        '<td data-cfx-val="' + ((+l.os_n_falta || +l.os_n_sem) ? 'falta cliente' : 'assinado') + '">' + resumoOS(l) + '</td>' +
+        '<td class="v381-n" data-cfx-val="' + (+l.os_n_fotos || 0) + '">📷 ' + (+l.os_n_fotos || 0) + '</td><td></td></tr>';
+      if (!aberta) continue;
+      var ks = {};
+      G.rs.forEach(function (r) { ks[r.A.k] = 1; out += linhaMaq(r, s.sel, false); });
+      var faltam = nMaq - G.rs.length;
+      if (faltam > 0) {
+        if (s.osOutras[G.os]) {
+          Object.keys(V382.D.at).forEach(function (k) {
+            var A = V382.D.at[k];
+            if (!A || A.os !== G.os || ks[k]) return;
+            out += linhaMaq({ A: A, s: h.selo(A), arq: null, lau: laudoDeA(A) }, s.sel, false);
+          });
+        } else {
+          out += '<tr class="v383-outras" data-v381="v383-outras" data-k="' + E(G.os) + '" data-cfx-skip><td>mostrar ' + (faltam === 1 ? 'a outra máquina' : 'as outras ' + faltam) + '</td><td></td><td></td><td></td><td></td></tr>';
+        }
+      }
+    }
+    list.innerHTML = '<table class="v381-t" id="v381Tab"><colgroup><col style="width:23%"><col style="width:33%"><col style="width:22%"><col style="width:8%"><col style="width:14%"></colgroup>' +
+      '<thead><tr><th>OS · data</th><th>Cliente · máquina</th><th>Laudo</th><th>Fotos</th><th></th></tr></thead><tbody>' + out + '</tbody></table>';
+    var cont = document.getElementById('docsCounter'), mais = document.getElementById('v381Mais');
+    var perTxt = s.per ? 'últimos ' + s.per + ' dias' : 'todo o período';
+    if (cont) cont.textContent = lim + ' de ' + tot + ' OS · ' + perTxt;
+    if (mais) mais.innerHTML = tot > lim ? '<button type="button" class="btn btn-secondary btn-sm" data-v381="mais">Mostrar mais</button>' : '';
+  };
+
+  // o visualizador do laudo (por cima; Esc fecha) e o baixar
+  var vis = null;
+  function fecharVis() { if (vis && vis.parentNode) vis.parentNode.removeChild(vis); vis = null; }
+  function verLaudo(aid) {
+    var L = laudos[aid]; if (!L) return;
+    if (!L.fid) { if (L.url) _docOpen(L.url); return; }
+    fecharVis();
+    vis = document.createElement('div');
+    vis.className = 'v383-pdf mob-keep'; vis.setAttribute('role', 'dialog'); vis.setAttribute('aria-label', 'Laudo');
+    vis.innerHTML = '<div class="v383-pdf-top"><span class="t"></span><button type="button" data-v383v="drive">Abrir no Drive</button>' +
+      '<button type="button" data-v383v="baixar">⬇ Baixar</button><button type="button" data-v383v="x" title="Fechar (Esc)">✕</button></div><iframe title="Laudo"></iframe>';
+    vis.querySelector('.t').textContent = L.nome || 'Laudo';
+    vis.querySelector('iframe').src = 'https://drive.google.com/file/d/' + encodeURIComponent(L.fid) + '/preview';
+    vis.addEventListener('click', function (ev) {
+      var b = ev.target.closest && ev.target.closest('[data-v383v]'); if (!b) return;
+      var a = b.getAttribute('data-v383v');
+      if (a === 'x') fecharVis();
+      else if (a === 'drive') _docOpen(L.url || ('https://drive.google.com/file/d/' + encodeURIComponent(L.fid) + '/view'));
+      else if (a === 'baixar') baixar(aid);
+    });
+    document.body.appendChild(vis);
+  }
+  function baixar(aid) {
+    var L = laudos[aid]; if (!L) return;
+    _docOpen(L.fid ? 'https://drive.google.com/uc?export=download&id=' + encodeURIComponent(L.fid) : L.url);
+  }
+  V383.verLaudo = verLaudo;
+
+  // ═══ 2 · 🗂 SEM OS: a faixa e o 🔗 Ligar à OS ════════════════════════════════════════════════════════════════════
+  function respSemOS() { try { return V382.resposta(S()) || {}; } catch (e) { return {}; } }
+  V383.faixaSemOS = function (list, tot, totArq) {
+    if (!ligado() || !list) return;
+    var R = respSemOS(), np = +R.n_drive_pend || 0, h = H(), html = '';
+    if (np) html = '⏳ <b>' + E(h.plural(np, 'arquivo ligado ainda não foi', 'arquivos ligados ainda não foram')) + ' para a pasta da OS no Drive.</b>' +
+                   '<button type="button" class="btn btn-secondary btn-xs" data-v381="v383-drive"' + (Object.keys(ocupado).length ? ' disabled' : '') + '>Tentar de novo</button>';
+    else if (tot) html = '⚠ <b>' + E(h.plural(totArq, 'arquivo', 'arquivos')) + ' de atendimento sem OS</b> — em ' + E(h.plural(tot, 'visita', 'visitas')) + '. Ligue cada visita à OS certa e ela sai desta lista.';
+    if (!html) return;
+    var d = document.createElement('div');
+    d.className = 'v383-faixa'; d.setAttribute('role', 'status'); d.innerHTML = html;
+    list.insertBefore(d, list.firstChild);
+  };
+  V383.botaoLigar = function (k, n) {
+    if (!ligado()) return '';
+    return ' <button type="button" class="btn btn-primary btn-xs" data-v381="ligar" data-k="' + E(k) + '"' + (n ? ' data-n="' + (+n) + '"' : '') + '>🔗 Ligar à OS</button>';
+  };
+  function nDaVisita(k, btn) {
+    var n = +((btn && btn.getAttribute('data-n')) || 0);
+    if (n) return n;
+    var l = (respSemOS().linhas || []).filter(function (x) { return T(x.k) === k; })[0];
+    if (l) return +l.n_itens || 0;
+    var A = V382.achar(k);
+    return A ? A.itens.length : 0;
+  }
+  function fecharBalao() {
+    if (B && B.el && B.el.parentNode) B.el.parentNode.removeChild(B.el);
+    B = null;
+  }
+  V383.fecharBalao = fecharBalao;
+  function posicionar() {
+    if (!B || !B.el || !B.btn) return;
+    if (!document.body.contains(B.btn)) { fecharBalao(); return; }
+    var r = B.btn.getBoundingClientRect(), w = B.el.offsetWidth || 380;
+    var x = Math.max(8, Math.min(window.innerWidth - w - 8, r.right - w)) + window.scrollX;
+    B.el.style.left = x + 'px';
+    B.el.style.top = (r.bottom + 6 + window.scrollY) + 'px';
+  }
+  function pintarBalao() {
+    if (!B || !B.el) return;
+    var h = H(), corpo;
+    if (B.carregando) corpo = '<div class="v383-vaz">Procurando as OS deste cliente…</div>';
+    else if (B.erro) corpo = '<div class="v383-vaz">' + E(B.erro) + '</div>';
+    else if (!B.ops.length) corpo = '<div class="v383-vaz">Nenhuma OS aberta deste cliente. Abra a OS e volte aqui, ou digite o número abaixo.</div>';
+    else corpo = '<div class="v383-ops" role="listbox">' + B.ops.map(function (o) {
+      var on = B.sel === o.os && !T(B.outra);
+      return '<button type="button" class="v383-op' + (on ? ' on' : '') + '" role="option" aria-selected="' + on + '" data-v383-os="' + E(o.os) + '"><span class="t"><b>' + E(o.os) + (o.tipo ? ' · ' + E(o.tipo) : '') + '</b>' +
+             '<span>aberta em ' + E(o.aberta_em ? h.dia(Date.parse(o.aberta_em)) : '—') + ' · ' + (o.mesma_maquina ? 'mesma máquina' : 'outra máquina') + (o.status ? ' · ' + E(o.status) : '') + '</span></span><span class="ck">✔</span></button>';
+    }).join('') + '</div>' + (B.total > B.ops.length ? '<div class="v383-vaz">+' + (B.total - B.ops.length) + ' OS deste cliente: digite o número abaixo.</div>' : '');
+    var alvo = T(B.outra) || B.sel;
+    B.el.innerHTML = '<h4>Ligar a qual OS deste cliente?</h4>' + corpo +
+      '<label class="v383-outra">Outra OS: <input class="form-input" type="text" data-v383-outra placeholder="número da OS" value="' + E(B.outra || '') + '" autocomplete="off" name="pcm_v383_os_nofill" data-lpignore="true" data-1p-ignore readonly onfocus="this.removeAttribute(\'readonly\')"></label>' +
+      '<div class="v383-bts"><button type="button" class="btn btn-secondary btn-sm" data-v383b="nao">Cancelar</button>' +
+      '<button type="button" class="btn btn-primary btn-sm" data-v383b="sim"' + (alvo && !B.carregando ? '' : ' disabled') + (B.enviando ? ' data-pcm-enviando="1" disabled' : '') + '>' +
+      (B.enviando ? 'Ligando…' : 'Ligar ' + h.plural(B.n, 'arquivo', 'arquivos')) + '</button></div>';
+    posicionar();
+  }
+  function abrirBalao(k, btn) {
+    if (B && B.k === k && B.el) { fecharBalao(); return; }
+    fecharBalao();
+    var n = nDaVisita(k, btn);
+    if (!n) { toast('Não achei os arquivos desta visita. Clique em ↻ Atualizar.', 'error'); return; }
+    var r0 = btn.getBoundingClientRect(), el = document.elementFromPoint(r0.left + r0.width / 2, r0.top + r0.height / 2);
+    if (!el || !(el === btn || btn.contains(el))) { try { btn.scrollIntoView({ block: 'center' }); } catch (e) {} }
+    B = { k: k, n: n, uid: uid(), sel: '', ops: [], total: 0, outra: '', carregando: true, erro: '', enviando: false, btn: btn, el: document.createElement('div') };
+    B.el.className = 'v383-bal mob-keep'; B.el.setAttribute('role', 'dialog'); B.el.setAttribute('aria-label', 'Ligar à OS');
+    document.body.appendChild(B.el);
+    pintarBalao();
+    var meu = B;
+    _v200Rpc('pc_docs_os_sugestoes', { p: excl({ k: k }) }, false).then(function (r) {
+      if (B !== meu) return;
+      B.carregando = false; B.ops = (r && Array.isArray(r.os)) ? r.os : []; B.total = +(r && r.total) || B.ops.length;
+      if (B.ops.length) B.sel = T(B.ops[0].os);
+      if (r && +r.n_arquivos && +r.n_arquivos !== B.n) B.n = +r.n_arquivos;   // a fila mudou desde a lista: vale o que o banco tem agora
+      pintarBalao();
+    }).catch(function (e) {
+      if (B !== meu) return;
+      B.carregando = false; B.erro = msgErro(e); pintarBalao();
+    });
+  }
+  async function ligar() {
+    if (!B || B.enviando) return;
+    var os = T(B.outra) || B.sel; if (!os) return;
+    var meu = B;
+    B.enviando = true; pintarBalao();
+    var r;
+    try {
+      r = await _v200Rpc('pc_docs_ligar_os', { p: excl({ k: B.k, os: os, n: B.n, uid: B.uid }) }, true);
+    } catch (e) {
+      if (B !== meu) return;
+      B.enviando = false; pintarBalao();
+      var m = msgErro(e);
+      if (e && e.codigo === 'acesso') m = 'Ligar à OS é do escritório (PCM): o banco recusou o seu acesso.';
+      toast(m, 'error');
+      if (/não está mais na fila|a visita mudou/i.test(m)) { fecharBalao(); reler(); }
+      return;
+    }
+    var k = B.k; fecharBalao();
+    toast(H().plural(+r.n_visiveis || +r.n || 0, 'arquivo ligado', 'arquivos ligados') + ' à OS ' + os + '. Movendo no Drive…', 'success');
+    try { if (V381.S.sel === k) V381.fechar(); } catch (e) {}
+    reler();
+    drive(r.lote);
+  }
+  // o Apps Script move os arquivos do lote no Drive (2º plano); o resultado volta pelo banco
+  function drive(lote) {
+    if (!lote || ocupado[lote]) return Promise.resolve();
+    ocupado[lote] = true;
+    return Promise.resolve().then(function () { return syncToGS('docsLigarOS', { lote: lote, createdBy: quem() }); }).then(function (r) {
+      if (!r || r.status !== 'ok') throw new Error((r && r.error) || 'sem resposta');
+      if (+r.n_erro) toast(H().plural(+r.n_erro, 'arquivo não foi', 'arquivos não foram') + ' para a pasta da OS no Drive. Use "Tentar de novo" na aba 🗂 Sem OS.', 'error');
+      else if (+r.resta) toast('Ainda faltam ' + r.resta + ' arquivos no Drive. Use "Tentar de novo" na aba 🗂 Sem OS.', 'warning');
+    }).catch(function (e) {
+      console.warn('[V383] docsLigarOS:', e && e.message);
+      toast('O Drive não acompanhou agora — a ligação vale. Use "Tentar de novo" na aba 🗂 Sem OS.', 'warning');
+    }).then(function () { delete ocupado[lote]; reler(); });
+  }
+  function tentarDeNovo(lotes) {
+    lotes = (lotes || []).filter(Boolean);
+    if (!lotes.length) { reler(); return; }
+    var n = 0;
+    (function prox() {
+      if (n >= lotes.length) return;
+      drive(lotes[n++]).then(prox);
+    })();
+  }
+
+  // ═══ 3 · O PAINEL: o botão da visita e a trilha da OS ═══════════════════════════════════════════════════════════
+  var DRV = { ok: ['ok', '✔ no Drive'], pendente: ['pend', '⏳ Drive pendente'], erro: ['erro', '⚠ Drive com erro'] };
+  V383.painelExtra = function (A) {
+    if (!ligado() || !A) return '';
+    if (!A.os) return '<div class="v381-pf">' + V383.botaoLigar(A.k, A.itens.length).trim() + '</div>';
+    var vs = Array.isArray(A.vinculos) ? A.vinculos : [];
+    if (!vs.length) return '';
+    var h = H(), out = '<div class="v381-s">🔗 Ligado pela fila Sem OS</div>';
+    vs.forEach(function (v) {
+      var d = DRV[v.drive] || DRV.pendente, quando = v.em ? new Date(v.em) : null;
+      var data = quando ? h.dia(quando.getTime()) + ' ' + String(quando.getHours()).padStart(2, '0') + ':' + String(quando.getMinutes()).padStart(2, '0') : '';
+      out += '<div class="v383-vin"><div class="l1"><span>' + E(h.plural(+v.n || 0, 'arquivo', 'arquivos')) + ' · ' + E(v.por_nome || v.por || '—') + (data ? ' · ' + E(data) : '') + '</span>' +
+        '<span class="dr ' + d[0] + '"' + (v.drive_msg ? ' title="' + E(v.drive_msg) + '"' : '') + '>' + d[1] + '</span><span class="bts">' +
+        (v.drive !== 'ok' ? '<button type="button" class="btn btn-secondary btn-xs" data-v381="v383-drive" data-k="' + E(v.lote) + '"' + (ocupado[v.lote] ? ' disabled' : '') + '>Tentar de novo</button>' : '') +
+        '<button type="button" class="btn btn-secondary btn-xs" data-v381="v383-desfazer" data-k="' + E(v.lote) + '">Desfazer</button></span></div>';
+      if (conf === v.lote) {
+        out += '<div class="v381-conf" data-v383-conf><b>Desfazer a ligação?</b>' + E(h.plural(+v.n || 0, 'O arquivo volta', 'Os ' + (+v.n || 0) + ' arquivos voltam')) +
+          ' para a fila 🗂 Sem OS e para a pasta de antes no Drive.<div class="bts"><button type="button" class="btn btn-secondary btn-sm" data-v381="v383-desf-nao">Cancelar</button>' +
+          '<button type="button" class="btn btn-sm" style="background:#D92D20;color:#fff;border-color:#D92D20" data-v381="v383-desf-sim" data-k="' + E(v.lote) + '">Desfazer</button></div></div>';
+      }
+      out += '</div>';
+    });
+    return out;
+  };
+  async function desfazer(lote, btn) {
+    if (!lote || (btn && btn.getAttribute('data-pcm-enviando'))) return;
+    if (btn) { btn.disabled = true; btn.setAttribute('data-pcm-enviando', '1'); btn.textContent = 'Desfazendo…'; }
+    var r;
+    try {
+      r = await _v200Rpc('pc_docs_desfazer', { p: { lote: lote } }, true);
+    } catch (e) {
+      var m = msgErro(e);
+      if (e && e.codigo === 'acesso') m = 'Desfazer a ligação é do escritório (PCM): o banco recusou o seu acesso.';
+      toast(m, 'error');
+      if (btn && document.body.contains(btn)) { btn.disabled = false; btn.removeAttribute('data-pcm-enviando'); btn.textContent = 'Desfazer'; }
+      return;
+    }
+    conf = '';
+    toast(H().plural(+r.n || 0, 'arquivo voltou', 'arquivos voltaram') + ' para a fila 🗂 Sem OS.', 'success');
+    try { V381.fechar(); } catch (e) {}
+    reler();
+    drive(lote);
+  }
+
+  // ═══ 4 · OS GESTOS (o delegado do V381 passa os data-v381="v383-…" e "ligar" para cá) ════════════════════════════
+  V383.acao = function (a, b) {
+    var k = b.getAttribute('data-k') || '', s = S();
+    if (a === 'ligar') abrirBalao(k, b);
+    else if (a === 'v383-os') { if (!s.osAbertas) s.osAbertas = {}; var ab = b.classList.contains('aberta'); s.osAbertas[k] = !ab; V381.lista(); }
+    else if (a === 'v383-outras') {
+      if (b.getAttribute('data-lendo')) return;
+      b.setAttribute('data-lendo', '1'); b.firstChild.textContent = 'lendo as outras máquinas…';
+      V382.carregarOS(k).then(function () { if (!s.osOutras) s.osOutras = {}; s.osOutras[k] = true; V381.lista(); },
+        function () { toast('Não consegui ler as outras máquinas da OS. Tente de novo.', 'error'); V381.lista(); });
+    }
+    else if (a === 'v383-ver') verLaudo(b.getAttribute('data-aid') || '');
+    else if (a === 'v383-baixar') baixar(b.getAttribute('data-aid') || '');
+    else if (a === 'v383-drive') tentarDeNovo(k ? [k] : (respSemOS().drive_lotes || []));
+    else if (a === 'v383-desfazer') { conf = conf === k ? '' : k; V381.h.repintarPainel(); }
+    else if (a === 'v383-desf-nao') { conf = ''; V381.h.repintarPainel(); }
+    else if (a === 'v383-desf-sim') desfazer(k, b);
+  };
+  // o balão: escolher, digitar, ligar, cancelar; fora dele, fecha
+  document.addEventListener('click', function (ev) {
+    if (!B || !B.el) return;
+    var t = ev.target;
+    if (B.el.contains(t)) {
+      var op = t.closest && t.closest('[data-v383-os]');
+      if (op) { B.sel = op.getAttribute('data-v383-os'); B.outra = ''; pintarBalao(); return; }
+      var bt = t.closest && t.closest('[data-v383b]');
+      if (bt) { if (bt.getAttribute('data-v383b') === 'nao') fecharBalao(); else if (!bt.disabled) ligar(); }
+      return;
+    }
+    if (B.btn && (t === B.btn || B.btn.contains(t))) return;
+    if (!B.enviando) fecharBalao();
+  }, true);
+  document.addEventListener('input', function (ev) {
+    var t = ev.target; if (!B || !t || !t.matches || !t.matches('[data-v383-outra]')) return;
+    B.outra = t.value;
+    var bt = B.el.querySelector('[data-v383b="sim"]'); if (bt && !B.enviando) bt.disabled = !(T(B.outra) || B.sel);
+    B.el.querySelectorAll('.v383-op').forEach(function (o) { var on = !T(B.outra) && o.getAttribute('data-v383-os') === B.sel; o.classList.toggle('on', on); o.setAttribute('aria-selected', String(on)); });
+  });
+  document.addEventListener('keydown', function (ev) {
+    if (vis && ev.key === 'Escape') { fecharVis(); ev.preventDefault(); ev.stopPropagation(); return; }
+    if (B && ev.key === 'Escape' && !B.enviando) { fecharBalao(); ev.preventDefault(); ev.stopPropagation(); }
+    if (B && ev.key === 'Enter' && ev.target && ev.target.matches && ev.target.matches('[data-v383-outra]') && T(B.outra)) { ev.preventDefault(); ligar(); }
+  }, true);
+  window.addEventListener('resize', posicionar);
+  window.addEventListener('scroll', posicionar, true);
+})();
+</script>
+<!-- ████ FIM PCM V383 ████ -->
 
 </body>
 </html>
